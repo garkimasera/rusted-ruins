@@ -1,0 +1,16 @@
+[package]
+name = "rusted-ruins-common"
+version = "0.0.1"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[lib]
+name = "rusted_ruins_common"
+crate-type = ["rlib"]
+
+[dependencies]
+serde = "1"
+serde_derive = "1"
+tar = "0.4"
+rmp = "0.8"
+rmp-serde = "0.13"
+

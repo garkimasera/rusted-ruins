@@ -1,0 +1,8 @@
+
+[workspace]
+members = [
+    "common",
+    "makepak",
+    "audio",
+    "rusted-ruins",
+]

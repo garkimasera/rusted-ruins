@@ -1,0 +1,12 @@
+[package]
+name = "rusted-ruins-audio"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[dependencies]
+log = "0.3"
+
+[dependencies.sdl2]
+version = "0.30"
+default-features = false
+features = ["mixer"]

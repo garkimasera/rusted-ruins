@@ -1,0 +1,24 @@
+[package]
+name = "rusted-ruins"
+version = "0.0.1"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[dependencies]
+rand = "0.3"
+lazy_static = "0.2"
+tar = "0.4"
+error-chain = "0.10"
+serde = "1"
+serde_derive = "1"
+toml = "0.4"
+log = "0.3"
+env_logger = "0.4"
+walkdir = "1"
+
+[dependencies.rusted-ruins-common]
+path = "../common"
+
+[dependencies.sdl2]
+version = "0.30"
+default-features = false
+features = ["ttf", "image", "mixer"]

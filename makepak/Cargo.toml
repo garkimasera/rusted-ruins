@@ -1,0 +1,18 @@
+[package]
+name = "rusted-ruins-makepak"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[dependencies]
+serde = "1"
+serde_derive = "1"
+error-chain = "0.10"
+toml = "0.4"
+tar = "0.4"
+getopts = "0.2"
+image = "0.14"
+
+[dependencies.rusted-ruins-common]
+path = "../common"
+
+
