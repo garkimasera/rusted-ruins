@@ -2,6 +2,7 @@
 extern crate sdl2;
 #[macro_use]
 extern crate rusted_ruins_common as common;
+extern crate rusted_ruins_audio as audio;
 extern crate rand;
 #[macro_use]
 extern crate lazy_static;
@@ -48,6 +49,7 @@ pub struct SdlContext {
     pub sdl_context: sdl2::Sdl,
     pub ttf_context: sdl2::ttf::Sdl2TtfContext,
     _image: sdl2::image::Sdl2ImageContext,
+    _audio_context: audio::AudioContext,
 }
 
 impl SdlContext {
@@ -56,6 +58,7 @@ impl SdlContext {
             sdl_context: sdl2::init().expect("Init Failed : SDL Context"),
             ttf_context: sdl2::ttf::init().expect("Init Failed : SDL_ttf Context"),
             _image: sdl2::image::init(sdl2::image::INIT_PNG).expect("Init Failed : SDL_Image"),
+            _audio_context: audio::init(&[&*config::APP_DIR]),
         }
     }
 }

@@ -3,6 +3,10 @@ name = "rusted-ruins-audio"
 version = "0.1.0"
 authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
 
+[lib]
+name = "rusted_ruins_audio"
+crate-type = ["rlib"]
+
 [dependencies]
 log = "0.3"
 

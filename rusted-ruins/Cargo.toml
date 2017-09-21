@@ -18,7 +18,10 @@ walkdir = "1"
 [dependencies.rusted-ruins-common]
 path = "../common"
 
+[dependencies.rusted-ruins-audio]
+path = "../audio"
+
 [dependencies.sdl2]
 version = "0.30"
 default-features = false
-features = ["ttf", "image", "mixer"]
+features = ["ttf", "image"]
