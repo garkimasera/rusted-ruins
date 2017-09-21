@@ -2,19 +2,20 @@
 use std::collections::HashMap;
 use std::path::Path;
 use std::fs;
-use sdl2::mixer::{Channel, Chunk};
+use sdl2::mixer::{self, Channel, Chunk};
 
 pub struct WavTable {
+    channel: Channel,
     chunks: HashMap<String, Chunk>,
 }
 
 impl WavTable {
-    pub fn new<P: AsRef<Path>>(app_dirs: &[P]) -> WavTable {
-        // Load chunks from appdir/sound
+    pub fn new<P: AsRef<Path>>(data_dirs: &[P]) -> WavTable {
+        // Load chunks from datadir/sound
         let mut chunks = HashMap::new();
         
-        for app_dir in app_dirs {
-            let sound_dir = app_dir.as_ref().join("sound");
+        for data_dir in data_dirs {
+            let sound_dir = data_dir.as_ref().join("sound");
             let sound_dir = warn_continue!(fs::read_dir(sound_dir));
             
             for entry in sound_dir {
@@ -35,16 +36,17 @@ impl WavTable {
         }
         
         WavTable {
+            channel: mixer::channel(0),
             chunks,
         }
     }
 
-    pub fn play(&self, s: &str) -> Result<(), String> {
-        if let Some(chunk) = self.chunks.get(s) {
-            Channel::all().play(&chunk, 0)?;
+    pub fn play(&self, name: &str) -> Result<(), String> {
+        if let Some(chunk) = self.chunks.get(name) {
+            self.channel.play(&chunk, 0)?;
             Ok(())
         }else{
-            Err(format!("Unknown sound effect \"{}\"", s))
+            Err(format!("Unknown sound effect \"{}\"", name))
         }
     }
 }
