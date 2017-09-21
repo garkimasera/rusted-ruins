@@ -1,4 +1,7 @@
 
+//! This crate provides functions for sound and music playing.
+//! All function must be called from main thread only.
+
 #[macro_use]
 extern crate log;
 extern crate sdl2;
@@ -7,20 +10,62 @@ extern crate sdl2;
 mod tool;
 mod wavtable;
 
+use std::cell::RefCell;
 use std::path::Path;
 use wavtable::WavTable;
 
-pub struct AudioPlayer {
+thread_local!(static AUDIO_PLAYER: RefCell<Option<AudioPlayer>> = RefCell::new(None));
+
+pub struct AudioContext {
     _mixer_context: sdl2::mixer::Sdl2MixerContext,
+}
+
+/// Initialize AudioPlayer
+pub fn init<P: AsRef<Path>>(data_dirs: &[P]) -> AudioContext {
+    let mixer_context = init_device();
+    
+    AUDIO_PLAYER.with(|a| {
+        assert!(a.borrow().is_none());
+        *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
+    });
+    AudioContext { _mixer_context: mixer_context }
+}
+
+pub fn with_audio_player<F: FnOnce(&AudioPlayer)>(f: F) {
+    AUDIO_PLAYER.with(|a| {
+        assert!(a.borrow().is_some());
+        f(a.borrow().as_ref().unwrap());
+    });
+}
+
+/// Play an sound (wav file)
+pub fn play_sound(name: &str) {
+    with_audio_player(|a| {
+        a.play_sound(name);
+    });
+}
+
+fn finalize() {
+    AUDIO_PLAYER.with(|a| {
+        assert!(a.borrow().is_some());
+        *a.borrow_mut() = None;
+    });
+}
+
+impl Drop for AudioContext {
+    fn drop(&mut self) {
+        finalize();
+    }
+}
+
+pub struct AudioPlayer {
     wavtable: WavTable,
 }
 
 impl AudioPlayer {
-    pub fn new<P: AsRef<Path>>(app_dirs: &[P]) -> AudioPlayer {
-        let mixer_context = init_device();
-        let wavtable = WavTable::new(app_dirs);
+    pub fn new<P: AsRef<Path>>(data_dirs: &[P]) -> AudioPlayer {
+        let wavtable = WavTable::new(data_dirs);
         AudioPlayer {
-            _mixer_context: mixer_context,
             wavtable,
         }
     }
@@ -32,7 +77,7 @@ impl AudioPlayer {
     }
 }
 
-pub fn init_device() -> sdl2::mixer::Sdl2MixerContext {
+fn init_device() -> sdl2::mixer::Sdl2MixerContext {
     use sdl2::mixer::{INIT_OGG, DEFAULT_CHANNELS, AUDIO_S16LSB};
     
     let mixer_context = sdl2::mixer::init(INIT_OGG).unwrap();
@@ -66,10 +111,9 @@ mod tests {
             }
         };
 
-        let audio_player = AudioPlayer::new(&[app_dir]);
+        let _audio_context = init(&[app_dir]);
 
-        let wavname = "anim.club";
-        println!("Play of wavfile \"{}\" : {:?}", wavname, audio_player.play_sound(wavname));
-        std::thread::sleep(std::time::Duration::from_millis(1000));
+        play_sound("anim.club");
+        std::thread::sleep(std::time::Duration::from_millis(300));
     }
 }
