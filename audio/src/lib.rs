@@ -9,10 +9,12 @@ extern crate sdl2;
 #[macro_use]
 mod tool;
 mod wavtable;
+mod musictable;
 
 use std::cell::RefCell;
 use std::path::Path;
 use wavtable::WavTable;
+use musictable::MusicTable;
 
 thread_local!(static AUDIO_PLAYER: RefCell<Option<AudioPlayer>> = RefCell::new(None));
 
@@ -45,6 +47,13 @@ pub fn play_sound(name: &str) {
     });
 }
 
+/// Play an music (ogg file)
+pub fn play_music(name: &str) {
+    with_audio_player(|a| {
+        a.play_music(name);
+    });
+}
+
 fn finalize() {
     AUDIO_PLAYER.with(|a| {
         assert!(a.borrow().is_some());
@@ -60,18 +69,26 @@ impl Drop for AudioContext {
 
 pub struct AudioPlayer {
     wavtable: WavTable,
+    musictable: MusicTable,
 }
 
 impl AudioPlayer {
     pub fn new<P: AsRef<Path>>(data_dirs: &[P]) -> AudioPlayer {
         let wavtable = WavTable::new(data_dirs);
+        let musictable = MusicTable::new(data_dirs);
         AudioPlayer {
-            wavtable,
+            wavtable, musictable,
         }
     }
 
     pub fn play_sound(&self, name: &str) {
         if let Err(e) = self.wavtable.play(name) {
+            warn!("{}", e);
+        }
+    }
+
+    pub fn play_music(&self, name: &str) {
+        if let Err(e) = self.musictable.play(name) {
             warn!("{}", e);
         }
     }
@@ -113,7 +130,9 @@ mod tests {
 
         let _audio_context = init(&[app_dir]);
 
+        play_music("test");
+        std::thread::sleep(std::time::Duration::from_millis(3000));
         play_sound("anim.club");
-        std::thread::sleep(std::time::Duration::from_millis(300));
+        std::thread::sleep(std::time::Duration::from_millis(3000));
     }
 }
