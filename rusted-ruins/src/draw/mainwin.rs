@@ -2,8 +2,8 @@
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
+use array2d::*;
 use common::basic::{TILE_SIZE, TILE_SIZE_I};
-use common::array2d::*;
 use common::objholder::Holder;
 use common::obj::*;
 use game::{Game, Animation, InfoGetter, CharaId};

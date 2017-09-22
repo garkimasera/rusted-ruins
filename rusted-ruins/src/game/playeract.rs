@@ -2,7 +2,7 @@
 use super::Game;
 use super::action;
 use game::CharaId;
-use common::array2d::*;
+use array2d::*;
 
 /// Player actions are processed through this.
 pub struct DoPlayerAction<'a>(&'a mut Game);

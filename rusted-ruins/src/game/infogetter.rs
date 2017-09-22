@@ -1,5 +1,5 @@
 
-use common::array2d::*;
+use array2d::*;
 use super::Game;
 
 /// Helper functions to get information for drawing or other displaying

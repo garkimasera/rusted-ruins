@@ -1,5 +1,5 @@
 
-use common::array2d::*;
+use array2d::*;
 use common::objholder::AnimImgIdx;
 use obj;
 

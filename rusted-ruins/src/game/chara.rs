@@ -1,5 +1,5 @@
 
-use common::array2d::*;
+use array2d::*;
 use common::obj::CharaTemplateObject;
 use common::objholder::*;
 use common::chara::*;

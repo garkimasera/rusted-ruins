@@ -1,5 +1,6 @@
 
 extern crate sdl2;
+extern crate rusted_ruins_array2d as array2d;
 #[macro_use]
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_audio as audio;

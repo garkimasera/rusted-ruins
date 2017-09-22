@@ -1,0 +1,12 @@
+[package]
+name = "rusted-ruins-array2d"
+version = "1.0.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[lib]
+name = "rusted_ruins_array2d"
+crate-type = ["rlib"]
+
+[dependencies]
+serde = "1"
+serde_derive = "1"

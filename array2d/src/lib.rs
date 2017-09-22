@@ -1,4 +1,10 @@
 
+//! This crate provide functions for 2d array and vector
+
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+
 use std::ops::{Index, IndexMut, Add, Sub, Mul, Range};
 use std::fmt;
 

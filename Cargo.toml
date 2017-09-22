@@ -1,6 +1,7 @@
 
 [workspace]
 members = [
+    "array2d",
     "common",
     "makepak",
     "audio",

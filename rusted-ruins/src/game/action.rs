@@ -3,7 +3,7 @@ use super::Game;
 use super::Animation;
 use super::CharaId;
 use super::combat;
-use common::array2d::*;
+use array2d::*;
 use common::chara::*;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {

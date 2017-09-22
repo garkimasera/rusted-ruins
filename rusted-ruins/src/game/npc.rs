@@ -1,5 +1,5 @@
 
-use common::array2d::*;
+use array2d::*;
 use super::Game;
 use super::chara::*;
 use super::action;

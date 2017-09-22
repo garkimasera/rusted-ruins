@@ -1,7 +1,7 @@
 
 mod builder;
 
-use common::array2d::*;
+use array2d::*;
 use common::objholder::*;
 use common::item::Inventory;
 use game::CharaId;

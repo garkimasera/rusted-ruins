@@ -1,7 +1,7 @@
 
 use sdl2::rect::Rect;
 use sdl2::render::{WindowCanvas, Texture};
-use common::array2d::*;
+use array2d::*;
 use sdlvalues::*;
 use config::UI_CFG;
 use game::Command;

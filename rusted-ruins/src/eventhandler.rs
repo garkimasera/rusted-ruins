@@ -6,7 +6,7 @@ use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
 use std::time::Instant;
-use common::array2d::*;
+use array2d::*;
 use game::Command;
 use config::{INPUT_CFG, UI_CFG};
 

@@ -1,5 +1,5 @@
 
-use common::array2d::*;
+use array2d::*;
 
 /// User inputs are converted to command
 /// Command represents user's input, and independent from configuration
