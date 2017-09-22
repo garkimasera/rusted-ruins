@@ -155,6 +155,27 @@ impl<T> IndexMut<(u32, u32)> for Array2d<T> {
     }
 }
 
+impl<T> Index<(i32, i32)> for Array2d<T> {
+    type Output = T;
+    #[inline]
+    fn index(&self, index: (i32, i32)) -> &T {
+        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= index.1 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
+        
+        &self.v[(index.1 as u32 * self.w + index.0 as u32) as usize]
+    }
+}
+
+impl<T> IndexMut<(i32, i32)> for Array2d<T> {
+    #[inline]
+    fn index_mut(&mut self, index: (i32, i32)) -> &mut T {
+        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= index.1 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
+        
+        &mut self.v[(index.1 as u32 * self.w + index.0 as u32) as usize]
+    }
+}
+
 impl<T> Index<Vec2d> for Array2d<T> {
     type Output = T;
     #[inline]
