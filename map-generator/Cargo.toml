@@ -1,0 +1,11 @@
+[package]
+name = "rusted-ruins-map-generator"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[lib]
+name = "rusted_ruins_map_generator"
+crate-type = ["rlib"]
+
+[dependencies]
+rand = "0.3"

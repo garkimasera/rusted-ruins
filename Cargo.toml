@@ -4,5 +4,6 @@ members = [
     "common",
     "makepak",
     "audio",
+    "map-generator",
     "rusted-ruins",
 ]
