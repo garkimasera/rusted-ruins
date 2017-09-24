@@ -24,6 +24,9 @@ path = "../common"
 [dependencies.rusted-ruins-audio]
 path = "../audio"
 
+[dependencies.rusted-ruins-map-generator]
+path = "../map-generator"
+
 [dependencies.sdl2]
 version = "0.30"
 default-features = false

@@ -37,8 +37,6 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         let mut current_map = map::MapBuilder::new(10, 10).build();
-        current_map.tile[(2, 2)].wall = Some(::obj::id_to_idx::<::common::objholder::WallIdx>("!dirt-wall"));
-        current_map.tile[(1, 2)].wall = Some(::obj::id_to_idx::<::common::objholder::WallIdx>("!dirt-wall"));
         
         let mut game = Game {
             current_map: current_map,
