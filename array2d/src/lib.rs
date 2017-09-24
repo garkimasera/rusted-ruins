@@ -18,6 +18,13 @@ impl Vec2d {
     pub fn new(x: i32, y: i32) -> Vec2d {
         Vec2d(x, y)
     }
+
+    /// Iterate from (0, 0) to (self.0 - 1, self.1 - 1)
+    pub fn iter_from_zero(self) -> RectIter {
+        assert!(self.0 > 1);
+        assert!(self.1 > 1);
+        RectIter::new((0, 0), (self.0 - 1, self.1 - 1))
+    }
 }
 
 impl From<(i32, i32)> for Vec2d {
@@ -228,6 +235,7 @@ pub struct RectIter {
 }
 
 impl RectIter {
+    /// Create rectangle iterator. It includes right_bottom
     pub fn new<T: Into<Vec2d>>(top_left: T, right_bottom: T) -> RectIter {
         let top_left = top_left.into();
         let right_bottom = right_bottom.into();
@@ -239,6 +247,7 @@ impl RectIter {
         }
     }
 
+    /// Iterator for one tile
     pub fn one<T: Into<Vec2d>>(t: T) -> RectIter {
         let t = t.into();
         RectIter {
