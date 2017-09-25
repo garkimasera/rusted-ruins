@@ -6,6 +6,8 @@ extern crate rusted_ruins_array2d as array2d;
 
 use array2d::*;
 
+mod lattice;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TileKind {
     Floor, Wall, Door,
@@ -16,9 +18,10 @@ pub struct GeneratedMap {
     pub tile: Array2d<TileKind>,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 enum MapGenParam {
     Flat,
+    Lattice { nx: u32, ny: u32, step_min: u32, step_max: u32, door_weight: f64 },
 }
 
 pub struct MapGenerator {
@@ -45,10 +48,24 @@ impl MapGenerator {
         mg
     }
 
+    /// Create lattice map. There are separated rooms in lattice
+    pub fn lattice(
+        self, nx: u32, ny: u32, step_min: u32, step_max: u32, door_weight: f64) -> MapGenerator {
+        
+        let mut mg = self;
+        mg.genparam = Some(MapGenParam::Lattice { nx, ny, step_min, step_max, door_weight } );
+        mg
+    }
+
     /// Generate one map
-    pub fn generate(self) -> GeneratedMap {
+    pub fn generate(mut self) -> GeneratedMap {
         match self.genparam.expect("Map generate before giving parameters") {
             MapGenParam::Flat => {
+                return self.map;
+            },
+            MapGenParam::Lattice { nx, ny, step_min, step_max, door_weight } => {
+                let lattice = lattice::create_lattice(nx, ny, step_min, step_max);
+                lattice.write_to_map(&mut self.map, door_weight);
                 return self.map;
             },
         }
@@ -83,6 +100,14 @@ mod tests {
         let map = MapGenerator::new((10, 10)).flat().generate();
 
         println!("Flat map:");
+        println!("{}", map);
+    }
+
+    #[test]
+    fn lattice_map() {
+        let map = MapGenerator::new((19, 15)).lattice(5, 4, 3, 7, 0.5).generate();
+
+        println!("Lattice map:");
         println!("{}", map);
     }
 }
