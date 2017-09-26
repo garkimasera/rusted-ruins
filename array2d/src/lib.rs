@@ -25,6 +25,11 @@ impl Vec2d {
         assert!(self.1 > 1);
         RectIter::new((0, 0), (self.0 - 1, self.1 - 1))
     }
+
+    /// Calculate Manhattan distance between two points
+    pub fn mdistance(self, another: Vec2d) -> i32 {
+        (self.0 - another.0).abs() + (self.1 - another.1).abs()
+    }
 }
 
 impl From<(i32, i32)> for Vec2d {
