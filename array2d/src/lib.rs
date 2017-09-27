@@ -119,6 +119,10 @@ impl<T> Array2d<T> {
         }
     }
 
+    pub fn size(&self) -> (u32, u32) {
+        (self.w, self.h)
+    }
+
     pub fn iter_entire(&self) -> RectIter {
         RectIter::new((0, 0), (self.w - 1, self.h - 1))
     }
