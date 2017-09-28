@@ -75,7 +75,7 @@ impl Map {
 
     /// Get character position
     pub fn chara_pos(&self, id: CharaId) -> Option<Vec2d> {
-        for p in self.tile.iter_entire() {
+        for p in self.tile.iter_idx() {
             if self.tile[p].chara == Some(id) {
                 return Some(p);
             }

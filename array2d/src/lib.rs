@@ -123,7 +123,21 @@ impl<T> Array2d<T> {
         (self.w, self.h)
     }
 
-    pub fn iter_entire(&self) -> RectIter {
+    pub fn iter<'a>(&'a self) -> Array2dIter<'a, T> {
+        Array2dIter {
+            array: &self,
+            rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
+        }
+    }
+
+    pub fn iter_with_idx<'a>(&'a self) -> Array2dIterWithIdx<'a, T> {
+        Array2dIterWithIdx {
+            array: &self,
+            rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
+        }
+    }
+
+    pub fn iter_idx(&self) -> RectIter {
         RectIter::new((0, 0), (self.w - 1, self.h - 1))
     }
 }
@@ -233,6 +247,40 @@ impl<T> fmt::Debug for Array2d<T> where T: fmt::Debug {
         }
         write!(f, "]")?;
         Ok(())
+    }
+}
+
+#[derive(Clone)]
+pub struct Array2dIter<'a, T> where T: 'a {
+    array: &'a Array2d<T>,
+    rectiter: RectIter,
+}
+
+impl<'a, T> Iterator for Array2dIter<'a, T> {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<&'a T> {
+        if let Some(a) = self.rectiter.next() {
+            Some(&self.array[a])
+        }else{
+            None
+        }
+    }
+}
+
+#[derive(Clone)]
+pub struct Array2dIterWithIdx<'a, T> where T: 'a {
+    array: &'a Array2d<T>,
+    rectiter: RectIter,
+}
+
+impl<'a, T> Iterator for Array2dIterWithIdx<'a, T> {
+    type Item = (Vec2d, &'a T);
+    fn next(&mut self) -> Option<(Vec2d, &'a T)> {
+        if let Some(a) = self.rectiter.next() {
+            Some((a, &self.array[a]))
+        }else{
+            None
+        }
     }
 }
 
