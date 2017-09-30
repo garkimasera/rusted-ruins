@@ -394,10 +394,10 @@ impl Iterator for LineIter {
         
         let returnval = if self.slope_mode {
             let y = self.a * self.p as f64 + self.b as f64;
-            Vec2d::new(self.p, y as i32)
+            Vec2d::new(self.p, y.round() as i32)
         }else{
             let x = self.a * self.p as f64 + self.b as f64;
-            Vec2d::new(x as i32, self.p)
+            Vec2d::new(x.round() as i32, self.p)
         };
         self.p += self.dir;
         Some(returnval)
