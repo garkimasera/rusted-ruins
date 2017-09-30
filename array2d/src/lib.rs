@@ -92,6 +92,12 @@ impl PartialEq<(i32, i32)> for Vec2d {
     }
 }
 
+impl fmt::Display for Vec2d {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {})", self.0, self.1)
+    }
+}
+
 /// Base type for 2D map
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Array2d<T> {
