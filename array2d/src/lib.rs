@@ -341,6 +341,63 @@ impl Iterator for RectIter {
     }
 }
 
+#[derive(Clone, Copy, PartialEq)]
+pub struct LineIter {
+    start: Vec2d, end: Vec2d,
+    slope_mode: bool, dir: i32,
+    a: f64, b: f64,
+    p: i32,
+}
+
+impl LineIter {
+    pub fn new<V: Into<Vec2d>>(start: V, end: V) -> LineIter {
+        let start = start.into();
+        let end = end.into();
+        
+        let dx = end.0 - start.0;
+        let dy = end.1 - start.1;
+        let slope_mode = dx.abs() >= dy.abs();
+        let (a, b, dir, p);
+        if dx == 0 && dy == 0 {
+            a = 0.0; b = 0.0; dir = 1; p = start.0;
+        }else if slope_mode {
+            a = dy as f64 / dx as f64;
+            b = start.1 as f64 - a * start.0 as f64;
+            dir = if start.0 < end.0 { 1 }else{ -1 };
+            p = start.0;
+        }else{
+            a = dx as f64 / dy as f64;
+            b = start.0 as f64 - a * start.1 as f64;
+            dir = if start.1 < end.1 { 1 }else{ -1 };
+            p = start.1;
+        }
+        
+        LineIter {
+            start, end, slope_mode, dir, a, b, p,
+        }
+    }
+}
+
+impl Iterator for LineIter {
+    type Item = Vec2d;
+    fn next(&mut self) -> Option<Vec2d> {
+        if (self.slope_mode && (self.end.0 - self.p) * self.dir < 0)
+            || (!self.slope_mode && (self.end.1 - self.p) * self.dir < 0) {
+            return None;
+        }
+        
+        let returnval = if self.slope_mode {
+            let y = self.a * self.p as f64 + self.b as f64;
+            Vec2d::new(self.p, y as i32)
+        }else{
+            let x = self.a * self.p as f64 + self.b as f64;
+            Vec2d::new(x as i32, self.p)
+        };
+        self.p += self.dir;
+        Some(returnval)
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum HDirection {
     None, Left, Right,
