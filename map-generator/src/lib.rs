@@ -7,6 +7,7 @@ extern crate rusted_ruins_array2d as array2d;
 use array2d::*;
 
 mod lattice;
+mod fractal;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TileKind {
@@ -108,6 +109,16 @@ mod tests {
         let map = MapGenerator::new((19, 15)).lattice(5, 4, 3, 7, 0.5).generate();
 
         println!("Lattice map:");
+        println!("{}", map);
+    }
+
+    #[test]
+    fn fractal_map() {
+        let fractal = fractal::create_fractal(Vec2d::new(30, 30));
+
+        println!("Fractal map:");
+        let mut map = MapGenerator::new((30, 30)).flat().generate();
+        fractal::write_to_map(&mut map);
         println!("{}", map);
     }
 }
