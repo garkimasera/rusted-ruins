@@ -404,6 +404,42 @@ impl Iterator for LineIter {
     }
 }
 
+/// Iterate around center, and the range is manhattan distance
+#[derive(Clone, Copy, PartialEq)]
+pub struct MDistRangeIter {
+    center: Vec2d,
+    r: i32,
+    rectiter: RectIter,
+}
+
+impl MDistRangeIter {
+    pub fn new<V: Into<Vec2d>>(center: V, r: i32) -> MDistRangeIter {
+        assert!(r >= 0);
+        let center = center.into();
+
+        let top_left = Vec2d::new(center.0 - r, center.1 - r);
+        let right_bottom = Vec2d::new(center.0 + r, center.1 + r);
+
+        MDistRangeIter {
+            center, r,
+            rectiter: RectIter::new(top_left, right_bottom),
+        }
+    }
+}
+
+impl Iterator for MDistRangeIter {
+    type Item = (i32, Vec2d);
+    fn next(&mut self) -> Option<(i32, Vec2d)> {
+        while let Some(p) = self.rectiter.next() {
+            let mdistance = self.center.mdistance(p);
+            if self.r >= mdistance {
+                return Some((mdistance, p));
+            }
+        }
+        None
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum HDirection {
     None, Left, Right,
