@@ -28,7 +28,14 @@ impl Lattice {
         let ew_wall_len = (gm.size.0 - self.nx as i32 + 1) / self.nx as i32;
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
         let mut rng = thread_rng();
-        println!("{}", ns_wall_len);
+
+        // Set entrance/exit
+        gm.entrance = Vec2d::new(
+            self.start.0 * (ew_wall_len + 1) + ew_wall_len / 2,
+            self.start.0 * (ns_wall_len + 1) + ns_wall_len / 2);
+        gm.exit = Some(Vec2d::new(
+            self.end.0 * (ew_wall_len + 1) + ew_wall_len / 2,
+            self.end.0 * (ns_wall_len + 1) + ns_wall_len / 2));
 
         // Write horizontal walls
         for b in 0..(self.ny as i32 - 1) {
