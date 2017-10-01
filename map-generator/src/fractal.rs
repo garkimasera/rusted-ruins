@@ -58,8 +58,8 @@ pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
 
 fn write_block(map: &mut Array2d<f32>, block_size: u32, weight: f32) {
     let size = map.size();
-    let nx_block = map.size().0 / block_size + 1;
-    let ny_block = map.size().1 / block_size + 1;
+    let nx_block = size.0 / block_size + 1;
+    let ny_block = size.1 / block_size + 1;
     let mut rand_map = Array2d::new(nx_block, ny_block, 0.0f32);
 
     let mut rng = thread_rng();
@@ -96,6 +96,6 @@ fn calc_threshold(fractal: &Array2d<f32>, floor_ratio: f32) -> f32 {
     let mut v: Vec<f32> = fractal.iter().map(|a| *a).collect();
     v.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
 
-    v[(v.len() as f32 * floor_ratio) as usize]
+    v[(n_tile as f32 * floor_ratio) as usize]
 }
 

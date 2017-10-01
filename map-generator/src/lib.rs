@@ -17,12 +17,15 @@ pub enum TileKind {
 pub struct GeneratedMap {
     pub size: Vec2d,
     pub tile: Array2d<TileKind>,
+    pub entrance: Vec2d,
+    pub exit: Option<Vec2d>,
 }
 
 #[derive(Clone, PartialEq, Debug)]
 enum MapGenParam {
     Flat,
     Lattice { nx: u32, ny: u32, step_min: u32, step_max: u32, door_weight: f64 },
+    Fractal,
 }
 
 pub struct MapGenerator {
@@ -35,6 +38,8 @@ impl MapGenerator {
         let size = size.into();
         let map = GeneratedMap {
             size, tile: Array2d::new(size.0 as u32, size.1 as u32, TileKind::Floor),
+            entrance: Vec2d::new(0, 0),
+            exit: None,
         };
         MapGenerator {
             map,
@@ -58,6 +63,14 @@ impl MapGenerator {
         mg
     }
 
+    /// Create fractal map
+    pub fn fractal(self) -> MapGenerator {
+        
+        let mut mg = self;
+        mg.genparam = Some(MapGenParam::Fractal);
+        mg
+    }
+
     /// Generate one map
     pub fn generate(mut self) -> GeneratedMap {
         match self.genparam.expect("Map generate before giving parameters") {
@@ -67,6 +80,10 @@ impl MapGenerator {
             MapGenParam::Lattice { nx, ny, step_min, step_max, door_weight } => {
                 let lattice = lattice::create_lattice(nx, ny, step_min, step_max);
                 lattice.write_to_map(&mut self.map, door_weight);
+                return self.map;
+            },
+            MapGenParam::Fractal => {
+                fractal::write_to_map(&mut self.map);
                 return self.map;
             },
         }
@@ -114,11 +131,8 @@ mod tests {
 
     #[test]
     fn fractal_map() {
-        let fractal = fractal::create_fractal(Vec2d::new(30, 30));
-
         println!("Fractal map:");
-        let mut map = MapGenerator::new((30, 30)).flat().generate();
-        fractal::write_to_map(&mut map);
+        let map = MapGenerator::new((30, 30)).fractal().generate();
         println!("{}", map);
     }
 }
