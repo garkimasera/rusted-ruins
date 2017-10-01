@@ -20,6 +20,14 @@ pub fn write_to_map(gm: &mut GeneratedMap) {
 pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
     let mut map = Array2d::new(size.0 as u32, size.1 as u32, 0.0);
 
+    // Biasing for edges
+    let edge_bias = [3.0, 1.5, 1.0, 0.5];
+    for (i, b) in edge_bias.iter().enumerate() {
+        let i = i as i32;
+        println!("{}", i);
+        write_rect(&mut map, *b, Vec2d::new(i, i), Vec2d::new(size.0 - i - 1, size.1 - i - 1));
+    }
+
     write_block(&mut map, 8, 1.0);
     write_block(&mut map, 7, 1.0);
     write_block(&mut map, 6, 1.0);
@@ -61,6 +69,24 @@ fn write_block(map: &mut Array2d<f32>, block_size: u32, weight: f32) {
 
     for p in map.iter_idx() {
         map[p] += rand_map[(p.0 / block_size as i32, p.1 / block_size as i32)];
+    }
+}
+
+fn write_rect(map: &mut Array2d<f32>, value: f32, top_left: Vec2d, bottom_right: Vec2d) {
+    let top_right = Vec2d::new(bottom_right.0, top_left.1);
+    let bottom_left = Vec2d::new(top_left.0, bottom_right.1);
+
+    for p in LineIter::new(top_left, top_right) {
+        map[p] = value;
+    }
+    for p in LineIter::new(top_right, bottom_right) {
+        map[p] = value;
+    }
+    for p in LineIter::new(bottom_right, bottom_left) {
+        map[p] = value;
+    }
+    for p in LineIter::new(bottom_left, top_left) {
+        map[p] = value;
     }
 }
 
