@@ -1,16 +1,21 @@
 
-use common::objholder::*;
+//! This module provides global state objholder
 
-use config::PAK_DIRS;
+use std::path::PathBuf;
+use std::sync::Mutex;
+use objholder::*;
 
 /// Initialize lazy static
-pub fn init() {
+pub fn init(pak_dirs: Vec<PathBuf>) {
+    *PAK_DIRS.lock().unwrap() = Some(pak_dirs);
     ::lazy_static::initialize(&OBJ_HOLDER);
 }
 
 lazy_static! {
+    static ref PAK_DIRS: Mutex<Option<Vec<PathBuf>>> = Mutex::new(None);
     static ref OBJ_HOLDER: ObjectHolder = {
-        ObjectHolder::load(&PAK_DIRS)
+        let pak_dirs = PAK_DIRS.lock().unwrap();
+        ObjectHolder::load(pak_dirs.as_ref().unwrap())
     };
 }
 

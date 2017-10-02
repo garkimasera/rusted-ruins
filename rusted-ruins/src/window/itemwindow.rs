@@ -8,7 +8,7 @@ use config::UI_CFG;
 use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
-use obj;
+use common::gobj;
 
 pub struct ItemWindow {
     rect: Rect,
@@ -18,7 +18,7 @@ pub struct ItemWindow {
 impl ItemWindow {
     pub fn new() -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
-        let idx: ::common::objholder::ItemIdx = obj::id_to_idx("!plank");
+        let idx: ::common::objholder::ItemIdx = gobj::id_to_idx("!plank");
         let v = vec![(IconIdx::Item(idx), "木材".to_owned()), (IconIdx::Item(idx), "良い木材".to_owned())];
         ItemWindow {
             rect: rect,

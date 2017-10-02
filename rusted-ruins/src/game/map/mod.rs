@@ -3,7 +3,7 @@ mod builder;
 
 use array2d::*;
 use common::objholder::*;
-use common::item::Inventory;
+use common::gamedata::item::Inventory;
 use game::CharaId;
 
 pub use self::builder::MapBuilder;

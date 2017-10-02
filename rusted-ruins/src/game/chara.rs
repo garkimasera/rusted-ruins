@@ -2,10 +2,10 @@
 use array2d::*;
 use common::obj::CharaTemplateObject;
 use common::objholder::*;
-use common::chara::*;
-use common::item::Inventory;
+use common::gamedata::chara::*;
+use common::gamedata::item::Inventory;
 use super::Game;
-use obj;
+use common::gobj;
 
 pub fn add_chara(game: &mut Game, chara: Chara, pos: Option<Vec2d>, ty: CharaType) {
     let chara_place = game.chara_holder.add(chara, ty);
@@ -99,12 +99,12 @@ impl CharaHolder {
 
 pub fn create_chara(idx: CharaTemplateIdx, level: u32) -> Chara {
     //let template = obj::get_obj(idx);
-    let id = obj::idx_to_id(idx);
+    let id = gobj::idx_to_id(idx);
     
     Chara {
         name: ::text::obj_txt(id).to_owned(),
         params: CharaParams::default(),
-        template: obj::idx_to_id(idx).to_owned(),
+        template: gobj::idx_to_id(idx).to_owned(),
         template_idx: idx,
         inventory: Inventory::for_chara(),
         wait_time: 100.0,

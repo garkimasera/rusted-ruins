@@ -1,6 +1,6 @@
 
 use std::fmt;
-use item::*;
+use gamedata::item::*;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {

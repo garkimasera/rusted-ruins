@@ -26,7 +26,6 @@ mod log;
 mod util;
 mod config;
 mod game;
-mod obj;
 mod sdlvalues;
 mod draw;
 mod text;
@@ -38,6 +37,7 @@ mod sdltypeconv;
 fn main() {
     setup_logger();
     init_lazy_statics();
+    init_obj();
     
     game_log!("start"; version="0.0.1");
     
@@ -68,9 +68,16 @@ impl SdlContext {
 /// Initialize lazy_static values
 fn init_lazy_statics() {
     config::init();
-    obj::init();
     text::init();
     log::init();
+}
+
+fn init_obj() {
+    let mut data_dirs = ::config::get_data_dirs();
+    for mut d in data_dirs.iter_mut() {
+        d.push("paks");
+    }
+    ::common::gobj::init(data_dirs);
 }
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.

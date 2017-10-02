@@ -45,14 +45,14 @@ impl Game {
             turn_loop_data: TurnLoopData::new(),
             chara_holder: CharaHolder::default(),
         };
-        let mut chara = ::common::chara::Chara::default();
+        let mut chara = ::common::gamedata::chara::Chara::default();
         chara.params.spd = 100;
         chara.params.str = 25;
-        chara.rel = ::common::chara::Relationship::ALLY;
+        chara.rel = ::common::gamedata::chara::Relationship::ALLY;
         chara::add_chara(&mut game, chara, Some(::array2d::Vec2d::new(0,0)), chara::CharaType::Player);
         let mut chara = create_chara(::common::objholder::CharaTemplateIdx(1), 10);
         chara.params.spd = 100;
-        chara.rel = ::common::chara::Relationship::HOSTILE;
+        chara.rel = ::common::gamedata::chara::Relationship::HOSTILE;
         add_chara(&mut game, chara, Some(::array2d::Vec2d::new(2,2)), chara::CharaType::OnMap);
         game
     }

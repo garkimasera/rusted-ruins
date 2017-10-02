@@ -9,7 +9,7 @@ pub use self::texture::{TextureHolder, IconIdx};
 pub use self::textrenderer::{TextRenderer, FontKind};
 use self::textcachepool::TextCachePool;
 pub use self::textcachepool::TextCache;
-use obj;
+use common::gobj;
 use SdlContext;
 
 /// Includes data that isn't used by Game
@@ -28,7 +28,7 @@ impl<'sdl, 't> SdlValues<'sdl, 't> {
 
         SdlValues {
             tc: tc,
-            texture_holder: TextureHolder::new(obj::get_objholder(), tc),
+            texture_holder: TextureHolder::new(gobj::get_objholder(), tc),
             text_renderer: TextRenderer::new(sdl_context),
             tcp: TextCachePool::new(),
         }

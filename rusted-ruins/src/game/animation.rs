@@ -1,7 +1,7 @@
 
 use array2d::*;
 use common::objholder::AnimImgIdx;
-use obj;
+use common::gobj;
 
 #[derive(Clone, Copy)]
 pub enum Animation {
@@ -33,7 +33,7 @@ impl Animation {
 
     pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
         Animation::Img {
-            n_frame: obj::get_obj(idx).n_frame,
+            n_frame: gobj::get_obj(idx).n_frame,
             idx: idx,
             range: RectIter::one(p),
         }

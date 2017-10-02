@@ -1,5 +1,5 @@
 
-use common::chara::{Chara, CharaParams};
+use common::gamedata::chara::{Chara, CharaParams};
 use common::basic::{TURN_RESOLUTION, WAIT_TIME_DEFAULT};
 use super::{Game, GameState};
 use super::chara::{CharaIdIter, CharaId};

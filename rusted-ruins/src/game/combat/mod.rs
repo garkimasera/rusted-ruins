@@ -3,7 +3,7 @@ use super::Game;
 use super::chara::*;
 use super::animation::*;
 use common::objholder::AnimImgIdx;
-use obj;
+use common::gobj;
 use rand::{thread_rng, Rng};
 
 pub fn attack_neighbor(game: &mut Game, chara_a: CharaId, chara_b: CharaId) {

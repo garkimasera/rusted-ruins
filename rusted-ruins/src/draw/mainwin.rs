@@ -6,9 +6,9 @@ use array2d::*;
 use common::basic::{TILE_SIZE, TILE_SIZE_I};
 use common::objholder::Holder;
 use common::obj::*;
+use common::gobj;
 use game::{Game, Animation, InfoGetter, CharaId};
 use sdlvalues::SdlValues;
-use obj;
 
 pub struct MainWinDrawer {
     rect: Rect,
@@ -85,7 +85,7 @@ impl MainWinDrawer {
             // Draw player when moving
             if is_player_moving && ny == player_drawing_row {
                 let chara = game.chara_holder.get(CharaId::Player);
-                let ct = obj::get_obj(chara.template_idx);
+                let ct = gobj::get_obj(chara.template_idx);
                 let src = Rect::from(ct.img_rect());
                 let dest = centering_at_tile(src, game.player_pos(), dx - player_move_adjust.0, dy - player_move_adjust.1);
                 canvas.copy(sv.tex().get(chara.template_idx), src, dest).unwrap();
@@ -102,7 +102,7 @@ impl MainWinDrawer {
                 // Draw character on the tile
                 if let Some(chara_id) = current_map.get_chara(p) {
                     let chara = game.chara_holder.get(chara_id);
-                    let ct = obj::get_obj(chara.template_idx);
+                    let ct = gobj::get_obj(chara.template_idx);
                     let src = Rect::from(ct.img_rect());
                     
                     if chara_id == CharaId::Player && is_player_moving {
@@ -144,7 +144,7 @@ impl MainWinDrawer {
         }else{
             ::common::objholder::WallIdx(0)
         };
-        let wall = obj::get_obj(wall_idx);
+        let wall = gobj::get_obj(wall_idx);
         let src = Rect::from(wall.img_rect());
         let dest = bottom_at_tile(src, p, dx, dy);
         let texture = sv.tex().get(wall_idx);
@@ -159,7 +159,7 @@ impl MainWinDrawer {
         match anim {
             &Animation::Img{ idx, range, .. } => {
                 for p in range {
-                    let src = Rect::from(obj::get_obj(idx).img_rect_nth(i_frame));
+                    let src = Rect::from(gobj::get_obj(idx).img_rect_nth(i_frame));
                     let dest = centering_at_tile(src, p, dx, dy);
                     check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
                 }

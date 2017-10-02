@@ -4,7 +4,7 @@ use super::Animation;
 use super::CharaId;
 use super::combat;
 use array2d::*;
-use common::chara::*;
+use common::gamedata::chara::*;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) { return true; } // Move to current tile always success

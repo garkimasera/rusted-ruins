@@ -1,6 +1,6 @@
 
 use objholder::CharaTemplateIdx;
-use item::Inventory;
+use gamedata::item::Inventory;
 
 /// Relationship between one chara to another.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
