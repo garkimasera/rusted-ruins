@@ -31,6 +31,10 @@ pub fn id_to_idx<T: ObjectIndex + Default>(id: &str) -> T {
     T::search_idx(id, &OBJ_HOLDER).unwrap_or_default()
 }
 
+pub fn id_to_idx_checked<T: ObjectIndex>(id: &str) -> Option<T> {
+    T::search_idx(id, &OBJ_HOLDER)
+}
+
 pub fn idx_to_id<T: ObjectIndex>(idx: T) -> &'static str {
     idx.to_id(&OBJ_HOLDER)
 }

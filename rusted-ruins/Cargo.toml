@@ -20,6 +20,7 @@ path = "../array2d"
 
 [dependencies.rusted-ruins-common]
 path = "../common"
+features = ["global_state_obj", "auto_idx_conversion"]
 
 [dependencies.rusted-ruins-audio]
 path = "../audio"

@@ -25,6 +25,85 @@ macro_rules! impl_idx {
             }
         }
 
+        // If auto conversion is enabled, idx is converted string id on (de)serializing
+        // Object loading to global state is needed before this
+        #[cfg(feature="auto_idx_conversion")]
+        mod $mem {
+            use serde::ser::{Serialize, Serializer};
+            use serde::de::{Deserialize, Deserializer, Visitor};
+            use std::fmt;
+            
+            impl Serialize for super::$idx {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+                    let id = ::gobj::idx_to_id(*self);
+
+                    serializer.serialize_str(id)
+                }
+            }
+
+            struct IdxVisitor;
+
+            impl<'de> Visitor<'de> for IdxVisitor {
+                type Value = super::$idx;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    formatter.write_str("an id string")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<super::$idx, E> where E: ::serde::de::Error {
+                    if let Some(idx) = ::gobj::id_to_idx_checked(v) {
+                        Ok(idx)
+                    }else{
+                        Ok(super::$idx::default())
+                    }
+                }
+            }
+            
+            impl<'de> Deserialize<'de> for super::$idx {
+                fn deserialize<D>(deserializer: D) -> Result<super::$idx, D::Error>
+                    where D: Deserializer<'de>
+                {
+                    deserializer.deserialize_str(IdxVisitor)
+                }
+            }
+        }
+
+        // If auto conversion is disabled, the content of idx is (de)serialized as integer
+        #[cfg(not(feature="auto_idx_conversion"))]
+        mod $mem {
+            use serde::ser::{Serialize, Serializer};
+            use serde::de::{Deserialize, Deserializer, Visitor};
+            use std::fmt;
+            
+            impl Serialize for super::$idx {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+                    serializer.serialize_u64(self.0 as u64)
+                }
+            }
+
+            struct IdxVisitor;
+
+            impl<'de> Visitor<'de> for IdxVisitor {
+                type Value = super::$idx;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    formatter.write_str("an index integer")
+                }
+
+                fn visit_u64<E>(self, v: u64) -> Result<super::$idx, E> where E: ::serde::de::Error {
+                    Ok(super::$idx(v as u32))
+                }
+            }
+
+            impl<'de> Deserialize<'de> for super::$idx {
+                fn deserialize<D>(deserializer: D) -> Result<super::$idx, D::Error>
+                    where D: Deserializer<'de>
+                {
+                    deserializer.deserialize_u64(IdxVisitor)
+                }
+            }
+        }
+
         impl FromId for $obj {
             fn get_obj_from_objholder_by_id<'a>(
                 id: &str, objholder: &'a ObjectHolder) -> Option<&'a $obj> {
@@ -86,7 +165,7 @@ macro_rules! impl_objholder {
 
         // Index type is an integer type that represents object index in ObjectHolder
         $(
-            #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+            #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
             pub struct $idx(pub u32);
 
             impl_idx!($idx, $obj, $mem);

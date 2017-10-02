@@ -7,6 +7,10 @@ authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
 name = "rusted_ruins_common"
 crate-type = ["rlib"]
 
+[features]
+global_state_obj = []
+auto_idx_conversion = []
+
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
 
