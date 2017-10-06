@@ -26,6 +26,7 @@ impl Relationship {
     }
 }
 
+/// All data for one character
 #[derive(Serialize, Deserialize)]
 pub struct Chara {
     pub name: String,
@@ -95,3 +96,21 @@ impl Default for CharaParams {
         }
     }
 }
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum CharaKind {
+    /// Player is unique character in the game
+    Player,
+    /// Indexed for a map. This character don't appear on other maps
+    OnMap,
+}
+
+#[derive(Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub enum CharaId {
+    /// Player is unique character in the game
+    Player,
+    /// Indexed for a map. This character don't appear on other maps
+    OnMap(::gamedata::map::MapId),
+}
+
+
