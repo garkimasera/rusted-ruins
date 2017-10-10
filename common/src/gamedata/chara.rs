@@ -115,3 +115,24 @@ pub enum CharaId {
     OnMap { mid: MapId, n: u32 },
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct CharaHolder(pub(crate) HashMap<CharaId, Chara>);
+
+impl CharaHolder {
+    pub(crate) fn new() -> CharaHolder {
+        CharaHolder(HashMap::new())
+    }
+    
+    pub fn get(&self, cid: CharaId) -> &Chara {
+        self.0.get(&cid).expect(&super::unknown_id_err(cid))
+    }
+
+    pub fn get_mut(&mut self, cid: CharaId) -> &mut Chara {
+        self.0.get_mut(&cid).expect(&super::unknown_id_err(cid))
+    }
+
+    pub fn iter_charaid(&self) -> ::std::collections::hash_map::Keys<CharaId, Chara> {
+        self.0.keys()
+    }
+}
+

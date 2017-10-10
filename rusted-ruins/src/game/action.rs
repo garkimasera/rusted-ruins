@@ -25,8 +25,8 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
         push_move_anim(&mut game.anim_queue);
     }else{
         let rel = {
-            let chara = game.gd.get_chara(chara_id);
-            let other_chara = game.gd.get_chara(other_chara.unwrap());
+            let chara = game.gd.chara.get(chara_id);
+            let other_chara = game.gd.chara.get(other_chara.unwrap());
             chara.rel.relative(other_chara.rel)
         };
         match rel {

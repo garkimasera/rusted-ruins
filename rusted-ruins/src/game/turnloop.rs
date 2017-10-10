@@ -36,7 +36,7 @@ pub fn turn_loop(game: &mut Game) {
         while let Some(cid) =  game.turn_loop_data.0.pop_front() {
             
             let is_process_npc_turn = {
-                let mut chara = game.gd.get_chara_mut(cid);
+                let mut chara = game.gd.chara.get_mut(cid);
                 decrease_wait_time(chara)
             };
             
@@ -51,7 +51,7 @@ pub fn turn_loop(game: &mut Game) {
         }
 
         // If player's wait time becomes 0, player turn now.
-        if decrease_wait_time(&mut game.gd.get_chara_mut(CharaId::Player)) {
+        if decrease_wait_time(&mut game.gd.chara.get_mut(CharaId::Player)) {
             game.state = GameState::PlayerTurn;
             break;
         }

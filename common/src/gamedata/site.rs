@@ -1,5 +1,6 @@
 
-use super::map::Map;
+use std::collections::HashMap;
+use super::map::{Map, MapId};
 
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
@@ -45,3 +46,27 @@ pub enum SiteId {
     AutoGenDungeon { n: u32 },
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct SiteHolder(pub(crate) HashMap<SiteId, Site>);
+
+impl SiteHolder {
+    pub(crate) fn new() -> SiteHolder {
+        SiteHolder(HashMap::new())
+    }
+    
+    pub fn get(&self, sid: SiteId) -> &Site {
+        self.0.get(&sid).expect(&super::unknown_id_err(sid))
+    }
+
+    pub fn get_mut(&mut self, sid: SiteId) -> &mut Site {
+        self.0.get_mut(&sid).expect(&super::unknown_id_err(sid))
+    }
+
+    pub fn get_map(&self, mid: MapId) -> &Map {
+        self.get(mid.sid).get_map(mid.floor)
+    }
+
+    pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
+        self.get_mut(mid.sid).get_map_mut(mid.floor)
+    }
+}

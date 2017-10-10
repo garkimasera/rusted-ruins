@@ -85,7 +85,7 @@ impl MainWinDrawer {
 
             // Draw player when moving
             if is_player_moving && ny == player_drawing_row {
-                let chara = game.gd.get_chara(CharaId::Player);
+                let chara = game.gd.chara.get(CharaId::Player);
                 let ct = gobj::get_obj(chara.template_idx);
                 let src = Rect::from(ct.img_rect());
                 let dest = centering_at_tile(src, game.player_pos(), dx - player_move_adjust.0, dy - player_move_adjust.1);
@@ -102,7 +102,7 @@ impl MainWinDrawer {
 
                 // Draw character on the tile
                 if let Some(chara_id) = current_map.get_chara(p) {
-                    let chara = game.gd.get_chara(chara_id);
+                    let chara = game.gd.chara.get(chara_id);
                     let ct = gobj::get_obj(chara.template_idx);
                     let src = Rect::from(ct.img_rect());
                     
