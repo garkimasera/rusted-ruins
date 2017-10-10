@@ -1,7 +1,7 @@
 
 use super::Game;
 use super::action;
-use game::CharaId;
+use common::gamedata::chara::CharaId;
 use array2d::*;
 
 /// Player actions are processed through this.

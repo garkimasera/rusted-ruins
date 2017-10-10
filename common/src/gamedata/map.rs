@@ -10,6 +10,8 @@ pub struct Map {
     pub h: u32,
     pub tile: Array2d<TileInfo>,
     pub player_pos: Vec2d,
+    /// Characters on this map
+    charaid: Vec<CharaId>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -17,7 +19,7 @@ pub struct TileInfo {
     pub tile: TileIdx, // Basic tile type
     pub wall: Option<WallIdx>, // If wall is presented, the tile is no walkable
     pub items: Option<Inventory>,
-    chara: Option<CharaId>,
+    pub chara: Option<CharaId>,
 }
 
 impl Default for TileInfo {
@@ -35,12 +37,16 @@ impl Map {
     pub fn new(w: u32, h: u32) -> Map {
         Map {
             w: w, h: h, tile: Array2d::new(w, h, TileInfo::default()),
-            player_pos: Vec2d::new(0, 0),
+            player_pos: Vec2d::new(0, 0), charaid: Vec::new()
         }
     }
 
     pub fn get_chara<T: Into<Vec2d>>(&self, pos: T) -> Option<CharaId> {
         self.tile[pos.into()].chara.clone()
+    }
+
+    pub fn iter_charaid(&self) -> ::std::slice::Iter<CharaId> {
+        self.charaid.iter()
     }
 
     pub fn is_movable(&self, pos: Vec2d) -> bool {
@@ -66,23 +72,24 @@ impl Map {
     }
 
     /// Add one character on this map.
-    pub fn add_character(&mut self, pos: Vec2d, id: CharaId) {
+    pub(crate) fn add_chara(&mut self, pos: Vec2d, id: CharaId) {
+        self.charaid.push(id);
         self.tile[pos].chara = Some(id);
     }
 
     /// Get character position
-    pub fn chara_pos(&self, id: &CharaId) -> Option<Vec2d> {
+    pub fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
         for p in self.tile.iter_idx() {
-            if self.tile[p].chara.as_ref() == Some(id) {
+            if self.tile[p].chara.as_ref() == Some(&cid) {
                 return Some(p);
             }
         }
         None
     }
 
-    pub fn move_chara(&mut self, id: &CharaId, dir: Direction) -> bool {
+    pub fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
         use std::mem::replace;
-        if let Some(p) = self.chara_pos(id) {
+        if let Some(p) = self.chara_pos(cid) {
             let new_p = p + dir.as_vec();
             if self.is_movable(p + dir.as_vec()) { // Swap charas of the two tiles
                 let temp0 = replace(&mut self.tile[p].chara,     None);
@@ -97,10 +104,25 @@ impl Map {
             false
         }
     }
+
+    pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {
+        'i_loop:
+        for i in 0.. {
+            for cid in self.charaid.iter() {
+                if let CharaId::OnMap { n, .. } = *cid {
+                    if i == n { continue 'i_loop; }
+                }
+            }
+            return i;
+        }
+        panic!()
+    }
 }
 
-#[derive(Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct MapId {
-    pub site: super::site::SiteId,
+    pub sid: super::site::SiteId,
     pub floor: u32,
 }
+
+pub const STARTING_MAP_ID: MapId = MapId { sid: super::site::SiteId::Start, floor: 0 };

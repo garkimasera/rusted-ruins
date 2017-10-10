@@ -7,7 +7,8 @@ use common::basic::{TILE_SIZE, TILE_SIZE_I};
 use common::objholder::Holder;
 use common::obj::*;
 use common::gobj;
-use game::{Game, Animation, InfoGetter, CharaId};
+use common::gamedata::chara::CharaId;
+use game::{Game, Animation, InfoGetter};
 use sdlvalues::SdlValues;
 
 pub struct MainWinDrawer {
@@ -55,7 +56,7 @@ impl MainWinDrawer {
 
         canvas.set_viewport(self.rect);
         canvas.set_draw_color(Color::RGB(120, 120, 120));
-        let current_map = &game.current_map;
+        let current_map = &game.gd.get_current_map();
 
         self.center_tile = game.player_pos();
         let (dx, dy) = self.calc_dxdy();
@@ -84,7 +85,7 @@ impl MainWinDrawer {
 
             // Draw player when moving
             if is_player_moving && ny == player_drawing_row {
-                let chara = game.chara_holder.get(CharaId::Player);
+                let chara = game.gd.get_chara(CharaId::Player);
                 let ct = gobj::get_obj(chara.template_idx);
                 let src = Rect::from(ct.img_rect());
                 let dest = centering_at_tile(src, game.player_pos(), dx - player_move_adjust.0, dy - player_move_adjust.1);
@@ -101,7 +102,7 @@ impl MainWinDrawer {
 
                 // Draw character on the tile
                 if let Some(chara_id) = current_map.get_chara(p) {
-                    let chara = game.chara_holder.get(chara_id);
+                    let chara = game.gd.get_chara(chara_id);
                     let ct = gobj::get_obj(chara.template_idx);
                     let src = Rect::from(ct.img_rect());
                     
@@ -123,7 +124,7 @@ impl MainWinDrawer {
     fn draw_tile_ground(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
-        let current_map = &game.current_map;
+        let current_map = &game.gd.get_current_map();
         if !current_map.is_inside(p) { return; }
         let dest = Rect::new(
             p.0 * TILE_SIZE_I + dx, p.1 * TILE_SIZE_I + dy,
@@ -136,7 +137,7 @@ impl MainWinDrawer {
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
         
-        let current_map = &game.current_map;
+        let current_map = &game.gd.get_current_map();
         let wall_idx = if current_map.is_inside(p) {
             match current_map.tile[p].wall {
                 Some(wall_idx) => wall_idx, None => { return; }

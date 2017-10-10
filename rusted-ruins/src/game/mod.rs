@@ -1,22 +1,20 @@
 
 pub mod playeract;
 pub mod item;
-mod map;
 mod npc;
 mod action;
 mod command;
 mod infogetter;
 mod animation;
-mod chara;
 mod combat;
 mod turnloop;
 
 use std::collections::VecDeque;
+use common::gamedata::GameData;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
-pub use self::chara::*;
 use self::turnloop::TurnLoopData;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -27,8 +25,7 @@ pub enum GameState {
 }
 
 pub struct Game {
-    pub current_map: map::Map,
-    pub chara_holder: CharaHolder,
+    pub gd: GameData,
     state: GameState,
     turn_loop_data: TurnLoopData,
     anim_queue: VecDeque<Animation>,
@@ -36,24 +33,31 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Game {
-        let mut current_map = map::MapBuilder::new(10, 10).build();
-        
         let mut game = Game {
-            current_map: current_map,
-            anim_queue: VecDeque::new(),
+            gd: GameData::empty(),
             state: GameState::WaitingForNextTurn,
             turn_loop_data: TurnLoopData::new(),
-            chara_holder: CharaHolder::default(),
+            anim_queue: VecDeque::new(),
         };
-        let mut chara = ::common::gamedata::chara::Chara::default();
+        use common::gamedata;
+        
+        let map = gamedata::map::Map::new(10, 10);
+        let site = gamedata::site::Site::new("はじまり");
+        let sid = game.gd.add_site(site, gamedata::site::SiteKind::Start);
+        let mid = game.gd.add_map(map, sid);
+
+        let mut chara = gamedata::chara::Chara::default();
         chara.params.spd = 100;
         chara.params.str = 25;
-        chara.rel = ::common::gamedata::chara::Relationship::ALLY;
-        chara::add_chara(&mut game, chara, Some(::array2d::Vec2d::new(0,0)), chara::CharaType::Player);
-        let mut chara = create_chara(::common::objholder::CharaTemplateIdx(1), 10);
+        chara.rel = gamedata::chara::Relationship::ALLY;
+        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(0, 0));
+
+        let mut chara = gamedata::chara::Chara::default();
         chara.params.spd = 100;
-        chara.rel = ::common::gamedata::chara::Relationship::HOSTILE;
-        add_chara(&mut game, chara, Some(::array2d::Vec2d::new(2,2)), chara::CharaType::OnMap);
+        chara.params.str = 20;
+        chara.rel = gamedata::chara::Relationship::HOSTILE;
+        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::OnMap, mid, ::array2d::Vec2d(2, 2));
+        
         game
     }
 
@@ -63,8 +67,7 @@ impl Game {
 
     pub fn advance_turn(&mut self) {
         ::log::new_line(); // Insert break to log lines
-        let turn_loop_data = self.turn_loop_data;
-        self.turn_loop_data = turnloop::turn_loop(self, turn_loop_data);
+        turnloop::turn_loop(self);
     }
 
     pub fn finish_player_turn(&mut self) {

@@ -1,7 +1,7 @@
 
 use array2d::*;
+use common::gamedata::chara::CharaId;
 use super::Game;
-use super::chara::*;
 use super::action;
 use rand::{thread_rng, Rng};
 

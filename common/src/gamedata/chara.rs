@@ -1,6 +1,8 @@
 
+use std::collections::HashMap;
 use objholder::CharaTemplateIdx;
-use gamedata::item::Inventory;
+use super::item::Inventory;
+use super::map::MapId;
 
 /// Relationship between one chara to another.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -105,12 +107,11 @@ pub enum CharaKind {
     OnMap,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum CharaId {
     /// Player is unique character in the game
     Player,
     /// Indexed for a map. This character don't appear on other maps
-    OnMap(::gamedata::map::MapId),
+    OnMap { mid: MapId, n: u32 },
 }
-
 

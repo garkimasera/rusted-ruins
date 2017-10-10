@@ -1,47 +1,61 @@
 
-use common::gamedata::chara::{Chara, CharaParams};
+use std::collections::VecDeque;
+use common::gamedata::chara::{Chara, CharaId};
 use common::basic::{TURN_RESOLUTION, WAIT_TIME_DEFAULT};
 use super::{Game, GameState};
-use super::chara::{CharaIdIter, CharaId};
 use super::npc::process_npc_turn;
 
 /// Contains interruption data of charaid iterator
-#[derive(Clone, Copy)]
-pub struct TurnLoopData(Option<CharaIdIter>);
+#[derive(Clone)]
+pub struct TurnLoopData(VecDeque<CharaId>);
 
 impl TurnLoopData {
     pub fn new() -> TurnLoopData {
-        TurnLoopData(None)
+        TurnLoopData(VecDeque::new())
     }
 }
     
 /// Advance game time until player's waittime becomes 0
-pub fn turn_loop(game: &mut Game, interrupt_data: TurnLoopData) -> TurnLoopData {
-    let ciditer = match interrupt_data.0 {
-        Some(ciditer) => ciditer,
-        None => game.chara_holder.id_iter_on_map(),
-    };
+pub fn turn_loop(game: &mut Game) {
     
     'turn_loop:
     loop {
-        for chara_id in ciditer {
-            if decrease_wait_time(game.chara_holder.get_mut(chara_id)) {
-                process_npc_turn(game, chara_id);
+        // Add chara ids that are on the current map
+        if game.turn_loop_data.0.is_empty() {
+            let map = game.gd.get_current_map();
+            for cid in map.iter_charaid() {
+                match *cid {
+                    CharaId::OnMap { .. } => {
+                        game.turn_loop_data.0.push_back(*cid);
+                    },
+                    CharaId::Player => (),
+                }
+            }
+        }
+        
+        while let Some(cid) =  game.turn_loop_data.0.pop_front() {
+            
+            let is_process_npc_turn = {
+                let mut chara = game.gd.get_chara_mut(cid);
+                decrease_wait_time(chara)
+            };
+            
+            if is_process_npc_turn {
+                process_npc_turn(game, cid);
                 
                 // If an animation is started, turn_loop is interrupted
                 if !game.anim_queue.is_empty() {
-                    return TurnLoopData(Some(ciditer));
+                    return;
                 }
             }
         }
 
         // If player's wait time becomes 0, player turn now.
-        if decrease_wait_time(&mut game.chara_holder.player) {
+        if decrease_wait_time(&mut game.gd.get_chara_mut(CharaId::Player)) {
             game.state = GameState::PlayerTurn;
             break;
         }
     }
-    TurnLoopData(None)
 }
 
 // Returns true if chara's wait_time becomes 0
