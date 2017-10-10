@@ -2,9 +2,8 @@
 use error::*;
 use tomlinput::*;
 use common::obj::*;
-use common::item::*;
+use common::gamedata::item::*;
 use super::img::{build_img, build_icon};
-//use super::
 
 pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     let img = get_optional_field!(tomlinput, image);
