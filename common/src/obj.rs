@@ -9,11 +9,20 @@ pub enum ObjectType {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Object {
+    AnimImg(AnimImgObject),
     CharaTemplate(CharaTemplateObject),
+    Item(ItemObject),
+    SpecialTile(SpecialTileObject),
     Tile(TileObject),
     Wall(WallObject),
-    Item(ItemObject),
-    AnimImg(AnimImgObject),
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AnimImgObject {
+    pub id: String,
+    pub img: Img,
+    pub duration: u32,
+    pub n_frame: u32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -27,6 +36,12 @@ pub struct CharaTemplateObject {
     pub wil: u32,
     pub cha: u32,
     pub spd: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct SpecialTileObject {
+    pub id: String,
+    pub img: Img,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -48,14 +63,6 @@ pub struct ItemObject {
     pub icon: Icon,
     pub basic_price: f32,
     pub content: ItemContent,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AnimImgObject {
-    pub id: String,
-    pub img: Img,
-    pub duration: u32,
-    pub n_frame: u32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -86,17 +93,18 @@ macro_rules! impl_object {
 }
 
 impl_object!(
-    CharaTemplateObject, TileObject, WallObject, ItemObject, AnimImgObject
+    AnimImgObject, CharaTemplateObject, SpecialTileObject, TileObject, WallObject, ItemObject
 );
 
 impl Object {
     pub fn get_id(&self) -> &str {
         match *self {
+            Object::AnimImg(ref o) => &o.id,
             Object::CharaTemplate(ref o) => &o.id,
+            Object::Item(ref o) => &o.id,
+            Object::SpecialTile(ref o) => &o.id,
             Object::Tile(ref o) => &o.id,
             Object::Wall(ref o) => &o.id,
-            Object::Item(ref o) => &o.id,
-            Object::AnimImg(ref o) => &o.id,
         }
     }
 }
@@ -160,7 +168,7 @@ macro_rules! impl_icon_object {
 }
 
 impl_img_object!(
-    AnimImgObject, CharaTemplateObject, ItemObject, TileObject, WallObject
+    AnimImgObject, CharaTemplateObject, ItemObject, SpecialTileObject, TileObject, WallObject
 );
 
 impl_icon_object!(

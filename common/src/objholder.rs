@@ -174,11 +174,12 @@ macro_rules! impl_objholder {
 }
 
 impl_objholder! {
-    {Tile, TileObject, tile, TileIdx},
-    {Wall, WallObject, wall, WallIdx},
-    {Item, ItemObject, item, ItemIdx},
+    {AnimImg, AnimImgObject, anim_img, AnimImgIdx},
     {CharaTemplate, CharaTemplateObject, chara_template, CharaTemplateIdx},
-    {AnimImg, AnimImgObject, anim_img, AnimImgIdx}
+    {Item, ItemObject, item, ItemIdx},
+    {SpecialTile, SpecialTileObject, special_tile, SpecialTileIdx},
+    {Tile, TileObject, tile, TileIdx},
+    {Wall, WallObject, wall, WallIdx}
 }
 
 pub trait ObjectIndex: Sized {

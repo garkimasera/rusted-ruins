@@ -11,25 +11,37 @@ use self::item::build_item_object;
 pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
     let object_type = tomlinput.object_type.clone();
     match object_type.as_ref() {
+        "anim_img" => {
+            return build_anim_img_object(tomlinput).map(|o| Object::AnimImg(o));
+        }
+        "chara_template" => {
+            return build_chara_template_object(tomlinput).map(|o| Object::CharaTemplate(o));
+        }
+        "item" => {
+            return build_item_object(tomlinput).map(|o| Object::Item(o));
+        }
+        "special_tile" => {
+            return build_special_tile_object(tomlinput).map(|o| Object::SpecialTile(o));
+        }
         "tile" => {
             return build_tile_object(tomlinput).map(|o| Object::Tile(o));
         }
         "wall" => {
             return build_wall_object(tomlinput).map(|o| Object::Wall(o));
         }
-        "item" => {
-            return build_item_object(tomlinput).map(|o| Object::Item(o));
-        }
-        "chara_template" => {
-            return build_chara_template_object(tomlinput).map(|o| Object::CharaTemplate(o));
-        }
-        "anim_img" => {
-            return build_anim_img_object(tomlinput).map(|o| Object::AnimImg(o));
-        }
         _ => {
             bail!("Unknown object_type");
         }
     }
+}
+
+fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> {
+    let img = get_optional_field!(tomlinput, image);
+    
+    Ok(SpecialTileObject {
+        id: tomlinput.id,
+        img: build_img(img)?,
+    })
 }
 
 fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {

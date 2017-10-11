@@ -19,7 +19,7 @@ impl Screen {
         let video_subsystem = sdl_context.video().expect("Init Failed : SDL Video Subsystem");
 
         let window = video_subsystem.window(
-            "rust-sdl2 demo: Video", SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
+            "Rusted Ruins", SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
             .position_centered()
             .build()
             .unwrap();
