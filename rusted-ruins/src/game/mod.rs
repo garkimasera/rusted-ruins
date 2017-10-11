@@ -4,6 +4,7 @@ pub mod item;
 mod npc;
 mod action;
 mod command;
+mod map;
 mod infogetter;
 mod animation;
 mod combat;
@@ -40,8 +41,8 @@ impl Game {
             anim_queue: VecDeque::new(),
         };
         use common::gamedata;
-        
-        let map = gamedata::map::Map::new(10, 10);
+
+        let map = self::map::builder::MapBuilder::new(10, 10).build();
         let site = gamedata::site::Site::new("はじまり");
         let sid = game.gd.add_site(site, gamedata::site::SiteKind::Start);
         let mid = game.gd.add_map(map, sid);

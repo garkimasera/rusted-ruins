@@ -1,7 +1,7 @@
 
 use array2d::*;
 use common::objholder::*;
-use super::Map;
+use common::gamedata::map::Map;
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
 
 pub struct MapBuilder {
