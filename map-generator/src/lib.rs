@@ -94,17 +94,22 @@ impl std::fmt::Display for GeneratedMap {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         for ny in 0..self.size.1 {
             for nx in 0..self.size.0 {
-                let c = match self.tile[(nx, ny)] {
-                    TileKind::Floor => '.',
-                    TileKind::Wall  => '#',
-                    TileKind::Door  => 'D',
+                let c = if self.entrance == (nx, ny) {
+                    '<'
+                }else if self.exit == Some(Vec2d::new(nx, ny)) {
+                    '>'
+                }else{
+                    match self.tile[(nx, ny)] {
+                        TileKind::Floor => '.',
+                        TileKind::Wall  => '#',
+                        TileKind::Door  => 'D',
+                    }
                 };
 
                 write!(f, "{}", c)?;
             }
             write!(f, "\n")?;
         }
-        
         
         Ok(())
     }
