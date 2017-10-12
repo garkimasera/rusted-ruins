@@ -28,14 +28,14 @@ impl Lattice {
         let ew_wall_len = (gm.size.0 - self.nx as i32 + 1) / self.nx as i32;
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
         let mut rng = thread_rng();
-
+        
         // Set entrance/exit
         gm.entrance = Vec2d::new(
             self.start.0 * (ew_wall_len + 1) + ew_wall_len / 2,
-            self.start.0 * (ns_wall_len + 1) + ns_wall_len / 2);
+            self.start.1 * (ns_wall_len + 1) + ns_wall_len / 2);
         gm.exit = Some(Vec2d::new(
             self.end.0 * (ew_wall_len + 1) + ew_wall_len / 2,
-            self.end.0 * (ns_wall_len + 1) + ns_wall_len / 2));
+            self.end.1 * (ns_wall_len + 1) + ns_wall_len / 2));
 
         // Write horizontal walls
         for b in 0..(self.ny as i32 - 1) {
@@ -114,7 +114,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
     lattice.start = start_room;
 
     let max_step = rng.gen_range(min_step, max_step);
-
+    
     // Determine start and goal, and the route
     random_walk(start_room,
                 &mut lattice,
