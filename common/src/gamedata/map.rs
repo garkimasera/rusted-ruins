@@ -14,12 +14,20 @@ pub struct Map {
     charaid: Vec<CharaId>,
 }
 
+/// This represents special objects on a tile. For example, stairs, doors, traps.
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[repr(u32)]
+pub enum SpecialTileKind {
+    None, DownStairs, UpStairs,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
     pub tile: TileIdx, // Basic tile type
     pub wall: Option<WallIdx>, // If wall is presented, the tile is no walkable
     pub items: Option<Inventory>,
     pub chara: Option<CharaId>,
+    pub special: SpecialTileKind,
 }
 
 impl Default for TileInfo {
@@ -29,6 +37,7 @@ impl Default for TileInfo {
             wall: None,
             items: None,
             chara: None,
+            special: SpecialTileKind::None,
         }
     }
 }

@@ -54,6 +54,7 @@ impl_texture_holder! {
     {anim_img, AnimImgIdx},
     {chara_template, CharaTemplateIdx},
     {item, ItemIdx},
+    {special_tile, SpecialTileIdx},
     {tile, TileIdx},
     {wall, WallIdx}
 }

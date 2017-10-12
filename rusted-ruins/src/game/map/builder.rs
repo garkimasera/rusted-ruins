@@ -1,7 +1,7 @@
 
 use array2d::*;
 use common::objholder::*;
-use common::gamedata::map::Map;
+use common::gamedata::map::{Map, SpecialTileKind};
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
 
 pub struct MapBuilder {
@@ -28,6 +28,8 @@ impl MapBuilder {
 pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> Map {
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
+
+    map.tile[(4i32, 0)].special = SpecialTileKind::DownStairs;
 
     for p in size.iter_from_zero() {
         map.tile[p].tile = tile;

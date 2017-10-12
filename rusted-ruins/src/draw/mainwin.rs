@@ -69,18 +69,20 @@ impl MainWinDrawer {
         
         let tile_range = self.tile_range();
 
-        // Draw ground for the first row
+        // Draw ground and special objs for the first row
         let top_row = tile_range.iter1().next().unwrap();
         for nx in tile_range.iter0() {
-                let p = Vec2d::new(nx, top_row);
-                self.draw_tile_ground(canvas, game, sv, p, dx, dy);
+            let p = Vec2d::new(nx, top_row);
+            self.draw_tile_ground(canvas, game, sv, p, dx, dy);
+            self.draw_tile_special(canvas, game, sv, p, dx, dy);
         }
 
         for ny in tile_range.iter1() {
-            // Draw ground for the next row
+            // Draw ground and special objs for the next row
             for nx in tile_range.iter0() {
                 let p = Vec2d::new(nx, ny + 1);
                 self.draw_tile_ground(canvas, game, sv, p, dx, dy);
+                self.draw_tile_special(canvas, game, sv, p, dx, dy);
             }
 
             // Draw player when moving
@@ -149,6 +151,33 @@ impl MainWinDrawer {
         let src = Rect::from(wall.img_rect());
         let dest = bottom_at_tile(src, p, dx, dy);
         let texture = sv.tex().get(wall_idx);
+        check_draw!(canvas.copy(&texture, src, dest));
+    }
+
+    fn draw_tile_special(
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
+        p: Vec2d, dx: i32, dy: i32) {
+        use common::gamedata::map::SpecialTileKind;
+        use common::objholder::SpecialTileIdx;
+        use common::basic::*;
+        println!("{:?}", p);
+
+        let current_map = &game.gd.get_current_map();
+        if !current_map.is_inside(p) { return; }
+
+        // Convert special tile kind to its idx
+        let special_tile_id = match current_map.tile[p].special {
+            SpecialTileKind::None => { return; },
+            SpecialTileKind::DownStairs => SPECIAL_TILE_OBJ_DOWNSTAIRS,
+            SpecialTileKind::UpStairs   => SPECIAL_TILE_OBJ_UPSTAIRS,
+        };
+        println!("Ok-{:?}", p);
+        let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
+        let texture = sv.tex().get(special_tile_idx);
+        let query = texture.query();
+        let src = Rect::new(0, 0, query.width, query.height);
+        let dest = bottom_at_tile(src, p, dx, dy);
+        
         check_draw!(canvas.copy(&texture, src, dest));
     }
 
