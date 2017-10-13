@@ -14,6 +14,15 @@ pub enum TileKind {
     Floor, Wall, Door,
 }
 
+impl TileKind {
+    pub fn is_passable(self) -> bool {
+        match self {
+            TileKind::Floor | TileKind::Door => true,
+            TileKind::Wall => false,
+        }
+    }
+}
+
 pub struct GeneratedMap {
     pub size: Vec2d,
     pub tile: Array2d<TileKind>,

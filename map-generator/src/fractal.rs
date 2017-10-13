@@ -15,6 +15,26 @@ pub fn write_to_map(gm: &mut GeneratedMap) {
             gm.tile[p] = TileKind::Floor;
         }
     }
+
+    // Determine start and end
+    let start = pick_passable_tile(&gm);
+    let reach_map = create_reach_map(&gm, start);
+
+    loop {
+        let end = pick_passable_tile(&gm);
+        if start != end && reach_map[end] {
+            gm.entrance = start;
+            gm.exit = Some(end);
+            break;
+        }
+    }
+
+    // Write walls for unreachable tiles from the start
+    for p in gm.tile.iter_idx() {
+        if !reach_map[p] && gm.tile[p] != TileKind::Wall {
+            gm.tile[p] = TileKind::Wall;
+        }
+    }
 }
 
 pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
@@ -97,5 +117,51 @@ fn calc_threshold(fractal: &Array2d<f32>, floor_ratio: f32) -> f32 {
     v.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
 
     v[(n_tile as f32 * floor_ratio) as usize]
+}
+
+/// Calculate tiles are reacheable from given tile
+fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> Array2d<bool> {
+    let mut reachable = Array2d::new(map.size.0 as u32, map.size.1 as u32, false);
+
+    if map.tile[start].is_passable() {
+        reachable[start] = true;
+    }else{
+        return reachable;
+    }
+
+    loop {
+        let mut new_reachable_tile = false;
+
+        for p in map.tile.iter_idx() {
+            if reachable[p] {
+                let mut try_next_tile = |next_tile: Vec2d| {
+                    if map.tile.in_range(next_tile) && map.tile[next_tile].is_passable()
+                        && !reachable[next_tile] {
+                        reachable[next_tile] = true; new_reachable_tile = true;
+                    }
+                };
+                
+                try_next_tile(p + (-1,  0));
+                try_next_tile(p + ( 1,  0));
+                try_next_tile(p + ( 0, -1));
+                try_next_tile(p + ( 0,  1));
+            }
+        }
+
+        if !new_reachable_tile { break; }
+    }
+
+    reachable
+}
+
+/// Pick one passable tile at random
+fn pick_passable_tile(map: &GeneratedMap) -> Vec2d {
+    let mut rng = thread_rng();
+    
+    loop {
+        let p = Vec2d(rng.gen_range(0, map.size.0), rng.gen_range(0, map.size.1));
+
+        if map.tile[p].is_passable() { return p; }
+    }
 }
 
