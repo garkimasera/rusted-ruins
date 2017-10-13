@@ -146,6 +146,10 @@ impl<T> Array2d<T> {
     pub fn iter_idx(&self) -> RectIter {
         RectIter::new((0, 0), (self.w - 1, self.h - 1))
     }
+
+    pub fn in_range(&self, p: Vec2d) -> bool {
+        p.0 >= 0 && p.1 >= 0 && (p.0 as u32) < self.w && (p.1 as u32) < self.h
+    }
 }
 
 impl<T> Array2d<T> where T: Clone {
