@@ -58,8 +58,9 @@ impl MainWinDrawer {
         canvas.set_viewport(self.rect);
         canvas.set_draw_color(Color::RGB(120, 120, 120));
 
-        let map = game.gd.get_current_map();
-        let player_pos = game.player_pos();
+        let gd = &game.gd;
+        let map = gd.get_current_map();
+        let player_pos = gd.player_pos();
         self.center_tile = player_pos;
         let (dx, dy) = self.calc_dxdy();
         let (dx, dy) = (dx + player_move_adjust.0, dy + player_move_adjust.1);
@@ -89,7 +90,7 @@ impl MainWinDrawer {
 
             // Draw player when moving
             if is_player_moving && ny == player_drawing_row {
-                let chara = game.gd.chara.get(CharaId::Player);
+                let chara = gd.chara.get(CharaId::Player);
                 let ct = gobj::get_obj(chara.template_idx);
                 let src = Rect::from(ct.img_rect());
                 let dest = centering_at_tile(src, player_pos, dx - player_move_adjust.0, dy - player_move_adjust.1);
@@ -106,7 +107,7 @@ impl MainWinDrawer {
 
                 // Draw character on the tile
                 if let Some(chara_id) = map.get_chara(p) {
-                    let chara = game.gd.chara.get(chara_id);
+                    let chara = gd.chara.get(chara_id);
                     let ct = gobj::get_obj(chara.template_idx);
                     let src = Rect::from(ct.img_rect());
                     

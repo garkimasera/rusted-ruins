@@ -4,7 +4,6 @@ use config::UI_CFG;
 use game::DoPlayerAction;
 use super::commonuse::*;
 use super::widget::*;
-use text;
 
 pub struct YesNoDialog {
     rect: Rect,
