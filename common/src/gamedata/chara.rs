@@ -73,7 +73,7 @@ impl Default for Chara {
         Chara {
             name: "Unknown".to_owned(),
             params: CharaParams::default(),
-            template: "!!".to_owned(),
+            template: "!".to_owned(),
             template_idx: CharaTemplateIdx(0),
             inventory: Inventory::for_chara(),
             wait_time: 100.0,

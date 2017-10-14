@@ -10,7 +10,7 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(w: u32, h: u32) -> MapBuilder {
-        let generated_map = MapGenerator::new((w, h)).flat().generate();
+        let generated_map = MapGenerator::new((w, h)).fractal().generate();
         let map = generated_map_to_map(generated_map, TileIdx(0), WallIdx(0));
         
         MapBuilder {
@@ -40,6 +40,14 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> M
             _ => (),
         }
     }
+
+    // Set stairs
+    map.tile[gm.entrance].special = SpecialTileKind::UpStairs;
+
+    if gm.exit.is_some()  {
+        map.tile[gm.exit.unwrap()].special = SpecialTileKind::DownStairs;
+    }
+    
     map
 }
 

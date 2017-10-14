@@ -42,7 +42,7 @@ impl Game {
         };
         use common::gamedata;
 
-        let map = self::map::builder::MapBuilder::new(10, 10).build();
+        let map = self::map::builder::MapBuilder::new(40, 40).build();
         let site = gamedata::site::Site::new("はじまり");
         let sid = game.gd.add_site(site, gamedata::site::SiteKind::Start);
         let mid = game.gd.add_map(map, sid);
@@ -51,7 +51,7 @@ impl Game {
         chara.params.spd = 100;
         chara.params.str = 25;
         chara.rel = gamedata::chara::Relationship::ALLY;
-        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(0, 0));
+        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(15, 15));
 
         let mut chara = gamedata::chara::Chara::default();
         chara.params.spd = 100;

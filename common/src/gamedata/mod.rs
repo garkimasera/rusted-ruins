@@ -52,7 +52,7 @@ impl GameData {
         match kind {
             CharaKind::Player => {
                 self.chara.0.insert(CharaId::Player, chara);
-                let mut map = self.site.get_map_mut(mid);
+                let map = self.site.get_map_mut(mid);
                 map.add_chara(pos, CharaId::Player);
                 CharaId::Player
             },
@@ -81,7 +81,7 @@ impl GameData {
     }
 
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
-        let mut site = self.site.get_mut(sid);
+        let site = self.site.get_mut(sid);
         let floor = site.add_map(map);
         MapId { sid, floor }
     }
