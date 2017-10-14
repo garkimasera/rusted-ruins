@@ -4,9 +4,10 @@ mod logwindow;
 mod textwindow;
 mod itemwindow;
 mod exitwindow;
+mod yesnodialog;
 mod widget;
 
-use game::GameState;
+use game::{GameState, DoPlayerAction};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
@@ -28,6 +29,7 @@ mod commonuse {
 
 use self::commonuse::*;
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum DialogResult {
     Continue, Close, CloseAll, Quit,
 }
@@ -154,6 +156,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
+            },
+            Command::Enter => {
+                self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
+                    ::text::ui_txt("dialog.move_floor"),
+                    |pa| {
+                        pa.move_next_floor();
+                        DialogResult::Close
+                    }
+                )));
             },
             Command::OpenExitWin => {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));

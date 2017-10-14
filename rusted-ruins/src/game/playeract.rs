@@ -17,5 +17,9 @@ impl<'a> DoPlayerAction<'a> {
             self.0.finish_player_turn();
         }
     }
+
+    pub fn move_next_floor(&mut self) {
+        println!("Try to move next floor");
+    }
 }
 
