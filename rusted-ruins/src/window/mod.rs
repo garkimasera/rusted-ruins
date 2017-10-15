@@ -7,7 +7,7 @@ mod exitwindow;
 mod yesnodialog;
 mod widget;
 
-use game::{GameState, DoPlayerAction};
+use game::{GameState, DoPlayerAction, InfoGetter};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
@@ -158,13 +158,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 pa.try_move(dir);
             },
             Command::Enter => {
-                self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
-                    ::text::ui_txt("dialog.move_floor"),
-                    |pa| {
-                        pa.move_next_floor();
-                        DialogResult::Close
-                    }
-                )));
+                if pa.gamedata().on_map_entrance() {
+                    self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
+                        ::text::ui_txt("dialog.move_floor"),
+                        |pa| {
+                            pa.move_next_floor();
+                            DialogResult::Close
+                        }
+                    )));
+                }
             },
             Command::OpenExitWin => {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));

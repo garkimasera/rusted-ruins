@@ -1,6 +1,7 @@
 
 use super::Game;
 use super::action;
+use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
 use array2d::*;
 
@@ -10,6 +11,10 @@ pub struct DoPlayerAction<'a>(&'a mut Game);
 impl<'a> DoPlayerAction<'a> {
     pub fn new(game: &'a mut Game) -> DoPlayerAction<'a> {
         DoPlayerAction(game)
+    }
+
+    pub fn gamedata(&self) -> &GameData {
+        &self.0.gd
     }
 
     pub fn try_move(&mut self, dir: Direction) {
