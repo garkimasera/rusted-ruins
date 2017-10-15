@@ -29,7 +29,7 @@ impl Site {
     }
 
     pub(crate) fn add_map(&mut self, map: Map) -> u32 {
-        assert!(self.map.len() as u32 + 1 < self.max_floor);
+        assert!(self.map.len() as u32 + 1 <= self.max_floor);
         self.map.push(map);
         self.map.len() as u32 - 1
     }

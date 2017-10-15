@@ -28,6 +28,10 @@ impl GameData {
         }
     }
 
+    pub fn get_current_mapid(&self) -> MapId {
+        self.current_mapid
+    }
+
     pub fn get_current_map(&self) -> &Map {
         self.site.get_map(self.current_mapid)
     }
