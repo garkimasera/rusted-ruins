@@ -92,7 +92,7 @@ impl<'t> TextCachePool<'t> {
     fn append(&mut self, t: Vec<Texture<'t>>) -> usize {
         self.gc();
         
-        for (i, mut d) in self.data.iter_mut().enumerate() {
+        for (i, d) in self.data.iter_mut().enumerate() {
             if d.is_none() {
                 *d = Some(t);
                 return i;

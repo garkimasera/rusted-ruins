@@ -1,5 +1,4 @@
 
-use array2d::*;
 use common::objholder::*;
 use common::gamedata::map::{Map, SpecialTileKind};
 use map_generator::{MapGenerator, GeneratedMap, TileKind};

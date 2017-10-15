@@ -36,7 +36,7 @@ pub fn turn_loop(game: &mut Game) {
         while let Some(cid) =  game.turn_loop_data.0.pop_front() {
             
             let is_process_npc_turn = {
-                let mut chara = game.gd.chara.get_mut(cid);
+                let chara = game.gd.chara.get_mut(cid);
                 decrease_wait_time(chara)
             };
             

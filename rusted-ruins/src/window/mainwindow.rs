@@ -7,14 +7,12 @@ use window::Window;
 use draw::mainwin::MainWinDrawer;
 
 pub struct MainWindow {
-    rect: Rect,
     drawer: MainWinDrawer,
 }
 
 impl MainWindow {
     pub fn new(rect: Rect) -> MainWindow {
         MainWindow {
-            rect: rect,
             drawer: MainWinDrawer::new(rect),
         }
     }

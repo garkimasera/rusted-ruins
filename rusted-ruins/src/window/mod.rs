@@ -112,7 +112,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         self.main_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
         self.log_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
 
-        for mut w in &mut self.window_stack {
+        for w in &mut self.window_stack {
             w.redraw(canvas, &self.game, &mut self.sdl_values, anim);
         }
 

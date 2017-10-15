@@ -26,7 +26,7 @@ pub fn attack_neighbor(game: &mut Game, chara_a: CharaId, chara_b: CharaId) {
 
 pub fn damage(game: &mut Game, attacker: CharaId, target: CharaId, damage: i32) {
     let attacker_name = game.gd.chara.get(attacker).name.clone();;
-    let mut target = game.gd.chara.get_mut(target);
+    let target = game.gd.chara.get_mut(target);
     
     target.params.hp -= damage;
     game_log!("attack"; attacker=attacker_name, target=target.name);

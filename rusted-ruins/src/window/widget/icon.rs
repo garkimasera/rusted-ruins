@@ -23,7 +23,7 @@ impl IconWidget {
 
 impl WidgetTrait for IconWidget {
     type Response =  ();
-    fn process_command(&mut self, command: &Command) -> Option<()> {
+    fn process_command(&mut self, _command: &Command) -> Option<()> {
         None
     }
 

@@ -74,7 +74,7 @@ fn init_lazy_statics() {
 
 fn init_obj() {
     let mut data_dirs = ::config::get_data_dirs();
-    for mut d in data_dirs.iter_mut() {
+    for d in data_dirs.iter_mut() {
         d.push("paks");
     }
     ::common::gobj::init(data_dirs);

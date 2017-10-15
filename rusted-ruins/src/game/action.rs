@@ -32,7 +32,7 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
         match rel {
             Relationship::ALLY | Relationship::FRIENDLY |Relationship::NEUTRAL => {
                 {
-                    let mut current_map = game.gd.get_current_map_mut();
+                    let current_map = game.gd.get_current_map_mut();
                     current_map.move_chara(chara_id, dir);
                 }
                 push_move_anim(&mut game.anim_queue);

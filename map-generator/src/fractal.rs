@@ -44,7 +44,6 @@ pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
     let edge_bias = [3.0, 1.5, 1.0, 0.5];
     for (i, b) in edge_bias.iter().enumerate() {
         let i = i as i32;
-        println!("{}", i);
         write_rect(&mut map, *b, Vec2d::new(i, i), Vec2d::new(size.0 - i - 1, size.1 - i - 1));
     }
 
