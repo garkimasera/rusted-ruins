@@ -5,8 +5,10 @@ mod npc;
 mod action;
 mod command;
 mod map;
+mod site;
 mod infogetter;
 mod animation;
+mod newgame;
 mod combat;
 mod turnloop;
 
@@ -34,30 +36,13 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Game {
-        let mut game = Game {
-            gd: GameData::empty(),
+        let new_gamedata = self::newgame::create_newgame();
+        let game = Game {
+            gd: new_gamedata,
             state: GameState::WaitingForNextTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
         };
-        use common::gamedata;
-
-        let map = self::map::builder::MapBuilder::new(40, 40).build();
-        let site = gamedata::site::Site::new("はじまり");
-        let sid = game.gd.add_site(site, gamedata::site::SiteKind::Start);
-        let mid = game.gd.add_map(map, sid);
-
-        let mut chara = gamedata::chara::Chara::default();
-        chara.params.spd = 100;
-        chara.params.str = 25;
-        chara.rel = gamedata::chara::Relationship::ALLY;
-        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(15, 15));
-
-        let mut chara = gamedata::chara::Chara::default();
-        chara.params.spd = 100;
-        chara.params.str = 20;
-        chara.rel = gamedata::chara::Relationship::HOSTILE;
-        game.gd.add_chara_to_map(chara, gamedata::chara::CharaKind::OnMap, mid, ::array2d::Vec2d(2, 2));
         
         game
     }

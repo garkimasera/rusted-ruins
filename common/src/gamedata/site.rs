@@ -8,13 +8,15 @@ use super::map::{Map, MapId};
 pub struct Site {
     pub name: String,
     map: Vec<Map>,
+    max_floor: u32,
 }
 
 impl Site {
-    pub fn new(name: &str) -> Site {
+    pub fn new(name: &str, max_floor: u32) -> Site {
         Site {
             name: name.to_owned(),
             map: Vec::new(),
+            max_floor,
         }
     }
     
@@ -27,6 +29,7 @@ impl Site {
     }
 
     pub(crate) fn add_map(&mut self, map: Map) -> u32 {
+        assert!(self.map.len() as u32 + 1 < self.max_floor);
         self.map.push(map);
         self.map.len() as u32 - 1
     }
