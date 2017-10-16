@@ -1,9 +1,12 @@
 
 use config::UI_CFG;
+use sdlvalues::FontKind;
 use super::commonuse::*;
 use super::text_input;
+use super::widget::*;
 
 pub struct TextInputDialog {
+    label: LabelWidget,
     rect: Rect,
     text: String,
 }
@@ -11,8 +14,13 @@ pub struct TextInputDialog {
 impl TextInputDialog {
     pub fn new() -> TextInputDialog {
         text_input::start();
+
+        let rect: Rect = UI_CFG.text_input_dialog.rect.into();
+        let label_rect = Rect::new(0, 0, rect.width(), rect.height());
+        
         TextInputDialog {
-            rect: UI_CFG.text_input_dialog.rect.into(),
+            label: LabelWidget::new(label_rect, " ", FontKind::M),
+            rect: rect,
             text: String::new(),
         }
     }
@@ -24,6 +32,7 @@ impl Window for TextInputDialog {
         _anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(canvas, self.rect);
+        self.label.draw(canvas, sv);
     }
 }
 
@@ -33,6 +42,7 @@ impl DialogWindow for TextInputDialog {
             Command::TextInput { text } => {
                 println!("{}", text);
                 self.text.push_str(&text);
+                self.label.set_text(&self.text);
                 DialogResult::Continue
             },
             Command::Enter => {
