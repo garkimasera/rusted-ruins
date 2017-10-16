@@ -24,12 +24,14 @@ pub struct EventHandler {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum InputMode {
-    Normal, Dialog,
+    Normal, Dialog, TextInput,
 }
 
 #[derive(PartialEq, Eq, Hash, Debug)]
 pub enum RawCommand {
     KeyPress(Keycode),
+    TextInput(String),
+    TextDelete,
 }
 
 impl EventHandler {
@@ -96,7 +98,11 @@ impl EventHandler {
             // Joystick events
             Event::JoyButtonDown { button_idx, .. } => {
                 println!("ButtonDown: {}", button_idx);
-            }
+            },
+            // Text input events
+            Event::TextInput { text, .. } => {
+                self.command_queue.push_back(RawCommand::TextInput(text));
+            },
             
             _ => {}
         }
@@ -214,9 +220,28 @@ impl CommandConvTable {
         let table = match mode {
             InputMode::Normal => &self.normal,
             InputMode::Dialog => &self.dialog,
+            InputMode::TextInput => {
+                return text_input_conv(raw);
+            },
         };
 
         table.get(&raw).map(|c| c.clone())
+    }
+}
+
+/// In text input mode, all event is ignored except for text input or finish key press
+fn text_input_conv(raw: RawCommand) -> Option<Command> {
+    match raw {
+        RawCommand::TextInput(text) => {
+            Some(Command::TextInput { text })
+        },
+        RawCommand::KeyPress(keycode) if keycode == Keycode::Return => {
+            Some(Command::Enter)
+        },
+        RawCommand::KeyPress(keycode) if keycode == Keycode::Escape => {
+            Some(Command::Cancel)
+        },
+        _ => None,
     }
 }
 

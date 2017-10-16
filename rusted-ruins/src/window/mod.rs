@@ -5,12 +5,14 @@ mod textwindow;
 mod itemwindow;
 mod exitwindow;
 mod yesnodialog;
+mod textinputdialog;
 mod widget;
 
 use game::{GameState, DoPlayerAction, InfoGetter};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
+use sdl2::keyboard::TextInputUtil;
 use SdlContext;
 use config::SCREEN_CFG;
 use self::mainwindow::MainWindow;
@@ -46,9 +48,11 @@ pub trait DialogWindow: Window {
     fn mode(&self) -> InputMode;
 }
 
+/// Manage all windows
 pub struct WindowManager<'sdl, 't> {
     game: Game,
     sdl_values: SdlValues<'sdl, 't>,
+    text_input_util: TextInputUtil,
     main_window: MainWindow,
     log_window: LogWindow,
     anim: Option<Animation>,
@@ -63,10 +67,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         let game = Game::new();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
+        let text_input_util = sdl_context.sdl_context.video().unwrap().text_input();
         
         WindowManager {
             game: game,
             sdl_values: sdl_values,
+            text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
             log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
             anim: None,
@@ -127,6 +133,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
     // If return value is false, quit.
     pub fn process_command(&mut self, event_handler: &mut EventHandler) -> bool {
+        text_input::check_mode(&self.text_input_util);
+        
         let mode = if self.window_stack.len() > 0 {
             self.window_stack[self.window_stack.len() - 1].mode()
         }else{
@@ -172,7 +180,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
             },
             Command::OpenItemMenu => {
-                self.window_stack.push(Box::new(itemwindow::ItemWindow::new()));
+                self.window_stack.push(Box::new(textinputdialog::TextInputDialog::new()));
+                //self.window_stack.push(Box::new(itemwindow::ItemWindow::new()));
             },
             _ => (),
         }
@@ -180,4 +189,38 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     }
 }
 
+/// Functions for setting text_input_util state
+pub mod text_input {
+    use sdl2::keyboard::TextInputUtil;
+    use std::cell::Cell;
+    thread_local!(static TEXT_INPUT: Cell<bool> = Cell::new(false));
+
+    pub fn get() -> bool {
+        TEXT_INPUT.with(|text_input| {
+            text_input.get()
+        })
+    }
+
+    pub fn check_mode(text_input_util: &TextInputUtil) {
+        let active = text_input_util.is_active();
+        if !active && get() {
+            text_input_util.start();
+        }
+        if active && !get() {
+            text_input_util.stop();
+        }
+    }
+
+    pub fn start() {
+        TEXT_INPUT.with(|text_input| {
+            text_input.set(true);
+        });
+    }
+
+    pub fn end() {
+        TEXT_INPUT.with(|text_input| {
+            text_input.set(false);
+        });
+    }
+}
 

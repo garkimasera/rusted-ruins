@@ -18,6 +18,7 @@ pub struct UIConfig {
     pub font: Font,
     pub log_window: LogWindowConfig,
     pub exit_window: ExitWindowConfig,
+    pub text_input_dialog: TextInputDialogConfig,
     pub item_window: ItemWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
@@ -58,6 +59,11 @@ pub struct LogWindowConfig {
 pub struct ExitWindowConfig {
     pub rect: CfgRect,
     pub list_y: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TextInputDialogConfig {
+    pub rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
