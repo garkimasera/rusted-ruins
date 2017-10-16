@@ -58,6 +58,10 @@ impl TextCache {
             font: font, color: color, wrap_size: Some(w),
         }
     }
+
+    pub fn get_str(&self, i: usize) -> &str {
+        &self.s[i]
+    }
 }
 
 impl Drop for TextCache {

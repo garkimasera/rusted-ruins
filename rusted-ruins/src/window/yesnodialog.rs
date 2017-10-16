@@ -4,6 +4,7 @@ use config::UI_CFG;
 use game::DoPlayerAction;
 use super::commonuse::*;
 use super::widget::*;
+use sdlvalues::FontKind;
 
 pub struct YesNoDialog {
     rect: Rect,
@@ -21,7 +22,7 @@ impl YesNoDialog {
         YesNoDialog {
             rect: rect,
             label: LabelWidget::wrapped(
-                (0, 0, rect.w as u32, 0), &msg, rect.w as u32),
+                (0, 0, rect.w as u32, 0), &msg, FontKind::M, rect.w as u32),
             answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),
             action_on_yes: Box::new(f),
         }

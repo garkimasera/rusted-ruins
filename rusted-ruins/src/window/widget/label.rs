@@ -10,25 +10,36 @@ use super::WidgetTrait;
 pub struct LabelWidget {
     rect: Rect,
     cache: TextCache,
+    font: FontKind,
+    wrap_w: Option<u32>,
 }
 
 impl LabelWidget {
-    pub fn new<R: Into<Rect>>(rect: R, s: &str) -> LabelWidget {
+    pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::one(s, FontKind::M, UI_CFG.color.normal_font.into());
+        let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
         LabelWidget {
-            rect: rect,
-            cache: cache,
+            rect, cache, font,
+            wrap_w: None,
         }
     }
 
-    pub fn wrapped<R: Into<Rect>>(rect: R, s: &str, w: u32) -> LabelWidget {
+    pub fn wrapped<R: Into<Rect>>(rect: R, s: &str, font: FontKind, w: u32) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::one_wrapped(s, FontKind::M, UI_CFG.color.normal_font.into(), w);
+        let cache = TextCache::one_wrapped(s, font, UI_CFG.color.normal_font.into(), w);
         LabelWidget {
-            rect: rect,
-            cache: cache,
+            rect, cache, font,
+            wrap_w: Some(w),
         }
+    }
+
+    pub fn set_text(&mut self, text: &str) {
+        let cache = if let Some(w) = self.wrap_w {
+            TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
+        }else{
+            TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
+        };
+        self.cache = cache;
     }
 }
 

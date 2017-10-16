@@ -3,6 +3,7 @@ use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
+use sdlvalues::FontKind;
 use text;
 
 pub struct ExitWindow {
@@ -18,7 +19,7 @@ impl ExitWindow {
         ExitWindow {
             rect: rect,
             label: LabelWidget::wrapped(
-                (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), rect.w as u32),
+                (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), FontKind::M, rect.w as u32),
             answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),
         }
     }
