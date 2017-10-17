@@ -31,7 +31,6 @@ pub enum InputMode {
 pub enum RawCommand {
     KeyPress(Keycode),
     TextInput(String),
-    TextDelete,
 }
 
 impl EventHandler {

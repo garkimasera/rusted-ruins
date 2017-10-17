@@ -24,8 +24,6 @@ impl WidgetTrait for IconWidget {
     type Response =  ();
 
     fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
-        let orig: Rect;
-
         let (t, r) = sv.tex().get_icon(self.idx);
         
         check_draw!(canvas.copy(t, r, self.rect));
