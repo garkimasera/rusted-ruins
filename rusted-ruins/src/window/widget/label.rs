@@ -1,7 +1,6 @@
 
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
-use game::Command;
 use sdlvalues::*;
 use config::UI_CFG;
 use super::WidgetTrait;
@@ -45,9 +44,6 @@ impl LabelWidget {
 
 impl WidgetTrait for LabelWidget {
     type Response = ();
-    fn process_command(&mut self, _command: &Command) -> Option<()> {
-        None
-    }
     
     fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
         let tex = sv.tt_one(&mut self.cache);

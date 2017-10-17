@@ -2,11 +2,13 @@
 use super::{CfgRect, CfgColor};
 
 /// Size of screen and rects of windows
+/// These parameters will change if screen size is different
 #[derive(Debug, Deserialize)]
 pub struct ScreenConfig {
     pub screen_w: u32, pub screen_h: u32,
     pub main_window: CfgRect,
     pub log_window: CfgRect,
+    pub hp_indicator: CfgRect,
 }
 
 /// UI colors, fonts, and other widget settings
@@ -35,6 +37,10 @@ pub struct UIColorConfig {
     pub log_window_bg: CfgColor,
     pub log_font: CfgColor,
     pub normal_font: CfgColor,
+    pub guage_border_light: CfgColor,
+    pub guage_border_dark: CfgColor,
+    pub guage_bg: CfgColor,
+    pub guage_hp: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]

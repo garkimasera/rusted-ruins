@@ -6,6 +6,7 @@ mod itemwindow;
 mod exitwindow;
 mod yesnodialog;
 mod textinputdialog;
+mod indicator;
 mod widget;
 
 use game::{GameState, DoPlayerAction, InfoGetter};
@@ -55,6 +56,7 @@ pub struct WindowManager<'sdl, 't> {
     text_input_util: TextInputUtil,
     main_window: MainWindow,
     log_window: LogWindow,
+    indicator: indicator::HPIndicator,
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
@@ -75,6 +77,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
             log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
+            indicator: indicator::HPIndicator::new(),
             anim: None,
             passed_frame: 0,
             window_stack: Vec::new(),
@@ -117,6 +120,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         self.main_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
         self.log_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+        self.indicator.redraw(canvas, &self.game, &mut self.sdl_values, anim);
 
         for w in &mut self.window_stack {
             w.redraw(canvas, &self.game, &mut self.sdl_values, anim);
