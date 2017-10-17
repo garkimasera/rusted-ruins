@@ -1,5 +1,6 @@
 
 use config::{SCREEN_CFG, UI_CFG};
+use game::InfoGetter;
 use super::commonuse::*;
 use super::widget::*;
 
@@ -22,11 +23,13 @@ impl HPIndicator {
 
 impl Window for HPIndicator {
     fn redraw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 
+        let (max_hp, hp) = game.gd.player_hp();
+
         canvas.set_viewport(self.rect);
-        self.guage.set_params(0.0, 1.0, 0.5);
+        self.guage.set_params(0.0, max_hp as f32, hp as f32);
         self.guage.draw(canvas, sv);
         
     }

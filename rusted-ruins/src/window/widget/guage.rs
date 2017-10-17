@@ -39,8 +39,9 @@ impl WidgetTrait for GuageWidget {
         canvas.set_draw_color(bg);
         check_draw!(canvas.fill_rect(self.rect));
 
+        let value = if self.value >= self.min { self.value } else { self.min };
         let bar_width =
-            ((self.rect.w - 4) as f32 * ((self.value - self.min) / (self.max - self.min))) as u32;
+            ((self.rect.w - 4) as f32 * ((value - self.min) / (self.max - self.min))) as u32;
         let bar_rect = Rect::new(2, 2, bar_width, self.rect.height() - 2);
 
         canvas.set_draw_color(self.color);
