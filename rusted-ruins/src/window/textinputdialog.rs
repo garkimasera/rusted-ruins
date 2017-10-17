@@ -19,7 +19,7 @@ impl TextInputDialog {
         let label_rect = Rect::new(0, 0, rect.width(), rect.height());
         
         TextInputDialog {
-            label: LabelWidget::new(label_rect, " ", FontKind::M),
+            label: LabelWidget::new(label_rect, "", FontKind::M),
             rect: rect,
             text: String::new(),
         }
@@ -40,13 +40,16 @@ impl DialogWindow for TextInputDialog {
     fn process_command(&mut self, command: Command, _pa: DoPlayerAction) -> DialogResult {
         match command {
             Command::TextInput { text } => {
-                println!("{}", text);
                 self.text.push_str(&text);
                 self.label.set_text(&self.text);
                 DialogResult::Continue
             },
+            Command::TextDelete => {
+                self.text.pop();
+                self.label.set_text(&self.text);
+                DialogResult::Continue
+            },
             Command::Enter => {
-                println!("{}", self.text);
                 text_input::end();
                 DialogResult::Close
             },

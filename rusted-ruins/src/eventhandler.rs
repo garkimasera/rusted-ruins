@@ -241,6 +241,11 @@ fn text_input_conv(raw: RawCommand) -> Option<Command> {
         RawCommand::KeyPress(keycode) if keycode == Keycode::Escape => {
             Some(Command::Cancel)
         },
+        RawCommand::KeyPress(keycode)
+            if keycode == Keycode::Backspace || keycode == Keycode::Delete => {
+                
+            Some(Command::TextDelete)
+        },
         _ => None,
     }
 }

@@ -10,4 +10,5 @@ pub enum Command {
     Cancel,
     OpenExitWin, OpenItemMenu,
     TextInput { text: String },
+    TextDelete,
 }

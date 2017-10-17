@@ -37,6 +37,7 @@ impl<'sdl> TextRenderer<'sdl> {
 
     pub fn surface(&self, font_usage: FontKind, text: &str, c: Color, wrap: Option<u32>)
                    -> Result<Surface<'static>, FontError> {
+        let text = if text != "" { text } else { " " };
         
         let font = self.select_font(font_usage);
 
