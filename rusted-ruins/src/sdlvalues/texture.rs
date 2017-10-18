@@ -56,6 +56,7 @@ impl_texture_holder! {
     {item, ItemIdx},
     {special_tile, SpecialTileIdx},
     {tile, TileIdx},
+    {ui_img, UIImgIdx},
     {wall, WallIdx}
 }
 

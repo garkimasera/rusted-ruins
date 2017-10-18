@@ -179,6 +179,7 @@ impl_objholder! {
     {Item, ItemObject, item, ItemIdx},
     {SpecialTile, SpecialTileObject, special_tile, SpecialTileIdx},
     {Tile, TileObject, tile, TileIdx},
+    {UIImg, UIImgObject, ui_img, UIImgIdx},
     {Wall, WallObject, wall, WallIdx}
 }
 

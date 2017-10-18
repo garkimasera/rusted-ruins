@@ -26,6 +26,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         "tile" => {
             return build_tile_object(tomlinput).map(|o| Object::Tile(o));
         }
+        "ui_img" => {
+            return build_ui_img_object(tomlinput).map(|o| Object::UIImg(o));
+        }
         "wall" => {
             return build_wall_object(tomlinput).map(|o| Object::Wall(o));
         }
@@ -49,6 +52,15 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
     let img = get_optional_field!(tomlinput, image);
     
     Ok(TileObject {
+        id: tomlinput.id,
+        img: build_img(img)?,
+    })
+}
+
+fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject> {
+    let img = get_optional_field!(tomlinput, image);
+    
+    Ok(UIImgObject {
         id: tomlinput.id,
         img: build_img(img)?,
     })
