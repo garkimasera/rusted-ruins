@@ -18,14 +18,10 @@ impl Rules {
     }
 }
 
-
-
-
-// Global state rules holder
-
 lazy_static! {
     static ref RULES_DIR: Mutex<Option<PathBuf>> = Mutex::new(None);
-    static ref RULES: Rules = Rules::load_from_dir(&RULES_DIR.lock().unwrap().as_ref().unwrap());
+    /// Global state rules holder
+    pub static ref RULES: Rules = Rules::load_from_dir(&RULES_DIR.lock().unwrap().as_ref().unwrap());
 }
 
 /// Initialize Rules

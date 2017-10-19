@@ -4,6 +4,19 @@ use objholder::CharaTemplateIdx;
 use super::item::Inventory;
 use super::map::MapId;
 
+/// Character's races
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[repr(u32)]
+pub enum Race {
+    Human,
+    Slime,
+}
+
+impl_fromstr_for_enum!(
+    Race;
+    Human, Slime
+);
+
 /// Relationship between one chara to another.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u32)]

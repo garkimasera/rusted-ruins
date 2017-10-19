@@ -30,6 +30,10 @@ pub struct AnimImgObject {
 pub struct CharaTemplateObject {
     pub id: String,
     pub img: Img,
+    /// Character's race
+    pub race: ::gamedata::chara::Race,
+    /// The frequency of character generation for random map
+    pub gen_weight: u32,
     pub str: u32,
     pub vit: u32,
     pub dex: u32,

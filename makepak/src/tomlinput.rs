@@ -45,6 +45,8 @@ pub struct AnimImgDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct CharaTemplateDepInput {
+    pub race: String,
+    pub gen_weight: u32,
     pub str: u32,
     pub vit: u32,
     pub dex: u32,
