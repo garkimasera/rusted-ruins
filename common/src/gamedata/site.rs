@@ -7,6 +7,9 @@ use super::map::{Map, MapId};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Site {
     pub name: String,
+    /// If the site is dungeon, it has a dungeon kind.
+    /// It is used for map generation, enemy race weighting, etc.
+    dungeon_kind: DungeonKind,
     map: Vec<Map>,
     max_floor: u32,
 }
@@ -15,6 +18,7 @@ impl Site {
     pub fn new(name: &str, max_floor: u32) -> Site {
         Site {
             name: name.to_owned(),
+            dungeon_kind: DungeonKind::None,
             map: Vec::new(),
             max_floor,
         }
@@ -47,6 +51,11 @@ pub enum SiteId {
     Start,
     /// Auto generated dungeon
     AutoGenDungeon { n: u32 },
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub enum DungeonKind {
+    None, Cave,
 }
 
 #[derive(Serialize, Deserialize)]
