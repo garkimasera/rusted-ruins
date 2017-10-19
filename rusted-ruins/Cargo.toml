@@ -25,6 +25,9 @@ features = ["global_state_obj", "auto_idx_conversion"]
 [dependencies.rusted-ruins-audio]
 path = "../audio"
 
+[dependencies.rusted-ruins-rules]
+path = "../rules"
+
 [dependencies.rusted-ruins-map-generator]
 path = "../map-generator"
 

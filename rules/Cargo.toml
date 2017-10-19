@@ -1,0 +1,15 @@
+[package]
+name = "rusted-ruins-rules"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[lib]
+name = "rusted_ruins_rules"
+crate-type = ["rlib"]
+
+[dependencies]
+serde = "1"
+serde_derive = "1"
+lazy_static = "0.2"
+toml = "0.4"
+

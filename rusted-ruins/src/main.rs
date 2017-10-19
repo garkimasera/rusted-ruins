@@ -4,6 +4,7 @@ extern crate rusted_ruins_array2d as array2d;
 #[macro_use]
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_audio as audio;
+extern crate rusted_ruins_rules as rules;
 extern crate rusted_ruins_map_generator as map_generator;
 extern crate rand;
 #[macro_use]
