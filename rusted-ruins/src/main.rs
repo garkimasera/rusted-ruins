@@ -39,6 +39,7 @@ fn main() {
     setup_logger();
     init_lazy_statics();
     init_obj();
+    init_rules();
     
     game_log!("start"; version="0.0.1");
     
@@ -79,6 +80,10 @@ fn init_obj() {
         d.push("paks");
     }
     ::common::gobj::init(data_dirs);
+}
+
+fn init_rules() {
+    rules::init(&*::config::APP_DIR);
 }
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.

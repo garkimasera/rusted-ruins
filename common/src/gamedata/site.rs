@@ -39,7 +39,7 @@ impl Site {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum SiteKind {
     Start,
     /// Auto generated dungeon
