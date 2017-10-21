@@ -8,8 +8,7 @@ use super::map::MapId;
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum Race {
-    Human,
-    Slime,
+    Animal, Devil, Human, Phantom, Slime,
 }
 
 /// Relationship between one chara to another.
