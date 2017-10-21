@@ -12,11 +12,6 @@ pub enum Race {
     Slime,
 }
 
-impl_fromstr_for_enum!(
-    Race;
-    Human, Slime
-);
-
 /// Relationship between one chara to another.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u32)]

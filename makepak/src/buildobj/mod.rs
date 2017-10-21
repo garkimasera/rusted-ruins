@@ -2,7 +2,6 @@
 mod img;
 mod item;
 
-use std::str::FromStr;
 use common::obj::*;
 use tomlinput::TomlInput;
 use error::*;
@@ -76,16 +75,14 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
     })
 }
 
-fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject> {
-    use common::gamedata::chara::Race;
-    
+fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject> {    
     let chara_dep_input = get_optional_field!(tomlinput, chara_template);
     let img = get_optional_field!(tomlinput, image);
     
     Ok(CharaTemplateObject {
         id: tomlinput.id,
         img: build_img(img)?,
-        race: Race::from_str(&chara_dep_input.race)?,
+        race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         str: chara_dep_input.str,
         vit: chara_dep_input.vit,

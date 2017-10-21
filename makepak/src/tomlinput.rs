@@ -1,4 +1,6 @@
 
+use common::gamedata;
+
 #[derive(Debug, Deserialize)]
 pub struct TomlInput {
     pub object_type: String,
@@ -45,7 +47,7 @@ pub struct AnimImgDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct CharaTemplateDepInput {
-    pub race: String,
+    pub race: gamedata::chara::Race,
     pub gen_weight: u32,
     pub str: u32,
     pub vit: u32,
