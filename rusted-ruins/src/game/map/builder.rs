@@ -16,7 +16,7 @@ impl MapBuilder {
             map: map,
         }
     }
-
+    
     pub fn build(self) -> Map {
         let map = self.map;
         
