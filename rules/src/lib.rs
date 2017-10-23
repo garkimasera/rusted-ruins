@@ -8,6 +8,7 @@ extern crate log;
 extern crate lazy_static;
 extern crate serde_json;
 extern crate rusted_ruins_common as common;
+extern crate rand;
 
 pub mod mapgen;
 
