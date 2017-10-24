@@ -40,10 +40,7 @@ impl Relationship {
 pub struct Chara {
     pub name: String,
     pub params: CharaParams,
-    pub template: String,
-    /// CharaTemplateIdx is preserved for use in CharaHolder
-    /// But ignored when it is saved
-    pub template_idx: CharaTemplateIdx,
+    pub template: CharaTemplateIdx,
     pub inventory: Inventory,
     pub wait_time: f32,
     /// Relationship to player character
@@ -80,8 +77,7 @@ impl Default for Chara {
         Chara {
             name: "Unknown".to_owned(),
             params: CharaParams::default(),
-            template: "!".to_owned(),
-            template_idx: CharaTemplateIdx(0),
+            template: CharaTemplateIdx(0),
             inventory: Inventory::for_chara(),
             wait_time: 100.0,
             rel: Relationship::NEUTRAL,

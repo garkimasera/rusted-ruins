@@ -19,13 +19,13 @@ use serde::de::Deserialize;
 
 /// Contain game rules
 pub struct Rules {
-    pub mapgen: mapgen::MapGen,
+    pub map_gen: mapgen::MapGen,
 }
 
 impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
         Rules {
-            mapgen: read_from_json(&rules_dir.join("mapgen.json"))
+            map_gen: read_from_json(&rules_dir.join("mapgen.json"))
         }
     }
 }

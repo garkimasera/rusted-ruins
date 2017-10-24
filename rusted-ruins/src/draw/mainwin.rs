@@ -91,10 +91,10 @@ impl MainWinDrawer {
             // Draw player when moving
             if is_player_moving && ny == player_drawing_row {
                 let chara = gd.chara.get(CharaId::Player);
-                let ct = gobj::get_obj(chara.template_idx);
+                let ct = gobj::get_obj(chara.template);
                 let src = Rect::from(ct.img_rect());
                 let dest = centering_at_tile(src, player_pos, dx - player_move_adjust.0, dy - player_move_adjust.1);
-                canvas.copy(sv.tex().get(chara.template_idx), src, dest).unwrap();
+                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
             }
 
             for nx in tile_range.iter0() {
@@ -108,7 +108,7 @@ impl MainWinDrawer {
                 // Draw character on the tile
                 if let Some(chara_id) = map.get_chara(p) {
                     let chara = gd.chara.get(chara_id);
-                    let ct = gobj::get_obj(chara.template_idx);
+                    let ct = gobj::get_obj(chara.template);
                     let src = Rect::from(ct.img_rect());
                     
                     if chara_id == CharaId::Player && is_player_moving {
@@ -120,7 +120,7 @@ impl MainWinDrawer {
                     }else{
                         centering_at_tile(src, p, dx, dy)
                     };
-                    canvas.copy(sv.tex().get(chara.template_idx), src, dest).unwrap();
+                    canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
                 }
             }
         }

@@ -4,16 +4,17 @@ pub mod builder;
 use array2d::Vec2d;
 use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
+use common::gamedata::site::DungeonKind;
 use rand::{Rng, thread_rng};
+use rules::RULES;
+use super::chara::create_npc_chara;
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32) {
     for _ in 0..n {
         
         let p = choose_empty_tile(gd.site.get_map(mid));
-        let mut chara = ::common::gamedata::chara::Chara::default();
-        chara.params.spd = 100;
-        chara.params.str = 20;
-        chara.rel = ::common::gamedata::chara::Relationship::HOSTILE;
+        let race = RULES.map_gen.choose_race(DungeonKind::Cave);
+        let chara = create_npc_chara(race);
         gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
     }
 }

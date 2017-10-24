@@ -27,7 +27,7 @@ impl MapGen {
         let mut rng = thread_rng();
         
         for (race, weight) in npc_gen {
-            if rng.gen_range(0.0, sum_w) > *weight {
+            if rng.gen_range(0.0, sum_w) <= *weight {
                 return *race;
             }
             sum_w -= *weight;
