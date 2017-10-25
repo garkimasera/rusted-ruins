@@ -28,7 +28,7 @@ pub fn damage(game: &mut Game, attacker: CharaId, target: CharaId, damage: i32) 
     let attacker_name = game.gd.chara.get(attacker).name.clone();;
     let target = game.gd.chara.get_mut(target);
     
-    target.params.hp -= damage;
+    target.hp -= damage;
     game_log!("attack"; attacker=attacker_name, target=target.name, damage=damage);
 }
 

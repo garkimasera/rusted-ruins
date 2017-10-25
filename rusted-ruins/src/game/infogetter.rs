@@ -20,7 +20,7 @@ impl InfoGetter for GameData {
     
     fn player_hp(&self) -> (i32, i32) {
         let player =self.chara.get(CharaId::Player);
-        (player.params.max_hp, player.params.hp)
+        (player.params.max_hp, player.hp)
     }
     
     fn on_map_entrance(&self) -> bool {

@@ -43,6 +43,7 @@ pub struct Chara {
     pub template: CharaTemplateIdx,
     pub inventory: Inventory,
     pub wait_time: f32,
+    pub hp: i32,
     /// Relationship to player character
     pub rel: Relationship,
 }
@@ -51,7 +52,6 @@ pub struct Chara {
 pub struct CharaParams {
     pub level: u32,
     pub max_hp: i32,
-    pub hp:  i32,
     pub str: u32,
     pub vit: u32,
     pub dex: u32,
@@ -80,6 +80,7 @@ impl Default for Chara {
             template: CharaTemplateIdx(0),
             inventory: Inventory::for_chara(),
             wait_time: 100.0,
+            hp: 100,
             rel: Relationship::NEUTRAL,
         }
     }
@@ -90,7 +91,6 @@ impl Default for CharaParams {
         CharaParams {
             level: 0,
             max_hp: 100,
-            hp: 100,
             str: 0,
             vit: 0,
             dex: 0,

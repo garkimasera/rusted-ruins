@@ -9,10 +9,11 @@ use text;
 pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
+    let max_hp = ct.max_hp;
+
     let params = CharaParams {
         level: 1,
-        max_hp: 100,
-        hp:  100,
+        max_hp: max_hp,
         str: ct.str,
         vit: ct.vit,
         dex: ct.dex,
@@ -28,6 +29,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         template: chara_template_idx,
         inventory: Inventory::for_chara(),
         wait_time: 100.0,
+        hp: max_hp,
         rel: Relationship::NEUTRAL,
     };
     chara
