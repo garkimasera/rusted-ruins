@@ -29,6 +29,6 @@ pub fn damage(game: &mut Game, attacker: CharaId, target: CharaId, damage: i32) 
     let target = game.gd.chara.get_mut(target);
     
     target.params.hp -= damage;
-    game_log!("attack"; attacker=attacker_name, target=target.name);
+    game_log!("attack"; attacker=attacker_name, target=target.name, damage=damage);
 }
 
