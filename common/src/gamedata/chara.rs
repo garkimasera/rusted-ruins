@@ -5,7 +5,7 @@ use super::item::Inventory;
 use super::map::MapId;
 
 /// Character's races
-#[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum Race {
     Animal, Devil, Human, Phantom, Slime,

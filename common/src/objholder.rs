@@ -159,7 +159,13 @@ macro_rules! impl_objholder {
             }
 
             fn sort(&mut self) {
-                $(self.$mem.sort_by(|a, b| a.id.cmp(&b.id)));*
+                {
+                    $(self.$mem.sort_by(|a, b| a.id.cmp(&b.id)));*
+                }
+                
+                // chara_template is sorted by the special function
+                // because the order is used for choosing chara from race and gen_level
+                self.chara_template.sort_by(|a, b| cmp_chara_template(a, b));
             }
         }
 
@@ -197,5 +203,18 @@ pub trait FromId {
 pub trait Holder<I> {
     type ReturnType;
     fn get(&self, idx: I) -> &Self::ReturnType;
+}
+
+fn cmp_chara_template(a: &CharaTemplateObject, b: &CharaTemplateObject) -> ::std::cmp::Ordering {
+    use std::cmp::Ordering;
+
+    if a.id == "!" && b.id == "!" { return Ordering::Equal; }
+    if a.id == "!" { return Ordering::Less; }
+    if b.id == "!" { return Ordering::Greater; }
+    let ord = a.race.cmp(&b.race);
+    if ord != Ordering::Equal { return ord; }
+    let ord = a.gen_level.cmp(&b.gen_level);
+    if ord != Ordering::Equal { return ord; }
+    a.id.cmp(&b.id)
 }
 
