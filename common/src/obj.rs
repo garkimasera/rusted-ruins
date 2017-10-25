@@ -34,6 +34,9 @@ pub struct CharaTemplateObject {
     pub race: ::gamedata::chara::Race,
     /// The frequency of character generation for random map
     pub gen_weight: u32,
+    /// Generation level
+    /// If it is higher, and the character will be generated on deeper floors
+    pub gen_level: u32,
     pub max_hp: i32,
     pub str: u32,
     pub vit: u32,

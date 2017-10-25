@@ -49,6 +49,7 @@ pub struct AnimImgDepInput {
 pub struct CharaTemplateDepInput {
     pub race: gamedata::chara::Race,
     pub gen_weight: u32,
+    pub gen_level: u32,
     pub max_hp: i32,
     pub str: u32,
     pub vit: u32,

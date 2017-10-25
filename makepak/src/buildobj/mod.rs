@@ -84,6 +84,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         img: build_img(img)?,
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
+        gen_level: chara_dep_input.gen_level,
         max_hp: chara_dep_input.max_hp,
         str: chara_dep_input.str,
         vit: chara_dep_input.vit,

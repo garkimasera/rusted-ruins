@@ -51,13 +51,21 @@ pub struct Chara {
 #[derive(Serialize, Deserialize)]
 pub struct CharaParams {
     pub level: u32,
+    /// Max HP
     pub max_hp: i32,
+    /// Strength
     pub str: u32,
+    /// Vitality
     pub vit: u32,
+    /// Dexterity
     pub dex: u32,
+    /// Intelligence
     pub int: u32,
+    /// Will
     pub wil: u32,
+    /// Charisma
     pub cha: u32,
+    /// Speed
     pub spd: u32,
 }
 
