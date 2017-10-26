@@ -17,7 +17,7 @@ pub fn create_newgame() -> GameData {
     chara.rel = gamedata::chara::Relationship::ALLY;
     gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(15, 15));
 
-    map::gen_npcs(&mut gd, mid, 10);
+    map::gen_npcs(&mut gd, mid, 10, 10);
 
     gd
 }
