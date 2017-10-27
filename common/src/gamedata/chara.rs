@@ -12,6 +12,11 @@ pub enum Race {
 }
 
 /// Relationship between one chara to another.
+///         |A|F|N|H
+/// ALLY    |A|F|N|H
+/// FRIENDLY|F|F|N|H
+/// NEUTRAL |N|N|N|N
+/// HOSTILE |H|H|N|F
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum Relationship {
@@ -30,7 +35,7 @@ impl Relationship {
             (FRIENDLY, NEUTRAL) => NEUTRAL, (FRIENDLY, HOSTILE) => HOSTILE,
             (NEUTRAL, _) => NEUTRAL,
             (HOSTILE, ALLY) => HOSTILE, (HOSTILE, FRIENDLY) => HOSTILE,
-            (HOSTILE, NEUTRAL) => NEUTRAL, (HOSTILE, HOSTILE) => HOSTILE,
+            (HOSTILE, NEUTRAL) => NEUTRAL, (HOSTILE, HOSTILE) => FRIENDLY,
         }
     }
 }

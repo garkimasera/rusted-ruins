@@ -2,7 +2,9 @@
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
 use common::gamedata::item::Inventory;
+use common::gamedata::site::DungeonKind;
 use common::gobj;
+use rules::RULES;
 use rand::{Rng, thread_rng};
 use text;
 
@@ -37,44 +39,44 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
 }
 
 /// Create npc character from the race
-pub fn create_npc_chara(race: Race, floor_level: u32) -> Chara {    
-    let mut chara = create_chara(choose_npc_chara_template(race, floor_level));
+pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {    
+    let mut chara = create_chara(choose_npc_chara_template(dungeon, floor_level));
     chara.rel = Relationship::HOSTILE;
     return chara;
 }
 
 /// Choose one chara_template by race, gen_level and gen_weight
-fn choose_npc_chara_template(race: Race, floor_level: u32) -> CharaTemplateIdx {
-    let v = &gobj::get_objholder().chara_template;
-    // Search the first idx that has specified race
-    let start_idx = v.iter().enumerate().find(|&(_, ct)| ct.race == race).expect("No character found").0;
+fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTemplateIdx {
+    let dungeon_adjustments = RULES.map_gen.npc_gen.get(&dungeon).expect("No rule for npc generation");
+    let chara_templates = &gobj::get_objholder().chara_template;
 
-    // Search the last idx, and sum up gen_weight * weight_dist
+    // Sum up gen_weight * weight_dist * dungeon_adjustment
     let weight_dist = CalcLevelWeightDist::new(floor_level);
     let mut sum = 0.0;
-    let mut end_idx = v.len() - 1;
+    let mut first_available_ct_idx = None;
     
-    for i in start_idx..(v.len()) {
-        let ct = &v[i];
-        if ct.race != race {
-            end_idx = i;
-            break;
+    for (i, ct) in chara_templates.iter().enumerate() {
+        if let Some(da) = dungeon_adjustments.get(&ct.race) {
+            sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
+            if first_available_ct_idx.is_none() {
+                first_available_ct_idx = Some(i);
+            }
         }
-        sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64;
     }
 
     // Choose one chara
     let r = thread_rng().gen_range(0.0, sum);
     let mut sum = 0.0;
-    for i in start_idx..(end_idx + 1) {
-        let ct = &v[i];
-        sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64;
-        if r < sum {
-            return CharaTemplateIdx(i as u32);
+    for (i, ct) in chara_templates.iter().enumerate() {
+        if let Some(da) = dungeon_adjustments.get(&ct.race) {
+            sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
+            if r < sum {
+                return CharaTemplateIdx(i as u32);
+            }
         }
     }
 
-    CharaTemplateIdx(start_idx as u32)
+    CharaTemplateIdx(first_available_ct_idx.unwrap() as u32)
 }
 
 struct CalcLevelWeightDist {

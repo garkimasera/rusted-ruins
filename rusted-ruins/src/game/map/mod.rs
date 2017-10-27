@@ -6,15 +6,13 @@ use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
 use common::gamedata::site::DungeonKind;
 use rand::{Rng, thread_rng};
-use rules::RULES;
 use super::chara::create_npc_chara;
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
         
         let p = choose_empty_tile(gd.site.get_map(mid));
-        let race = RULES.map_gen.choose_race(DungeonKind::Cave);
-        let chara = create_npc_chara(race, floor_level);
+        let chara = create_npc_chara(DungeonKind::Cave, floor_level);
         gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
     }
 }
