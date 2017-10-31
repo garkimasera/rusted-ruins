@@ -47,12 +47,14 @@ impl Window for LogWindow {
 
         for (i, line) in (start..end).enumerate() {
             let line_texs = sv.tt_group(&mut self.line_cache.lines[line]);
+            let mut x = 0;
             for t in line_texs {
                 let w = t.query().width;
                 let h = t.query().height;
                 let orig = Rect::new(0, 0, w, h);
-                let dest = Rect::new(0, dy * i as i32, w, h);
+                let dest = Rect::new(x, dy * i as i32, w, h);
                 check_draw!(canvas.copy(t, orig, dest));
+                x += w as i32;
             }
         }
     }

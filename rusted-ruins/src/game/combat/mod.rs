@@ -21,14 +21,14 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         let damage = attack_power - defence_power;
         if damage < 0.0 { 0 }else{ damage as i32 }
     };
-    // Damage processing
-    super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);
     // Logging
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
         game_log!("attack"; attacker=attacker.name, target=target.name, damage=damage);
     }
+    // Damage processing
+    super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);
     // Animation pushing
     game.anim_queue.push_back(Animation::img_onetile(
         AnimImgIdx(0), game.gd.get_current_map().chara_pos(target).unwrap()));
