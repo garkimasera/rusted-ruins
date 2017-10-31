@@ -6,7 +6,7 @@ use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
 use common::gamedata::site::DungeonKind;
 use rand::{Rng, thread_rng};
-use super::chara::create_npc_chara;
+use super::chara::creation::create_npc_chara;
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
