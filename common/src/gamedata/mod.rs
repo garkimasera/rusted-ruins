@@ -69,6 +69,20 @@ impl GameData {
         }
     }
 
+    pub fn remove_chara(&mut self, cid: CharaId) {
+        match cid {
+            CharaId::Player => {
+                panic!();
+            }
+            CharaId::OnMap { mid, .. } => {
+                let map = self.site.get_map_mut(mid);
+                
+                self.chara.remove_chara(cid);
+                map.remove_chara(cid);
+            }
+        }
+    }
+
     pub fn add_site(&mut self, site: Site, kind: SiteKind) -> SiteId {
         match kind {
             SiteKind::Start => {

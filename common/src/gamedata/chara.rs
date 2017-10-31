@@ -150,5 +150,9 @@ impl CharaHolder {
     pub fn iter_charaid(&self) -> ::std::collections::hash_map::Keys<CharaId, Chara> {
         self.0.keys()
     }
+
+    pub(crate) fn remove_chara(&mut self, cid: CharaId) {
+        self.0.remove(&cid);
+    }
 }
 

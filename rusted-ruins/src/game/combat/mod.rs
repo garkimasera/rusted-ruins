@@ -5,6 +5,10 @@ use common::objholder::AnimImgIdx;
 use common::gamedata::chara::CharaId;
 use rand::{thread_rng, Rng};
 
+pub enum DamageKind {
+    CloseRangeAttack,
+}
+
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Damage calculation
     let damage = {
@@ -18,7 +22,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         if damage < 0.0 { 0 }else{ damage as i32 }
     };
     // Damage processing
-    super::chara::damage(game, target, damage);
+    super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);
     // Logging
     {
         let attacker = game.gd.chara.get(attacker);

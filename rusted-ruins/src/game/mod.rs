@@ -15,6 +15,7 @@ mod turnloop;
 
 use std::collections::VecDeque;
 use common::gamedata::GameData;
+use common::gamedata::chara::CharaId;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
@@ -33,6 +34,7 @@ pub struct Game {
     state: GameState,
     turn_loop_data: TurnLoopData,
     anim_queue: VecDeque<Animation>,
+    dying_charas: Vec<CharaId>,
 }
 
 impl Game {
@@ -43,6 +45,7 @@ impl Game {
             state: GameState::WaitingForNextTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
+            dying_charas: Vec::new(),
         };
         
         game

@@ -17,6 +17,7 @@ impl TurnLoopData {
     
 /// Advance game time until player's waittime becomes 0
 pub fn turn_loop(game: &mut Game) {
+    remove_dying_charas(game);
     
     'turn_loop:
     loop {
@@ -58,7 +59,7 @@ pub fn turn_loop(game: &mut Game) {
     }
 }
 
-// Returns true if chara's wait_time becomes 0
+/// Returns true if chara's wait_time becomes 0
 fn decrease_wait_time(chara: &mut Chara) -> bool {
     let spd = chara.params.spd;
     let mut wt = chara.wait_time;
@@ -74,6 +75,13 @@ fn decrease_wait_time(chara: &mut Chara) -> bool {
     }else{
         chara.wait_time = wt;
         false
+    }
+}
+
+/// Dying chara is removed before new turn processing
+fn remove_dying_charas(game: &mut Game) {
+    while let Some(cid) = game.dying_charas.pop() {
+        game.gd.remove_chara(cid);
     }
 }
 

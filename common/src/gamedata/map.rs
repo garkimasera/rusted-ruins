@@ -126,6 +126,17 @@ impl Map {
         }
         panic!()
     }
+
+    pub(crate) fn remove_chara(&mut self, cid: CharaId) {
+        let pos = self.chara_pos(cid).unwrap();
+        self.tile[pos].chara = None;
+
+        if let CharaId::OnMap { .. } = cid {
+            let i = self.charaid.iter().enumerate().find(|&(_, cid_o)| *cid_o == cid).unwrap().0;
+            let removed_cid = self.charaid.swap_remove(i);
+            assert!(removed_cid == cid);
+        }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
