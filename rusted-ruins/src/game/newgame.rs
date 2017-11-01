@@ -10,12 +10,13 @@ pub fn create_newgame() -> GameData {
     add_dungeon_site(&mut gd);
 
     let mid = gd.get_current_mapid();
+    let start_pos = gd.get_current_map().entrance;
 
     let mut chara = gamedata::chara::Chara::default();
     chara.params.spd = 100;
     chara.params.str = 25;
     chara.rel = gamedata::chara::Relationship::ALLY;
-    gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, ::array2d::Vec2d(15, 15));
+    gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
 
     map::gen_npcs(&mut gd, mid, 10, 10);
 

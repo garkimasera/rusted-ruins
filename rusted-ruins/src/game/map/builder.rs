@@ -28,7 +28,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> M
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
 
-    map.tile[(4i32, 0)].special = SpecialTileKind::DownStairs;
+    trace!("New map creating");
 
     for p in size.iter_from_zero() {
         map.tile[p].tile = tile;
@@ -41,6 +41,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> M
     }
 
     // Set stairs
+    map.entrance = gm.entrance;
     map.tile[gm.entrance].special = SpecialTileKind::UpStairs;
 
     if gm.exit.is_some()  {

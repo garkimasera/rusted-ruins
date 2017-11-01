@@ -10,6 +10,7 @@ pub struct Map {
     pub h: u32,
     pub tile: Array2d<TileInfo>,
     pub player_pos: Vec2d,
+    pub entrance: Vec2d,
     /// Characters on this map
     charaid: Vec<CharaId>,
 }
@@ -46,7 +47,8 @@ impl Map {
     pub fn new(w: u32, h: u32) -> Map {
         Map {
             w: w, h: h, tile: Array2d::new(w, h, TileInfo::default()),
-            player_pos: Vec2d::new(0, 0), charaid: Vec::new()
+            player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
+            charaid: Vec::new()
         }
     }
 
