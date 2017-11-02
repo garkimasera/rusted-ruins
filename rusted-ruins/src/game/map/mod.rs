@@ -23,7 +23,7 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
 
 /// Choose one empty tile in random
 pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
-    const MAX_TRY: usize = 100;
+    const MAX_TRY: usize = 10;
     let mut rng = thread_rng();
     
     for _ in 0..MAX_TRY {
@@ -33,6 +33,22 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
             return Some(p);
         }
     }
-    None
+
+    // If random tile choosing is failed many times, count empty tiles and choose
+    let n_empty_tile = map.tile.iter().filter(|t| t.wall.is_none() && t.chara.is_none()).count();
+    if n_empty_tile == 0 {
+        None
+    } else {
+        
+        let r = rng.gen_range(0, n_empty_tile);
+        let p = map.tile
+            .iter_with_idx()
+            .filter(|&(_, t)| t.wall.is_none() && t.chara.is_none())
+            .skip(r)
+            .next()
+            .unwrap()
+            .0;
+        Some(p)
+    }
 }
 
