@@ -461,6 +461,11 @@ impl HDirection {
     pub fn as_vec(&self) -> Vec2d {
         Vec2d::new(self.as_int(), 0)
     }
+
+    #[inline]
+    pub fn is_none(&self) -> bool {
+        *self == HDirection::None
+    }
 }
 
 impl Default for VDirection {
@@ -486,6 +491,11 @@ impl VDirection {
     pub fn as_vec(&self) -> Vec2d {
         Vec2d::new(0, self.as_int())
     }
+
+    #[inline]
+    pub fn is_none(&self) -> bool {
+        *self == VDirection::None
+    }
 }
 
 impl Default for HDirection {
@@ -506,8 +516,18 @@ impl Direction {
             hdir: hdir, vdir: vdir,
         }
     }
+
+    pub fn none() -> Direction {
+        Direction {
+            hdir: HDirection::None, vdir: VDirection::None,
+        }
+    }
     #[inline]
     pub fn as_vec(&self) -> Vec2d {
         self.hdir.as_vec() + self.vdir.as_vec()
+    }
+    #[inline]
+    pub fn is_none(&self) -> bool {
+        self.hdir.is_none() && self.vdir.is_none()
     }
 }
