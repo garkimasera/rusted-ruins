@@ -18,6 +18,7 @@ use SdlContext;
 use config::SCREEN_CFG;
 use self::mainwindow::MainWindow;
 use self::logwindow::LogWindow;
+use array2d::*;
 
 mod commonuse {
     pub use window::{Window, DialogWindow, DialogResult};
@@ -170,11 +171,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 pa.try_move(dir);
             },
             Command::Enter => {
-                if pa.gamedata().on_map_entrance() {
+                if pa.gd().on_map_entrance() {
                     self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
                         ::text::ui_txt("dialog.move_floor"),
                         |pa| {
-                            pa.move_next_floor();
+                            pa.goto_next_floor(Direction::none());
                             DialogResult::Close
                         }
                     )));

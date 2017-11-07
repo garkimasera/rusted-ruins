@@ -3,6 +3,8 @@ use super::Game;
 use super::action;
 use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
+use common::gamedata::map::SpecialTileKind;
+use game::InfoGetter;
 use array2d::*;
 
 /// Player actions are processed through this.
@@ -13,7 +15,7 @@ impl<'a> DoPlayerAction<'a> {
         DoPlayerAction(game)
     }
 
-    pub fn gamedata(&self) -> &GameData {
+    pub fn gd(&self) -> &GameData {
         &self.0.gd
     }
 
@@ -23,8 +25,28 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
-    pub fn move_next_floor(&mut self) {
-        println!("Try to move next floor");
+    /// Try to go to next floor
+    /// This function will be called when players use stairs or try to exit from map borders.
+    /// In the latter case, dir is not None and represents player's move direction.
+    pub fn goto_next_floor(&mut self, dir: Direction) {
+        // Use stairs
+        if dir.is_none() {
+            let special_tile_kind
+                = &self.gd().get_current_map().tile[self.gd().player_pos()].special;
+
+            match special_tile_kind {
+                &SpecialTileKind::DownStairs => {
+
+                }
+                &SpecialTileKind::UpStairs => {
+
+                }
+                _ => { panic!("Try to use not exist stairs") }
+            }
+            return;
+        }
     }
 }
+
+
 
