@@ -147,4 +147,19 @@ pub struct MapId {
     pub floor: u32,
 }
 
+impl MapId {
+    pub fn inc_floor(self) -> MapId {
+        MapId {
+            sid: self.sid, floor: self.floor + 1,
+        }
+    }
+
+    pub fn dec_floor(self) -> Option<MapId> {
+        if self.floor == 0 { return None; } 
+        Some(MapId {
+            sid: self.sid, floor: self.floor - 1,
+        })
+    }
+}
+
 pub const STARTING_MAP_ID: MapId = MapId { sid: super::site::SiteId::Start, floor: 0 };
