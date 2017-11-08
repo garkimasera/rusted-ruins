@@ -58,6 +58,18 @@ pub enum DungeonKind {
     None, Cave,
 }
 
+impl DungeonKind {
+    /// If the dungeon is in underground, it returns true.
+    /// Player can go to deeper floors using downstairs tiles, and the exit is upstairs tile.
+    /// If not, upstairs tile is used to go to deeper floor lile towers.
+    pub fn is_underground(&self) -> bool {
+        match *self {
+            DungeonKind::Cave => true,
+            _ => false,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct SiteHolder(pub(crate) HashMap<SiteId, Site>);
 
