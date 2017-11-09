@@ -103,6 +103,10 @@ impl GameData {
         let floor = site.add_map(map);
         MapId { sid, floor }
     }
+
+    pub fn set_current_mapid(&mut self, mid: MapId) {
+        self.current_mapid = mid;
+    }
 }
 
 fn unknown_id_err<T: ::std::fmt::Debug>(id: T) -> String {

@@ -116,6 +116,18 @@ impl Map {
         }
     }
 
+    /// Locate a character at given position.
+    /// If the new position is not empty, this function will fail and return false
+    pub fn locate_chara(&mut self, cid: CharaId, pos: Vec2d) -> bool {
+        if self.tile[pos].chara.is_some() { return false; }
+            
+        if let Some(old_pos) = self.chara_pos(cid) {
+            self.tile[old_pos].chara = None;
+        }
+        self.tile[pos].chara = Some(cid);
+        true
+    }
+
     pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {
         'i_loop:
         for i in 0.. {

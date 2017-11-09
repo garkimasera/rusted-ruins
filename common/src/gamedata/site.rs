@@ -32,10 +32,22 @@ impl Site {
         &mut self.map[floor as usize]
     }
 
+    pub fn get_map_checked(&self, floor: u32) -> Option<&Map> {
+        self.map.get(floor as usize)
+    }
+
+    pub fn get_map_mut_checked(&mut self, floor: u32) -> Option<&mut Map> {
+        self.map.get_mut(floor as usize)
+    }
+
     pub(crate) fn add_map(&mut self, map: Map) -> u32 {
         assert!(self.map.len() as u32 + 1 <= self.max_floor);
         self.map.push(map);
         self.map.len() as u32 - 1
+    }
+
+    pub fn get_dungeon_kind(&self) -> DungeonKind {
+        self.dungeon_kind
     }
 }
 
@@ -92,5 +104,13 @@ impl SiteHolder {
 
     pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
         self.get_mut(mid.sid).get_map_mut(mid.floor)
+    }
+
+    pub fn get_map_checked(&self, mid: MapId) -> Option<&Map> {
+        self.get(mid.sid).get_map_checked(mid.floor)
+    }
+
+    pub fn get_map_mut_checked(&mut self, mid: MapId) -> Option<&mut Map> {
+        self.get_mut(mid.sid).get_map_mut_checked(mid.floor)
     }
 }

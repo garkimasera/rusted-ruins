@@ -4,9 +4,18 @@ pub mod builder;
 use array2d::Vec2d;
 use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
+use common::gamedata::chara::CharaId;
 use common::gamedata::site::DungeonKind;
 use rand::{Rng, thread_rng};
 use super::chara::creation::create_npc_chara;
+
+/// Switch current map to the specified map
+pub fn switch_map(gd: &mut GameData, mid: MapId) {
+    gd.set_current_mapid(mid);
+    
+    let new_player_pos = gd.get_current_map().entrance;
+    gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
+}
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
