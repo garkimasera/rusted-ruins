@@ -5,6 +5,8 @@ use super::commonuse::*;
 use super::widget::*;
 use common::gobj;
 use common::obj::UIImgObject;
+use common::gamedata::map::MapId;
+use sdlvalues::FontKind;
 
 pub struct HPIndicator {
     rect: Rect,
@@ -43,6 +45,39 @@ impl Window for HPIndicator {
         canvas.set_viewport(self.rect);
         self.guage.draw(canvas, sv);
         self.label.draw(canvas, sv);        
+    }
+}
+
+pub struct FloorInfo {
+    rect: Rect,
+    label: LabelWidget,
+    mid: Option<MapId>,
+}
+
+impl FloorInfo {
+    pub fn new() -> FloorInfo {
+        let rect: Rect = SCREEN_CFG.floor_info.into();
+        let label = LabelWidget::new(Rect::new(0, 0, rect.width(), rect.height()), "AA", FontKind::M);
+        FloorInfo { rect, label, mid: None, }
+    }
+}
+
+impl Window for FloorInfo {
+    fn redraw(
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+
+        let current_mid = game.gd.get_current_mapid();
+
+        if self.mid != Some(current_mid) {
+            self.mid = Some(current_mid);
+            let site = game.gd.site.get(current_mid.sid);
+            let s = format!("{} ({})", site.name, current_mid.floor + 1);
+            self.label.set_text(&s);
+        }
+        
+        canvas.set_viewport(self.rect);
+        self.label.draw(canvas, sv);
     }
 }
 

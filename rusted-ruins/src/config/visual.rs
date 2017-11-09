@@ -9,6 +9,7 @@ pub struct ScreenConfig {
     pub main_window: CfgRect,
     pub log_window: CfgRect,
     pub hp_indicator: CfgRect,
+    pub floor_info: CfgRect,
 }
 
 /// UI colors, fonts, and other widget settings
