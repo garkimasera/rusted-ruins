@@ -55,13 +55,10 @@ pub struct WindowManager<'sdl, 't> {
     game: Game,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
-    main_window: MainWindow,
-    log_window: LogWindow,
+    game_windows: GameWindows,
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
-    indicator: indicator::HPIndicator,
-    floor_info: indicator::FloorInfo,
 }
 
 impl<'sdl, 't> WindowManager<'sdl, 't> {
@@ -77,13 +74,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             game: game,
             sdl_values: sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
-            main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
-            log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
+            game_windows: GameWindows::new(),
             anim: None,
             passed_frame: 0,
             window_stack: Vec::new(),
-            indicator: indicator::HPIndicator::new(),
-            floor_info: indicator::FloorInfo::new(),
         }
     }
 
@@ -120,11 +114,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         let anim = self.anim.as_ref().map(|a| (a, self.passed_frame));
-        
-        self.main_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
-        self.log_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
-        self.indicator.redraw(canvas, &self.game, &mut self.sdl_values, anim);
-        self.floor_info.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+
+        self.game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
 
         for w in &mut self.window_stack {
             w.redraw(canvas, &self.game, &mut self.sdl_values, anim);
@@ -229,6 +220,34 @@ pub mod text_input {
         TEXT_INPUT.with(|text_input| {
             text_input.set(false);
         });
+    }
+}
+
+/// These windows are displayed after a game is started
+struct GameWindows {
+    main_window: MainWindow,
+    log_window: LogWindow,
+    indicator: indicator::HPIndicator,
+    floor_info: indicator::FloorInfo,
+}
+
+impl GameWindows {
+    fn new() -> GameWindows {
+        GameWindows {
+            main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
+            log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
+            indicator: indicator::HPIndicator::new(),
+            floor_info: indicator::FloorInfo::new(),
+        }
+    }
+
+    fn redraw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+              anim: Option<(&Animation, u32)>) {
+        
+        self.main_window.redraw(canvas, game, sv, anim);
+        self.log_window.redraw(canvas, game, sv, anim);
+        self.indicator.redraw(canvas, game, sv, anim);
+        self.floor_info.redraw(canvas, game, sv, anim);
     }
 }
 
