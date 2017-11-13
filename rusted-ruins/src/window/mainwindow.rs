@@ -5,15 +5,16 @@ use game::{Game, Animation};
 use sdlvalues::SdlValues;
 use window::Window;
 use draw::mainwin::MainWinDrawer;
+use config::SCREEN_CFG;
 
 pub struct MainWindow {
     drawer: MainWinDrawer,
 }
 
 impl MainWindow {
-    pub fn new(rect: Rect) -> MainWindow {
+    pub fn new() -> MainWindow {
         MainWindow {
-            drawer: MainWinDrawer::new(rect),
+            drawer: MainWinDrawer::new(SCREEN_CFG.main_window.into()),
         }
     }
 

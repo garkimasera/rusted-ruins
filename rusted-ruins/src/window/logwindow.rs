@@ -6,7 +6,7 @@ use sdl2::pixels::Color;
 use game::{Game, Animation};
 use sdlvalues::*;
 use window::Window;
-use config::UI_CFG;
+use config::{SCREEN_CFG, UI_CFG};
 use log;
 
 pub struct LogWindow {
@@ -15,9 +15,9 @@ pub struct LogWindow {
 }
 
 impl LogWindow {
-    pub fn new(rect: Rect) -> LogWindow {
+    pub fn new() -> LogWindow {
         LogWindow {
-            rect: rect,
+            rect: SCREEN_CFG.log_window.into(),
             line_cache: LineCache::new(),
         }
     }

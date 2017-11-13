@@ -236,8 +236,8 @@ struct GameWindows {
 impl GameWindows {
     fn new() -> GameWindows {
         GameWindows {
-            main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
-            log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
+            main_window: MainWindow::new(),
+            log_window:  LogWindow ::new(),
             minimap_window: minimap::MiniMapWindow::new(),
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
