@@ -7,6 +7,7 @@ mod exitwindow;
 mod yesnodialog;
 mod textinputdialog;
 mod indicator;
+mod minimap;
 mod widget;
 
 use game::{GameState, DoPlayerAction, InfoGetter};
@@ -227,6 +228,7 @@ pub mod text_input {
 struct GameWindows {
     main_window: MainWindow,
     log_window: LogWindow,
+    minimap_window: minimap::MiniMapWindow,
     indicator: indicator::HPIndicator,
     floor_info: indicator::FloorInfo,
 }
@@ -236,6 +238,7 @@ impl GameWindows {
         GameWindows {
             main_window: MainWindow::new(SCREEN_CFG.main_window.into()),
             log_window:  LogWindow ::new(SCREEN_CFG.log_window.into()),
+            minimap_window: minimap::MiniMapWindow::new(),
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
         }
@@ -246,6 +249,7 @@ impl GameWindows {
         
         self.main_window.redraw(canvas, game, sv, anim);
         self.log_window.redraw(canvas, game, sv, anim);
+        self.minimap_window.redraw(canvas, game, sv, anim);
         self.indicator.redraw(canvas, game, sv, anim);
         self.floor_info.redraw(canvas, game, sv, anim);
     }
