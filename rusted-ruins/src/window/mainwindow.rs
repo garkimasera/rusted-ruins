@@ -1,5 +1,4 @@
 
-use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use game::{Game, Animation};
 use sdlvalues::SdlValues;

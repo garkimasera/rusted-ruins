@@ -16,7 +16,6 @@ use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use sdl2::keyboard::TextInputUtil;
 use SdlContext;
-use config::SCREEN_CFG;
 use self::mainwindow::MainWindow;
 use self::logwindow::LogWindow;
 use array2d::*;
