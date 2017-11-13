@@ -54,6 +54,7 @@ pub struct FontConfig {
 #[derive(Debug, Deserialize)]
 pub struct Font {
     pub log: FontConfig,
+    pub s: FontConfig,
     pub m: FontConfig,
 }
 

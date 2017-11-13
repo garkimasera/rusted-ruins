@@ -57,7 +57,7 @@ pub struct FloorInfo {
 impl FloorInfo {
     pub fn new() -> FloorInfo {
         let rect: Rect = SCREEN_CFG.floor_info.into();
-        let label = LabelWidget::new(Rect::new(0, 0, rect.width(), rect.height()), "AA", FontKind::M);
+        let label = LabelWidget::new(Rect::new(0, 0, rect.width(), rect.height()), "", FontKind::S);
         FloorInfo { rect, label, mid: None, }
     }
 }

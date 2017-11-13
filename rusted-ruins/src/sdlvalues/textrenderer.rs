@@ -9,10 +9,11 @@ use config::visual::FontConfig;
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub enum FontKind {
-    Log, M,
+    Log, M, S,
 }
 
 pub struct TextRenderer<'sdl> {
+    font_s: Font<'sdl, 'static>,
     font_m: Font<'sdl, 'static>,
     font_log: Font<'sdl, 'static>,
 }
@@ -30,6 +31,7 @@ impl<'sdl> TextRenderer<'sdl> {
         };
         
         TextRenderer {
+            font_s: f(&font.s),
             font_m: f(&font.m),
             font_log: f(&font.log),
         }
@@ -51,6 +53,7 @@ impl<'sdl> TextRenderer<'sdl> {
     fn select_font(&self, font_usage: FontKind) -> &Font {
         match font_usage {
             FontKind::Log => &self.font_log,
+            FontKind::S => &self.font_s,
             FontKind::M => &self.font_m,
         }
     }
