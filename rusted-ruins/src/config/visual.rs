@@ -12,6 +12,7 @@ pub struct ScreenConfig {
     pub hp_indicator: CfgRect,
     pub floor_info: CfgRect,
     pub hborders: Vec<BorderConfig>,
+    pub vborders: Vec<BorderConfig>,
 }
 
 #[derive(Debug, Deserialize)]

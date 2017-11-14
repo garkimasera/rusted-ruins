@@ -232,16 +232,22 @@ struct GameWindows {
     indicator: indicator::HPIndicator,
     floor_info: indicator::FloorInfo,
     hborders: Vec<self::widget::HBorder>,
+    vborders: Vec<self::widget::VBorder>,
 }
 
 impl GameWindows {
     fn new() -> GameWindows {
         use config::SCREEN_CFG;
-        use self::widget::HBorder;
+        use self::widget::{HBorder, VBorder};
         let mut hborders = Vec::new();
         for hborder in &SCREEN_CFG.hborders {
             hborders.push(HBorder::new(
                 (hborder.x, hborder.y), hborder.len));
+        }
+        let mut vborders = Vec::new();
+        for vborder in &SCREEN_CFG.vborders {
+            vborders.push(VBorder::new(
+                (vborder.x, vborder.y), vborder.len));
         }
         
         GameWindows {
@@ -251,6 +257,7 @@ impl GameWindows {
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
             hborders: hborders,
+            vborders: vborders,
         }
     }
 
@@ -265,6 +272,9 @@ impl GameWindows {
 
         for hborder in self.hborders.iter_mut() {
             hborder.draw(canvas, sv);
+        }
+        for vborder in self.vborders.iter_mut() {
+            vborder.draw(canvas, sv);
         }
     }
 }
