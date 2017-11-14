@@ -1,7 +1,7 @@
 
 use array2d::*;
 use objholder::*;
-use gamedata::item::Inventory;
+use gamedata::item::ItemList;
 use gamedata::chara::CharaId;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -26,7 +26,7 @@ pub enum SpecialTileKind {
 pub struct TileInfo {
     pub tile: TileIdx, // Basic tile type
     pub wall: Option<WallIdx>, // If wall is presented, the tile is no walkable
-    pub items: Option<Inventory>,
+    pub items: Option<ItemList>,
     pub chara: Option<CharaId>,
     pub special: SpecialTileKind,
 }

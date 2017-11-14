@@ -1,7 +1,7 @@
 
 use std::collections::HashMap;
 use objholder::CharaTemplateIdx;
-use super::item::Inventory;
+use super::item::ItemList;
 use super::map::MapId;
 
 /// Character's races
@@ -46,7 +46,7 @@ pub struct Chara {
     pub name: String,
     pub params: CharaParams,
     pub template: CharaTemplateIdx,
-    pub inventory: Inventory,
+    pub itemlist: ItemList,
     pub wait_time: f32,
     pub hp: i32,
     /// Relationship to player character
@@ -91,7 +91,7 @@ impl Default for Chara {
             name: "Unknown".to_owned(),
             params: CharaParams::default(),
             template: CharaTemplateIdx(0),
-            inventory: Inventory::for_chara(),
+            itemlist: ItemList::for_chara(),
             wait_time: 100.0,
             hp: 100,
             rel: Relationship::NEUTRAL,

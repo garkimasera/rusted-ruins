@@ -33,27 +33,27 @@ pub enum PotionKind {
     Heal,
 }
 
-/// Inventory for one character
+/// Item list that records all items owned by one character or one tile
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Inventory {
+pub struct ItemList {
     pub limit: usize,
     pub items: Vec<Item>,
 }
 
-impl Inventory {
-    pub fn new(limit: usize) -> Inventory {
-        Inventory {
+impl ItemList {
+    pub fn new(limit: usize) -> ItemList {
+        ItemList {
             limit, items: Vec::new(),
         }
     }    
 
-    pub fn for_chara() -> Inventory {
-        Self::new(::basic::INVENTORY_MAX_ITEM_CHARA)
+    pub fn for_chara() -> ItemList {
+        Self::new(::basic::MAX_ITEM_CHARA)
     }
 
     /// Inventory for player has larger size
-    pub fn for_player() -> Inventory {
-        Self::new(::basic::INVENTORY_MAX_ITEM_PLAYER)
+    pub fn for_player() -> ItemList {
+        Self::new(::basic::MAX_ITEM_PLAYER)
     }
 }
 

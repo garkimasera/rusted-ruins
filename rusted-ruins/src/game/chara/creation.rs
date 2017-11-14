@@ -1,7 +1,7 @@
 
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
-use common::gamedata::item::Inventory;
+use common::gamedata::item::ItemList;
 use common::gamedata::site::DungeonKind;
 use common::gobj;
 use rules::RULES;
@@ -30,7 +30,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         name: text::obj_txt(&ct.id).to_owned(),
         params: params,
         template: chara_template_idx,
-        inventory: Inventory::for_chara(),
+        itemlist: ItemList::for_chara(),
         wait_time: 100.0,
         hp: max_hp,
         rel: Relationship::NEUTRAL,
