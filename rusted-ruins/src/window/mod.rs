@@ -180,8 +180,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
             },
             Command::OpenItemMenu => {
-                self.window_stack.push(Box::new(textinputdialog::TextInputDialog::new()));
-                //self.window_stack.push(Box::new(itemwindow::ItemWindow::new()));
+                self.window_stack.push(Box::new(itemwindow::ItemWindow::new()));
             },
             _ => (),
         }
