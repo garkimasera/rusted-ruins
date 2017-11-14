@@ -18,6 +18,7 @@ use sdl2::keyboard::TextInputUtil;
 use SdlContext;
 use self::mainwindow::MainWindow;
 use self::logwindow::LogWindow;
+use self::widget::WidgetTrait;
 use array2d::*;
 
 mod commonuse {
@@ -230,16 +231,26 @@ struct GameWindows {
     minimap_window: minimap::MiniMapWindow,
     indicator: indicator::HPIndicator,
     floor_info: indicator::FloorInfo,
+    hborders: Vec<self::widget::HBorder>,
 }
 
 impl GameWindows {
     fn new() -> GameWindows {
+        use config::SCREEN_CFG;
+        use self::widget::HBorder;
+        let mut hborders = Vec::new();
+        for hborder in &SCREEN_CFG.hborders {
+            hborders.push(HBorder::new(
+                (hborder.x, hborder.y), hborder.len));
+        }
+        
         GameWindows {
             main_window: MainWindow::new(),
             log_window:  LogWindow ::new(),
             minimap_window: minimap::MiniMapWindow::new(),
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
+            hborders: hborders,
         }
     }
 
@@ -251,6 +262,10 @@ impl GameWindows {
         self.minimap_window.redraw(canvas, game, sv, anim);
         self.indicator.redraw(canvas, game, sv, anim);
         self.floor_info.redraw(canvas, game, sv, anim);
+
+        for hborder in self.hborders.iter_mut() {
+            hborder.draw(canvas, sv);
+        }
     }
 }
 

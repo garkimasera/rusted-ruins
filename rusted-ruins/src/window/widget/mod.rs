@@ -1,4 +1,5 @@
 
+mod border;
 mod guage;
 mod icon;
 mod image;
@@ -15,6 +16,7 @@ pub trait WidgetTrait {
     fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues);
 }
 
+pub use self::border::*;
 pub use self::guage::*;
 pub use self::icon::*;
 pub use self::image::*;

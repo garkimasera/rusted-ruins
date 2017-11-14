@@ -11,6 +11,14 @@ pub struct ScreenConfig {
     pub minimap_window: CfgRect,
     pub hp_indicator: CfgRect,
     pub floor_info: CfgRect,
+    pub hborders: Vec<BorderConfig>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct BorderConfig {
+    pub x: i32,
+    pub y: i32,
+    pub len: u32,
 }
 
 /// UI colors, fonts, and other widget settings
