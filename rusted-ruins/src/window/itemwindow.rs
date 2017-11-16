@@ -18,11 +18,11 @@ pub struct ItemWindow {
 impl ItemWindow {
     pub fn new() -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
-        let idx: ::common::objholder::ItemIdx = gobj::id_to_idx("!plank");
-        let v = vec![(IconIdx::Item(idx), "木材".to_owned()), (IconIdx::Item(idx), "良い木材".to_owned())];
+        
         ItemWindow {
             rect: rect,
-            list: ListWidget::new((0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::IconStr(v), vec![0, 26]),
+            list: ListWidget::new(
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::IconStr(vec![]), vec![0, 26]),
         }
     }
 }
