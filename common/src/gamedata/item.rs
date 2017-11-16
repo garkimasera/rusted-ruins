@@ -12,14 +12,14 @@ pub struct Item {
 #[repr(u32)]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Thing,
+    Object,
     Potion,
 }
 
 /// Kind dependent data for a item
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum ItemContent {
-    Thing,
+    Object,
     Potion {
         kind: PotionKind,
         /// Effectiveness of this item
@@ -37,7 +37,7 @@ pub enum PotionKind {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemList {
     pub limit: usize,
-    pub items: Vec<Item>,
+    pub items: Vec<Box<Item>>,
 }
 
 impl ItemList {

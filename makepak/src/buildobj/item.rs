@@ -11,8 +11,8 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     let item = get_optional_field!(tomlinput, item);
 
     let content = match item.item_kind.as_str() {
-        "Thing" => {
-            ItemContent::Thing
+        "Object" => {
+            ItemContent::Object
         },
         "Potion" => {
             ItemContent::Potion {
