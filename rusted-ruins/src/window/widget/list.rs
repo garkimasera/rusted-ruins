@@ -81,6 +81,7 @@ impl WidgetTrait for ListWidget {
                 Some(ListWidgetResponse::Select(self.current_choice))
             },
             Command::Move { dir } => {
+                if self.n_row == 0 { return None; }
                 match dir.vdir {
                     VDirection::Up => {
                         if self.current_choice == 0 {
@@ -107,6 +108,7 @@ impl WidgetTrait for ListWidget {
     }
 
     fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+        if self.n_row == 0 { return; }
         
         let h_row = self.h_row;
         let left_margin = UI_CFG.list_widget.left_margin as i32;
