@@ -46,7 +46,7 @@ pub struct Chara {
     pub name: String,
     pub params: CharaParams,
     pub template: CharaTemplateIdx,
-    pub itemlist: ItemList,
+    pub item_list: ItemList,
     pub wait_time: f32,
     pub hp: i32,
     /// Relationship to player character
@@ -91,7 +91,7 @@ impl Default for Chara {
             name: "Unknown".to_owned(),
             params: CharaParams::default(),
             template: CharaTemplateIdx(0),
-            itemlist: ItemList::for_chara(),
+            item_list: ItemList::for_chara(),
             wait_time: 100.0,
             hp: 100,
             rel: Relationship::NEUTRAL,

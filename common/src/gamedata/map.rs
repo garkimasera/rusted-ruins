@@ -26,7 +26,7 @@ pub enum SpecialTileKind {
 pub struct TileInfo {
     pub tile: TileIdx, // Basic tile type
     pub wall: Option<WallIdx>, // If wall is presented, the tile is no walkable
-    pub items: Option<ItemList>,
+    pub item_list: Option<ItemList>,
     pub chara: Option<CharaId>,
     pub special: SpecialTileKind,
 }
@@ -36,7 +36,7 @@ impl Default for TileInfo {
         TileInfo {
             tile: TileIdx(0),
             wall: None,
-            items: None,
+            item_list: None,
             chara: None,
             special: SpecialTileKind::None,
         }

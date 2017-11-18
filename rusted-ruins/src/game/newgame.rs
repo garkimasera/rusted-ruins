@@ -19,6 +19,7 @@ pub fn create_newgame() -> GameData {
     gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
 
     map::gen_npcs(&mut gd, mid, 10, 10);
+    map::gen_items(&mut gd, mid);
 
     gd
 }

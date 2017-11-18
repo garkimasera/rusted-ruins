@@ -86,6 +86,7 @@ impl MainWinDrawer {
                 let p = Vec2d::new(nx, ny + 1);
                 self.draw_tile_ground(canvas, map, sv, p, dx, dy);
                 self.draw_tile_special(canvas, map, sv, p, dx, dy);
+                self.draw_item(canvas, map, sv, p, dx, dy);
             }
 
             // Draw player when moving
@@ -179,6 +180,23 @@ impl MainWinDrawer {
         let dest = bottom_at_tile(src, p, dx, dy);
         
         check_draw!(canvas.copy(&texture, src, dest));
+    }
+
+    fn draw_item(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
+                 p: Vec2d, dx: i32, dy: i32) {
+        if !map.is_inside(p) { return; }
+        if map.tile[p].item_list.is_none() { return; }
+
+        for &(ref item, _) in map.tile[p].item_list.as_ref().unwrap().iter() {
+            let texture = sv.tex().get(item.idx);
+
+            let query = texture.query();
+            let src = Rect::new(0, 0, query.width, query.height);
+            let dest = centering_at_tile(src, p, dx, dy);
+        
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
+        
     }
 
     fn draw_anim(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,

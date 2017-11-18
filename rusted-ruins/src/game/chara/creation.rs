@@ -30,7 +30,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         name: text::obj_txt(&ct.id).to_owned(),
         params: params,
         template: chara_template_idx,
-        itemlist: ItemList::for_chara(),
+        item_list: ItemList::for_chara(),
         wait_time: 100.0,
         hp: max_hp,
         rel: Relationship::NEUTRAL,

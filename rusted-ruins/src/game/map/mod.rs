@@ -6,8 +6,10 @@ use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
 use common::gamedata::chara::CharaId;
 use common::gamedata::site::DungeonKind;
+use common::gamedata::item::ItemList;
 use rand::{Rng, thread_rng};
 use super::chara::creation::create_npc_chara;
+use super::item::gen_dungeon_item;
 
 /// Switch current map to the specified map
 pub fn switch_map(gd: &mut GameData, mid: MapId) {
@@ -59,5 +61,23 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
             .0;
         Some(p)
     }
+}
+
+/// Locate some items for a new map
+pub fn gen_items(gd: &mut GameData, mid: MapId) {
+    let mut map = gd.site.get_map_mut(mid);
+
+    for p in map.tile.iter_idx() {
+        let tile = &mut map.tile[p];
+        if tile.wall.is_some() { continue; } // Skip tile with wall
+
+        let mut item_list = ItemList::new(10);
+
+        if thread_rng().gen_weighted_bool(8) {
+            item_list.append(gen_dungeon_item(mid.floor), 1);
+            tile.item_list = Some(item_list);
+        }
+    }
+    
 }
 

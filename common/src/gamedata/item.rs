@@ -1,10 +1,9 @@
 
 use objholder::ItemIdx;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 /// Game item
 pub struct Item {
-    pub id: String,
     pub idx: ItemIdx,
     pub content: ItemContent,
 }
@@ -37,7 +36,7 @@ pub enum PotionKind {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemList {
     pub limit: usize,
-    pub items: Vec<Box<Item>>,
+    pub items: Vec<(Box<Item>, u32)>,
 }
 
 impl ItemList {
@@ -54,6 +53,28 @@ impl ItemList {
     /// Inventory for player has larger size
     pub fn for_player() -> ItemList {
         Self::new(::basic::MAX_ITEM_PLAYER)
+    }
+
+    /// Append item
+    /// If the list doesn't have empty, returns given item.
+    pub fn append(&mut self, item: Box<Item>, n: u32) -> Option<Box<Item>> {
+        if self.limit <= self.items.len() + 1 {
+            return Some(item)
+        }
+
+        for i in self.items.iter_mut() {
+            if *i.0 == *item {
+                i.1 += n;
+            }
+        }
+        
+        self.items.push((item, n));
+        None
+    }
+
+    /// Return item iterator
+    pub fn iter(&self) -> ::std::slice::Iter<(Box<Item>, u32)> {
+        self.items.iter()
     }
 }
 
