@@ -10,19 +10,25 @@ use eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
 
+pub enum ItemWindowMode {
+    List, PickUp,
+}
+
 pub struct ItemWindow {
     rect: Rect,
     list: ListWidget,
+    mode: ItemWindowMode,
 }
 
 impl ItemWindow {
-    pub fn new() -> ItemWindow {
+    pub fn new(mode: ItemWindowMode) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
         
         ItemWindow {
             rect: rect,
             list: ListWidget::new(
                 (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::IconStr(vec![]), vec![0, 26]),
+            mode: mode,
         }
     }
 }

@@ -180,8 +180,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
             },
             Command::OpenItemMenu => {
-                self.window_stack.push(Box::new(itemwindow::ItemWindow::new()));
+                use self::itemwindow::*;
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List)));
             },
+            Command::PickUpItem => {
+                use self::itemwindow::*;
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::PickUp)));
+            }
             _ => (),
         }
         true
