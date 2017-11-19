@@ -57,7 +57,7 @@ fn walk_dir(dir: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingEr
         let path = entry.path();
         if path.is_dir() {
             walk_dir(&path, cb, err_stack);
-        }else if path.extension() != None && path.extension().unwrap() == "pak" {
+        } else if path.extension() != None && path.extension().unwrap() == "pak" {
             read_tar(&path, cb, err_stack);
         }
     }
@@ -70,7 +70,7 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
         Err(e) => {
             err_stack.push(PakLoadingError::Io(e));
             return;
-        },
+        }
     };
 
     let mut ar = tar::Archive::new(outputfile);
@@ -80,7 +80,7 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
         Err(e) => {
             err_stack.push(PakLoadingError::Io(e));
             return;
-        },
+        }
     };
 
     for file in entries {
@@ -97,7 +97,7 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
             Err(e) => {
                 err_stack.push(PakLoadingError::Rmps(e));
                 continue;
-            },
+            }
         };
 
         cb(object);

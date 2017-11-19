@@ -2,7 +2,6 @@
 use rand::{Rng, thread_rng};
 use common::gamedata::item::*;
 use common::gobj;
-use text::obj_txt;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32) -> Box<Item> {

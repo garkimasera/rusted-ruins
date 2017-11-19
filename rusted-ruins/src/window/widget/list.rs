@@ -79,22 +79,22 @@ impl WidgetTrait for ListWidget {
         match *command {
             Command::Enter => {
                 Some(ListWidgetResponse::Select(self.current_choice))
-            },
+            }
             Command::Move { dir } => {
                 if self.n_row == 0 { return None; }
                 match dir.vdir {
                     VDirection::Up => {
                         if self.current_choice == 0 {
                             self.current_choice = self.n_row as u32 - 1;
-                        }else{
+                        } else {
                             self.current_choice -= 1;
                         }
                         return Some(ListWidgetResponse::SelectionChanged);
-                    },
+                    }
                     VDirection::Down => {
                         if self.current_choice == self.n_row as u32 - 1 {
                             self.current_choice = 0;
-                        }else{
+                        } else {
                             self.current_choice += 1;
                         }
                         return Some(ListWidgetResponse::SelectionChanged);
@@ -103,7 +103,7 @@ impl WidgetTrait for ListWidget {
                 }
                 None
             }
-            _ => None
+            _ => None,
         }
     }
 

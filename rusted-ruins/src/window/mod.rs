@@ -175,7 +175,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
         if self.window_stack.len() > 0 {
             let dialog_result = {
-                let mut pa = DoPlayerAction::new(&mut self.game);
+                let pa = DoPlayerAction::new(&mut self.game);
                 let tail = self.window_stack.len() - 1;
                 self.window_stack[tail].process_command(command, pa)
             };
@@ -194,7 +194,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
-            },
+            }
             Command::Enter => {
                 if pa.gd().on_map_entrance() {
                     self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
@@ -205,14 +205,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         }
                     )));
                 }
-            },
+            }
             Command::OpenExitWin => {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
-            },
+            }
             Command::OpenItemMenu => {
                 use self::itemwindow::*;
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List)));
-            },
+            }
             Command::PickUpItem => {
                 use self::itemwindow::*;
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::PickUp)));

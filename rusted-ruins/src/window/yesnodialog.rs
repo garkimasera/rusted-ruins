@@ -48,19 +48,17 @@ impl DialogWindow for YesNoDialog {
             match response {
                 ListWidgetResponse::Select(0) => { // Yes
                     return (self.action_on_yes)(&mut pa);
-                },
+                }
                 ListWidgetResponse::Select(1) => { // No
                     return DialogResult::Close;
-                },
+                }
                 _ => (),
             }
             return DialogResult::Continue;
         }
         
         match command {
-            Command::Cancel => {
-                DialogResult::Close
-            },
+            Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
     }

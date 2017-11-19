@@ -140,7 +140,7 @@ pub trait ImgObject {
         let img = self.get_img();
         let n = if n < img.grid_w * img.grid_h {
             n
-        }else{
+        } else {
             1
         };
         let grid_x = n % img.grid_w;

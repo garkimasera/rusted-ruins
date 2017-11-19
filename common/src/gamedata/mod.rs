@@ -45,10 +45,10 @@ impl GameData {
             CharaKind::Player => {
                 self.chara.0.insert(CharaId::Player, chara);
                 CharaId::Player
-            },
+            }
             CharaKind::OnMap => {
                 panic!("Adding OnMap chara without mapid is unavailable")
-            },
+            }
         }
     }
 
@@ -59,13 +59,13 @@ impl GameData {
                 let map = self.site.get_map_mut(mid);
                 map.add_chara(pos, CharaId::Player);
                 CharaId::Player
-            },
+            }
             CharaKind::OnMap => {
                 let cid = CharaId::OnMap { mid, n: self.site.get_map(mid).search_empty_onmap_charaid_n() };
                 self.chara.0.insert(cid, chara);
                 self.site.get_map_mut(mid).add_chara(pos, cid);
                 cid
-            },
+            }
         }
     }
 
@@ -89,12 +89,12 @@ impl GameData {
                 let sid = SiteId::Start;
                 self.site.0.insert(sid, site);
                 sid
-            },
+            }
             SiteKind::AutoGenDungeon => {
                 let sid = SiteId::AutoGenDungeon { n: 0 };
                 self.site.0.insert(sid, site);
                 sid
-            },
+            }
         }
     }
 
