@@ -54,7 +54,7 @@ impl Game {
     pub fn empty() -> Game {        
         Game {
             gd: GameData::empty(),
-            state: GameState::WaitingForNextTurn,
+            state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
             dying_charas: Vec::new(),

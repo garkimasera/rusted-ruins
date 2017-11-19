@@ -57,6 +57,15 @@ pub enum WindowManageMode {
     Start(self::startwindow::StartWindow), OnGame(GameWindows),
 }
 
+impl WindowManageMode {
+    pub fn is_on_game(&self) -> bool {
+        match self {
+            &WindowManageMode::OnGame(_) => true,
+            _ => false,
+        }
+    }
+}
+
 /// Manage all windows
 pub struct WindowManager<'sdl, 't> {
     game: Game,
@@ -73,7 +82,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         sdl_context: &'sdl SdlContext,
         texture_creator: &'t TextureCreator<WindowContext>) -> WindowManager<'sdl, 't> {
         
-        let game = Game::new();
+        let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let text_input_util = sdl_context.sdl_context.video().unwrap().text_input();
         let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
@@ -95,7 +104,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         // Animation must be finished before 
         assert!(self.anim.is_none());
         
-        if self.game.get_state() == GameState::WaitingForNextTurn {
+        if self.game.get_state() == GameState::WaitingForNextTurn && self.mode.is_on_game() {
             self.game.advance_turn();
         }
 
