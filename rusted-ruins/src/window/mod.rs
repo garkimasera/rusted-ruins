@@ -8,6 +8,7 @@ mod yesnodialog;
 mod textinputdialog;
 mod indicator;
 mod minimap;
+mod startwindow;
 mod widget;
 
 use game::{GameState, DoPlayerAction, InfoGetter};
@@ -51,12 +52,17 @@ pub trait DialogWindow: Window {
     fn mode(&self) -> InputMode;
 }
 
+/// The current main mode
+pub enum WindowManageMode {
+    Start(self::startwindow::StartWindow), OnGame(GameWindows),
+}
+
 /// Manage all windows
 pub struct WindowManager<'sdl, 't> {
     game: Game,
+    mode: WindowManageMode,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
-    game_windows: GameWindows,
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
@@ -73,9 +79,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         WindowManager {
             game: game,
+            mode: WindowManageMode::Start(self::startwindow::StartWindow::new()),
             sdl_values: sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
-            game_windows: GameWindows::new(),
             anim: None,
             passed_frame: 0,
             window_stack: Vec::new(),
@@ -116,8 +122,17 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
         let anim = self.anim.as_ref().map(|a| (a, self.passed_frame));
 
-        self.game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+        // Draw windows
+        match self.mode {
+            WindowManageMode::Start(ref mut start_window) => {
+                start_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+            }
+            WindowManageMode::OnGame(ref mut game_windows) => {
+                game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+            }
+        }
 
+        // Draw dialog windows
         for w in &mut self.window_stack {
             w.redraw(canvas, &self.game, &mut self.sdl_values, anim);
         }
@@ -161,6 +176,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
         
         // Process when any window are not opened
+        match self.mode {
+            WindowManageMode::Start(_) => { return true; }
+            WindowManageMode::OnGame(_) => (),
+        }
+
+        // If self.mode is OnGame
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
