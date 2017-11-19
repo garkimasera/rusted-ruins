@@ -42,7 +42,7 @@ impl Game {
         let new_gamedata = self::newgame::create_newgame();
         let game = Game {
             gd: new_gamedata,
-            state: GameState::WaitingForNextTurn,
+            state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
             dying_charas: Vec::new(),
