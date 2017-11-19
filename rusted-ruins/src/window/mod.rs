@@ -11,7 +11,7 @@ mod minimap;
 mod startwindow;
 mod widget;
 
-use game::{GameState, DoPlayerAction, InfoGetter};
+use game::{GameState, DoPlayerAction, InfoGetter, Command};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
@@ -37,7 +37,7 @@ use self::commonuse::*;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum DialogResult {
-    Continue, Close, CloseAll, Quit,
+    Continue, Close, CloseAll, Quit, User(u32),
 }
 
 pub trait Window {
@@ -76,6 +76,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let game = Game::new();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let text_input_util = sdl_context.sdl_context.video().unwrap().text_input();
+        let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
+        window_stack.push(Box::new(self::startwindow::StartDialog::new()));
         
         WindowManager {
             game: game,
@@ -84,7 +86,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             anim: None,
             passed_frame: 0,
-            window_stack: Vec::new(),
+            window_stack: window_stack,
         }
     }
 
@@ -152,7 +154,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         let mode = if self.window_stack.len() > 0 {
             self.window_stack[self.window_stack.len() - 1].mode()
-        }else{
+        } else {
             InputMode::Normal
         };
         
@@ -161,27 +163,25 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let command = command.unwrap();
         
         use game::playeract::DoPlayerAction;
-        use game::Command;
-        let mut pa = DoPlayerAction::new(&mut self.game);
 
         if self.window_stack.len() > 0 {
-            let tail = self.window_stack.len() - 1;
-            match self.window_stack[tail].process_command(command, pa) {
+            let dialog_result = {
+                let mut pa = DoPlayerAction::new(&mut self.game);
+                let tail = self.window_stack.len() - 1;
+                self.window_stack[tail].process_command(command, pa)
+            };
+            match dialog_result {
                 DialogResult::Continue => (),
                 DialogResult::Close => { self.window_stack.pop(); },
                 DialogResult::CloseAll => { self.window_stack.clear(); },
                 DialogResult::Quit => { return false; },
+                DialogResult::User(n) => { self.process_user_result(n); },
             }
             return true;
         }
         
-        // Process when any window are not opened
-        match self.mode {
-            WindowManageMode::Start(_) => { return true; }
-            WindowManageMode::OnGame(_) => (),
-        }
-
         // If self.mode is OnGame
+        let mut pa = DoPlayerAction::new(&mut self.game);
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
@@ -211,6 +211,30 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             _ => (),
         }
         true
+    }
+
+    pub fn process_user_result(&mut self, n: u32) {
+
+        match self.mode {
+            WindowManageMode::Start(_) => {
+                match n {
+                    // Start new game
+                    self::startwindow::START_DIALOG_RESULT_NEWGAME => {
+                        self.window_stack.pop();
+                        self.mode = WindowManageMode::OnGame(GameWindows::new());
+
+                        let game = Game::new();
+                        self.game = game;
+                    }
+                    // Load game from saved data
+                    self::startwindow::START_DIALOG_RESULT_LOADGAME => {
+                        unimplemented!();
+                    }
+                    _ => unreachable!(),
+                }
+            }
+            _ => (),
+        }
     }
 }
 

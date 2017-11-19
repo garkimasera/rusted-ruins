@@ -51,6 +51,16 @@ impl Game {
         game
     }
 
+    pub fn empty() -> Game {        
+        Game {
+            gd: GameData::empty(),
+            state: GameState::WaitingForNextTurn,
+            turn_loop_data: TurnLoopData::new(),
+            anim_queue: VecDeque::new(),
+            dying_charas: Vec::new(),
+        }
+    }
+
     pub fn get_state(&self) -> GameState {
         self.state
     }
