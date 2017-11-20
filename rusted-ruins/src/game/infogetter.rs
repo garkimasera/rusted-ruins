@@ -10,6 +10,8 @@ pub trait InfoGetter {
     fn player_hp(&self) -> (i32, i32);
     /// Player's current tile is entrance/exit or not
     fn on_map_entrance(&self) -> bool;
+    /// Return item list in the tile that player stands on
+    fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList>;
 }
 
 impl InfoGetter for GameData {
@@ -35,6 +37,11 @@ impl InfoGetter for GameData {
             _ => (),
         }
         false
+    }
+
+    fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList> {
+        let player_pos = self.player_pos();
+        self.get_current_map().tile[player_pos].item_list.as_ref()
     }
 }
 

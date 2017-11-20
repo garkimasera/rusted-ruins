@@ -211,11 +211,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenItemMenu => {
                 use self::itemwindow::*;
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List)));
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, pa)));
             }
             Command::PickUpItem => {
-                use self::itemwindow::*;
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::PickUp)));
+                if pa.gd().item_on_player_tile().is_some() {
+                    use self::itemwindow::*;
+                    let item_window = ItemWindow::new(ItemWindowMode::PickUp, pa);
+                    self.window_stack.push(Box::new(item_window));
+                }
             }
             _ => (),
         }

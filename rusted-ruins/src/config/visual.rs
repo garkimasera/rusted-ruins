@@ -93,6 +93,7 @@ pub struct TextInputDialogConfig {
 #[derive(Debug, Deserialize)]
 pub struct ItemWindowConfig {
     pub rect: CfgRect,
+    pub n_row: u32,
 }
 
 #[derive(Debug, Deserialize)]

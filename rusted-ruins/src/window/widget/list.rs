@@ -32,44 +32,53 @@ impl ListWidget {
     pub fn new<R: Into<Rect>>(rect: R, rows: ListRow, column_pos: Vec<i32>) -> ListWidget {
         Self::with_hrow(rect, rows, column_pos, 26)
     }
-    
+
+    /// Create ListWidget with specified height per row
     pub fn with_hrow<R: Into<Rect>>(
         rect: R, rows: ListRow, column_pos: Vec<i32>, h_row: i32) -> ListWidget {
         
         let rect = rect.into();
+
+        let mut list_widget = ListWidget {
+            rect: rect,
+            rows: ListRow::Str(Vec::new()),
+            n_row: 0,
+            h_row: h_row,
+            column_pos: column_pos,
+            cache: Vec::new(),
+            current_choice: 0,
+        };
+        list_widget.set_rows(rows);
+        list_widget
+    }
+
+    pub fn single<R: Into<Rect>>(rect: R, choices: Vec<String>) -> ListWidget {
+        Self::with_hrow(rect, ListRow::Str(choices), vec![0], UI_CFG.list_widget.h_row_with_text)
+    }
+
+    pub fn set_rows(&mut self, rows: ListRow) {
         let n_row;
         let mut cache = Vec::new();
         
         match &rows {
             &ListRow::Str(ref rows) => {
-                assert!(column_pos.len() == 1);
+                assert!(self.column_pos.len() == 1);
                 n_row = rows.len();
                 for r in rows {
                     cache.push(TextCache::new(&[r], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
             },
             &ListRow::IconStr(ref rows) => {
-                assert!(column_pos.len() == 2);
+                assert!(self.column_pos.len() == 2);
                 n_row = rows.len();
                 for r in rows {
                     cache.push(TextCache::new(&[&r.1], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
             }
         }
-
-        ListWidget {
-            rect: rect,
-            rows: rows,
-            n_row: n_row,
-            h_row: h_row,
-            column_pos: column_pos,
-            cache: cache,
-            current_choice: 0,
-        }
-    }
-
-    pub fn single<R: Into<Rect>>(rect: R, choices: Vec<String>) -> ListWidget {
-        Self::with_hrow(rect, ListRow::Str(choices), vec![0], UI_CFG.list_widget.h_row_with_text)
+        self.n_row = n_row;
+        self.rows = rows;
+        self.cache = cache;
     }
 }
 
