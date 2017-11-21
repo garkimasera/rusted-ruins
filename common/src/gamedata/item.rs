@@ -64,6 +64,11 @@ impl ItemList {
         Self::new(::basic::MAX_ITEM_PLAYER)
     }
 
+    /// This list has empty slot or not
+    pub fn has_empty(&self) -> bool {
+        self.limit > self.items.len() + 1
+    }
+
     /// Append item
     /// If the list doesn't have empty, returns given item.
     pub fn append(&mut self, item: Box<Item>, n: u32) -> Option<Box<Item>> {
@@ -81,9 +86,72 @@ impl ItemList {
         None
     }
 
+    /// Remove an item from list
+    pub fn remove<T: Into<ItemMoveNum>>(&mut self, i: usize, n: T) {
+        let n = n.into().to_u32(self.items[i].1);
+        assert!(self.items[i].1 <= n && n != 0);
+        if n == 0 { return; }
+
+        self.items[i].1 -= n;
+        if self.items[i].1 == 0 {
+            self.items.remove(i);
+        }
+    }
+
+    /// Remove an item from list and get its clone or moved value
+    pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: usize, n: T) -> Box<Item> {
+        let n = n.into().to_u32(self.items[i].1);
+        assert!(self.items[i].1 <= n && n != 0);
+
+        self.items[i].1 -= n;
+        if self.items[i].1 == 0 {
+            self.items.remove(i).0
+        } else {
+            self.items[i].0.clone()
+        }
+    }
+
+    /// Move an item to the other item list
+    pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) -> bool {
+        let n = n.into().to_u32(self.items[i].1);
+        assert!(self.items[i].1 <= n && n != 0);
+        if !dest.has_empty() { return false; }
+        
+        self.items[i].1 -= n;
+
+        let item = if self.items[i].1 == 0 {
+            self.items.remove(i).0
+        } else {
+            self.items[i].0.clone()
+        };
+
+        dest.append(item, n);
+        true
+    }
+
     /// Return item iterator
     pub fn iter(&self) -> ::std::slice::Iter<(Box<Item>, u32)> {
         self.items.iter()
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum ItemMoveNum {
+    All, Partial(u32),
+}
+
+impl ItemMoveNum {
+    fn to_u32(self, all: u32) -> u32 {
+        match self {
+            ItemMoveNum::All => all,
+            ItemMoveNum::Partial(n) => n,
+        }
+    }
+}
+
+impl From<u32> for ItemMoveNum {
+    fn from(n: u32) -> ItemMoveNum {
+        ItemMoveNum::Partial(n)
     }
 }
 
