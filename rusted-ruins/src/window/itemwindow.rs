@@ -83,8 +83,13 @@ impl ItemWindow {
             }
             ItemWindowMode::PickUp => {
                 pa.pick_up_item(i, 1);
+                let result = if pa.gd().is_item_on_player_tile() {
+                    DialogResult::Continue
+                } else {
+                    DialogResult::Close
+                };
                 self.update_by_mode(pa);
-                DialogResult::Continue
+                result
             }
         }
     }

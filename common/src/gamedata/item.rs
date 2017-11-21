@@ -64,6 +64,11 @@ impl ItemList {
         Self::new(::basic::MAX_ITEM_PLAYER)
     }
 
+    /// This list is empty or not
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+
     /// This list has empty slot or not
     pub fn has_empty(&self) -> bool {
         self.limit > self.items.len() + 1

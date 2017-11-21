@@ -12,6 +12,8 @@ pub trait InfoGetter {
     fn on_map_entrance(&self) -> bool;
     /// Return item list in the tile that player stands on
     fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList>;
+    /// Return any item exist or not on player tile
+    fn is_item_on_player_tile(&self) -> bool;
 }
 
 impl InfoGetter for GameData {
@@ -42,6 +44,11 @@ impl InfoGetter for GameData {
     fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList> {
         let player_pos = self.player_pos();
         self.get_current_map().tile[player_pos].item_list.as_ref()
+    }
+
+    fn is_item_on_player_tile(&self) -> bool {
+        let list = self.item_on_player_tile();
+        !(list.is_none() || list.unwrap().is_empty())
     }
 }
 
