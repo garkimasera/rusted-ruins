@@ -12,6 +12,7 @@ use common::gobj;
 use common::gamedata::item::FilteredItemList;
 use text;
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ItemWindowMode {
     List, PickUp,
 }
@@ -22,6 +23,7 @@ pub struct ItemWindow {
     mode: ItemWindowMode,
     n_row: u32,
     current_page: u32,
+    actual_idx: Vec<usize>,
 }
 
 impl ItemWindow {
@@ -35,6 +37,7 @@ impl ItemWindow {
             mode: mode,
             n_row: UI_CFG.item_window.n_row,
             current_page: 0,
+            actual_idx: Vec::new(),
         };
         item_window.update_by_mode(pa);
         item_window
@@ -44,23 +47,46 @@ impl ItemWindow {
         let gd = pa.gd();
         
         match self.mode {
+            ItemWindowMode::List => {
+                use common::gamedata::chara::CharaId;
+                let item_list = &gd.chara.get(CharaId::Player).item_list;
+                let filtered_list = FilteredItemList::all(item_list);
+                self.update_list(filtered_list);
+            }
             ItemWindowMode::PickUp => {
                 let item_list = gd.item_on_player_tile().unwrap();
                 let filtered_list = FilteredItemList::all(item_list);
                 self.update_list(filtered_list);
             }
-            _ => { unimplemented!() }
         }
     }
 
     fn update_list(&mut self, list: FilteredItemList) {
         let mut rows: Vec<(IconIdx, String)> = Vec::new();
+        self.actual_idx.clear();
 
-        for (idx, item, _n_item) in list.skip((self.current_page * self.n_row) as usize) {
-            let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
+        for (idx, item, n_item) in list.skip((self.current_page * self.n_row) as usize) {
+            let item_text = format!(
+                "{} x {}",
+                text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
+                n_item);
             rows.push((IconIdx::Item(item.idx), item_text));
+            self.actual_idx.push(idx);
         }
         self.list.set_rows(ListRow::IconStr(rows));
+    }
+
+    fn do_action_for_item(&mut self, mut pa: DoPlayerAction, i: usize) -> DialogResult {
+        match self.mode {
+            ItemWindowMode::List => {
+                DialogResult::Continue
+            }
+            ItemWindowMode::PickUp => {
+                pa.pick_up_item(i, 1);
+                self.update_by_mode(pa);
+                DialogResult::Continue
+            }
+        }
     }
 }
 
@@ -77,6 +103,16 @@ impl Window for ItemWindow {
 
 impl DialogWindow for ItemWindow {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
+        if let Some(response) = self.list.process_command(&command) {
+            match response {
+                ListWidgetResponse::Select(i) => { // Any item is selected
+                    let i = self.actual_idx[i as usize];
+                    return self.do_action_for_item(pa, i);
+                }
+                _ => (),
+            }
+            return DialogResult::Continue;
+        }
         self.list.process_command(&command);
         
         match command {
@@ -91,3 +127,4 @@ impl DialogWindow for ItemWindow {
         InputMode::Dialog
     }
 }
+

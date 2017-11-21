@@ -74,6 +74,18 @@ impl<'a> DoPlayerAction<'a> {
             return;
         }
     }
+
+    /// Pick up an item on tile
+    pub fn pick_up_item(&mut self, item_idx: usize, n: u32) -> bool {
+        let gd = self.gd_mut();
+        let mid = gd.get_current_mapid();
+        let player_pos = gd.player_pos();
+        let item_list_src = gd.site.get_map_mut(mid).tile[player_pos].item_list.as_mut().unwrap();
+        let item_list_dest = &mut gd.chara.get_mut(CharaId::Player).item_list;
+        item_list_src.move_to(item_list_dest, item_idx, n);
+        
+        true
+    }
 }
 
 

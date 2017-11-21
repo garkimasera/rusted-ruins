@@ -79,6 +79,7 @@ impl ItemList {
         for i in self.items.iter_mut() {
             if *i.0 == *item {
                 i.1 += n;
+                return None;
             }
         }
         
