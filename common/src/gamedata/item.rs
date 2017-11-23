@@ -12,8 +12,7 @@ pub struct Item {
 #[repr(u32)]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object,
-    Potion,
+    Object, Potion, Weapon,
 }
 
 /// Kind dependent data for a item
@@ -25,6 +24,10 @@ pub enum ItemContent {
         /// Effectiveness of this item
         eff: f32,
     },
+    Weapon {
+        kind: WeaponKind,
+        eff: f32,
+    },
 }
 
 impl ItemContent {
@@ -32,6 +35,7 @@ impl ItemContent {
         match *self {
             ItemContent::Object => ItemKind::Object,
             ItemContent::Potion { .. } => ItemKind::Potion,
+            ItemContent::Weapon { .. } => ItemKind::Weapon,
         }
     }
 }
@@ -40,6 +44,12 @@ impl ItemContent {
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum PotionKind {
     Heal,
+}
+
+#[repr(u32)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum WeaponKind {
+    Sword, Spear, Axe, Whip,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]

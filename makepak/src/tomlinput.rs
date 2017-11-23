@@ -72,5 +72,6 @@ pub struct ItemDepInput {
     pub gen_level: u32,
     pub eff: Option<f32>,
     pub potion_kind: Option<gamedata::item::PotionKind>,
+    pub weapon_kind: Option<gamedata::item::WeaponKind>,
 }
 
