@@ -41,6 +41,13 @@ pub enum PotionKind {
     Heal,
 }
 
+pub enum ItemListLocation {
+    OnMap { mid: super::map::MapId },
+    Chara { cid: super::chara::CharaId },
+}
+
+pub type ItemLocation = (ItemListLocation, u32);
+
 /// Item list that records all items owned by one character or one tile
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemList {

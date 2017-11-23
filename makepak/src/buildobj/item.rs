@@ -16,7 +16,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         },
         "Potion" => {
             ItemContent::Potion {
-                kind: PotionKind::Heal,
+                kind: get_optional_field!(item, potion_kind),
                 eff: get_optional_field!(item, eff)
             }
         }
