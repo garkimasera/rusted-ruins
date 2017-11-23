@@ -9,7 +9,8 @@ use common::gamedata::site::DungeonKind;
 use common::gamedata::item::ItemList;
 use rand::{Rng, thread_rng};
 use super::chara::creation::create_npc_chara;
-use super::item::gen_dungeon_item;
+use super::item::gen::gen_dungeon_item;
+use rules::RULES;
 
 /// Switch current map to the specified map
 pub fn switch_map(gd: &mut GameData, mid: MapId) {
@@ -73,7 +74,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
         let mut item_list = ItemList::new(10);
 
-        if thread_rng().gen_weighted_bool(8) {
+        if thread_rng().gen_weighted_bool(RULES.map_gen.item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor), 1);
             tile.item_list = Some(item_list);
         }

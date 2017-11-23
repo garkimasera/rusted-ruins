@@ -29,6 +29,8 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         id: tomlinput.id,
         img: build_img(img)?,
         icon: build_icon(icon)?,
+        gen_weight: item.gen_weight,
+        gen_level: item.gen_level,
         basic_price: item.basic_price,
         content: content, 
     })

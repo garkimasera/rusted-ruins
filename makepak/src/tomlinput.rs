@@ -68,6 +68,8 @@ pub struct TileDepInput {
 pub struct ItemDepInput {
     pub item_kind: String,
     pub basic_price: f32,
+    pub gen_weight: f32,
+    pub gen_level: u32,
     pub eff: Option<f32>,
     pub potion_kind: Option<gamedata::item::PotionKind>,
 }

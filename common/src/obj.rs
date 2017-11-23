@@ -77,6 +77,11 @@ pub struct ItemObject {
     pub img: Img,
     pub icon: Icon,
     pub basic_price: f32,
+    /// The frequency of character generation for random map
+    pub gen_weight: f32,
+    /// Generation level
+    /// If it is higher, and the item will be generated on deeper floors
+    pub gen_level: u32,
     pub content: ItemContent,
 }
 
