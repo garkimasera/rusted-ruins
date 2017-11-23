@@ -9,6 +9,7 @@ use array2d::Vec2d;
 use self::chara::*;
 use self::map::*;
 use self::site::*;
+use self::item::*;
 
 
 /// Includes all data for one game
@@ -107,6 +108,73 @@ impl GameData {
     pub fn set_current_mapid(&mut self, mid: MapId) {
         self.current_mapid = mid;
     }
+
+    // Fuctions for item handling
+
+    /// Get item list by ItemListLocation
+    pub fn get_item_list(&self, list_location: ItemListLocation) -> &ItemList {
+        match list_location {
+            ItemListLocation::Chara { cid } => {
+                &self.chara.get(cid).item_list
+            }
+            ItemListLocation::OnMap { mid, pos } => {
+                &self.site.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
+            }
+        }
+    }
+
+    /// Mutable version for get_item_list
+    pub fn get_item_list_mut(&mut self, list_location: ItemListLocation) -> &mut ItemList {
+        match list_location {
+            ItemListLocation::Chara { cid } => {
+                &mut self.chara.get_mut(cid).item_list
+            }
+            ItemListLocation::OnMap { mid, pos } => {
+                self.site.get_map_mut(mid).tile[pos].item_list.as_mut()
+                    .expect("Get item list to empty tile")
+            }
+        }
+    }
+
+    pub fn get_filtered_item_list(&self, list_location: ItemListLocation, filter: ItemFilter)
+                                  -> FilteredItemList {
+        let item_list = self.get_item_list(list_location);
+        FilteredItemList::new(item_list, list_location, filter)
+    }
+
+    /// Remove item from list
+    pub fn remove_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T) {
+        let item_list = self.get_item_list_mut(item_location.0);
+        item_list.remove(item_location.1, n);
+    }
+
+    /// Remove item from list and get its clone or moved value
+    pub fn remove_item_and_get<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T)
+                                             -> Box<Item> {
+        let item_list = self.get_item_list_mut(item_location.0);
+        item_list.remove_and_get(item_location.1, n)
+    }
+
+    /// Move item to dest
+    /// If destination list is full, returns false and does nothing
+    pub fn move_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation,
+                                           dest: ItemListLocation, n: T) -> bool {
+        let (item, n) = {
+            let src_list = self.get_item_list_mut(item_location.0);
+            let n = match n.into() {
+                ItemMoveNum::Partial(n) => n,
+                ItemMoveNum::All => {
+                    src_list.get_number(item_location.1)
+                }
+            };
+            (src_list.remove_and_get(item_location.1, n), n)
+        };
+        let dest_list = self.get_item_list_mut(dest);
+        if !dest_list.has_empty() { return false; }
+        dest_list.append(item, n);
+        true
+    }
+    
 }
 
 fn unknown_id_err<T: ::std::fmt::Debug>(id: T) -> String {

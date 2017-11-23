@@ -1,4 +1,5 @@
 
+use array2d::Vec2d;
 use objholder::ItemIdx;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -41,8 +42,9 @@ pub enum PotionKind {
     Heal,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ItemListLocation {
-    OnMap { mid: super::map::MapId },
+    OnMap { mid: super::map::MapId, pos: Vec2d },
     Chara { cid: super::chara::CharaId },
 }
 
@@ -69,6 +71,11 @@ impl ItemList {
     /// Inventory for player has larger size
     pub fn for_player() -> ItemList {
         Self::new(::basic::MAX_ITEM_PLAYER)
+    }
+
+    /// Get the number of item
+    pub fn get_number(&self, i: u32) -> u32 {
+        self.items[i as usize].1
     }
 
     /// This list is empty or not
@@ -100,7 +107,8 @@ impl ItemList {
     }
 
     /// Remove an item from list
-    pub fn remove<T: Into<ItemMoveNum>>(&mut self, i: usize, n: T) {
+    pub fn remove<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) {
+        let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 <= n && n != 0);
         if n == 0 { return; }
@@ -112,7 +120,8 @@ impl ItemList {
     }
 
     /// Remove an item from list and get its clone or moved value
-    pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: usize, n: T) -> Box<Item> {
+    pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) -> Box<Item> {
+        let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 <= n && n != 0);
 
@@ -176,6 +185,10 @@ pub struct ItemFilter {
 }
 
 impl ItemFilter {
+    pub fn all() -> ItemFilter {
+        ItemFilter::default()
+    }
+    
     /// Given item will be filtered (false) or not (true)
     pub fn judge(&self, item: &Item) -> bool {
         if self.all { return true; }
@@ -188,29 +201,41 @@ impl ItemFilter {
     }
 }
 
+impl Default for ItemFilter {
+    fn default() -> ItemFilter {
+        ItemFilter {
+            all: true,
+            kind: None,
+        }
+    }
+}
+
 pub struct FilteredItemList<'a> {
     item_list: &'a ItemList,
+    location: ItemListLocation,
     filter: ItemFilter,
     count: usize,
 }
 
 impl<'a> FilteredItemList<'a> {
-    pub fn new(item_list: &'a ItemList, filter: ItemFilter) -> FilteredItemList<'a> {
+    pub fn new(item_list: &'a ItemList, location: ItemListLocation,
+               filter: ItemFilter) -> FilteredItemList<'a> {
+        
         FilteredItemList {
-            item_list, filter, count: 0,
+            item_list, location, filter, count: 0,
         }
     }
 
-    pub fn all(item_list: &'a ItemList) -> FilteredItemList<'a> {
-        let filter = ItemFilter {
-            all: true, kind: None,
-        };
-        FilteredItemList::new(item_list, filter)
+    pub fn all(item_list: &'a ItemList, location: ItemListLocation) -> FilteredItemList<'a> {
+        
+        FilteredItemList {
+            item_list, location, filter: ItemFilter::all(), count: 0,
+        }
     }
 }
 
 impl<'a> Iterator for FilteredItemList<'a> {
-    type Item = (usize, &'a Item, u32);
+    type Item = (ItemLocation, &'a Item, u32);
     
     fn next(&mut self) -> Option<Self::Item> {
         loop {
@@ -223,7 +248,7 @@ impl<'a> Iterator for FilteredItemList<'a> {
             self.count += 1;
 
             if self.filter.judge(&*a.0) {
-                return Some((prev_count, &*a.0, a.1));
+                return Some(((self.location, prev_count as u32), &*a.0, a.1));
             }
         }
     }

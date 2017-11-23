@@ -9,7 +9,7 @@ use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
-use common::gamedata::item::FilteredItemList;
+use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
 use text;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -23,7 +23,7 @@ pub struct ItemWindow {
     mode: ItemWindowMode,
     n_row: u32,
     current_page: u32,
-    actual_idx: Vec<usize>,
+    item_locations: Vec<ItemLocation>,
 }
 
 impl ItemWindow {
@@ -37,7 +37,7 @@ impl ItemWindow {
             mode: mode,
             n_row: UI_CFG.item_window.n_row,
             current_page: 0,
-            actual_idx: Vec::new(),
+            item_locations: Vec::new(),
         };
         item_window.update_by_mode(pa);
         item_window
@@ -48,14 +48,16 @@ impl ItemWindow {
         
         match self.mode {
             ItemWindowMode::List => {
-                use common::gamedata::chara::CharaId;
-                let item_list = &gd.chara.get(CharaId::Player).item_list;
-                let filtered_list = FilteredItemList::all(item_list);
+                let ill = ItemListLocation::Chara { cid: ::common::gamedata::chara::CharaId::Player };
+                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
                 self.update_list(filtered_list);
             }
             ItemWindowMode::PickUp => {
-                let item_list = gd.item_on_player_tile().unwrap();
-                let filtered_list = FilteredItemList::all(item_list);
+                let ill = ItemListLocation::OnMap {
+                    mid: gd.get_current_mapid(),
+                    pos: gd.player_pos(),
+                };
+                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
                 self.update_list(filtered_list);
             }
         }
@@ -63,26 +65,26 @@ impl ItemWindow {
 
     fn update_list(&mut self, list: FilteredItemList) {
         let mut rows: Vec<(IconIdx, String)> = Vec::new();
-        self.actual_idx.clear();
+        self.item_locations.clear();
 
-        for (idx, item, n_item) in list.skip((self.current_page * self.n_row) as usize) {
+        for (item_location, item, n_item) in list.skip((self.current_page * self.n_row) as usize) {
             let item_text = format!(
                 "{} x {}",
                 text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
                 n_item);
             rows.push((IconIdx::Item(item.idx), item_text));
-            self.actual_idx.push(idx);
+            self.item_locations.push(item_location);
         }
         self.list.set_rows(ListRow::IconStr(rows));
     }
 
-    fn do_action_for_item(&mut self, mut pa: DoPlayerAction, i: usize) -> DialogResult {
+    fn do_action_for_item(&mut self, mut pa: DoPlayerAction, il: ItemLocation) -> DialogResult {
         match self.mode {
             ItemWindowMode::List => {
                 DialogResult::Continue
             }
             ItemWindowMode::PickUp => {
-                pa.pick_up_item(i, 1);
+                pa.pick_up_item(il, 1);
                 let result = if pa.gd().is_item_on_player_tile() {
                     DialogResult::Continue
                 } else {
@@ -111,8 +113,8 @@ impl DialogWindow for ItemWindow {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
-                    let i = self.actual_idx[i as usize];
-                    return self.do_action_for_item(pa, i);
+                    let il = self.item_locations[i as usize];
+                    return self.do_action_for_item(pa, il);
                 }
                 _ => (),
             }
