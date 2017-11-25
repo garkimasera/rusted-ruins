@@ -9,8 +9,14 @@ pub struct Item {
     pub content: ItemContent,
 }
 
+impl Item {
+    pub fn kind(&self) -> ItemKind {
+        self.content.kind()
+    }
+}
+
 #[repr(u32)]
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
     Object, Potion, Weapon,
 }
@@ -263,4 +269,81 @@ impl<'a> Iterator for FilteredItemList<'a> {
         }
     }
 }
+
+pub struct EquipItemList {
+    /// Slot infomation
+    /// (The kind of equipment, Index at list)
+    slots: Vec<(ItemKind, Option<u8>)>,
+    item_list: ItemList,
+}
+
+pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
+
+impl EquipItemList {
+    pub fn new() -> EquipItemList {
+        EquipItemList {
+            slots: Vec::new(),
+            item_list: ItemList::new(::basic::MAX_EQUIP_SLOT),
+        }
+    }
+
+    /// Number of slots for specified ItemKind
+    pub fn slot_num(&self, ik: ItemKind) -> usize {
+        self.slots.iter().take_while(|a| a.0 == ik).count()
+    }
+    
+    /// Specified slot is empty or not
+    /// If specified slot doesn't exist, return false.
+    pub fn is_slot_empty(&self, ik: ItemKind, n: usize) -> bool {
+        assert!(n < MAX_SLOT_NUM_PER_KIND);
+        if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
+            a.1.is_none()
+        } else {
+            false
+        }
+    }
+
+    /// Get specified equipped item
+    pub fn item(&self, ik: ItemKind, n: usize) -> Option<&Item> {
+        assert!(n < MAX_SLOT_NUM_PER_KIND);
+        if let Some(a) = self.list_idx(ik, n) {
+            Some(&self.item_list.items[a].0)
+        } else {
+            None
+        }
+    }
+    
+    /// Equip an item to specified slot, and returns removed item
+    pub fn equip(&mut self, item: Box<Item>, ik: ItemKind, n: usize) -> Option<Box<Item>> {
+        assert!(self.slot_num(ik) > n);
+        if let Some(i) = self.list_idx(ik, n) { // Replace existing item
+            return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
+        }
+        let mut new_idx = 0;
+        // Calculate new index for insert
+        // Todo: this does not consider the order of equipments
+        for (_slot_ik, is_equipped) in self.slots.iter().map(|&(slot_ik, idx)| (slot_ik, idx.is_some())) {
+            if is_equipped {
+                new_idx += 1;
+            }
+        }
+
+        self.item_list.items.insert(new_idx, (item, 1));
+        
+        None
+    }
+
+    fn list_idx(&self, ik: ItemKind, n: usize) -> Option<usize> {
+        if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
+            if let Some(a) = a.1 {
+                Some(a as usize)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+    
 

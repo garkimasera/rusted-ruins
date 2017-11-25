@@ -15,6 +15,8 @@ pub const MAX_ITEM_CHARA: usize = 32;
 pub const MAX_ITEM_PLAYER: usize = 32;
 /// Maximum number of items on one tile
 pub const MAX_ITEM_TILE: usize = 256;
+/// Maximum number of equipment slots
+pub const MAX_EQUIP_SLOT: usize = 16;
 
 pub const WAIT_TIME_DEFAULT: f32 = 100.0;
 /// The resolution of turns.
