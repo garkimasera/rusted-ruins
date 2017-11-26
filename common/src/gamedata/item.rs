@@ -273,8 +273,8 @@ impl<'a> Iterator for FilteredItemList<'a> {
 #[derive(Serialize, Deserialize)]
 pub struct EquipItemList {
     /// Slot infomation
-    /// (The kind of equipment, Index at list)
-    slots: Vec<(ItemKind, Option<u8>)>,
+    /// (The kind of equipment, The index for this ItemKind, Index at list)
+    slots: Vec<(ItemKind, u8, Option<u8>)>,
     item_list: ItemList,
 }
 
@@ -298,7 +298,7 @@ impl EquipItemList {
     pub fn is_slot_empty(&self, ik: ItemKind, n: usize) -> bool {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
         if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
-            a.1.is_none()
+            a.2.is_none()
         } else {
             false
         }
@@ -323,7 +323,7 @@ impl EquipItemList {
         let mut new_idx = 0;
         // Calculate new index for insert
         // Todo: this does not consider the order of equipments
-        for (_slot_ik, is_equipped) in self.slots.iter().map(|&(slot_ik, idx)| (slot_ik, idx.is_some())) {
+        for (_slot_ik, is_equipped) in self.slots.iter().map(|&(slot_ik, _, idx)| (slot_ik, idx.is_some())) {
             if is_equipped {
                 new_idx += 1;
             }
@@ -336,7 +336,7 @@ impl EquipItemList {
 
     fn list_idx(&self, ik: ItemKind, n: usize) -> Option<usize> {
         if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
-            if let Some(a) = a.1 {
+            if let Some(a) = a.2 {
                 Some(a as usize)
             } else {
                 None
@@ -345,6 +345,35 @@ impl EquipItemList {
             None
         }
     }
+
+    pub fn iter(&self) -> EquipItemIter {
+        EquipItemIter {
+            equip_item_list: &self,
+            n: 0,
+        }
+    }
 }
     
+pub struct EquipItemIter<'a> {
+    equip_item_list: &'a EquipItemList,
+    n: usize,
+}
+
+impl<'a> Iterator for EquipItemIter<'a> {
+    type Item = (ItemKind, u8, &'a Item);
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            if self.n >= self.equip_item_list.slots.len() {
+                return None;
+            }
+            let slot = &self.equip_item_list.slots[self.n];
+            if let Some(i) = slot.2 {
+                let result = (slot.0, slot.1, &*self.equip_item_list.item_list.items[i as usize].0);
+                self.n += 1;
+                return Some(result);
+            }
+            self.n += 1;
+        }
+    }
+}
 
