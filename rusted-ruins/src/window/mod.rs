@@ -4,6 +4,7 @@ mod logwindow;
 mod textwindow;
 mod itemwindow;
 mod exitwindow;
+mod equipwindow;
 mod yesnodialog;
 mod textinputdialog;
 mod indicator;
@@ -212,6 +213,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::OpenItemMenu => {
                 use self::itemwindow::*;
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, pa)));
+            }
+            Command::OpenEquipWin => {
+                use common::gamedata::chara::CharaId;
+                use self::equipwindow::*;
+                self.window_stack.push(Box::new(equipwindow::EquipWindow::new(pa, CharaId::Player)));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {

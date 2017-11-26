@@ -8,7 +8,7 @@ pub enum Command {
     Move { dir: Direction },
     Enter,
     Cancel,
-    OpenExitWin, OpenItemMenu, PickUpItem,
+    OpenExitWin, OpenItemMenu, OpenEquipWin, PickUpItem,
     TextInput { text: String },
     TextDelete,
 }

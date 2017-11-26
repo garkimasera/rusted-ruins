@@ -34,6 +34,7 @@ pub struct UIConfig {
     pub start_dialog: StartDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
     pub item_window: ItemWindowConfig,
+    pub equip_window: EquipWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
 }
@@ -92,6 +93,12 @@ pub struct TextInputDialogConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct ItemWindowConfig {
+    pub rect: CfgRect,
+    pub n_row: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct EquipWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
 }

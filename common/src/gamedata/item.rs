@@ -270,6 +270,7 @@ impl<'a> Iterator for FilteredItemList<'a> {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct EquipItemList {
     /// Slot infomation
     /// (The kind of equipment, Index at list)
