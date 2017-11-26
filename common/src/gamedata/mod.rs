@@ -174,6 +174,11 @@ impl GameData {
         dest_list.append(item, n);
         true
     }
+
+    pub fn get_equip_list(&self, cid: CharaId) -> &EquipItemList {
+        let chara = self.chara.get(cid);
+        &chara.equip
+    }
     
 }
 
