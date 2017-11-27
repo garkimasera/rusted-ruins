@@ -9,6 +9,7 @@ use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
+use common::gamedata::item::ItemKind;
 use common::gamedata::chara::CharaId;
 use text;
 
@@ -18,6 +19,7 @@ pub struct EquipWindow {
     n_row: u32,
     current_page: u32,
     cid: CharaId,
+    slots: Vec<(ItemKind, u8)>
 }
 
 impl EquipWindow {
@@ -31,13 +33,30 @@ impl EquipWindow {
             n_row: UI_CFG.equip_window.n_row,
             current_page: 0,
             cid: cid,
+            slots: Vec::new(),
         };
         equip_window.update_list(pa);
         equip_window
     }
 
     fn update_list(&mut self, pa: DoPlayerAction) {
-        
+        let mut rows: Vec<(IconIdx, String)> = Vec::new();
+        let equips = pa.gd().get_equip_list(self.cid);
+        self.slots.clear();
+
+        for (ik, ik_i, item) in equips.slot_iter() {
+            if let Some(item) = item {
+                let item_text = format!(
+                    "{} ({:?})",
+                    text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
+                    ik);
+                rows.push((IconIdx::Item(item.idx), item_text));
+            } else {
+                rows.push((IconIdx::Item(::common::objholder::ItemIdx(0)), "Empty".to_owned()));
+            }
+            self.slots.push((ik, ik_i));
+        }
+        self.list.set_rows(ListRow::IconStr(rows));
     }
 }
 

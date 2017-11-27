@@ -1,7 +1,7 @@
 
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
-use common::gamedata::item::{ItemList, EquipItemList};
+use common::gamedata::item::{ItemList, EquipItemList, ItemKind};
 use common::gamedata::site::DungeonKind;
 use common::gobj;
 use rules::RULES;
@@ -25,13 +25,13 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         cha: ct.cha,
         spd: ct.spd,
     };
-
+    
     let chara = Chara {
         name: text::obj_txt(&ct.id).to_owned(),
         params: params,
         template: chara_template_idx,
         item_list: ItemList::for_chara(),
-        equip: EquipItemList::new(),
+        equip: EquipItemList::new(Vec::new()),
         wait_time: 100.0,
         hp: max_hp,
         rel: Relationship::NEUTRAL,

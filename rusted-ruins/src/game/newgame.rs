@@ -16,6 +16,11 @@ pub fn create_newgame() -> GameData {
     chara.params.spd = 100;
     chara.params.str = 25;
     chara.rel = gamedata::chara::Relationship::ALLY;
+    /* Test code for equipment */
+    let mut equip = gamedata::item::EquipItemList::new(vec![(gamedata::item::ItemKind::Weapon, 1)]);
+    let item = ::game::item::gen::gen_dungeon_item(1);
+    equip.equip(gamedata::item::ItemKind::Weapon, 0, item);
+    chara.equip = equip;
     gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
 
     map::gen_npcs(&mut gd, mid, 10, 10);

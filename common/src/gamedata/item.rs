@@ -281,23 +281,25 @@ pub struct EquipItemList {
 pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
 
 impl EquipItemList {
-    pub fn new() -> EquipItemList {
+    pub fn new(mut slots: Vec<(ItemKind, u8)>) -> EquipItemList {
+        slots.sort_by_key(|&(ik, _)| ik);
+        let slots = slots.iter().map(|&(ik, ik_i)| (ik, ik_i, None)).collect();
         EquipItemList {
-            slots: Vec::new(),
+            slots: slots,
             item_list: ItemList::new(::basic::MAX_EQUIP_SLOT),
         }
     }
 
     /// Number of slots for specified ItemKind
     pub fn slot_num(&self, ik: ItemKind) -> usize {
-        self.slots.iter().take_while(|a| a.0 == ik).count()
+        self.slots.iter().filter(|a| a.0 == ik).count()
     }
     
     /// Specified slot is empty or not
     /// If specified slot doesn't exist, return false.
     pub fn is_slot_empty(&self, ik: ItemKind, n: usize) -> bool {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
-        if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
+        if let Some(a) = self.slots.iter().filter(|a| a.0 == ik).nth(n) {
             a.2.is_none()
         } else {
             false
@@ -315,7 +317,7 @@ impl EquipItemList {
     }
     
     /// Equip an item to specified slot, and returns removed item
-    pub fn equip(&mut self, item: Box<Item>, ik: ItemKind, n: usize) -> Option<Box<Item>> {
+    pub fn equip(&mut self, ik: ItemKind, n: usize, item: Box<Item>) -> Option<Box<Item>> {
         assert!(self.slot_num(ik) > n);
         if let Some(i) = self.list_idx(ik, n) { // Replace existing item
             return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
@@ -330,12 +332,18 @@ impl EquipItemList {
         }
 
         self.item_list.items.insert(new_idx, (item, 1));
+        self.slots[0].2 = Some(0);
+        for slot in self.slots.iter_mut() {
+            if slot.0 == ik && slot.1 == n as u8 {
+                slot.2 = Some(new_idx as u8);
+            }
+        }
         
         None
     }
 
     fn list_idx(&self, ik: ItemKind, n: usize) -> Option<usize> {
-        if let Some(a) = self.slots.iter().take_while(|a| a.0 == ik).skip(n).next() {
+        if let Some(a) = self.slots.iter().filter(|a| a.0 == ik).nth(n) {
             if let Some(a) = a.2 {
                 Some(a as usize)
             } else {
@@ -346,11 +354,40 @@ impl EquipItemList {
         }
     }
 
-    pub fn iter(&self) -> EquipItemIter {
+    pub fn slot_iter(&self) -> EquipSlotIter {
+        EquipSlotIter {
+            equip_item_list: &self,
+            n: 0,
+        }
+    }
+
+    pub fn item_iter(&self) -> EquipItemIter {
         EquipItemIter {
             equip_item_list: &self,
             n: 0,
         }
+    }
+}
+
+pub struct EquipSlotIter<'a> {
+    equip_item_list: &'a EquipItemList,
+    n: usize,
+}
+
+impl<'a> Iterator for EquipSlotIter<'a> {
+    type Item = (ItemKind, u8, Option<&'a Item>);
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.n >= self.equip_item_list.slots.len() {
+            return None;
+        }
+        let slot = &self.equip_item_list.slots[self.n];
+        let result = if let Some(i) = slot.2 {
+            (slot.0, slot.1, Some(&*self.equip_item_list.item_list.items[i as usize].0))
+        } else {
+            (slot.0, slot.1, None)
+        };
+        self.n += 1;
+        return Some(result);
     }
 }
     
