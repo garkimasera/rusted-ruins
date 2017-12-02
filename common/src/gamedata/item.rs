@@ -273,9 +273,24 @@ impl<'a> Iterator for FilteredItemList<'a> {
 #[derive(Serialize, Deserialize)]
 pub struct EquipItemList {
     /// Slot infomation
-    /// (The kind of equipment, The index for this ItemKind, Index at list)
-    slots: Vec<(ItemKind, u8, Option<u8>)>,
+    slots: Vec<SlotInfo>,
     item_list: ItemList,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct SlotInfo {
+    /// The kind of equipment
+    ik: ItemKind,
+    /// The index in this ItemKind
+    n: u8,
+    /// The Index at list
+    list_idx: Option<u8>,
+}
+
+impl SlotInfo {
+    fn new(ik: ItemKind, n: u8) -> SlotInfo {
+        SlotInfo { ik, n, list_idx: None }
+    }
 }
 
 pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
@@ -283,24 +298,30 @@ pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
 impl EquipItemList {
     pub fn new(mut slots: Vec<(ItemKind, u8)>) -> EquipItemList {
         slots.sort_by_key(|&(ik, _)| ik);
-        let slots = slots.iter().map(|&(ik, ik_i)| (ik, ik_i, None)).collect();
+        let mut new_slots = Vec::new();
+        for &(ik, n) in slots.iter() {
+            for i in 0..n {
+                new_slots.push(SlotInfo::new(ik, i));
+            }
+        }
+        
         EquipItemList {
-            slots: slots,
+            slots: new_slots,
             item_list: ItemList::new(::basic::MAX_EQUIP_SLOT),
         }
     }
 
     /// Number of slots for specified ItemKind
     pub fn slot_num(&self, ik: ItemKind) -> usize {
-        self.slots.iter().filter(|a| a.0 == ik).count()
+        self.slots.iter().filter(|slot| slot.ik == ik).count()
     }
     
     /// Specified slot is empty or not
     /// If specified slot doesn't exist, return false.
     pub fn is_slot_empty(&self, ik: ItemKind, n: usize) -> bool {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
-        if let Some(a) = self.slots.iter().filter(|a| a.0 == ik).nth(n) {
-            a.2.is_none()
+        if let Some(a) = self.slots.iter().filter(|slot| slot.ik == ik).nth(n) {
+            a.list_idx.is_none()
         } else {
             false
         }
@@ -316,26 +337,36 @@ impl EquipItemList {
         }
     }
     
-    /// Equip an item to specified slot, and returns removed item
+    /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
     pub fn equip(&mut self, ik: ItemKind, n: usize, item: Box<Item>) -> Option<Box<Item>> {
         assert!(self.slot_num(ik) > n);
         if let Some(i) = self.list_idx(ik, n) { // Replace existing item
             return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
         }
-        let mut new_idx = 0;
+        
+        if self.item_list.items.is_empty() { // If any item is not equipped.
+            self.item_list.items.push((item, 1));
+            self.set_list_idx(ik, n, 0);
+            return None;
+        }
+        
         // Calculate new index for insert
-        // Todo: this does not consider the order of equipments
-        for (_slot_ik, is_equipped) in self.slots.iter().map(|&(slot_ik, _, idx)| (slot_ik, idx.is_some())) {
-            if is_equipped {
+        let mut new_idx = 0;
+        let mut processed_slot = 0;
+        for i_slot in 0..self.slots.len() {
+            if self.slots[i_slot].ik == ik && self.slots[i_slot].n as usize == n {
+                self.set_list_idx(ik, n, new_idx);
+                self.item_list.items.insert(new_idx, (item, 1));
+                processed_slot = i_slot;
+                break;
+            } else if self.slots[i_slot].list_idx.is_some() {
                 new_idx += 1;
             }
         }
 
-        self.item_list.items.insert(new_idx, (item, 1));
-        self.slots[0].2 = Some(0);
-        for slot in self.slots.iter_mut() {
-            if slot.0 == ik && slot.1 == n as u8 {
-                slot.2 = Some(new_idx as u8);
+        for i_slot in (processed_slot + 1)..self.slots.len() {
+            if let Some(list_idx) = self.slots[i_slot].list_idx {
+                self.slots[i_slot].list_idx = Some(list_idx + 1);
             }
         }
         
@@ -343,14 +374,22 @@ impl EquipItemList {
     }
 
     fn list_idx(&self, ik: ItemKind, n: usize) -> Option<usize> {
-        if let Some(a) = self.slots.iter().filter(|a| a.0 == ik).nth(n) {
-            if let Some(a) = a.2 {
-                Some(a as usize)
+        if let Some(slot) = self.slots.iter().find(|slot| slot.ik == ik && slot.n as usize == n) {
+            if let Some(list_idx) = slot.list_idx {
+                Some(list_idx as usize)
             } else {
                 None
             }
         } else {
             None
+        }
+    }
+
+    fn set_list_idx(&mut self, ik: ItemKind, n: usize, idx: usize) {
+        if let Some(slot) = self.slots.iter_mut().find(|slot| slot.ik == ik && slot.n as usize == n) {
+            slot.list_idx = Some(idx as u8);
+        } else {
+            panic!("set_list_idx for invalid slot");
         }
     }
 
@@ -381,10 +420,10 @@ impl<'a> Iterator for EquipSlotIter<'a> {
             return None;
         }
         let slot = &self.equip_item_list.slots[self.n];
-        let result = if let Some(i) = slot.2 {
-            (slot.0, slot.1, Some(&*self.equip_item_list.item_list.items[i as usize].0))
+        let result = if let Some(i) = slot.list_idx {
+            (slot.ik, slot.n, Some(&*self.equip_item_list.item_list.items[i as usize].0))
         } else {
-            (slot.0, slot.1, None)
+            (slot.ik, slot.n, None)
         };
         self.n += 1;
         return Some(result);
@@ -404,8 +443,8 @@ impl<'a> Iterator for EquipItemIter<'a> {
                 return None;
             }
             let slot = &self.equip_item_list.slots[self.n];
-            if let Some(i) = slot.2 {
-                let result = (slot.0, slot.1, &*self.equip_item_list.item_list.items[i as usize].0);
+            if let Some(i) = slot.list_idx {
+                let result = (slot.ik, slot.n, &*self.equip_item_list.item_list.items[i as usize].0);
                 self.n += 1;
                 return Some(result);
             }
