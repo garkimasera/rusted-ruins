@@ -144,15 +144,22 @@ impl GameData {
 
     /// Remove item from list
     pub fn remove_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T) {
-        let item_list = self.get_item_list_mut(item_location.0);
-        item_list.remove(item_location.1, n);
+        {
+            let item_list = self.get_item_list_mut(item_location.0);
+            item_list.remove(item_location.1, n);
+        }
+        self.check_item_list_on_tile(item_location.0);
     }
 
     /// Remove item from list and get its clone or moved value
     pub fn remove_item_and_get<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T)
                                              -> Box<Item> {
-        let item_list = self.get_item_list_mut(item_location.0);
-        item_list.remove_and_get(item_location.1, n)
+        let result = {
+            let item_list = self.get_item_list_mut(item_location.0);
+            item_list.remove_and_get(item_location.1, n)
+        };
+        self.check_item_list_on_tile(item_location.0);
+        result
     }
 
     /// Move item to dest
@@ -169,10 +176,25 @@ impl GameData {
             };
             (src_list.remove_and_get(item_location.1, n), n)
         };
-        let dest_list = self.get_item_list_mut(dest);
-        if !dest_list.has_empty() { return false; }
-        dest_list.append(item, n);
+        {
+            let dest_list = self.get_item_list_mut(dest);
+            if !dest_list.has_empty() { return false; }
+            dest_list.append(item, n);
+        }
+        self.check_item_list_on_tile(item_location.0);
         true
+    }
+
+    /// Checks item list on tile is empty or not. If so, delete
+    fn check_item_list_on_tile(&mut self, item_list_location: ItemListLocation) {
+        match item_list_location {
+            ItemListLocation::OnMap { mid, pos } => {
+                if self.get_item_list(item_list_location).is_empty() {
+                    self.site.get_map_mut(mid).tile[pos].item_list = None;
+                }
+            }
+            _ => (),
+        }
     }
 
     pub fn get_equip_list(&self, cid: CharaId) -> &EquipItemList {
