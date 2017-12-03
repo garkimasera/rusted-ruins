@@ -34,6 +34,12 @@ pub enum ItemContent {
         kind: WeaponKind,
         eff: f32,
     },
+    BodyArmor {
+        /// Defence
+        def: f32,
+        /// Magic Defence
+        mdf: f32,
+    }
 }
 
 impl ItemContent {
@@ -42,6 +48,7 @@ impl ItemContent {
             ItemContent::Object => ItemKind::Object,
             ItemContent::Potion { .. } => ItemKind::Potion,
             ItemContent::Weapon { .. } => ItemKind::Weapon,
+            ItemContent::BodyArmor { .. } => ItemKind::BodyArmor,
         }
     }
 }

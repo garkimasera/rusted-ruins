@@ -73,5 +73,9 @@ pub struct ItemDepInput {
     pub eff: Option<f32>,
     pub potion_kind: Option<gamedata::item::PotionKind>,
     pub weapon_kind: Option<gamedata::item::WeaponKind>,
+    /// For armor items
+    pub def: Option<f32>,
+    /// For armor items
+    pub mdf: Option<f32>,
 }
 

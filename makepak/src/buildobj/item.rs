@@ -26,6 +26,12 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
                 eff: get_optional_field!(item, eff),
             }
         }
+        "BodyArmor" => {
+            ItemContent::BodyArmor {
+                def: get_optional_field!(item, def),
+                mdf: get_optional_field!(item, mdf),
+            }
+        }
         _ => {
             bail!(ErrorKind::UnexpectedValue("item_kind".to_owned(), item.item_kind.clone()));
         },
