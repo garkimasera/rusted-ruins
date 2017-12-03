@@ -12,9 +12,14 @@ use common::gobj;
 use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
 use text;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub type ActionCallback = FnMut(DoPlayerAction, ItemLocation) -> bool;
 pub enum ItemWindowMode {
     List, PickUp,
+    Select {
+        ill: ItemListLocation,
+        filter: ItemFilter,
+        action: Box<ActionCallback>,
+    }
 }
 
 pub struct ItemWindow {
@@ -43,6 +48,14 @@ impl ItemWindow {
         item_window
     }
 
+    pub fn new_select(ill: ItemListLocation, filter: ItemFilter,
+                  action: Box<ActionCallback>, pa: DoPlayerAction) -> ItemWindow {
+        let mode = ItemWindowMode::Select {
+            ill, filter, action
+        };
+        ItemWindow::new(mode, pa)
+    }
+
     fn update_by_mode(&mut self, pa: DoPlayerAction) {
         let gd = pa.gd();
         
@@ -58,6 +71,10 @@ impl ItemWindow {
                     pos: gd.player_pos(),
                 };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Select { ill, filter, ..} => {
+                let filtered_list = gd.get_filtered_item_list(ill, filter);
                 self.update_list(filtered_list);
             }
         }
@@ -92,6 +109,13 @@ impl ItemWindow {
                     DialogResult::Close
                 };
                 result
+            }
+            ItemWindowMode::Select { ref mut action, .. } => {
+                if action(pa, il) {
+                    DialogResult::Close
+                } else {
+                    DialogResult::Continue
+                }
             }
         }
     }

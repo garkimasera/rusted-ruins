@@ -117,6 +117,9 @@ impl GameData {
             ItemListLocation::Chara { cid } => {
                 &self.chara.get(cid).item_list
             }
+            ItemListLocation::Equip { cid } => {
+                self.chara.get(cid).equip.list()
+            }
             ItemListLocation::OnMap { mid, pos } => {
                 &self.site.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
             }
@@ -128,6 +131,9 @@ impl GameData {
         match list_location {
             ItemListLocation::Chara { cid } => {
                 &mut self.chara.get_mut(cid).item_list
+            }
+            ItemListLocation::Equip { .. } => {
+                panic!("Mutable borrow is prohibited for equipment list");
             }
             ItemListLocation::OnMap { mid, pos } => {
                 self.site.get_map_mut(mid).tile[pos].item_list.as_mut()

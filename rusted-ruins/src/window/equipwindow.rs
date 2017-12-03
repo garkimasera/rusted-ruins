@@ -76,7 +76,18 @@ impl DialogWindow for EquipWindow {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
-                    
+                    use super::itemwindow::ItemWindow;
+                    use common::gamedata::item::*;
+                    let action = |pa: DoPlayerAction, il: ItemLocation| {
+                        true
+                    };
+                    let select_window = ItemWindow::new_select(
+                        ItemListLocation::Chara { cid: CharaId::Player },
+                        ItemFilter::new().kind(self.slots[i as usize].0),
+                        Box::new(action),
+                        pa
+                    );
+                    return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
                 _ => (),
             }

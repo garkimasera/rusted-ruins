@@ -62,6 +62,7 @@ pub enum WeaponKind {
 pub enum ItemListLocation {
     OnMap { mid: super::map::MapId, pos: Vec2d },
     Chara { cid: super::chara::CharaId },
+    Equip { cid: super::chara::CharaId },
 }
 
 pub type ItemLocation = (ItemListLocation, u32);
@@ -194,15 +195,21 @@ impl From<u32> for ItemMoveNum {
 }
 
 /// Used for creating filtered list and saving filtering state
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct ItemFilter {
     pub all: bool,
     pub kind: Option<ItemKind>,
 }
 
 impl ItemFilter {
-    pub fn all() -> ItemFilter {
+    pub fn new() -> ItemFilter {
         ItemFilter::default()
+    }
+    
+    pub fn all() -> ItemFilter {
+        let mut filter = ItemFilter::default();
+        filter.all = true;
+        filter
     }
     
     /// Given item will be filtered (false) or not (true)
@@ -215,12 +222,17 @@ impl ItemFilter {
         
         true
     }
+
+    pub fn kind(mut self, kind: ItemKind) -> ItemFilter {
+        self.kind = Some(kind);
+        self
+    }
 }
 
 impl Default for ItemFilter {
     fn default() -> ItemFilter {
         ItemFilter {
-            all: true,
+            all: false,
             kind: None,
         }
     }
@@ -405,6 +417,10 @@ impl EquipItemList {
             equip_item_list: &self,
             n: 0,
         }
+    }
+
+    pub fn list(&self) -> &ItemList {
+        &self.item_list
     }
 }
 

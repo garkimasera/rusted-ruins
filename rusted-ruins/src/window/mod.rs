@@ -36,9 +36,8 @@ mod commonuse {
 
 use self::commonuse::*;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum DialogResult {
-    Continue, Close, CloseAll, Quit, User(u32),
+    Continue, Close, CloseAll, Quit, OpenChildDialog(Box<DialogWindow>), User(u32),
 }
 
 pub trait Window {
@@ -182,10 +181,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             };
             match dialog_result {
                 DialogResult::Continue => (),
-                DialogResult::Close => { self.window_stack.pop(); },
-                DialogResult::CloseAll => { self.window_stack.clear(); },
-                DialogResult::Quit => { return false; },
-                DialogResult::User(n) => { self.process_user_result(n); },
+                DialogResult::Close => { self.window_stack.pop(); }
+                DialogResult::CloseAll => { self.window_stack.clear(); }
+                DialogResult::Quit => { return false; }
+                DialogResult::OpenChildDialog(child) => {
+                    self.window_stack.push(child);
+                }
+                DialogResult::User(n) => { self.process_user_result(n); }
             }
             return true;
         }
