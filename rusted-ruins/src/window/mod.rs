@@ -75,6 +75,7 @@ pub struct WindowManager<'sdl, 't> {
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
+    child_window_closed: bool,
 }
 
 impl<'sdl, 't> WindowManager<'sdl, 't> {
@@ -96,6 +97,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             anim: None,
             passed_frame: 0,
             window_stack: window_stack,
+            child_window_closed: false,
         }
     }
 
@@ -167,7 +169,16 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             InputMode::Normal
         };
         
-        let command = event_handler.get_command(mode);
+        let command = if self.child_window_closed {
+            self.child_window_closed = false;
+            if self.window_stack.len() > 0 {
+                Some(Command::ChildWindowClosed)
+            } else {
+                event_handler.get_command(mode)
+            }
+        } else {
+            event_handler.get_command(mode)
+        };
         if command.is_none() { return true; }
         let command = command.unwrap();
         
@@ -181,7 +192,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             };
             match dialog_result {
                 DialogResult::Continue => (),
-                DialogResult::Close => { self.window_stack.pop(); }
+                DialogResult::Close => {
+                    self.window_stack.pop();
+                    self.child_window_closed = true;
+                }
                 DialogResult::CloseAll => { self.window_stack.clear(); }
                 DialogResult::Quit => { return false; }
                 DialogResult::OpenChildDialog(child) => {

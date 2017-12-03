@@ -11,4 +11,6 @@ pub enum Command {
     OpenExitWin, OpenItemMenu, OpenEquipWin, PickUpItem,
     TextInput { text: String },
     TextDelete,
+    /// Special command to notify that the child window is closed
+    ChildWindowClosed,
 }

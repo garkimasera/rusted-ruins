@@ -134,7 +134,7 @@ impl ItemList {
     pub fn remove<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) {
         let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
-        assert!(self.items[i].1 <= n && n != 0);
+        assert!(self.items[i].1 >= n && n != 0);
         if n == 0 { return; }
 
         self.items[i].1 -= n;
@@ -147,7 +147,7 @@ impl ItemList {
     pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) -> Box<Item> {
         let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
-        assert!(self.items[i].1 <= n && n != 0);
+        assert!(self.items[i].1 >= n && n != 0);
 
         self.items[i].1 -= n;
         if self.items[i].1 == 0 {
@@ -160,7 +160,7 @@ impl ItemList {
     /// Move an item to the other item list
     pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) -> bool {
         let n = n.into().to_u32(self.items[i].1);
-        assert!(self.items[i].1 <= n && n != 0);
+        assert!(self.items[i].1 >= n && n != 0);
         if !dest.has_empty() { return false; }
         
         self.items[i].1 -= n;

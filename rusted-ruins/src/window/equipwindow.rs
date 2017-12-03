@@ -11,6 +11,7 @@ use super::widget::*;
 use common::gobj;
 use common::gamedata::item::ItemKind;
 use common::gamedata::chara::CharaId;
+use common::gamedata::item::*;
 use text;
 
 pub struct EquipWindow {
@@ -75,18 +76,28 @@ impl Window for EquipWindow {
 
 impl DialogWindow for EquipWindow {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
+        if command == Command::ChildWindowClosed {
+            self.update_list(pa);
+            return DialogResult::Continue;
+        }
+        
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
                     use super::itemwindow::ItemWindow;
-                    use common::gamedata::item::*;
-                    let action = |pa: DoPlayerAction, il: ItemLocation| {
-                        true
+
+                    // Callback function for selected item equipment
+                    let slot = self.slots[i as usize];
+                    let cid = self.cid;
+                    let equip_selected_item = move |mut pa: DoPlayerAction, il: ItemLocation| {
+                        pa.change_equipment(cid, slot, il);
+                        DialogResult::Close
                     };
+                    
                     let select_window = ItemWindow::new_select(
                         ItemListLocation::Chara { cid: CharaId::Player },
                         ItemFilter::new().kind(self.slots[i as usize].0),
-                        Box::new(action),
+                        Box::new(equip_selected_item),
                         pa
                     );
                     return DialogResult::OpenChildDialog(Box::new(select_window));

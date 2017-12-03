@@ -12,7 +12,7 @@ use common::gobj;
 use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
 use text;
 
-pub type ActionCallback = FnMut(DoPlayerAction, ItemLocation) -> bool;
+pub type ActionCallback = FnMut(DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
     List, PickUp,
     Select {
@@ -111,11 +111,7 @@ impl ItemWindow {
                 result
             }
             ItemWindowMode::Select { ref mut action, .. } => {
-                if action(pa, il) {
-                    DialogResult::Close
-                } else {
-                    DialogResult::Continue
-                }
+                action(pa, il)
             }
         }
     }

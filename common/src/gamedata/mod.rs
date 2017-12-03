@@ -207,7 +207,11 @@ impl GameData {
         let chara = self.chara.get(cid);
         &chara.equip
     }
-    
+
+    pub fn get_equip_list_mut(&mut self, cid: CharaId) -> &mut EquipItemList {
+        let chara = self.chara.get_mut(cid);
+        &mut chara.equip
+    }
 }
 
 fn unknown_id_err<T: ::std::fmt::Debug>(id: T) -> String {

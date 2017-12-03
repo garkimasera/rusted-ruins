@@ -4,6 +4,7 @@ use super::action;
 use common::gamedata::{self, GameData};
 use common::gamedata::chara::CharaId;
 use common::gamedata::map::SpecialTileKind;
+use common::gamedata::item::*;
 use game::InfoGetter;
 use array2d::*;
 
@@ -83,6 +84,11 @@ impl<'a> DoPlayerAction<'a> {
         let player_item_list_location = gamedata::item::ItemListLocation::Chara { cid: CharaId::Player };
         gd.move_item(il, player_item_list_location, n);
         true
+    }
+
+    /// Change specified character's equipment by given item
+    pub fn change_equipment(&mut self, cid: CharaId, slot: (ItemKind, u8), il: ItemLocation) -> bool {
+        super::item::change_equipment(self.gd_mut(), cid, slot, il)
     }
 }
 
