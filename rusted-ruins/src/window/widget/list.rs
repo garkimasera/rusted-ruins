@@ -21,6 +21,7 @@ pub struct ListWidget {
 pub enum ListRow {
     Str(Vec<String>),
     IconStr(Vec<(IconIdx, String)>),
+    StrIconStr(Vec<(String, IconIdx, String)>),
 }
 
 impl ListRow {
@@ -28,6 +29,7 @@ impl ListRow {
         match *self {
             ListRow::Str(ref v) => { v.len() }
             ListRow::IconStr(ref v) => { v.len() }
+            ListRow::StrIconStr(ref v) => { v.len() }
         }
     }
 }
@@ -82,6 +84,14 @@ impl ListWidget {
                 n_row = rows.len();
                 for r in rows {
                     cache.push(TextCache::new(&[&r.1], FontKind::M, UI_CFG.color.normal_font.into()));
+                }
+            }
+            &ListRow::StrIconStr(ref rows) => {
+                assert!(self.column_pos.len() == 3);
+                n_row = rows.len();
+                for r in rows {
+                    cache.push(TextCache::new(
+                        &[&r.0, &r.2], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
             }
         }
@@ -143,9 +153,11 @@ impl WidgetTrait for ListWidget {
         check_draw!(canvas.fill_rect(highlight_rect));
 
         // Draw each rows
-        fn draw_text(t: &Texture, canvas: &mut WindowCanvas, rect: Rect, x: i32, y: i32) {
+        fn draw_text(t: &Texture, canvas: &mut WindowCanvas, rect: Rect, x: i32, y: i32,
+                     max_w: u32) {
             let w = t.query().width;
             let h = t.query().height;
+            let w = if w > max_w { max_w } else { w };
 
             let dest = Rect::new(rect.x + x, rect.y + y, w, h);
             check_draw!(canvas.copy(t, None, dest));
@@ -157,25 +169,43 @@ impl WidgetTrait for ListWidget {
             let dest = Rect::new(rect.x + x, rect.y + y, ICON_SIZE, ICON_SIZE);
             check_draw!(canvas.copy(t, orig, dest));
         }
-        
+
         match self.rows {
             ListRow::Str(_) => {
                 for i in 0..self.n_row {
+                    let h = h_row * i as i32;
                     let tex = sv.tt_group(&mut self.cache[i]);
                     draw_text(&tex[0], canvas, self.rect,
-                              self.column_pos[0] + left_margin, h_row * i as i32);
+                              self.column_pos[0] + left_margin, h, self.rect.width());
                 }
-            },
+            }
             ListRow::IconStr(ref r) => {
                 for i in 0..self.n_row {
+                    let h = h_row * i as i32;
                     draw_icon(sv, r[i].0, canvas, self.rect,
-                              self.column_pos[0] + left_margin, h_row * i as i32);
+                              self.column_pos[0] + left_margin, h);
                     
                     let tex = sv.tt_group(&mut self.cache[i]);
                     draw_text(&tex[0], canvas, self.rect,
-                              self.column_pos[1] + left_margin, h_row * i as i32);
+                              self.column_pos[1] + left_margin, h,
+                              self.rect.width() - self.column_pos[1] as u32);
                 }
-            },
+            }
+            ListRow::StrIconStr(ref r) => {
+                for i in 0..self.n_row {
+                    let h = h_row * i as i32;
+                    draw_icon(sv, r[i].1, canvas, self.rect,
+                              self.column_pos[1] + left_margin, h);
+                    
+                    let tex = sv.tt_group(&mut self.cache[i]);
+                    draw_text(&tex[0], canvas, self.rect,
+                              self.column_pos[0] + left_margin, h,
+                              self.column_pos[1] as u32);
+                    draw_text(&tex[1], canvas, self.rect,
+                              self.column_pos[2] + left_margin, h,
+                              self.rect.width() - self.column_pos[2] as u32);
+                }
+            }
         }
 
         // Draw highlight row borders

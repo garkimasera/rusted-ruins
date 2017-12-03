@@ -29,7 +29,8 @@ impl EquipWindow {
         let mut equip_window = EquipWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::IconStr(vec![]), vec![0, 26]),
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::StrIconStr(vec![]),
+                UI_CFG.equip_window.column_pos.clone()),
             n_row: UI_CFG.equip_window.n_row,
             current_page: 0,
             cid: cid,
@@ -40,23 +41,24 @@ impl EquipWindow {
     }
 
     fn update_list(&mut self, pa: DoPlayerAction) {
-        let mut rows: Vec<(IconIdx, String)> = Vec::new();
+        let mut rows: Vec<(String, IconIdx, String)> = Vec::new();
         let equips = pa.gd().get_equip_list(self.cid);
         self.slots.clear();
 
         for (ik, ik_i, item) in equips.slot_iter() {
+            let kind = text::ui_txt(&format!("{:?}", ik)).to_owned();
             if let Some(item) = item {
-                let item_text = format!(
-                    "{} ({:?})",
-                    text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
-                    ik);
-                rows.push((IconIdx::Item(item.idx), item_text));
+                let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
+                rows.push((kind, IconIdx::Item(item.idx), item_text));
             } else {
-                rows.push((IconIdx::Item(::common::objholder::ItemIdx(0)), "Empty".to_owned()));
+                rows.push((
+                    kind,
+                    IconIdx::Item(::common::objholder::ItemIdx(0)),
+                    text::ui_txt("Empty").to_owned()));
             }
             self.slots.push((ik, ik_i));
         }
-        self.list.set_rows(ListRow::IconStr(rows));
+        self.list.set_rows(ListRow::StrIconStr(rows));
     }
 }
 
