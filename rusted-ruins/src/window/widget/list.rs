@@ -23,6 +23,15 @@ pub enum ListRow {
     IconStr(Vec<(IconIdx, String)>),
 }
 
+impl ListRow {
+    fn len(&self) -> usize {
+        match *self {
+            ListRow::Str(ref v) => { v.len() }
+            ListRow::IconStr(ref v) => { v.len() }
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub enum ListWidgetResponse {
     Select(u32), SelectionChanged,
@@ -87,7 +96,11 @@ impl WidgetTrait for ListWidget {
     fn process_command(&mut self, command: &Command) -> Option<ListWidgetResponse> {
         match *command {
             Command::Enter => {
-                Some(ListWidgetResponse::Select(self.current_choice))
+                if self.rows.len() > 0 {
+                    Some(ListWidgetResponse::Select(self.current_choice))
+                } else {
+                    None
+                }
             }
             Command::Move { dir } => {
                 if self.n_row == 0 { return None; }
