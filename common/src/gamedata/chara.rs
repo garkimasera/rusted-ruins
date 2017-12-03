@@ -93,7 +93,7 @@ impl Default for Chara {
             params: CharaParams::default(),
             template: CharaTemplateIdx(0),
             item_list: ItemList::for_chara(),
-            equip: EquipItemList::new(Vec::new()),
+            equip: EquipItemList::new(&[]),
             wait_time: 100.0,
             hp: 100,
             rel: Relationship::NEUTRAL,

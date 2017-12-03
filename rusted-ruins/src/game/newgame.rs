@@ -17,7 +17,9 @@ pub fn create_newgame() -> GameData {
     chara.params.str = 25;
     chara.rel = gamedata::chara::Relationship::ALLY;
     /* Test code for equipment */
-    let mut equip = gamedata::item::EquipItemList::new(vec![(gamedata::item::ItemKind::Weapon, 1)]);
+    use common::gamedata::chara::Race;
+    let slots = &::rules::RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
+    let mut equip = gamedata::item::EquipItemList::new(slots);
     let item = ::game::item::gen::gen_dungeon_item(1);
     equip.equip(gamedata::item::ItemKind::Weapon, 0, item);
     chara.equip = equip;

@@ -18,7 +18,7 @@ impl Item {
 #[repr(u32)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object, Potion, Weapon,
+    Object, Potion, Weapon, BodyArmor,
 }
 
 /// Kind dependent data for a item
@@ -308,7 +308,8 @@ impl SlotInfo {
 pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
 
 impl EquipItemList {
-    pub fn new(mut slots: Vec<(ItemKind, u8)>) -> EquipItemList {
+    pub fn new(slots: &[(ItemKind, u8)]) -> EquipItemList {
+        let mut slots = slots.to_vec();
         slots.sort_by_key(|&(ik, _)| ik);
         let mut new_slots = Vec::new();
         for &(ik, n) in slots.iter() {
