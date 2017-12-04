@@ -19,9 +19,7 @@ pub fn create_newgame() -> GameData {
     /* Test code for equipment */
     use common::gamedata::chara::Race;
     let slots = &::rules::RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
-    let mut equip = gamedata::item::EquipItemList::new(slots);
-    let item = ::game::item::gen::gen_dungeon_item(1);
-    equip.equip(gamedata::item::ItemKind::Weapon, 0, item);
+    let equip = gamedata::item::EquipItemList::new(slots);
     chara.equip = equip;
     gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
 
