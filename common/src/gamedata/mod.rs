@@ -142,6 +142,11 @@ impl GameData {
         }
     }
 
+    pub fn get_item(&self, item_location: ItemLocation) -> (&Item, u32) {
+        let a = &self.get_item_list(item_location.0).items[item_location.1 as usize];
+        (&*a.0, a.1)
+    }
+
     pub fn get_filtered_item_list(&self, list_location: ItemListLocation, filter: ItemFilter)
                                   -> FilteredItemList {
         let item_list = self.get_item_list(list_location);
