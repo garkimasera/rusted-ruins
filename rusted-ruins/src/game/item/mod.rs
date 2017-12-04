@@ -1,7 +1,7 @@
 
 pub mod gen;
 
-use common::gamedata::{self, GameData};
+use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
 use common::gamedata::item::*;
 use common::gobj;
@@ -16,11 +16,11 @@ pub fn change_equipment(gd: &mut GameData, cid: CharaId, slot: (ItemKind, u8), i
         return false;
     }
     let item = gd.remove_item_and_get(il, 1);
-    let item_name = get_item_name(&item);;
+    let item_name = get_item_name(&item);
     if let Some(removed_equipment) = gd.get_equip_list_mut(cid).equip(slot.0, slot.1 as usize, item) {
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }
-    game_log!("item-equip"; chara=gd.chara.get(cid).name, item=item_name);
+    game_log_i!("item-equip"; chara=gd.chara.get(cid).name, item=item_name);
     true
 }
 

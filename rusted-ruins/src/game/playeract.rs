@@ -84,7 +84,7 @@ impl<'a> DoPlayerAction<'a> {
         let player_item_list_location = gamedata::item::ItemListLocation::Chara { cid: CharaId::Player };
         let item_name = super::item::get_item_name(gd.get_item(il).0);
         gd.move_item(il, player_item_list_location, n);
-        game_log!("item-pickup"; chara=gd.chara.get(CharaId::Player).name, item=item_name);
+        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player).name, item=item_name);
         true
     }
 

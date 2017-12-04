@@ -85,7 +85,7 @@ pub fn latest_line() -> usize {
 
 macro_rules! game_log {
     ($textid:expr) => {
-        log::push(text::get_txt($textid));
+        $crate::log::push(text::get_txt($textid));
     };
     ($textid:expr; $($target:ident = $value:expr),*) => {
         let text_raw = $crate::text::log_txt($textid);
@@ -99,6 +99,22 @@ macro_rules! game_log {
     }
 }
 
-
-    
+/// Instantly add a new line after logging
+macro_rules! game_log_i {
+    ($textid:expr) => {
+        $crate::log::push(text::get_txt($textid));
+        $crate::log::new_line()
+    };
+    ($textid:expr; $($target:ident = $value:expr),*) => {
+        let text_raw = $crate::text::log_txt($textid);
+        let mut table: Vec<(&str, String)> = Vec::new();
+        $(
+            table.push((stringify!($target), $value.to_string()));
+        )*;
+        
+        let t = $crate::util::replace_str(text_raw, table.as_slice());
+        $crate::log::push(t);
+        $crate::log::new_line();
+    }
+}
 
