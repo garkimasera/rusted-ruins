@@ -12,6 +12,7 @@ mod minimap;
 mod startwindow;
 mod widget;
 
+use std::any::Any;
 use game::{GameState, DoPlayerAction, InfoGetter, Command};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
@@ -37,7 +38,8 @@ mod commonuse {
 use self::commonuse::*;
 
 pub enum DialogResult {
-    Continue, Close, CloseAll, Quit, OpenChildDialog(Box<DialogWindow>), User(u32),
+    Continue, Close, CloseWithValue(Box<Any>), CloseAll, Quit,
+    OpenChildDialog(Box<DialogWindow>), User(u32),
 }
 
 pub trait Window {
@@ -50,6 +52,9 @@ pub trait DialogWindow: Window {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult;
     /// Return InputMode for this window
     fn mode(&self) -> InputMode;
+    fn callback_child_closed(&mut self, result: Option<Box<Any>>, pa: DoPlayerAction) -> DialogResult {
+        DialogResult::Continue
+    }
 }
 
 /// The current main mode
@@ -75,7 +80,6 @@ pub struct WindowManager<'sdl, 't> {
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
-    child_window_closed: bool,
 }
 
 impl<'sdl, 't> WindowManager<'sdl, 't> {
@@ -97,7 +101,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             anim: None,
             passed_frame: 0,
             window_stack: window_stack,
-            child_window_closed: false,
         }
     }
 
@@ -169,41 +172,48 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             InputMode::Normal
         };
         
-        let command = if self.child_window_closed {
-            self.child_window_closed = false;
-            if self.window_stack.len() > 0 {
-                Some(Command::ChildWindowClosed)
-            } else {
-                event_handler.get_command(mode)
-            }
-        } else {
-            event_handler.get_command(mode)
-        };
+        let command = event_handler.get_command(mode);
         if command.is_none() { return true; }
         let command = command.unwrap();
         
         use game::playeract::DoPlayerAction;
 
         if self.window_stack.len() > 0 {
-            let dialog_result = {
+            let mut tail = self.window_stack.len() - 1;
+            let mut dialog_result = {
                 let pa = DoPlayerAction::new(&mut self.game);
-                let tail = self.window_stack.len() - 1;
                 self.window_stack[tail].process_command(command, pa)
             };
-            match dialog_result {
-                DialogResult::Continue => (),
-                DialogResult::Close => {
-                    self.window_stack.pop();
-                    self.child_window_closed = true;
+            loop {
+                match dialog_result {
+                    DialogResult::Continue => (),
+                    DialogResult::Close => {
+                        self.window_stack.pop();
+                        if tail > 0 {
+                            tail -= 1;
+                            let pa = DoPlayerAction::new(&mut self.game);
+                            dialog_result = self.window_stack[tail].callback_child_closed(None, pa);
+                            continue;
+                        }
+                    }
+                    DialogResult::CloseWithValue(v) => {
+                        self.window_stack.pop();
+                        if tail > 0 {
+                            tail -= 1;
+                            let pa = DoPlayerAction::new(&mut self.game);
+                            dialog_result = self.window_stack[tail].callback_child_closed(None, pa);
+                            continue;
+                        }
+                    }
+                    DialogResult::CloseAll => { self.window_stack.clear(); }
+                    DialogResult::Quit => { return false; }
+                    DialogResult::OpenChildDialog(child) => {
+                        self.window_stack.push(child);
+                    }
+                    DialogResult::User(n) => { self.process_user_result(n); }
                 }
-                DialogResult::CloseAll => { self.window_stack.clear(); }
-                DialogResult::Quit => { return false; }
-                DialogResult::OpenChildDialog(child) => {
-                    self.window_stack.push(child);
-                }
-                DialogResult::User(n) => { self.process_user_result(n); }
+                return true;
             }
-            return true;
         }
         
         // If self.mode is OnGame

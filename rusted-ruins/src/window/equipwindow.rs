@@ -1,4 +1,5 @@
 
+use std::any::Any;
 use window::{Window, DialogWindow, DialogResult};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
@@ -76,10 +77,6 @@ impl Window for EquipWindow {
 
 impl DialogWindow for EquipWindow {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
-        if command == Command::ChildWindowClosed {
-            self.update_list(pa);
-            return DialogResult::Continue;
-        }
         
         if let Some(response) = self.list.process_command(&command) {
             match response {
@@ -118,6 +115,11 @@ impl DialogWindow for EquipWindow {
 
     fn mode(&self) -> InputMode {
         InputMode::Dialog
+    }
+
+    fn callback_child_closed(&mut self, result: Option<Box<Any>>, pa: DoPlayerAction) -> DialogResult {
+        self.update_list(pa);
+        DialogResult::Continue
     }
 }
 
