@@ -186,7 +186,8 @@ impl_objholder! {
     {SpecialTile, SpecialTileObject, special_tile, SpecialTileIdx},
     {Tile, TileObject, tile, TileIdx},
     {UIImg, UIImgObject, ui_img, UIImgIdx},
-    {Wall, WallObject, wall, WallIdx}
+    {Wall, WallObject, wall, WallIdx},
+    {TalkScript, TalkScriptObject, talk_script, TalkScriptIdx}
 }
 
 pub trait ObjectIndex: Sized {

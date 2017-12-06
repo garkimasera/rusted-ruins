@@ -1,19 +1,20 @@
 
 use std::collections::HashMap;
 
-#[derive(Deserialize)]
-pub struct TalkScript {
+/// Hold data of one taliking
+#[derive(Serialize, Deserialize)]
+pub struct TalkScriptObject {
     pub id: String,
     pub contents: HashMap<String, TalkContent>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TalkContent {
-    pub text_id: String,
+    pub text: String,
     pub action: TalkAction,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum TalkAction {
     End,
 }

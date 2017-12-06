@@ -1,5 +1,7 @@
 
+use std::collections::HashMap;
 use common::gamedata;
+use common::talkscript;
 
 #[derive(Debug, Deserialize)]
 pub struct TomlInput {
@@ -11,6 +13,7 @@ pub struct TomlInput {
     pub chara_template: Option<CharaTemplateDepInput>,
     pub item: Option<ItemDepInput>,
     pub tile: Option<TileDepInput>,
+    pub talk_script: Option<TalkScriptDepInput>,
 }
 
 /// If tomlinput has specified optional field, return it. If not, return error.
@@ -77,5 +80,10 @@ pub struct ItemDepInput {
     pub def: Option<f32>,
     /// For armor items
     pub mdf: Option<f32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TalkScriptDepInput {
+    pub contents: HashMap<String, talkscript::TalkContent>,
 }
 

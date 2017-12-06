@@ -32,6 +32,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         "wall" => {
             return build_wall_object(tomlinput).map(|o| Object::Wall(o));
         }
+        "talk_script" => {
+            return build_talk_script_object(tomlinput).map(|o| Object::TalkScript(o));
+        }
         _ => {
             bail!("Unknown object_type");
         }
@@ -105,6 +108,15 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
         img: build_img(img)?,
         duration: anim_img_dep.duration,
         n_frame: anim_img_dep.n_frame,
+    })
+}
+
+fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
+    let talk_script_dep = get_optional_field!(tomlinput, talk_script);
+
+    Ok(TalkScriptObject {
+        id: tomlinput.id,
+        contents: talk_script_dep.contents,
     })
 }
 
