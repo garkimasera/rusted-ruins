@@ -35,6 +35,8 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         wait_time: 100.0,
         hp: max_hp,
         rel: Relationship::NEUTRAL,
+        trigger: None,
+        talk: None,
     };
     chara
 }

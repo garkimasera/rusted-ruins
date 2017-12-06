@@ -4,7 +4,7 @@ use window::{Window, DialogWindow, DialogResult};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use sdlvalues::*;
-use game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
+use game::{Game, Animation, Command, DoPlayerAction};
 use config::UI_CFG;
 use draw::border::draw_rect_border;
 use eventhandler::InputMode;

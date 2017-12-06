@@ -2,7 +2,7 @@
 use super::Game;
 use super::action;
 use common::gamedata::{self, GameData};
-use common::gamedata::chara::CharaId;
+use common::gamedata::chara::{CharaId, Relationship};
 use common::gamedata::map::SpecialTileKind;
 use common::gamedata::item::*;
 use game::InfoGetter;
@@ -20,11 +20,40 @@ impl<'a> DoPlayerAction<'a> {
         &self.0.gd
     }
 
-    pub fn gd_mut(&mut self) -> &mut GameData {
+    fn gd_mut(&mut self) -> &mut GameData {
         &mut self.0.gd
     }
 
     pub fn try_move(&mut self, dir: Direction) {
+        // If there is friendy chara on target tile, and have a trigger to start talk
+        let will_talk = {
+            if dir.as_vec() != (0, 0) {
+                let gd = self.gd();
+                let player_chara = gd.chara.get(CharaId::Player);
+                let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+                if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
+                    let other_chara = gd.chara.get(other_chara);
+                    match player_chara.rel.relative(other_chara.rel) {
+                        Relationship::ALLY | Relationship::FRIENDLY => {
+                            if !other_chara.talk.is_none() {
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                        _ => false,
+                    }
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        };
+        if will_talk {
+            self.try_talk(dir);
+            return;
+        }
         if action::try_move(self.0, CharaId::Player, dir) {
             self.0.finish_player_turn();
         }
@@ -92,7 +121,24 @@ impl<'a> DoPlayerAction<'a> {
     pub fn change_equipment(&mut self, cid: CharaId, slot: (ItemKind, u8), il: ItemLocation) -> bool {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)
     }
+
+    /// Try talk to next chara
+    /// If success, returns id of the talk script
+    pub fn try_talk(&mut self, dir: Direction) {
+        if dir.as_vec() == (0, 0) { return; }
+
+        let gd = self.gd();
+        let player_chara = gd.chara.get(CharaId::Player);
+        let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+        if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
+            let other_chara = gd.chara.get(other_chara);
+            match player_chara.rel.relative(other_chara.rel) {
+                Relationship::ALLY | Relationship::FRIENDLY => {
+                    
+                }
+                _ => (),
+            }
+        }
+    }
 }
-
-
 

@@ -58,7 +58,7 @@ pub trait DialogWindow: Window {
 }
 
 /// The current main mode
-pub enum WindowManageMode {
+enum WindowManageMode {
     Start(self::startwindow::StartWindow), OnGame(GameWindows),
 }
 
@@ -242,7 +242,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenEquipWin => {
                 use common::gamedata::chara::CharaId;
-                use self::equipwindow::*;
                 self.window_stack.push(Box::new(equipwindow::EquipWindow::new(pa, CharaId::Player)));
             }
             Command::PickUpItem => {

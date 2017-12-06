@@ -52,6 +52,10 @@ pub struct Chara {
     pub hp: i32,
     /// Relationship to player character
     pub rel: Relationship,
+    /// Trigger for event
+    pub trigger: Option<(CharaTriggerKind, TriggerAction)>,
+    /// Talk attribute
+    pub talk: Option<CharaTalk>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -97,6 +101,8 @@ impl Default for Chara {
             wait_time: 100.0,
             hp: 100,
             rel: Relationship::NEUTRAL,
+            trigger: None,
+            talk: None,
         }
     }
 }
@@ -156,5 +162,28 @@ impl CharaHolder {
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {
         self.0.remove(&cid);
     }
+}
+
+/// Represents triggers for one chara
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CharaTriggerKind {
+    /// When the chara is died
+    Die,
+}
+
+/// Action after trigger occured
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub enum TriggerAction {
+    /// Trigger for event handling
+    Event(::event::EventTrigger),
+    /// Start talking that has given string id
+    Talk(String),
+}
+
+/// What happens when player chara try to talk to the chara
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum CharaTalk {
+    /// Start new talking that has specified TalkScript id
+    Start(String),
 }
 
