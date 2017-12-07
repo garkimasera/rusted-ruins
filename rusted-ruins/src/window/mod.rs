@@ -53,7 +53,7 @@ pub trait DialogWindow: Window {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult;
     /// Return InputMode for this window
     fn mode(&self) -> InputMode;
-    fn callback_child_closed(&mut self, result: Option<Box<Any>>, pa: DoPlayerAction) -> DialogResult {
+    fn callback_child_closed(&mut self, _result: Option<Box<Any>>, _pa: DoPlayerAction) -> DialogResult {
         DialogResult::Continue
     }
 }
@@ -90,7 +90,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
-        let text_input_util = sdl_context.sdl_context.video().unwrap().text_input();
         let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
         window_stack.push(Box::new(self::startwindow::StartDialog::new()));
         
@@ -208,7 +207,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         if tail > 0 {
                             tail -= 1;
                             let pa = DoPlayerAction::new(&mut self.game);
-                            dialog_result = self.window_stack[tail].callback_child_closed(None, pa);
+                            dialog_result = self.window_stack[tail].callback_child_closed(Some(v), pa);
                             continue;
                         }
                     }

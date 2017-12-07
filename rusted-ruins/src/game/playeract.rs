@@ -108,8 +108,6 @@ impl<'a> DoPlayerAction<'a> {
     /// Pick up an item on tile
     pub fn pick_up_item(&mut self, il: gamedata::item::ItemLocation, n: u32) -> bool {
         let gd = self.gd_mut();
-        let mid = gd.get_current_mapid();
-        let player_pos = gd.player_pos();
         let player_item_list_location = gamedata::item::ItemListLocation::Chara { cid: CharaId::Player };
         let item_name = super::item::get_item_name(gd.get_item(il).0);
         gd.move_item(il, player_item_list_location, n);

@@ -3,7 +3,6 @@ use config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
 use text;
-use sdlvalues::FontKind;
 
 pub struct StartWindow {
     title_screen: ImageWidget,
