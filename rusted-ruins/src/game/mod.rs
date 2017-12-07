@@ -14,6 +14,7 @@ mod combat;
 mod turnloop;
 
 use std::collections::VecDeque;
+use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
 pub use self::command::Command;
@@ -34,6 +35,7 @@ pub struct Game {
     state: GameState,
     turn_loop_data: TurnLoopData,
     anim_queue: VecDeque<Animation>,
+    dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
 }
 
@@ -45,6 +47,7 @@ impl Game {
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
+            dialog_open_request: None,
             dying_charas: Vec::new(),
         };
         
@@ -57,6 +60,7 @@ impl Game {
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),
+            dialog_open_request: None,
             dying_charas: Vec::new(),
         }
     }
@@ -78,5 +82,20 @@ impl Game {
     pub fn pop_animation(&mut self) -> Option<Animation> {
         self.anim_queue.pop_front()
     }
+
+    pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {
+        self.dialog_open_request = Some(req);
+    }
+
+    pub fn pop_dialog_open_request(&mut self) -> Option<DialogOpenRequest> {
+        if self.dialog_open_request.is_some() {
+            ::std::mem::replace(&mut self.dialog_open_request, None)
+        } else {
+            None
+        }
+    }
 }
 
+pub enum DialogOpenRequest {
+    Talk(gamedata::chara::CharaTalk),
+}

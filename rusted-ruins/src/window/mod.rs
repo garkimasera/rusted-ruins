@@ -11,6 +11,7 @@ mod indicator;
 mod minimap;
 mod startwindow;
 mod widget;
+mod dialogreq;
 
 use std::any::Any;
 use game::{GameState, DoPlayerAction, InfoGetter, Command};
@@ -116,6 +117,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         if self.game.get_state() == GameState::PlayerTurn {
             if !self.process_command(event_handler) { return false; }
         }
+        // If game requests dialog popup for player
+        if let Some(dialog_open_request) = self.game.pop_dialog_open_request() {
+            let dialog = dialogreq::create_dialog_from_request(dialog_open_request);
+            self.window_stack.push(dialog);
+        }
+        
         // After advancing turn and processing command, game may start animation.
         self.anim = self.game.pop_animation();
 
