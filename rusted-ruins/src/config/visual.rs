@@ -31,6 +31,7 @@ pub struct UIConfig {
     pub font: Font,
     pub log_window: LogWindowConfig,
     pub exit_window: ExitWindowConfig,
+    pub talk_window: TalkWindowConfig,
     pub start_dialog: StartDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
     pub item_window: ItemWindowConfig,
@@ -79,6 +80,12 @@ pub struct LogWindowConfig {
 pub struct ExitWindowConfig {
     pub rect: CfgRect,
     pub list_y: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TalkWindowConfig {
+    pub rect: CfgRect,
+    pub n_default_line: u32,
 }
 
 #[derive(Debug, Deserialize)]

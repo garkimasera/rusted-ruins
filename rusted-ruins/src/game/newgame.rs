@@ -26,7 +26,10 @@ pub fn create_newgame() -> GameData {
     let mut chara = super::chara::creation::create_npc_chara(
         ::common::gamedata::site::DungeonKind::Cave, 10);
     chara.rel = ::common::gamedata::chara::Relationship::FRIENDLY;
-    chara.talk = Some(::common::gamedata::chara::CharaTalk::Start("!hello".to_owned()));
+    chara.talk = Some(::common::gamedata::chara::CharaTalk::Start {
+        id: "!hello".to_owned(),
+        section: "start".to_owned(),
+    });
     gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, start_pos + (0, 2));
 
     map::gen_npcs(&mut gd, mid, 10, 10);

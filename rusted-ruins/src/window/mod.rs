@@ -2,6 +2,7 @@
 mod mainwindow;
 mod logwindow;
 mod textwindow;
+mod talkwindow;
 mod itemwindow;
 mod exitwindow;
 mod equipwindow;

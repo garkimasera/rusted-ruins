@@ -184,6 +184,6 @@ pub enum TriggerAction {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum CharaTalk {
     /// Start new talking that has specified TalkScript id
-    Start(String),
+    Start { id: String, section: String },
 }
 
