@@ -113,10 +113,28 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
 
 fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
     let talk_script_dep = get_optional_field!(tomlinput, talk_script);
+    use std::collections::HashMap;
+    use common::talkscript::TalkSection;
+    let mut sections: HashMap<String, TalkSection> = HashMap::new();
+    for (k, v) in talk_script_dep.sections {
+        let text = if v.text.is_none() && (v.is_empty.is_none() || v.is_empty.unwrap()) {
+            // Setting default text id
+            Some(format!("{}.{}", &tomlinput.id, k))
+        } else {
+            v.text
+        };
+        sections.insert(
+            k,
+            TalkSection {
+                text: text,
+                action: v.action,
+            }
+        );
+    }
 
     Ok(TalkScriptObject {
         id: tomlinput.id,
-        sections: talk_script_dep.sections,
+        sections: sections,
     })
 }
 

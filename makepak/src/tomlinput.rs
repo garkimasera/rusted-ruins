@@ -84,6 +84,13 @@ pub struct ItemDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TalkScriptDepInput {
-    pub sections: HashMap<String, talkscript::TalkSection>,
+    pub sections: HashMap<String, TalkScriptSectionInput>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TalkScriptSectionInput {
+    pub is_empty: Option<bool>,
+    pub text: Option<String>,
+    pub action: talkscript::TalkSectionAction,
 }
 
