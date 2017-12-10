@@ -28,6 +28,7 @@ pub const CFG_FILES_DIR: &'static str = "config";
 pub const OBJ_TXT_DIR: &'static str = "obj";
 pub const LOG_TXT_DIR: &'static str = "log";
 pub const UI_TXT_DIR: &'static str = "ui";
+pub const TALK_TXT_DIR: &'static str = "talk";
 
 /// Special tile object id for downstairs
 pub const SPECIAL_TILE_OBJ_DOWNSTAIRS: &'static str = "!downstairs";

@@ -13,12 +13,14 @@ pub fn init() {
     ::lazy_static::initialize(&OBJ_TXT_MAP);
     ::lazy_static::initialize(&LOG_TXT_MAP);
     ::lazy_static::initialize(&UI_TXT_MAP);
+    ::lazy_static::initialize(&TALK_TXT_MAP);
 }
 
 lazy_static! {
     static ref OBJ_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
     static ref LOG_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
     static ref UI_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
+    static ref TALK_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::TALK_TXT_DIR);
 }
 
 pub fn obj_txt<'a>(id: &'a str) -> &'a str {
@@ -43,6 +45,14 @@ pub fn ui_txt<'a>(id: &'a str) -> &'a str {
 
 pub fn ui_txt_checked(id: &str) -> Option<&'static str> {
     UI_TXT_MAP.get(id).map(|txt| txt.as_ref())
+}
+
+pub fn talk_txt<'a>(id: &'a str) -> &'a str {
+    if let Some(txt) = TALK_TXT_MAP.get(id) { txt }else{ id }
+}
+
+pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
+    TALK_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
 fn load_trans_txt(kind: &str) -> HashMap<String, String> {

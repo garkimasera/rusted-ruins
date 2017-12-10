@@ -4,6 +4,7 @@ use common::objholder::TalkScriptIdx;
 use common::gamedata::chara::{CharaId, CharaTalk};
 use common::gobj;
 use game::Game;
+use text;
 
 /// Hold data for talk handling
 pub struct TalkStatus {
@@ -26,7 +27,8 @@ impl TalkStatus {
 
     pub fn get_text(&self) -> &'static str {
         let tso = gobj::get_obj(self.idx);
-        tso.get_section_text(&self.current_section).unwrap()
+        let text = tso.get_section_text(&self.current_section).unwrap();
+        text::talk_txt(&text)
     }
 }
 

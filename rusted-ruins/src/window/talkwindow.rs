@@ -5,6 +5,7 @@ use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use game::TalkStatus;
+use text;
 
 pub struct TalkWindow {
     rect: Rect,
@@ -28,7 +29,7 @@ impl TalkWindow {
     fn set_text<T: Into<String>>(&mut self, text: T) {
         let text: String = text.into();
         
-        println!("{}", text);
+        println!("{}", text::talk_txt(&text));
         // for line in text.lines().skip(self.current_line).take(UI_CFG. {
             
         // }
