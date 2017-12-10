@@ -176,14 +176,17 @@ pub enum CharaTriggerKind {
 pub enum TriggerAction {
     /// Trigger for event handling
     Event(::event::EventTrigger),
-    /// Start talking that has given string id
-    Talk(String),
 }
 
-/// What happens when player chara try to talk to the chara
+/// When a chara is talked to, talk will be start from the section of specified TalkScript
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum CharaTalk {
-    /// Start new talking that has specified TalkScript id
-    Start { id: String, section: String },
+pub struct CharaTalk {
+    /// Id of TalkScriptObject
+    pub id: String,
+    /// Section of the TalkScript
+    pub section: String,
+    /// If the talk include custom event, for example shopping
+    /// This data will be used to specify that event
+    pub event_data: Option<String>,
 }
 

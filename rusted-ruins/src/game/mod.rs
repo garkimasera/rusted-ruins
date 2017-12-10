@@ -12,6 +12,7 @@ mod animation;
 mod newgame;
 mod combat;
 mod turnloop;
+mod talk;
 
 use std::collections::VecDeque;
 use common::gamedata;
@@ -21,6 +22,7 @@ pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
+pub use self::talk::TalkStatus;
 use self::turnloop::TurnLoopData;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -97,5 +99,5 @@ impl Game {
 }
 
 pub enum DialogOpenRequest {
-    Talk(gamedata::chara::CharaTalk),
+    Talk { chara_talk: gamedata::chara::CharaTalk, cid: gamedata::chara::CharaId },
 }

@@ -73,7 +73,7 @@ pub struct Font {
 #[derive(Debug, Deserialize)]
 pub struct LogWindowConfig {
     pub h: i32,
-    pub n_display_line: u32,
+    pub n_display_line: usize,
 }
 
 #[derive(Debug, Deserialize)]

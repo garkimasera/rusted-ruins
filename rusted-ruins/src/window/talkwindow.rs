@@ -4,31 +4,45 @@ use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
+use game::TalkStatus;
 
 pub struct TalkWindow {
     rect: Rect,
-    label: LabelWidget,
+    text: String,
+    talk_status: TalkStatus,
+    current_line: usize,
 }
 
 impl TalkWindow {
-    pub fn new(chara_talk: CharaTalk) -> TalkWindow {
+    pub fn new(talk_status: TalkStatus) -> TalkWindow {
+        println!("{}", talk_status.get_text());
         let rect = UI_CFG.talk_window.rect.into();
         TalkWindow {
             rect: rect,
-            label: LabelWidget::wrapped(
-                rect, "", FontKind::M, rect.w as u32),
+            text: "".to_owned(),
+            current_line: 0,
+            talk_status: talk_status,
         }
+    }
+
+    fn set_text<T: Into<String>>(&mut self, text: T) {
+        let text: String = text.into();
+        
+        println!("{}", text);
+        // for line in text.lines().skip(self.current_line).take(UI_CFG. {
+            
+        // }
     }
 }
 
+
+
 impl Window for TalkWindow {
-    
     fn redraw(
         &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 
         draw_rect_border(canvas, self.rect);
-        self.label.draw(canvas, sv);
     }
 }
 

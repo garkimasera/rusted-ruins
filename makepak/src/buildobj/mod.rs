@@ -116,7 +116,7 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
 
     Ok(TalkScriptObject {
         id: tomlinput.id,
-        contents: talk_script_dep.contents,
+        sections: talk_script_dep.sections,
     })
 }
 

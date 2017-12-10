@@ -84,6 +84,6 @@ pub struct ItemDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TalkScriptDepInput {
-    pub contents: HashMap<String, talkscript::TalkContent>,
+    pub sections: HashMap<String, talkscript::TalkSection>,
 }
 

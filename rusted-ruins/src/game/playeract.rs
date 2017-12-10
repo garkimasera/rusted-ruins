@@ -125,25 +125,29 @@ impl<'a> DoPlayerAction<'a> {
     pub fn try_talk(&mut self, dir: Direction) {
         if dir.as_vec() == (0, 0) { return; }
 
-        let mut talk_script_id = None;
+        let mut chara_talk = None;
+        let mut cid = None;
         {
             let gd = self.gd();
             let player_chara = gd.chara.get(CharaId::Player);
             let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
             if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
+                cid = Some(other_chara);
                 let other_chara = gd.chara.get(other_chara);
                 match player_chara.rel.relative(other_chara.rel) {
                     Relationship::ALLY | Relationship::FRIENDLY => {
                         if let Some(ref t) = other_chara.talk {
-                            talk_script_id = Some(t.clone())
+                            chara_talk = Some(t.clone())
                         }
                     }
                     _ => (),
                 }
             }
         }
-        if let Some(talk_script_id) = talk_script_id {
-            self.0.request_dialog_open(DialogOpenRequest::Talk(talk_script_id.clone()));
+        if let Some(chara_talk) = chara_talk {
+            self.0.request_dialog_open(DialogOpenRequest::Talk {
+                chara_talk, cid: cid.unwrap(),
+            });
         }
     }
 }

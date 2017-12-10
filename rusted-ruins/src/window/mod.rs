@@ -119,8 +119,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
         // If game requests dialog popup for player
         if let Some(dialog_open_request) = self.game.pop_dialog_open_request() {
-            let dialog = dialogreq::create_dialog_from_request(dialog_open_request);
-            self.window_stack.push(dialog);
+            let dialog = dialogreq::create_dialog_from_request(dialog_open_request, &mut self.game);
+            if let Some(dialog) = dialog {
+                self.window_stack.push(dialog);
+            }
         }
         
         // After advancing turn and processing command, game may start animation.
