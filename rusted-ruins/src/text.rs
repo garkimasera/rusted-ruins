@@ -27,6 +27,7 @@ pub fn obj_txt<'a>(id: &'a str) -> &'a str {
     if let Some(txt) = OBJ_TXT_MAP.get(id) { txt }else{ id }
 }
 
+#[allow(unused)]
 pub fn obj_txt_checked(id: &str) -> Option<&'static str> {
     OBJ_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
@@ -35,6 +36,7 @@ pub fn log_txt<'a>(id: &'a str) -> &'a str {
     if let Some(txt) = LOG_TXT_MAP.get(id) { txt }else{ id }
 }
 
+#[allow(unused)]
 pub fn log_txt_checked(id: &str) -> Option<&'static str> {
     LOG_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
@@ -43,6 +45,7 @@ pub fn ui_txt<'a>(id: &'a str) -> &'a str {
     if let Some(txt) = UI_TXT_MAP.get(id) { txt }else{ id }
 }
 
+#[allow(unused)]
 pub fn ui_txt_checked(id: &str) -> Option<&'static str> {
     UI_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
@@ -51,6 +54,7 @@ pub fn talk_txt<'a>(id: &'a str) -> &'a str {
     if let Some(txt) = TALK_TXT_MAP.get(id) { txt }else{ id }
 }
 
+#[allow(unused)]
 pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
     TALK_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
