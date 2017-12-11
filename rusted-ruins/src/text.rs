@@ -94,14 +94,14 @@ fn load_trans_txt(kind: &str) -> HashMap<String, String> {
                     continue;
                 }
             
-            let _ = add_file(f.path(), &mut map);
+            let _ = add_file(f.path(), &mut map, kind != "talk");
         }
     }
     
     map
 }
 
-fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<()> {
+fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>, ignore_newline: bool) -> Result<()> {
     let p = p.as_ref();
     let file = fs::File::open(p)?;
     let file = BufReader::new(file);
@@ -130,6 +130,9 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
             key = Some(line[1..].trim_left().to_string());
         }else{
             value.push_str(&line);
+            if !ignore_newline {
+                value.push('\n');
+            }
         }
     }
     
