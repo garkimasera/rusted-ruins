@@ -85,7 +85,7 @@ pub struct ExitWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct TalkWindowConfig {
     pub rect: CfgRect,
-    pub n_default_line: u32,
+    pub n_default_line: usize,
 }
 
 #[derive(Debug, Deserialize)]

@@ -70,14 +70,16 @@ impl LineSpecifiedLabelWidget {
         rect: R, s: &[&str], font: FontKind, max_line: usize) -> LineSpecifiedLabelWidget {
         
         let rect = rect.into();
-        let cache = TextCache::new(&s[0..max_line], font, UI_CFG.color.normal_font.into());
+        let slice_len = ::std::cmp::min(s.len(), max_line);
+        let cache = TextCache::new(&s[0..slice_len], font, UI_CFG.color.normal_font.into());
         LineSpecifiedLabelWidget {
             rect, cache, font, max_line,
         }
     }
 
     pub fn set_text(&mut self, s: &[&str]) {
-        let cache = TextCache::new(&s[0..self.max_line], self.font, UI_CFG.color.normal_font.into());
+        let slice_len = ::std::cmp::min(s.len(), self.max_line);
+        let cache = TextCache::new(&s[0..slice_len], self.font, UI_CFG.color.normal_font.into());
         self.cache = cache;
     }
 }
