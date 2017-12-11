@@ -57,3 +57,45 @@ impl WidgetTrait for LabelWidget {
     }
 }
 
+/// Label widget whose lines are specified by user
+pub struct LineSpecifiedLabelWidget {
+    rect: Rect,
+    cache: TextCache,
+    font: FontKind,
+    max_line: usize,
+}
+
+impl LineSpecifiedLabelWidget {
+    pub fn new<R: Into<Rect>>(
+        rect: R, s: &[&str], font: FontKind, max_line: usize) -> LineSpecifiedLabelWidget {
+        
+        let rect = rect.into();
+        let cache = TextCache::new(&s[0..max_line], font, UI_CFG.color.normal_font.into());
+        LineSpecifiedLabelWidget {
+            rect, cache, font, max_line,
+        }
+    }
+
+    pub fn set_text(&mut self, s: &[&str]) {
+        let cache = TextCache::new(&s[0..self.max_line], self.font, UI_CFG.color.normal_font.into());
+        self.cache = cache;
+    }
+}
+
+impl WidgetTrait for LineSpecifiedLabelWidget {
+    type Response = ();
+    
+    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+        let tex_group = sv.tt_group(&mut self.cache);
+
+        let mut y = 0;
+
+        for tex in tex_group {
+            let w = tex.query().width;
+            let h = tex.query().height;
+            let dest = Rect::new(self.rect.x + UI_CFG.label_widget.left_margin, self.rect.y + y, w, h);
+            y += h as i32;
+            check_draw!(canvas.copy(tex, None, dest));
+        }
+    }
+}
