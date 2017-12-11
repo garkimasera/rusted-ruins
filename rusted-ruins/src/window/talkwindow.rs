@@ -4,7 +4,7 @@ use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
-use game::TalkStatus;
+use game::talk::*;
 use text;
 
 pub struct TalkWindow {
@@ -55,8 +55,11 @@ impl Window for TalkWindow {
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
         match command {
-            Command::Cancel => {
-                DialogResult::Close
+            Command::Enter => {
+                match self.talk_status.proceed(pa, None) {
+                    TalkResult::End => { DialogResult::Close },
+                    TalkResult::Continue => { DialogResult::Continue },
+                }
             },
             _ => DialogResult::Continue,
         }

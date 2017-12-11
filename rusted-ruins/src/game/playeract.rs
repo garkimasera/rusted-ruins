@@ -9,7 +9,7 @@ use game::{InfoGetter, DialogOpenRequest};
 use array2d::*;
 
 /// Player actions are processed through this.
-pub struct DoPlayerAction<'a>(&'a mut Game);
+pub struct DoPlayerAction<'a>(pub(in super) &'a mut Game);
 
 impl<'a> DoPlayerAction<'a> {
     pub fn new(game: &'a mut Game) -> DoPlayerAction<'a> {

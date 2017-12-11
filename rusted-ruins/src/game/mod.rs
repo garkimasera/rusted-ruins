@@ -12,7 +12,7 @@ mod animation;
 mod newgame;
 mod combat;
 mod turnloop;
-mod talk;
+pub mod talk;
 
 use std::collections::VecDeque;
 use common::gamedata;
