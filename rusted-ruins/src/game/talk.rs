@@ -1,5 +1,4 @@
 
-use common::obj::TalkScriptObject;
 use common::objholder::TalkScriptIdx;
 use common::gamedata::chara::{CharaId, CharaTalk};
 use common::gobj;

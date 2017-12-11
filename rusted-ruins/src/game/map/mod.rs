@@ -66,7 +66,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
 
 /// Locate some items for a new map
 pub fn gen_items(gd: &mut GameData, mid: MapId) {
-    let mut map = gd.site.get_map_mut(mid);
+    let map = gd.site.get_map_mut(mid);
 
     for p in map.tile.iter_idx() {
         let tile = &mut map.tile[p];

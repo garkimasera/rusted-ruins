@@ -1,7 +1,7 @@
 
 use common::gamedata::chara::{CharaId, CharaTalk};
 use game::{Game, DialogOpenRequest, TalkStatus};
-use super::{Window, DialogWindow, DialogResult};
+use super::DialogWindow;
 use super::talkwindow;
 
 pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Option<Box<DialogWindow>> {

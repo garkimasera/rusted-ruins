@@ -199,7 +199,7 @@ impl MainWinDrawer {
         
     }
 
-    fn draw_anim(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
+    fn draw_anim(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &SdlValues,
                  anim: &Animation, i_frame: u32) {
         
         let (dx, dy) = self.calc_dxdy();
