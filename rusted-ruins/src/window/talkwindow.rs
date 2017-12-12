@@ -12,6 +12,7 @@ pub struct TalkWindow {
     text: String,
     talk_status: TalkStatus,
     current_line: usize,
+    n_line: usize,
     label: LineSpecifiedLabelWidget,
 }
 
@@ -25,16 +26,19 @@ impl TalkWindow {
             rect: rect,
             text: "".to_owned(),
             current_line: 0,
+            n_line: 0,
             talk_status: talk_status,
             label: label,
         };
-        talk_window.set_text();
+        talk_window.update_text();
         talk_window
     }
 
-    fn set_text(&mut self) {
+    fn update_text(&mut self) {
         let mut lines: Vec<&str> = Vec::new();
-        for line in text::talk_txt(self.talk_status.get_text()).lines().skip(self.current_line).
+        let s = text::talk_txt(self.talk_status.get_text());
+        self.n_line = s.lines().count();
+        for line in s.lines().skip(self.current_line).
             take(UI_CFG.talk_window.n_default_line) {
             lines.push(line);
         }
@@ -56,9 +60,17 @@ impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
         match command {
             Command::Enter => {
-                match self.talk_status.proceed(pa, None) {
-                    TalkResult::End => { DialogResult::Close },
-                    TalkResult::Continue => { DialogResult::Continue },
+                // If all text of the section has been displayed,
+                // proceeds the talk to next section
+                if self.current_line + UI_CFG.talk_window.n_default_line >= self.n_line {
+                    match self.talk_status.proceed(pa, None) {
+                        TalkResult::End => { DialogResult::Close },
+                        TalkResult::Continue => { DialogResult::Continue },
+                    }
+                } else {
+                    self.current_line += UI_CFG.talk_window.n_default_line;
+                    self.update_text();
+                    DialogResult::Continue
                 }
             },
             _ => DialogResult::Continue,
