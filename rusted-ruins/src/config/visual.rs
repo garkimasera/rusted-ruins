@@ -79,7 +79,6 @@ pub struct LogWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct ExitWindowConfig {
     pub rect: CfgRect,
-    pub list_y: i32,
 }
 
 #[derive(Debug, Deserialize)]

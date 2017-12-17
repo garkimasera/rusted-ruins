@@ -14,10 +14,10 @@ pub struct ChooseWindow {
 
 impl ChooseWindow {
     pub fn new(y: i32, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
-        let rect = Rect::new(10, y, 100, 100);
+        let rect = Rect::new(10, y, 0, 0);
         ChooseWindow {
             rect: rect,
-            answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),
+            answer_list: ListWidget::single((0, 0, rect.w as u32, 0), choices),
             default_choose: default_choose,
         }
     }
@@ -28,7 +28,13 @@ impl Window for ChooseWindow {
     fn redraw(
         &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
-        
+
+        // Update window size
+        let list_widget_size = self.answer_list.adjust_widget_size(sv);
+        let rect = Rect::new(10, 10, list_widget_size.0, list_widget_size.1);
+        self.rect = rect;
+
+        // Drawing
         draw_rect_border(canvas, self.rect);
         
         self.answer_list.draw(canvas, sv);

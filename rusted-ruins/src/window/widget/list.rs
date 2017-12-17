@@ -99,6 +99,40 @@ impl ListWidget {
         self.rows = rows;
         self.cache = cache;
     }
+
+    /// Adjust widget size to fit inner contents
+    /// Returns adjusted size
+    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+        let (w, h) = self.get_adjusted_widget_size(sv);
+        let rect = Rect::new(self.rect.x, self.rect.y, w, h);
+        self.rect = rect;
+        (w, h)
+    }
+
+    /// Helper function to get widget size
+    /// SdlValues is needed to calculate text size from text cache
+    pub fn get_adjusted_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+        let h = UI_CFG.list_widget.h_row_with_text as u32 * self.rows.len() as u32;
+        let max_w = match self.rows {
+            ListRow::Str(_) => {
+                let mut max_w = 0;
+                for i in 0..self.n_row {
+                    let tex = sv.tt_group(&mut self.cache[i]);
+                    let w = tex[0].query().width;
+                    if max_w < w { max_w = w }
+                }
+                max_w
+            }
+            ListRow::IconStr(ref r) => {
+                unimplemented!()
+            }
+            ListRow::StrIconStr(ref r) => {
+                unimplemented!()
+            }
+        };
+        const MARGIN_FOR_BORDER: u32 = 6;
+        (max_w + UI_CFG.list_widget.left_margin as u32 + MARGIN_FOR_BORDER, h)
+    }
 }
 
 impl WidgetTrait for ListWidget {

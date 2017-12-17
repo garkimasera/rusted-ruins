@@ -23,7 +23,7 @@ impl YesNoDialog {
             rect: rect,
             label: LabelWidget::wrapped(
                 (0, 0, rect.w as u32, 0), &msg, FontKind::M, rect.w as u32),
-            answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),
+            answer_list: ListWidget::single((0, 0, rect.w as u32, 0), choices),
             action_on_yes: Box::new(f),
         }
     }
