@@ -14,7 +14,7 @@ pub struct ChooseWindow {
 
 impl ChooseWindow {
     pub fn new(y: i32, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
-        let rect = Rect::new(0, y, 0, 0);
+        let rect = Rect::new(10, y, 100, 100);
         ChooseWindow {
             rect: rect,
             answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),

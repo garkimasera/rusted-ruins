@@ -3,24 +3,26 @@ use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
+use super::choosewindow::ChooseWindow;
 use sdlvalues::FontKind;
 use text;
 
 pub struct ExitWindow {
     rect: Rect,
     label: LabelWidget,
-    answer_list: ListWidget,
+    choose_win: ChooseWindow,
 }
 
 impl ExitWindow {
     pub fn new() -> ExitWindow {
         let choices = vec!["Yes".to_owned(), "No".to_owned()];
+        let choices_a = choices.clone();
         let rect = UI_CFG.exit_window.rect.into();
         ExitWindow {
             rect: rect,
             label: LabelWidget::wrapped(
                 (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), FontKind::M, rect.w as u32),
-            answer_list: ListWidget::single((0, UI_CFG.exit_window.list_y, rect.w as u32, 0), choices),
+            choose_win: ChooseWindow::new(30, choices_a, None),
         }
     }
 }
@@ -28,37 +30,37 @@ impl ExitWindow {
 impl Window for ExitWindow {
     
     fn redraw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(canvas, self.rect);
 
         self.label.draw(canvas, sv);
-        self.answer_list.draw(canvas, sv);
+        self.choose_win.redraw(canvas, game, sv, anim);
     }
 }
 
 impl DialogWindow for ExitWindow {
-    fn process_command(&mut self, command: Command, _pa: DoPlayerAction) -> DialogResult {
-        if let Some(response) = self.answer_list.process_command(&command) {
-            match response {
-                ListWidgetResponse::Select(0) => { // Yes for quit game
-                    return DialogResult::Quit;
-                },
-                ListWidgetResponse::Select(1) => { // No for quit game
-                    return DialogResult::Close;
-                },
-                _ => (),
+    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
+        match &command {
+            &Command::Cancel => {
+                return DialogResult::Close;
             }
-            return DialogResult::Continue;
+            _ => (),
         }
         
-        match command {
-            Command::Cancel => {
-                DialogResult::Close
+        match self.choose_win.process_command(command, pa) {
+            DialogResult::CloseWithValue(v) => { // An choice is choosed
+                let n = *v.downcast::<u32>().unwrap();
+                match n {
+                    0 => { return DialogResult::Quit }
+                    1 => { return DialogResult::Close }
+                    _ => panic!(),
+                }
             },
-            _ => DialogResult::Continue,
+            _ => (),
         }
+        return DialogResult::Continue;
     }
 
     fn mode(&self) -> InputMode {
