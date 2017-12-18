@@ -3,21 +3,21 @@ use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
+use super::winpos::WindowPos;
 use sdlvalues::FontKind;
 use text;
 
 pub struct ChooseWindow {
-    rect: Rect,
+    winpos: WindowPos,
     answer_list: ListWidget,
     default_choose: Option<u32>,
 }
 
 impl ChooseWindow {
-    pub fn new(y: i32, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
-        let rect = Rect::new(10, y, 0, 0);
+    pub fn new(winpos: WindowPos, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
         ChooseWindow {
-            rect: rect,
-            answer_list: ListWidget::single((0, 0, rect.w as u32, 0), choices),
+            winpos: winpos,
+            answer_list: ListWidget::single((0, 0, 0, 0), choices),
             default_choose: default_choose,
         }
     }
@@ -31,11 +31,11 @@ impl Window for ChooseWindow {
 
         // Update window size
         let list_widget_size = self.answer_list.adjust_widget_size(sv);
-        let rect = Rect::new(10, 10, list_widget_size.0, list_widget_size.1);
-        self.rect = rect;
+        let left_top_point = self.winpos.calc_left_top(list_widget_size.0, list_widget_size.1);
+        let rect = Rect::new(left_top_point.0, left_top_point.1, list_widget_size.0, list_widget_size.1);
 
         // Drawing
-        draw_rect_border(canvas, self.rect);
+        draw_rect_border(canvas, rect);
         
         self.answer_list.draw(canvas, sv);
     }

@@ -4,6 +4,7 @@ use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
 use super::choosewindow::ChooseWindow;
+use super::winpos::{WindowPos, WindowHPos, WindowVPos};
 use sdlvalues::FontKind;
 use text;
 
@@ -17,12 +18,15 @@ impl ExitWindow {
     pub fn new() -> ExitWindow {
         let choices = vec!["Yes".to_owned(), "No".to_owned()];
         let choices_a = choices.clone();
-        let rect = UI_CFG.exit_window.rect.into();
+        let rect: Rect = UI_CFG.exit_window.rect.into();
+        let winpos = WindowPos::new(
+            WindowHPos::RightX(rect.right()),
+            WindowVPos::TopMargin(rect.bottom()));
         ExitWindow {
             rect: rect,
             label: LabelWidget::wrapped(
                 (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), FontKind::M, rect.w as u32),
-            choose_win: ChooseWindow::new(30, choices_a, None),
+            choose_win: ChooseWindow::new(winpos, choices_a, None),
         }
     }
 }
