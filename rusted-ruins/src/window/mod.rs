@@ -1,4 +1,5 @@
 
+mod winpos;
 mod mainwindow;
 mod logwindow;
 mod textwindow;
