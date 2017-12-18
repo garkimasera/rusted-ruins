@@ -16,8 +16,6 @@ pub struct ExitWindow {
 
 impl ExitWindow {
     pub fn new() -> ExitWindow {
-        let choices = vec!["Yes".to_owned(), "No".to_owned()];
-        let choices_a = choices.clone();
         let rect: Rect = UI_CFG.exit_window.rect.into();
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
@@ -26,7 +24,7 @@ impl ExitWindow {
             rect: rect,
             label: LabelWidget::wrapped(
                 (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), FontKind::M, rect.w as u32),
-            choose_win: ChooseWindow::new(winpos, choices_a, None),
+            choose_win: ChooseWindow::with_yesno(winpos, None),
         }
     }
 }

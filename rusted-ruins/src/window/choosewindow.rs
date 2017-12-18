@@ -21,6 +21,14 @@ impl ChooseWindow {
             default_choose: default_choose,
         }
     }
+
+    /// Create ChooseWindow with two choices, yes and no
+    /// default_choose: When Esc is inputed, which choice will be returned
+    pub fn with_yesno(winpos: WindowPos, default_choose: Option<bool>) -> ChooseWindow {
+        let choices = vec!["Yes".to_owned(), "No".to_owned()];
+        let default_choose = default_choose.map(|a| if a { 0 } else { 1 });
+        ChooseWindow::new(winpos, choices, default_choose)
+    }
 }
 
 impl Window for ChooseWindow {
