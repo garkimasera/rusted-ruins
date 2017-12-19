@@ -1,5 +1,4 @@
 
-use sdl2::rect::Rect;
 use config::UI_CFG;
 use game::DoPlayerAction;
 use super::commonuse::*;
@@ -7,22 +6,37 @@ use super::textwindow::TextWindow;
 use super::choosewindow::ChooseWindow;
 use super::winpos::{WindowPos, WindowHPos, WindowVPos};
 
-pub struct YesNoDialog {
+pub struct MsgDialog {
     text_win: TextWindow,
     choose_win: ChooseWindow,
     action_callback: Box<FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static>
 }
 
-impl YesNoDialog {
-    pub fn new<F>(msg: &str, f: F) -> YesNoDialog
+impl MsgDialog {
+    pub fn new<F>(msg: &str, choices: Vec<String>, f: F) -> MsgDialog
         where F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static {
 
-        let rect = Rect::new(100, 0, 0, 0);
+        let rect = UI_CFG.msg_dialog.rect.into();
         let text_win = TextWindow::new(rect, msg);
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
-        YesNoDialog {
+        MsgDialog {
+            text_win: text_win,
+            choose_win: ChooseWindow::new(winpos, choices, None),
+            action_callback: Box::new(f),
+        }
+    }
+    
+    pub fn with_yesno<F>(msg: &str, f: F) -> MsgDialog
+        where F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static {
+
+        let rect = UI_CFG.msg_dialog.rect.into();
+        let text_win = TextWindow::new(rect, msg);
+        let winpos = WindowPos::new(
+            WindowHPos::RightX(rect.right()),
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+        MsgDialog {
             text_win: text_win,
             choose_win: ChooseWindow::with_yesno(winpos, None),
             action_callback: Box::new(f),
@@ -30,7 +44,7 @@ impl YesNoDialog {
     }
 }
 
-impl Window for YesNoDialog {
+impl Window for MsgDialog {
     
     fn redraw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
@@ -46,7 +60,7 @@ impl Window for YesNoDialog {
     }
 }
 
-impl DialogWindow for YesNoDialog {
+impl DialogWindow for MsgDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match *command {
             Command::Cancel => { return DialogResult::Close; },
@@ -56,7 +70,7 @@ impl DialogWindow for YesNoDialog {
         match self.choose_win.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => { // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
-//                return (self.action_callback)(&mut pa, n);
+                return (self.action_callback)(pa, n);
             },
             _ => (),
         }

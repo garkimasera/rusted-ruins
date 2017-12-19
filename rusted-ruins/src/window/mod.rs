@@ -8,7 +8,7 @@ mod talkwindow;
 mod itemwindow;
 mod exitwindow;
 mod equipwindow;
-mod yesnodialog;
+mod msgdialog;
 mod textinputdialog;
 mod indicator;
 mod minimap;
@@ -238,7 +238,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::Enter => {
                 if pa.gd().on_map_entrance() {
-                    self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
+                    self.window_stack.push(Box::new(msgdialog::MsgDialog::with_yesno(
                         ::text::ui_txt("dialog.move_floor"),
                         |pa, n| {
                             if n == 0 {

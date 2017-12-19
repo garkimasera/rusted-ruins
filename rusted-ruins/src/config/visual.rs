@@ -34,6 +34,7 @@ pub struct UIConfig {
     pub exit_window: ExitWindowConfig,
     pub talk_window: TalkWindowConfig,
     pub start_dialog: StartDialogConfig,
+    pub msg_dialog: MsgDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
@@ -86,6 +87,11 @@ pub struct ExitWindowConfig {
 pub struct TalkWindowConfig {
     pub rect: CfgRect,
     pub n_default_line: usize,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MsgDialogConfig {
+    pub rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
