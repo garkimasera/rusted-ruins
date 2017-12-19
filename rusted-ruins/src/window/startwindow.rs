@@ -57,7 +57,7 @@ impl Window for StartDialog {
 }
 
 impl DialogWindow for StartDialog {
-    fn process_command(&mut self, command: Command, _pa: DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(0) => { // New Game

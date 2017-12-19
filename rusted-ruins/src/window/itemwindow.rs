@@ -12,7 +12,7 @@ use common::gobj;
 use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
 use text;
 
-pub type ActionCallback = FnMut(DoPlayerAction, ItemLocation) -> DialogResult;
+pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
     List, PickUp,
     Select {
@@ -32,7 +32,7 @@ pub struct ItemWindow {
 }
 
 impl ItemWindow {
-    pub fn new(mode: ItemWindowMode, pa: DoPlayerAction) -> ItemWindow {
+    pub fn new(mode: ItemWindowMode, pa: &mut DoPlayerAction) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
         
         let mut item_window = ItemWindow {
@@ -49,14 +49,14 @@ impl ItemWindow {
     }
 
     pub fn new_select(ill: ItemListLocation, filter: ItemFilter,
-                  action: Box<ActionCallback>, pa: DoPlayerAction) -> ItemWindow {
+                  action: Box<ActionCallback>, pa: &mut DoPlayerAction) -> ItemWindow {
         let mode = ItemWindowMode::Select {
             ill, filter, action
         };
         ItemWindow::new(mode, pa)
     }
 
-    fn update_by_mode(&mut self, pa: DoPlayerAction) {
+    fn update_by_mode(&mut self, pa: &mut DoPlayerAction) {
         let gd = pa.gd();
         
         match self.mode {
@@ -95,7 +95,7 @@ impl ItemWindow {
         self.list.set_rows(ListRow::IconStr(rows));
     }
 
-    fn do_action_for_item(&mut self, mut pa: DoPlayerAction, il: ItemLocation) -> DialogResult {
+    fn do_action_for_item(&mut self, pa: &mut DoPlayerAction, il: ItemLocation) -> DialogResult {
         match self.mode {
             ItemWindowMode::List => {
                 DialogResult::Continue
@@ -129,7 +129,7 @@ impl Window for ItemWindow {
 }
 
 impl DialogWindow for ItemWindow {
-    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
@@ -142,7 +142,7 @@ impl DialogWindow for ItemWindow {
         }
         self.list.process_command(&command);
         
-        match command {
+        match *command {
             Command::Cancel => {
                 DialogResult::Close
             },

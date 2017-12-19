@@ -25,7 +25,7 @@ pub struct EquipWindow {
 }
 
 impl EquipWindow {
-    pub fn new(pa: DoPlayerAction, cid: CharaId) -> EquipWindow {
+    pub fn new(pa: &mut DoPlayerAction, cid: CharaId) -> EquipWindow {
         let rect = UI_CFG.equip_window.rect.into();
         
         let mut equip_window = EquipWindow {
@@ -42,7 +42,7 @@ impl EquipWindow {
         equip_window
     }
 
-    fn update_list(&mut self, pa: DoPlayerAction) {
+    fn update_list(&mut self, pa: &mut DoPlayerAction) {
         let mut rows: Vec<(String, IconIdx, String)> = Vec::new();
         let equips = pa.gd().get_equip_list(self.cid);
         self.slots.clear();
@@ -76,7 +76,7 @@ impl Window for EquipWindow {
 }
 
 impl DialogWindow for EquipWindow {
-    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         
         if let Some(response) = self.list.process_command(&command) {
             match response {
@@ -86,7 +86,7 @@ impl DialogWindow for EquipWindow {
                     // Callback function for selected item equipment
                     let slot = self.slots[i as usize];
                     let cid = self.cid;
-                    let equip_selected_item = move |mut pa: DoPlayerAction, il: ItemLocation| {
+                    let equip_selected_item = move |pa: &mut DoPlayerAction, il: ItemLocation| {
                         pa.change_equipment(cid, slot, il);
                         DialogResult::Close
                     };
@@ -105,7 +105,7 @@ impl DialogWindow for EquipWindow {
         }
         self.list.process_command(&command);
         
-        match command {
+        match *command {
             Command::Cancel => {
                 DialogResult::Close
             },
@@ -117,7 +117,9 @@ impl DialogWindow for EquipWindow {
         InputMode::Dialog
     }
 
-    fn callback_child_closed(&mut self, result: Option<Box<Any>>, pa: DoPlayerAction) -> DialogResult {
+    fn callback_child_closed(
+        &mut self, result: Option<Box<Any>>, pa: &mut DoPlayerAction) -> DialogResult {
+        
         self.update_list(pa);
         DialogResult::Continue
     }

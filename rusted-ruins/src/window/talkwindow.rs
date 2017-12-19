@@ -57,8 +57,8 @@ impl Window for TalkWindow {
 }
 
 impl DialogWindow for TalkWindow {
-    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
-        match command {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match *command {
             Command::Enter => {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section

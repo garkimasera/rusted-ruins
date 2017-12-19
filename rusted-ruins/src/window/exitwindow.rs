@@ -45,9 +45,9 @@ impl Window for ExitWindow {
 }
 
 impl DialogWindow for ExitWindow {
-    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult {
-        match &command {
-            &Command::Cancel => {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match *command {
+            Command::Cancel => {
                 return DialogResult::Close;
             }
             _ => (),

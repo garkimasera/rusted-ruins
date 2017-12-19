@@ -53,10 +53,11 @@ pub trait Window {
 }
 
 pub trait DialogWindow: Window {
-    fn process_command(&mut self, command: Command, pa: DoPlayerAction) -> DialogResult;
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult;
     /// Return InputMode for this window
     fn mode(&self) -> InputMode;
-    fn callback_child_closed(&mut self, _result: Option<Box<Any>>, _pa: DoPlayerAction) -> DialogResult {
+    fn callback_child_closed(
+        &mut self, _result: Option<Box<Any>>, _pa: &mut DoPlayerAction) -> DialogResult {
         DialogResult::Continue
     }
 }
@@ -192,8 +193,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         if self.window_stack.len() > 0 {
             let mut tail = self.window_stack.len() - 1;
             let mut dialog_result = {
-                let pa = DoPlayerAction::new(&mut self.game);
-                self.window_stack[tail].process_command(command, pa)
+                let mut pa = DoPlayerAction::new(&mut self.game);
+                self.window_stack[tail].process_command(&command, &mut pa)
             };
             loop {
                 match dialog_result {
@@ -202,8 +203,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.window_stack.pop();
                         if tail > 0 {
                             tail -= 1;
-                            let pa = DoPlayerAction::new(&mut self.game);
-                            dialog_result = self.window_stack[tail].callback_child_closed(None, pa);
+                            let mut pa = DoPlayerAction::new(&mut self.game);
+                            dialog_result = self.window_stack[tail].callback_child_closed(
+                                None, &mut pa);
                             continue;
                         }
                     }
@@ -211,8 +213,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.window_stack.pop();
                         if tail > 0 {
                             tail -= 1;
-                            let pa = DoPlayerAction::new(&mut self.game);
-                            dialog_result = self.window_stack[tail].callback_child_closed(Some(v), pa);
+                            let mut pa = DoPlayerAction::new(&mut self.game);
+                            dialog_result = self.window_stack[tail].callback_child_closed(
+                                Some(v), &mut pa);
                             continue;
                         }
                     }
@@ -251,16 +254,16 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenItemMenu => {
                 use self::itemwindow::*;
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, pa)));
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, &mut pa)));
             }
             Command::OpenEquipWin => {
                 use common::gamedata::chara::CharaId;
-                self.window_stack.push(Box::new(equipwindow::EquipWindow::new(pa, CharaId::Player)));
+                self.window_stack.push(Box::new(equipwindow::EquipWindow::new(&mut pa, CharaId::Player)));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
                     use self::itemwindow::*;
-                    let item_window = ItemWindow::new(ItemWindowMode::PickUp, pa);
+                    let item_window = ItemWindow::new(ItemWindowMode::PickUp, &mut pa);
                     self.window_stack.push(Box::new(item_window));
                 }
             }

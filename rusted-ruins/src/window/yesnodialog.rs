@@ -49,9 +49,9 @@ impl Window for YesNoDialog {
 }
 
 impl DialogWindow for YesNoDialog {
-    fn process_command(&mut self, command: Command, mut pa: DoPlayerAction) -> DialogResult {
-        match &command {
-            &Command::Cancel => { return DialogResult::Close; },
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match *command {
+            Command::Cancel => { return DialogResult::Close; },
             _ => (),
         }
 

@@ -39,7 +39,7 @@ impl TalkStatus {
         text::talk_txt(&text)
     }
 
-    pub fn proceed(&mut self, pa: DoPlayerAction, choice: Option<usize>) -> TalkResult {
+    pub fn proceed(&mut self, pa: &mut DoPlayerAction, choice: Option<usize>) -> TalkResult {
         self.execute_action(pa.0, choice)
     }
 
