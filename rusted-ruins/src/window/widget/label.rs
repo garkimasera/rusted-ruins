@@ -40,6 +40,17 @@ impl LabelWidget {
         };
         self.cache = cache;
     }
+
+    /// Adjust widget size to fit inner contents if given rect doesn't have value
+    /// Returns adjusted size
+    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+        let tex = sv.tt_one(&mut self.cache);
+        let w = tex.query().width;
+        let h = tex.query().height;
+        let rect = Rect::new(self.rect.x, self.rect.y, w, h);
+        self.rect = rect;
+        (w, h)
+    }
 }
 
 impl WidgetTrait for LabelWidget {

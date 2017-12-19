@@ -26,6 +26,7 @@ pub struct BorderConfig {
 #[derive(Debug, Deserialize)]
 pub struct UIConfig {
     pub cursor_move_duration: u64,
+    pub gap_len_between_dialogs: i32,
     
     pub color: UIColorConfig,
     pub font: Font,

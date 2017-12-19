@@ -29,6 +29,10 @@ impl ChooseWindow {
         let default_choose = default_choose.map(|a| if a { 0 } else { 1 });
         ChooseWindow::new(winpos, choices, default_choose)
     }
+
+    pub fn set_winpos(&mut self, winpos: WindowPos) {
+        self.winpos = winpos;
+    }
 }
 
 impl Window for ChooseWindow {

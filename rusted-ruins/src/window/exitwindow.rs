@@ -3,27 +3,26 @@ use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
+use super::textwindow::TextWindow;
 use super::choosewindow::ChooseWindow;
 use super::winpos::{WindowPos, WindowHPos, WindowVPos};
 use sdlvalues::FontKind;
 use text;
 
 pub struct ExitWindow {
-    rect: Rect,
-    label: LabelWidget,
+    text_win: TextWindow,
     choose_win: ChooseWindow,
 }
 
 impl ExitWindow {
     pub fn new() -> ExitWindow {
         let rect: Rect = UI_CFG.exit_window.rect.into();
+        let text_win = TextWindow::new(rect, text::ui_txt("dialog.exit"));
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom()));
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         ExitWindow {
-            rect: rect,
-            label: LabelWidget::wrapped(
-                (0, 0, rect.w as u32, 0), text::ui_txt("dialog.exit"), FontKind::M, rect.w as u32),
+            text_win: text_win,
             choose_win: ChooseWindow::with_yesno(winpos, None),
         }
     }
@@ -34,10 +33,13 @@ impl Window for ExitWindow {
     fn redraw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
-        
-        draw_rect_border(canvas, self.rect);
 
-        self.label.draw(canvas, sv);
+        self.text_win.redraw(canvas, game, sv, anim);
+        let rect = self.text_win.get_rect();
+        let winpos = WindowPos::new(
+            WindowHPos::RightX(rect.right()),
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+        self.choose_win.set_winpos(winpos);
         self.choose_win.redraw(canvas, game, sv, anim);
     }
 }
