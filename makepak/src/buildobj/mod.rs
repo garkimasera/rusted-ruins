@@ -123,11 +123,17 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
         } else {
             v.text
         };
+        let sub_reaction = if let Some(sub_reaction) = v.sub_reaction {
+            sub_reaction
+        } else {
+            Vec::new()
+        };
         sections.insert(
             k,
             TalkSection {
                 text: text,
                 action: v.action,
+                sub_reaction: sub_reaction,
             }
         );
     }
