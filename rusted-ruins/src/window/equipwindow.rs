@@ -118,7 +118,7 @@ impl DialogWindow for EquipWindow {
     }
 
     fn callback_child_closed(
-        &mut self, result: Option<Box<Any>>, pa: &mut DoPlayerAction) -> DialogResult {
+        &mut self, _result: Option<Box<Any>>, pa: &mut DoPlayerAction) -> DialogResult {
         
         self.update_list(pa);
         DialogResult::Continue

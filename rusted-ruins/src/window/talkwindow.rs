@@ -1,5 +1,4 @@
 
-use common::gamedata::chara::CharaTalk;
 use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;

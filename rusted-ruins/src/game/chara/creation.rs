@@ -1,7 +1,7 @@
 
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
-use common::gamedata::item::{ItemList, EquipItemList, ItemKind};
+use common::gamedata::item::{ItemList, EquipItemList};
 use common::gamedata::site::DungeonKind;
 use common::gobj;
 use rules::RULES;

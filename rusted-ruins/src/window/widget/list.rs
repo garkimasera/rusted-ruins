@@ -123,10 +123,10 @@ impl ListWidget {
                 }
                 max_w
             }
-            ListRow::IconStr(ref r) => {
+            ListRow::IconStr(_) => {
                 unimplemented!()
             }
-            ListRow::StrIconStr(ref r) => {
+            ListRow::StrIconStr(_) => {
                 unimplemented!()
             }
         };

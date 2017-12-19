@@ -45,7 +45,7 @@ impl TalkStatus {
 
     /// Execute action of current section
     /// If current section has choices, choice must be specified
-    fn execute_action(&mut self, game: &mut Game, choice: Option<usize>) -> TalkResult {
+    fn execute_action(&mut self, _game: &mut Game, _choice: Option<usize>) -> TalkResult {
         let section = self.get_current_section();
         match section.action {
             TalkSectionAction::End => { TalkResult::End },

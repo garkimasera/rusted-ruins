@@ -1,11 +1,8 @@
 
 use sdl2::rect::Rect;
-use config::UI_CFG;
 use super::commonuse::*;
 use super::widget::*;
 use super::winpos::WindowPos;
-use sdlvalues::FontKind;
-use text;
 
 pub struct ChooseWindow {
     winpos: WindowPos,

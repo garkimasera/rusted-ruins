@@ -2,11 +2,9 @@
 use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
-use super::widget::*;
 use super::textwindow::TextWindow;
 use super::choosewindow::ChooseWindow;
 use super::winpos::{WindowPos, WindowHPos, WindowVPos};
-use sdlvalues::FontKind;
 use text;
 
 pub struct ExitWindow {
