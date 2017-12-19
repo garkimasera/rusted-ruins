@@ -4,27 +4,30 @@ use config::UI_CFG;
 use game::DoPlayerAction;
 use super::commonuse::*;
 use super::widget::*;
+use super::textwindow::TextWindow;
+use super::choosewindow::ChooseWindow;
+use super::winpos::{WindowPos, WindowHPos, WindowVPos};
 use sdlvalues::FontKind;
 
 pub struct YesNoDialog {
-    rect: Rect,
-    label: LabelWidget,
-    answer_list: ListWidget,
-    action_on_yes: Box<FnMut(&mut DoPlayerAction) -> DialogResult + 'static>
+    text_win: TextWindow,
+    choose_win: ChooseWindow,
+    action_callback: Box<FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static>
 }
 
 impl YesNoDialog {
     pub fn new<F>(msg: &str, f: F) -> YesNoDialog
-        where F: FnMut(&mut DoPlayerAction) -> DialogResult + 'static {
-        
-        let choices = vec!["Yes".to_owned(), "No".to_owned()];
-        let rect = UI_CFG.exit_window.rect.into();
+        where F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static {
+
+        let rect = Rect::new(100, 0, 0, 0);
+        let text_win = TextWindow::new(rect, msg);
+        let winpos = WindowPos::new(
+            WindowHPos::RightX(rect.right()),
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         YesNoDialog {
-            rect: rect,
-            label: LabelWidget::wrapped(
-                (0, 0, rect.w as u32, 0), &msg, FontKind::M, rect.w as u32),
-            answer_list: ListWidget::single((0, 0, rect.w as u32, 0), choices),
-            action_on_yes: Box::new(f),
+            text_win: text_win,
+            choose_win: ChooseWindow::with_yesno(winpos, None),
+            action_callback: Box::new(f),
         }
     }
 }
@@ -32,35 +35,34 @@ impl YesNoDialog {
 impl Window for YesNoDialog {
     
     fn redraw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
-        
-        draw_rect_border(canvas, self.rect);
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        anim: Option<(&Animation, u32)>) {
 
-        self.label.draw(canvas, sv);
-        self.answer_list.draw(canvas, sv);
+        self.text_win.redraw(canvas, game, sv, anim);
+        let rect = self.text_win.get_rect();
+        let winpos = WindowPos::new(
+            WindowHPos::RightX(rect.right()),
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+        self.choose_win.set_winpos(winpos);
+        self.choose_win.redraw(canvas, game, sv, anim);
     }
 }
 
 impl DialogWindow for YesNoDialog {
     fn process_command(&mut self, command: Command, mut pa: DoPlayerAction) -> DialogResult {
-        if let Some(response) = self.answer_list.process_command(&command) {
-            match response {
-                ListWidgetResponse::Select(0) => { // Yes
-                    return (self.action_on_yes)(&mut pa);
-                }
-                ListWidgetResponse::Select(1) => { // No
-                    return DialogResult::Close;
-                }
-                _ => (),
-            }
-            return DialogResult::Continue;
+        match &command {
+            &Command::Cancel => { return DialogResult::Close; },
+            _ => (),
         }
-        
-        match command {
-            Command::Cancel => DialogResult::Close,
-            _ => DialogResult::Continue,
+
+        match self.choose_win.process_command(command, pa) {
+            DialogResult::CloseWithValue(v) => { // An choice is choosed
+                let n = *v.downcast::<u32>().unwrap();
+//                return (self.action_callback)(&mut pa, n);
+            },
+            _ => (),
         }
+        DialogResult::Continue
     }
 
     fn mode(&self) -> InputMode {

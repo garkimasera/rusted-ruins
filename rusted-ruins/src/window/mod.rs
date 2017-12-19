@@ -237,8 +237,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 if pa.gd().on_map_entrance() {
                     self.window_stack.push(Box::new(yesnodialog::YesNoDialog::new(
                         ::text::ui_txt("dialog.move_floor"),
-                        |pa| {
-                            pa.goto_next_floor(Direction::none());
+                        |pa, n| {
+                            if n == 0 {
+                                pa.goto_next_floor(Direction::none());
+                            }
                             DialogResult::Close
                         }
                     )));
