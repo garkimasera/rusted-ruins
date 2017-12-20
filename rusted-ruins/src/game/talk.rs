@@ -48,7 +48,8 @@ impl TalkStatus {
     fn execute_action(&mut self, _game: &mut Game, _choice: Option<usize>) -> TalkResult {
         let section = self.get_current_section();
         match section.reaction {
-            TalkSectionReaction::End => { TalkResult::End },
+            TalkSectionReaction::End => { TalkResult::End }
+            _ => unimplemented!()
         }
     }
 

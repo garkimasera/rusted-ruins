@@ -23,7 +23,20 @@ pub struct TalkSection {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TalkSectionReaction {
+    /// End this talk
     End,
+    /// Answer from some choices
+    Answers(Vec<TalkAnswer>),
+    /// Jump to another section
+    Jump(String, TalkSubReaction),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TalkAnswer {
+    text: String,
+    /// This reaction must not be 'Answers'
+    reaction: TalkSectionReaction,
+    sub_reaction: Vec<TalkSubReaction>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
