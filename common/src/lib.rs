@@ -19,6 +19,7 @@ pub mod pakutil;
 #[macro_use]
 pub mod str2enum;
 pub mod gamedata;
+pub mod maptemplate;
 pub mod event;
 pub mod talkscript;
 

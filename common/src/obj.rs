@@ -16,6 +16,7 @@ pub enum Object {
     Tile(TileObject),
     UIImg(UIImgObject),
     Wall(WallObject),
+    MapTemplate(MapTemplateObject),
     TalkScript(TalkScriptObject),
 }
 
@@ -110,6 +111,7 @@ pub struct Icon {
 // No image objects
 
 pub use talkscript::TalkScriptObject;
+pub use maptemplate::MapTemplateObject;
 
 macro_rules! impl_object {
     ( $($i:ty),* ) => {
@@ -126,7 +128,7 @@ macro_rules! impl_object {
 impl_object!(
     AnimImgObject, CharaTemplateObject, ItemObject, SpecialTileObject, TileObject,
     UIImgObject, WallObject,
-    TalkScriptObject
+    MapTemplateObject, TalkScriptObject
 );
 
 impl Object {
@@ -139,6 +141,7 @@ impl Object {
             Object::Tile(ref o) => &o.id,
             Object::UIImg(ref o) => &o.id,
             Object::Wall(ref o) => &o.id,
+            Object::MapTemplate(ref o) => &o.id,
             Object::TalkScript(ref o) => &o.id,
         }
     }

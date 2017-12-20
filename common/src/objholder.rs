@@ -187,6 +187,7 @@ impl_objholder! {
     {Tile, TileObject, tile, TileIdx},
     {UIImg, UIImgObject, ui_img, UIImgIdx},
     {Wall, WallObject, wall, WallIdx},
+    {MapTemplate, MapTemplateObject, map_template, MapTemplateIdx},
     {TalkScript, TalkScriptObject, talk_script, TalkScriptIdx}
 }
 
