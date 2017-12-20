@@ -17,12 +17,12 @@ impl TalkScriptObject {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TalkSection {
     pub text: Option<String>,
-    pub action: TalkSectionAction,
+    pub reaction: TalkSectionReaction,
     pub sub_reaction: Vec<TalkSubReaction>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum TalkSectionAction {
+pub enum TalkSectionReaction {
     End,
 }
 

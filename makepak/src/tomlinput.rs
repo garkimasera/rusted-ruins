@@ -91,7 +91,7 @@ pub struct TalkScriptDepInput {
 pub struct TalkScriptSectionInput {
     pub is_empty: Option<bool>,
     pub text: Option<String>,
-    pub action: talkscript::TalkSectionAction,
+    pub reaction: talkscript::TalkSectionReaction,
     pub sub_reaction: Option<Vec<talkscript::TalkSubReaction>>,
 }
 

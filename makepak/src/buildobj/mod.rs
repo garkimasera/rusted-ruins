@@ -132,7 +132,7 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
             k,
             TalkSection {
                 text: text,
-                action: v.action,
+                reaction: v.reaction,
                 sub_reaction: sub_reaction,
             }
         );
