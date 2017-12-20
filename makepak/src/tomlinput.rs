@@ -65,6 +65,7 @@ pub struct CharaTemplateDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TileDepInput {
+    pub kind: ::common::obj::TileKind,
 }
 
 #[derive(Debug, Deserialize)]

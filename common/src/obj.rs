@@ -58,6 +58,12 @@ pub struct SpecialTileObject {
 pub struct TileObject {
     pub id: String,
     pub img: Img,
+    pub kind: TileKind,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum TileKind {
+    Ground, Water,
 }
 
 #[derive(Serialize, Deserialize)]

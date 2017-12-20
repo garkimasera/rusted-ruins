@@ -51,12 +51,13 @@ fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> 
 }
 
 fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
-    let _tile_dep_input = get_optional_field!(tomlinput, tile);
+    let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
     
     Ok(TileObject {
         id: tomlinput.id,
         img: build_img(img)?,
+        kind: tile_dep_input.kind,
     })
 }
 
