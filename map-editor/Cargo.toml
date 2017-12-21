@@ -1,0 +1,14 @@
+[package]
+name = "rusted-ruins-map-editor"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+
+[dependencies]
+rusted-ruins-array2d = { path = "../array2d" }
+rusted-ruins-common = { path = "../common" }
+
+gtk = { version = "0.3", features = ["v3_10"] }
+gio = "0.3"
+gdk-pixbuf = "0.3"
+cairo-rs = "0.3"
+
