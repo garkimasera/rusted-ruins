@@ -6,8 +6,9 @@ extern crate gtk;
 extern crate gdk_pixbuf;
 extern crate cairo;
 
+mod edit_map;
 mod ui;
-mod map_edit;
+mod draw_map;
 
 use gio::prelude::*;
 

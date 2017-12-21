@@ -1,4 +1,3 @@
-//! map_drawing_area functions
 
 use common::basic::TILE_SIZE;
 use cairo::Context;

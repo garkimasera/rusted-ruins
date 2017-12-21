@@ -42,7 +42,7 @@ pub fn build_ui(application: &gtk::Application) {
         ui.map_drawing_area.connect_draw(move |widget, context| {
             let width = widget.get_allocated_width();
             let height = widget.get_allocated_height();
-            ::map_edit::draw_map(context, width, height);
+            ::draw_map::draw_map(context, width, height);
             Inhibit(false)
         });
     }
