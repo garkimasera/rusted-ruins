@@ -1,7 +1,7 @@
 [package]
 name = "rusted-ruins-makepak"
 version = "0.1.0"
-authors = ["T. Okubo <t.okubo.rx78+github@gmail.com>"]
+authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
 serde = "1"
