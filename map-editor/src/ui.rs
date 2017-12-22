@@ -1,11 +1,14 @@
 
+use std::rc::Rc;
 use gtk;
 use gtk::prelude::*;
+use pixbuf_holder::PixbufHolder;
 
 #[derive(Clone)]
 pub struct Ui {
     pub window: gtk::ApplicationWindow,
     pub map_drawing_area: gtk::DrawingArea,
+    pub pbh: Rc<PixbufHolder>,
 }
 
 macro_rules! get_object {
@@ -25,6 +28,7 @@ pub fn build_ui(application: &gtk::Application) {
     let ui = Ui {
         window:           get_object!(builder, "window1"),
         map_drawing_area: get_object!(builder, "map-drawing-area"),
+        pbh: Rc::new(PixbufHolder::new()),
     };
 
     let menu_quit: gtk::MenuItem = get_object!(builder, "menu-quit");
