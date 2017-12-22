@@ -43,10 +43,11 @@ pub fn build_ui(application: &gtk::Application) {
         });
     }
     {
+        let uic = ui.clone();
         ui.map_drawing_area.connect_draw(move |widget, context| {
             let width = widget.get_allocated_width();
             let height = widget.get_allocated_height();
-            ::draw_map::draw_map(context, width, height);
+            ::draw_map::draw_map(context, &*uic.pbh, width, height);
             Inhibit(false)
         });
     }

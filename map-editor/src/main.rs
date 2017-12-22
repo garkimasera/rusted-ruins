@@ -2,6 +2,7 @@
 extern crate rusted_ruins_common as common;
 
 extern crate gio;
+extern crate gdk;
 extern crate gtk;
 extern crate gdk_pixbuf;
 extern crate cairo;
