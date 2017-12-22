@@ -8,6 +8,7 @@ use pixbuf_holder::PixbufHolder;
 pub struct Ui {
     pub window: gtk::ApplicationWindow,
     pub map_drawing_area: gtk::DrawingArea,
+    pub new_map_dialog: gtk::Dialog,
     pub pbh: Rc<PixbufHolder>,
 }
 
@@ -28,9 +29,11 @@ pub fn build_ui(application: &gtk::Application) {
     let ui = Ui {
         window:           get_object!(builder, "window1"),
         map_drawing_area: get_object!(builder, "map-drawing-area"),
+        new_map_dialog:   get_object!(builder, "new-map-dialog"),
         pbh: Rc::new(PixbufHolder::new()),
     };
 
+    let menu_new:  gtk::MenuItem = get_object!(builder, "menu-new");
     let menu_quit: gtk::MenuItem = get_object!(builder, "menu-quit");
 
     ui.window.set_application(application);
@@ -49,6 +52,15 @@ pub fn build_ui(application: &gtk::Application) {
             let height = widget.get_allocated_height();
             ::draw_map::draw_map(context, &*uic.pbh, width, height);
             Inhibit(false)
+        });
+    }
+    {
+        let uic = ui.clone();
+        menu_new.connect_activate(move |_| {
+            uic.new_map_dialog.show();
+            let responce_id = uic.new_map_dialog.run();
+            uic.new_map_dialog.hide();
+            println!("{}", responce_id);
         });
     }
     {
