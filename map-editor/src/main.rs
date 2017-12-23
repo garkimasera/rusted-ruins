@@ -1,5 +1,6 @@
 
 extern crate rusted_ruins_common as common;
+extern crate rusted_ruins_array2d as array2d;
 
 extern crate gio;
 extern crate gdk;

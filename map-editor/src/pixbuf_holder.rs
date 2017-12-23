@@ -1,7 +1,6 @@
 
 use gdk_pixbuf::{Pixbuf, PixbufLoader};
 use common::objholder::*;
-use common::obj::IconObject;
 use common::gobj;
 
 macro_rules! impl_pixbuf_holder {
