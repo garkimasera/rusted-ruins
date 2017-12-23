@@ -2,19 +2,17 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkAdjustment" id="adjustment-new-map-height">
-    <property name="lower">1</property>
-    <property name="upper">255</property>
-    <property name="value">1</property>
+  <object class="GtkAdjustment" id="adjustment-map-pos-x">
+    <property name="upper">16</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+    <property name="page_size">1</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment-new-map-width">
-    <property name="lower">1</property>
-    <property name="upper">255</property>
-    <property name="value">1</property>
+  <object class="GtkAdjustment" id="adjustment-map-pos-y">
+    <property name="upper">16</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+    <property name="page_size">1</property>
   </object>
   <object class="GtkApplicationWindow" id="window1">
     <property name="can_focus">False</property>
@@ -103,20 +101,57 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkPaned">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <child>
-              <object class="GtkDrawingArea" id="map-drawing-area">
+              <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="hexpand">False</property>
-                <property name="vexpand">False</property>
+                <child>
+                  <object class="GtkDrawingArea" id="map-drawing-area">
+                    <property name="width_request">288</property>
+                    <property name="height_request">288</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrollbar" id="scrollbar-map-vertical">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">adjustment-map-pos-y</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrollbar" id="scrollbar-map-horizonal">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="adjustment">adjustment-map-pos-x</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
@@ -126,9 +161,8 @@
                 <property name="label" translatable="yes">label</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="resize">True</property>
+                <property name="shrink">True</property>
               </packing>
             </child>
           </object>
@@ -140,6 +174,20 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-new-map-height">
+    <property name="lower">1</property>
+    <property name="upper">255</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-new-map-width">
+    <property name="lower">1</property>
+    <property name="upper">255</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkDialog" id="new-map-dialog">
     <property name="can_focus">False</property>

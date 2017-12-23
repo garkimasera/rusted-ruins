@@ -13,6 +13,8 @@ pub struct Ui {
     pub new_map_dialog: gtk::Dialog,
     pub adjustment_new_map_width: gtk::Adjustment,
     pub adjustment_new_map_height: gtk::Adjustment,
+    pub adjustment_map_pos_x: gtk::Adjustment,
+    pub adjustment_map_pos_y: gtk::Adjustment,
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
 }
@@ -37,6 +39,8 @@ pub fn build_ui(application: &gtk::Application) {
         new_map_dialog:   get_object!(builder, "new-map-dialog"),
         adjustment_new_map_width:  get_object!(builder, "adjustment-new-map-width"),
         adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
+        adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
+        adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new(16, 16))),
     };
@@ -59,7 +63,9 @@ pub fn build_ui(application: &gtk::Application) {
             let width = widget.get_allocated_width();
             let height = widget.get_allocated_height();
             let map = uic.map.borrow();
-            ::draw_map::draw_map(context, &*map, &*uic.pbh, width, height);
+            let pos_x = uic.adjustment_map_pos_x.get_value() as i32;
+            let pos_y = uic.adjustment_map_pos_y.get_value() as i32;
+            ::draw_map::draw_map(context, &*map, &*uic.pbh, width, height, pos_x, pos_y);
             Inhibit(false)
         });
     }
@@ -72,6 +78,10 @@ pub fn build_ui(application: &gtk::Application) {
             if responce_id == 1 {
                 let width  = uic.adjustment_new_map_width.get_value() as u32;
                 let height = uic.adjustment_new_map_height.get_value() as u32;
+                uic.adjustment_map_pos_x.set_value(0.0);
+                uic.adjustment_map_pos_y.set_value(0.0);
+                uic.adjustment_map_pos_x.set_upper(width as f64);
+                uic.adjustment_map_pos_y.set_upper(height as f64);
                 let new_map = EditingMap::new(width, height);
                 *uic.map.borrow_mut() = new_map;
                 uic.map_drawing_area.queue_draw();
@@ -82,6 +92,24 @@ pub fn build_ui(application: &gtk::Application) {
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
             uic.window.destroy();
+        });
+    }
+    {
+        let uic = ui.clone();
+        menu_quit.connect_activate(move |_| {
+            uic.window.destroy();
+        });
+    }
+    {
+        let uic = ui.clone();
+        ui.adjustment_map_pos_x.connect_value_changed(move |_| {
+            uic.map_drawing_area.queue_draw();
+        });
+    }
+        {
+        let uic = ui.clone();
+        ui.adjustment_map_pos_y.connect_value_changed(move |_| {
+            uic.map_drawing_area.queue_draw();
         });
     }
 
