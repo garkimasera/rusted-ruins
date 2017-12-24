@@ -1,8 +1,10 @@
 
 use std::rc::Rc;
 use std::cell::{Cell, RefCell};
+use gdk;
 use gtk;
 use gtk::prelude::*;
+use array2d::Vec2d;
 use common::objholder::*;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
@@ -64,19 +66,28 @@ pub fn build_ui(application: &gtk::Application) {
             Inhibit(false)
         });
     }
-    {
+    { // Map drawing area (draw)
         let uic = ui.clone();
         ui.map_drawing_area.connect_draw(move |widget, context| {
             let width = widget.get_allocated_width();
             let height = widget.get_allocated_height();
             let map = uic.map.borrow();
-            let pos_x = uic.adjustment_map_pos_x.get_value() as i32;
-            let pos_y = uic.adjustment_map_pos_y.get_value() as i32;
-            ::draw_map::draw_map(context, &*map, &*uic.pbh, width, height, pos_x, pos_y);
+            let pos = uic.get_map_pos();
+            ::draw_map::draw_map(context, &*map, &*uic.pbh, width, height, pos);
             Inhibit(false)
         });
     }
-    {
+    { // Map drawing area (clicked)
+        let uic = ui.clone();
+        use gdk::EventMask;
+        let mask = EventMask::BUTTON_PRESS_MASK;
+        ui.map_drawing_area.add_events(mask.bits() as i32);
+        ui.map_drawing_area.connect_button_press_event(move |_, eb| {
+            on_map_clicked(&uic, eb);
+            Inhibit(false)
+        });
+    }
+    { // Menu (new)
         let uic = ui.clone();
         menu_new.connect_activate(move |_| {
             uic.new_map_dialog.show();
@@ -95,13 +106,7 @@ pub fn build_ui(application: &gtk::Application) {
             }
         });
     }
-    {
-        let uic = ui.clone();
-        menu_quit.connect_activate(move |_| {
-            uic.window.destroy();
-        });
-    }
-    {
+    { // Menu (quit)
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
             uic.window.destroy();
@@ -144,8 +149,25 @@ fn set_iconview(ui: &Ui) {
                 &[0, 1],
                 &[pbh.get(TileIdx(i as u32)), &tile.id]);
         }
+    }   
+}
+
+fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
+    use common::basic::TILE_SIZE_I;
+    let ix = (eb.get_position().0 / TILE_SIZE_I as f64) as i32;
+    let iy = (eb.get_position().1 / TILE_SIZE_I as f64) as i32;
+    if eb.get_button() == 1 {
+        let map_pos = ui.get_map_pos();
+        let (ix, iy) = (ix + map_pos.0, iy + map_pos.1);
+        if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
+            match ui.selected_item.get() {
+                SelectedItem::Tile(idx) => {
+                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
+                }
+            }
+            ui.map_redraw();
+        }
     }
-    
 }
 
 impl Ui {
@@ -155,6 +177,12 @@ impl Ui {
 
     pub fn map_redraw(&self) {
         self.map_drawing_area.queue_draw();
+    }
+
+    pub fn get_map_pos(&self) -> (i32, i32) {
+        let pos_x = self.adjustment_map_pos_x.get_value() as i32;
+        let pos_y = self.adjustment_map_pos_y.get_value() as i32;
+        (pos_x, pos_y)
     }
 }
 

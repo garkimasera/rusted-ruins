@@ -13,5 +13,9 @@ impl EditingMap {
         let tile = Array2d::new(width, height, TileIdx(0));
         EditingMap { tile, width, height }
     }
+
+    pub fn set_tile(&mut self, pos: Vec2d, tile: TileIdx) {
+        self.tile[pos] = tile;
+    }
 }
 
