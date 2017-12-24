@@ -1,6 +1,7 @@
 
 use std::rc::Rc;
 use std::cell::{Cell, RefCell};
+use std::path::PathBuf;
 use gdk;
 use gtk;
 use gtk::prelude::*;
@@ -26,6 +27,7 @@ pub struct Ui {
     pub map: Rc<RefCell<EditingMap>>,
     pub selected_item: Rc<Cell<SelectedItem>>,
     pub on_drag: Rc<Cell<bool>>,
+    pub filepath: Rc<RefCell<Option<PathBuf>>>,
 }
 
 macro_rules! get_object {
@@ -56,10 +58,14 @@ pub fn build_ui(application: &gtk::Application) {
         map: Rc::new(RefCell::new(EditingMap::new(16, 16))),
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
         on_drag: Rc::new(Cell::new(false)),
+        filepath: Rc::new(RefCell::new(None)),
     };
 
-    let menu_new:  gtk::MenuItem = get_object!(builder, "menu-new");
-    let menu_quit: gtk::MenuItem = get_object!(builder, "menu-quit");
+    let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
+    let menu_open:    gtk::MenuItem = get_object!(builder, "menu-open");
+    let menu_save:    gtk::MenuItem = get_object!(builder, "menu-save");
+    let menu_save_as: gtk::MenuItem = get_object!(builder, "menu-save-as");
+    let menu_quit:    gtk::MenuItem = get_object!(builder, "menu-quit");
 
     ui.window.set_application(application);
     // Connect signals
@@ -125,19 +131,50 @@ pub fn build_ui(application: &gtk::Application) {
             }
         });
     }
+    { // Menu (open)
+        let uic = ui.clone();
+        menu_open.connect_activate(move |_| {
+            if let Some(path) = file_open(&uic) {
+                println!("{:?} will be open", path);
+            }
+        });
+    }
+    { // Menu (save)
+        let uic = ui.clone();
+        menu_save.connect_activate(move |_| {
+            let path = if let Some(path) = (*uic.filepath).clone().into_inner() {
+                path
+            } else {
+                if let Some(path) = file_save_as(&uic) {
+                    path
+                } else {
+                    return;
+                }
+            };
+            println!("{:?} will be saved", path);
+        });
+    }
+    { // Menu (save as)
+        let uic = ui.clone();
+        menu_save_as.connect_activate(move |_| {
+            if let Some(path) = file_save_as(&uic) {
+                println!("{:?} will be saved", path);
+            }
+        });
+    }
     { // Menu (quit)
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
             uic.window.destroy();
         });
     }
-    {
+    { // Scroll (x)
         let uic = ui.clone();
         ui.adjustment_map_pos_x.connect_value_changed(move |_| {
             uic.map_redraw();
         });
     }
-    {
+    { // Scroll (y)
         let uic = ui.clone();
         ui.adjustment_map_pos_y.connect_value_changed(move |_| {
             uic.map_redraw();
@@ -188,6 +225,47 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
     if ui.on_drag.get() {
         try_write(ui, pos);
     }
+}
+
+fn file_open(ui: &Ui) -> Option<PathBuf> {
+    let file_chooser = gtk::FileChooserDialog::new(
+        Some("Open map object file"), Some(&ui.window), gtk::FileChooserAction::Open);
+    file_chooser.add_buttons(&[
+        ("Open", gtk::ResponseType::Ok.into()),
+        ("Cancel", gtk::ResponseType::Cancel.into()),
+    ]);
+    file_chooser.add_filter(&create_file_filter());
+    if file_chooser.run() == gtk::ResponseType::Ok.into() {
+        let filename = file_chooser.get_filename().expect("Couldn't get filename");
+        file_chooser.destroy();
+        return Some(filename);
+    }
+    file_chooser.destroy();
+    None
+}
+
+fn file_save_as(ui: &Ui) -> Option<PathBuf> {
+    let file_chooser = gtk::FileChooserDialog::new(
+        Some("Save map object"), Some(&ui.window), gtk::FileChooserAction::Save);
+    file_chooser.add_buttons(&[
+        ("Save", gtk::ResponseType::Ok.into()),
+        ("Cancel", gtk::ResponseType::Cancel.into()),
+    ]);
+    file_chooser.add_filter(&create_file_filter());
+    if file_chooser.run() == gtk::ResponseType::Ok.into() {
+        let filename = file_chooser.get_filename().expect("Couldn't get filename");
+        file_chooser.destroy();
+        return Some(filename);
+    }
+    file_chooser.destroy();
+    None
+}
+
+fn create_file_filter() -> gtk::FileFilter {
+    let f = gtk::FileFilter::new();
+    f.add_pattern("*.pak");
+    gtk::FileFilterExt::set_name(&f, "Rusted Ruins pak file");
+    f
 }
 
 fn try_write(ui: &Ui, pos: (f64, f64)) {
