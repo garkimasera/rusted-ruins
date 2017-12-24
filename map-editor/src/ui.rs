@@ -9,6 +9,8 @@ use common::objholder::*;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
 
+const WRITE_BUTTON: u32 = 1;
+
 #[derive(Clone)]
 pub struct Ui {
     pub window: gtk::ApplicationWindow,
@@ -23,6 +25,7 @@ pub struct Ui {
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
     pub selected_item: Rc<Cell<SelectedItem>>,
+    pub on_drag: Rc<Cell<bool>>,
 }
 
 macro_rules! get_object {
@@ -52,6 +55,7 @@ pub fn build_ui(application: &gtk::Application) {
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new(16, 16))),
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
+        on_drag: Rc::new(Cell::new(false)),
     };
 
     let menu_new:  gtk::MenuItem = get_object!(builder, "menu-new");
@@ -77,13 +81,28 @@ pub fn build_ui(application: &gtk::Application) {
             Inhibit(false)
         });
     }
-    { // Map drawing area (clicked)
+    { // Map drawing area (button pressed)
         let uic = ui.clone();
         use gdk::EventMask;
-        let mask = EventMask::BUTTON_PRESS_MASK;
+        let mask = EventMask::BUTTON_PRESS_MASK | EventMask::BUTTON_RELEASE_MASK
+            | EventMask::POINTER_MOTION_MASK;
         ui.map_drawing_area.add_events(mask.bits() as i32);
         ui.map_drawing_area.connect_button_press_event(move |_, eb| {
             on_map_clicked(&uic, eb);
+            Inhibit(false)
+        });
+    }
+    { // Map drawing area (button pressed)
+        let uic = ui.clone();
+        ui.map_drawing_area.connect_button_release_event(move |_, _| {
+            uic.on_drag.set(false);
+            Inhibit(false)
+        });
+    }
+    { // Map drawing area (motion)
+        let uic = ui.clone();
+        ui.map_drawing_area.connect_motion_notify_event(move |drawing_area, em| {
+            on_motion(&uic, em, drawing_area.get_allocated_width(), drawing_area.get_allocated_height());
             Inhibit(false)
         });
     }
@@ -153,20 +172,37 @@ fn set_iconview(ui: &Ui) {
 }
 
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
+    if eb.get_button() == WRITE_BUTTON {
+        ui.on_drag.set(true);
+        try_write(ui, eb.get_position());
+    }
+}
+
+fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
+    let w = w as f64;
+    let h = h as f64;
+    let pos = em.get_position();
+    if pos.0 < 0.0 || pos.1 < 0.0 || pos.0 > w || pos.1 > h { // Out of drawing widget
+        return;
+    }
+    if ui.on_drag.get() {
+        try_write(ui, pos);
+    }
+}
+
+fn try_write(ui: &Ui, pos: (f64, f64)) {
     use common::basic::TILE_SIZE_I;
-    let ix = (eb.get_position().0 / TILE_SIZE_I as f64) as i32;
-    let iy = (eb.get_position().1 / TILE_SIZE_I as f64) as i32;
-    if eb.get_button() == 1 {
-        let map_pos = ui.get_map_pos();
-        let (ix, iy) = (ix + map_pos.0, iy + map_pos.1);
-        if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
-            match ui.selected_item.get() {
-                SelectedItem::Tile(idx) => {
-                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
-                }
+    let map_pos = ui.get_map_pos();
+    let ix = (pos.0 / TILE_SIZE_I as f64) as i32;
+    let iy = (pos.1 / TILE_SIZE_I as f64) as i32;
+    let (ix, iy) = (ix + map_pos.0, iy + map_pos.1);
+    if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
+        match ui.selected_item.get() {
+            SelectedItem::Tile(idx) => {
+                ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
             }
-            ui.map_redraw();
         }
+        ui.map_redraw();
     }
 }
 
