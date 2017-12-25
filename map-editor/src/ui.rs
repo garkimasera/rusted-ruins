@@ -138,7 +138,12 @@ pub fn build_ui(application: &gtk::Application) {
         let uic = ui.clone();
         menu_open.connect_activate(move |_| {
             if let Some(path) = file_open(&uic) {
-                println!("{:?} will be open", path);
+                match ::file::load_from_file(&path) {
+                    Ok(mapobj) => {
+                        *uic.map.borrow_mut() = EditingMap::from(mapobj);
+                    }
+                    Err(_) => (),
+                }
             }
         });
     }
@@ -154,16 +159,14 @@ pub fn build_ui(application: &gtk::Application) {
                     return;
                 }
             };
-            println!("{:?} will be saved", path);
-            let mapobj = uic.map.borrow().create_mapobj();
-            println!("{:?}", mapobj);
+            save_to(&uic, path);
         });
     }
     { // Menu (save as)
         let uic = ui.clone();
         menu_save_as.connect_activate(move |_| {
             if let Some(path) = file_save_as(&uic) {
-                println!("{:?} will be saved", path);
+                save_to(&uic, path)
             }
         });
     }
@@ -264,6 +267,11 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
     }
     file_chooser.destroy();
     None
+}
+
+fn save_to(ui: &Ui, path: PathBuf) {
+    let mapobj = ui.map.borrow().create_mapobj();
+    let _ = ::file::save_to_file(&path, mapobj);
 }
 
 fn create_file_filter() -> gtk::FileFilter {

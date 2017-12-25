@@ -63,3 +63,16 @@ impl MapProperty {
     }
 }
 
+impl From<MapTemplateObject> for EditingMap {
+    fn from(obj: MapTemplateObject) -> EditingMap {
+        let mut map = EditingMap::new(&obj.id, obj.w, obj.h);
+
+        for (pos, &i) in obj.tile.iter_with_idx() {
+            let tile_id = &obj.tile_table[i as usize];
+            map.tile[pos] = gobj::id_to_idx(tile_id);
+        }
+        
+        map
+    }
+}
+

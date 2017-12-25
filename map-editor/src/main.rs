@@ -7,6 +7,7 @@ extern crate gdk;
 extern crate gtk;
 extern crate gdk_pixbuf;
 extern crate cairo;
+extern crate tar;
 
 mod edit_map;
 mod ui;

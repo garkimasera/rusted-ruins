@@ -12,4 +12,5 @@ gdk = "0.7"
 gio = "0.3"
 gdk-pixbuf = "0.3"
 cairo-rs = "0.3"
+tar = "0.4"
 
