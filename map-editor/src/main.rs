@@ -12,6 +12,7 @@ mod edit_map;
 mod ui;
 mod pixbuf_holder;
 mod draw_map;
+mod file;
 
 use gio::prelude::*;
 use std::env;

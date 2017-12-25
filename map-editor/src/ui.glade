@@ -275,7 +275,7 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Please input size of new map</property>
+            <property name="label" translatable="yes">Please input properties of new map</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -294,11 +294,23 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">False</property>
-                <property name="label" translatable="yes">width</property>
+                <property name="label" translatable="yes">height</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="new-map-height">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hexpand">False</property>
+                <property name="adjustment">adjustment-new-map-height</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
@@ -306,7 +318,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">False</property>
-                <property name="label" translatable="yes">height</property>
+                <property name="label" translatable="yes">width</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -323,19 +335,29 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">id</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="new-map-height">
+              <object class="GtkEntry" id="new-map-id">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hexpand">False</property>
-                <property name="adjustment">adjustment-new-map-height</property>
+                <property name="text" translatable="yes">newmap</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
           </object>

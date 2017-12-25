@@ -17,6 +17,7 @@ pub struct Ui {
     pub window: gtk::ApplicationWindow,
     pub map_drawing_area: gtk::DrawingArea,
     pub new_map_dialog: gtk::Dialog,
+    pub new_map_id:     gtk::Entry,
     pub iconview_tile:  gtk::IconView,
     pub liststore_tile: gtk::ListStore,
     pub adjustment_new_map_width: gtk::Adjustment,
@@ -48,6 +49,7 @@ pub fn build_ui(application: &gtk::Application) {
         window:           get_object!(builder, "window1"),
         map_drawing_area: get_object!(builder, "map-drawing-area"),
         new_map_dialog:   get_object!(builder, "new-map-dialog"),
+        new_map_id:       get_object!(builder, "new-map-id"),
         iconview_tile:    get_object!(builder, "iconview-tile"),
         liststore_tile:   get_object!(builder, "liststore-tile"),
         adjustment_new_map_width:  get_object!(builder, "adjustment-new-map-width"),
@@ -55,7 +57,7 @@ pub fn build_ui(application: &gtk::Application) {
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
         pbh: Rc::new(PixbufHolder::new()),
-        map: Rc::new(RefCell::new(EditingMap::new(16, 16))),
+        map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
         on_drag: Rc::new(Cell::new(false)),
         filepath: Rc::new(RefCell::new(None)),
@@ -125,7 +127,8 @@ pub fn build_ui(application: &gtk::Application) {
                 uic.adjustment_map_pos_y.set_value(0.0);
                 uic.adjustment_map_pos_x.set_upper(width as f64);
                 uic.adjustment_map_pos_y.set_upper(height as f64);
-                let new_map = EditingMap::new(width, height);
+                let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
+                let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
                 uic.map_redraw();
             }
@@ -152,6 +155,8 @@ pub fn build_ui(application: &gtk::Application) {
                 }
             };
             println!("{:?} will be saved", path);
+            let mapobj = uic.map.borrow().create_mapobj();
+            println!("{:?}", mapobj);
         });
     }
     { // Menu (save as)
