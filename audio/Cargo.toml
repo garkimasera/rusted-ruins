@@ -8,9 +8,9 @@ name = "rusted_ruins_audio"
 crate-type = ["rlib"]
 
 [dependencies]
-log = "0.3"
+log = "0.4"
 
 [dependencies.sdl2]
-version = "0.30"
+version = "0.31"
 default-features = false
 features = ["mixer"]

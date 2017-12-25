@@ -36,7 +36,7 @@ impl WavTable {
         }
         
         WavTable {
-            channel: mixer::channel(0),
+            channel: mixer::Channel(0),
             chunks,
         }
     }

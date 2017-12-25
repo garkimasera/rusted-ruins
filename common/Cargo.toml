@@ -17,7 +17,7 @@ path = "../array2d"
 [dependencies]
 serde = "1"
 serde_derive = "1"
-lazy_static = "0.2"
+lazy_static = "1"
 tar = "0.4"
 rmp = "0.8"
 rmp-serde = "0.13"

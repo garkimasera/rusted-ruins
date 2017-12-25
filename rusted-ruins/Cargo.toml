@@ -4,10 +4,10 @@ version = "0.0.1"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
-rand = "0.3"
-lazy_static = "0.2"
+rand = "0.4"
+lazy_static = "1"
 tar = "0.4"
-error-chain = "0.10"
+error-chain = "0.11"
 serde = "1"
 serde_derive = "1"
 toml = "0.4"
@@ -32,6 +32,6 @@ path = "../rules"
 path = "../map-generator"
 
 [dependencies.sdl2]
-version = "0.30"
+version = "0.31"
 default-features = false
 features = ["ttf", "image"]

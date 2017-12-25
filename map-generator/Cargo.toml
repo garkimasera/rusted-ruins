@@ -11,4 +11,4 @@ crate-type = ["rlib"]
 path = "../array2d"
 
 [dependencies]
-rand = "0.3"
+rand = "0.4"
