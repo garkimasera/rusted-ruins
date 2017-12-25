@@ -10,7 +10,9 @@ extern crate cairo;
 extern crate tar;
 
 mod edit_map;
+#[macro_use]
 mod ui;
+mod property_controls;
 mod pixbuf_holder;
 mod draw_map;
 mod file;

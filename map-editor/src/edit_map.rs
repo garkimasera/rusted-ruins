@@ -52,7 +52,7 @@ impl EditingMap {
 
 #[derive(Debug)]
 pub struct MapProperty {
-    id: String,
+    pub id: String,
 }
 
 impl MapProperty {

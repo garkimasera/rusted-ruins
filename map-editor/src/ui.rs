@@ -9,6 +9,7 @@ use array2d::Vec2d;
 use common::objholder::*;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
+use property_controls::PropertyControls;
 
 const WRITE_BUTTON: u32 = 1;
 
@@ -24,6 +25,7 @@ pub struct Ui {
     pub adjustment_new_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
+    pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
     pub selected_item: Rc<Cell<SelectedItem>>,
@@ -56,6 +58,7 @@ pub fn build_ui(application: &gtk::Application) {
         adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
+        property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
@@ -130,6 +133,7 @@ pub fn build_ui(application: &gtk::Application) {
                 let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
                 let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
+                uic.property_controls.update(&*uic.map.borrow());
                 uic.map_redraw();
             }
         });
@@ -189,6 +193,7 @@ pub fn build_ui(application: &gtk::Application) {
         });
     }
 
+    ::property_controls::connect_for_property_controls(&ui);
     set_iconview(&ui);
     ui.window.show_all();
 }
