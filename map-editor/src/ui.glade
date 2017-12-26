@@ -255,6 +255,7 @@
                             <property name="can_focus">True</property>
                             <property name="margin">6</property>
                             <property name="model">liststore-tile</property>
+                            <property name="item_width">64</property>
                           </object>
                         </child>
                       </object>

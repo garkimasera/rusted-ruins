@@ -31,6 +31,8 @@ pub struct Ui {
     pub selected_item: Rc<Cell<SelectedItem>>,
     pub on_drag: Rc<Cell<bool>>,
     pub filepath: Rc<RefCell<Option<PathBuf>>>,
+    /// If it is false, some signal will not be processed
+    pub signal_mode: Rc<Cell<bool>>,
 }
 
 macro_rules! get_object {
@@ -64,6 +66,7 @@ pub fn build_ui(application: &gtk::Application) {
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
         on_drag: Rc::new(Cell::new(false)),
         filepath: Rc::new(RefCell::new(None)),
+        signal_mode: Rc::new(Cell::new(true)),
     };
 
     let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
@@ -144,7 +147,12 @@ pub fn build_ui(application: &gtk::Application) {
             if let Some(path) = file_open(&uic) {
                 match ::file::load_from_file(&path) {
                     Ok(mapobj) => {
-                        *uic.map.borrow_mut() = EditingMap::from(mapobj);
+                        {
+                            *uic.map.borrow_mut() = EditingMap::from(mapobj);
+                        }
+                        uic.set_signal_mode(false);
+                        uic.property_controls.update(&*uic.map.borrow());
+                        uic.set_signal_mode(true);
                     }
                     Err(_) => (),
                 }
@@ -315,6 +323,14 @@ impl Ui {
         let pos_x = self.adjustment_map_pos_x.get_value() as i32;
         let pos_y = self.adjustment_map_pos_y.get_value() as i32;
         (pos_x, pos_y)
+    }
+
+    pub fn set_signal_mode(&self, mode: bool) {
+        self.signal_mode.set(mode);
+    }
+
+    pub fn get_signal_mode(&self) -> bool {
+        self.signal_mode.get()
     }
 }
 
