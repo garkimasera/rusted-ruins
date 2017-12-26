@@ -32,7 +32,15 @@
     <columns>
       <!-- column-name icon -->
       <column type="GdkPixbuf"/>
-      <!-- column-name gchararray1 -->
+      <!-- column-name tile-id -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="liststore-wall">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name id-wall -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -267,6 +275,39 @@
                         <property name="label" translatable="yes">Tile</property>
                       </object>
                       <packing>
+                        <property name="tab_fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="vscrollbar_policy">always</property>
+                        <property name="shadow_type">in</property>
+                        <child>
+                          <object class="GtkIconView" id="iconview-wall">
+                            <property name="width_request">100</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="margin">6</property>
+                            <property name="model">liststore-wall</property>
+                            <property name="item_width">64</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child type="tab">
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Wall</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>

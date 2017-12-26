@@ -20,7 +20,9 @@ pub struct Ui {
     pub new_map_dialog: gtk::Dialog,
     pub new_map_id:     gtk::Entry,
     pub iconview_tile:  gtk::IconView,
+    pub iconview_wall:  gtk::IconView,
     pub liststore_tile: gtk::ListStore,
+    pub liststore_wall: gtk::ListStore,
     pub adjustment_new_map_width: gtk::Adjustment,
     pub adjustment_new_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
@@ -55,7 +57,9 @@ pub fn build_ui(application: &gtk::Application) {
         new_map_dialog:   get_object!(builder, "new-map-dialog"),
         new_map_id:       get_object!(builder, "new-map-id"),
         iconview_tile:    get_object!(builder, "iconview-tile"),
+        iconview_wall:    get_object!(builder, "iconview-wall"),
         liststore_tile:   get_object!(builder, "liststore-tile"),
+        liststore_wall:   get_object!(builder, "liststore-wall"),
         adjustment_new_map_width:  get_object!(builder, "adjustment-new-map-width"),
         adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
@@ -226,7 +230,25 @@ fn set_iconview(ui: &Ui) {
                 &[0, 1],
                 &[pbh.get(TileIdx(i as u32)), &tile.id]);
         }
-    }   
+    }
+    { // Set wall icons
+        ui.iconview_wall.set_pixbuf_column(0);
+        ui.iconview_wall.set_text_column(1);
+        let uic = ui.clone();
+        ui.iconview_wall.connect_selection_changed(move |_| {
+            if let Some(path) = uic.iconview_wall.get_selected_items().get(0) {
+                uic.wall_selected(path.get_indices()[0]);
+            }
+        });
+        
+        let liststore_wall = &ui.liststore_wall;
+        for (i, wall) in objholder.wall.iter().enumerate() {
+            liststore_wall.insert_with_values(
+                None,
+                &[0, 1],
+                &[pbh.get(WallIdx(i as u32)), &wall.id]);
+        }
+    }
 }
 
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
@@ -305,6 +327,9 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
             SelectedItem::Tile(idx) => {
                 ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
             }
+            SelectedItem::Wall(idx) => {
+                ui.map.borrow_mut().set_wall(Vec2d::new(ix, iy), Some(idx));
+            }
         }
         ui.map_redraw();
     }
@@ -313,6 +338,10 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
 impl Ui {
     fn tile_selected(&self, i: i32) {
         self.selected_item.set(SelectedItem::Tile(TileIdx(i as u32)));
+    }
+
+    fn wall_selected(&self, i: i32) {
+        self.selected_item.set(SelectedItem::Wall(WallIdx(i as u32)));
     }
 
     pub fn map_redraw(&self) {
@@ -336,6 +365,6 @@ impl Ui {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum SelectedItem {
-    Tile(TileIdx),
+    Tile(TileIdx), Wall(WallIdx),
 }
 
