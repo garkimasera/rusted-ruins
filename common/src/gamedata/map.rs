@@ -176,4 +176,9 @@ impl MapId {
     }
 }
 
-pub const STARTING_MAP_ID: MapId = MapId { sid: super::site::SiteId::Start, floor: 0 };
+impl Default for MapId {
+    fn default() -> MapId {
+        MapId { sid: super::site::SiteId::Other(0), floor: 0 }
+    }
+}
+

@@ -25,7 +25,7 @@ impl GameData {
         GameData {
             site: SiteHolder::new(),
             chara: CharaHolder::new(),
-            current_mapid: map::STARTING_MAP_ID,
+            current_mapid: MapId::default(),
         }
     }
 
@@ -86,16 +86,17 @@ impl GameData {
 
     pub fn add_site(&mut self, site: Site, kind: SiteKind) -> SiteId {
         match kind {
-            SiteKind::Start => {
-                let sid = SiteId::Start;
+            SiteKind::Other => {
+                let sid = SiteId::Other(0);
                 self.site.0.insert(sid, site);
                 sid
             }
             SiteKind::AutoGenDungeon => {
-                let sid = SiteId::AutoGenDungeon { n: 0 };
+                let sid = SiteId::AutoGenDungeon(0);
                 self.site.0.insert(sid, site);
                 sid
             }
+            _ => { unimplemented!() }
         }
     }
 
