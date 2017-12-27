@@ -81,7 +81,13 @@ fn decrease_wait_time(chara: &mut Chara) -> bool {
 /// Dying chara is removed before new turn processing
 fn remove_dying_charas(game: &mut Game) {
     while let Some(cid) = game.dying_charas.pop() {
+        // Remove from gamedata
         game.gd.remove_chara(cid);
+        // Remove from action queue
+        let action_queue = &mut game.turn_loop_data.0;
+        if let Some((i, _)) = action_queue.iter().enumerate().find(|&(_, a)| *a == cid) {
+            action_queue.remove(i);
+        }
     }
 }
 
