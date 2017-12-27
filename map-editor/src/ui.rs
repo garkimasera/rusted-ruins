@@ -140,7 +140,9 @@ pub fn build_ui(application: &gtk::Application) {
                 let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
                 let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
+                uic.set_signal_mode(false);
                 uic.property_controls.update(&*uic.map.borrow());
+                uic.set_signal_mode(true);
                 uic.map_redraw();
             }
         });
