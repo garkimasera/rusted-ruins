@@ -53,7 +53,9 @@ impl Map {
     }
 
     pub fn get_chara<T: Into<Vec2d>>(&self, pos: T) -> Option<CharaId> {
-        self.tile[pos.into()].chara.clone()
+        let pos = pos.into();
+        if !self.is_inside(pos) { return None; }
+        self.tile[pos].chara.clone()
     }
 
     pub fn iter_charaid(&self) -> ::std::slice::Iter<CharaId> {
