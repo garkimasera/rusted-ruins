@@ -13,7 +13,9 @@ pub fn add_dungeon_site(gd: &mut GameData) -> SiteId {
 }
 
 pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
-    let map = super::map::builder::MapBuilder::new(40, 40).build();
+    // let map = super::map::builder::MapBuilder::new(40, 40).build();
+    // test code of creating from map template
+    let map = super::map::from_template::from_template_id("!start");
     
     gd.add_map(map, sid);
 }

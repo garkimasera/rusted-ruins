@@ -8,6 +8,10 @@ pub fn from_template(t: &MapTemplateObject) -> Map {
     map
 }
 
+pub fn from_template_id(id: &str) -> Map {
+    from_template(gobj::get_by_id(id))
+}
+
 /// Create map its terrains (tile, wall) are loaded from template
 fn create_terrain(t: &MapTemplateObject) -> Map {
     let mut map = Map::new(t.w, t.h);
