@@ -1,5 +1,6 @@
 
 pub mod builder;
+pub mod from_template;
 
 use array2d::Vec2d;
 use common::gamedata::GameData;
