@@ -74,14 +74,14 @@ impl<'a> DoPlayerAction<'a> {
                     = &gd.get_current_map().tile[gd.player_pos()].special;
                 match special_tile_kind {
                     &SpecialTileKind::DownStairs => {
-                        if gd.site.get(mid.sid).get_dungeon_kind().is_underground() {
+                        if gd.site.get(mid.sid).is_underground() {
                             Some(mid.inc_floor())
                         } else {
                             mid.dec_floor()
                         }
                     }
                     &SpecialTileKind::UpStairs => {
-                        if gd.site.get(mid.sid).get_dungeon_kind().is_underground() {
+                        if gd.site.get(mid.sid).is_underground() {
                             mid.dec_floor()
                         } else {
                             Some(mid.inc_floor())

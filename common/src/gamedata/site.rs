@@ -62,6 +62,15 @@ impl Site {
         self.map.push(map);
         self.map.len() as u32 - 1
     }
+    
+    pub fn is_underground(&self) -> bool {
+        match self.content {
+            SiteContent::AutoGenDungeon { dungeon_kind, .. } => {
+                dungeon_kind.is_underground()
+            }
+            _ => false,
+        }
+    }
 }
 
 impl SiteContent {

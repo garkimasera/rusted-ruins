@@ -5,7 +5,7 @@ use common::gamedata::site::{Site, SiteId, SiteKind};
 pub fn add_dungeon_site(gd: &mut GameData) -> SiteId {
     let site = Site::new("Ruin Hoge", 10);
 
-    let sid = gd.add_site(site, SiteKind::Start);
+    let sid = gd.add_site(site, SiteKind::Other);
     
     extend_site_floor(gd, sid);
     
