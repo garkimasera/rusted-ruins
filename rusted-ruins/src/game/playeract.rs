@@ -74,14 +74,14 @@ impl<'a> DoPlayerAction<'a> {
                     = &gd.get_current_map().tile[gd.player_pos()].special;
                 match special_tile_kind {
                     &SpecialTileKind::DownStairs => {
-                        if gd.site.get(mid.sid).is_underground() {
+                        if gd.region.get_site(mid.sid).is_underground() {
                             Some(mid.inc_floor())
                         } else {
                             mid.dec_floor()
                         }
                     }
                     &SpecialTileKind::UpStairs => {
-                        if gd.site.get(mid.sid).is_underground() {
+                        if gd.region.get_site(mid.sid).is_underground() {
                             mid.dec_floor()
                         } else {
                             Some(mid.inc_floor())
@@ -96,7 +96,7 @@ impl<'a> DoPlayerAction<'a> {
             }
             let next_mid = next_mid.unwrap();
 
-            if gd.site.get_map_checked(next_mid).is_none() { // If next_mid floor doesn't exist
+            if gd.region.get_map_checked(next_mid).is_none() { // If next_mid floor doesn't exist
                 super::site::extend_site_floor(gd, next_mid.sid);
             }
 

@@ -23,7 +23,7 @@ pub fn switch_map(gd: &mut GameData, mid: MapId) {
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
-        if let Some(p) = choose_empty_tile(gd.site.get_map(mid)) {
+        if let Some(p) = choose_empty_tile(gd.region.get_map(mid)) {
             let chara = create_npc_chara(DungeonKind::Cave, floor_level);
             trace!("Generate new npc {}", chara.name);
             gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
@@ -67,7 +67,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
 
 /// Locate some items for a new map
 pub fn gen_items(gd: &mut GameData, mid: MapId) {
-    let map = gd.site.get_map_mut(mid);
+    let map = gd.region.get_map_mut(mid);
 
     for p in map.tile.iter_idx() {
         let tile = &mut map.tile[p];

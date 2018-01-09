@@ -3,6 +3,7 @@ pub mod item;
 pub mod chara;
 pub mod map;
 pub mod site;
+pub mod region;
 
 use array2d::Vec2d;
 
@@ -10,21 +11,21 @@ use self::chara::*;
 use self::map::*;
 use self::site::*;
 use self::item::*;
-
+use self::region::*;
 
 /// Includes all data for one game
 #[derive(Serialize, Deserialize)]
 pub struct GameData {
-    pub site: SiteHolder,
     pub chara: CharaHolder,
+    pub region: RegionHolder,
     current_mapid: MapId,
 }
 
 impl GameData {
     pub fn empty() -> GameData {
         GameData {
-            site: SiteHolder::new(),
             chara: CharaHolder::new(),
+            region: RegionHolder::new(),
             current_mapid: MapId::default(),
         }
     }
@@ -34,11 +35,24 @@ impl GameData {
     }
 
     pub fn get_current_map(&self) -> &Map {
-        self.site.get_map(self.current_mapid)
+        self.region.get_map(self.current_mapid)
     }
 
     pub fn get_current_map_mut(&mut self) -> &mut Map {
-        self.site.get_map_mut(self.current_mapid)
+        self.region.get_map_mut(self.current_mapid)
+    }
+
+    pub fn get_current_region_id(&self) -> RegionId {
+        let mapid = self.get_current_mapid();
+        mapid.sid.rid
+    }
+
+    pub fn get_current_region(&self) -> &Region {
+        self.region.get(self.current_mapid.sid.rid)
+    }
+
+    pub fn get_current_region_mut(&mut self) -> &mut Region {
+        self.region.get_mut(self.current_mapid.sid.rid)
     }
 
     pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {
@@ -57,14 +71,14 @@ impl GameData {
         match kind {
             CharaKind::Player => {
                 self.chara.0.insert(CharaId::Player, chara);
-                let map = self.site.get_map_mut(mid);
+                let map = self.region.get_map_mut(mid);
                 map.add_chara(pos, CharaId::Player);
                 CharaId::Player
             }
             CharaKind::OnMap => {
-                let cid = CharaId::OnMap { mid, n: self.site.get_map(mid).search_empty_onmap_charaid_n() };
+                let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
                 self.chara.0.insert(cid, chara);
-                self.site.get_map_mut(mid).add_chara(pos, cid);
+                self.region.get_map_mut(mid).add_chara(pos, cid);
                 cid
             }
         }
@@ -76,7 +90,7 @@ impl GameData {
                 panic!();
             }
             CharaId::OnMap { mid, .. } => {
-                let map = self.site.get_map_mut(mid);
+                let map = self.region.get_map_mut(mid);
                 
                 self.chara.remove_chara(cid);
                 map.remove_chara(cid);
@@ -84,24 +98,13 @@ impl GameData {
         }
     }
 
-    pub fn add_site(&mut self, site: Site, kind: SiteKind) -> SiteId {
-        match kind {
-            SiteKind::Other => {
-                let sid = SiteId::Other(0);
-                self.site.0.insert(sid, site);
-                sid
-            }
-            SiteKind::AutoGenDungeon => {
-                let sid = SiteId::AutoGenDungeon(0);
-                self.site.0.insert(sid, site);
-                sid
-            }
-            _ => { unimplemented!() }
-        }
+    pub fn add_site(&mut self, site: Site, kind: SiteKind, rid: RegionId) -> SiteId {
+        let region = self.region.get_mut(rid);
+        region.add_site(site, kind)
     }
 
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
-        let site = self.site.get_mut(sid);
+        let site = self.region.get_site_mut(sid);
         let floor = site.add_map(map);
         MapId { sid, floor }
     }
@@ -122,7 +125,7 @@ impl GameData {
                 self.chara.get(cid).equip.list()
             }
             ItemListLocation::OnMap { mid, pos } => {
-                &self.site.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
+                &self.region.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
             }
         }
     }
@@ -137,7 +140,7 @@ impl GameData {
                 panic!("Mutable borrow is prohibited for equipment list");
             }
             ItemListLocation::OnMap { mid, pos } => {
-                self.site.get_map_mut(mid).tile[pos].item_list.as_mut()
+                self.region.get_map_mut(mid).tile[pos].item_list.as_mut()
                     .expect("Get item list to empty tile")
             }
         }
@@ -202,7 +205,7 @@ impl GameData {
         match item_list_location {
             ItemListLocation::OnMap { mid, pos } => {
                 if self.get_item_list(item_list_location).is_empty() {
-                    self.site.get_map_mut(mid).tile[pos].item_list = None;
+                    self.region.get_map_mut(mid).tile[pos].item_list = None;
                 }
             }
             _ => (),

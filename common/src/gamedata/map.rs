@@ -178,7 +178,7 @@ impl MapId {
 
 impl Default for MapId {
     fn default() -> MapId {
-        MapId { sid: super::site::SiteId::Other(0), floor: 0 }
+        MapId { sid: super::site::SiteId::default(), floor: 0 }
     }
 }
 

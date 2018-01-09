@@ -1,6 +1,6 @@
 
-use std::collections::HashMap;
-use super::map::{Map, MapId};
+use super::map::Map;
+use super::region::RegionId;
 
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
@@ -89,10 +89,20 @@ pub enum SiteKind {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-pub enum SiteId {
-    /// Auto generated dungeon
-    AutoGenDungeon(u32),
-    Other(u32),
+pub struct SiteId {
+    pub rid: RegionId,
+    pub kind: SiteKind,
+    pub n: u32,
+}
+
+impl Default for SiteId {
+    fn default() -> SiteId {
+        SiteId {
+            rid: RegionId::default(),
+            kind: SiteKind::Other,
+            n: 0
+        }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
@@ -112,35 +122,3 @@ impl DungeonKind {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct SiteHolder(pub(crate) HashMap<SiteId, Site>);
-
-impl SiteHolder {
-    pub(crate) fn new() -> SiteHolder {
-        SiteHolder(HashMap::new())
-    }
-    
-    pub fn get(&self, sid: SiteId) -> &Site {
-        self.0.get(&sid).expect(&super::unknown_id_err(sid))
-    }
-
-    pub fn get_mut(&mut self, sid: SiteId) -> &mut Site {
-        self.0.get_mut(&sid).expect(&super::unknown_id_err(sid))
-    }
-
-    pub fn get_map(&self, mid: MapId) -> &Map {
-        self.get(mid.sid).get_map(mid.floor)
-    }
-
-    pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
-        self.get_mut(mid.sid).get_map_mut(mid.floor)
-    }
-
-    pub fn get_map_checked(&self, mid: MapId) -> Option<&Map> {
-        self.get(mid.sid).get_map_checked(mid.floor)
-    }
-
-    pub fn get_map_mut_checked(&mut self, mid: MapId) -> Option<&mut Map> {
-        self.get_mut(mid.sid).get_map_mut_checked(mid.floor)
-    }
-}
