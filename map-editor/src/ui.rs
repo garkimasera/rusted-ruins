@@ -27,6 +27,8 @@ pub struct Ui {
     pub adjustment_new_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
+    pub label_cursor_pos:    gtk::Label,
+    pub label_selected_item: gtk::Label,
     pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
@@ -64,6 +66,8 @@ pub fn build_ui(application: &gtk::Application) {
         adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
+        label_cursor_pos:    get_object!(builder, "label-cursor-pos"),
+        label_selected_item: get_object!(builder, "label-selected-item"),
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
@@ -270,6 +274,10 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
     if ui.on_drag.get() {
         try_write(ui, pos);
     }
+    // Update cursor position display
+    let (ix, iy) = ui.cursor_to_tile_pos(pos);
+    let text = format!("({},{})", ix, iy);
+    ui.label_cursor_pos.set_text(&text);
 }
 
 fn file_open(ui: &Ui) -> Option<PathBuf> {
@@ -319,11 +327,7 @@ fn create_file_filter() -> gtk::FileFilter {
 }
 
 fn try_write(ui: &Ui, pos: (f64, f64)) {
-    use common::basic::TILE_SIZE_I;
-    let map_pos = ui.get_map_pos();
-    let ix = (pos.0 / TILE_SIZE_I as f64) as i32;
-    let iy = (pos.1 / TILE_SIZE_I as f64) as i32;
-    let (ix, iy) = (ix + map_pos.0, iy + map_pos.1);
+    let (ix, iy) = ui.cursor_to_tile_pos(pos);
     if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
@@ -362,6 +366,14 @@ impl Ui {
 
     pub fn get_signal_mode(&self) -> bool {
         self.signal_mode.get()
+    }
+
+    pub fn cursor_to_tile_pos(&self, pos: (f64, f64)) -> (i32, i32) {
+        let map_pos = self.get_map_pos();
+        use common::basic::TILE_SIZE_I;
+        let ix = (pos.0 / TILE_SIZE_I as f64) as i32;
+        let iy = (pos.1 / TILE_SIZE_I as f64) as i32;
+        (ix + map_pos.0, iy + map_pos.1)
     }
 }
 

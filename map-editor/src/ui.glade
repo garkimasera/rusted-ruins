@@ -14,36 +14,6 @@
     <property name="page_increment">10</property>
     <property name="page_size">1</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment-new-map-height">
-    <property name="lower">1</property>
-    <property name="upper">255</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment-new-map-width">
-    <property name="lower">1</property>
-    <property name="upper">255</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkListStore" id="liststore-tile">
-    <columns>
-      <!-- column-name icon -->
-      <column type="GdkPixbuf"/>
-      <!-- column-name tile-id -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="liststore-wall">
-    <columns>
-      <!-- column-name icon -->
-      <column type="GdkPixbuf"/>
-      <!-- column-name id-wall -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkApplicationWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Rusted Ruins Map Editor</property>
@@ -190,132 +160,192 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkNotebook">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="margin_bottom">6</property>
+                    <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
+                    <property name="baseline_position">top</property>
                     <child>
-                      <object class="GtkGrid">
+                      <object class="GtkLabel" id="label-cursor-pos">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">5</property>
-                        <property name="margin_right">5</property>
-                        <property name="margin_top">5</property>
-                        <property name="margin_bottom">5</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_right">6</property>
-                            <property name="label" translatable="yes">id</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkEntry" id="property-map-id">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="text" translatable="yes">newmap</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="tab">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Basic</property>
+                        <property name="label" translatable="yes">(0,0)</property>
+                        <property name="track_visited_links">False</property>
                       </object>
                       <packing>
-                        <property name="tab_fill">False</property>
+                        <property name="expand">True</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label-selected-item">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">! (tile)</property>
+                        <property name="track_visited_links">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkNotebook">
+                  <object class="GtkPaned">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="margin_top">7</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkNotebook">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
-                        <property name="vscrollbar_policy">always</property>
-                        <property name="shadow_type">in</property>
+                        <property name="margin_top">7</property>
                         <child>
-                          <object class="GtkIconView" id="iconview-tile">
-                            <property name="width_request">100</property>
+                          <object class="GtkScrolledWindow">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="margin">6</property>
-                            <property name="model">liststore-tile</property>
-                            <property name="item_width">64</property>
+                            <property name="hscrollbar_policy">never</property>
+                            <property name="vscrollbar_policy">always</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkIconView" id="iconview-tile">
+                                <property name="width_request">100</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="margin">6</property>
+                                <property name="model">liststore-tile</property>
+                                <property name="item_width">64</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                    <child type="tab">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Tile</property>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Tile</property>
+                          </object>
+                          <packing>
+                            <property name="tab_fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">never</property>
+                            <property name="vscrollbar_policy">always</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkIconView" id="iconview-wall">
+                                <property name="width_request">100</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="margin">6</property>
+                                <property name="model">liststore-wall</property>
+                                <property name="item_width">64</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Wall</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                            <property name="tab_fill">False</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="tab_fill">False</property>
+                        <property name="resize">True</property>
+                        <property name="shrink">False</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkNotebook">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
-                        <property name="vscrollbar_policy">always</property>
-                        <property name="shadow_type">in</property>
+                        <property name="margin_bottom">6</property>
                         <child>
-                          <object class="GtkIconView" id="iconview-wall">
-                            <property name="width_request">100</property>
+                          <object class="GtkGrid">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="margin">6</property>
-                            <property name="model">liststore-wall</property>
-                            <property name="item_width">64</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_top">5</property>
+                            <property name="margin_bottom">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">id</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="property-map-id">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="text" translatable="yes">newmap</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="cb-regionmap">
+                                <property name="label" translatable="yes">Region Map</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
                           </object>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Basic</property>
+                          </object>
+                          <packing>
+                            <property name="tab_fill">False</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child type="tab">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Wall</property>
-                      </object>
-                      <packing>
-                        <property name="position">1</property>
-                        <property name="tab_fill">False</property>
+                        <property name="resize">False</property>
+                        <property name="shrink">True</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -333,6 +363,20 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-new-map-height">
+    <property name="lower">1</property>
+    <property name="upper">255</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-new-map-width">
+    <property name="lower">1</property>
+    <property name="upper">255</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkDialog" id="new-map-dialog">
     <property name="can_focus">False</property>
@@ -483,5 +527,21 @@
       <action-widget response="0">button1</action-widget>
       <action-widget response="1">button2</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkListStore" id="liststore-tile">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name tile-id -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="liststore-wall">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name id-wall -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>
