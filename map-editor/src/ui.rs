@@ -9,6 +9,7 @@ use array2d::Vec2d;
 use common::objholder::*;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
+use iconview::IconView;
 use property_controls::PropertyControls;
 
 const WRITE_BUTTON: u32 = 1;
@@ -19,16 +20,13 @@ pub struct Ui {
     pub map_drawing_area: gtk::DrawingArea,
     pub new_map_dialog: gtk::Dialog,
     pub new_map_id:     gtk::Entry,
-    pub iconview_tile:  gtk::IconView,
-    pub iconview_wall:  gtk::IconView,
-    pub liststore_tile: gtk::ListStore,
-    pub liststore_wall: gtk::ListStore,
     pub adjustment_new_map_width: gtk::Adjustment,
     pub adjustment_new_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
     pub label_cursor_pos:    gtk::Label,
     pub label_selected_item: gtk::Label,
+    pub iconview: IconView,
     pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
@@ -58,16 +56,13 @@ pub fn build_ui(application: &gtk::Application) {
         map_drawing_area: get_object!(builder, "map-drawing-area"),
         new_map_dialog:   get_object!(builder, "new-map-dialog"),
         new_map_id:       get_object!(builder, "new-map-id"),
-        iconview_tile:    get_object!(builder, "iconview-tile"),
-        iconview_wall:    get_object!(builder, "iconview-wall"),
-        liststore_tile:   get_object!(builder, "liststore-tile"),
-        liststore_wall:   get_object!(builder, "liststore-wall"),
         adjustment_new_map_width:  get_object!(builder, "adjustment-new-map-width"),
         adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
         label_cursor_pos:    get_object!(builder, "label-cursor-pos"),
         label_selected_item: get_object!(builder, "label-selected-item"),
+        iconview: IconView::build(&builder),
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
@@ -212,50 +207,11 @@ pub fn build_ui(application: &gtk::Application) {
     }
 
     ::property_controls::connect_for_property_controls(&ui);
-    set_iconview(&ui);
+    ::iconview::set_iconview(&ui);
     ui.window.show_all();
 }
 
-fn set_iconview(ui: &Ui) {
-    let pbh = &*ui.pbh;
-    let objholder = ::common::gobj::get_objholder();
-    { // Set tile icons
-        ui.iconview_tile.set_pixbuf_column(0);
-        ui.iconview_tile.set_text_column(1);
-        let uic = ui.clone();
-        ui.iconview_tile.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview_tile.get_selected_items().get(0) {
-                uic.tile_selected(path.get_indices()[0]);
-            }
-        });
-        
-        let liststore_tile = &ui.liststore_tile;
-        for (i, tile) in objholder.tile.iter().enumerate() {
-            liststore_tile.insert_with_values(
-                None,
-                &[0, 1],
-                &[pbh.get(TileIdx(i as u32)), &tile.id]);
-        }
-    }
-    { // Set wall icons
-        ui.iconview_wall.set_pixbuf_column(0);
-        ui.iconview_wall.set_text_column(1);
-        let uic = ui.clone();
-        ui.iconview_wall.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview_wall.get_selected_items().get(0) {
-                uic.wall_selected(path.get_indices()[0]);
-            }
-        });
-        
-        let liststore_wall = &ui.liststore_wall;
-        for (i, wall) in objholder.wall.iter().enumerate() {
-            liststore_wall.insert_with_values(
-                None,
-                &[0, 1],
-                &[pbh.get(WallIdx(i as u32)), &wall.id]);
-        }
-    }
-}
+
 
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
     if eb.get_button() == WRITE_BUTTON {
@@ -342,14 +298,6 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
 }
 
 impl Ui {
-    fn tile_selected(&self, i: i32) {
-        self.selected_item.set(SelectedItem::Tile(TileIdx(i as u32)));
-    }
-
-    fn wall_selected(&self, i: i32) {
-        self.selected_item.set(SelectedItem::Wall(WallIdx(i as u32)));
-    }
-
     pub fn map_redraw(&self) {
         self.map_drawing_area.queue_draw();
     }
