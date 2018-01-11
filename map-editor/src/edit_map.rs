@@ -79,12 +79,14 @@ impl EditingMap {
 #[derive(Debug)]
 pub struct MapProperty {
     pub id: String,
+    pub is_region_map: bool,
 }
 
 impl MapProperty {
     fn new(id: &str) -> MapProperty {
         MapProperty {
             id: id.to_owned(),
+            is_region_map: false,
         }
     }
 }
