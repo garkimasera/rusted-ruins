@@ -13,5 +13,8 @@ pub struct MapTemplateObject {
     /// Wall Id (String) <-> integer value conversion table
     pub wall_table: Vec<String>,
     pub wall: Array2d<Option<u32>>,
+    /// Deco Id (String) <-> integer value conversion table
+    pub deco_table: Vec<String>,
+    pub deco: Array2d<Option<u32>>,
 }
 

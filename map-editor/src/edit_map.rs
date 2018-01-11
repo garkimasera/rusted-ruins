@@ -70,6 +70,25 @@ impl EditingMap {
             }
         }
 
+        let mut deco_table: Vec<String> = Vec::new();
+        for deco_idx in self.deco.iter() {
+            if let Some(deco_idx) = *deco_idx {
+                let deco_id = gobj::idx_to_id(deco_idx);
+                if deco_table.iter().all(|a| *a != deco_id) {
+                    deco_table.push(deco_id.to_owned());
+                }
+            }
+        }
+        let mut deco_map = Array2d::new(self.width, self.height, None);
+        for (pos, deco_idx) in self.deco.iter_with_idx() {
+            if let Some(deco_idx) = *deco_idx {
+                let deco_id = gobj::idx_to_id(deco_idx);
+                let converted_idx =
+                    deco_table.iter().enumerate().find(|&(_, a)| a == deco_id).unwrap().0 as u32;
+                deco_map[pos] = Some(converted_idx);
+            }
+        }
+
         MapTemplateObject {
             id: self.property.id.to_owned(),
             w: self.width,
@@ -78,6 +97,8 @@ impl EditingMap {
             tile: tile_map,
             wall_table: wall_table,
             wall: wall_map,
+            deco_table: deco_table,
+            deco: deco_map,
         }
     }
 }
@@ -110,6 +131,13 @@ impl From<MapTemplateObject> for EditingMap {
             if let Some(i) = *i {
                 let wall_id = &obj.wall_table[i as usize];
                 map.wall[pos] = Some(gobj::id_to_idx(wall_id));
+            }
+        }
+
+        for (pos, i) in obj.deco.iter_with_idx() {
+            if let Some(i) = *i {
+                let deco_id = &obj.deco_table[i as usize];
+                map.deco[pos] = Some(gobj::id_to_idx(deco_id));
             }
         }
         
