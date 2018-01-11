@@ -108,7 +108,7 @@ impl From<MapTemplateObject> for EditingMap {
 
         for (pos, i) in obj.wall.iter_with_idx() {
             if let Some(i) = *i {
-                let wall_id = &obj.tile_table[i as usize];
+                let wall_id = &obj.wall_table[i as usize];
                 map.wall[pos] = Some(gobj::id_to_idx(wall_id));
             }
         }
