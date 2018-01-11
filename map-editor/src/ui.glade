@@ -28,6 +28,17 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="liststore-deco">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name tile-id -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkTreeModelFilter" id="filter-deco">
+    <property name="child_model">liststore-deco</property>
+  </object>
   <object class="GtkListStore" id="liststore-tile">
     <columns>
       <!-- column-name icon -->
@@ -303,6 +314,39 @@
                           </object>
                           <packing>
                             <property name="position">1</property>
+                            <property name="tab_fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">never</property>
+                            <property name="vscrollbar_policy">always</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkIconView" id="iconview-deco">
+                                <property name="width_request">100</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="margin">6</property>
+                                <property name="model">filter-deco</property>
+                                <property name="item_width">64</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Deco</property>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
                             <property name="tab_fill">False</property>
                           </packing>
                         </child>

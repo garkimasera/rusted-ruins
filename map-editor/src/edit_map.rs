@@ -10,14 +10,16 @@ pub struct EditingMap {
     pub height: u32,
     pub tile: Array2d<TileIdx>,
     pub wall: Array2d<Option<WallIdx>>,
+    pub deco: Array2d<Option<DecoIdx>>,
 }
 
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
         let tile = Array2d::new(width, height, TileIdx(0));
         let wall = Array2d::new(width, height, None);
+        let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
-        EditingMap { property, width, height, tile, wall }
+        EditingMap { property, width, height, tile, wall, deco }
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, tile: TileIdx) {
@@ -26,6 +28,10 @@ impl EditingMap {
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
         self.wall[pos] = wall;
+    }
+
+    pub fn set_deco(&mut self, pos: Vec2d, deco: Option<DecoIdx>) {
+        self.deco[pos] = deco;
     }
 
     pub fn create_mapobj(&self) -> MapTemplateObject {

@@ -292,6 +292,9 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
             SelectedItem::Wall(idx) => {
                 ui.map.borrow_mut().set_wall(Vec2d::new(ix, iy), Some(idx));
             }
+            SelectedItem::Deco(idx) => {
+                ui.map.borrow_mut().set_deco(Vec2d::new(ix, iy), Some(idx));
+            }
         }
         ui.map_redraw();
     }
@@ -327,6 +330,6 @@ impl Ui {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum SelectedItem {
-    Tile(TileIdx), Wall(WallIdx),
+    Tile(TileIdx), Wall(WallIdx), Deco(DecoIdx),
 }
 

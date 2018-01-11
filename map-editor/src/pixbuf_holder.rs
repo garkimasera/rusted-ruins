@@ -42,6 +42,7 @@ macro_rules! impl_pixbuf_holder {
 }
 
 impl_pixbuf_holder! {
+    {deco, DecoIdx},
     {chara_template, CharaTemplateIdx},
     {special_tile, SpecialTileIdx},
     {tile, TileIdx},

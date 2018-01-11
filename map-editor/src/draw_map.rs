@@ -38,6 +38,16 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
                                      (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64);
                 cr.paint();
             }
+
+            // Draw deco
+            if let Some(deco_idx) = map.deco[p] {
+                let pixbuf = pbh.get(deco_idx);
+                let height = pixbuf.get_height();
+                cr.set_source_pixbuf(pixbuf,
+                                     (ix * TILE_SIZE_I) as f64,
+                                     (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64);
+                cr.paint();
+            }
         }
     }
 }
