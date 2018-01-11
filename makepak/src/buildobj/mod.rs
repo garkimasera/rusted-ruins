@@ -17,6 +17,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         "chara_template" => {
             return build_chara_template_object(tomlinput).map(|o| Object::CharaTemplate(o));
         }
+        "deco" => {
+            return build_deco_object(tomlinput).map(|o| Object::Deco(o));
+        }
         "item" => {
             return build_item_object(tomlinput).map(|o| Object::Item(o));
         }
@@ -39,6 +42,15 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
             bail!("Unknown object_type");
         }
     }
+}
+
+fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
+    let img = get_optional_field!(tomlinput, image);
+    
+    Ok(DecoObject {
+        id: tomlinput.id,
+        img: build_img(img)?,
+    })
 }
 
 fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> {
