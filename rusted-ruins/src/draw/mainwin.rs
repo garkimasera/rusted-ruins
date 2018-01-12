@@ -29,6 +29,7 @@ impl MainWinDrawer {
 
     pub fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
                 anim: Option<(&Animation, u32)>) {
+        super::frame::next_frame();
         let mut player_move_dir = None;
 
         let player_move_adjust = if let Some(anim) = anim {
@@ -132,11 +133,14 @@ impl MainWinDrawer {
         p: Vec2d, dx: i32, dy: i32) {
         
         if !map.is_inside(p) { return; }
+        let tile_idx = map.tile[p].tile;
+        let o = gobj::get_obj(tile_idx);
+        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = Rect::new(
             p.0 * TILE_SIZE_I + dx, p.1 * TILE_SIZE_I + dy,
             TILE_SIZE, TILE_SIZE);
         let texture = sv.tex().get(map.tile[p].tile);
-        check_draw!(canvas.copy(&texture, None, dest));
+        check_draw!(canvas.copy(&texture, src, dest));
 
         self.draw_tile_deco(canvas, map, sv, p, dx, dy);
     }
