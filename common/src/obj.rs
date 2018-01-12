@@ -173,7 +173,7 @@ pub trait ImgObject {
             1
         };
         let grid_x = n % img.grid_w;
-        let grid_y = n / img.grid_h;
+        let grid_y = if img.grid_h == 1 { 0 } else { n / img.grid_h };
         ((img.w * grid_x) as i32, (img.h * grid_y) as i32, img.w, img.h)
     }
 }
