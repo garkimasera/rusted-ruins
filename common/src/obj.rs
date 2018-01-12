@@ -25,8 +25,6 @@ pub enum Object {
 pub struct AnimImgObject {
     pub id: String,
     pub img: Img,
-    pub duration: u32,
-    pub n_frame: u32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -107,6 +105,8 @@ pub struct Img {
     pub h: u32,
     pub grid_w: u32,
     pub grid_h: u32,
+    pub n_frame: u32,
+    pub duration: u32,
 }
 
 #[derive(Serialize, Deserialize)]

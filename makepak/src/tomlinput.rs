@@ -9,7 +9,6 @@ pub struct TomlInput {
     pub id: String,
     pub image: Option<ImgInput>,
     pub icon: Option<IconInput>,
-    pub anim_img: Option<AnimImgDepInput>,
     pub chara_template: Option<CharaTemplateDepInput>,
     pub item: Option<ItemDepInput>,
     pub tile: Option<TileDepInput>,
@@ -33,6 +32,8 @@ pub struct ImgInput {
     pub h: u32,
     pub grid_w: Option<u32>,
     pub grid_h: Option<u32>,
+    pub n_frame: Option<u32>,
+    pub duration: Option<u32>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -41,12 +42,6 @@ pub struct IconInput {
 }
 
 // Type dependent fields
-
-#[derive(Debug, Deserialize)]
-pub struct AnimImgDepInput {
-    pub duration: u32,
-    pub n_frame: u32,
-}
 
 #[derive(Debug, Deserialize)]
 pub struct CharaTemplateDepInput {

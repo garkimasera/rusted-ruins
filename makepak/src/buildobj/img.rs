@@ -19,6 +19,9 @@ pub fn build_img(input: ImgInput) -> Result<Img> {
     let dimensions = get_dimensions(&newpath)?;
     let grid_w = input.grid_w.unwrap_or(1);
     let grid_h = input.grid_h.unwrap_or(1);
+    let n_frame = input.n_frame.unwrap_or(1);
+    let duration = input.duration.unwrap_or(0);
+    
     ensure!(
         input.w * grid_w == dimensions.0 && input.h * grid_h == dimensions.1,
         ErrorKind::ImageSizeError((input.w * grid_w, input.h * grid_h), dimensions));
@@ -29,6 +32,8 @@ pub fn build_img(input: ImgInput) -> Result<Img> {
         h: input.h,
         grid_w: grid_w,
         grid_h: grid_h,
+        n_frame: n_frame,
+        duration: duration,
     })
 }
 

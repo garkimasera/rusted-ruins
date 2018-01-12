@@ -113,14 +113,11 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
 }
 
 fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
-    let anim_img_dep = get_optional_field!(tomlinput, anim_img);
     let img = get_optional_field!(tomlinput, image);
 
     Ok(AnimImgObject {
         id: tomlinput.id,
         img: build_img(img)?,
-        duration: anim_img_dep.duration,
-        n_frame: anim_img_dep.n_frame,
     })
 }
 

@@ -33,7 +33,7 @@ impl Animation {
 
     pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
         Animation::Img {
-            n_frame: gobj::get_obj(idx).n_frame,
+            n_frame: gobj::get_obj(idx).img.n_frame,
             idx: idx,
             range: RectIter::one(p),
         }
