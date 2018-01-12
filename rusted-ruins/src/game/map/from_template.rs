@@ -23,8 +23,15 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
 
     for (pos, i) in t.wall.iter_with_idx() { // Setting walls
         if let Some(i) = *i {
-            let wall_id = &t.tile_table[i as usize];
+            let wall_id = &t.wall_table[i as usize];
             map.tile[pos].wall = Some(gobj::id_to_idx(wall_id));
+        }
+    }
+
+    for (pos, i) in t.deco.iter_with_idx() { // Setting decos
+        if let Some(i) = *i {
+            let deco_id = &t.deco_table[i as usize];
+            map.tile[pos].deco = Some(gobj::id_to_idx(deco_id));
         }
     }
 

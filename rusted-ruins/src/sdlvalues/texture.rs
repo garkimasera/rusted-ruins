@@ -53,6 +53,7 @@ macro_rules! impl_texture_holder {
 impl_texture_holder! {
     {anim_img, AnimImgIdx},
     {chara_template, CharaTemplateIdx},
+    {deco, DecoIdx},
     {item, ItemIdx},
     {special_tile, SpecialTileIdx},
     {tile, TileIdx},

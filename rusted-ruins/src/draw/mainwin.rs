@@ -137,6 +137,8 @@ impl MainWinDrawer {
             TILE_SIZE, TILE_SIZE);
         let texture = sv.tex().get(map.tile[p].tile);
         check_draw!(canvas.copy(&texture, None, dest));
+
+        self.draw_tile_deco(canvas, map, sv, p, dx, dy);
     }
 
     fn draw_tile_wall(
@@ -154,6 +156,24 @@ impl MainWinDrawer {
         let src = Rect::from(wall.img_rect());
         let dest = bottom_at_tile(src, p, dx, dy);
         let texture = sv.tex().get(wall_idx);
+        check_draw!(canvas.copy(&texture, src, dest));
+    }
+
+    fn draw_tile_deco(
+        &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
+        p: Vec2d, dx: i32, dy: i32) {
+        
+        let deco_idx = if map.is_inside(p) {
+            match map.tile[p].deco {
+                Some(deco_idx) => deco_idx, None => { return; }
+            }
+        }else{
+            return;
+        };
+        let deco = gobj::get_obj(deco_idx);
+        let src = Rect::from(deco.img_rect());
+        let dest = bottom_at_tile(src, p, dx, dy);
+        let texture = sv.tex().get(deco_idx);
         check_draw!(canvas.copy(&texture, src, dest));
     }
 
