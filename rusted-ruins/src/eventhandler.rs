@@ -253,8 +253,6 @@ fn text_input_conv(raw: RawCommand) -> Option<Command> {
 macro_rules! impl_conv_str_to_keycode {
     ($($m:ident),*) => {
         fn conv_str_to_keycode(s: &str) -> Keycode {
-            use std::ascii::AsciiExt;
-            
             $(
                 if s.eq_ignore_ascii_case(stringify!($m)) {
                     return Keycode::$m;

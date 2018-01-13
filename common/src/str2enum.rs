@@ -26,8 +26,6 @@ macro_rules! impl_fromstr_for_enum {
         impl ::std::str::FromStr for $e {
             type Err = $crate::str2enum::InvalidEnumMemberError;
             fn from_str(s: &str) -> Result<$e, $crate::str2enum::InvalidEnumMemberError> {
-                use std::ascii::AsciiExt;
-                
                 $(
                     if s.eq_ignore_ascii_case(stringify!($m)) {
                         return Ok($e::$m);
