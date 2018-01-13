@@ -156,8 +156,8 @@ impl MainWinDrawer {
         }else{
             ::common::objholder::WallIdx(0)
         };
-        let wall = gobj::get_obj(wall_idx);
-        let src = Rect::from(wall.img_rect());
+        let o = gobj::get_obj(wall_idx);
+        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = bottom_at_tile(src, p, dx, dy);
         let texture = sv.tex().get(wall_idx);
         check_draw!(canvas.copy(&texture, src, dest));
@@ -174,8 +174,8 @@ impl MainWinDrawer {
         }else{
             return;
         };
-        let deco = gobj::get_obj(deco_idx);
-        let src = Rect::from(deco.img_rect());
+        let o = gobj::get_obj(deco_idx);
+        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = bottom_at_tile(src, p, dx, dy);
         let texture = sv.tex().get(deco_idx);
         check_draw!(canvas.copy(&texture, src, dest));
