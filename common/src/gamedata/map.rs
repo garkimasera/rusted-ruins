@@ -13,6 +13,9 @@ pub struct Map {
     pub entrance: Vec2d,
     /// Characters on this map
     charaid: Vec<CharaId>,
+    /// This is drawed outer this map
+    /// If this is None, nearest tile's infomation will be used
+    pub outside_tile: Option<OutsideTileInfo>,
 }
 
 /// This represents special objects on a tile. For example, stairs, doors, traps.
@@ -36,6 +39,13 @@ pub struct TileInfo {
     pub special: SpecialTileKind,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct OutsideTileInfo {
+    pub tile: TileIdx,
+    pub wall: Option<WallIdx>, 
+    pub deco: Option<DecoIdx>,
+}
+
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
@@ -54,7 +64,8 @@ impl Map {
         Map {
             w: w, h: h, tile: Array2d::new(w, h, TileInfo::default()),
             player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
-            charaid: Vec::new()
+            charaid: Vec::new(),
+            outside_tile: None,
         }
     }
 
