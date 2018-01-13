@@ -127,7 +127,9 @@ impl MainWinDrawer {
             }
         }
     }
-    
+
+    /// Draw tile ground
+    /// Decoration will be drawed at the same time
     fn draw_tile_ground(
         &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
