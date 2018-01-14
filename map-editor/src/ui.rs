@@ -7,12 +7,14 @@ use gtk;
 use gtk::prelude::*;
 use array2d::Vec2d;
 use common::objholder::*;
+use common::basic::TILE_SIZE_I;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
 use iconview::IconView;
 use property_controls::PropertyControls;
 
 const WRITE_BUTTON: u32 = 1;
+const CENTERING_BUTTON: u32 = 2;
 
 #[derive(Clone)]
 pub struct Ui {
@@ -214,9 +216,12 @@ pub fn build_ui(application: &gtk::Application) {
 
 
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
-    if eb.get_button() == WRITE_BUTTON {
+    let button = eb.get_button();
+    if button == WRITE_BUTTON {
         ui.on_drag.set(true);
         try_write(ui, eb.get_position());
+    } else if button == CENTERING_BUTTON {
+        centering_to(ui, ui.cursor_to_tile_pos(eb.get_position()));
     }
 }
 
@@ -300,6 +305,16 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
     }
 }
 
+fn centering_to(ui: &Ui, pos: (i32, i32)) {
+    let area_w = ui.map_drawing_area.get_allocated_width();
+    let area_h = ui.map_drawing_area.get_allocated_height();
+    let x = pos.0 - area_w / (TILE_SIZE_I * 2);
+    let y = pos.1 - area_h / (TILE_SIZE_I * 2);
+    ui.adjustment_map_pos_x.set_value(x as f64);
+    ui.adjustment_map_pos_y.set_value(y as f64);
+    ui.map_redraw();
+}
+
 impl Ui {
     pub fn map_redraw(&self) {
         self.map_drawing_area.queue_draw();
@@ -321,7 +336,6 @@ impl Ui {
 
     pub fn cursor_to_tile_pos(&self, pos: (f64, f64)) -> (i32, i32) {
         let map_pos = self.get_map_pos();
-        use common::basic::TILE_SIZE_I;
         let ix = (pos.0 / TILE_SIZE_I as f64) as i32;
         let iy = (pos.1 / TILE_SIZE_I as f64) as i32;
         (ix + map_pos.0, iy + map_pos.1)
