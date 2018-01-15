@@ -39,7 +39,7 @@ pub struct TileInfo {
     pub special: SpecialTileKind,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
     pub tile: TileIdx,
     pub wall: Option<WallIdx>, 
@@ -169,6 +169,53 @@ impl Map {
             let removed_cid = self.charaid.swap_remove(i);
             assert!(removed_cid == cid);
         }
+    }
+
+    /// Get tile index with extrapolation
+    /// If pos is outside map and self.outside_tile has value, returns it.
+    /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> TileIdx {
+        if self.is_inside(pos) {
+            return self.tile[pos].tile;
+        }
+        if let Some(outside_tile) = self.outside_tile {
+            outside_tile.tile
+        } else {
+            self.tile[self.nearest_existent_tile(pos)].tile
+        }
+    }
+
+    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> Option<WallIdx> {
+        if self.is_inside(pos) {
+            return self.tile[pos].wall;
+        }
+        if let Some(outside_tile) = self.outside_tile {
+            outside_tile.wall
+        } else {
+            self.tile[self.nearest_existent_tile(pos)].wall
+        }
+    }
+
+    pub fn get_deco_extrapolated(&self, pos: Vec2d) -> Option<DecoIdx> {
+        if self.is_inside(pos) {
+            return self.tile[pos].deco;
+        }
+        if let Some(outside_tile) = self.outside_tile {
+            outside_tile.deco
+        } else {
+            self.tile[self.nearest_existent_tile(pos)].deco
+        }
+    }
+
+    /// Calculate the position of nearest and exsitent tile
+    pub fn nearest_existent_tile(&self, pos: Vec2d) -> Vec2d {
+        if self.is_inside(pos) {
+            return pos;
+        }
+        let (w, h) = (self.w as i32, self.h as i32);
+        let x = if pos.0 < 0 { 0 } else if pos.0 >= w { w - 1 } else { pos.0 };
+        let y = if pos.1 < 0 { 0 } else if pos.1 >= h { h - 1 } else { pos.1 };
+        Vec2d::new(x, y)
     }
 }
 

@@ -134,14 +134,13 @@ impl MainWinDrawer {
         &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
         
-        if !map.is_inside(p) { return; }
-        let tile_idx = map.tile[p].tile;
+        let tile_idx = map.get_tile_extrapolated(p);
         let o = gobj::get_obj(tile_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = Rect::new(
             p.0 * TILE_SIZE_I + dx, p.1 * TILE_SIZE_I + dy,
             TILE_SIZE, TILE_SIZE);
-        let texture = sv.tex().get(map.tile[p].tile);
+        let texture = sv.tex().get(tile_idx);
         check_draw!(canvas.copy(&texture, src, dest));
 
         self.draw_tile_deco(canvas, map, sv, p, dx, dy);
@@ -151,13 +150,7 @@ impl MainWinDrawer {
         &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
         
-        let wall_idx = if map.is_inside(p) {
-            match map.tile[p].wall {
-                Some(wall_idx) => wall_idx, None => { return; }
-            }
-        }else{
-            ::common::objholder::WallIdx(0)
-        };
+        let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
         let o = gobj::get_obj(wall_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = bottom_at_tile(src, p, dx, dy);
@@ -169,13 +162,7 @@ impl MainWinDrawer {
         &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
         p: Vec2d, dx: i32, dy: i32) {
         
-        let deco_idx = if map.is_inside(p) {
-            match map.tile[p].deco {
-                Some(deco_idx) => deco_idx, None => { return; }
-            }
-        }else{
-            return;
-        };
+        let deco_idx = if let Some(deco_idx) = map.get_deco_extrapolated(p) { deco_idx } else { return; };
         let o = gobj::get_obj(deco_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = bottom_at_tile(src, p, dx, dy);
