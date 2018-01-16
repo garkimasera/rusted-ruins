@@ -15,7 +15,10 @@ use sdlvalues::SdlValues;
 pub struct MainWinDrawer {
     rect: Rect,
     w: u32, h: u32,
-    center_tile: Vec2d,
+    topleft: Vec2d,
+    bottomright: Vec2d,
+    dx: i32, dy: i32,
+    player_dx: i32, player_dy: i32,
 }
 
 impl MainWinDrawer {
@@ -23,7 +26,10 @@ impl MainWinDrawer {
         MainWinDrawer {
             rect: rect,
             w: rect.width(), h: rect.height(),
-            center_tile: Vec2d::new(0, 0),
+            topleft: Vec2d::new(0, 0),
+            bottomright: Vec2d::new(0, 0),
+            dx: 0, dy: 0,
+            player_dx: 0, player_dy: 0,
         }
     }
 
@@ -44,7 +50,11 @@ impl MainWinDrawer {
         }else{
             (0, 0)
         };
-        
+
+        let centering_tile = game.gd.player_pos();
+        let map = game.gd.get_current_map();
+        self.update_draw_params((map.w as i32, map.h as i32),
+                                centering_tile, player_move_adjust);
         self.draw_except_anim(canvas, game, sv, player_move_adjust, player_move_dir);
 
         if let Some(anim) = anim {
@@ -62,9 +72,8 @@ impl MainWinDrawer {
         let gd = &game.gd;
         let map = gd.get_current_map();
         let player_pos = gd.player_pos();
-        self.center_tile = player_pos;
+        
         let (dx, dy) = self.calc_dxdy();
-        let (dx, dy) = (dx + player_move_adjust.0, dy + player_move_adjust.1);
         let is_player_moving = player_move_adjust != (0, 0);
 
         let player_drawing_row = player_pos.1 + if let Some(dir) = player_move_dir {
@@ -229,22 +238,54 @@ impl MainWinDrawer {
         }
     }
 
+    fn update_draw_params(&mut self,
+                          map_size: (i32, i32), centering_tile: Vec2d, player_move_adjust: (i32, i32)) {
+        // Center point by pixel
+        let center_p = (centering_tile.0 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.0,
+                        centering_tile.1 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.1); 
+        let (win_w, win_h) = (self.w as i32, self.h as i32);
+        let (min_left, min_top) = (0, 0);
+        let (max_right, max_bottom) = (map_size.0 * TILE_SIZE_I - 1, map_size.1 * TILE_SIZE_I - 1);
+        let left = if center_p.0 - win_w / 2 < min_left {
+            min_left
+        } else if center_p.0 + win_w / 2 > max_right {
+            ::std::cmp::max(max_right - win_w, 0)
+        } else {
+            center_p.0 - win_w / 2
+        };
+        let top = if center_p.1 - win_h / 2 < min_top {
+            min_top
+        } else if center_p.1 + win_h / 2 > max_bottom {
+            ::std::cmp::max(max_bottom - win_h, 0)
+        } else {
+            center_p.1 - win_h / 2
+        };
+        println!("{},{}", left, top);
+        let top_left_tile = Vec2d::new(left / TILE_SIZE_I, top / TILE_SIZE_I);
+        self.dx = -left;
+        self.dy = -top;
+        self.topleft = top_left_tile;
+    }
+
     /// Calculates adjustment value for centering
     fn calc_dxdy(&self) -> (i32, i32) {
+        (self.dx, self.dy)
+        //(-self.topleft.0 * TILE_SIZE_I, -self.topleft.1 * TILE_SIZE_I)
+    }
+
+    /// Calculate the number of needed tile to fill screen
+    fn calc_tile_num(&self) -> (i32, i32) {
         (
-            (self.w / 2) as i32 - self.center_tile.0 * TILE_SIZE_I - TILE_SIZE_I / 2,
-            (self.h / 2) as i32 - self.center_tile.1 * TILE_SIZE_I - TILE_SIZE_I / 2,
+            if self.w % TILE_SIZE == 0 { self.w / TILE_SIZE } else { self.w / TILE_SIZE + 1 } as i32,
+            if self.h % TILE_SIZE == 0 { self.h / TILE_SIZE } else { self.h / TILE_SIZE + 1 } as i32,
         )
     }
 
     /// Gets needed range of tiles to draw over the window
     fn tile_range(&self) -> RectIter {
-        let w_win = self.w as i32; let h_win = self.h as i32;
-        let ct = self.center_tile;
-        let n0 = (w_win - TILE_SIZE_I) / (2 * TILE_SIZE_I) + 1;
-        let n1 = (h_win - TILE_SIZE_I) / (2 * TILE_SIZE_I) + 1;
-        let top_left     = (ct.0 - n0 - 1, ct.1 - n1 - 1);
-        let bottom_right = (ct.0 + n0 + 1, ct.1 + n1 + 2);
+        let (nx, ny) = self.calc_tile_num();
+        let top_left = self.topleft;
+        let bottom_right = Vec2d::new(nx + top_left.0, ny + top_left.1);
         RectIter::new(top_left, bottom_right)
     }
 }
