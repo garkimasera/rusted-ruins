@@ -16,9 +16,7 @@ pub struct MainWinDrawer {
     rect: Rect,
     w: u32, h: u32,
     topleft: Vec2d,
-    bottomright: Vec2d,
     dx: i32, dy: i32,
-    player_dx: i32, player_dy: i32,
 }
 
 impl MainWinDrawer {
@@ -27,9 +25,7 @@ impl MainWinDrawer {
             rect: rect,
             w: rect.width(), h: rect.height(),
             topleft: Vec2d::new(0, 0),
-            bottomright: Vec2d::new(0, 0),
             dx: 0, dy: 0,
-            player_dx: 0, player_dy: 0,
         }
     }
 
@@ -73,7 +69,6 @@ impl MainWinDrawer {
         let map = gd.get_current_map();
         let player_pos = gd.player_pos();
         
-        let (dx, dy) = self.calc_dxdy();
         let is_player_moving = player_move_adjust != (0, 0);
 
         let player_drawing_row = player_pos.1 + if let Some(dir) = player_move_dir {
@@ -86,17 +81,17 @@ impl MainWinDrawer {
         let top_row = tile_range.iter1().next().unwrap();
         for nx in tile_range.iter0() {
             let p = Vec2d::new(nx, top_row);
-            self.draw_tile_ground(canvas, map, sv, p, dx, dy);
-            self.draw_tile_special(canvas, map, sv, p, dx, dy);
+            self.draw_tile_ground(canvas, map, sv, p);
+            self.draw_tile_special(canvas, map, sv, p);
         }
 
         for ny in tile_range.iter1() {
             // Draw ground and special objs for the next row
             for nx in tile_range.iter0() {
                 let p = Vec2d::new(nx, ny + 1);
-                self.draw_tile_ground(canvas, map, sv, p, dx, dy);
-                self.draw_tile_special(canvas, map, sv, p, dx, dy);
-                self.draw_item(canvas, map, sv, p, dx, dy);
+                self.draw_tile_ground(canvas, map, sv, p);
+                self.draw_tile_special(canvas, map, sv, p);
+                self.draw_item(canvas, map, sv, p);
             }
 
             // Draw player when moving
@@ -104,7 +99,8 @@ impl MainWinDrawer {
                 let chara = gd.chara.get(CharaId::Player);
                 let ct = gobj::get_obj(chara.template);
                 let src = Rect::from(ct.img_rect());
-                let dest = centering_at_tile(src, player_pos, dx - player_move_adjust.0, dy - player_move_adjust.1);
+                let dest = self.centering_at_tile(src, player_pos,
+                                                  -player_move_adjust.0, -player_move_adjust.1);
                 canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
             }
 
@@ -112,7 +108,7 @@ impl MainWinDrawer {
                 let p = Vec2d::new(nx, ny);
                 
                 // Draw wall
-                self.draw_tile_wall(canvas, map, sv, p, dx, dy);
+                self.draw_tile_wall(canvas, map, sv, p);
 
                 if !map.is_inside(p) { continue; }
 
@@ -127,9 +123,9 @@ impl MainWinDrawer {
                     };
                     
                     let dest = if chara_id == CharaId::Player {
-                        centering_at_tile(src, p, dx - player_move_adjust.0, dy - player_move_adjust.1)
+                        self.centering_at_tile(src, p, -player_move_adjust.0, -player_move_adjust.1)
                     }else{
-                        centering_at_tile(src, p, dx, dy)
+                        self.centering_at_tile(src, p, 0, 0)
                     };
                     canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
                 }
@@ -139,49 +135,38 @@ impl MainWinDrawer {
 
     /// Draw tile ground
     /// Decoration will be drawed at the same time
-    fn draw_tile_ground(
-        &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
-        p: Vec2d, dx: i32, dy: i32) {
-        
+    fn draw_tile_ground(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         let tile_idx = map.get_tile_extrapolated(p);
         let o = gobj::get_obj(tile_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = Rect::new(
-            p.0 * TILE_SIZE_I + dx, p.1 * TILE_SIZE_I + dy,
+            p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
             TILE_SIZE, TILE_SIZE);
         let texture = sv.tex().get(tile_idx);
         check_draw!(canvas.copy(&texture, src, dest));
 
-        self.draw_tile_deco(canvas, map, sv, p, dx, dy);
+        self.draw_tile_deco(canvas, map, sv, p);
     }
 
-    fn draw_tile_wall(
-        &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
-        p: Vec2d, dx: i32, dy: i32) {
-        
+    fn draw_tile_wall(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
         let o = gobj::get_obj(wall_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = bottom_at_tile(src, p, dx, dy);
+        let dest = self.bottom_at_tile(src, p, 0, 0);
         let texture = sv.tex().get(wall_idx);
         check_draw!(canvas.copy(&texture, src, dest));
     }
 
-    fn draw_tile_deco(
-        &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
-        p: Vec2d, dx: i32, dy: i32) {
-        
+    fn draw_tile_deco(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         let deco_idx = if let Some(deco_idx) = map.get_deco_extrapolated(p) { deco_idx } else { return; };
         let o = gobj::get_obj(deco_idx);
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = bottom_at_tile(src, p, dx, dy);
+        let dest = self.bottom_at_tile(src, p, 0, 0);
         let texture = sv.tex().get(deco_idx);
         check_draw!(canvas.copy(&texture, src, dest));
     }
 
-    fn draw_tile_special(
-        &self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
-        p: Vec2d, dx: i32, dy: i32) {
+    fn draw_tile_special(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         use common::gamedata::map::SpecialTileKind;
         use common::objholder::SpecialTileIdx;
         use common::basic::*;
@@ -199,13 +184,12 @@ impl MainWinDrawer {
         let texture = sv.tex().get(special_tile_idx);
         let query = texture.query();
         let src = Rect::new(0, 0, query.width, query.height);
-        let dest = bottom_at_tile(src, p, dx, dy);
+        let dest = self.bottom_at_tile(src, p, 0, 0);
         
         check_draw!(canvas.copy(&texture, src, dest));
     }
 
-    fn draw_item(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues,
-                 p: Vec2d, dx: i32, dy: i32) {
+    fn draw_item(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         if !map.is_inside(p) { return; }
         if map.tile[p].item_list.is_none() { return; }
 
@@ -214,7 +198,7 @@ impl MainWinDrawer {
 
             let query = texture.query();
             let src = Rect::new(0, 0, query.width, query.height);
-            let dest = centering_at_tile(src, p, dx, dy);
+            let dest = self.centering_at_tile(src, p, 0, 0);
         
             check_draw!(canvas.copy(&texture, src, dest));
         }
@@ -223,14 +207,11 @@ impl MainWinDrawer {
 
     fn draw_anim(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &SdlValues,
                  anim: &Animation, i_frame: u32) {
-        
-        let (dx, dy) = self.calc_dxdy();
-
         match anim {
             &Animation::Img{ idx, range, .. } => {
                 for p in range {
                     let src = Rect::from(gobj::get_obj(idx).img_rect_nth(i_frame));
-                    let dest = centering_at_tile(src, p, dx, dy);
+                    let dest = self.centering_at_tile(src, p, 0, 0);
                     check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
                 }
             }
@@ -260,17 +241,26 @@ impl MainWinDrawer {
         } else {
             center_p.1 - win_h / 2
         };
-        println!("{},{}", left, top);
         let top_left_tile = Vec2d::new(left / TILE_SIZE_I, top / TILE_SIZE_I);
         self.dx = -left;
         self.dy = -top;
         self.topleft = top_left_tile;
     }
-
-    /// Calculates adjustment value for centering
-    fn calc_dxdy(&self) -> (i32, i32) {
-        (self.dx, self.dy)
-        //(-self.topleft.0 * TILE_SIZE_I, -self.topleft.1 * TILE_SIZE_I)
+    
+    fn centering_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+        Rect::new(
+            (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
+            (TILE_SIZE_I * tile.1 + (TILE_SIZE_I - src.h) / 2) + dy + self.dy,
+            src.w as u32, src.h as u32
+        )
+    }
+    
+    fn bottom_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+        Rect::new(
+            (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
+            tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
+            src.w as u32, src.h as u32
+        )
     }
 
     /// Calculate the number of needed tile to fill screen
@@ -288,23 +278,5 @@ impl MainWinDrawer {
         let bottom_right = Vec2d::new(nx + top_left.0, ny + top_left.1);
         RectIter::new(top_left, bottom_right)
     }
-}
-
-#[inline]
-fn centering_at_tile(src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
-    Rect::new(
-        (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx,
-        (TILE_SIZE_I * tile.1 + (TILE_SIZE_I - src.h) / 2) + dy,
-        src.w as u32, src.h as u32
-    )
-}
-
-#[inline]
-fn bottom_at_tile(src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
-    Rect::new(
-        (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx,
-        tile.1 * TILE_SIZE_I + dy + (TILE_SIZE_I - src.h),
-        src.w as u32, src.h as u32
-    )
 }
 
