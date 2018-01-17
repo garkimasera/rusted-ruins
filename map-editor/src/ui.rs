@@ -15,6 +15,10 @@ use property_controls::PropertyControls;
 
 const WRITE_BUTTON: u32 = 1;
 const CENTERING_BUTTON: u32 = 2;
+const ERASE_BUTTON: u32 = 3;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum DragMode { None, Write, Erase }
 
 #[derive(Clone)]
 pub struct Ui {
@@ -33,7 +37,7 @@ pub struct Ui {
     pub pbh: Rc<PixbufHolder>,
     pub map: Rc<RefCell<EditingMap>>,
     pub selected_item: Rc<Cell<SelectedItem>>,
-    pub on_drag: Rc<Cell<bool>>,
+    pub drag_mode: Rc<Cell<DragMode>>,
     pub filepath: Rc<RefCell<Option<PathBuf>>>,
     /// If it is false, some signal will not be processed
     pub signal_mode: Rc<Cell<bool>>,
@@ -69,7 +73,7 @@ pub fn build_ui(application: &gtk::Application) {
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
         selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
-        on_drag: Rc::new(Cell::new(false)),
+        drag_mode: Rc::new(Cell::new(DragMode::None)),
         filepath: Rc::new(RefCell::new(None)),
         signal_mode: Rc::new(Cell::new(true)),
     };
@@ -114,7 +118,7 @@ pub fn build_ui(application: &gtk::Application) {
     { // Map drawing area (button pressed)
         let uic = ui.clone();
         ui.map_drawing_area.connect_button_release_event(move |_, _| {
-            uic.on_drag.set(false);
+            uic.drag_mode.set(DragMode::None);
             Inhibit(false)
         });
     }
@@ -218,10 +222,13 @@ pub fn build_ui(application: &gtk::Application) {
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
     let button = eb.get_button();
     if button == WRITE_BUTTON {
-        ui.on_drag.set(true);
+        ui.drag_mode.set(DragMode::Write);
         try_write(ui, eb.get_position());
     } else if button == CENTERING_BUTTON {
         centering_to(ui, ui.cursor_to_tile_pos(eb.get_position()));
+    } else if button == ERASE_BUTTON {
+        ui.drag_mode.set(DragMode::Erase);
+        try_erase(ui, eb.get_position());
     }
 }
 
@@ -232,8 +239,14 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
     if pos.0 < 0.0 || pos.1 < 0.0 || pos.0 > w || pos.1 > h { // Out of drawing widget
         return;
     }
-    if ui.on_drag.get() {
-        try_write(ui, pos);
+    match ui.drag_mode.get() {
+        DragMode::Write => {
+            try_write(ui, pos);
+        }
+        DragMode::Erase => {
+            try_erase(ui, pos);
+        }
+        _ => (),
     }
     // Update cursor position display
     let (ix, iy) = ui.cursor_to_tile_pos(pos);
@@ -301,6 +314,14 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
                 ui.map.borrow_mut().set_deco(Vec2d::new(ix, iy), Some(idx));
             }
         }
+        ui.map_redraw();
+    }
+}
+
+fn try_erase(ui: &Ui, pos: (f64, f64)) {
+    let (ix, iy) = ui.cursor_to_tile_pos(pos);
+    if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
+        ui.map.borrow_mut().erase(Vec2d::new(ix, iy));
         ui.map_redraw();
     }
 }

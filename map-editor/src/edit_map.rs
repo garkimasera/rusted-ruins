@@ -34,6 +34,11 @@ impl EditingMap {
         self.deco[pos] = deco;
     }
 
+    pub fn erase(&mut self, pos: Vec2d) {
+        self.wall[pos] = None;
+        self.deco[pos] = None;
+    }
+
     pub fn create_mapobj(&self) -> MapTemplateObject {
         let mut tile_table: Vec<String> = Vec::new();
         
