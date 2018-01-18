@@ -16,6 +16,7 @@ pub struct Map {
     /// This is drawed outer this map
     /// If this is None, nearest tile's infomation will be used
     pub outside_tile: Option<OutsideTileInfo>,
+    pub boundary_behavior: BoundaryBehavior,
 }
 
 /// This represents special objects on a tile. For example, stairs, doors, traps.
@@ -46,6 +47,12 @@ pub struct OutsideTileInfo {
     pub deco: Option<DecoIdx>,
 }
 
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum BoundaryBehavior {
+    NoPass,
+    ExitToRegionMap,
+}
+         
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
@@ -66,6 +73,7 @@ impl Map {
             player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
             charaid: Vec::new(),
             outside_tile: None,
+            boundary_behavior: BoundaryBehavior::NoPass,
         }
     }
 
