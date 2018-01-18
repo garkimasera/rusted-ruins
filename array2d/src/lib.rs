@@ -172,6 +172,28 @@ impl<T> Array2d<T> where T: Clone {
 
         self.v.swap((a.1 * self.w as i32 + a.0) as usize, (b.1 * self.w as i32 + b.0) as usize);
     }
+
+    /// Clip and create new Array2d
+    /// Outside of original array is filled by given default value
+    pub fn clip_with_default<P: Into<Vec2d>>(&self, topleft: P, bottomright: P, default: T) -> Array2d<T> {
+        let topleft = topleft.into();
+        let bottomright = bottomright.into();
+
+        let w = bottomright.0 - topleft.0 + 1;
+        let h = bottomright.1 - topleft.1 + 1;
+        assert!(w >= 0 && h >= 0);
+        let mut a = Array2d::new(w as u32, h as u32, default);
+
+        for j in 0..h {
+            for i in 0..w {
+                let orig = (i + topleft.0, j + topleft.1);
+                if self.in_range(orig.into()) {
+                    a[(i, j)] = self[orig].clone();
+                }
+            }
+        }
+        a
+    }
 }
 
 impl<T> Index<(u32, u32)> for Array2d<T> {
