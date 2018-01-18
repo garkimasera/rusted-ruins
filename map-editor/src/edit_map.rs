@@ -39,6 +39,17 @@ impl EditingMap {
         self.deco[pos] = None;
     }
 
+    pub fn resize(&mut self, new_w: u32, new_h: u32) {
+        self.width = new_w;
+        self.height = new_h;
+        let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), TileIdx(0));
+        self.tile = tile;
+        let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), None);
+        self.wall = wall;
+        let deco = self.deco.clip_with_default((0, 0), (new_w, new_h), None);
+        self.deco = deco;
+    }
+
     pub fn create_mapobj(&self) -> MapTemplateObject {
         let mut tile_table: Vec<String> = Vec::new();
         

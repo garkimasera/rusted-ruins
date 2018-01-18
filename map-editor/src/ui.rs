@@ -25,9 +25,10 @@ pub struct Ui {
     pub window: gtk::ApplicationWindow,
     pub map_drawing_area: gtk::DrawingArea,
     pub new_map_dialog: gtk::Dialog,
+    pub resize_dialog: gtk::Dialog,
     pub new_map_id:     gtk::Entry,
-    pub adjustment_new_map_width: gtk::Adjustment,
-    pub adjustment_new_map_height: gtk::Adjustment,
+    pub adjustment_map_width: gtk::Adjustment,
+    pub adjustment_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
     pub label_cursor_pos:    gtk::Label,
@@ -61,9 +62,10 @@ pub fn build_ui(application: &gtk::Application) {
         window:           get_object!(builder, "window1"),
         map_drawing_area: get_object!(builder, "map-drawing-area"),
         new_map_dialog:   get_object!(builder, "new-map-dialog"),
+        resize_dialog:    get_object!(builder, "resize-dialog"),
         new_map_id:       get_object!(builder, "new-map-id"),
-        adjustment_new_map_width:  get_object!(builder, "adjustment-new-map-width"),
-        adjustment_new_map_height: get_object!(builder, "adjustment-new-map-height"),
+        adjustment_map_width:  get_object!(builder, "adjustment-map-width"),
+        adjustment_map_height: get_object!(builder, "adjustment-map-height"),
         adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
         label_cursor_pos:    get_object!(builder, "label-cursor-pos"),
@@ -83,6 +85,7 @@ pub fn build_ui(application: &gtk::Application) {
     let menu_save:    gtk::MenuItem = get_object!(builder, "menu-save");
     let menu_save_as: gtk::MenuItem = get_object!(builder, "menu-save-as");
     let menu_quit:    gtk::MenuItem = get_object!(builder, "menu-quit");
+    let menu_resize:  gtk::MenuItem = get_object!(builder, "menu-resize");
 
     ui.window.set_application(application);
     // Connect signals
@@ -136,8 +139,8 @@ pub fn build_ui(application: &gtk::Application) {
             let responce_id = uic.new_map_dialog.run();
             uic.new_map_dialog.hide();
             if responce_id == 1 {
-                let width  = uic.adjustment_new_map_width.get_value() as u32;
-                let height = uic.adjustment_new_map_height.get_value() as u32;
+                let width  = uic.adjustment_map_width.get_value() as u32;
+                let height = uic.adjustment_map_height.get_value() as u32;
                 uic.adjustment_map_pos_x.set_value(0.0);
                 uic.adjustment_map_pos_y.set_value(0.0);
                 uic.adjustment_map_pos_x.set_upper(width as f64);
@@ -197,6 +200,24 @@ pub fn build_ui(application: &gtk::Application) {
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
             uic.window.destroy();
+        });
+    }
+    { // Menu (resize)
+        let uic = ui.clone();
+        menu_resize.connect_activate(move |_| {
+            uic.resize_dialog.show();
+            let responce_id = uic.resize_dialog.run();
+            uic.resize_dialog.hide();
+            if responce_id == 1 {
+                let width  = uic.adjustment_map_width.get_value() as u32;
+                let height = uic.adjustment_map_height.get_value() as u32;
+                uic.adjustment_map_pos_x.set_value(0.0);
+                uic.adjustment_map_pos_y.set_value(0.0);
+                uic.adjustment_map_pos_x.set_upper(width as f64);
+                uic.adjustment_map_pos_y.set_upper(height as f64);
+                uic.map.borrow_mut().resize(width, height);
+                uic.map_redraw();
+            }
         });
     }
     { // Scroll (x)
