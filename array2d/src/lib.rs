@@ -147,7 +147,8 @@ impl<T> Array2d<T> {
         RectIter::new((0, 0), (self.w - 1, self.h - 1))
     }
 
-    pub fn in_range(&self, p: Vec2d) -> bool {
+    pub fn in_range<P: Into<Vec2d>>(&self, p: P) -> bool {
+        let p = p.into();
         p.0 >= 0 && p.1 >= 0 && (p.0 as u32) < self.w && (p.1 as u32) < self.h
     }
 }
@@ -187,7 +188,7 @@ impl<T> Array2d<T> where T: Clone {
         for j in 0..h {
             for i in 0..w {
                 let orig = (i + topleft.0, j + topleft.1);
-                if self.in_range(orig.into()) {
+                if self.in_range(orig) {
                     a[(i, j)] = self[orig].clone();
                 }
             }
