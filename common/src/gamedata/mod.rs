@@ -98,9 +98,9 @@ impl GameData {
         }
     }
 
-    pub fn add_site(&mut self, site: Site, kind: SiteKind, rid: RegionId) -> SiteId {
+    pub fn add_site(&mut self, site: Site, kind: SiteKind, rid: RegionId, pos: Vec2d) -> Option<SiteId> {
         let region = self.region.get_mut(rid);
-        region.add_site(site, kind)
+        region.add_site(site, kind, pos)
     }
 
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {

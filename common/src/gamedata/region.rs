@@ -103,26 +103,45 @@ impl Region {
             sites: HashMap::new(),
         }
     }
-    
-    pub fn add_site(&mut self, site: Site, kind: SiteKind) -> SiteId {
+
+    /// Add new site to region
+    /// If already site is existed, this function will fail and return None
+    pub fn add_site(&mut self, site: Site, kind: SiteKind, pos: Vec2d) -> Option<SiteId> {
         // Calculate new number for the given site
-        let n = match kind {
-            SiteKind::Other => {
-                0
-            }
-            SiteKind::AutoGenDungeon => {
-                0
-            }
-            _ => { unimplemented!() }
-        };
+        let n = self.search_empty_n(kind);
         let sid = SiteId {
             rid: self.id,
             kind: kind,
             n: n
         };
-        let site_info = SiteInfo { site, pos: Vec2d::new(0, 0) };
+        let site_info = SiteInfo { site, pos: pos };
         self.sites.insert(sid, site_info);
-        sid
+        Some(sid)
+    }
+
+    /// Get the number of sites on the region
+    pub fn get_site_n(&self, kind: SiteKind) -> u32 {
+        self.sites.keys().filter(|&sid| sid.kind == kind).count() as u32
+    }
+
+    /// Get site by position on the region
+    pub fn get_id_by_pos(&self, pos: Vec2d) -> Option<SiteId> {
+        for (sid, sinfo) in self.sites.iter() {
+            if sinfo.pos == pos {
+                return Some(*sid);
+            }
+        }
+        None
+    }
+
+    fn search_empty_n(&self, kind: SiteKind) -> u32 {
+        for n in 0.. {
+            let sid = SiteId { rid: self.id, kind, n };
+            if self.sites.get(&sid).is_none() {
+                return n;
+            }
+        }
+        unreachable!()
     }
 }
 
