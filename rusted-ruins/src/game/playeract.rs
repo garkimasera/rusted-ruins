@@ -25,12 +25,12 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     pub fn try_move(&mut self, dir: Direction) {
+        let dest_tile = self.gd().get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
         // If there is friendy chara on target tile, and have a trigger to start talk
         let will_talk = {
             if dir.as_vec() != (0, 0) {
                 let gd = self.gd();
                 let player_chara = gd.chara.get(CharaId::Player);
-                let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
                 if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
                     let other_chara = gd.chara.get(other_chara);
                     match player_chara.rel.relative(other_chara.rel) {
@@ -54,13 +54,19 @@ impl<'a> DoPlayerAction<'a> {
             self.try_talk(dir);
             return;
         }
+        // If destination is out of boundary
+        if self.gd().get_current_map().is_inside(dest_tile) {
+            self.goto_next_floor(dir);
+            return;
+        }
+        // Move to the next tile
         if action::try_move(self.0, CharaId::Player, dir) {
             self.0.finish_player_turn();
         }
     }
 
     /// Try to go to next floor
-    /// This function will be called when players use stairs or try to exit from map borders.
+    /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.
     pub fn goto_next_floor(&mut self, dir: Direction) {
         let gd = self.gd_mut();
