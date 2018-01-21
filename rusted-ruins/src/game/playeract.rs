@@ -3,7 +3,7 @@ use super::Game;
 use super::action;
 use common::gamedata::{self, GameData};
 use common::gamedata::chara::{CharaId, Relationship};
-use common::gamedata::map::SpecialTileKind;
+use common::gamedata::map::{MapId, SpecialTileKind};
 use common::gamedata::item::*;
 use game::{InfoGetter, DialogOpenRequest};
 use array2d::*;
@@ -77,17 +77,18 @@ impl<'a> DoPlayerAction<'a> {
                 let next_mid = {
                     let special_tile_kind
                         = &gd.get_current_map().tile[gd.player_pos()].special;
+                    let region_map = MapId::from(mid.sid.rid);
                     match special_tile_kind {
                         &SpecialTileKind::DownStairs => {
                             if gd.region.get_site(mid.sid).is_underground() {
                                 Some(mid.inc_floor())
                             } else {
-                                mid.dec_floor()
+                                if mid.floor == 0 { Some(region_map) } else { mid.dec_floor() }
                             }
                         }
                         &SpecialTileKind::UpStairs => {
                             if gd.region.get_site(mid.sid).is_underground() {
-                                mid.dec_floor()
+                                if mid.floor == 0 { Some(region_map) } else { mid.dec_floor() }
                             } else {
                                 Some(mid.inc_floor())
                             }
