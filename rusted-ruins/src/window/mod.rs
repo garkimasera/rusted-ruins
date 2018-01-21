@@ -237,16 +237,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 pa.try_move(dir);
             }
             Command::Enter => {
+                // If player is on stairs, move from this map
                 if pa.gd().on_map_entrance() {
-                    self.window_stack.push(Box::new(msgdialog::MsgDialog::with_yesno(
-                        ::text::ui_txt("dialog.move_floor"),
-                        |pa, n| {
-                            if n == 0 {
-                                pa.goto_next_floor(Direction::none());
-                            }
-                            DialogResult::Close
-                        }
-                    )));
+                    pa.goto_next_floor(Direction::none());
                 }
             }
             Command::OpenExitWin => {

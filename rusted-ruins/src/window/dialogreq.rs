@@ -10,7 +10,7 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
         DialogOpenRequest::YesNo { mut callback, msg_text_id } => {
             let msgdialog = msgdialog::MsgDialog::with_yesno(
                 ::text::ui_txt(msg_text_id),
-                move |mut pa, n| {
+                move |pa, n| {
                     callback(pa, n == 0);
                     super::DialogResult::Close
                 }

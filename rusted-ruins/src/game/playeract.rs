@@ -55,7 +55,7 @@ impl<'a> DoPlayerAction<'a> {
             return;
         }
         // If destination is out of boundary
-        if self.gd().get_current_map().is_inside(dest_tile) {
+        if !self.gd().get_current_map().is_inside(dest_tile) {
             self.goto_next_floor(dir);
             return;
         }
@@ -69,45 +69,56 @@ impl<'a> DoPlayerAction<'a> {
     /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.
     pub fn goto_next_floor(&mut self, dir: Direction) {
-        let gd = self.gd_mut();
-        
         // Use stairs
         if dir.is_none() {
-
-            let mid = gd.get_current_mapid();
             let next_mid = {
-                let special_tile_kind
-                    = &gd.get_current_map().tile[gd.player_pos()].special;
-                match special_tile_kind {
-                    &SpecialTileKind::DownStairs => {
-                        if gd.region.get_site(mid.sid).is_underground() {
-                            Some(mid.inc_floor())
-                        } else {
-                            mid.dec_floor()
+                let gd = self.gd_mut();
+                let mid = gd.get_current_mapid();
+                let next_mid = {
+                    let special_tile_kind
+                        = &gd.get_current_map().tile[gd.player_pos()].special;
+                    match special_tile_kind {
+                        &SpecialTileKind::DownStairs => {
+                            if gd.region.get_site(mid.sid).is_underground() {
+                                Some(mid.inc_floor())
+                            } else {
+                                mid.dec_floor()
+                            }
                         }
-                    }
-                    &SpecialTileKind::UpStairs => {
-                        if gd.region.get_site(mid.sid).is_underground() {
-                            mid.dec_floor()
-                        } else {
-                            Some(mid.inc_floor())
+                        &SpecialTileKind::UpStairs => {
+                            if gd.region.get_site(mid.sid).is_underground() {
+                                mid.dec_floor()
+                            } else {
+                                Some(mid.inc_floor())
+                            }
                         }
+                        _ => { panic!("Try to use not exist stairs") }
                     }
-                    _ => { panic!("Try to use not exist stairs") }
-                }
+                };
+                if next_mid.is_none() { return; }
+                next_mid.unwrap()
             };
 
-            if next_mid.is_none() {
-                return;
-            }
-            let next_mid = next_mid.unwrap();
-
-            if gd.region.get_map_checked(next_mid).is_none() { // If next_mid floor doesn't exist
-                super::site::extend_site_floor(gd, next_mid.sid);
-            }
-
-            super::map::switch_map(gd, next_mid);
+            let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
+                if !result { return; }
+                let gd = pa.gd_mut();
+                if gd.region.get_map_checked(next_mid).is_none() { // If next_mid floor doesn't exist
+                    super::site::extend_site_floor(gd, next_mid.sid);
+                }
+                super::map::switch_map(gd, next_mid);
+            });
+            self.0.request_dialog_open(DialogOpenRequest::YesNo {
+                callback: cb, msg_text_id: "dialog.move_floor"
+            });
+            
             return;
+        } else {
+            let cb = Box::new(|pa: &mut DoPlayerAction, result: bool| {
+                println!("{}", result);
+            });
+            self.0.request_dialog_open(DialogOpenRequest::YesNo {
+                callback: cb, msg_text_id: ""
+            });
         }
     }
 
