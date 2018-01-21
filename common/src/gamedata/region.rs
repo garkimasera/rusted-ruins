@@ -82,15 +82,17 @@ impl RegionHolder {
         site.get_map_mut_checked(mid.floor)
     }
 
-    pub fn add_region(&mut self, region: Region) {
+    pub fn add_region(&mut self, mut region: Region) -> RegionId {
         // Search unused id
         for i in 0.. {
             let rid = RegionId(i);
             if self.0.get(&rid).is_none() {
                 self.0.insert(rid, region);
-                break;
+                region.id = rid;
+                return rid;
             }
         }
+        unreachable!()
     }
 }
 
