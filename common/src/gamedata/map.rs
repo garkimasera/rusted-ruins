@@ -3,6 +3,8 @@ use array2d::*;
 use objholder::*;
 use gamedata::item::ItemList;
 use gamedata::chara::CharaId;
+use gamedata::site::SiteId;
+use gamedata::region::RegionId;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map {
@@ -231,26 +233,35 @@ impl Map {
 pub struct MapId {
     pub sid: super::site::SiteId,
     pub floor: u32,
+    pub is_region_map: bool,
 }
 
 impl MapId {
     pub fn inc_floor(self) -> MapId {
         MapId {
-            sid: self.sid, floor: self.floor + 1,
+            sid: self.sid, floor: self.floor + 1, is_region_map: false,
         }
     }
 
     pub fn dec_floor(self) -> Option<MapId> {
         if self.floor == 0 { return None; } 
         Some(MapId {
-            sid: self.sid, floor: self.floor - 1,
+            sid: self.sid, floor: self.floor - 1, is_region_map: false,
         })
     }
 }
 
 impl Default for MapId {
     fn default() -> MapId {
-        MapId { sid: super::site::SiteId::default(), floor: 0 }
+        MapId { sid: SiteId::default(), floor: 0, is_region_map: false }
+    }
+}
+
+impl From<RegionId> for MapId {
+    fn from(rid: RegionId) -> MapId {
+        let mut sid = SiteId::default();
+        sid.rid = rid;
+        MapId { sid, floor: 0, is_region_map: true }
     }
 }
 

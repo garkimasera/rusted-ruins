@@ -106,7 +106,7 @@ impl GameData {
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
         let site = self.region.get_site_mut(sid);
         let floor = site.add_map(map);
-        MapId { sid, floor }
+        MapId { sid, floor, is_region_map: false }
     }
 
     pub fn set_current_mapid(&mut self, mid: MapId) {

@@ -13,6 +13,8 @@ pub struct Region {
     pub name: String,
     id: RegionId,
     pub(crate) sites: HashMap<SiteId, SiteInfo>,
+    /// An map to represents this region
+    map: Map,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -55,11 +57,19 @@ impl RegionHolder {
     }
 
     pub fn get_map(&self, mid: MapId) -> &Map {
-        self.get_site(mid.sid).get_map(mid.floor)
+        if mid.is_region_map {
+            &self.get(mid.sid.rid).map
+        } else {
+            self.get_site(mid.sid).get_map(mid.floor)
+        }
     }
 
     pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
-        self.get_site_mut(mid.sid).get_map_mut(mid.floor)
+        if mid.is_region_map {
+            &mut self.get_mut(mid.sid.rid).map
+        } else {
+            self.get_site_mut(mid.sid).get_map_mut(mid.floor)
+        }
     }
 
     pub fn get_site_checked(&self, sid: SiteId) -> Option<&Site> {
@@ -97,12 +107,13 @@ impl RegionHolder {
 }
 
 impl Region {
-    pub fn new() -> Region {
+    pub fn new(name: &str, map: Map) -> Region {
         
         Region {
-            name: "".to_owned(),
+            name: name.to_owned(),
             id: RegionId(0),
             sites: HashMap::new(),
+            map: map,
         }
     }
 
