@@ -7,9 +7,7 @@ use super::map;
 pub fn create_newgame() -> GameData {
     let mut gd = GameData::empty();
 
-    let region = gamedata::region::Region::new();
-    gd.region.add_region(region);
-    
+    super::region::add_region(&mut gd, "!east-coast");
     add_dungeon_site(&mut gd);
 
     let mid = gd.get_current_mapid();

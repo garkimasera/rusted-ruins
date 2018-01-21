@@ -4,6 +4,7 @@ pub mod item;
 mod npc;
 mod action;
 mod command;
+mod region;
 mod site;
 mod map;
 mod chara;
