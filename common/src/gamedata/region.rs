@@ -14,7 +14,7 @@ pub struct Region {
     id: RegionId,
     pub(crate) sites: HashMap<SiteId, SiteInfo>,
     /// An map to represents this region
-    map: Map,
+    pub(crate) map: Map,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -145,6 +145,14 @@ impl Region {
             }
         }
         None
+    }
+
+    pub fn get_map(&self) -> &Map {
+        &self.map
+    }
+
+    pub fn get_map_mut(&mut self) -> &mut Map {
+        &mut self.map
     }
 
     fn search_empty_n(&self, kind: SiteKind) -> u32 {
