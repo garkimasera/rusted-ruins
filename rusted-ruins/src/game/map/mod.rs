@@ -15,9 +15,16 @@ use rules::RULES;
 
 /// Switch current map to the specified map
 pub fn switch_map(gd: &mut GameData, mid: MapId) {
+    let prev_mid = gd.get_current_mapid();
     gd.set_current_mapid(mid);
+
+    let new_player_pos = if mid.is_region_map && !prev_mid.is_region_map
+        && mid.sid.rid == prev_mid.sid.rid { // Exit from a site to region map
+        gd.region.get_site_pos(mid.sid)
+    } else {
+        gd.get_current_map().entrance
+    };
     
-    let new_player_pos = gd.get_current_map().entrance;
     gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
 }
 
