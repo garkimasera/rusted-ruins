@@ -2,6 +2,7 @@
 use std::rc::Rc;
 use std::cell::{Cell, RefCell};
 use std::path::PathBuf;
+use std::error::Error;
 use gdk;
 use gtk;
 use gtk::prelude::*;
@@ -165,8 +166,9 @@ pub fn build_ui(application: &gtk::Application) {
                         uic.property_controls.update(&*uic.map.borrow());
                         uic.set_signal_mode(true);
                         uic.reset_map_size(uic.map.borrow().width, uic.map.borrow().height);
+                        *uic.filepath.borrow_mut() = Some(path);
                     }
-                    Err(_) => (),
+                    Err(e) => { show_err_dialog(&uic, &e.to_string()); },
                 }
             }
         });
@@ -183,14 +185,19 @@ pub fn build_ui(application: &gtk::Application) {
                     return;
                 }
             };
-            save_to(&uic, path);
+            if let Err(e) = save_to(&uic, path) {
+                show_err_dialog(&uic, &e.to_string());
+            }
         });
     }
     { // Menu (save as)
         let uic = ui.clone();
         menu_save_as.connect_activate(move |_| {
             if let Some(path) = file_save_as(&uic) {
-                save_to(&uic, path)
+                match save_to(&uic, path.clone()) {
+                    Ok(_) => { *uic.filepath.borrow_mut() = Some(path); }
+                    Err(e) => { show_err_dialog(&uic, &e.to_string()); }
+                }
             }
         });
     }
@@ -307,9 +314,9 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
     None
 }
 
-fn save_to(ui: &Ui, path: PathBuf) {
+fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<Error>> {
     let mapobj = ui.map.borrow().create_mapobj();
-    let _ = ::file::save_to_file(&path, mapobj);
+    ::file::save_to_file(&path, mapobj)
 }
 
 fn create_file_filter() -> gtk::FileFilter {
@@ -353,6 +360,18 @@ fn centering_to(ui: &Ui, pos: (i32, i32)) {
     ui.adjustment_map_pos_x.set_value(x as f64);
     ui.adjustment_map_pos_y.set_value(y as f64);
     ui.map_redraw();
+}
+
+fn show_err_dialog(ui: &Ui, msg: &str) {
+    let dialog = gtk::MessageDialog::new(
+        Some(&ui.window),
+        gtk::DialogFlags::empty(),
+        gtk::MessageType::Error,
+        gtk::ButtonsType::Ok,
+        msg);
+    dialog.show();
+    dialog.run();
+    dialog.destroy();
 }
 
 impl Ui {

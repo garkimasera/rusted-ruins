@@ -24,7 +24,7 @@ pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<Error>> {
         },
         &mut errors);
 
-    Ok(mapobj.unwrap())
+    Ok(mapobj.ok_or("Object is not found")?)
 }
 
 pub fn save_to_file(path: &Path, map: MapTemplateObject) -> Result<(), Box<Error>> {
