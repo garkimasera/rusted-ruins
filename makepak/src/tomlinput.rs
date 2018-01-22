@@ -12,6 +12,7 @@ pub struct TomlInput {
     pub chara_template: Option<CharaTemplateDepInput>,
     pub item: Option<ItemDepInput>,
     pub tile: Option<TileDepInput>,
+    pub wall: Option<WallDepInput>,
     pub talk_script: Option<TalkScriptDepInput>,
 }
 
@@ -61,6 +62,11 @@ pub struct CharaTemplateDepInput {
 #[derive(Debug, Deserialize)]
 pub struct TileDepInput {
     pub kind: ::common::obj::TileKind,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct WallDepInput {
+    pub base_draw: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
