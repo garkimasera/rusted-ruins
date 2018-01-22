@@ -56,6 +56,11 @@ impl RegionHolder {
         &mut region.sites.get_mut(&sid).expect(&super::unknown_id_err(sid)).site
     }
 
+    pub fn get_site_pos(&self, sid: SiteId) -> Vec2d {
+        let region = self.0.get(&sid.rid).expect(&super::unknown_id_err(sid.rid));
+        region.sites.get(&sid).expect(&super::unknown_id_err(sid)).pos
+    }
+
     pub fn get_map(&self, mid: MapId) -> &Map {
         if mid.is_region_map {
             &self.get(mid.sid.rid).map
