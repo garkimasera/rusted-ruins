@@ -180,8 +180,8 @@ impl<T> Array2d<T> where T: Clone {
         let topleft = topleft.into();
         let bottomright = bottomright.into();
 
-        let w = bottomright.0 - topleft.0 + 1;
-        let h = bottomright.1 - topleft.1 + 1;
+        let w = bottomright.0 - topleft.0;
+        let h = bottomright.1 - topleft.1;
         assert!(w >= 0 && h >= 0);
         let mut a = Array2d::new(w as u32, h as u32, default);
 
