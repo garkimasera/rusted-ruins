@@ -141,10 +141,7 @@ pub fn build_ui(application: &gtk::Application) {
             if responce_id == 1 {
                 let width  = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
-                uic.adjustment_map_pos_x.set_value(0.0);
-                uic.adjustment_map_pos_y.set_value(0.0);
-                uic.adjustment_map_pos_x.set_upper(width as f64);
-                uic.adjustment_map_pos_y.set_upper(height as f64);
+                uic.reset_map_size(width, height);
                 let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
                 let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
@@ -167,6 +164,7 @@ pub fn build_ui(application: &gtk::Application) {
                         uic.set_signal_mode(false);
                         uic.property_controls.update(&*uic.map.borrow());
                         uic.set_signal_mode(true);
+                        uic.reset_map_size(uic.map.borrow().width, uic.map.borrow().height);
                     }
                     Err(_) => (),
                 }
@@ -366,6 +364,13 @@ impl Ui {
         let pos_x = self.adjustment_map_pos_x.get_value() as i32;
         let pos_y = self.adjustment_map_pos_y.get_value() as i32;
         (pos_x, pos_y)
+    }
+
+    pub fn reset_map_size(&self, width: u32, height: u32) {
+        self.adjustment_map_pos_x.set_value(0.0);
+        self.adjustment_map_pos_y.set_value(0.0);
+        self.adjustment_map_pos_x.set_upper(width as f64);
+        self.adjustment_map_pos_y.set_upper(height as f64);
     }
 
     pub fn set_signal_mode(&self, mode: bool) {
