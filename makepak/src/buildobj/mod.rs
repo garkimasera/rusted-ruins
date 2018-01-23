@@ -84,11 +84,16 @@ fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject> {
 
 fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
     let img = get_optional_field!(tomlinput, image);
-    let base_draw = if let Some(wall) = tomlinput.wall { wall.base_draw.unwrap_or(false) } else { false };
+    let (base_draw, always_background) = if let Some(wall) = tomlinput.wall {
+        (wall.base_draw.unwrap_or(false), wall.always_background.unwrap_or(false))
+    } else {
+        (false, false)
+    };
     
     Ok(WallObject {
         id: tomlinput.id,
         base_draw: base_draw,
+        always_background: always_background,
         img: build_img(img)?,
     })
 }

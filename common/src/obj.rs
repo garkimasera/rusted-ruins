@@ -83,6 +83,8 @@ pub struct WallObject {
     pub id: String,
     /// If this is false, skips base tile drawing
     pub base_draw: bool,
+    /// If this is true, this wall is always drawed as background of player character.
+    pub always_background: bool,
     pub img: Img,
 }
 
