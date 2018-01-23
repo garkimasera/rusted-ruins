@@ -1,30 +1,34 @@
 
 use common::objholder::*;
-use common::gamedata::map::{Map, SpecialTileKind};
+use common::gamedata::map::{Map, SpecialTileKind, StairsKind, FLOOR_OUTSIDE};
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
 
+#[derive(Default)]
 pub struct MapBuilder {
-    map: Map,
+    w: u32, h: u32,
+    floor: u32,
 }
 
 impl MapBuilder {
     pub fn new(w: u32, h: u32) -> MapBuilder {
-        let generated_map = MapGenerator::new((w, h)).fractal().generate();
-        let map = generated_map_to_map(generated_map, TileIdx(0), WallIdx(0));
-        
-        MapBuilder {
-            map: map,
-        }
+        let mut map_builder = MapBuilder::default();
+        map_builder.w = w;
+        map_builder.h = h;
+        map_builder
     }
     
     pub fn build(self) -> Map {
-        let map = self.map;
-        
-        map
+        let generated_map = MapGenerator::new((self.w, self.h)).fractal().generate();
+        generated_map_to_map(generated_map, TileIdx(0), WallIdx(0), self.floor)
+    }
+
+    pub fn floor(mut self, floor: u32) -> MapBuilder {
+        self.floor = floor;
+        self
     }
 }
 
-pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> Map {
+pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx, floor: u32) -> Map {
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
 
@@ -41,11 +45,16 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx) -> M
     }
 
     // Set stairs
+    let entrance_stairs = StairsKind::UpStairs;
+    let exit_stairs = StairsKind::DownStairs;
+
+    let dest_floor = if floor == 0 { FLOOR_OUTSIDE } else { floor - 1 };
     map.entrance = gm.entrance;
-    map.tile[gm.entrance].special = SpecialTileKind::UpStairs;
+    map.tile[gm.entrance].special = SpecialTileKind::Stairs { dest_floor, kind: entrance_stairs };
 
     if gm.exit.is_some()  {
-        map.tile[gm.exit.unwrap()].special = SpecialTileKind::DownStairs;
+        let dest_floor = floor + 1;
+        map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs { dest_floor, kind: exit_stairs };;
     }
     
     map

@@ -21,8 +21,9 @@ pub fn switch_map(gd: &mut GameData, mid: MapId) {
     let new_player_pos = if mid.is_region_map && !prev_mid.is_region_map
         && mid.sid.rid == prev_mid.sid.rid { // Exit from a site to region map
         gd.region.get_site_pos(mid.sid)
-    } else {
-        gd.get_current_map().entrance
+    } else { // Move to another floor of the same site
+        let current_map = gd.get_current_map();
+        if let Some(p) = current_map.search_stairs(prev_mid.floor) { p } else { current_map.entrance }
     };
     
     gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);

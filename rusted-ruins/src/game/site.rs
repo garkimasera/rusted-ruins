@@ -14,8 +14,10 @@ pub fn add_dungeon_site(gd: &mut GameData) -> SiteId {
     sid
 }
 
+/// Extend dungion site by one floor
 pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
-    let map = super::map::builder::MapBuilder::new(40, 40).build();
+    let floor = gd.region.get_site(sid).floor_num();
+    let map = super::map::builder::MapBuilder::new(40, 40).floor(floor).build();
     
     gd.add_map(map, sid);
 }

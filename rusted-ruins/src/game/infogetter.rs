@@ -32,13 +32,11 @@ impl InfoGetter for GameData {
         
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
-        match tile.special {
-            SpecialTileKind::UpStairs | SpecialTileKind::DownStairs => {
-                return true;
-            },
-            _ => (),
+        if let SpecialTileKind::Stairs { .. } = tile.special {
+            true
+        } else {
+            false
         }
-        false
     }
 
     fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList> {

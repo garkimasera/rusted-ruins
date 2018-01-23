@@ -3,7 +3,7 @@ use super::Game;
 use super::action;
 use common::gamedata::{self, GameData};
 use common::gamedata::chara::{CharaId, Relationship};
-use common::gamedata::map::{MapId, SpecialTileKind};
+use common::gamedata::map::{MapId, SpecialTileKind, FLOOR_OUTSIDE};
 use common::gamedata::item::*;
 use game::{InfoGetter, DialogOpenRequest};
 use array2d::*;
@@ -74,30 +74,18 @@ impl<'a> DoPlayerAction<'a> {
             let next_mid = {
                 let gd = self.gd_mut();
                 let mid = gd.get_current_mapid();
-                let next_mid = {
-                    let special_tile_kind
-                        = &gd.get_current_map().tile[gd.player_pos()].special;
-                    let region_map = MapId::from(mid.sid.rid);
-                    match special_tile_kind {
-                        &SpecialTileKind::DownStairs => {
-                            if gd.region.get_site(mid.sid).is_underground() {
-                                Some(mid.inc_floor())
-                            } else {
-                                if mid.floor == 0 { Some(region_map) } else { mid.dec_floor() }
-                            }
-                        }
-                        &SpecialTileKind::UpStairs => {
-                            if gd.region.get_site(mid.sid).is_underground() {
-                                if mid.floor == 0 { Some(region_map) } else { mid.dec_floor() }
-                            } else {
-                                Some(mid.inc_floor())
-                            }
-                        }
-                        _ => { panic!("Try to use not exist stairs") }
+                let special_tile_kind
+                    = &gd.get_current_map().tile[gd.player_pos()].special;
+                if let &SpecialTileKind::Stairs { dest_floor, .. } = special_tile_kind {
+                    if dest_floor == FLOOR_OUTSIDE {
+                        MapId::from(mid.sid.rid)
+                    } else {
+                        mid.set_floor(dest_floor)
                     }
-                };
-                if next_mid.is_none() { return; }
-                next_mid.unwrap()
+                } else {
+                    error!("Tried to use stairs that don't exist");
+                    return;
+                }
             };
 
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {

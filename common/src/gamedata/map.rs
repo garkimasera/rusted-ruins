@@ -23,10 +23,22 @@ pub struct Map {
 
 /// This represents special objects on a tile. For example, stairs, doors, traps.
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[repr(u32)]
 pub enum SpecialTileKind {
-    None, DownStairs, UpStairs,
+    None,
+    Stairs {
+        /// Stairs has the destination floor number
+        dest_floor: u32,
+        kind: StairsKind,
+    },
 }
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum StairsKind {
+    UpStairs, DownStairs,
+}
+
+/// If stairs or boundaries have this value, they are connected to region map
+pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
@@ -227,6 +239,18 @@ impl Map {
         let y = if pos.1 < 0 { 0 } else if pos.1 >= h { h - 1 } else { pos.1 };
         Vec2d::new(x, y)
     }
+
+    /// Search stairs that is connected to given floor
+    pub fn search_stairs(&self, floor: u32) -> Option<Vec2d> {
+        for (p, tile) in self.tile.iter_with_idx() {
+            if let SpecialTileKind::Stairs { dest_floor, .. } = tile.special {
+                if dest_floor == floor {
+                    return Some(p);
+                }
+            }
+        }
+        None
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
@@ -248,6 +272,11 @@ impl MapId {
         Some(MapId {
             sid: self.sid, floor: self.floor - 1, is_region_map: false,
         })
+    }
+
+    pub fn set_floor(mut self, floor: u32) -> MapId {
+        self.floor = floor;
+        self
     }
 }
 

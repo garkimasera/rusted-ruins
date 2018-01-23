@@ -71,6 +71,10 @@ impl Site {
             _ => false,
         }
     }
+
+    pub fn floor_num(&self) -> u32 {
+        self.map.len() as u32
+    }
 }
 
 impl SiteContent {

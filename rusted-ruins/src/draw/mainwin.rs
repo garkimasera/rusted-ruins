@@ -176,8 +176,13 @@ impl MainWinDrawer {
         // Convert special tile kind to its idx
         let special_tile_id = match map.tile[p].special {
             SpecialTileKind::None => { return; },
-            SpecialTileKind::DownStairs => SPECIAL_TILE_OBJ_DOWNSTAIRS,
-            SpecialTileKind::UpStairs   => SPECIAL_TILE_OBJ_UPSTAIRS,
+            SpecialTileKind::Stairs { kind, .. } => {
+                use common::gamedata::map::StairsKind;
+                match kind {
+                    StairsKind::DownStairs => SPECIAL_TILE_OBJ_DOWNSTAIRS,
+                    StairsKind::UpStairs => SPECIAL_TILE_OBJ_UPSTAIRS,
+                }                
+            }
         };
         
         let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
