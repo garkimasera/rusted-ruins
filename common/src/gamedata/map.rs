@@ -30,11 +30,43 @@ pub enum SpecialTileKind {
         dest_floor: u32,
         kind: StairsKind,
     },
+    /// Site symbol on region map
+    SiteSymbol {
+        kind: SiteSymbolKind,
+    }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum StairsKind {
     UpStairs, DownStairs,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum SiteSymbolKind {
+    Cave, Tower, Town, Village,
+}
+
+impl SpecialTileKind {
+    /// Convert to id of SpecialTileObject
+    pub fn obj_id(&self) -> Option<&'static str> {
+        Some(match *self {
+            SpecialTileKind::None => { return None; },
+            SpecialTileKind::Stairs { kind, .. } => {
+                match kind {
+                    StairsKind::DownStairs => "!downstairs",
+                    StairsKind::UpStairs => "!upstairs",
+                }
+            }
+            SpecialTileKind::SiteSymbol { kind } => {
+                match kind {
+                    SiteSymbolKind::Cave =>    "!rm.cave",
+                    SiteSymbolKind::Tower =>   "!rm.tower",
+                    SiteSymbolKind::Town =>    "!rm.town",
+                    SiteSymbolKind::Village => "!rm.village",
+                }
+            }
+        })
+    }
 }
 
 /// If stairs or boundaries have this value, they are connected to region map

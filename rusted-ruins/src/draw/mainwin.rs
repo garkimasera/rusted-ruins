@@ -167,25 +167,11 @@ impl MainWinDrawer {
     }
 
     fn draw_tile_special(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        use common::gamedata::map::SpecialTileKind;
         use common::objholder::SpecialTileIdx;
-        use common::basic::*;
-        
         if !map.is_inside(p) { return; }
-
-        // Convert special tile kind to its idx
-        let special_tile_id = match map.tile[p].special {
-            SpecialTileKind::None => { return; },
-            SpecialTileKind::Stairs { kind, .. } => {
-                use common::gamedata::map::StairsKind;
-                match kind {
-                    StairsKind::DownStairs => SPECIAL_TILE_OBJ_DOWNSTAIRS,
-                    StairsKind::UpStairs => SPECIAL_TILE_OBJ_UPSTAIRS,
-                }                
-            }
-        };
-        
-        let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
+        let special_tile_id = map.tile[p].special.obj_id();
+        if special_tile_id.is_none() { return; }
+        let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id.unwrap());
         let texture = sv.tex().get(special_tile_idx);
         let query = texture.query();
         let src = Rect::new(0, 0, query.width, query.height);

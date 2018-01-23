@@ -30,8 +30,3 @@ pub const LOG_TXT_DIR: &'static str = "log";
 pub const UI_TXT_DIR: &'static str = "ui";
 pub const TALK_TXT_DIR: &'static str = "talk";
 
-/// Special tile object id for downstairs
-pub const SPECIAL_TILE_OBJ_DOWNSTAIRS: &'static str = "!downstairs";
-/// Special tile object id for upstairs
-pub const SPECIAL_TILE_OBJ_UPSTAIRS: &'static str = "!upstairs";
-
