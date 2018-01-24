@@ -93,10 +93,13 @@ pub struct OutsideTileInfo {
     pub deco: Option<DecoIdx>,
 }
 
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum BoundaryBehavior {
-    NoPass,
-    ExitToRegionMap,
+/// Has connected floors of each boundaries
+#[derive(Clone, Copy, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct BoundaryBehavior {
+    n: Option<u32>,
+    s: Option<u32>,
+    e: Option<u32>,
+    w: Option<u32>,
 }
          
 impl Default for TileInfo {
@@ -119,7 +122,7 @@ impl Map {
             player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
             charaid: Vec::new(),
             outside_tile: None,
-            boundary_behavior: BoundaryBehavior::NoPass,
+            boundary_behavior: BoundaryBehavior::default(),
         }
     }
 
@@ -282,6 +285,21 @@ impl Map {
             }
         }
         None
+    }
+
+    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<u32> {
+        let dest_pos = pos + dir.as_vec();
+        if dest_pos.0 < 0 {
+            self.boundary_behavior.n
+        } else if dest_pos.0 >= self.h as i32 {
+            self.boundary_behavior.s
+        } else if dest_pos.1 < 0 {
+            self.boundary_behavior.w
+        } else if dest_pos.1 >= self.w as i32 {
+            self.boundary_behavior.e
+        } else {
+            None
+        }
     }
 }
 
