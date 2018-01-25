@@ -50,7 +50,8 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
 
 /// Choose one chara_template by race, gen_level and gen_weight
 fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTemplateIdx {
-    let dungeon_adjustments = RULES.map_gen.npc_gen.get(&dungeon).expect("No rule for npc generation");
+    let dungeon_gen_params = RULES.map_gen.dungeons.get(&dungeon).expect("No rule for npc generation");
+    let nrp = &dungeon_gen_params.npc_race_probability;
     let chara_templates = &gobj::get_objholder().chara_template;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
@@ -59,7 +60,7 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     let mut first_available_ct_idx = None;
     
     for (i, ct) in chara_templates.iter().enumerate() {
-        if let Some(da) = dungeon_adjustments.get(&ct.race) {
+        if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
             if first_available_ct_idx.is_none() {
                 first_available_ct_idx = Some(i);
@@ -71,7 +72,7 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     let r = thread_rng().gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, ct) in chara_templates.iter().enumerate() {
-        if let Some(da) = dungeon_adjustments.get(&ct.race) {
+        if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
             if r < sum {
                 return CharaTemplateIdx(i as u32);
