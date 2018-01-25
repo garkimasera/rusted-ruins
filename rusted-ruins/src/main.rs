@@ -88,18 +88,15 @@ fn init_rules() {
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.
 fn setup_logger() {
-    use applog::{LogRecord, LogLevelFilter};
+    use applog::LevelFilter;
     use std::env;
-    let mut builder = env_logger::LogBuilder::new();
+    use std::io::Write;
+    let mut builder = env_logger::Builder::new();
 
-    let format = |record: &LogRecord| {
-        format!("{}: {}", record.level(), record.args())
-    };
-
-    builder.format(format);
-    builder.filter(None, LogLevelFilter::Info);
+    builder.format(|buf, record| { writeln!(buf, "{}: {}", record.level(), record.args()) });
+    builder.filter(None, LevelFilter::Info);
     if let Ok(e) = env::var("RUST_LOG") {
         builder.parse(&e);
     }
-    builder.init().unwrap();
+    builder.init();
 }
