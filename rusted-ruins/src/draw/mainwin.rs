@@ -145,16 +145,30 @@ impl MainWinDrawer {
         let texture = sv.tex().get(tile_idx);
         check_draw!(canvas.copy(&texture, src, dest));
 
+        self.draw_tile_wall_background(canvas, map, sv, p);
         self.draw_tile_deco(canvas, map, sv, p);
     }
 
     fn draw_tile_wall(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
         let o = gobj::get_obj(wall_idx);
+        if o.always_background { return; }
         let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
         let dest = self.bottom_at_tile(src, p, 0, 0);
         let texture = sv.tex().get(wall_idx);
         check_draw!(canvas.copy(&texture, src, dest));
+    }
+
+    /// Draw wall if always_background is true
+    fn draw_tile_wall_background(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
+        let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
+        let o = gobj::get_obj(wall_idx);
+        if !o.always_background { return; }
+        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
+        let dest = self.bottom_at_tile(src, p, 0, 0);
+        let texture = sv.tex().get(wall_idx);
+        check_draw!(canvas.copy(&texture, src, dest));
+        
     }
 
     fn draw_tile_deco(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
