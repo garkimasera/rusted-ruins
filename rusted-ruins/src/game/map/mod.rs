@@ -83,7 +83,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
         let mut item_list = ItemList::new(10);
 
-        if thread_rng().gen_weighted_bool(RULES.map_gen.item_gen_probability) {
+        if thread_rng().gen_weighted_bool(RULES.dungeon_gen[&DungeonKind::Cave].item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor), 1);
             tile.item_list = Some(item_list);
         }

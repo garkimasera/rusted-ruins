@@ -50,7 +50,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
 
 /// Choose one chara_template by race, gen_level and gen_weight
 fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTemplateIdx {
-    let dungeon_gen_params = RULES.map_gen.dungeons.get(&dungeon).expect("No rule for npc generation");
+    let dungeon_gen_params = RULES.dungeon_gen.get(&dungeon).expect("No rule for npc generation");
     let nrp = &dungeon_gen_params.npc_race_probability;
     let chara_templates = &gobj::get_objholder().chara_template;
 

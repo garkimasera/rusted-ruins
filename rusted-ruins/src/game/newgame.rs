@@ -8,7 +8,7 @@ pub fn create_newgame() -> GameData {
     let mut gd = GameData::empty();
 
     super::region::add_region(&mut gd, "!east-coast");
-    add_dungeon_site(&mut gd);
+    add_dungeon_site(&mut gd, gamedata::site::DungeonKind::Cave);
 
     let mid = gd.get_current_mapid();
     let start_pos = gd.get_current_map().entrance;

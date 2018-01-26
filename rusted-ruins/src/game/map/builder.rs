@@ -7,6 +7,8 @@ use map_generator::{MapGenerator, GeneratedMap, TileKind};
 pub struct MapBuilder {
     w: u32, h: u32,
     floor: u32,
+    tile: TileIdx,
+    wall: WallIdx,
 }
 
 impl MapBuilder {
@@ -19,11 +21,21 @@ impl MapBuilder {
     
     pub fn build(self) -> Map {
         let generated_map = MapGenerator::new((self.w, self.h)).fractal().generate();
-        generated_map_to_map(generated_map, TileIdx(0), WallIdx(0), self.floor)
+        generated_map_to_map(generated_map, self.tile, self.wall, self.floor)
     }
 
     pub fn floor(mut self, floor: u32) -> MapBuilder {
         self.floor = floor;
+        self
+    }
+
+    pub fn tile(mut self, tile: TileIdx) -> MapBuilder {
+        self.tile = tile;
+        self
+    }
+
+    pub fn wall(mut self, wall: WallIdx) -> MapBuilder {
+        self.wall = wall;
         self
     }
 }
