@@ -280,7 +280,7 @@ impl MainWinDrawer {
     fn tile_range(&self) -> RectIter {
         let (nx, ny) = self.calc_tile_num();
         let top_left = self.topleft;
-        let bottom_right = Vec2d::new(nx + top_left.0, ny + top_left.1);
+        let bottom_right = Vec2d::new(nx + top_left.0, ny + top_left.1 + 1);
         RectIter::new(top_left, bottom_right)
     }
 }
