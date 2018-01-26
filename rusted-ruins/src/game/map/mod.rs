@@ -6,7 +6,7 @@ use array2d::Vec2d;
 use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
 use common::gamedata::chara::CharaId;
-use common::gamedata::site::DungeonKind;
+use common::gamedata::site::{SiteContent, DungeonKind};
 use common::gamedata::item::ItemList;
 use rand::{Rng, thread_rng};
 use super::chara::creation::create_npc_chara;
@@ -75,6 +75,15 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
 
 /// Locate some items for a new map
 pub fn gen_items(gd: &mut GameData, mid: MapId) {
+    let item_gen_probability = {
+        let site = gd.region.get_site(mid.sid);
+        match site.content {
+            SiteContent::AutoGenDungeon { dungeon_kind } => {
+                RULES.dungeon_gen[&dungeon_kind].item_gen_probability
+            }
+            _ => 0,
+        }
+    };
     let map = gd.region.get_map_mut(mid);
 
     for p in map.tile.iter_idx() {
@@ -83,7 +92,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
         let mut item_list = ItemList::new(10);
 
-        if thread_rng().gen_weighted_bool(RULES.dungeon_gen[&DungeonKind::Cave].item_gen_probability) {
+        if thread_rng().gen_weighted_bool(item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor), 1);
             tile.item_list = Some(item_list);
         }
