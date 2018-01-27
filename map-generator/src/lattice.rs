@@ -1,6 +1,6 @@
 
 use array2d::*;
-use rand::{Rng, ThreadRng, thread_rng};
+use rng::*;
 use super::{GeneratedMap, TileKind};
 
 pub struct Lattice {
@@ -27,7 +27,6 @@ impl Lattice {
     pub fn write_to_map(&self, gm: &mut GeneratedMap, door_weight: f64) {
         let ew_wall_len = (gm.size.0 - self.nx as i32 + 1) / self.nx as i32;
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
-        let mut rng = thread_rng();
         
         // Set entrance/exit
         gm.entrance = Vec2d::new(
@@ -43,7 +42,7 @@ impl Lattice {
 
             for a in 0..(self.nx as i32) {
                 if self.ns_open[(a, b)] {
-                    if door_weight > rng.gen_range(0.0, 1.0) {
+                    if door_weight > gen_range(0.0, 1.0) {
                         let middle = ew_wall_len / 2;
                         for c in 0..ew_wall_len {
                             if c == middle {
@@ -68,7 +67,7 @@ impl Lattice {
             for b in 0..(self.ny as i32) {
                 if self.ew_open[(a, b)] {
                     // Determine door or fully opened
-                    if door_weight > rng.gen_range(0.0, 1.0) {
+                    if door_weight > gen_range(0.0, 1.0) {
                         let middle = ns_wall_len / 2;
                         for c in 0..ns_wall_len {
                             if c == middle {
@@ -107,19 +106,17 @@ enum Dir {
 
 pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice {
     let mut lattice = Lattice::new(nx, ny);
-    let mut rng = thread_rng();
     let mut is_reach = Array2d::new(nx, ny, false);
 
-    let start_room = Vec2d::new(rng.gen_range(0, nx) as i32, rng.gen_range(0, ny) as i32);
+    let start_room = Vec2d::new(gen_range(0, nx) as i32, gen_range(0, ny) as i32);
     lattice.start = start_room;
 
-    let max_step = rng.gen_range(min_step, max_step);
+    let max_step = gen_range(min_step, max_step);
     
     // Determine start and goal, and the route
     random_walk(start_room,
                 &mut lattice,
                 &mut is_reach,
-                &mut rng,
                 0,
                 max_step);
 
@@ -150,7 +147,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
                 next_rooms.push(Dir::S);
             }
             // Random select which wall will be opened.
-            if let Some(next_room) = rng.choose(&next_rooms) {
+            if let Some(next_room) = get_rng().choose(&next_rooms) {
                 match *next_room {
                     Dir::W => {
                         lattice.ew_open[(room.0 - 1, room.1)] = true;
@@ -184,7 +181,6 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
 fn random_walk(room: Vec2d,
                lattice: &mut Lattice,
                is_reach: &mut Array2d<bool>,
-               rng: &mut ThreadRng,
                count: u32,
                n_step: u32) {
 
@@ -213,23 +209,23 @@ fn random_walk(room: Vec2d,
         return;
     }
 
-    if let Some(next_room) = rng.choose(&next_rooms) {
+    if let Some(next_room) = get_rng().choose(&next_rooms) {
         match *next_room {
             Dir::W => {
                 lattice.ew_open[(room.0 - 1, room.1)] = true;
-                random_walk(west_room, lattice, is_reach, rng, count + 1, n_step);
+                random_walk(west_room, lattice, is_reach, count + 1, n_step);
             }
             Dir::E => {
                 lattice.ew_open[(room.0, room.1)] = true;
-                random_walk(east_room, lattice, is_reach, rng, count + 1, n_step);
+                random_walk(east_room, lattice, is_reach, count + 1, n_step);
             }
             Dir::N => {
                 lattice.ns_open[(room.0, room.1 - 1)] = true;
-                random_walk(north_room, lattice, is_reach, rng, count + 1, n_step);
+                random_walk(north_room, lattice, is_reach, count + 1, n_step);
             }
             Dir::S => {
                 lattice.ns_open[(room.0, room.1)] = true;
-                random_walk(south_room, lattice, is_reach, rng, count + 1, n_step);
+                random_walk(south_room, lattice, is_reach, count + 1, n_step);
             }
         }
     } else {

@@ -4,7 +4,6 @@ version = "0.0.1"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
-rand = "0.4"
 lazy_static = "1"
 tar = "0.4"
 error-chain = "0.11"
@@ -24,6 +23,9 @@ features = ["global_state_obj", "auto_idx_conversion"]
 
 [dependencies.rusted-ruins-audio]
 path = "../audio"
+
+[dependencies.rusted-ruins-rng]
+path = "../rng"
 
 [dependencies.rusted-ruins-rules]
 path = "../rules"

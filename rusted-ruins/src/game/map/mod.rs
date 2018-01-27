@@ -8,7 +8,6 @@ use common::gamedata::map::{Map, MapId};
 use common::gamedata::chara::CharaId;
 use common::gamedata::site::{SiteContent, DungeonKind};
 use common::gamedata::item::ItemList;
-use rand::{Rng, thread_rng};
 use super::chara::creation::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
@@ -50,11 +49,11 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
 
 /// Choose one empty tile in random
 pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
+    use rng::gen_range;
     const MAX_TRY: usize = 10;
-    let mut rng = thread_rng();
     
     for _ in 0..MAX_TRY {
-        let p = Vec2d::new(rng.gen_range(0, map.w) as i32, rng.gen_range(0, map.h) as i32);
+        let p = Vec2d::new(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
 
         if map.tile[p].wall.is_none() && map.tile[p].chara.is_none() {
             return Some(p);
@@ -67,7 +66,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
         None
     } else {
         
-        let r = rng.gen_range(0, n_empty_tile);
+        let r = gen_range(0, n_empty_tile);
         let p = map.tile
             .iter_with_idx()
             .filter(|&(_, t)| t.wall.is_none() && t.chara.is_none())
@@ -81,6 +80,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
 
 /// Locate some items for a new map
 pub fn gen_items(gd: &mut GameData, mid: MapId) {
+    use rng::*;
     let item_gen_probability = {
         let site = gd.region.get_site(mid.sid());
         match site.content {
@@ -98,7 +98,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
         let mut item_list = ItemList::new(10);
 
-        if thread_rng().gen_weighted_bool(item_gen_probability) {
+        if get_rng().gen_weighted_bool(item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor()), 1);
             tile.item_list = Some(item_list);
         }

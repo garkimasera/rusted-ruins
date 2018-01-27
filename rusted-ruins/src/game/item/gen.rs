@@ -1,5 +1,4 @@
 
-use rand::{Rng, thread_rng};
 use common::gamedata::item::*;
 use common::gobj;
 use common::objholder::ItemIdx;
@@ -35,7 +34,7 @@ fn choose_item_by_floor_level(floor_level: u32) -> ItemIdx {
     assert!(sum > 0.0);
 
     // Choose one chara
-    let r = thread_rng().gen_range(0.0, sum);
+    let r = ::rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, item) in items.iter().enumerate() {
         sum += weight_dist.calc(item.gen_level) * item.gen_weight as f64;

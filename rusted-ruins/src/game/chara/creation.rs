@@ -5,7 +5,6 @@ use common::gamedata::item::{ItemList, EquipItemList};
 use common::gamedata::site::DungeonKind;
 use common::gobj;
 use rules::RULES;
-use rand::{Rng, thread_rng};
 use text;
 
 /// Create character from chara_template
@@ -69,7 +68,7 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     }
 
     // Choose one chara
-    let r = thread_rng().gen_range(0.0, sum);
+    let r = ::rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {

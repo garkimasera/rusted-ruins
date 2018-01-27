@@ -1,8 +1,8 @@
 
 //! Random Map Generator for Rusted Ruins
 
-extern crate rand;
 extern crate rusted_ruins_array2d as array2d;
+extern crate rusted_ruins_rng as rng;
 
 use array2d::*;
 
