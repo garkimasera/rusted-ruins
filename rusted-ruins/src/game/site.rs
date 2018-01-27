@@ -30,6 +30,8 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
         }
     };
     
-    gd.add_map(map, sid);
+    let mid = gd.add_map(map, sid);
+    super::map::gen_npcs(gd, mid, 10, mid.floor());
+    super::map::gen_items(gd, mid);
 }
 

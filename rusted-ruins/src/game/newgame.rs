@@ -3,7 +3,6 @@ use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::map::MapId;
 use common::gamedata::region::RegionId;
-use super::map;
 
 pub fn create_newgame() -> GameData {
     let mut gd = GameData::empty();
@@ -37,9 +36,6 @@ pub fn create_newgame() -> GameData {
         event_data: None,
     });
     gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, start_pos + (0, 2));
-
-    map::gen_npcs(&mut gd, mid, 10, 10);
-    map::gen_items(&mut gd, mid);
     */
 
     gd
