@@ -30,3 +30,5 @@ pub const LOG_TXT_DIR: &'static str = "log";
 pub const UI_TXT_DIR: &'static str = "ui";
 pub const TALK_TXT_DIR: &'static str = "talk";
 
+/// The number of auto generated dungeons per region
+pub const MAX_AUTO_GEN_DUNGEONS: u32 = 20;

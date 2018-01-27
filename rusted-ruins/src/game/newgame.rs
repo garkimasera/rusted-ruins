@@ -1,17 +1,21 @@
 
 use common::gamedata;
 use common::gamedata::GameData;
-use super::site::add_dungeon_site;
+use common::gamedata::map::MapId;
 use super::map;
 
 pub fn create_newgame() -> GameData {
     let mut gd = GameData::empty();
 
     super::region::add_region(&mut gd, "!east-coast");
-    add_dungeon_site(&mut gd, gamedata::site::DungeonKind::Cave);
 
-    let mid = gd.get_current_mapid();
+    let mut mid = MapId::default();
+    mid.is_region_map = true;
+    mid.sid.kind = ::common::gamedata::site::SiteKind::AutoGenDungeon;
+    gd.set_current_mapid(mid);
     let start_pos = gd.get_current_map().entrance;
+
+    super::region::gen_dungeon(&mut gd, mid.sid.rid);
 
     let mut chara = gamedata::chara::Chara::default();
     chara.params.spd = 100;

@@ -32,10 +32,11 @@ impl InfoGetter for GameData {
         
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
-        if let SpecialTileKind::Stairs { .. } = tile.special {
-            true
-        } else {
-            false
+        match tile.special {
+            SpecialTileKind::Stairs { .. } | SpecialTileKind::SiteSymbol { .. } => {
+                true
+            }
+            _ => false,
         }
     }
 

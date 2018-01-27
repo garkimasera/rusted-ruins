@@ -7,10 +7,10 @@ use common::gobj;
 use rules::RULES;
 use super::map::builder::MapBuilder;
 
-pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind) -> SiteId {
+pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d) -> SiteId {
     let mut site = Site::new("Ruin Hoge", 10);
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
-    let sid = gd.add_site(site, SiteKind::Other, RegionId::default(), Vec2d::new(0, 0)).unwrap();
+    let sid = gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap();
     extend_site_floor(gd, sid);
     
     sid

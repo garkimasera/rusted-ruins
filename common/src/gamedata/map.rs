@@ -311,6 +311,12 @@ pub struct MapId {
 }
 
 impl MapId {
+    pub fn site_first_floor(sid: SiteId) -> MapId {
+        MapId {
+            sid, floor: 0, is_region_map: false
+        }
+    }
+    
     pub fn inc_floor(self) -> MapId {
         MapId {
             sid: self.sid, floor: self.floor + 1, is_region_map: false,

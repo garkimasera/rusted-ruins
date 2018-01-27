@@ -76,24 +76,34 @@ impl<'a> DoPlayerAction<'a> {
                 let mid = gd.get_current_mapid();
                 let special_tile_kind
                     = &gd.get_current_map().tile[gd.player_pos()].special;
-                if let &SpecialTileKind::Stairs { dest_floor, .. } = special_tile_kind {
-                    if dest_floor == FLOOR_OUTSIDE {
-                        MapId::from(mid.sid.rid)
-                    } else {
-                        mid.set_floor(dest_floor)
+                match *special_tile_kind {
+                    SpecialTileKind::Stairs { dest_floor, .. } => { // Use stairs on map
+                        if dest_floor == FLOOR_OUTSIDE {
+                            MapId::from(mid.sid.rid)
+                        } else {
+                            mid.set_floor(dest_floor)
+                        }
                     }
-                } else {
-                    error!("Tried to use stairs that don't exist");
-                    return;
+                    SpecialTileKind::SiteSymbol { .. } => { // Enter other site from region map
+                        let pos = gd.player_pos();
+                        let region = gd.region.get(mid.sid.rid);
+                        if let Some(sid) = region.get_id_by_pos(pos) {
+                            MapId::site_first_floor(sid)
+                        } else {
+                            warn!("No site existed at {:?}", pos);
+                            return;
+                        }                        
+                    }
+                    _ => {
+                        warn!("Tried to use stairs that don't exist");
+                        return;
+                    }
                 }
             };
 
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
                 if !result { return; }
                 let gd = pa.gd_mut();
-                if gd.region.get_map_checked(next_mid).is_none() { // If next_mid floor doesn't exist
-                    super::site::extend_site_floor(gd, next_mid.sid);
-                }
                 super::map::switch_map(gd, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
