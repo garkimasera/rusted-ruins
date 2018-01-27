@@ -304,49 +304,68 @@ impl Map {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-pub struct MapId {
-    pub sid: super::site::SiteId,
-    pub floor: u32,
-    pub is_region_map: bool,
+pub enum MapId {
+    SiteMap { sid: SiteId, floor: u32 },
+    RegionMap { rid: RegionId },
 }
 
 impl MapId {
     pub fn site_first_floor(sid: SiteId) -> MapId {
-        MapId {
-            sid, floor: 0, is_region_map: false
-        }
+        MapId::SiteMap { sid, floor: 0 }
     }
-    
-    pub fn inc_floor(self) -> MapId {
-        MapId {
-            sid: self.sid, floor: self.floor + 1, is_region_map: false,
+
+    pub fn set_floor(self, floor: u32) -> MapId {
+        match self {
+            MapId::SiteMap { sid, .. } => {
+                MapId::SiteMap { sid, floor }
+            }
+            _ => panic!("Invalid operation on MapId::RegionId")
         }
     }
 
-    pub fn dec_floor(self) -> Option<MapId> {
-        if self.floor == 0 { return None; } 
-        Some(MapId {
-            sid: self.sid, floor: self.floor - 1, is_region_map: false,
-        })
+    #[inline]
+    pub fn rid(self) -> RegionId {
+        match self {
+            MapId::SiteMap { sid, .. } => sid.rid,
+            MapId::RegionMap { rid } => rid,
+        }
     }
 
-    pub fn set_floor(mut self, floor: u32) -> MapId {
-        self.floor = floor;
-        self
+    #[inline]
+    pub fn sid(self) -> SiteId {
+        match self {
+            MapId::SiteMap { sid, .. } => sid,
+            _ => panic!("Invalid operation on MapId::RegionId")
+        }
+    }
+
+    #[inline]
+    /// Get floor number of this map
+    /// If the map is region map, returns FLOOR_OUTSIDE
+    pub fn floor(self) -> u32 {
+        match self {
+            MapId::SiteMap { floor, .. } => floor,
+            MapId::RegionMap { .. } => FLOOR_OUTSIDE,
+        }
+    }
+
+    pub fn is_region_map(self) -> bool {
+        match self {
+            MapId::RegionMap { .. } => true,
+            _ => false,
+        }
     }
 }
 
 impl Default for MapId {
     fn default() -> MapId {
-        MapId { sid: SiteId::default(), floor: 0, is_region_map: false }
+        MapId::SiteMap { sid: SiteId::default(), floor: 0 }
     }
 }
 
 impl From<RegionId> for MapId {
     fn from(rid: RegionId) -> MapId {
-        let mut sid = SiteId::default();
-        sid.rid = rid;
-        MapId { sid, floor: 0, is_region_map: true }
+        MapId::RegionMap { rid }
     }
 }
 

@@ -2,6 +2,7 @@
 use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::map::MapId;
+use common::gamedata::region::RegionId;
 use super::map;
 
 pub fn create_newgame() -> GameData {
@@ -9,13 +10,11 @@ pub fn create_newgame() -> GameData {
 
     super::region::add_region(&mut gd, "!east-coast");
 
-    let mut mid = MapId::default();
-    mid.is_region_map = true;
-    mid.sid.kind = ::common::gamedata::site::SiteKind::AutoGenDungeon;
+    let mut mid = MapId::RegionMap { rid: RegionId::default() };
     gd.set_current_mapid(mid);
     let start_pos = gd.get_current_map().entrance;
 
-    super::region::gen_dungeon(&mut gd, mid.sid.rid);
+    super::region::gen_dungeon(&mut gd, mid.rid());
 
     let mut chara = gamedata::chara::Chara::default();
     chara.params.spd = 100;
@@ -27,6 +26,7 @@ pub fn create_newgame() -> GameData {
     let equip = gamedata::item::EquipItemList::new(slots);
     chara.equip = equip;
     gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
+    /*
     /* Test code for talk */
     let mut chara = super::chara::creation::create_npc_chara(
         ::common::gamedata::site::DungeonKind::Cave, 10);
@@ -40,6 +40,7 @@ pub fn create_newgame() -> GameData {
 
     map::gen_npcs(&mut gd, mid, 10, 10);
     map::gen_items(&mut gd, mid);
+    */
 
     gd
 }

@@ -71,9 +71,9 @@ impl Window for FloorInfo {
 
         if self.mid != Some(current_mid) {
             self.mid = Some(current_mid);
-            if !current_mid.is_region_map {
-                let site = game.gd.region.get_site(current_mid.sid);
-                let s = format!("{} ({})", site.name, current_mid.floor + 1);
+            if !current_mid.is_region_map() {
+                let site = game.gd.region.get_site(current_mid.sid());
+                let s = format!("{} ({})", site.name, current_mid.floor() + 1);
                 self.label.set_text(&s);
             }
         }

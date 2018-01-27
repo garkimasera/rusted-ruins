@@ -45,6 +45,14 @@ impl RegionHolder {
     pub fn get_mut(&mut self, rid: RegionId) -> &mut Region {
         self.0.get_mut(&rid).expect(&super::unknown_id_err(rid))
     }
+
+    pub fn get_checked(&self, rid: RegionId) -> Option<&Region> {
+        self.0.get(&rid)
+    }
+
+    pub fn get_mut_checked(&mut self, rid: RegionId) -> Option<&mut Region> {
+        self.0.get_mut(&rid)
+    }
     
     pub fn get_site(&self, sid: SiteId) -> &Site {
         let region = self.0.get(&sid.rid).expect(&super::unknown_id_err(sid.rid));
@@ -62,18 +70,16 @@ impl RegionHolder {
     }
 
     pub fn get_map(&self, mid: MapId) -> &Map {
-        if mid.is_region_map {
-            &self.get(mid.sid.rid).map
-        } else {
-            self.get_site(mid.sid).get_map(mid.floor)
+        match mid {
+            MapId::SiteMap { sid, floor } => { self.get_site(sid).get_map(floor) }
+            MapId::RegionMap { rid } => { &self.get(rid).map }
         }
     }
 
     pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
-        if mid.is_region_map {
-            &mut self.get_mut(mid.sid.rid).map
-        } else {
-            self.get_site_mut(mid.sid).get_map_mut(mid.floor)
+        match mid {
+            MapId::SiteMap { sid, floor } => { self.get_site_mut(sid).get_map_mut(floor) }
+            MapId::RegionMap { rid } => { &mut self.get_mut(rid).map }
         }
     }
 
@@ -88,13 +94,39 @@ impl RegionHolder {
     }
 
     pub fn get_map_checked(&self, mid: MapId) -> Option<&Map> {
-        let site = self.get_site_checked(mid.sid)?;
-        site.get_map_checked(mid.floor)
+        match mid {
+            MapId::SiteMap { sid, floor } => {
+                let site = self.get_site_checked(sid)?;
+                site.get_map_checked(floor)
+            }
+            MapId::RegionMap { rid } => {
+                Some(&self.get_checked(rid)?.map)
+            }
+        }
     }
 
-    pub fn get_map_checked_mut(&mut self, mid: MapId) -> Option<&mut Map> {
-        let site = self.get_site_mut_checked(mid.sid)?;
-        site.get_map_mut_checked(mid.floor)
+    pub fn get_map_checked_mut(&self, mid: MapId) -> Option<&Map> {
+        match mid {
+            MapId::SiteMap { sid, floor } => {
+                let site = self.get_site_checked(sid)?;
+                site.get_map_checked(floor)
+            }
+            MapId::RegionMap { rid } => {
+                Some(&self.get_checked(rid)?.map)
+            }
+        }
+    }
+
+    pub fn get_map_mut_checked(&mut self, mid: MapId) -> Option<&mut Map> {
+        match mid {
+            MapId::SiteMap { sid, floor } => {
+                let site = self.get_site_mut_checked(sid)?;
+                site.get_map_mut_checked(floor)
+            }
+            MapId::RegionMap { rid } => {
+                Some(&mut self.get_mut_checked(rid)?.map)
+            }
+        }
     }
 
     pub fn add_region(&mut self, mut region: Region) -> RegionId {

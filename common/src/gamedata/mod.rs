@@ -44,15 +44,15 @@ impl GameData {
 
     pub fn get_current_region_id(&self) -> RegionId {
         let mapid = self.get_current_mapid();
-        mapid.sid.rid
+        mapid.rid()
     }
 
     pub fn get_current_region(&self) -> &Region {
-        self.region.get(self.current_mapid.sid.rid)
+        self.region.get(self.current_mapid.rid())
     }
 
     pub fn get_current_region_mut(&mut self) -> &mut Region {
-        self.region.get_mut(self.current_mapid.sid.rid)
+        self.region.get_mut(self.current_mapid.rid())
     }
 
     pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {
@@ -106,7 +106,7 @@ impl GameData {
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
         let site = self.region.get_site_mut(sid);
         let floor = site.add_map(map);
-        MapId { sid, floor, is_region_map: false }
+        MapId::SiteMap { sid, floor }
     }
 
     pub fn set_current_mapid(&mut self, mid: MapId) {

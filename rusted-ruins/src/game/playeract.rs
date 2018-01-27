@@ -79,14 +79,14 @@ impl<'a> DoPlayerAction<'a> {
                 match *special_tile_kind {
                     SpecialTileKind::Stairs { dest_floor, .. } => { // Use stairs on map
                         if dest_floor == FLOOR_OUTSIDE {
-                            MapId::from(mid.sid.rid)
+                            MapId::from(mid.rid())
                         } else {
                             mid.set_floor(dest_floor)
                         }
                     }
                     SpecialTileKind::SiteSymbol { .. } => { // Enter other site from region map
                         let pos = gd.player_pos();
-                        let region = gd.region.get(mid.sid.rid);
+                        let region = gd.region.get(mid.rid());
                         if let Some(sid) = region.get_id_by_pos(pos) {
                             MapId::site_first_floor(sid)
                         } else {
