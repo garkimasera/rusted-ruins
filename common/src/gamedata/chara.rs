@@ -80,6 +80,8 @@ pub struct CharaParams {
     pub cha: u32,
     /// Speed
     pub spd: u32,
+    /// Range of view in tile
+    pub view_range: i32,
 }
 
 /// Character base parameters
