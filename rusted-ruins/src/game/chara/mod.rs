@@ -5,6 +5,7 @@ use super::Game;
 use super::combat::DamageKind;
 use common::gamedata::GameData;
 use common::gamedata::chara::{Chara, CharaId};
+use rules::RULES;
 
 pub fn damage(game: &mut Game, target: CharaId, damage: i32, damage_kind: DamageKind) {
     let t = game.gd.chara.get_mut(target);
@@ -34,5 +35,6 @@ pub fn update_params(chara: &mut Chara) {
     chara.params.wil = chara.base_params.wil;
     chara.params.cha = chara.base_params.cha;
     chara.params.spd = chara.base_params.spd;
+    chara.params.view_range = RULES.chara.default_view_range;
 }
 

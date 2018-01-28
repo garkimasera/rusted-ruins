@@ -10,6 +10,7 @@ extern crate serde_json;
 extern crate rusted_ruins_common as common;
 
 pub mod dungeon_gen;
+pub mod chara;
 pub mod charagen;
 
 use std::path::{Path, PathBuf};
@@ -20,6 +21,7 @@ use serde::de::Deserialize;
 /// Contain game rules
 pub struct Rules {
     pub dungeon_gen: dungeon_gen::DungeonGen,
+    pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
 }
 
@@ -27,7 +29,8 @@ impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
         Rules {
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
-            chara_gen: read_from_json(&rules_dir.join("charagen.json")),
+            chara:       read_from_json(&rules_dir.join("chara.json")),
+            chara_gen:   read_from_json(&rules_dir.join("charagen.json")),
         }
     }
 }
