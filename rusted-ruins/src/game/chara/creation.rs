@@ -13,8 +13,19 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
 
     let max_hp = ct.max_hp;
 
-    let params = CharaParams {
+    let base_params = CharaBaseParams {
         level: 1,
+        max_hp: max_hp,
+        str: ct.str,
+        vit: ct.vit,
+        dex: ct.dex,
+        int: ct.int,
+        wil: ct.wil,
+        cha: ct.cha,
+        spd: ct.spd,
+    };
+
+    let params = CharaParams {
         max_hp: max_hp,
         str: ct.str,
         vit: ct.vit,
@@ -28,6 +39,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
     let chara = Chara {
         name: text::obj_txt(&ct.id).to_owned(),
         params: params,
+        base_params: base_params,
         template: chara_template_idx,
         item_list: ItemList::for_chara(),
         equip: EquipItemList::new(&[]),

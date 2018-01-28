@@ -45,6 +45,7 @@ impl Relationship {
 pub struct Chara {
     pub name: String,
     pub params: CharaParams,
+    pub base_params: CharaBaseParams,
     pub template: CharaTemplateIdx,
     pub item_list: ItemList,
     pub equip: EquipItemList,
@@ -58,9 +59,11 @@ pub struct Chara {
     pub talk: Option<CharaTalk>,
 }
 
-#[derive(Serialize, Deserialize)]
+/// Character parameters
+/// These values are calculated from base params and other factors
+/// They are updated by some actions
+#[derive(Serialize, Deserialize, Default)]
 pub struct CharaParams {
-    pub level: u32,
     /// Max HP
     pub max_hp: i32,
     /// Strength
@@ -76,6 +79,21 @@ pub struct CharaParams {
     /// Charisma
     pub cha: u32,
     /// Speed
+    pub spd: u32,
+}
+
+/// Character base parameters
+#[derive(Serialize, Deserialize, Default)]
+pub struct CharaBaseParams {
+    /// Character level
+    pub level: u32,
+    pub max_hp: i32,
+    pub str: u32,
+    pub vit: u32,
+    pub dex: u32,
+    pub int: u32,
+    pub wil: u32,
+    pub cha: u32,
     pub spd: u32,
 }
 
@@ -95,6 +113,7 @@ impl Default for Chara {
         Chara {
             name: "Unknown".to_owned(),
             params: CharaParams::default(),
+            base_params: CharaBaseParams::default(),
             template: CharaTemplateIdx(0),
             item_list: ItemList::for_chara(),
             equip: EquipItemList::new(&[]),
@@ -103,22 +122,6 @@ impl Default for Chara {
             rel: Relationship::NEUTRAL,
             trigger: None,
             talk: None,
-        }
-    }
-}
-
-impl Default for CharaParams {
-    fn default() -> CharaParams {
-        CharaParams {
-            level: 0,
-            max_hp: 100,
-            str: 0,
-            vit: 0,
-            dex: 0,
-            int: 0,
-            wil: 0,
-            cha: 0,
-            spd: 100,
         }
     }
 }
