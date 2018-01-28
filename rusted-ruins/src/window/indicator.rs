@@ -71,10 +71,15 @@ impl Window for FloorInfo {
 
         if self.mid != Some(current_mid) {
             self.mid = Some(current_mid);
-            if !current_mid.is_region_map() {
-                let site = game.gd.region.get_site(current_mid.sid());
-                let s = format!("{} ({})", site.name, current_mid.floor() + 1);
-                self.label.set_text(&s);
+            match current_mid {
+                MapId::SiteMap { sid, floor }=> {
+                    let site = game.gd.region.get_site(sid);
+                    self.label.set_text(&format!("{} ({})", site.name, floor + 1));
+                }
+                MapId::RegionMap { rid } => {
+                    let region = game.gd.region.get(rid);
+                    self.label.set_text(&format!("{}", region.name))
+                }
             }
         }
         
