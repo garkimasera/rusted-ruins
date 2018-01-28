@@ -24,21 +24,10 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         cha: ct.cha,
         spd: ct.spd,
     };
-
-    let params = CharaParams {
-        max_hp: max_hp,
-        str: ct.str,
-        vit: ct.vit,
-        dex: ct.dex,
-        int: ct.int,
-        wil: ct.wil,
-        cha: ct.cha,
-        spd: ct.spd,
-    };
     
-    let chara = Chara {
+    let mut chara = Chara {
         name: text::obj_txt(&ct.id).to_owned(),
-        params: params,
+        params: CharaParams::default(),
         base_params: base_params,
         template: chara_template_idx,
         item_list: ItemList::for_chara(),
@@ -49,6 +38,8 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         trigger: None,
         talk: None,
     };
+    super::update_params(&mut chara);
+    chara.hp = chara.base_params.max_hp;
     chara
 }
 
