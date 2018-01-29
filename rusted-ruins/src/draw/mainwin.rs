@@ -7,10 +7,13 @@ use common::basic::{TILE_SIZE, TILE_SIZE_I};
 use common::objholder::Holder;
 use common::obj::*;
 use common::gobj;
+use common::gamedata::GameData;
 use common::gamedata::map::Map;
 use common::gamedata::chara::CharaId;
 use game::{Game, Animation, InfoGetter};
 use sdlvalues::SdlValues;
+use super::tile_getter::*;
+use super::frame::calc_frame;
 
 pub struct MainWinDrawer {
     rect: Rect,
@@ -72,134 +75,94 @@ impl MainWinDrawer {
         let is_player_moving = player_move_adjust != (0, 0);
 
         let player_drawing_row = player_pos.1 + if let Some(dir) = player_move_dir {
-            if dir.vdir == VDirection::Up { 1 }else{ 0 }
+            match dir.vdir {
+                VDirection::Up | VDirection::None => 0,
+                VDirection::Down => -1,
+            }
         }else{ 0 };
         
         let tile_range = self.tile_range();
 
-        // Draw ground and special objs for the first row
-        let top_row = tile_range.iter1().next().unwrap();
-        for nx in tile_range.iter0() {
-            let p = Vec2d::new(nx, top_row);
-            self.draw_tile_ground(canvas, map, sv, p);
-            self.draw_tile_special(canvas, map, sv, p);
-        }
-
+        // Draw background parts
         for ny in tile_range.iter1() {
-            // Draw ground and special objs for the next row
-            for nx in tile_range.iter0() {
-                let p = Vec2d::new(nx, ny + 1);
-                self.draw_tile_ground(canvas, map, sv, p);
-                self.draw_tile_special(canvas, map, sv, p);
-                self.draw_item(canvas, map, sv, p);
-            }
-
-            // Draw player when moving
-            if is_player_moving && ny == player_drawing_row {
-                let chara = gd.chara.get(CharaId::Player);
-                let ct = gobj::get_obj(chara.template);
-                let src = Rect::from(ct.img_rect());
-                let dest = self.centering_at_tile(src, player_pos,
-                                                  -player_move_adjust.0, -player_move_adjust.1);
-                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
-            }
-
             for nx in tile_range.iter0() {
                 let p = Vec2d::new(nx, ny);
-                
-                // Draw wall
-                self.draw_tile_wall(canvas, map, sv, p);
+                self.draw_background_parts(canvas, map, sv, p);
+            }
+        }
 
-                if !map.is_inside(p) { continue; }
+        // Draw foreground parts
+        for ny in tile_range.iter1() {
+            for nx in tile_range.iter0() {
+                let p = Vec2d::new(nx, ny);
+                self.draw_foreground_parts(canvas, map, sv, p, gd, is_player_moving, player_move_adjust);
 
-                // Draw character on the tile
-                if let Some(chara_id) = map.get_chara(p) {
-                    let chara = gd.chara.get(chara_id);
+                // Draw player during moving animation
+                if is_player_moving && ny == player_drawing_row {
+                    let chara = gd.chara.get(CharaId::Player);
                     let ct = gobj::get_obj(chara.template);
                     let src = Rect::from(ct.img_rect());
-                    
-                    if chara_id == CharaId::Player && is_player_moving {
-                        continue;
-                    };
-                    
-                    let dest = if chara_id == CharaId::Player {
-                        self.centering_at_tile(src, p, -player_move_adjust.0, -player_move_adjust.1)
-                    }else{
-                        self.centering_at_tile(src, p, 0, 0)
-                    };
+                    let dest = self.centering_at_tile(src, player_pos,
+                                                      -player_move_adjust.0, -player_move_adjust.1);
                     canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
                 }
             }
         }
     }
 
-    /// Draw tile ground
-    /// Decoration will be drawed at the same time
-    fn draw_tile_ground(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        let tile_idx = map.get_tile_extrapolated(p);
-        let o = gobj::get_obj(tile_idx);
-        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = Rect::new(
-            p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-            TILE_SIZE, TILE_SIZE);
-        let texture = sv.tex().get(tile_idx);
-        check_draw!(canvas.copy(&texture, src, dest));
+    /// Draw tile background parts
+    fn draw_background_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
+        let di = BackgroundDrawInfo::new(map, p);
 
-        self.draw_tile_wall_background(canvas, map, sv, p);
-        self.draw_tile_deco(canvas, map, sv, p);
+        if let Some(tile_idx) = di.tile { // Draw base tile
+            let o = gobj::get_obj(tile_idx);
+            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
+            let dest = Rect::new(
+                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
+                TILE_SIZE, TILE_SIZE);
+            let texture = sv.tex().get(tile_idx);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
+        if let Some(deco_idx) = di.deco { // Draw deco
+            let o = gobj::get_obj(deco_idx);
+            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            let texture = sv.tex().get(deco_idx);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
+        if let Some(wall_idx) = di.wall { // Draw wall
+            let o = gobj::get_obj(wall_idx);
+            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            let texture = sv.tex().get(wall_idx);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
+        if let Some(special_tile_idx) = di.special { // Draw tile special
+            let texture = sv.tex().get(special_tile_idx);
+            let query = texture.query();
+            let src = Rect::new(0, 0, query.width, query.height);
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
     }
 
-    fn draw_tile_wall(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
-        let o = gobj::get_obj(wall_idx);
-        if o.always_background { return; }
-        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = self.bottom_at_tile(src, p, 0, 0);
-        let texture = sv.tex().get(wall_idx);
-        check_draw!(canvas.copy(&texture, src, dest));
-    }
-
-    /// Draw wall if always_background is true
-    fn draw_tile_wall_background(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        let wall_idx = if let Some(wall_idx) = map.get_wall_extrapolated(p) { wall_idx } else { return; };
-        let o = gobj::get_obj(wall_idx);
-        if !o.always_background { return; }
-        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = self.bottom_at_tile(src, p, 0, 0);
-        let texture = sv.tex().get(wall_idx);
-        check_draw!(canvas.copy(&texture, src, dest));
+    // Draw tile foreground parts
+    fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d,
+                             gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
+        let di = ForegroundDrawInfo::new(map, p);
         
-    }
+        if let Some(wall_idx) = di.wall { // Draw wall
+            let o = gobj::get_obj(wall_idx);
+            let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            let texture = sv.tex().get(wall_idx);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
 
-    fn draw_tile_deco(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        let deco_idx = if let Some(deco_idx) = map.get_deco_extrapolated(p) { deco_idx } else { return; };
-        let o = gobj::get_obj(deco_idx);
-        let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-        let dest = self.bottom_at_tile(src, p, 0, 0);
-        let texture = sv.tex().get(deco_idx);
-        check_draw!(canvas.copy(&texture, src, dest));
-    }
-
-    fn draw_tile_special(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        use common::objholder::SpecialTileIdx;
-        if !map.is_inside(p) { return; }
-        let special_tile_id = map.tile[p].special.obj_id();
-        if special_tile_id.is_none() { return; }
-        let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id.unwrap());
-        let texture = sv.tex().get(special_tile_idx);
-        let query = texture.query();
-        let src = Rect::new(0, 0, query.width, query.height);
-        let dest = self.bottom_at_tile(src, p, 0, 0);
-        
-        check_draw!(canvas.copy(&texture, src, dest));
-    }
-
-    fn draw_item(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
-        if !map.is_inside(p) { return; }
-        if map.tile[p].item_list.is_none() { return; }
-
-        for &(ref item, _) in map.tile[p].item_list.as_ref().unwrap().iter() {
-            let texture = sv.tex().get(item.idx);
+        // Draw items
+        for i in 0..di.n_item {
+            let item_idx = di.items[i];
+            let texture = sv.tex().get(item_idx);
 
             let query = texture.query();
             let src = Rect::new(0, 0, query.width, query.height);
@@ -207,7 +170,22 @@ impl MainWinDrawer {
         
             check_draw!(canvas.copy(&texture, src, dest));
         }
-        
+
+        // Draw character on the tile
+        if let Some(chara_id) = di.chara {
+            let chara = gd.chara.get(chara_id);
+            let ct = gobj::get_obj(chara.template);
+            let src = Rect::from(ct.img_rect());
+            
+            if !(chara_id == CharaId::Player && is_player_moving) {
+                let dest = if chara_id == CharaId::Player {
+                    self.centering_at_tile(src, p, -player_move_adjust.0, -player_move_adjust.1)
+                }else{
+                    self.centering_at_tile(src, p, 0, 0)
+                };
+                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
+            }
+        }
     }
 
     fn draw_anim(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &SdlValues,
@@ -266,7 +244,7 @@ impl MainWinDrawer {
             tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
             src.w as u32, src.h as u32
         )
-    }
+    }    
 
     /// Calculate the number of needed tile to fill screen
     fn calc_tile_num(&self) -> (i32, i32) {
