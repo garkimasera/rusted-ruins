@@ -55,9 +55,15 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
 
 fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> {
     let img = get_optional_field!(tomlinput, image);
+    let always_background = if let Some(special_tile) = tomlinput.special_tile {
+        special_tile.always_background.unwrap_or(false)
+    } else {
+        false
+    };
     
     Ok(SpecialTileObject {
         id: tomlinput.id,
+        always_background: always_background,
         img: build_img(img)?,
     })
 }

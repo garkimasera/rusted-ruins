@@ -13,6 +13,7 @@ pub struct TomlInput {
     pub item: Option<ItemDepInput>,
     pub tile: Option<TileDepInput>,
     pub wall: Option<WallDepInput>,
+    pub special_tile: Option<SpecialTileDepInput>,
     pub talk_script: Option<TalkScriptDepInput>,
 }
 
@@ -67,6 +68,11 @@ pub struct TileDepInput {
 #[derive(Debug, Deserialize)]
 pub struct WallDepInput {
     pub base_draw: Option<bool>,
+    pub always_background: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SpecialTileDepInput {
     pub always_background: Option<bool>,
 }
 

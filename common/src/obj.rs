@@ -57,6 +57,7 @@ pub struct DecoObject {
 #[derive(Serialize, Deserialize)]
 pub struct SpecialTileObject {
     pub id: String,
+    pub always_background: bool,
     pub img: Img,
 }
 

@@ -150,7 +150,14 @@ impl MainWinDrawer {
     fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d,
                              gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
         let di = ForegroundDrawInfo::new(map, p);
-        
+
+        if let Some(special_tile_idx) = di.special { // Draw tile special
+            let texture = sv.tex().get(special_tile_idx);
+            let query = texture.query();
+            let src = Rect::new(0, 0, query.width, query.height);
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            check_draw!(canvas.copy(&texture, src, dest));
+        }
         if let Some(wall_idx) = di.wall { // Draw wall
             let o = gobj::get_obj(wall_idx);
             let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));

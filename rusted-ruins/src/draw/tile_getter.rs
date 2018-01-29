@@ -4,6 +4,7 @@ use common::objholder::*;
 use common::gamedata::map::Map;
 use common::gamedata::chara::CharaId;
 use common::gobj;
+use common::obj::SpecialTileObject;
 
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
@@ -47,8 +48,11 @@ impl BackgroundDrawInfo {
 
         if map.is_inside(pos) {
             if let Some(special_tile_id) = map.tile[pos].special.obj_id() {
-                let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
-                di.special = Some(special_tile_idx);
+                let special_tile_obj: &'static SpecialTileObject = gobj::get_by_id(special_tile_id);
+                if special_tile_obj.always_background {
+                    let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
+                    di.special = Some(special_tile_idx);
+                }
             }
         }
         
@@ -65,6 +69,7 @@ pub const MAX_ITEM_FOR_DRAW: usize = 5;
 /// whose are on the prev row
 #[derive(Default)]
 pub struct ForegroundDrawInfo {
+    pub special: Option<SpecialTileIdx>,
     pub wall: Option<WallIdx>,
     pub n_item: usize,
     pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
@@ -74,6 +79,16 @@ pub struct ForegroundDrawInfo {
 impl ForegroundDrawInfo {
     pub fn new(map: &Map, pos: Vec2d) -> ForegroundDrawInfo {
         let mut di = ForegroundDrawInfo::default();
+
+        if map.is_inside(pos) {
+            if let Some(special_tile_id) = map.tile[pos].special.obj_id() {
+                let special_tile_obj: &'static SpecialTileObject = gobj::get_by_id(special_tile_id);
+                if !special_tile_obj.always_background {
+                    let special_tile_idx: SpecialTileIdx = gobj::id_to_idx(special_tile_id);
+                    di.special = Some(special_tile_idx);
+                }
+            }
+        }
 
         let wall = if map.is_inside(pos) {
             let tinfo = &map.tile[pos];
