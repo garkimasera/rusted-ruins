@@ -71,6 +71,16 @@ impl MainWinDrawer {
         let gd = &game.gd;
         let map = gd.get_current_map();
         let player_pos = gd.player_pos();
+        let prev_player_pos: Option<Vec2d> = if let Some(dir) = player_move_dir {
+            Some(player_pos - dir.as_vec())
+        } else {
+            None
+        };
+        let prev_player_pos_one_back_side = if let Some(prev_player_pos) = prev_player_pos {
+            Some(prev_player_pos + (0, -1))
+        } else {
+            None
+        };
         
         let is_player_moving = player_move_adjust != (0, 0);
 
@@ -91,21 +101,38 @@ impl MainWinDrawer {
             }
         }
 
+        let player_pos_one_back_side = player_pos + (0, -1);
+
         // Draw foreground parts
         for ny in tile_range.iter1() {
             for nx in tile_range.iter0() {
                 let p = Vec2d::new(nx, ny);
-                self.draw_foreground_parts(canvas, map, sv, p, gd, is_player_moving, player_move_adjust);
 
-                // Draw player during moving animation
-                if is_player_moving && ny == player_drawing_row {
-                    let chara = gd.chara.get(CharaId::Player);
-                    let ct = gobj::get_obj(chara.template);
-                    let src = Rect::from(ct.img_rect());
-                    let dest = self.centering_at_tile(src, player_pos,
-                                                      -player_move_adjust.0, -player_move_adjust.1);
-                    canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
+                // Control the order of drawing foreground parts
+                // because foreground parts on player's original or destination tiles
+                // are drawed before player character drawing.
+                // It is needed to make the graphic order more natural
+                if !is_player_moving || (p != player_pos && Some(p) != prev_player_pos){
+                    self.draw_foreground_parts(
+                        canvas, map, sv, p, gd, is_player_moving, player_move_adjust);
                 }
+                if is_player_moving && p == player_pos_one_back_side {
+                    self.draw_foreground_parts(
+                        canvas, map, sv, player_pos, gd, is_player_moving, player_move_adjust);
+                }
+                if prev_player_pos_one_back_side == Some(p) {
+                    self.draw_foreground_parts(
+                        canvas, map, sv, p + (0, 1), gd, is_player_moving, player_move_adjust);
+                }
+            }
+            // Draw player during moving animation
+            if is_player_moving && ny == player_drawing_row {
+                let chara = gd.chara.get(CharaId::Player);
+                let ct = gobj::get_obj(chara.template);
+                let src = Rect::from(ct.img_rect());
+                let dest = self.centering_at_tile(src, player_pos,
+                                                  -player_move_adjust.0, -player_move_adjust.1);
+                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
             }
         }
     }
