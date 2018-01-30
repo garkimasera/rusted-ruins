@@ -126,6 +126,18 @@ impl Map {
         }
     }
 
+    pub fn width(&self) -> u32 {
+        self.w
+    }
+
+    pub fn height(&self) -> u32 {
+        self.h
+    }
+
+    pub fn size(&self) -> (u32, u32) {
+        (self.w, self.h)
+    }
+
     pub fn get_chara<T: Into<Vec2d>>(&self, pos: T) -> Option<CharaId> {
         let pos = pos.into();
         if !self.is_inside(pos) { return None; }
