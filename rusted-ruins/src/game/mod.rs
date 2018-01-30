@@ -14,6 +14,7 @@ mod newgame;
 mod combat;
 mod turnloop;
 pub mod talk;
+pub mod view;
 
 use std::collections::VecDeque;
 use common::gamedata;
@@ -40,6 +41,7 @@ pub struct Game {
     anim_queue: VecDeque<Animation>,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
+    view_map: view::ViewMap,
 }
 
 impl Game {
@@ -52,6 +54,7 @@ impl Game {
             anim_queue: VecDeque::new(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            view_map: view::ViewMap::new(),
         };
         
         game
@@ -65,6 +68,7 @@ impl Game {
             anim_queue: VecDeque::new(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            view_map: view::ViewMap::new(),
         }
     }
 
