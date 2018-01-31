@@ -54,6 +54,7 @@ pub fn turn_loop(game: &mut Game) {
         // If player's wait time becomes 0, player turn now.
         if decrease_wait_time(&mut game.gd.chara.get_mut(CharaId::Player)) {
             game.state = GameState::PlayerTurn;
+            game.update_before_player_turn();
             break;
         }
     }

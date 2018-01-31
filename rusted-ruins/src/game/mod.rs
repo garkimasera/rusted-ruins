@@ -81,6 +81,11 @@ impl Game {
         turnloop::turn_loop(self);
     }
 
+    /// Update some parameters before starting player's turn
+    pub fn update_before_player_turn(&mut self) {
+        view::update_view_map(self);
+    }
+
     pub fn finish_player_turn(&mut self) {
         assert!(self.state == GameState::PlayerTurn);
         self.state = GameState::WaitingForNextTurn;
