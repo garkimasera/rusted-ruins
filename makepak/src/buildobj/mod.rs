@@ -20,6 +20,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         "deco" => {
             return build_deco_object(tomlinput).map(|o| Object::Deco(o));
         }
+        "effect" => {
+            return build_effect_object(tomlinput).map(|o| Object::Effect(o));
+        }
         "item" => {
             return build_item_object(tomlinput).map(|o| Object::Item(o));
         }
@@ -48,6 +51,15 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
     let img = get_optional_field!(tomlinput, image);
     
     Ok(DecoObject {
+        id: tomlinput.id,
+        img: build_img(img)?,
+    })
+}
+
+fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject> {
+    let img = get_optional_field!(tomlinput, image);
+    
+    Ok(EffectObject {
         id: tomlinput.id,
         img: build_img(img)?,
     })

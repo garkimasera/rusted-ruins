@@ -12,6 +12,7 @@ pub enum Object {
     AnimImg(AnimImgObject),
     CharaTemplate(CharaTemplateObject),
     Deco(DecoObject),
+    Effect(EffectObject),
     Item(ItemObject),
     SpecialTile(SpecialTileObject),
     Tile(TileObject),
@@ -50,6 +51,12 @@ pub struct CharaTemplateObject {
 
 #[derive(Serialize, Deserialize)]
 pub struct DecoObject {
+    pub id: String,
+    pub img: Img,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct EffectObject {
     pub id: String,
     pub img: Img,
 }
@@ -138,7 +145,8 @@ macro_rules! impl_object {
 }
 
 impl_object!(
-    AnimImgObject, CharaTemplateObject, DecoObject, ItemObject, SpecialTileObject, TileObject,
+    AnimImgObject, CharaTemplateObject, DecoObject, EffectObject,
+    ItemObject, SpecialTileObject, TileObject,
     UIImgObject, WallObject,
     MapTemplateObject, TalkScriptObject
 );
@@ -149,6 +157,7 @@ impl Object {
             Object::AnimImg(ref o) => &o.id,
             Object::CharaTemplate(ref o) => &o.id,
             Object::Deco(ref o) => &o.id,
+            Object::Effect(ref o) => &o.id,
             Object::Item(ref o) => &o.id,
             Object::SpecialTile(ref o) => &o.id,
             Object::Tile(ref o) => &o.id,
