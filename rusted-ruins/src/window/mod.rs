@@ -278,6 +278,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
                         let game = Game::new();
                         self.game = game;
+                        self.game.update_before_player_turn();
                     }
                     // Load game from saved data
                     self::startwindow::START_DIALOG_RESULT_LOADGAME => {
