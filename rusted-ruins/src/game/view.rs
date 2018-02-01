@@ -57,6 +57,7 @@ pub fn update_view_map(game: &mut Game) {
     let player_view_range = game.gd.chara.get(CharaId::Player).params.view_range;
 
     for (_, pos) in MDistRangeIter::new(player_pos, player_view_range) {
+        if !map.is_inside(pos) { continue; }
         view_map.visible[pos] = true;
     }
 }
