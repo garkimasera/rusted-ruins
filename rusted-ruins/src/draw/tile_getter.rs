@@ -5,6 +5,7 @@ use common::gamedata::map::Map;
 use common::gamedata::chara::CharaId;
 use common::gobj;
 use common::obj::SpecialTileObject;
+use game::view::ViewMap;
 
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
@@ -125,5 +126,22 @@ impl ForegroundDrawInfo {
         di
     }
 
+}
+
+#[derive(Default)]
+pub struct EffectDrawInfo {
+    pub fog: Option<EffectIdx>
+}
+
+impl EffectDrawInfo {
+    pub fn new(view_map: &ViewMap, pos: Vec2d) -> EffectDrawInfo {
+        let mut di = EffectDrawInfo::default();
+
+        if !view_map.get_tile_visible(pos) {
+            di.fog = Some(EffectIdx(0));
+        }
+
+        di
+    }
 }
 

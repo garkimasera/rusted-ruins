@@ -11,6 +11,7 @@ use common::gamedata::GameData;
 use common::gamedata::map::Map;
 use common::gamedata::chara::CharaId;
 use game::{Game, Animation, InfoGetter};
+use game::view::ViewMap;
 use sdlvalues::SdlValues;
 use super::tile_getter::*;
 use super::frame::calc_frame;
@@ -132,6 +133,10 @@ impl MainWinDrawer {
                 canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
             }
         }
+        // Draw background parts
+        for p in tile_range {
+            self.draw_effect_filter(canvas, &game.view_map, sv, p);
+        }
     }
 
     /// Draw tile background parts
@@ -170,7 +175,7 @@ impl MainWinDrawer {
         }
     }
 
-    // Draw tile foreground parts
+    /// Draw tile foreground parts
     fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d,
                              gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
         let di = ForegroundDrawInfo::new(map, p);
@@ -214,8 +219,24 @@ impl MainWinDrawer {
                 }else{
                     self.centering_at_tile(src, p, 0, 0)
                 };
-                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
+                check_draw!(canvas.copy(sv.tex().get(chara.template), src, dest));
             }
+        }
+    }
+
+    /// Draw effect filter for tile
+    fn draw_effect_filter(&self, canvas: &mut WindowCanvas, view_map: &ViewMap,
+                             sv: &SdlValues, p: Vec2d) {
+        let di = EffectDrawInfo::new(view_map, p);
+        
+        if let Some(fog_idx) = di.fog {
+            let o = gobj::get_obj(fog_idx);
+            let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
+            let dest = Rect::new(
+                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
+                TILE_SIZE, TILE_SIZE);
+            let texture = sv.tex().get(fog_idx);
+            check_draw!(canvas.copy(&texture, src, dest));
         }
     }
 

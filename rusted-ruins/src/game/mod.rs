@@ -41,7 +41,7 @@ pub struct Game {
     anim_queue: VecDeque<Animation>,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
-    view_map: view::ViewMap,
+    pub view_map: view::ViewMap,
 }
 
 impl Game {

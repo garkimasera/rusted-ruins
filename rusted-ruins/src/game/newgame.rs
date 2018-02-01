@@ -16,9 +16,10 @@ pub fn create_newgame() -> GameData {
     super::region::gen_dungeon(&mut gd, mid.rid());
 
     let mut chara = gamedata::chara::Chara::default();
-    chara.params.spd = 100;
-    chara.params.str = 25;
+    chara.base_params.spd = 100;
+    chara.base_params.str = 25;
     chara.rel = gamedata::chara::Relationship::ALLY;
+    super::chara::update_params(&mut chara);
     /* Test code for equipment */
     use common::gamedata::chara::Race;
     let slots = &::rules::RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
