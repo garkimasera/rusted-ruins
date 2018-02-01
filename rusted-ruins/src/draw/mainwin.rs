@@ -94,11 +94,8 @@ impl MainWinDrawer {
         let tile_range = self.tile_range();
 
         // Draw background parts
-        for ny in tile_range.iter1() {
-            for nx in tile_range.iter0() {
-                let p = Vec2d::new(nx, ny);
-                self.draw_background_parts(canvas, map, sv, p);
-            }
+        for p in tile_range.clone() {
+            self.draw_background_parts(canvas, map, sv, p);
         }
 
         let player_pos_one_back_side = player_pos + (0, -1);
