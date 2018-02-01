@@ -3,11 +3,13 @@ pub mod builder;
 pub mod from_template;
 
 use array2d::Vec2d;
+use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::GameData;
 use common::gamedata::map::{Map, MapId};
 use common::gamedata::chara::CharaId;
 use common::gamedata::site::{SiteContent, DungeonKind};
 use common::gamedata::item::ItemList;
+use super::Game;
 use super::chara::creation::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
@@ -104,5 +106,30 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
         }
     }
     
+}
+
+pub fn update_observed_map(game: &mut Game) {
+    let view_map = &game.view_map;
+    let map = game.gd.get_current_map_mut();
+
+    for p in map.tile.iter_idx() {
+        if !view_map.get_tile_visible(p) { continue; }
+
+        let tile = &map.tile[p];
+        let observed_tile = &mut map.observed_tile[p];
+
+        observed_tile.tile = Some(tile.tile);
+        observed_tile.wall = tile.wall;
+        observed_tile.deco = tile.deco;
+        observed_tile.special = tile.special;
+        observed_tile.n_item = 0;
+
+        if let Some(ref item_list) = tile.item_list {
+            for (i, &(ref item, _)) in item_list.iter().take(MAX_ITEM_FOR_DRAW).enumerate() {
+                observed_tile.items[i] = item.idx;
+                observed_tile.n_item += 1;
+            }
+        }
+    }
 }
 

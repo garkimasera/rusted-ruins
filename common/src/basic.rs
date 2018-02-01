@@ -32,3 +32,8 @@ pub const TALK_TXT_DIR: &'static str = "talk";
 
 /// The number of auto generated dungeons per region
 pub const MAX_AUTO_GEN_DUNGEONS: u32 = 20;
+
+/// If the number of items on one tile is more than this,
+/// remaining items will be not drawed.
+pub const MAX_ITEM_FOR_DRAW: usize = 5;
+

@@ -156,6 +156,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 start_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
             }
             WindowManageMode::OnGame(ref mut game_windows) => {
+                self.game.update_before_drawing();
                 game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
             }
         }

@@ -1,6 +1,7 @@
 
 use array2d::*;
 use objholder::*;
+use basic::MAX_ITEM_FOR_DRAW;
 use gamedata::item::ItemList;
 use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
@@ -11,6 +12,7 @@ pub struct Map {
     pub w: u32,
     pub h: u32,
     pub tile: Array2d<TileInfo>,
+    pub observed_tile: Array2d<ObservedTileInfo>,
     pub player_pos: Vec2d,
     pub entrance: Vec2d,
     /// Characters on this map
@@ -33,6 +35,13 @@ pub enum SpecialTileKind {
     /// Site symbol on region map
     SiteSymbol {
         kind: SiteSymbolKind,
+    }
+}
+
+impl Default for SpecialTileKind {
+    fn default() -> SpecialTileKind {
+        SpecialTileKind::None
+            
     }
 }
 
@@ -86,6 +95,18 @@ pub struct TileInfo {
     pub special: SpecialTileKind,
 }
 
+/// The data for map drawing
+/// These data will be updated every player turn based on player's view
+#[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
+pub struct ObservedTileInfo {
+    pub tile: Option<TileIdx>,
+    pub wall: Option<WallIdx>,
+    pub deco: Option<DecoIdx>,
+    pub n_item: usize,
+    pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
+    pub special: SpecialTileKind,
+}
+
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
     pub tile: TileIdx,
@@ -118,7 +139,9 @@ impl Default for TileInfo {
 impl Map {
     pub fn new(w: u32, h: u32) -> Map {
         Map {
-            w: w, h: h, tile: Array2d::new(w, h, TileInfo::default()),
+            w: w, h: h,
+            tile: Array2d::new(w, h, TileInfo::default()),
+            observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
             player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
             charaid: Vec::new(),
             outside_tile: None,

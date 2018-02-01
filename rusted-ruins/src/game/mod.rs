@@ -81,6 +81,11 @@ impl Game {
         turnloop::turn_loop(self);
     }
 
+    /// Update drawing data
+    pub fn update_before_drawing(&mut self) {
+        map::update_observed_map(self);
+    }
+
     /// Update some parameters before starting player's turn
     pub fn update_before_player_turn(&mut self) {
         view::update_view_map(self);
