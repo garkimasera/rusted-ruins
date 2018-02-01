@@ -71,6 +71,7 @@ impl MainWinDrawer {
 
         let gd = &game.gd;
         let map = gd.get_current_map();
+        let view_map = &game.view_map;
         let player_pos = gd.player_pos();
         let prev_player_pos: Option<Vec2d> = if let Some(dir) = player_move_dir {
             Some(player_pos - dir.as_vec())
@@ -112,15 +113,18 @@ impl MainWinDrawer {
                 // It is needed to make the graphic order more natural
                 if !is_player_moving || (p != player_pos && Some(p) != prev_player_pos){
                     self.draw_foreground_parts(
-                        canvas, map, sv, p, gd, is_player_moving, player_move_adjust);
+                        canvas, map, view_map, sv, p,
+                        gd, is_player_moving, player_move_adjust);
                 }
                 if is_player_moving && p == player_pos_one_back_side {
                     self.draw_foreground_parts(
-                        canvas, map, sv, player_pos, gd, is_player_moving, player_move_adjust);
+                        canvas, map, view_map, sv, player_pos,
+                        gd, is_player_moving, player_move_adjust);
                 }
                 if prev_player_pos_one_back_side == Some(p) {
                     self.draw_foreground_parts(
-                        canvas, map, sv, p + (0, 1), gd, is_player_moving, player_move_adjust);
+                        canvas, map, view_map, sv, p + (0, 1),
+                        gd, is_player_moving, player_move_adjust);
                 }
             }
             // Draw player during moving animation
@@ -176,9 +180,10 @@ impl MainWinDrawer {
     }
 
     /// Draw tile foreground parts
-    fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d,
+    fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, view_map: &ViewMap,
+                             sv: &SdlValues, p: Vec2d,
                              gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
-        let di = ForegroundDrawInfo::new(map, p);
+        let di = ForegroundDrawInfo::new(map, view_map, p);
 
         if let Some(special_tile_idx) = di.special { // Draw tile special
             let texture = sv.tex().get(special_tile_idx);

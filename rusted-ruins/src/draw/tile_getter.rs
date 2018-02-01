@@ -75,7 +75,7 @@ pub struct ForegroundDrawInfo {
 }
 
 impl ForegroundDrawInfo {
-    pub fn new(map: &Map, pos: Vec2d) -> ForegroundDrawInfo {
+    pub fn new(map: &Map, view_map: &ViewMap, pos: Vec2d) -> ForegroundDrawInfo {
         let mut di = ForegroundDrawInfo::default();
 
         if map.is_inside(pos) {
@@ -105,8 +105,10 @@ impl ForegroundDrawInfo {
                 di.wall = Some(wall);
             }
         }
-        
-        di.chara = map.get_chara(pos);
+
+        if view_map.get_tile_visible(pos) {
+            di.chara = map.get_chara(pos);
+        }
 
         // Set items
         if map.is_inside(pos) {
