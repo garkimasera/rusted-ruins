@@ -103,8 +103,7 @@ impl<'a> DoPlayerAction<'a> {
 
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
                 if !result { return; }
-                let gd = pa.gd_mut();
-                super::map::switch_map(gd, next_mid);
+                super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
                 callback: cb, msg_text_id: "dialog.move_floor"

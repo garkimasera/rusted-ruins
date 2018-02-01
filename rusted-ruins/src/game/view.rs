@@ -56,13 +56,28 @@ pub fn update_view_map(game: &mut Game) {
     let player_pos = game.gd.player_pos();
     let player_view_range = game.gd.chara.get(CharaId::Player).params.view_range;
 
+    view_map.visible[player_pos] = true;
+
     for (_, pos) in MDistRangeIter::new(player_pos, player_view_range) {
         if !map.is_inside(pos) { continue; }
-        view_map.visible[pos] = true;
+
+        let mut prev_tile = player_pos;
+        for p in LineIter::new(player_pos, pos).skip(1) {
+            view_map.visible[p] = true;
+            if map.tile[p].wall.is_some() {
+                break;
+            }
+        }
     }
 }
 
 pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> {
+    for pos in LineIter::new(orig, dist) {
+        if map.tile[pos].wall.is_some() {
+            return None;
+        }
+    }
+    
     Some(dist.mdistance(orig))
 }
 

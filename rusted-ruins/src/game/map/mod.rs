@@ -15,25 +15,31 @@ use super::item::gen::gen_dungeon_item;
 use rules::RULES;
 
 /// Switch current map to the specified map
-pub fn switch_map(gd: &mut GameData, mid: MapId) {
-    trace!("Switch map to {:?}", mid);
-    // If next_mid floor doesn't exist, create new floor
-    if !mid.is_region_map() && gd.region.get_map_checked(mid).is_none() {
-        info!("{:?} is not exist, so try to create new floor", mid);
-        super::site::extend_site_floor(gd, mid.sid());
-    }
-    let prev_mid = gd.get_current_mapid();
-    gd.set_current_mapid(mid);
+pub fn switch_map(game: &mut Game, mid: MapId) {
+    {
+        let gd = &mut game.gd;
+        
+        trace!("Switch map to {:?}", mid);
+        // If next_mid floor doesn't exist, create new floor
+        if !mid.is_region_map() && gd.region.get_map_checked(mid).is_none() {
+            info!("{:?} is not exist, so try to create new floor", mid);
+            super::site::extend_site_floor(gd, mid.sid());
+        }
+        let prev_mid = gd.get_current_mapid();
+        gd.set_current_mapid(mid);
 
-    let new_player_pos = if mid.is_region_map() && !prev_mid.is_region_map()
-        && mid.rid() == prev_mid.rid() { // Exit from a site to region map
-        gd.region.get_site_pos(prev_mid.sid())
-    } else { // Move to another floor of the same site
-        let current_map = gd.get_current_map();
-        if let Some(p) = current_map.search_stairs(prev_mid.floor()) { p } else { current_map.entrance }
-    };
+        let new_player_pos = if mid.is_region_map() && !prev_mid.is_region_map()
+            && mid.rid() == prev_mid.rid() { // Exit from a site to region map
+                gd.region.get_site_pos(prev_mid.sid())
+            } else { // Move to another floor of the same site
+                let current_map = gd.get_current_map();
+                if let Some(p) =
+                    current_map.search_stairs(prev_mid.floor()) { p } else { current_map.entrance }
+            };
     
-    gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
+        gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
+    }
+    super::view::update_view_map(game);
 }
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
