@@ -73,6 +73,7 @@ pub struct TileObject {
     pub id: String,
     pub img: Img,
     pub kind: TileKind,
+    pub symbol_color: (u8, u8, u8),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -94,6 +95,7 @@ pub struct WallObject {
     /// If this is true, this wall is always drawed as background of player character.
     pub always_background: bool,
     pub img: Img,
+    pub symbol_color: (u8, u8, u8),
 }
 
 #[derive(Serialize, Deserialize)]

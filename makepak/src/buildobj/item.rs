@@ -39,7 +39,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     
     Ok(ItemObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
         icon: build_icon(icon)?,
         gen_weight: item.gen_weight,
         gen_level: item.gen_level,

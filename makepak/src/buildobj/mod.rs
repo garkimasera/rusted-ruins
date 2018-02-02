@@ -52,7 +52,7 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
     
     Ok(DecoObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
     })
 }
 
@@ -61,7 +61,7 @@ fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject> {
     
     Ok(EffectObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
     })
 }
 
@@ -76,18 +76,20 @@ fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> 
     Ok(SpecialTileObject {
         id: tomlinput.id,
         always_background: always_background,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
     })
 }
 
 fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
     let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
+    let (img, imgdata) = build_img(img)?;
     
     Ok(TileObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: img,
         kind: tile_dep_input.kind,
+        symbol_color: imgdata.calc_average_color(),
     })
 }
 
@@ -96,12 +98,13 @@ fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject> {
     
     Ok(UIImgObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
     })
 }
 
 fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
     let img = get_optional_field!(tomlinput, image);
+    let (img, imgdata) = build_img(img)?;
     let (base_draw, always_background) = if let Some(wall) = tomlinput.wall {
         (wall.base_draw.unwrap_or(false), wall.always_background.unwrap_or(false))
     } else {
@@ -112,7 +115,8 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
         id: tomlinput.id,
         base_draw: base_draw,
         always_background: always_background,
-        img: build_img(img)?,
+        img: img,
+        symbol_color: imgdata.calc_average_color(),
     })
 }
 
@@ -122,7 +126,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
     
     Ok(CharaTemplateObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
@@ -142,7 +146,7 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
 
     Ok(AnimImgObject {
         id: tomlinput.id,
-        img: build_img(img)?,
+        img: build_img(img)?.0,
     })
 }
 
