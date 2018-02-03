@@ -80,7 +80,10 @@ impl DialogWindow for DummyNewGameDialog {
     }
 
     fn mode(&self) -> InputMode {
-        InputMode::Dialog
+        match self.stage {
+            NewGameBuildStage::PlayerNameInput => InputMode::TextInput,
+            _ => InputMode::Dialog,
+        }
     }
 }
 
