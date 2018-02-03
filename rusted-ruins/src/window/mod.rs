@@ -9,6 +9,7 @@ mod itemwindow;
 mod exitwindow;
 mod equipwindow;
 mod msgdialog;
+mod newgame_window;
 mod textinputdialog;
 mod indicator;
 mod minimap;
@@ -64,7 +65,12 @@ pub trait DialogWindow: Window {
 
 /// The current main mode
 enum WindowManageMode {
-    Start(self::startwindow::StartWindow), OnGame(GameWindows),
+    /// On start screen
+    Start(self::startwindow::StartWindow),
+    /// Creating new game
+    NewGame(self::newgame_window::NewGameWindow),
+    /// Game playing
+    OnGame(GameWindows),
 }
 
 impl WindowManageMode {
@@ -152,12 +158,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
         // Draw windows
         match self.mode {
-            WindowManageMode::Start(ref mut start_window) => {
-                start_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
-            }
             WindowManageMode::OnGame(ref mut game_windows) => {
                 self.game.update_before_drawing();
                 game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+            }
+            WindowManageMode::Start(ref mut start_window) => {
+                start_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+            }
+            WindowManageMode::NewGame(ref mut newgame_window) => {
+                newgame_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
             }
         }
 
@@ -273,16 +282,28 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 match n {
                     // Start new game
                     self::startwindow::START_DIALOG_RESULT_NEWGAME => {
-                        self.window_stack.pop();
+                        info!("Start newgame dialog");
+                        self.window_stack.clear();
+                        self.mode = WindowManageMode::NewGame(newgame_window::NewGameWindow::new());
+                        self.window_stack.push(Box::new(newgame_window::DummyNewGameDialog::new()));
+                    }
+                    // Load game from saved data
+                    self::startwindow::START_DIALOG_RESULT_LOADGAME => {
+                        unimplemented!();
+                    }
+                    _ => unreachable!(),
+                }
+            }
+            WindowManageMode::NewGame(_) => {
+                match n {
+                    self::newgame_window::NEW_GAME_WINDOW_RESULT_START => {
+                        info!("Create newgame from dialog result");
+                        self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 
                         let game = Game::new();
                         self.game = game;
                         self.game.update_before_player_turn();
-                    }
-                    // Load game from saved data
-                    self::startwindow::START_DIALOG_RESULT_LOADGAME => {
-                        unimplemented!();
                     }
                     _ => unreachable!(),
                 }

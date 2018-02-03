@@ -24,6 +24,10 @@ impl TextInputDialog {
             text: String::new(),
         }
     }
+
+    pub fn get_text(&self) -> &str {
+        &self.text
+    }
 }
 
 impl Window for TextInputDialog {

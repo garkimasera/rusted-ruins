@@ -10,7 +10,7 @@ mod map;
 mod chara;
 mod infogetter;
 mod animation;
-mod newgame;
+pub mod newgame;
 mod combat;
 mod turnloop;
 pub mod talk;
@@ -46,7 +46,8 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Game {
-        let new_gamedata = self::newgame::create_newgame();
+        let builder = newgame::NewGameBuilder::new();
+        let new_gamedata = builder.build();
         let game = Game {
             gd: new_gamedata,
             state: GameState::PlayerTurn,
