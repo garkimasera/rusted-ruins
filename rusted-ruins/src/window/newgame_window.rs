@@ -69,10 +69,11 @@ impl DialogWindow for DummyNewGameDialog {
                 match name_input_dialog.process_command(command, pa) {
                     DialogResult::Close => {
                         let player_name = name_input_dialog.get_text();
-                        if player_name != "" {
+                        if player_name != "" { // If input text is invalid for character name
                             self.builder.set_player_name(player_name);
                             return DialogResult::User(NEW_GAME_WINDOW_RESULT_START);
                         }
+                        name_input_dialog.restart();
                     }
                     _ => (),
                 }

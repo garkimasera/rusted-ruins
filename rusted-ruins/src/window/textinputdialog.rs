@@ -28,6 +28,12 @@ impl TextInputDialog {
     pub fn get_text(&self) -> &str {
         &self.text
     }
+
+    /// This function is used when the result string is invalid,
+    /// and text input is needed again.
+    pub fn restart(&self) {
+        text_input::start();
+    }
 }
 
 impl Window for TextInputDialog {
