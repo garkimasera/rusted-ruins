@@ -3,6 +3,7 @@ pub mod item;
 pub mod chara;
 pub mod map;
 pub mod site;
+pub mod town;
 pub mod region;
 
 use array2d::Vec2d;
