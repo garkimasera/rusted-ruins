@@ -68,9 +68,11 @@ impl DialogWindow for DummyNewGameDialog {
                 let name_input_dialog = self.name_input_dialog.as_mut().unwrap();
                 match name_input_dialog.process_command(command, pa) {
                     DialogResult::Close => {
-//                        if name_input_dialog.get_text() != "" {
-                        return DialogResult::User(NEW_GAME_WINDOW_RESULT_START);
-//                        }
+                        let player_name = name_input_dialog.get_text();
+                        if player_name != "" {
+                            self.builder.set_player_name(player_name);
+                            return DialogResult::User(NEW_GAME_WINDOW_RESULT_START);
+                        }
                     }
                     _ => (),
                 }
