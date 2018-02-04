@@ -35,7 +35,7 @@ impl Window for MiniMapWindow {
 const RECT_SIZE: u32 = 3;
 const RECT_SIZE_I: i32 = RECT_SIZE as i32;
 
-fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, sv: &mut SdlValues) {
+fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, _sv: &mut SdlValues) {
     use std::cmp::{max, min};
     let map = game.gd.get_current_map();
     let map_size = map.size();
@@ -62,7 +62,7 @@ fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, sv: &mut Sdl
         
         let draw_rect = Rect::new(p.0 * RECT_SIZE_I - dx, p.1 * RECT_SIZE_I - dy, RECT_SIZE, RECT_SIZE);
         canvas.set_draw_color(color);
-        canvas.fill_rect(draw_rect);
+        check_draw!(canvas.fill_rect(draw_rect));
     }
 }
 
