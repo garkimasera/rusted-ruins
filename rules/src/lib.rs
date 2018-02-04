@@ -12,6 +12,7 @@ extern crate rusted_ruins_common as common;
 pub mod dungeon_gen;
 pub mod chara;
 pub mod charagen;
+pub mod newgame;
 
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -23,6 +24,7 @@ pub struct Rules {
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
+    pub newgame: newgame::NewGame,
 }
 
 impl Rules {
@@ -31,6 +33,7 @@ impl Rules {
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             chara:       read_from_json(&rules_dir.join("chara.json")),
             chara_gen:   read_from_json(&rules_dir.join("charagen.json")),
+            newgame:     read_from_json(&rules_dir.join("newgame.json")),
         }
     }
 }
