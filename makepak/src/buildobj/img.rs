@@ -58,7 +58,7 @@ impl ImgData {
         let mut n_pixel_count = 0u32;
         let mut rgb = (0u32, 0u32, 0u32);
         
-        for y in 0..self.dimensions.0 {
+        for y in 0..self.dimensions.1 {
             for x in 0..self.dimensions.0 {
                 let pixel = self.img.get_pixel(x, y);
                 if pixel.data[3] != 0 { // Not transparent pixel
