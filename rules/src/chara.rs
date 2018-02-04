@@ -1,6 +1,4 @@
 
-use std::collections::HashMap;
-
 /// Rules for character parameter calculation
 #[derive(Serialize, Deserialize)]
 pub struct Chara {
