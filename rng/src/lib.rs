@@ -61,6 +61,16 @@ pub fn gen_range<T: PartialOrd + SampleRange>(low: T, high: T) -> T {
     rng.gen_range(low, high)
 }
 
+/// Calculate the sum of dices
+/// n is the number of dice rolled, and x is the number of die faces
+pub fn dice(n: i32, x: i32) -> i32 {
+    let mut sum = 0;
+    for _ in 0..n {
+        sum += gen_range(1, x + 1);
+    }
+    sum
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
