@@ -200,7 +200,7 @@ impl WidgetTrait for ListWidget {
         fn draw_icon(sv: &SdlValues, idx: IconIdx, canvas: &mut WindowCanvas, rect: Rect, x: i32, y: i32) {
             use common::basic::ICON_SIZE;
             let (t, orig) = sv.tex().get_icon(idx);
-            let dest = Rect::new(rect.x + x, rect.y + y, ICON_SIZE, ICON_SIZE);
+            let dest = Rect::new(rect.x + x, rect.y + y, orig.width(), orig.height());
             check_draw!(canvas.copy(t, orig, dest));
         }
 

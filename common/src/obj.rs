@@ -200,8 +200,7 @@ pub trait IconObject: ImgObject {
     fn which_icon_img(&self) -> u32;
     
     fn icon_img_rect(&self) -> (i32, i32, u32, u32) {
-        let rect = self.img_rect_nth(self.which_icon_img());
-        (rect.0, rect.1, ::basic::ICON_SIZE, ::basic::ICON_SIZE)
+        self.img_rect()
     }
 }
 
