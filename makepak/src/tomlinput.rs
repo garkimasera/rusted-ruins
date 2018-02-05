@@ -83,6 +83,8 @@ pub struct ItemDepInput {
     pub gen_weight: f32,
     pub gen_level: u32,
     pub eff: Option<f32>,
+    pub dice_n: Option<i32>,
+    pub dice_x: Option<i32>,
     pub potion_kind: Option<gamedata::item::PotionKind>,
     pub weapon_kind: Option<gamedata::item::WeaponKind>,
     /// For armor items

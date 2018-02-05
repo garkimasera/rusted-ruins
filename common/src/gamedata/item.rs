@@ -32,7 +32,8 @@ pub enum ItemContent {
     },
     Weapon {
         kind: WeaponKind,
-        eff: f32,
+        dice_n: i32,
+        dice_x: i32,
     },
     BodyArmor {
         /// Defence

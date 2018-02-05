@@ -23,7 +23,8 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         "Weapon" => {
             ItemContent::Weapon {
                 kind: get_optional_field!(item, weapon_kind),
-                eff: get_optional_field!(item, eff),
+                dice_n: get_optional_field!(item, dice_n),
+                dice_x: get_optional_field!(item, dice_x),
             }
         }
         "BodyArmor" => {
