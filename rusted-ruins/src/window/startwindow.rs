@@ -2,6 +2,7 @@
 use config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
+use super::SpecialDialogResult;
 use text;
 
 pub struct StartWindow {
@@ -28,9 +29,6 @@ pub struct StartDialog {
     rect: Rect,
     answer_list: ListWidget,
 }
-
-pub const START_DIALOG_RESULT_NEWGAME: u32 = 0;
-pub const START_DIALOG_RESULT_LOADGAME: u32 = 1;
 
 impl StartDialog {
     pub fn new() -> StartDialog {
@@ -61,10 +59,10 @@ impl DialogWindow for StartDialog {
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(0) => { // New Game
-                    return DialogResult::User(START_DIALOG_RESULT_NEWGAME);
+                    return DialogResult::Special(SpecialDialogResult::StartDialogNewGame);
                 },
                 ListWidgetResponse::Select(1) => { // Load Game
-                    return DialogResult::User(START_DIALOG_RESULT_LOADGAME);
+                    return DialogResult::Special(SpecialDialogResult::StartDialogLoadGame);
                 },
                 ListWidgetResponse::Select(2) => { // Exit
                     return DialogResult::Quit;

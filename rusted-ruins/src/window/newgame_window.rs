@@ -5,8 +5,7 @@ use super::widget::*;
 use text;
 use game::newgame::NewGameBuilder;
 use super::textinputdialog::TextInputDialog;
-
-pub const NEW_GAME_WINDOW_RESULT_START: u32 = 0;
+use super::SpecialDialogResult;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum NewGameBuildStage {
@@ -71,7 +70,7 @@ impl DialogWindow for DummyNewGameDialog {
                         let player_name = name_input_dialog.get_text();
                         if player_name != "" { // If input text is invalid for character name
                             self.builder.set_player_name(player_name);
-                            return DialogResult::User(NEW_GAME_WINDOW_RESULT_START);
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart);
                         }
                         name_input_dialog.restart();
                     }

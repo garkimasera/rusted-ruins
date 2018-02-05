@@ -44,7 +44,12 @@ use self::commonuse::*;
 
 pub enum DialogResult {
     Continue, Close, CloseWithValue(Box<Any>), CloseAll, Quit,
-    OpenChildDialog(Box<DialogWindow>), User(u32),
+    OpenChildDialog(Box<DialogWindow>), Special(SpecialDialogResult),
+}
+
+pub enum SpecialDialogResult {
+    StartDialogNewGame, StartDialogLoadGame,
+    NewGameStart,
 }
 
 pub trait Window {
@@ -234,7 +239,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     DialogResult::OpenChildDialog(child) => {
                         self.window_stack.push(child);
                     }
-                    DialogResult::User(n) => { self.process_user_result(n); }
+                    DialogResult::Special(result) => { self.process_special_result(result); }
                 }
                 return true;
             }
@@ -275,28 +280,28 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         true
     }
 
-    pub fn process_user_result(&mut self, n: u32) {
+    pub fn process_special_result(&mut self, result: SpecialDialogResult) {
 
         match self.mode {
             WindowManageMode::Start(_) => {
-                match n {
+                match result {
                     // Start new game
-                    self::startwindow::START_DIALOG_RESULT_NEWGAME => {
+                    SpecialDialogResult::StartDialogNewGame => {
                         info!("Start newgame dialog");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::NewGame(newgame_window::NewGameWindow::new());
                         self.window_stack.push(Box::new(newgame_window::DummyNewGameDialog::new()));
                     }
                     // Load game from saved data
-                    self::startwindow::START_DIALOG_RESULT_LOADGAME => {
+                    SpecialDialogResult::StartDialogLoadGame => {
                         unimplemented!();
                     }
                     _ => unreachable!(),
                 }
             }
             WindowManageMode::NewGame(_) => {
-                match n {
-                    self::newgame_window::NEW_GAME_WINDOW_RESULT_START => {
+                match result {
+                    SpecialDialogResult::NewGameStart => {
                         info!("Create newgame from dialog result");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
