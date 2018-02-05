@@ -63,7 +63,7 @@ impl Window for MsgDialog {
 impl DialogWindow for MsgDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match *command {
-            Command::Cancel => { return DialogResult::Close; },
+            Command::Cancel => { return DialogResult::Close; }
             _ => (),
         }
 
@@ -71,7 +71,7 @@ impl DialogWindow for MsgDialog {
             DialogResult::CloseWithValue(v) => { // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 return (self.action_callback)(pa, n);
-            },
+            }
             _ => (),
         }
         DialogResult::Continue

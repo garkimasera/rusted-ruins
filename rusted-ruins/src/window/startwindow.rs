@@ -60,13 +60,13 @@ impl DialogWindow for StartDialog {
             match response {
                 ListWidgetResponse::Select(0) => { // New Game
                     return DialogResult::Special(SpecialDialogResult::StartDialogNewGame);
-                },
+                }
                 ListWidgetResponse::Select(1) => { // Load Game
                     return DialogResult::Special(SpecialDialogResult::StartDialogLoadGame);
-                },
+                }
                 ListWidgetResponse::Select(2) => { // Exit
                     return DialogResult::Quit;
-                },
+                }
                 _ => (),
             }
             return DialogResult::Continue;

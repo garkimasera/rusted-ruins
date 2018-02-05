@@ -108,7 +108,7 @@ impl DialogWindow for EquipWindow {
         match *command {
             Command::Cancel => {
                 DialogResult::Close
-            },
+            }
             _ => DialogResult::Continue,
         }
     }

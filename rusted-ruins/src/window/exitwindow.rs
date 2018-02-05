@@ -59,7 +59,7 @@ impl DialogWindow for ExitWindow {
                     1 => { return DialogResult::Close }
                     _ => panic!(),
                 }
-            },
+            }
             _ => (),
         }
         return DialogResult::Continue;
