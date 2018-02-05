@@ -33,7 +33,7 @@ impl NewGameWindow {
 }
 
 pub struct DummyNewGameDialog {
-    builder: NewGameBuilder,
+    builder: Option<NewGameBuilder>,
     stage: NewGameBuildStage,
     name_input_dialog: Option<TextInputDialog>,
 }
@@ -41,7 +41,7 @@ pub struct DummyNewGameDialog {
 impl DummyNewGameDialog {
     pub fn new() -> DummyNewGameDialog {
         DummyNewGameDialog {
-            builder: NewGameBuilder::new(),
+            builder: Some(NewGameBuilder::new()),
             stage: NewGameBuildStage::PlayerNameInput,
             name_input_dialog: Some(TextInputDialog::new()),
         }
@@ -69,8 +69,10 @@ impl DialogWindow for DummyNewGameDialog {
                     DialogResult::Close => {
                         let player_name = name_input_dialog.get_text();
                         if player_name != "" { // If input text is invalid for character name
-                            self.builder.set_player_name(player_name);
-                            return DialogResult::Special(SpecialDialogResult::NewGameStart);
+                            self.builder.as_mut().unwrap().set_player_name(player_name);
+                            let builder = self.builder.take().unwrap();
+                            let gd = builder.build();
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
                         }
                         name_input_dialog.restart();
                     }

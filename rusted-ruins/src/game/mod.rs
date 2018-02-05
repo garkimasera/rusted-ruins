@@ -45,11 +45,9 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new() -> Game {
-        let builder = newgame::NewGameBuilder::new();
-        let new_gamedata = builder.build();
+    pub fn new(gd: GameData) -> Game {
         let game = Game {
-            gd: new_gamedata,
+            gd: gd,
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: VecDeque::new(),

@@ -18,6 +18,7 @@ mod widget;
 mod dialogreq;
 
 use std::any::Any;
+use common::gamedata::GameData;
 use game::{GameState, DoPlayerAction, InfoGetter, Command};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
@@ -49,7 +50,7 @@ pub enum DialogResult {
 
 pub enum SpecialDialogResult {
     StartDialogNewGame, StartDialogLoadGame,
-    NewGameStart,
+    NewGameStart(GameData),
 }
 
 pub trait Window {
@@ -301,12 +302,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             WindowManageMode::NewGame(_) => {
                 match result {
-                    SpecialDialogResult::NewGameStart => {
+                    SpecialDialogResult::NewGameStart(gd) => {
                         info!("Create newgame from dialog result");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                        let game = Game::new();
+                        let game = Game::new(gd);
                         self.game = game;
                         self.game.update_before_player_turn();
                     }
