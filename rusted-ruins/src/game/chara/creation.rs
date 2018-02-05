@@ -30,6 +30,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         params: CharaParams::default(),
         base_params: base_params,
         template: chara_template_idx,
+        class: CharaClass::Civilian,
         item_list: ItemList::for_chara(),
         equip: EquipItemList::new(&[]),
         wait_time: 100.0,

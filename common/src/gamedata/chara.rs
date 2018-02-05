@@ -11,6 +11,18 @@ pub enum Race {
     Animal, Devil, Human, Phantom, Slime,
 }
 
+/// Character classes
+#[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum CharaClass {
+    Archeologist, Civilian,
+}
+
+impl Default for CharaClass {
+    fn default() -> CharaClass {
+        CharaClass::Civilian
+    }
+}
+
 /// Relationship between one chara to another.
 ///         |A|F|N|H
 /// ALLY    |A|F|N|H
@@ -47,6 +59,7 @@ pub struct Chara {
     pub params: CharaParams,
     pub base_params: CharaBaseParams,
     pub template: CharaTemplateIdx,
+    pub class: CharaClass,
     pub item_list: ItemList,
     pub equip: EquipItemList,
     pub wait_time: f32,
@@ -117,6 +130,7 @@ impl Default for Chara {
             params: CharaParams::default(),
             base_params: CharaBaseParams::default(),
             template: CharaTemplateIdx(0),
+            class: CharaClass::default(),
             item_list: ItemList::for_chara(),
             equip: EquipItemList::new(&[]),
             wait_time: 100.0,
