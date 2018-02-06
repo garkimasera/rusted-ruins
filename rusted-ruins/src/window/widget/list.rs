@@ -46,7 +46,7 @@ impl ListRow {
 
 #[derive(Clone, Copy, Debug)]
 pub enum ListWidgetResponse {
-    Select(u32), SelectionChanged,
+    Select(u32), SelectionChanged, PageChanged,
 }
 
 impl ListWidget {
@@ -123,6 +123,9 @@ impl ListWidget {
 
     pub fn set_n_item(&mut self, n_item: u32) {
         self.n_item = n_item;
+        if let Some(page_size) = self.page_size {
+            self.max_page = n_item / page_size;
+        }
     }
 
     pub fn set_page(&mut self, page: u32) {
@@ -197,6 +200,29 @@ impl WidgetTrait for ListWidget {
                             self.current_choice += 1;
                         }
                         return Some(ListWidgetResponse::SelectionChanged);
+                    }
+                    VDirection::None if self.page_size.is_some() && self.max_page > 0 => {
+                        match dir.hdir {
+                            HDirection::Left => {
+                                let new_page = if self.current_page == 0 {
+                                    self.max_page
+                                } else {
+                                    self.current_page - 1
+                                };
+                                self.set_page(new_page);
+                                return Some(ListWidgetResponse::PageChanged);
+                            }
+                            HDirection::Right => {
+                                let new_page = if self.current_page == self.max_page {
+                                    0
+                                } else {
+                                    self.current_page + 1
+                                };
+                                self.set_page(new_page);
+                                return Some(ListWidgetResponse::PageChanged);
+                            }
+                            _ => (),
+                        }
                     }
                     _ => (),
                 }
