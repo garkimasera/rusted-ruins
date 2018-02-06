@@ -80,6 +80,8 @@ impl ItemWindow {
     }
 
     fn update_list(&mut self, list: FilteredItemList) {
+        self.list.set_n_item(list.clone().count() as u32);
+        
         let item_locations = &mut self.item_locations;
         self.list.update_rows_by_func(|start, page_size| {
             let mut rows = Vec::new();

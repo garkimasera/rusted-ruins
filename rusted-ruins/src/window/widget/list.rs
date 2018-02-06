@@ -20,6 +20,7 @@ pub struct ListWidget {
     cache: Vec<TextCache>,
     current_choice: u32,
     current_page: u32,
+    max_page: u32,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -49,11 +50,6 @@ pub enum ListWidgetResponse {
 }
 
 impl ListWidget {
-    // pub fn <R: Into<Rect>>(rect: R, kind: ListRowKind,
-    //                        rows: Vec<ListRow>, column_pos: Vec<i32>) -> ListWidget {
-    //     Self::with_hrow(rect, rows, column_pos, 26)
-    // }
-
     /// Create empty ListWidget
     pub fn new<R: Into<Rect>>(
         rect: R, kind: ListRowKind, column_pos: Vec<i32>,
@@ -77,6 +73,7 @@ impl ListWidget {
             cache: Vec::new(),
             current_choice: 0,
             current_page: 0,
+            max_page: 1,
         }
     }
 
@@ -122,6 +119,18 @@ impl ListWidget {
         let page_size = self.page_size.unwrap_or(self.n_item);
         let rows = f(page_size * self.current_page, page_size);
         self.set_rows(rows);
+    }
+
+    pub fn set_n_item(&mut self, n_item: u32) {
+        self.n_item = n_item;
+    }
+
+    pub fn set_page(&mut self, page: u32) {
+        self.current_page = page;
+    }
+
+    pub fn get_page(&mut self) -> u32 {
+        self.current_page
     }
 
     /// Adjust widget size to fit inner contents

@@ -246,6 +246,7 @@ impl Default for ItemFilter {
     }
 }
 
+#[derive(Clone)]
 pub struct FilteredItemList<'a> {
     item_list: &'a ItemList,
     location: ItemListLocation,
@@ -430,6 +431,10 @@ impl EquipItemList {
 
     pub fn list(&self) -> &ItemList {
         &self.item_list
+    }
+
+    pub fn n_slots(&self) -> u32 {
+        self.slots.len() as u32
     }
 }
 
