@@ -8,6 +8,7 @@ mod talkwindow;
 mod itemwindow;
 mod exitwindow;
 mod equipwindow;
+mod miscwindow;
 mod msgdialog;
 mod newgame_window;
 mod textinputdialog;
