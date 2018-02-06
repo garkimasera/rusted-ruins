@@ -19,7 +19,6 @@ pub struct EquipWindow {
     rect: Rect,
     list: ListWidget,
     n_row: u32,
-    current_page: u32,
     cid: CharaId,
     slots: Vec<(ItemKind, u8)>
 }
@@ -31,10 +30,9 @@ impl EquipWindow {
         let mut equip_window = EquipWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::StrIconStr(vec![]),
-                UI_CFG.equip_window.column_pos.clone()),
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::StrIconStr, vec![0, 100, 126],
+                Some(UI_CFG.equip_window.n_row), 26),
             n_row: UI_CFG.equip_window.n_row,
-            current_page: 0,
             cid: cid,
             slots: Vec::new(),
         };
@@ -43,24 +41,27 @@ impl EquipWindow {
     }
 
     fn update_list(&mut self, pa: &mut DoPlayerAction) {
-        let mut rows: Vec<(String, IconIdx, String)> = Vec::new();
+        let mut rows = Vec::new();
         let equips = pa.gd().get_equip_list(self.cid);
-        self.slots.clear();
+        let slots = &mut self.slots;
+        slots.clear();
 
-        for (ik, ik_i, item) in equips.slot_iter() {
-            let kind = text::ui_txt(&format!("{:?}", ik)).to_owned();
-            if let Some(item) = item {
-                let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
-                rows.push((kind, IconIdx::Item(item.idx), item_text));
-            } else {
-                rows.push((
-                    kind,
-                    IconIdx::Item(::common::objholder::ItemIdx(0)),
-                    text::ui_txt("Empty").to_owned()));
+        self.list.update_rows_by_func(|start, page_size| {
+            for (ik, ik_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
+                let kind = text::ui_txt(&format!("{:?}", ik)).to_owned();
+                if let Some(item) = item {
+                    let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
+                    rows.push(ListRow::StrIconStr(kind, IconIdx::Item(item.idx), item_text));
+                } else {
+                    rows.push(ListRow::StrIconStr(
+                        kind,
+                        IconIdx::Item(::common::objholder::ItemIdx(0)),
+                        text::ui_txt("Empty").to_owned()));
+                }
+                slots.push((ik, ik_i));
             }
-            self.slots.push((ik, ik_i));
-        }
-        self.list.set_rows(ListRow::StrIconStr(rows));
+            rows
+        });
     }
 }
 

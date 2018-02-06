@@ -10,26 +10,35 @@ use super::WidgetTrait;
 /// Simple list widget.
 pub struct ListWidget {
     rect: Rect,
-    rows: ListRow,
-    n_row: usize,
+    kind: ListRowKind,
+    rows: Vec<ListRow>,
     h_row: i32,
+    n_row: u32,
+    n_item: u32,
+    page_size: Option<u32>,
     column_pos: Vec<i32>,
     cache: Vec<TextCache>,
     current_choice: u32,
+    current_page: u32,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum ListRowKind {
+    Str, IconStr, StrIconStr,
 }
 
 pub enum ListRow {
-    Str(Vec<String>),
-    IconStr(Vec<(IconIdx, String)>),
-    StrIconStr(Vec<(String, IconIdx, String)>),
+    Str(String),
+    IconStr(IconIdx, String),
+    StrIconStr(String, IconIdx, String),
 }
 
 impl ListRow {
-    fn len(&self) -> usize {
+    fn kind(&self) -> ListRowKind {
         match *self {
-            ListRow::Str(ref v) => { v.len() }
-            ListRow::IconStr(ref v) => { v.len() }
-            ListRow::StrIconStr(ref v) => { v.len() }
+            ListRow::Str(_) => ListRowKind::Str,
+            ListRow::IconStr(_, _) => ListRowKind::IconStr,
+            ListRow::StrIconStr(_, _, _) => ListRowKind::StrIconStr,
         }
     }
 }
@@ -40,64 +49,79 @@ pub enum ListWidgetResponse {
 }
 
 impl ListWidget {
-    pub fn new<R: Into<Rect>>(rect: R, rows: ListRow, column_pos: Vec<i32>) -> ListWidget {
-        Self::with_hrow(rect, rows, column_pos, 26)
-    }
+    // pub fn <R: Into<Rect>>(rect: R, kind: ListRowKind,
+    //                        rows: Vec<ListRow>, column_pos: Vec<i32>) -> ListWidget {
+    //     Self::with_hrow(rect, rows, column_pos, 26)
+    // }
 
-    /// Create ListWidget with specified height per row
-    pub fn with_hrow<R: Into<Rect>>(
-        rect: R, rows: ListRow, column_pos: Vec<i32>, h_row: i32) -> ListWidget {
+    /// Create empty ListWidget
+    pub fn new<R: Into<Rect>>(
+        rect: R, kind: ListRowKind, column_pos: Vec<i32>,
+        page_size: Option<u32>, h_row: i32) -> ListWidget {
         
         let rect = rect.into();
 
-        let mut list_widget = ListWidget {
+        assert!((kind == ListRowKind::Str && column_pos.len() == 1) ||
+                (kind == ListRowKind::IconStr && column_pos.len() == 2) ||
+                (kind == ListRowKind::StrIconStr && column_pos.len() == 3));
+
+        ListWidget {
             rect: rect,
-            rows: ListRow::Str(Vec::new()),
-            n_row: 0,
+            kind: kind,
+            rows: Vec::new(),
             h_row: h_row,
+            n_row: 0,
+            n_item: 0,
+            page_size: page_size,
             column_pos: column_pos,
             cache: Vec::new(),
             current_choice: 0,
-        };
-        list_widget.set_rows(rows);
-        list_widget
+            current_page: 0,
+        }
     }
 
-    pub fn single<R: Into<Rect>>(rect: R, choices: Vec<String>) -> ListWidget {
-        Self::with_hrow(rect, ListRow::Str(choices), vec![0], UI_CFG.list_widget.h_row_with_text)
+    /// Create simple list with text only
+    pub fn texts_choices<R: Into<Rect>>(rect: R, choices: Vec<String>) -> ListWidget {
+        let n_item = choices.len() as u32;
+        let rows: Vec<ListRow> = choices.into_iter().map(|s| ListRow::Str(s)).collect();
+
+        let mut list = ListWidget::new(rect, ListRowKind::Str, vec![0],
+                                       None, UI_CFG.list_widget.h_row_with_text);
+        list.set_rows(rows);
+        list.n_item = n_item;
+        list
     }
 
-    pub fn set_rows(&mut self, rows: ListRow) {
-        let n_row;
+    /// Set row data directly
+    pub fn set_rows(&mut self, rows: Vec<ListRow>) {
         let mut cache = Vec::new();
-        
-        match &rows {
-            &ListRow::Str(ref rows) => {
-                assert!(self.column_pos.len() == 1);
-                n_row = rows.len();
-                for r in rows {
-                    cache.push(TextCache::new(&[r], FontKind::M, UI_CFG.color.normal_font.into()));
+        self.n_row = rows.len() as u32;
+
+        for row in &rows {
+            assert!(row.kind() == self.kind);
+            match *row {
+                ListRow::Str(ref s) => {
+                    cache.push(TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()));
+                },
+                ListRow::IconStr(i, ref s) => {
+                    cache.push(TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
-            },
-            &ListRow::IconStr(ref rows) => {
-                assert!(self.column_pos.len() == 2);
-                n_row = rows.len();
-                for r in rows {
-                    cache.push(TextCache::new(&[&r.1], FontKind::M, UI_CFG.color.normal_font.into()));
-                }
-            }
-            &ListRow::StrIconStr(ref rows) => {
-                assert!(self.column_pos.len() == 3);
-                n_row = rows.len();
-                for r in rows {
+                ListRow::StrIconStr(ref s0, i, ref s1) => {
                     cache.push(TextCache::new(
-                        &[&r.0, &r.2], FontKind::M, UI_CFG.color.normal_font.into()));
+                        &[s0, s1], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
             }
         }
-        self.n_row = n_row;
+        
         self.rows = rows;
         self.cache = cache;
+    }
+
+    /// Update rows for this page
+    pub fn update_rows_by_func<F>(&mut self, f: F) where F: FnOnce(u32, u32) -> Vec<ListRow> {
+        let page_size = self.page_size.unwrap_or(self.n_item);
+        let rows = f(page_size * self.current_page, page_size);
+        self.set_rows(rows);
     }
 
     /// Adjust widget size to fit inner contents
@@ -113,20 +137,20 @@ impl ListWidget {
     /// SdlValues is needed to calculate text size from text cache
     pub fn get_adjusted_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
         let h = UI_CFG.list_widget.h_row_with_text as u32 * self.rows.len() as u32;
-        let max_w = match self.rows {
-            ListRow::Str(_) => {
+        let max_w = match self.kind {
+            ListRowKind::Str => {
                 let mut max_w = 0;
                 for i in 0..self.n_row {
-                    let tex = sv.tt_group(&mut self.cache[i]);
+                    let tex = sv.tt_group(&mut self.cache[i as usize]);
                     let w = tex[0].query().width;
                     if max_w < w { max_w = w }
                 }
                 max_w
             }
-            ListRow::IconStr(_) => {
+            ListRowKind::IconStr => {
                 unimplemented!()
             }
-            ListRow::StrIconStr(_) => {
+            ListRowKind::StrIconStr => {
                 unimplemented!()
             }
         };
@@ -204,19 +228,17 @@ impl WidgetTrait for ListWidget {
             check_draw!(canvas.copy(t, orig, dest));
         }
 
-        match self.rows {
-            ListRow::Str(_) => {
-                for i in 0..self.n_row {
+        for (i, row) in self.rows.iter().enumerate() {
+            match *row {
+                ListRow::Str(_) => {
                     let h = h_row * i as i32;
                     let tex = sv.tt_group(&mut self.cache[i]);
                     draw_text(&tex[0], canvas, self.rect,
                               self.column_pos[0] + left_margin, h, self.rect.width());
                 }
-            }
-            ListRow::IconStr(ref r) => {
-                for i in 0..self.n_row {
+                ListRow::IconStr(icon_idx, _) => {
                     let h = h_row * i as i32;
-                    draw_icon(sv, r[i].0, canvas, self.rect,
+                    draw_icon(sv, icon_idx, canvas, self.rect,
                               self.column_pos[0] + left_margin, h);
                     
                     let tex = sv.tt_group(&mut self.cache[i]);
@@ -224,11 +246,9 @@ impl WidgetTrait for ListWidget {
                               self.column_pos[1] + left_margin, h,
                               self.rect.width() - self.column_pos[1] as u32);
                 }
-            }
-            ListRow::StrIconStr(ref r) => {
-                for i in 0..self.n_row {
+                ListRow::StrIconStr(_, icon_idx, _) => {
                     let h = h_row * i as i32;
-                    draw_icon(sv, r[i].1, canvas, self.rect,
+                    draw_icon(sv, icon_idx, canvas, self.rect,
                               self.column_pos[1] + left_margin, h);
                     
                     let tex = sv.tt_group(&mut self.cache[i]);

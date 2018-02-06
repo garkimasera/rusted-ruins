@@ -27,7 +27,6 @@ pub struct ItemWindow {
     list: ListWidget,
     mode: ItemWindowMode,
     n_row: u32,
-    current_page: u32,
     item_locations: Vec<ItemLocation>,
 }
 
@@ -38,10 +37,10 @@ impl ItemWindow {
         let mut item_window = ItemWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRow::IconStr(vec![]), vec![0, 26]),
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStr, vec![0, 26],
+                Some(UI_CFG.item_window.n_row), 26),
             mode: mode,
             n_row: UI_CFG.item_window.n_row,
-            current_page: 0,
             item_locations: Vec::new(),
         };
         item_window.update_by_mode(pa);
@@ -81,18 +80,21 @@ impl ItemWindow {
     }
 
     fn update_list(&mut self, list: FilteredItemList) {
-        let mut rows: Vec<(IconIdx, String)> = Vec::new();
-        self.item_locations.clear();
+        let item_locations = &mut self.item_locations;
+        self.list.update_rows_by_func(|start, page_size| {
+            let mut rows = Vec::new();
+            item_locations.clear();
 
-        for (item_location, item, n_item) in list.skip((self.current_page * self.n_row) as usize) {
-            let item_text = format!(
-                "{} x {}",
-                text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
-                n_item);
-            rows.push((IconIdx::Item(item.idx), item_text));
-            self.item_locations.push(item_location);
-        }
-        self.list.set_rows(ListRow::IconStr(rows));
+            for (item_location, item, n_item) in list.skip(start as usize).take(page_size as usize) {
+                let item_text = format!(
+                    "{} x {}",
+                    text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
+                    n_item);
+                rows.push(ListRow::IconStr(IconIdx::Item(item.idx), item_text));
+                item_locations.push(item_location);
+            }
+            rows
+        });
     }
 
     fn do_action_for_item(&mut self, pa: &mut DoPlayerAction, il: ItemLocation) -> DialogResult {

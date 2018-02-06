@@ -39,7 +39,7 @@ impl StartDialog {
         let rect = UI_CFG.start_dialog.rect.into();
         StartDialog {
             rect: rect,
-            answer_list: ListWidget::single((0, 0, rect.w as u32, 0), choices),
+            answer_list: ListWidget::texts_choices((0, 0, rect.w as u32, 0), choices),
         }
     }
 }

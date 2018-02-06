@@ -14,7 +14,7 @@ impl ChooseWindow {
     pub fn new(winpos: WindowPos, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
         ChooseWindow {
             winpos: winpos,
-            answer_list: ListWidget::single((0, 0, 0, 0), choices),
+            answer_list: ListWidget::texts_choices((0, 0, 0, 0), choices),
             default_choose: default_choose,
         }
     }
