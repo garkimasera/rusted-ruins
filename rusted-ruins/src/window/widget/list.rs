@@ -100,10 +100,10 @@ impl ListWidget {
                 ListRow::Str(ref s) => {
                     cache.push(TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()));
                 },
-                ListRow::IconStr(i, ref s) => {
+                ListRow::IconStr(_, ref s) => {
                     cache.push(TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
-                ListRow::StrIconStr(ref s0, i, ref s1) => {
+                ListRow::StrIconStr(ref s0, _, ref s1) => {
                     cache.push(TextCache::new(
                         &[s0, s1], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
@@ -257,7 +257,6 @@ impl WidgetTrait for ListWidget {
         };
 
         fn draw_icon(sv: &SdlValues, idx: IconIdx, canvas: &mut WindowCanvas, rect: Rect, x: i32, y: i32) {
-            use common::basic::ICON_SIZE;
             let (t, orig) = sv.tex().get_icon(idx);
             let dest = Rect::new(rect.x + x, rect.y + y, orig.width(), orig.height());
             check_draw!(canvas.copy(t, orig, dest));

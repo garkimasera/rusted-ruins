@@ -9,14 +9,14 @@ pub struct PageWindow {
 }
 
 impl PageWindow {
-    fn new(rect: Rect) -> PageWindow {
+    pub fn new(rect: Rect) -> PageWindow {
         PageWindow {
             rect,
             label: LabelWidget::new(rect, "", FontKind::M),
         }
     }
 
-    fn set_page(&mut self, current_page: u32, max_page: u32) {
+    pub fn set_page(&mut self, current_page: u32, max_page: u32) {
         self.label.set_text(&format!("{} / {}", current_page, max_page));
     }
 }
