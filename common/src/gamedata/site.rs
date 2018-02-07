@@ -1,6 +1,7 @@
 
 use super::map::Map;
 use super::region::RegionId;
+use super::town::Town;
 
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
@@ -24,8 +25,8 @@ pub enum SiteContent {
     },
     /// Town consists of residents and shops, etc.
     Town {
-        /// Town id is used to find town specific rules
-        id: String,
+        /// Detail data for this town
+        town: Box<Town>,
     },
     /// This does not include specific data, but character and other elements can be placed its map
     Other,

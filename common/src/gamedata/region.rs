@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use array2d::*;
 use super::site::*;
 use super::map::*;
-use super::town::*;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct RegionId(pub(crate) u32);
@@ -14,7 +13,6 @@ pub struct Region {
     pub name: String,
     id: RegionId,
     pub(crate) sites: HashMap<SiteId, SiteInfo>,
-    pub(crate) towns: HashMap<TownId, Town>,
     /// An map to represents this region
     pub(crate) map: Map,
 }
@@ -152,7 +150,6 @@ impl Region {
             name: name.to_owned(),
             id: RegionId(0),
             sites: HashMap::new(),
-            towns: HashMap::new(),
             map: map,
         }
     }
