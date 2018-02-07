@@ -38,6 +38,7 @@ pub struct UIConfig {
     pub text_input_dialog: TextInputDialogConfig,
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
+    pub page_window: PageWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
 }
@@ -115,6 +116,13 @@ pub struct EquipWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
     pub column_pos: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PageWindowConfig {
+    pub rect: CfgRect,
+    pub margin_to_parent: i32,
+    pub label_y: i32,
 }
 
 #[derive(Debug, Deserialize)]

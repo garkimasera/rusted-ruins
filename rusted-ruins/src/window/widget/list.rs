@@ -73,7 +73,7 @@ impl ListWidget {
             cache: Vec::new(),
             current_choice: 0,
             current_page: 0,
-            max_page: 1,
+            max_page: 0,
         }
     }
 
@@ -124,7 +124,11 @@ impl ListWidget {
     pub fn set_n_item(&mut self, n_item: u32) {
         self.n_item = n_item;
         if let Some(page_size) = self.page_size {
-            self.max_page = n_item / page_size;
+            if n_item > 0 {
+                self.max_page = (n_item - 1) / page_size;
+            } else {
+                self.max_page = 0;
+            }
         }
     }
 
@@ -132,8 +136,12 @@ impl ListWidget {
         self.current_page = page;
     }
 
-    pub fn get_page(&mut self) -> u32 {
+    pub fn get_page(&self) -> u32 {
         self.current_page
+    }
+
+    pub fn get_max_page(&self) -> u32 {
+        self.max_page
     }
 
     /// Adjust widget size to fit inner contents
@@ -201,28 +209,34 @@ impl WidgetTrait for ListWidget {
                         }
                         return Some(ListWidgetResponse::SelectionChanged);
                     }
+                    // Switching page
                     VDirection::None if self.page_size.is_some() && self.max_page > 0 => {
-                        match dir.hdir {
+                        let new_page = match dir.hdir {
                             HDirection::Left => {
-                                let new_page = if self.current_page == 0 {
+                                if self.current_page == 0 {
                                     self.max_page
                                 } else {
                                     self.current_page - 1
-                                };
-                                self.set_page(new_page);
-                                return Some(ListWidgetResponse::PageChanged);
+                                }
                             }
                             HDirection::Right => {
-                                let new_page = if self.current_page == self.max_page {
+                                if self.current_page == self.max_page {
                                     0
                                 } else {
                                     self.current_page + 1
-                                };
-                                self.set_page(new_page);
-                                return Some(ListWidgetResponse::PageChanged);
+                                }
                             }
-                            _ => (),
+                            _ => { return None; },
+                        };
+                        self.set_page(new_page);
+                        
+                        if new_page == self.max_page {
+                            let n_choice_last_page = self.n_item % self.page_size.unwrap();
+                            if self.current_choice >= n_choice_last_page {
+                                self.current_choice = n_choice_last_page - 1;
+                            }
                         }
+                        return Some(ListWidgetResponse::PageChanged);
                     }
                     _ => (),
                 }

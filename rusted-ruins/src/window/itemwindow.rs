@@ -8,6 +8,7 @@ use config::UI_CFG;
 use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
+use super::miscwindow::PageWindow;
 use common::gobj;
 use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
 use text;
@@ -28,6 +29,7 @@ pub struct ItemWindow {
     mode: ItemWindowMode,
     n_row: u32,
     item_locations: Vec<ItemLocation>,
+    page_window: PageWindow,
 }
 
 impl ItemWindow {
@@ -42,6 +44,7 @@ impl ItemWindow {
             mode: mode,
             n_row: UI_CFG.item_window.n_row,
             item_locations: Vec::new(),
+            page_window: PageWindow::new(None, Some(rect.bottom() + UI_CFG.page_window.margin_to_parent)),
         };
         item_window.update_by_mode(pa);
         item_window
@@ -77,6 +80,8 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
         }
+
+        self.page_window.set_page(self.list.get_page(), self.list.get_max_page());
     }
 
     fn update_list(&mut self, list: FilteredItemList) {
@@ -124,11 +129,12 @@ impl ItemWindow {
 impl Window for ItemWindow {
     
     fn redraw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(canvas, self.rect);
         self.list.draw(canvas, sv);
+        self.page_window.redraw(canvas, game, sv, anim);
     }
 }
 
@@ -139,6 +145,9 @@ impl DialogWindow for ItemWindow {
                 ListWidgetResponse::Select(i) => { // Any item is selected
                     let il = self.item_locations[i as usize];
                     return self.do_action_for_item(pa, il);
+                }
+                ListWidgetResponse::PageChanged => {
+                    self.update_by_mode(pa);
                 }
                 _ => (),
             }

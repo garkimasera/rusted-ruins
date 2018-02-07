@@ -101,6 +101,9 @@ impl DialogWindow for EquipWindow {
                     );
                     return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
+                ListWidgetResponse::PageChanged => {
+                    self.update_list(pa);
+                }
                 _ => (),
             }
             return DialogResult::Continue;
