@@ -5,6 +5,7 @@ pub mod map;
 pub mod site;
 pub mod town;
 pub mod region;
+pub mod shop;
 
 use array2d::Vec2d;
 
