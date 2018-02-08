@@ -1,17 +1,35 @@
 
 use array2d::Vec2d;
 use objholder::ItemIdx;
+use std::cmp::{PartialOrd, Ord, Ordering};
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 /// Game item
 pub struct Item {
     pub idx: ItemIdx,
+    pub kind: ItemKind,
+    pub quality: ItemQuality,
 }
 
-#[repr(u32)]
+impl Ord for Item {
+    fn cmp(&self, other: &Item) -> Ordering {
+        let order = self.kind.cmp(&other.kind);
+        if order != Ordering::Equal { return order; }
+        let order = self.idx.cmp(&other.idx);
+        if order != Ordering::Equal { return order; }
+        self.quality.cmp(&other.quality)
+    }
+}
+
+impl PartialOrd for Item {
+    fn partial_cmp(&self, other: &Item) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object, Potion, Weapon, BodyArmor,
+    Object, Potion, Weapon, Armor,
 }
 
 /// Kind dependent data for a item
@@ -28,7 +46,8 @@ pub enum ItemContent {
         dice_n: i32,
         dice_x: i32,
     },
-    BodyArmor {
+    Armor {
+        kind: ArmorKind,
         /// Defence
         def: f32,
         /// Magic Defence
@@ -42,21 +61,42 @@ impl ItemContent {
             ItemContent::Object => ItemKind::Object,
             ItemContent::Potion { .. } => ItemKind::Potion,
             ItemContent::Weapon { .. } => ItemKind::Weapon,
-            ItemContent::BodyArmor { .. } => ItemKind::BodyArmor,
+            ItemContent::Armor { .. } => ItemKind::Armor,
         }
     }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct ItemQuality(i16);
+
+impl Default for ItemQuality {
+    fn default() -> ItemQuality {
+        ItemQuality(0)
+    }
+}
+
+impl ItemQuality {
+    pub fn as_int(&self) -> i32 {
+        self.0 as i32
+    }
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum PotionKind {
     Heal,
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[repr(u8)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum WeaponKind {
     Sword, Spear, Axe, Whip,
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ArmorKind {
+    Body,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -113,13 +153,26 @@ impl ItemList {
             return Some(item)
         }
 
-        for i in self.items.iter_mut() {
-            if *i.0 == *item {
-                i.1 += n;
-                return None;
+        if self.items.is_empty() {
+            self.items.push((item, n));
+            return None;
+        }
+
+        for i in 0..self.items.len() {
+            match item.cmp(&self.items[i].0) { 
+                Ordering::Equal => { // If this list has the same item, increases the number
+                    self.items[i].1 += n;
+                    return None;
+                }
+                Ordering::Less => {
+                    self.items.insert(i, (item, n));
+                    return None;
+                }
+                Ordering::Greater => {
+                    continue;
+                }
             }
         }
-        
         self.items.push((item, n));
         None
     }

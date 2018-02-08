@@ -27,8 +27,9 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
                 dice_x: get_optional_field!(item, dice_x),
             }
         }
-        "BodyArmor" => {
-            ItemContent::BodyArmor {
+        "Armor" => {
+            ItemContent::Armor {
+                kind: get_optional_field!(item, armor_kind),
                 def: get_optional_field!(item, def),
                 mdf: get_optional_field!(item, mdf),
             }

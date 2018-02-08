@@ -10,6 +10,8 @@ pub fn gen_dungeon_item(floor_level: u32) -> Box<Item> {
     let item_obj = gobj::get_obj(idx);
     let item = Item {
         idx: idx,
+        kind: item_obj.content.kind(),
+        quality: ItemQuality::default(),
     };
     Box::new(item)
 }
