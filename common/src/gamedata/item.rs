@@ -7,7 +7,7 @@ use std::cmp::{PartialOrd, Ord, Ordering};
 /// Game item
 pub struct Item {
     pub idx: ItemIdx,
-    pub kind: ItemKind,
+    pub kind: ItemKindDetail,
     pub quality: ItemQuality,
 }
 
@@ -30,6 +30,12 @@ impl PartialOrd for Item {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
     Object, Potion, Weapon, Armor,
+}
+
+/// This is mainly used for item list sorting
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ItemKindDetail {
+    Object, Potion(PotionKind), Weapon(WeaponKind), Armor(ArmorKind),
 }
 
 /// Kind dependent data for a item
@@ -62,6 +68,15 @@ impl ItemContent {
             ItemContent::Potion { .. } => ItemKind::Potion,
             ItemContent::Weapon { .. } => ItemKind::Weapon,
             ItemContent::Armor { .. } => ItemKind::Armor,
+        }
+    }
+
+    pub fn kind_detail(&self) -> ItemKindDetail {
+        match *self {
+            ItemContent::Object => ItemKindDetail::Object,
+            ItemContent::Potion { kind, .. } => ItemKindDetail::Potion(kind),
+            ItemContent::Weapon { kind, .. } => ItemKindDetail::Weapon(kind),
+            ItemContent::Armor { kind, .. } => ItemKindDetail::Armor(kind),
         }
     }
 }
