@@ -1,4 +1,5 @@
 
+pub mod filter;
 pub mod gen;
 
 use common::gamedata::GameData;

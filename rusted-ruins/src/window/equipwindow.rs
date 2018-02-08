@@ -13,6 +13,7 @@ use common::gobj;
 use common::gamedata::item::ItemKind;
 use common::gamedata::chara::CharaId;
 use common::gamedata::item::*;
+use game::item::filter::*;
 use text;
 
 pub struct EquipWindow {

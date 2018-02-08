@@ -6,13 +6,6 @@ use objholder::ItemIdx;
 /// Game item
 pub struct Item {
     pub idx: ItemIdx,
-    pub content: ItemContent,
-}
-
-impl Item {
-    pub fn kind(&self) -> ItemKind {
-        self.content.kind()
-    }
 }
 
 #[repr(u32)]
@@ -199,95 +192,6 @@ impl ItemMoveNum {
 impl From<u32> for ItemMoveNum {
     fn from(n: u32) -> ItemMoveNum {
         ItemMoveNum::Partial(n)
-    }
-}
-
-/// Used for creating filtered list and saving filtering state
-#[derive(Clone, Copy, Debug)]
-pub struct ItemFilter {
-    pub all: bool,
-    pub kind: Option<ItemKind>,
-}
-
-impl ItemFilter {
-    pub fn new() -> ItemFilter {
-        ItemFilter::default()
-    }
-    
-    pub fn all() -> ItemFilter {
-        let mut filter = ItemFilter::default();
-        filter.all = true;
-        filter
-    }
-    
-    /// Given item will be filtered (false) or not (true)
-    pub fn judge(&self, item: &Item) -> bool {
-        if self.all { return true; }
-        
-        if let Some(kind) = self.kind {
-            if item.content.kind() != kind { return false; }
-        }
-        
-        true
-    }
-
-    pub fn kind(mut self, kind: ItemKind) -> ItemFilter {
-        self.kind = Some(kind);
-        self
-    }
-}
-
-impl Default for ItemFilter {
-    fn default() -> ItemFilter {
-        ItemFilter {
-            all: false,
-            kind: None,
-        }
-    }
-}
-
-#[derive(Clone)]
-pub struct FilteredItemList<'a> {
-    item_list: &'a ItemList,
-    location: ItemListLocation,
-    filter: ItemFilter,
-    count: usize,
-}
-
-impl<'a> FilteredItemList<'a> {
-    pub fn new(item_list: &'a ItemList, location: ItemListLocation,
-               filter: ItemFilter) -> FilteredItemList<'a> {
-        
-        FilteredItemList {
-            item_list, location, filter, count: 0,
-        }
-    }
-
-    pub fn all(item_list: &'a ItemList, location: ItemListLocation) -> FilteredItemList<'a> {
-        
-        FilteredItemList {
-            item_list, location, filter: ItemFilter::all(), count: 0,
-        }
-    }
-}
-
-impl<'a> Iterator for FilteredItemList<'a> {
-    type Item = (ItemLocation, &'a Item, u32);
-    
-    fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            if self.item_list.items.len() <= self.count {
-                return None
-            }
-            let a = &self.item_list.items[self.count];
-
-            let prev_count = self.count;
-            self.count += 1;
-
-            if self.filter.judge(&*a.0) {
-                return Some(((self.location, prev_count as u32), &*a.0, a.1));
-            }
-        }
     }
 }
 

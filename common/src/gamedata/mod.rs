@@ -152,12 +152,6 @@ impl GameData {
         (&*a.0, a.1)
     }
 
-    pub fn get_filtered_item_list(&self, list_location: ItemListLocation, filter: ItemFilter)
-                                  -> FilteredItemList {
-        let item_list = self.get_item_list(list_location);
-        FilteredItemList::new(item_list, list_location, filter)
-    }
-
     /// Remove item from list
     pub fn remove_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T) {
         {

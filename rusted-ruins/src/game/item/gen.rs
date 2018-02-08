@@ -8,10 +8,8 @@ pub fn gen_dungeon_item(floor_level: u32) -> Box<Item> {
     let idx = choose_item_by_floor_level(floor_level);
 
     let item_obj = gobj::get_obj(idx);
-    let itemcontent = item_obj.content.clone();
     let item = Item {
         idx: idx,
-        content: itemcontent,
     };
     Box::new(item)
 }

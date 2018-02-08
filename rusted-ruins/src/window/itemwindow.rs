@@ -10,7 +10,8 @@ use eventhandler::InputMode;
 use super::widget::*;
 use super::miscwindow::PageWindow;
 use common::gobj;
-use common::gamedata::item::{FilteredItemList, ItemListLocation, ItemFilter, ItemLocation};
+use common::gamedata::item::{ItemListLocation, ItemLocation};
+use game::item::filter::*;
 use text;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
