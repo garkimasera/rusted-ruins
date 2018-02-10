@@ -190,6 +190,7 @@ impl_objholder! {
     {UIImg, UIImgObject, ui_img, UIImgIdx},
     {Wall, WallObject, wall, WallIdx},
     {MapTemplate, MapTemplateObject, map_template, MapTemplateIdx},
+    {SiteGen, SiteGenObject, site_gen, SiteGenIdx},
     {TalkScript, TalkScriptObject, talk_script, TalkScriptIdx}
 }
 

@@ -21,5 +21,6 @@ pub mod str2enum;
 pub mod gamedata;
 pub mod maptemplate;
 pub mod event;
+pub mod sitegen_obj;
 pub mod talkscript;
 
