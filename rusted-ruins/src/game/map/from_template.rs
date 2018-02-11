@@ -8,8 +8,8 @@ pub fn from_template(t: &MapTemplateObject) -> Map {
     map
 }
 
-pub fn from_template_id(id: &str) -> Map {
-    from_template(gobj::get_by_id(id))
+pub fn from_template_id(id: &str) -> Option<Map> {
+    Some(from_template(gobj::get_by_id_checked(id)?))
 }
 
 /// Create map its terrains (tile, wall) are loaded from template

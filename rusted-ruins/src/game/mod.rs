@@ -12,6 +12,7 @@ mod infogetter;
 mod animation;
 pub mod newgame;
 mod combat;
+mod town;
 mod turnloop;
 pub mod talk;
 pub mod view;

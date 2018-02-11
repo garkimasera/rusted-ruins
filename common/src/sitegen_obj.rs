@@ -6,6 +6,7 @@ use gamedata::site::SiteKind;
 pub struct SiteGenObject {
     pub id: String,
     pub kind: SiteKind,
+    pub map_template_id: Vec<String>
 }
 
 

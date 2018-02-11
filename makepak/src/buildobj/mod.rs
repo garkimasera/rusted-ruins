@@ -159,6 +159,7 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
     Ok(SiteGenObject {
         id: tomlinput.id,
         kind: sg.kind,
+        map_template_id: sg.map_template_id,
     })
 }
 

@@ -7,7 +7,7 @@ use common::gamedata::map::*;
 use super::map::choose_empty_tile;
 
 pub fn add_region(gd: &mut GameData, id: &str) {
-    let map = super::map::from_template::from_template_id("!east-coast");
+    let map = super::map::from_template::from_template_id("!east-coast").unwrap();
     
     let region = Region::new(id, map);
     gd.region.add_region(region);
