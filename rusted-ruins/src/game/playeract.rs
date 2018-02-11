@@ -106,16 +106,36 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg_text_id: "dialog.move_floor"
+                callback: cb, msg_text_id: text::ui_txt("dialog.move_floor")
             });
             
             return;
-        } else {
-            let cb = Box::new(|pa: &mut DoPlayerAction, result: bool| {
-                println!("{}", result);
+        } else { // Crossing boundary
+            use common::gamedata::map::BoundaryBehavior;
+            let boundary = {
+                let player_pos = self.gd().player_pos();
+                let map = self.gd().get_current_map();
+                let b = map.get_boundary_by_tile_and_dir(player_pos, dir);
+                if let Some(b) = b { b } else { return; }
+            };
+            let (next_mid, msg) = match boundary {
+                BoundaryBehavior::None => { return; },
+                BoundaryBehavior::RegionMap => {
+                    let mid = MapId::from(self.gd().get_current_mapid().rid());
+                    (mid, "")
+                }
+                BoundaryBehavior::Floor(floor) => {
+                    let mid = self.gd().get_current_mapid().set_floor(floor);
+                    (mid, "")
+                }
+                BoundaryBehavior::MapId(_, _) => { unimplemented!() }
+            };
+            let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
+                if !result { return; }
+                super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg_text_id: ""
+                callback: cb, msg_text_id: msg
             });
         }
     }

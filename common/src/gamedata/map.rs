@@ -125,7 +125,7 @@ pub struct MapBoundary {
 /// Reperesents the floor that boundary connect to
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum BoundaryBehavior {
-    None, Floor(u32), MapId(MapId, u32),
+    None, Floor(u32), RegionMap, MapId(MapId, u32),
 }
 
 impl Default for BoundaryBehavior {
