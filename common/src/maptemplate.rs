@@ -16,5 +16,25 @@ pub struct MapTemplateObject {
     /// Deco Id (String) <-> integer value conversion table
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
+    pub boundary: MapTemplateBoundary,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum MapTemplateBoundaryBehavior {
+    None, NextFloor, PrevFloor, RegionMap
+}
+
+impl Default for MapTemplateBoundaryBehavior {
+    fn default() -> MapTemplateBoundaryBehavior {
+        MapTemplateBoundaryBehavior::None
+    }
+}
+
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct MapTemplateBoundary {
+    n: MapTemplateBoundaryBehavior,
+    s: MapTemplateBoundaryBehavior,
+    e: MapTemplateBoundaryBehavior,
+    w: MapTemplateBoundaryBehavior,
 }
 
