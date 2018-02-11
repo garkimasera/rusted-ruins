@@ -38,6 +38,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         "wall" => {
             return build_wall_object(tomlinput).map(|o| Object::Wall(o));
         }
+        "site_gen" => {
+            return build_site_gen_object(tomlinput).map(|o| Object::SiteGen(o));
+        }
         "talk_script" => {
             return build_talk_script_object(tomlinput).map(|o| Object::TalkScript(o));
         }
@@ -147,6 +150,15 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
     Ok(AnimImgObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
+    })
+}
+
+fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
+    let sg = get_optional_field!(tomlinput, site_gen);
+
+    Ok(SiteGenObject {
+        id: tomlinput.id,
+        kind: sg.kind,
     })
 }
 

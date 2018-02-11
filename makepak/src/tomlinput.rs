@@ -14,6 +14,7 @@ pub struct TomlInput {
     pub tile: Option<TileDepInput>,
     pub wall: Option<WallDepInput>,
     pub special_tile: Option<SpecialTileDepInput>,
+    pub site_gen: Option<SiteGenDepInput>,
     pub talk_script: Option<TalkScriptDepInput>,
 }
 
@@ -97,6 +98,11 @@ pub struct ItemDepInput {
 #[derive(Debug, Deserialize)]
 pub struct TalkScriptDepInput {
     pub sections: HashMap<String, TalkScriptSectionInput>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SiteGenDepInput {
+    pub kind: gamedata::site::SiteKind,
 }
 
 #[derive(Debug, Deserialize)]
