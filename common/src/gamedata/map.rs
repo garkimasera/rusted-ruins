@@ -20,7 +20,7 @@ pub struct Map {
     /// This is drawed outer this map
     /// If this is None, nearest tile's infomation will be used
     pub outside_tile: Option<OutsideTileInfo>,
-    pub boundary_behavior: BoundaryBehavior,
+    pub boundary: MapBoundary,
 }
 
 /// This represents special objects on a tile. For example, stairs, doors, traps.
@@ -114,13 +114,24 @@ pub struct OutsideTileInfo {
     pub deco: Option<DecoIdx>,
 }
 
-/// Has connected floors of each boundaries
 #[derive(Clone, Copy, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct BoundaryBehavior {
-    n: Option<u32>,
-    s: Option<u32>,
-    e: Option<u32>,
-    w: Option<u32>,
+pub struct MapBoundary {
+    n: BoundaryBehavior,
+    s: BoundaryBehavior,
+    e: BoundaryBehavior,
+    w: BoundaryBehavior,
+}
+
+/// Reperesents the floor that boundary connect to
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum BoundaryBehavior {
+    None, Floor(u32), MapId(MapId, u32),
+}
+
+impl Default for BoundaryBehavior {
+    fn default() -> BoundaryBehavior {
+        BoundaryBehavior::None
+    }
 }
          
 impl Default for TileInfo {
@@ -145,7 +156,7 @@ impl Map {
             player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
             charaid: Vec::new(),
             outside_tile: None,
-            boundary_behavior: BoundaryBehavior::default(),
+            boundary: MapBoundary::default(),
         }
     }
 
@@ -322,16 +333,18 @@ impl Map {
         None
     }
 
-    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<u32> {
+    /// Returns boundart when player move from 'pos' to 'dir' direction
+    /// If its destination tile is inside map, return None
+    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<BoundaryBehavior> {
         let dest_pos = pos + dir.as_vec();
         if dest_pos.0 < 0 {
-            self.boundary_behavior.n
+            Some(self.boundary.n)
         } else if dest_pos.0 >= self.h as i32 {
-            self.boundary_behavior.s
+            Some(self.boundary.s)
         } else if dest_pos.1 < 0 {
-            self.boundary_behavior.w
+            Some(self.boundary.w)
         } else if dest_pos.1 >= self.w as i32 {
-            self.boundary_behavior.e
+            Some(self.boundary.e)
         } else {
             None
         }
