@@ -7,9 +7,9 @@ use super::msgdialog;
 
 pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Option<Box<DialogWindow>> {
     Some(match req {
-        DialogOpenRequest::YesNo { mut callback, msg_text_id } => {
+        DialogOpenRequest::YesNo { mut callback, msg } => {
             let msgdialog = msgdialog::MsgDialog::with_yesno(
-                ::text::ui_txt(msg_text_id),
+                &*msg,
                 move |pa, n| {
                     callback(pa, n == 0);
                     super::DialogResult::Close

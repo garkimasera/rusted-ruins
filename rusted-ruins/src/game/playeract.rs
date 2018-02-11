@@ -106,7 +106,7 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg_text_id: text::ui_txt("dialog.move_floor")
+                callback: cb, msg: ::text::ui_txt("dialog.move_floor").into(),
             });
             
             return;
@@ -135,7 +135,7 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg_text_id: msg
+                callback: cb, msg: msg.into()
             });
         }
     }

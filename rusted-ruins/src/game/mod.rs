@@ -18,6 +18,7 @@ pub mod talk;
 pub mod view;
 
 use std::collections::VecDeque;
+use std::borrow::Cow;
 use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
@@ -114,6 +115,6 @@ impl Game {
 }
 
 pub enum DialogOpenRequest {
-    YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg_text_id: &'static str },
+    YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
     Talk { chara_talk: gamedata::chara::CharaTalk, cid: gamedata::chara::CharaId },
 }
