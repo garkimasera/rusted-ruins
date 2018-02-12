@@ -40,7 +40,12 @@ pub fn idx_to_id<T: ObjectIndex>(idx: T) -> &'static str {
 }
 
 pub fn get_by_id<T: FromId>(id: &str) -> &'static T {
-    T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER).unwrap()
+    if let Some(s) = T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER) {
+        s
+    } else {
+        eprintln!("Object \"{}\" is not found", id);
+        panic!();
+    }
 }
 
 pub fn get_by_id_checked<T: FromId>(id: &str) -> Option<&'static T> {
