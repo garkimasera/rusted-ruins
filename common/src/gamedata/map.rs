@@ -116,10 +116,10 @@ pub struct OutsideTileInfo {
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct MapBoundary {
-    n: BoundaryBehavior,
-    s: BoundaryBehavior,
-    e: BoundaryBehavior,
-    w: BoundaryBehavior,
+    pub n: BoundaryBehavior,
+    pub s: BoundaryBehavior,
+    pub e: BoundaryBehavior,
+    pub w: BoundaryBehavior,
 }
 
 /// Reperesents the floor that boundary connect to

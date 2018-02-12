@@ -1,10 +1,11 @@
 
-use common::obj::MapTemplateObject;
-use common::gamedata::map::Map;
+use common::maptemplate::*;
+use common::gamedata::map::*;
 use common::gobj;
 
 pub fn from_template(t: &MapTemplateObject) -> Map {
-    let map = create_terrain(t);
+    let mut map = create_terrain(t);
+    set_boundary(&mut map, t, 0);
     map
 }
 
@@ -36,5 +37,29 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
     }
 
     map
+}
+
+/// Setting Boundaries
+pub fn set_boundary(map: &mut Map, t: &MapTemplateObject, floor: u32) {
+    let next_floor = BoundaryBehavior::Floor(floor + 1);
+    let prev_floor = if floor == 0 {
+        BoundaryBehavior::RegionMap
+    } else {
+        BoundaryBehavior::Floor(floor - 1)
+    };
+
+    let f = |bb: &mut BoundaryBehavior, mtbb: MapTemplateBoundaryBehavior| {
+        *bb = match mtbb {
+            MapTemplateBoundaryBehavior::None => BoundaryBehavior::None,
+            MapTemplateBoundaryBehavior::NextFloor => next_floor,
+            MapTemplateBoundaryBehavior::PrevFloor => prev_floor,
+            MapTemplateBoundaryBehavior::RegionMap => BoundaryBehavior::RegionMap,
+        };
+    };
+
+    f(&mut map.boundary.n, t.boundary.n);
+    f(&mut map.boundary.s, t.boundary.s);
+    f(&mut map.boundary.e, t.boundary.e);
+    f(&mut map.boundary.w, t.boundary.w);
 }
 
