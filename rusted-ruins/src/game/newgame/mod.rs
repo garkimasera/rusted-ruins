@@ -33,7 +33,6 @@ impl NewGameBuilder {
             let start_pos = gd.get_current_map().entrance;
 
             super::region::gen_dungeon(&mut gd, mid.rid());
-            super::town::add_town(&mut gd, RegionId::default(), Vec2d::new(4, 5), "!town.freedom");
 
             let mut chara = gamedata::chara::Chara::default();
             chara.base_params.spd = 100;
