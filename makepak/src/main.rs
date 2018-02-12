@@ -8,6 +8,7 @@ extern crate tar;
 extern crate error_chain;
 extern crate getopts;
 extern crate image;
+extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 
 use getopts::Options;

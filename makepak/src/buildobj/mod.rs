@@ -2,6 +2,7 @@
 mod img;
 mod item;
 
+use array2d::Vec2d;
 use common::obj::*;
 use tomlinput::TomlInput;
 use error::*;
@@ -37,6 +38,9 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
         }
         "wall" => {
             return build_wall_object(tomlinput).map(|o| Object::Wall(o));
+        }
+        "region_gen" => {
+            return build_region_gen_object(tomlinput).map(|o| Object::RegionGen(o));
         }
         "site_gen" => {
             return build_site_gen_object(tomlinput).map(|o| Object::SiteGen(o));
@@ -150,6 +154,22 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
     Ok(AnimImgObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
+    })
+}
+
+fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject> {
+    let rg = get_optional_field!(tomlinput, region_gen);
+    use tomlinput::SiteGenIdAndPos;
+
+    let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
+        v.into_iter().map(|a| (a.id, Vec2d::new(a.x as i32, a.y as i32))).collect()
+    };
+    
+
+    Ok(RegionGenObject {
+        id: tomlinput.id,
+        map_template_id: rg.map_template_id,
+        towns: f(rg.towns),
     })
 }
 

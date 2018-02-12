@@ -14,6 +14,7 @@ pub struct TomlInput {
     pub tile: Option<TileDepInput>,
     pub wall: Option<WallDepInput>,
     pub special_tile: Option<SpecialTileDepInput>,
+    pub region_gen: Option<RegionGenDepInput>,
     pub site_gen: Option<SiteGenDepInput>,
     pub talk_script: Option<TalkScriptDepInput>,
 }
@@ -101,9 +102,24 @@ pub struct TalkScriptDepInput {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct RegionGenDepInput {
+    pub kind: gamedata::site::SiteKind,
+    pub map_template_id: String,
+    pub towns: Vec<SiteGenIdAndPos>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SiteGenIdAndPos {
+    pub id: String,
+    pub x: u32,
+    pub y: u32,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
-    pub map_template_id: Vec<String>
+    pub map_template_id: Vec<String>,
+        
 }
 
 #[derive(Debug, Deserialize)]
