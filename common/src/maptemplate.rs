@@ -32,9 +32,9 @@ impl Default for MapTemplateBoundaryBehavior {
 
 #[derive(Copy, Clone, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct MapTemplateBoundary {
-    n: MapTemplateBoundaryBehavior,
-    s: MapTemplateBoundaryBehavior,
-    e: MapTemplateBoundaryBehavior,
-    w: MapTemplateBoundaryBehavior,
+    pub n: MapTemplateBoundaryBehavior,
+    pub s: MapTemplateBoundaryBehavior,
+    pub e: MapTemplateBoundaryBehavior,
+    pub w: MapTemplateBoundaryBehavior,
 }
 

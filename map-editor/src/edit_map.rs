@@ -1,6 +1,6 @@
 
 use array2d::*;
-use common::obj::MapTemplateObject;
+use common::maptemplate::*;
 use common::objholder::*;
 use common::gobj;
 
@@ -115,6 +115,7 @@ impl EditingMap {
             wall: wall_map,
             deco_table: deco_table,
             deco: deco_map,
+            boundary: self.property.boundary,
         }
     }
 }
@@ -123,6 +124,7 @@ impl EditingMap {
 pub struct MapProperty {
     pub id: String,
     pub is_region_map: bool,
+    pub boundary: MapTemplateBoundary,
 }
 
 impl MapProperty {
@@ -130,6 +132,7 @@ impl MapProperty {
         MapProperty {
             id: id.to_owned(),
             is_region_map: false,
+            boundary: MapTemplateBoundary::default(),
         }
     }
 }
@@ -156,6 +159,8 @@ impl From<MapTemplateObject> for EditingMap {
                 map.deco[pos] = Some(gobj::id_to_idx(deco_id));
             }
         }
+
+        map.property.boundary = obj.boundary;
         
         map
     }
