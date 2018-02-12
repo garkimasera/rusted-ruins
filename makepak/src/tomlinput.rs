@@ -103,7 +103,6 @@ pub struct TalkScriptDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct RegionGenDepInput {
-    pub kind: gamedata::site::SiteKind,
     pub map_template_id: String,
     pub towns: Vec<SiteGenIdAndPos>,
 }
