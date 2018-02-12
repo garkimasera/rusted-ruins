@@ -150,6 +150,7 @@ pub fn build_ui(application: &gtk::Application) {
                 uic.property_controls.update(&*uic.map.borrow());
                 uic.set_signal_mode(true);
                 uic.map_redraw();
+                *uic.filepath.borrow_mut() = None;
             }
         });
     }
@@ -185,8 +186,9 @@ pub fn build_ui(application: &gtk::Application) {
                     return;
                 }
             };
-            if let Err(e) = save_to(&uic, path) {
-                show_err_dialog(&uic, &e.to_string());
+            match save_to(&uic, path.clone()) {
+                Ok(_) => { *uic.filepath.borrow_mut() = Some(path); }
+                Err(e) => { show_err_dialog(&uic, &e.to_string()); }
             }
         });
     }
