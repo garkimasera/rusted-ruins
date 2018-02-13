@@ -113,6 +113,7 @@ pub struct SiteGenIdAndPos {
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
     pub map_template_id: Vec<String>,
+    pub unique_citizens: Option<Vec<sitegen::UniqueCitizenGenData>>,
     pub shops: Option<Vec<sitegen::ShopGenData>>,
 }
 

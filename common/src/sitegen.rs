@@ -9,10 +9,20 @@ pub struct SiteGenObject {
     pub id: String,
     pub kind: SiteKind,
     pub map_template_id: Vec<String>,
+    pub unique_citizens: Vec<UniqueCitizenGenData>,
     pub shops: Vec<ShopGenData>,
 }
 
-/// Data to generate shops on the site
+/// Data to generate a unique citizen
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct UniqueCitizenGenData {
+    pub pos: Vec2d,
+    pub floor: u32,
+    pub name: Option<String>,
+    pub talk_script_id: Option<String>,
+}
+
+/// Data to generate a shop on the site
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ShopGenData {
     pub pos: Vec2d,
