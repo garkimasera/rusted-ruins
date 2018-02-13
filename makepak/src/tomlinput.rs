@@ -34,8 +34,8 @@ macro_rules! get_optional_field {
 #[derive(Debug, Deserialize)]
 pub struct ImgInput {
     pub path: String,
-    pub w: u32,
-    pub h: u32,
+    pub w: Option<u32>,
+    pub h: Option<u32>,
     pub grid_w: Option<u32>,
     pub grid_h: Option<u32>,
     pub n_frame: Option<u32>,
