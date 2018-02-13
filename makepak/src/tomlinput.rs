@@ -1,4 +1,5 @@
 
+use array2d::Vec2d;
 use std::collections::HashMap;
 use common::gamedata;
 use common::talkscript;
@@ -111,8 +112,7 @@ pub struct RegionGenDepInput {
 #[derive(Debug, Deserialize)]
 pub struct SiteGenIdAndPos {
     pub id: String,
-    pub x: u32,
-    pub y: u32,
+    pub pos: Vec2d,
 }
 
 #[derive(Debug, Deserialize)]

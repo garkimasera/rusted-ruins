@@ -1,4 +1,5 @@
 
+use array2d::Vec2d;
 use gamedata::site::SiteKind;
 use gamedata::shop::ShopKind;
 

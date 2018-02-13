@@ -162,7 +162,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject> {
     use tomlinput::SiteGenIdAndPos;
 
     let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
-        v.into_iter().map(|a| (a.id, Vec2d::new(a.x as i32, a.y as i32))).collect()
+        v.into_iter().map(|a| (a.id, a.pos)).collect()
     };
     
 
