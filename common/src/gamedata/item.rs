@@ -106,12 +106,13 @@ pub enum PotionKind {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum WeaponKind {
     Sword, Spear, Axe, Whip,
+    Bow, Crossbow, Gun,
 }
 
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ArmorKind {
-    Body,
+    Body, Shield,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
