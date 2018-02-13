@@ -104,7 +104,6 @@ pub struct WallObject {
 pub struct ItemObject {
     pub id: String,
     pub img: Img,
-    pub icon: Icon,
     pub basic_price: f32,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
@@ -200,16 +199,6 @@ pub trait ImgObject {
     }
 }
 
-/// Objects that have icon image
-pub trait IconObject: ImgObject {
-    /// Which is icon image
-    fn which_icon_img(&self) -> u32;
-    
-    fn icon_img_rect(&self) -> (i32, i32, u32, u32) {
-        self.img_rect()
-    }
-}
-
 macro_rules! impl_img_object {
     ( $($obj:ty),* ) => {
         $(
@@ -222,24 +211,8 @@ macro_rules! impl_img_object {
     }
 }
 
-macro_rules! impl_icon_object {
-    ( $($obj:ty),* ) => {
-        $(
-            impl IconObject for $obj {
-                fn which_icon_img(&self) -> u32 {
-                    self.icon.n
-                }
-            }
-        )*
-    }
-}
-
 impl_img_object!(
     AnimImgObject, CharaTemplateObject, DecoObject, ItemObject, SpecialTileObject, TileObject,
     UIImgObject, WallObject
-);
-
-impl_icon_object!(
-    ItemObject
 );
 

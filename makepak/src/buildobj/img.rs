@@ -83,8 +83,3 @@ fn load_as_vec(filepath: &Path) -> Result<Vec<u8>> {
     Ok(v)
 }
 
-pub fn build_icon(input: IconInput) -> Result<Icon> {
-    Ok(Icon {
-        n: input.n.unwrap_or(0)
-    })
-}

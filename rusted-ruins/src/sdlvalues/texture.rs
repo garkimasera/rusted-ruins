@@ -1,7 +1,7 @@
 
 use common::objholder::*;
-use common::obj::IconObject;
 use common::gobj;
+use common::obj::ImgObject;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 use sdl2::rwops::RWops;
@@ -94,7 +94,7 @@ macro_rules! impl_iconidx {
                     $(
                         IconIdx::$a(i) => {
                             let t = self.get(i);
-                            let r = gobj::get_obj(i).icon_img_rect();
+                            let r = gobj::get_obj(i).img_rect();
                             return (t, Rect::from(r));
                         }
                     )*
