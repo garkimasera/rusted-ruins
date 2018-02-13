@@ -180,6 +180,7 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
         id: tomlinput.id,
         kind: sg.kind,
         map_template_id: sg.map_template_id,
+        shops: sg.shops.unwrap_or(vec![]),
     })
 }
 

@@ -2,6 +2,7 @@
 use std::collections::HashMap;
 use common::gamedata;
 use common::talkscript;
+use common::sitegen;
 
 #[derive(Debug, Deserialize)]
 pub struct TomlInput {
@@ -118,7 +119,7 @@ pub struct SiteGenIdAndPos {
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
     pub map_template_id: Vec<String>,
-        
+    pub shops: Option<Vec<sitegen::ShopGenData>>,
 }
 
 #[derive(Debug, Deserialize)]
