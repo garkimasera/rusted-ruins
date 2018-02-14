@@ -19,6 +19,7 @@ pub struct UniqueCitizenGenData {
     pub pos: Vec2d,
     pub floor: u32,
     pub name: Option<String>,
+    pub chara_template_id: String,
     pub talk_script_id: Option<String>,
 }
 

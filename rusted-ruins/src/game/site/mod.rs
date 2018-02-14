@@ -1,4 +1,6 @@
 
+pub mod gen;
+
 use array2d::*;
 use common::gamedata::GameData;
 use common::gamedata::site::{Site, SiteId, SiteContent, SiteKind, DungeonKind};

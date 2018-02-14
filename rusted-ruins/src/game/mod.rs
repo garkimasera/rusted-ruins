@@ -7,7 +7,7 @@ mod command;
 mod region;
 mod site;
 mod map;
-mod chara;
+pub mod chara;
 mod infogetter;
 mod animation;
 pub mod newgame;
