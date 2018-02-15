@@ -148,11 +148,13 @@ macro_rules! impl_objholder {
             pub fn load<P: AsRef<Path>>(dirs: &[P]) -> ObjectHolder {
                 let mut objholder = ObjectHolder::new();
 
-                load_objs_dir(dirs[0].as_ref(), |object| {
-                    match object {
-                        $(Object::$a(o) => { objholder.$mem.push(o); }),*
-                    }
-                });
+                for dir in dirs {
+                    load_objs_dir(dir.as_ref(), |object| {
+                        match object {
+                            $(Object::$a(o) => { objholder.$mem.push(o); }),*
+                        }
+                    });
+                }
 
                 objholder.sort();
                 objholder

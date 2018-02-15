@@ -44,7 +44,7 @@ pub fn init() {
 
 lazy_static! {
     pub static ref APP_DIR: PathBuf = get_app_dir().expect("Cannot get data directory path");
-    
+    pub static ref ADDON_DIR: Option<PathBuf> = get_addon_dir();
     pub static ref CONFIG: Config = load_config_file!("config.toml");
     pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!("screen/800x600.toml");
     pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
@@ -76,11 +76,23 @@ fn get_app_dir() -> Option<PathBuf> {
     None
 }
 
+/// Get addon directory
+fn get_addon_dir() -> Option<PathBuf> {
+    if let Some(e) = env::var_os("RUSTED_RUINS_ADDON_DIR") {
+        return Some(PathBuf::from(e));
+    }
+    None
+}
+
 /// Get application and each addon's directories
 /// They will be the root path for searching pak or text, and other data files.
 pub fn get_data_dirs() -> Vec<PathBuf> {
     let mut v = Vec::new();
     v.push(APP_DIR.clone());
+    
+    if ADDON_DIR.is_some() {
+        v.push(ADDON_DIR.clone().unwrap());
+    }
 
     v
 }
