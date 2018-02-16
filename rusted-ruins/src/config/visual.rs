@@ -62,14 +62,17 @@ pub struct UIColorConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct FontConfig {
-    pub file: String,
     pub size: u16,
 }
 
+/// Font config for each use case
 #[derive(Debug, Deserialize)]
 pub struct Font {
+    /// For logging window
     pub log: FontConfig,
+    /// Small size ui text
     pub s: FontConfig,
+    /// Mediam size text
     pub m: FontConfig,
 }
 

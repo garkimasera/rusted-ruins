@@ -4,7 +4,7 @@ use sdl2::surface::Surface;
 use sdl2::pixels::Color;
 use sdl2::ttf::*;
 use SdlContext;
-use config::{UI_CFG, abs_path};
+use config::{UI_CFG, FONT_CFG, abs_path};
 use config::visual::FontConfig;
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
@@ -25,9 +25,10 @@ impl<'sdl> TextRenderer<'sdl> {
     pub fn new(sdl_context: &'sdl SdlContext) -> TextRenderer<'sdl> {
         
         const ERR_MSG: &'static str = "Font loading error";
+        let font_name = FONT_CFG.font_name();
         let font = &UI_CFG.font;
         let f = |fc: &FontConfig| -> Font {
-            sdl_context.ttf_context.load_font(&font_path(&fc.file), fc.size).expect(ERR_MSG)
+            sdl_context.ttf_context.load_font(&font_path(&font_name), fc.size).expect(ERR_MSG)
         };
         
         TextRenderer {

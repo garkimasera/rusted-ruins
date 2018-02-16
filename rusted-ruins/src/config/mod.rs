@@ -1,4 +1,5 @@
 
+pub mod font;
 pub mod visual;
 pub mod input;
 
@@ -49,6 +50,7 @@ lazy_static! {
     pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!("screen/800x600.toml");
     pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
     pub static ref INPUT_CFG: input::InputConfig = load_config_file!("input.toml");
+    pub static ref FONT_CFG: font::FontConfig = load_config_file!("font.toml");
     
     pub static ref PAK_DIRS: Vec<PathBuf> = {
         let mut v = Vec::new();
