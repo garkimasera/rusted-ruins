@@ -18,10 +18,7 @@ pub const MAX_ITEM_TILE: usize = 256;
 /// Maximum number of equipment slots
 pub const MAX_EQUIP_SLOT: usize = 16;
 
-pub const WAIT_TIME_DEFAULT: f32 = 100.0;
-/// The resolution of turns.
-/// wait_time is decreased by SPD / TURN_RESOLUTION
-pub const TURN_RESOLUTION: u32 = 100;
+pub const WAIT_TIME_START: u32 = 10000;
 
 // Path settings
 pub const CFG_FILES_DIR: &'static str = "config";

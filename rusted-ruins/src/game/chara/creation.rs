@@ -1,4 +1,5 @@
 
+use common::basic::WAIT_TIME_START;
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
 use common::gamedata::item::{ItemList, EquipItemList};
@@ -33,7 +34,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         class: CharaClass::Civilian,
         item_list: ItemList::for_chara(),
         equip: EquipItemList::new(&[]),
-        wait_time: 100.0,
+        wait_time: WAIT_TIME_START,
         hp: max_hp,
         rel: Relationship::NEUTRAL,
         trigger: None,

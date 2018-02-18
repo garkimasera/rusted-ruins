@@ -62,7 +62,7 @@ pub struct Chara {
     pub class: CharaClass,
     pub item_list: ItemList,
     pub equip: EquipItemList,
-    pub wait_time: f32,
+    pub wait_time: u32,
     pub hp: i32,
     /// Relationship to player character
     pub rel: Relationship,
@@ -133,7 +133,7 @@ impl Default for Chara {
             class: CharaClass::default(),
             item_list: ItemList::for_chara(),
             equip: EquipItemList::new(&[]),
-            wait_time: 100.0,
+            wait_time: ::basic::WAIT_TIME_START,
             hp: 100,
             rel: Relationship::NEUTRAL,
             trigger: None,

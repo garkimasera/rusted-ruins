@@ -1,7 +1,7 @@
 
 use std::collections::VecDeque;
 use common::gamedata::chara::{Chara, CharaId};
-use common::basic::{TURN_RESOLUTION, WAIT_TIME_DEFAULT};
+use common::basic::WAIT_TIME_START;
 use super::{Game, GameState};
 use super::npc::process_npc_turn;
 
@@ -63,18 +63,18 @@ pub fn turn_loop(game: &mut Game) {
 /// Returns true if chara's wait_time becomes 0
 fn decrease_wait_time(chara: &mut Chara) -> bool {
     let spd = chara.params.spd;
-    let mut wt = chara.wait_time;
 
-    wt -= spd as f32 / TURN_RESOLUTION as f32;
-
-    if wt < 0.0 {
-        wt += WAIT_TIME_DEFAULT;
-        if wt < 0.0 { wt = 0.0; }
-        chara.wait_time = wt;
+    if chara.wait_time < spd {
+        if spd < WAIT_TIME_START {
+            chara.wait_time += WAIT_TIME_START - spd;
+        } else {
+            warn!("Character's speed is over {}", WAIT_TIME_START);
+            chara.wait_time = 0;
+        }
         trace!("Turn Processing: {} (wt={})", chara.name, chara.wait_time);
         true
     }else{
-        chara.wait_time = wt;
+        chara.wait_time -= spd;
         false
     }
 }
