@@ -1,0 +1,4 @@
+% start
+Welcome to Rusted Ruins! (version : $(version))
+% attack
+$(attacker) attacks $(target) ($(damage))

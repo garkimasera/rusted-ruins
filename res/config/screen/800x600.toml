@@ -1,0 +1,43 @@
+# ScreenConfig for 800x600
+screen_w = 800
+screen_h = 600
+
+[main_window]
+x = 0
+y = 0
+w = 800
+h = 420
+
+[log_window]
+x = 203
+y = 423
+w = 600
+h = 177
+
+[minimap_window]
+x = 0
+y = 423
+w = 200
+h = 177
+
+[hp_indicator]
+x = 12
+y = 382
+w = 80
+h = 15
+
+[floor_info]
+x = 100
+y = 0
+w = 200
+h = 18
+
+[[hborders]]
+x = 0
+y = 420
+len = 800
+
+[[vborders]]
+x = 200
+y = 422
+len = 177

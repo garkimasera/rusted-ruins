@@ -1,0 +1,6 @@
+% dialog.choice.exit
+Exit
+% dialog.choice.newgame
+New Game
+% dialog.choice.loadgame
+Load Game

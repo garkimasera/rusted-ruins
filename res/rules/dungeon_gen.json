@@ -1,0 +1,13 @@
+
+{
+    "Cave": {
+        "npc_race_probability": {
+            "Slime": 0.7,
+            "Animal": 0.3
+        },
+        "terrain": [
+            ["!dirt", "!dirt.wall"]
+        ],
+        "item_gen_probability": 45
+    }
+}

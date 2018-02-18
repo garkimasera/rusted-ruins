@@ -1,0 +1,10 @@
+% start
+Rusted Ruinsの世界へようこそ! (version : $(version))
+% attack
+$(attacker)は$(target)を攻撃した! ($(damage))
+% killed-by-close-attack
+$(target)は倒れた
+% item-equip
+$(chara)は$(item)を装備した
+% item-pickup
+$(chara)は$(item)を拾った

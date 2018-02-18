@@ -1,0 +1,11 @@
+
+[normal]
+return = "Enter"
+i = "Openitemmenu"
+e = "OpenEquipWin"
+p = "PickUpItem"
+escape = "OpenExitWin"
+
+[dialog]
+return = "Enter"
+escape = "Cancel"

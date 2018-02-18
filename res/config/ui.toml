@@ -1,0 +1,66 @@
+
+cursor_move_duration = 160 # in milli secs
+gap_len_between_dialogs = 8
+
+[color]
+border_light = { r=209, g=136, b=84 }
+border_dark = { r=131, g=85, b=53 }
+border_highlight_light = { r=250, g=220, b=12 }
+border_highlight_dark = { r=210, g=160, b=12 }
+window_bg = { r=4, g=10, b=20 }
+window_bg_highlight = { r=34, g=40, b=60 }
+log_window_bg = { r=20, g=4, b=4 }
+log_font = { r=250, g=250, b=250 }
+normal_font = { r=250, g=250, b=250 }
+guage_border_light = { r=229, g=211, b =4 }
+guage_border_dark = { r=153, g=116, b =20 }
+guage_bg = { r=7, g=7, b =7 }
+guage_hp = { r=237, g=47, b =37 }
+
+[font]
+s = { size=11 }
+m = { size=16 }
+log = { size=14 }
+
+[log_window]
+h = 20
+n_display_line = 9
+
+[exit_window]
+rect = { x = -999, y = 120, w = 200, h = 100 }
+list_y = 52
+
+[talk_window]
+rect = { x = -999, y = 50, w = 450, h = 300 }
+n_default_line = 5
+
+[msg_dialog]
+rect = { x = -999, y = 120, w = 200, h = 0 }
+
+[start_dialog]
+rect = { x = -999, y = -1000, w = 200, h = 72 }
+
+[text_input_dialog]
+rect = { x = -999, y = -999, w = 200, h = 40 }
+
+[item_window]
+rect = { x = -999, y = -999, w = 450, h = 300 }
+n_row = 3
+
+[equip_window]
+rect = { x = -999, y = -999, w = 450, h = 300 }
+n_row = 16
+column_pos = [0, 80, 106]
+
+[page_window]
+rect = { x = -999, y = 0, w = 40, h = 22 }
+margin_to_parent = 8
+label_y = -3
+
+[label_widget]
+h = 24
+left_margin = 3
+
+[list_widget]
+h_row_with_text = 24
+left_margin = 5

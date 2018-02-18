@@ -1,0 +1,6 @@
+
+{
+    "default_equip_slots": {
+        "Human": [["Weapon", 1], ["Armor", 1]]
+    }
+} 
