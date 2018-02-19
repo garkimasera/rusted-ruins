@@ -23,7 +23,7 @@ m = { size=16 }
 log = { size=14 }
 
 [log_window]
-h = 20
+h = 19
 n_display_line = 9
 
 [exit_window]
