@@ -109,7 +109,6 @@ impl DialogWindow for EquipWindow {
             }
             return DialogResult::Continue;
         }
-        self.list.process_command(&command);
         
         match *command {
             Command::Cancel => {
