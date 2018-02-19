@@ -43,6 +43,9 @@ rect = { x = -999, y = -1000, w = 200, h = 72 }
 [text_input_dialog]
 rect = { x = -999, y = -999, w = 200, h = 40 }
 
+[choose_class_dialog]
+rect = { x = -999, y = -999, w = 200, h = 200 }
+
 [item_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
 n_row = 3

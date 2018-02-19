@@ -28,6 +28,7 @@ pub enum ListRowKind {
     Str, IconStr, StrIconStr,
 }
 
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub enum ListRow {
     Str(String),
     IconStr(IconIdx, String),
@@ -35,7 +36,7 @@ pub enum ListRow {
 }
 
 impl ListRow {
-    fn kind(&self) -> ListRowKind {
+    pub fn kind(&self) -> ListRowKind {
         match *self {
             ListRow::Str(_) => ListRowKind::Str,
             ListRow::IconStr(_, _) => ListRowKind::IconStr,
@@ -144,6 +145,12 @@ impl ListWidget {
         self.max_page
     }
 
+    /// Get current choice
+    /// This function considers current page position
+    pub fn get_current_choice(&self) -> u32 {
+        self.current_page * self.page_size.unwrap_or(0) + self.current_choice
+    }
+
     /// Adjust widget size to fit inner contents
     /// Returns adjusted size
     pub fn adjust_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
@@ -231,7 +238,13 @@ impl WidgetTrait for ListWidget {
                         self.set_page(new_page);
                         
                         if new_page == self.max_page {
-                            let n_choice_last_page = self.n_item % self.page_size.unwrap();
+                            let page_size = self.page_size.unwrap();
+                            let n_choice_last_page = self.n_item % page_size;
+                            let n_choice_last_page = if n_choice_last_page == 0 {
+                                page_size
+                            } else {
+                                n_choice_last_page
+                            };
                             if self.current_choice >= n_choice_last_page {
                                 self.current_choice = n_choice_last_page - 1;
                             }

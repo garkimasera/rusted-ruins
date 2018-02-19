@@ -4,6 +4,9 @@ use super::commonuse::*;
 use super::widget::*;
 use super::winpos::WindowPos;
 
+/// Player chooses one item from list
+/// The choices cannot be changed
+/// This handles text list only
 pub struct ChooseWindow {
     winpos: WindowPos,
     answer_list: ListWidget,
@@ -75,3 +78,90 @@ impl DialogWindow for ChooseWindow {
     }
 }
 
+/// Player chooses one item from list
+/// The choices cannot be changed
+/// Includes page functions
+pub struct PagedChooseWindow {
+    rect: Rect,
+    answer_list: ListWidget,
+    choices: Vec<ListRow>,
+}
+
+impl PagedChooseWindow {
+    pub fn new(rect: Rect, choices: Vec<ListRow>, page_size: u32, column_pos: Option<Vec<i32>>)
+               -> PagedChooseWindow {
+        let n_item = choices.len() as u32;
+        
+        let answer_list = ListWidget::new(
+            Rect::new(0, 0, rect.width(), rect.height()),
+            choices[0].kind(),
+            column_pos.unwrap_or(vec![0]),
+            Some(page_size),
+            26);
+        
+        let mut w = PagedChooseWindow {
+            rect, answer_list, choices
+        };
+        w.answer_list.set_n_item(n_item);
+        w.update_list();
+        w
+    }
+
+    pub fn get_current_choice(&self) -> u32 {
+        self.answer_list.get_current_choice()
+    }
+
+    fn update_list(&mut self) {
+        let choices = &self.choices;
+        self.answer_list.update_rows_by_func(|start, page_size| {
+            let mut rows = Vec::new();
+            for i in start..(start + page_size) {
+                if let Some(choice) = choices.get(i as usize) {
+                    rows.push(choice.clone());
+                }
+            }
+            rows
+        });
+    }
+}
+
+impl Window for PagedChooseWindow {
+    
+    fn redraw(
+        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+
+        // Drawing
+        draw_rect_border(canvas, self.rect);
+        
+        self.answer_list.draw(canvas, sv);
+    }
+}
+
+impl DialogWindow for PagedChooseWindow {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        if let Some(response) = self.answer_list.process_command(&command) {
+            match response {
+                ListWidgetResponse::Select(n) => {
+                    return DialogResult::CloseWithValue(Box::new(n));
+                },
+                ListWidgetResponse::PageChanged => {
+                    self.update_list();
+                }
+                _ => (),
+            }
+            return DialogResult::Continue;
+        }
+        
+        match *command {
+            Command::Cancel => {
+                DialogResult::Close
+            },
+            _ => DialogResult::Continue,
+        }
+    }
+
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
+    }
+}
