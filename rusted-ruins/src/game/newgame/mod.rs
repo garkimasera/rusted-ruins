@@ -4,6 +4,7 @@ use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::map::MapId;
 use common::gamedata::region::RegionId;
+use rules::RULES;
 
 pub struct NewGameBuilder {
     gd: GameData,
@@ -26,11 +27,11 @@ impl NewGameBuilder {
         {
             let mut gd = &mut self.gd;
 
-            super::region::add_region(&mut gd, "!east-coast");
+            super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
             let mut mid = MapId::RegionMap { rid: RegionId::default() };
             gd.set_current_mapid(mid);
-            let start_pos = gd.get_current_map().entrance;
+            let start_pos = RULES.newgame.start_pos;
 
             super::region::gen_dungeon(&mut gd, mid.rid());
 
@@ -42,7 +43,7 @@ impl NewGameBuilder {
             super::chara::update_params(&mut chara);
             /* Test code for equipment */
             use common::gamedata::chara::Race;
-            let slots = &::rules::RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
+            let slots = &RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
             let equip = gamedata::item::EquipItemList::new(slots);
             chara.equip = equip;
             gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);

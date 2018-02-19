@@ -1,4 +1,6 @@
 
 {
-    "class_choices": ["Archeologist"]
+    "class_choices": ["Archeologist"],
+    "start_region": "!east-coast",
+    "start_pos": [1, 1]
 }

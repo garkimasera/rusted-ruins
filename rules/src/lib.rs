@@ -7,6 +7,7 @@ extern crate log;
 #[macro_use]
 extern crate lazy_static;
 extern crate serde_json;
+extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 
 pub mod dungeon_gen;
