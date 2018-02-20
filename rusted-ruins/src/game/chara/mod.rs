@@ -29,6 +29,7 @@ pub fn update_params_by_id(gd: &mut GameData, cid: CharaId) {
 
 pub fn update_params(chara: &mut Chara) {
     chara.params.max_hp = chara.base_params.max_hp;
+    chara.params.str = chara.base_params.str;
     chara.params.vit = chara.base_params.vit;
     chara.params.dex = chara.base_params.dex;
     chara.params.int = chara.base_params.int;

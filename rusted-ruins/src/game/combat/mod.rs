@@ -1,8 +1,11 @@
 
+use rng;
 use super::Game;
 use super::animation::*;
+use common::gobj;
 use common::objholder::AnimImgIdx;
-use common::gamedata::chara::CharaId;
+use common::gamedata::chara::{CharaId, Chara};
+use common::gamedata::item::*;
 
 pub enum DamageKind {
     CloseRangeAttack,
@@ -13,12 +16,15 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     let damage = {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        let mut attack_power = attacker.params.str as f64;
-        let defence_power = target.params.vit as f64 / 2.0;
-        attack_power *= ::rng::gen_range(0.5, 1.0);
+        let defence_power = target.params.vit as i32;
+        let weapon_data = get_weapon_data(attacker);
+        let weapon_dice_result = rng::dice(weapon_data.dice_n, weapon_data.dice_x);
 
-        let damage = attack_power - defence_power;
-        if damage < 0.0 { 0 }else{ damage as i32 }
+        let damage_coef = 256 + attacker.params.str as i32 * 16;
+
+        let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
+        
+        if damage < 0 { 0 }else{ damage as i32 }
     };
     // Logging
     {
@@ -33,3 +39,25 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         AnimImgIdx(0), game.gd.get_current_map().chara_pos(target).unwrap()));
 }
 
+struct WeaponData {
+    dice_n: i32,
+    dice_x: i32,
+}
+
+fn get_weapon_data(chara: &Chara) -> WeaponData {
+    if let Some(weapon) = chara.equip.item(ItemKind::Weapon, 0) {
+        let item_obj = gobj::get_obj(weapon.idx);
+        match item_obj.content {
+            ItemContent::Weapon { dice_n, dice_x, kind } => {
+                WeaponData {
+                    dice_n, dice_x
+                }
+            }
+            _ => unreachable!()
+        }
+    } else {
+        WeaponData {
+            dice_n: 4, dice_x: 4
+        }
+    }
+}
