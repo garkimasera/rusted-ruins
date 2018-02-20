@@ -2,13 +2,16 @@
 use array2d::Vec2d;
 use common::gamedata;
 use common::gamedata::GameData;
+use common::gamedata::chara::*;
 use common::gamedata::map::MapId;
 use common::gamedata::region::RegionId;
+use common::gobj;
 use rules::RULES;
 
 pub struct NewGameBuilder {
     gd: GameData,
     player_name: Option<String>,
+    chara_class: Option<CharaClass>,
 }
 
 impl NewGameBuilder {
@@ -16,11 +19,16 @@ impl NewGameBuilder {
         NewGameBuilder {
             gd: GameData::empty(),
             player_name: None,
+            chara_class: None,
         }
     }
 
     pub fn set_player_name(&mut self, name: &str) {
         self.player_name = Some(name.to_owned());
+    }
+
+    pub fn set_chara_class(&mut self, chara_class: CharaClass) {
+        self.chara_class = Some(chara_class);
     }
 
     pub fn build(mut self) -> GameData {
@@ -35,9 +43,8 @@ impl NewGameBuilder {
 
             super::region::gen_dungeon(&mut gd, mid.rid());
 
-            let mut chara = gamedata::chara::Chara::default();
-            chara.base_params.spd = 100;
-            chara.base_params.str = 25;
+            let chara_template_id = &RULES.newgame.chara_template_table[&self.chara_class.unwrap()];
+            let mut chara = super::chara::creation::create_chara(gobj::id_to_idx(chara_template_id));
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = self.player_name.unwrap();
             super::chara::update_params(&mut chara);

@@ -3,6 +3,7 @@ use config::SCREEN_CFG;
 use super::commonuse::*;
 use super::widget::*;
 use text;
+use common::gamedata::chara::CharaClass;
 use game::newgame::NewGameBuilder;
 use super::textinputdialog::TextInputDialog;
 use super::choosewindow::PagedChooseWindow;
@@ -91,7 +92,9 @@ impl DialogWindow for DummyNewGameDialog {
             }
             NewGameBuildStage::ChooseClass => {
                 match self.choose_class_dialog.process_command(command, pa) {
-                    DialogResult::Close => {
+                    DialogResult::CloseWithValue(chara_class) => {
+                        let chara_class = chara_class.downcast::<CharaClass>().unwrap();
+                        self.builder.as_mut().unwrap().set_chara_class(*chara_class);
                         let builder = self.builder.take().unwrap();
                         let gd = builder.build();
                         return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
@@ -146,8 +149,9 @@ impl DialogWindow for ChooseClassDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match self.choose_window.process_command(&command, pa) {
             DialogResult::CloseWithValue(_) => {
-                println!("Class {} is selected", self.choose_window.get_current_choice());
-                DialogResult::Close
+                let chara_class =
+                    RULES.newgame.class_choices[self.choose_window.get_current_choice() as usize];
+                DialogResult::CloseWithValue(Box::new(chara_class))
             }
             _ => DialogResult::Continue
         }

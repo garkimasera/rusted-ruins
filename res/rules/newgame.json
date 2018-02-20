@@ -2,5 +2,8 @@
 {
     "class_choices": ["Archeologist"],
     "start_region": "!east-coast",
-    "start_pos": [1, 1]
+    "start_pos": [1, 1],
+    "chara_template_table": {
+        "Archeologist": "!archeologist.m"
+    }
 }
