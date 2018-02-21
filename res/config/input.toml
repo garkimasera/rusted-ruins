@@ -4,6 +4,7 @@ return = "Enter"
 i = "Openitemmenu"
 e = "OpenEquipWin"
 p = "PickUpItem"
+s = "OpenStatusWin"
 escape = "OpenExitWin"
 
 [dialog]

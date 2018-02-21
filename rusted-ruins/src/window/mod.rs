@@ -11,6 +11,7 @@ mod equipwindow;
 mod miscwindow;
 mod msgdialog;
 mod newgame_window;
+mod status_window;
 mod textinputdialog;
 mod indicator;
 mod minimap;
@@ -269,6 +270,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::OpenEquipWin => {
                 use common::gamedata::chara::CharaId;
                 self.window_stack.push(Box::new(equipwindow::EquipWindow::new(&mut pa, CharaId::Player)));
+            }
+            Command::OpenStatusWin => {
+                self.window_stack.push(Box::new(status_window::StatusWindow::new()));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {

@@ -271,6 +271,6 @@ impl_conv_str_to_keycode!(
 impl_fromstr_for_enum!(
     Command;
     Enter, Cancel,
-    OpenItemMenu, OpenExitWin, OpenEquipWin, PickUpItem
+    OpenItemMenu, OpenExitWin, OpenEquipWin, OpenStatusWin, PickUpItem
 );
 

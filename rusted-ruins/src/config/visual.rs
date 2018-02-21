@@ -39,6 +39,7 @@ pub struct UIConfig {
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
+    pub status_window: StatusWindowConfig,
     pub page_window: PageWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
@@ -125,6 +126,11 @@ pub struct EquipWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
     pub column_pos: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct StatusWindowConfig {
+    pub rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
