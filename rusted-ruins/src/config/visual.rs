@@ -131,6 +131,8 @@ pub struct EquipWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct StatusWindowConfig {
     pub rect: CfgRect,
+    pub image_rect: CfgRect,
+    pub name_label_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

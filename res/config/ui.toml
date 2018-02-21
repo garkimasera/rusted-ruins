@@ -57,6 +57,8 @@ column_pos = [0, 80, 106]
 
 [status_window]
 rect = { x = -999, y = -999, w = 500, h = 300 }
+image_rect = { x = 5, y = 5, w = 48, h = 96 }
+name_label_rect = { x = 50, y = 3, w = 0, h = 0 }
 
 [page_window]
 rect = { x = -999, y = 0, w = 40, h = 22 }

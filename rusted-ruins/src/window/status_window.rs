@@ -3,18 +3,27 @@ use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
+use common::gamedata::GameData;
+use common::gamedata::chara::*;
 use text;
 
 /// Character status viewer
 pub struct StatusWindow {
     rect: Rect,
+    image: ImageWidget,
+    name_label: LabelWidget,
 }
 
 impl StatusWindow {
-    pub fn new() -> StatusWindow {
-        let rect: Rect = UI_CFG.status_window.rect.into();
+    pub fn new(gd: &GameData) -> StatusWindow {
+        let cfg = &UI_CFG.status_window;
+        let rect: Rect = cfg.rect.into();
+        let chara = gd.chara.get(CharaId::Player);
+        let image = ImageWidget::chara(cfg.image_rect, chara.template);
+        let name_label = LabelWidget::new(cfg.name_label_rect, &chara.name, FontKind::M);
         let mut status_window = StatusWindow {
-            rect: rect,
+            rect,
+            image, name_label
         };
         status_window
     }
@@ -26,6 +35,8 @@ impl Window for StatusWindow {
         _anim: Option<(&Animation, u32)>) {
 
         draw_rect_border(canvas, self.rect);
+        self.image.draw(canvas, sv);
+        self.name_label.draw(canvas, sv);
     }
 }
 

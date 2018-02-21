@@ -272,7 +272,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(equipwindow::EquipWindow::new(&mut pa, CharaId::Player)));
             }
             Command::OpenStatusWin => {
-                self.window_stack.push(Box::new(status_window::StatusWindow::new()));
+                self.window_stack.push(Box::new(status_window::StatusWindow::new(pa.gd())));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
