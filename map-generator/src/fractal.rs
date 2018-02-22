@@ -4,21 +4,29 @@ use rng::gen_range;
 use super::{GeneratedMap, TileKind};
 
 pub fn write_to_map(gm: &mut GeneratedMap) {
-    let fractal = create_fractal(gm.size);
+    let (start, reach_map) = loop {
+        let fractal = create_fractal(gm.size);
 
-    let threshold = calc_threshold(&fractal, 0.6);
-    
-    for p in gm.tile.iter_idx() {
-        if fractal[p] > threshold {
-            gm.tile[p] = TileKind::Wall;
-        }else{
-            gm.tile[p] = TileKind::Floor;
+        let threshold = calc_threshold(&fractal, 0.6);
+        
+        for p in gm.tile.iter_idx() {
+            if fractal[p] > threshold {
+                gm.tile[p] = TileKind::Wall;
+            }else{
+                gm.tile[p] = TileKind::Floor;
+            }
         }
-    }
-
-    // Determine start and end
-    let start = pick_passable_tile(&gm);
-    let reach_map = create_reach_map(&gm, start);
+        
+        // Determine start and end
+        let start = pick_passable_tile(&gm);
+        let (reach_map, n_reachable_tile) = create_reach_map(&gm, start);
+        // If reachable tiles are too few, create map again
+        if n_reachable_tile < (gm.size.0 * gm.size.1) as u32 / 4 {
+            continue
+        } else {
+            break (start, reach_map);
+        }
+    };
 
     loop {
         let end = pick_passable_tile(&gm);
@@ -118,13 +126,14 @@ fn calc_threshold(fractal: &Array2d<f32>, floor_ratio: f32) -> f32 {
 }
 
 /// Calculate tiles are reacheable from given tile
-fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> Array2d<bool> {
+fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
     let mut reachable = Array2d::new(map.size.0 as u32, map.size.1 as u32, false);
+    let mut reachable_tile_count = 0;
 
     if map.tile[start].is_passable() {
         reachable[start] = true;
     }else{
-        return reachable;
+        return (reachable, 0);
     }
 
     loop {
@@ -135,6 +144,7 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> Array2d<bool> {
                 let mut try_next_tile = |next_tile: Vec2d| {
                     if map.tile.in_range(next_tile) && map.tile[next_tile].is_passable()
                         && !reachable[next_tile] {
+                        reachable_tile_count += 1;
                         reachable[next_tile] = true; new_reachable_tile = true;
                     }
                 };
@@ -149,7 +159,7 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> Array2d<bool> {
         if !new_reachable_tile { break; }
     }
 
-    reachable
+    (reachable, reachable_tile_count)
 }
 
 /// Pick one passable tile at random
