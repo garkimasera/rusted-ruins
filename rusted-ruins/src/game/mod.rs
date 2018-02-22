@@ -117,4 +117,5 @@ impl Game {
 pub enum DialogOpenRequest {
     YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
     Talk { chara_talk: gamedata::chara::CharaTalk, cid: gamedata::chara::CharaId },
+    GameOver,
 }

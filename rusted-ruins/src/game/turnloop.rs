@@ -4,6 +4,7 @@ use common::gamedata::chara::{Chara, CharaId};
 use common::basic::WAIT_TIME_START;
 use super::{Game, GameState};
 use super::npc::process_npc_turn;
+use super::DialogOpenRequest;
 
 /// Contains interruption data of charaid iterator
 #[derive(Clone)]
@@ -82,6 +83,10 @@ fn decrease_wait_time(chara: &mut Chara) -> bool {
 /// Dying chara is removed before new turn processing
 fn remove_dying_charas(game: &mut Game) {
     while let Some(cid) = game.dying_charas.pop() {
+        if cid == CharaId::Player {
+            game.request_dialog_open(DialogOpenRequest::GameOver);
+            return;
+        }
         // Remove from gamedata
         game.gd.remove_chara(cid);
         // Remove from action queue

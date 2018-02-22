@@ -1,2 +1,4 @@
 % dialog.exit
 ゲームを終了しますか?
+% dialog.gameover
+あなたは力つきた･･･

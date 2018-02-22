@@ -20,6 +20,9 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
         DialogOpenRequest::Talk { chara_talk, cid } => {
             create_talk_dialog(chara_talk, cid, game)?
         }
+        DialogOpenRequest::GameOver => {
+            Box::new(super::exitwindow::GameOverWindow::new())
+        }
     })
 }
 

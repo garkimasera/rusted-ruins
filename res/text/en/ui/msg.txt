@@ -1,4 +1,6 @@
 % dialog.exit
 Do you exit from Rusted Ruins?
+% dialog.gameover
+You die...
 % dialog.move_floor
 Do you move from this floor?

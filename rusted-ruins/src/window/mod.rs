@@ -53,6 +53,7 @@ pub enum DialogResult {
 pub enum SpecialDialogResult {
     StartDialogNewGame, StartDialogLoadGame,
     NewGameStart(GameData),
+    ReturnToStartScreen,
 }
 
 pub trait Window {
@@ -109,11 +110,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
-        window_stack.push(Box::new(self::startwindow::StartDialog::new()));
+        window_stack.push(Box::new(startwindow::StartDialog::new()));
         
         WindowManager {
             game: game,
-            mode: WindowManageMode::Start(self::startwindow::StartWindow::new()),
+            mode: WindowManageMode::Start(startwindow::StartWindow::new()),
             sdl_values: sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             anim: None,
@@ -319,7 +320,17 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     _ => unreachable!(),
                 }
             }
-            _ => (),
+            WindowManageMode::OnGame(_) => {
+                match result {
+                    SpecialDialogResult::ReturnToStartScreen => {
+                        info!("Return to start screen");
+                        self.window_stack.clear();
+                        self.window_stack.push(Box::new(startwindow::StartDialog::new()));
+                        self.mode = WindowManageMode::Start(startwindow::StartWindow::new());
+                    }
+                    _ => unreachable!(),
+                }
+            }
         }
     }
 }
