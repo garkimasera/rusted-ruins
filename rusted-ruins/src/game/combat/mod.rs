@@ -1,6 +1,7 @@
 
 use rng;
 use super::Game;
+use super::chara::CharaEx;
 use super::animation::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
@@ -30,7 +31,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        game_log!("attack"; attacker=attacker.name, target=target.name, damage=damage);
+        game_log!("attack"; attacker=attacker.get_name(), target=target.get_name(), damage=damage);
     }
     // Damage processing
     super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);

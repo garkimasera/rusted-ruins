@@ -27,7 +27,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
     };
     
     let mut chara = Chara {
-        name: text::obj_txt(&ct.id).to_owned(),
+        name: None,
         params: CharaParams::default(),
         base_params: base_params,
         template: chara_template_idx,

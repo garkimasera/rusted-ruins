@@ -5,6 +5,7 @@ use sdlvalues::FontKind;
 use config::UI_CFG;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
+use game::chara::CharaEx;
 use text;
 
 /// Character status viewer
@@ -20,7 +21,7 @@ impl StatusWindow {
         let rect: Rect = cfg.rect.into();
         let chara = gd.chara.get(CharaId::Player);
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
-        let name_label = LabelWidget::new(cfg.name_label_rect, &chara.name, FontKind::M);
+        let name_label = LabelWidget::new(cfg.name_label_rect, chara.get_name(), FontKind::M);
         let mut status_window = StatusWindow {
             rect,
             image, name_label

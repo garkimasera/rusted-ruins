@@ -5,7 +5,23 @@ use super::Game;
 use super::combat::DamageKind;
 use common::gamedata::GameData;
 use common::gamedata::chara::{Chara, CharaId};
+use common::gobj;
 use rules::RULES;
+
+/// Additional Chara method
+pub trait CharaEx {
+    fn get_name(&self) -> &str;
+}
+
+impl CharaEx for Chara {
+    fn get_name(&self) -> &str {
+        if let Some(ref name) = self.name {
+            name
+        } else {
+            ::text::obj_txt(gobj::idx_to_id(self.template))
+        }
+    }
+}
 
 pub fn damage(game: &mut Game, target: CharaId, damage: i32, damage_kind: DamageKind) {
     let t = game.gd.chara.get_mut(target);
@@ -17,7 +33,7 @@ pub fn damage(game: &mut Game, target: CharaId, damage: i32, damage_kind: Damage
         // Logging
         match damage_kind {
             DamageKind::CloseRangeAttack => {
-                game_log!("killed-by-close-attack"; target=t.name);
+                game_log!("killed-by-close-attack"; target=t.get_name());
             },
         }
     }

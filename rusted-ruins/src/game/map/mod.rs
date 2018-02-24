@@ -10,6 +10,7 @@ use common::gamedata::chara::CharaId;
 use common::gamedata::site::{SiteContent, DungeonKind};
 use common::gamedata::item::ItemList;
 use super::Game;
+use super::chara::CharaEx;
 use super::chara::creation::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
@@ -46,7 +47,7 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
         if let Some(p) = choose_empty_tile(gd.region.get_map(mid)) {
             let chara = create_npc_chara(DungeonKind::Cave, floor_level);
-            trace!("Generate new npc {}", chara.name);
+            trace!("Generate new npc {}", chara.get_name());
             gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
         } else {
             trace!("Failed npc generating because empty tile not found");

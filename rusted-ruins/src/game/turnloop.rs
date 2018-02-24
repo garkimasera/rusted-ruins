@@ -3,6 +3,7 @@ use std::collections::VecDeque;
 use common::gamedata::chara::{Chara, CharaId};
 use common::basic::WAIT_TIME_START;
 use super::{Game, GameState};
+use super::chara::CharaEx;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 
@@ -72,7 +73,7 @@ fn decrease_wait_time(chara: &mut Chara) -> bool {
             warn!("Character's speed is over {}", WAIT_TIME_START);
             chara.wait_time = 0;
         }
-        trace!("Turn Processing: {} (wt={})", chara.name, chara.wait_time);
+        trace!("Turn Processing: {} (wt={})", chara.get_name(), chara.wait_time);
         true
     }else{
         chara.wait_time -= spd;

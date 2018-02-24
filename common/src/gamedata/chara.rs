@@ -55,7 +55,7 @@ impl Relationship {
 /// All data for one character
 #[derive(Serialize, Deserialize)]
 pub struct Chara {
-    pub name: String,
+    pub name: Option<String>,
     pub params: CharaParams,
     pub base_params: CharaBaseParams,
     pub template: CharaTemplateIdx,
@@ -126,7 +126,7 @@ enum CharaState {
 impl Default for Chara {
     fn default() -> Chara {
         Chara {
-            name: "Unknown".to_owned(),
+            name: None,
             params: CharaParams::default(),
             base_params: CharaBaseParams::default(),
             template: CharaTemplateIdx(0),
