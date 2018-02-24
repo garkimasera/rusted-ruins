@@ -14,7 +14,10 @@ pub enum Race {
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum CharaClass {
-    Archeologist, Civilian,
+    // Playable classes
+    Archeologist, Rogue,
+    // Npc classes
+    Civilian,
 }
 
 impl Default for CharaClass {
