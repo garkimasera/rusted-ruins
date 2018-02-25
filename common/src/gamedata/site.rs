@@ -112,7 +112,7 @@ impl Default for SiteId {
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum DungeonKind {
-    None, Cave,
+    None, Cave, Ruin,
 }
 
 impl DungeonKind {

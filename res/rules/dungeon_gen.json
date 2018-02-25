@@ -9,5 +9,14 @@
             ["!dirt", "!dirt.wall"]
         ],
         "item_gen_probability": 45
+    },
+    "Ruin": {
+        "npc_race_probability": {
+            "Slime": 1
+        },
+        "terrain": [
+            ["!concrete-rust", "!concrete-rust.wall"]
+        ],
+        "item_gen_probability": 60
     }
 }

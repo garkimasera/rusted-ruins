@@ -44,9 +44,14 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
 }
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
+    let dungeon_kind = match gd.region.get_site(mid.sid()).content {
+        SiteContent::AutoGenDungeon { dungeon_kind } => dungeon_kind,
+        _ => DungeonKind::Ruin,
+    };
+    
     for _ in 0..n {
         if let Some(p) = choose_empty_tile(gd.region.get_map(mid)) {
-            let chara = create_npc_chara(DungeonKind::Cave, floor_level);
+            let chara = create_npc_chara(dungeon_kind, floor_level);
             trace!("Generate new npc {}", chara.get_name());
             gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
         } else {

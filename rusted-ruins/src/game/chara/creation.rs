@@ -73,11 +73,16 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     }
 
     // Choose one chara
+    if sum == 0.0 {
+        return CharaTemplateIdx(first_available_ct_idx
+                                .expect("Any appropriate chara_template not found") as u32);
+    }
     let r = ::rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
+            println!("{}", sum);
             if r < sum {
                 return CharaTemplateIdx(i as u32);
             }
