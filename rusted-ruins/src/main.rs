@@ -41,8 +41,6 @@ fn main() {
     init_obj();
     init_rules();
     
-    game_log!("start"; version="0.0.1");
-    
     let sdl_context = SdlContext::init();
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
 

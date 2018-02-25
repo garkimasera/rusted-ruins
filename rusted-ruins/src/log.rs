@@ -30,6 +30,12 @@ impl GameLog {
         self.buf.push(s);
     }
 
+    fn clear(&mut self) {
+        self.lines.clear();
+        self.buf.clear();
+        self.line_count = 0;
+    }
+
     fn update(&mut self) {
         if self.buf.is_empty() { return; }
 
@@ -66,6 +72,11 @@ const GAME_LOG_LOCK_ERR: &'static str = "Game log lock error";
 pub fn push(s: String) {
     let mut gamelog = GAME_LOG.try_lock().expect(GAME_LOG_LOCK_ERR);
     gamelog.push(s);
+}
+
+pub fn clear() {
+    let mut gamelog = GAME_LOG.try_lock().expect(GAME_LOG_LOCK_ERR);
+    gamelog.clear();
 }
 
 pub fn with_lines<F: FnMut(&Vec<String>)>(from: usize, f: F) {

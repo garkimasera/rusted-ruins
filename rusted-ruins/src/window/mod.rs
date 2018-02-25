@@ -316,6 +316,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         let game = Game::new(gd);
                         self.game = game;
                         self.game.update_before_player_turn();
+                        game_log_i!("start"; version="0.0.1");
                     }
                     _ => unreachable!(),
                 }
@@ -324,6 +325,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 match result {
                     SpecialDialogResult::ReturnToStartScreen => {
                         info!("Return to start screen");
+                        ::log::clear();
                         self.window_stack.clear();
                         self.window_stack.push(Box::new(startwindow::StartDialog::new()));
                         self.mode = WindowManageMode::Start(startwindow::StartWindow::new());
