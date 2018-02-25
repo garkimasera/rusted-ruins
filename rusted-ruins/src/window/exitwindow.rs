@@ -111,7 +111,7 @@ impl DialogWindow for GameOverWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match *command {
             Command::Cancel => {
-                return DialogResult::Close;
+                return DialogResult::Continue;
             }
             _ => (),
         }
