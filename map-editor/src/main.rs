@@ -29,7 +29,13 @@ pub fn main() {
 
     let mut app_dir = get_app_dir().expect("Could not found application directory");
     app_dir.push("paks");
-    common::gobj::init(vec![app_dir]);
+    let mut pak_dirs = vec![app_dir];
+    for mut addon_dir in get_addon_dir().into_iter() {
+        addon_dir.push("paks");
+        pak_dirs.push(addon_dir);
+    }
+    
+    common::gobj::init(pak_dirs);
     application.connect_startup(move |app| {
         ui::build_ui(app);
     });
@@ -54,4 +60,13 @@ fn get_app_dir() -> Option<PathBuf> {
         return Some(cdir);
     }
     None
+}
+
+/// Get addon directories
+fn get_addon_dir() -> Vec<PathBuf> {
+    let mut v = Vec::new();
+    if let Some(e) = env::var_os("RUSTED_RUINS_ADDON_DIR") {
+        v.push(PathBuf::from(e));
+    }
+    v
 }
