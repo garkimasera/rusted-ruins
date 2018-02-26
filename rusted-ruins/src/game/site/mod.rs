@@ -23,9 +23,11 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     let floor = gd.region.get_site(sid).floor_num();
     let map = match gd.region.get_site(sid).content {
         SiteContent::AutoGenDungeon { dungeon_kind } => {
+            let map_size = RULES.dungeon_gen[&dungeon_kind].map_size;
             let tile_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][0]);
             let wall_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][1]);
-            MapBuilder::new(40, 40).floor(floor).tile(tile_idx).wall(wall_idx).build()
+            MapBuilder::new(map_size.0 as u32, map_size.1 as u32)
+                .floor(floor).tile(tile_idx).wall(wall_idx).build()
         }
         _ => {
             MapBuilder::new(40, 40).floor(floor).build()

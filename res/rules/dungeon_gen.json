@@ -1,6 +1,7 @@
 
 {
     "Cave": {
+        "map_size": [32, 32],
         "npc_race_probability": {
             "Slime": 0.7,
             "Animal": 0.3
@@ -11,6 +12,7 @@
         "item_gen_probability": 45
     },
     "Ruin": {
+        "map_size": [32, 32],
         "npc_race_probability": {
             "Slime": 1
         },
