@@ -6,7 +6,6 @@ use common::gamedata::item::{ItemList, EquipItemList};
 use common::gamedata::site::DungeonKind;
 use common::gobj;
 use rules::RULES;
-use text;
 
 /// Create character from chara_template
 pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {

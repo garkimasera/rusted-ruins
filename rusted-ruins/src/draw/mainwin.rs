@@ -235,7 +235,6 @@ impl MainWinDrawer {
         let di = EffectDrawInfo::new(view_map, p);
         
         if let Some(fog_idx) = di.fog {
-            let o = gobj::get_obj(fog_idx);
             let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
             let dest = Rect::new(
                 p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,

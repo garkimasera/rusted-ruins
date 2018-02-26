@@ -42,7 +42,7 @@ impl Window for StatusWindow {
 }
 
 impl DialogWindow for StatusWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         match *command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,

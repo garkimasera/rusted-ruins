@@ -1,5 +1,4 @@
 
-use array2d::Vec2d;
 use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
@@ -37,7 +36,7 @@ impl NewGameBuilder {
 
             super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
-            let mut mid = MapId::RegionMap { rid: RegionId::default() };
+            let mid = MapId::RegionMap { rid: RegionId::default() };
             gd.set_current_mapid(mid);
             let start_pos = RULES.newgame.start_pos;
 

@@ -61,7 +61,6 @@ pub fn update_view_map(game: &mut Game) {
     for (_, pos) in MDistRangeIter::new(player_pos, player_view_range) {
         if !map.is_inside(pos) { continue; }
 
-        let mut prev_tile = player_pos;
         for p in LineIter::new(player_pos, pos).skip(1) {
             view_map.visible[p] = true;
             if map.tile[p].wall.is_some() {

@@ -1,7 +1,6 @@
 
 mod border;
 mod guage;
-mod icon;
 mod image;
 mod label;
 mod list;
@@ -18,7 +17,6 @@ pub trait WidgetTrait {
 
 pub use self::border::*;
 pub use self::guage::*;
-pub use self::icon::*;
 pub use self::image::*;
 pub use self::label::*;
 pub use self::list::*;
