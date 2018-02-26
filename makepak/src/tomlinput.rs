@@ -80,16 +80,16 @@ pub struct ItemDepInput {
     pub basic_price: f32,
     pub gen_weight: f32,
     pub gen_level: u32,
-    pub eff: Option<f32>,
+    pub eff: Option<i32>,
     pub dice_n: Option<i32>,
     pub dice_x: Option<i32>,
     pub potion_kind: Option<gamedata::item::PotionKind>,
     pub weapon_kind: Option<gamedata::item::WeaponKind>,
     pub armor_kind: Option<gamedata::item::ArmorKind>,
     /// For armor items
-    pub def: Option<f32>,
+    pub def: Option<i32>,
     /// For armor items
-    pub mdf: Option<f32>,
+    pub mdf: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]

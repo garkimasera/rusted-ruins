@@ -17,15 +17,14 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     let damage = {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        let defence_power = target.params.vit as i32;
         let weapon_data = get_weapon_data(attacker);
         let weapon_dice_result = rng::dice(weapon_data.dice_n, weapon_data.dice_x);
 
         let damage_coef = 256 + attacker.params.str as i32 * 16;
 
         let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
-        
-        if damage < 0 { 0 }else{ damage as i32 }
+        let defence_power = calc_defence(target);
+        if damage < defence_power { 0 }else{ damage - defence_power }
     };
     // Logging
     {
@@ -61,4 +60,19 @@ fn get_weapon_data(chara: &Chara) -> WeaponData {
             dice_n: 4, dice_x: 4
         }
     }
+}
+
+fn calc_defence(chara: &Chara) -> i32 {
+    let armor_power = if let Some(armor) = chara.equip.item(ItemKind::Armor, 0) {
+        let item_obj = gobj::get_obj(armor.idx);
+        match item_obj.content {
+            ItemContent::Armor { def, .. } => {
+                def
+            }
+            _ => unreachable!()
+        }
+    } else {
+        0
+    };
+    armor_power
 }

@@ -45,7 +45,7 @@ pub enum ItemContent {
     Potion {
         kind: PotionKind,
         /// Effectiveness of this item
-        eff: f32,
+        eff: i32,
     },
     Weapon {
         kind: WeaponKind,
@@ -55,9 +55,9 @@ pub enum ItemContent {
     Armor {
         kind: ArmorKind,
         /// Defence
-        def: f32,
+        def: i32,
         /// Magic Defence
-        mdf: f32,
+        mdf: i32,
     }
 }
 

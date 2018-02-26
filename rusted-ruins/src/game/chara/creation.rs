@@ -82,7 +82,6 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
-            println!("{}", sum);
             if r < sum {
                 return CharaTemplateIdx(i as u32);
             }
