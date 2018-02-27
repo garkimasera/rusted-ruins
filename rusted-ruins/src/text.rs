@@ -7,6 +7,7 @@ use walkdir::WalkDir;
 use error::*;
 use config;
 use common::basic;
+use common::to_textid::ToTextId;
 
 /// Initialize lazy static
 pub fn init() {
@@ -14,13 +15,15 @@ pub fn init() {
     ::lazy_static::initialize(&LOG_TXT_MAP);
     ::lazy_static::initialize(&UI_TXT_MAP);
     ::lazy_static::initialize(&TALK_TXT_MAP);
+    ::lazy_static::initialize(&MISC_TXT_MAP);
 }
 
 lazy_static! {
-    static ref OBJ_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
-    static ref LOG_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
-    static ref UI_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
-    static ref TALK_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::TALK_TXT_DIR);
+    static ref OBJ_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
+    static ref LOG_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
+    static ref UI_TXT_MAP:   HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
+    static ref TALK_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::TALK_TXT_DIR);
+    static ref MISC_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::MISC_TXT_DIR);
 }
 
 pub fn obj_txt<'a>(id: &'a str) -> &'a str {
@@ -57,6 +60,19 @@ pub fn talk_txt<'a>(id: &'a str) -> &'a str {
 #[allow(unused)]
 pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
     TALK_TXT_MAP.get(id).map(|txt| txt.as_ref())
+}
+
+pub fn misc_txt<'a>(id: &'a str) -> &'a str {
+    if let Some(txt) = MISC_TXT_MAP.get(id) { txt }else{ id }
+}
+
+#[allow(unused)]
+pub fn misc_txt_checked(id: &str) -> Option<&'static str> {
+    MISC_TXT_MAP.get(id).map(|txt| txt.as_ref())
+}
+
+pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {
+    misc_txt(a.to_textid())
 }
 
 fn load_trans_txt(kind: &str) -> HashMap<String, String> {
