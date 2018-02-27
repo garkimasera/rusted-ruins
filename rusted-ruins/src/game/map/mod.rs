@@ -55,7 +55,7 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
             trace!("Generate new npc {}", chara.get_name());
             gd.add_chara_to_map(chara, ::common::gamedata::chara::CharaKind::OnMap, mid, p);
         } else {
-            trace!("Failed npc generating because empty tile not found");
+            warn!("Failed npc generating because empty tile not found");
             return;
         }
     }
@@ -68,8 +68,10 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     
     for _ in 0..MAX_TRY {
         let p = Vec2d::new(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
+        let tile = &map.tile[p];
 
-        if map.tile[p].wall.is_none() && map.tile[p].chara.is_none() {
+        // Empty tile don't has wall, chara, and isn't special tile.
+        if tile.wall.is_none() && tile.chara.is_none() && tile.special.is_none() {
             return Some(p);
         }
     }
@@ -83,7 +85,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
         let r = gen_range(0, n_empty_tile);
         let p = map.tile
             .iter_with_idx()
-            .filter(|&(_, t)| t.wall.is_none() && t.chara.is_none())
+            .filter(|&(_, t)| t.wall.is_none() && t.chara.is_none() && t.special.is_none() )
             .skip(r)
             .next()
             .unwrap()

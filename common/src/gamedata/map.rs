@@ -38,6 +38,15 @@ pub enum SpecialTileKind {
     }
 }
 
+impl SpecialTileKind {
+    pub fn is_none(&self) -> bool {
+        match *self {
+            SpecialTileKind::None => true,
+            _ => false,
+        }
+    }
+}
+
 impl Default for SpecialTileKind {
     fn default() -> SpecialTileKind {
         SpecialTileKind::None
