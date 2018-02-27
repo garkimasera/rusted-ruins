@@ -7,7 +7,7 @@ use super::town::Town;
 /// It is consist of one or multiple maps
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Site {
-    pub name: String,
+    pub name: Option<String>,
     map: Vec<Map>,
     max_floor: u32,
     /// Site kind specific data
@@ -33,9 +33,9 @@ pub enum SiteContent {
 }
 
 impl Site {
-    pub fn new(name: &str, max_floor: u32) -> Site {
+    pub fn new(max_floor: u32) -> Site {
         Site {
-            name: name.to_owned(),
+            name: None,
             map: Vec::new(),
             max_floor,
             content: SiteContent::Other,

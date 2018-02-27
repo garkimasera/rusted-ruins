@@ -1,6 +1,7 @@
 
 pub mod gen;
 
+use std::borrow::Cow;
 use array2d::*;
 use common::gamedata::GameData;
 use common::gamedata::site::{Site, SiteId, SiteContent, SiteKind, DungeonKind};
@@ -8,9 +9,10 @@ use common::gamedata::region::RegionId;
 use common::gobj;
 use rules::RULES;
 use super::map::builder::MapBuilder;
+use text;
 
 pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d) -> SiteId {
-    let mut site = Site::new("Ruin Hoge", 10);
+    let mut site = Site::new(10);
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
     let sid = gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap();
     extend_site_floor(gd, sid);
@@ -39,3 +41,29 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     super::map::gen_items(gd, mid);
 }
 
+/// Additional Site method
+pub trait SiteEx {
+    fn get_name(&self) -> Cow<str>;
+}
+
+impl SiteEx for Site {
+    fn get_name(&self) -> Cow<str> {
+        if let Some(ref name) = self.name {
+            let name: &str = &*name;
+            return name.into();
+        }
+        
+        match self.content {
+            SiteContent::AutoGenDungeon { dungeon_kind } => {
+                text::to_txt(&dungeon_kind).into()
+            }
+            SiteContent::Town { ref town } => {
+                text::obj_txt(town.id()).into()
+            }
+            SiteContent::Other => {
+                warn!("Unnamed other kind site");
+                "".into()
+            }
+        }
+    }
+}

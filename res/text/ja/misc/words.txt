@@ -1,0 +1,4 @@
+% !dungeon_kind.cave
+洞窟
+% !dungeon_kind.ruin
+遺跡

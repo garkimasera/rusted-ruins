@@ -1,0 +1,4 @@
+% !dungeon_kind.cave
+Cave
+% !dungeon_kind.ruin
+Ruin

@@ -5,7 +5,7 @@ mod npc;
 mod action;
 mod command;
 mod region;
-mod site;
+pub mod site;
 mod map;
 pub mod chara;
 mod infogetter;
