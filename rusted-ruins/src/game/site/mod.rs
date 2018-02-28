@@ -29,7 +29,11 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
             let tile_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][0]);
             let wall_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][1]);
             MapBuilder::new(map_size.0 as u32, map_size.1 as u32)
-                .floor(floor).tile(tile_idx).wall(wall_idx).build()
+                .floor(floor)
+                .tile(tile_idx)
+                .wall(wall_idx)
+                .deepest_floor(floor >= gd.region.get_site(sid).max_floor() - 1)
+                .build()
         }
         _ => {
             MapBuilder::new(40, 40).floor(floor).build()

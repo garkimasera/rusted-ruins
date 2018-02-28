@@ -9,6 +9,7 @@ use super::town::Town;
 pub struct Site {
     pub name: Option<String>,
     map: Vec<Map>,
+    /// The maximum nubmer of floor
     max_floor: u32,
     /// Site kind specific data
     pub content: SiteContent,
@@ -75,6 +76,10 @@ impl Site {
 
     pub fn floor_num(&self) -> u32 {
         self.map.len() as u32
+    }
+
+    pub fn max_floor(&self) -> u32 {
+        self.max_floor
     }
 }
 

@@ -7,6 +7,7 @@ use map_generator::{MapGenerator, GeneratedMap, TileKind};
 pub struct MapBuilder {
     w: u32, h: u32,
     floor: u32,
+    is_deepest_floor: bool,
     tile: TileIdx,
     wall: WallIdx,
 }
@@ -21,7 +22,7 @@ impl MapBuilder {
     
     pub fn build(self) -> Map {
         let generated_map = MapGenerator::new((self.w, self.h)).fractal().generate();
-        generated_map_to_map(generated_map, self.tile, self.wall, self.floor)
+        generated_map_to_map(generated_map, self.tile, self.wall, self.floor, self.is_deepest_floor)
     }
 
     pub fn floor(mut self, floor: u32) -> MapBuilder {
@@ -38,9 +39,16 @@ impl MapBuilder {
         self.wall = wall;
         self
     }
+
+    pub fn deepest_floor(mut self, is_deepest_floor: bool) -> MapBuilder {
+        self.is_deepest_floor = is_deepest_floor;
+        self
+    }
 }
 
-pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx, floor: u32) -> Map {
+pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
+                            floor: u32, is_deepest_floor: bool) -> Map {
+    
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
 
@@ -64,7 +72,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx, floo
     map.entrance = gm.entrance;
     map.tile[gm.entrance].special = SpecialTileKind::Stairs { dest_floor, kind: entrance_stairs };
 
-    if gm.exit.is_some()  {
+    if !is_deepest_floor && gm.exit.is_some() {
         let dest_floor = floor + 1;
         map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs { dest_floor, kind: exit_stairs };;
     }
