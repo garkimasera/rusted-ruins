@@ -10,7 +10,7 @@ pub fn gen_dungeon_item(floor_level: u32) -> Item {
     let item_obj = gobj::get_obj(idx);
     Item {
         idx: idx,
-        flags: ItemFlags::empty(),
+        flags: item_obj.default_flags,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
     }

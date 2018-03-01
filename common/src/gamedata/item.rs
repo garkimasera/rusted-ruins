@@ -18,6 +18,9 @@ pub struct ItemObject {
     pub id: String,
     pub img: ::obj::Img,
     pub kind: ItemKind,
+    /// Defalut item flags
+    /// They are set at making object based on object setting files
+    pub default_flags: ItemFlags,
     pub basic_price: u32,
     /// The frequency of character generation for random map
     pub gen_weight: f32,

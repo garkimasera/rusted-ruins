@@ -8,10 +8,14 @@ use super::img::build_img;
 pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     let img = get_optional_field!(tomlinput, image);
     let item = get_optional_field!(tomlinput, item);
+    let mut flags = ItemFlags::empty();
 
     let kind = match item.item_kind.as_str() {
         "Object" => ItemKind::Object,
-        "Potion" => ItemKind::Potion,
+        "Potion" => {
+            flags |= ItemFlags::DRINKABLE;
+            ItemKind::Potion
+        }
         "Weapon" => {
             ItemKind::Weapon(get_optional_field!(item, weapon_kind))
         }
@@ -26,6 +30,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     Ok(ItemObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
+        default_flags: flags,
         kind: kind,
         basic_price: item.basic_price,
         gen_weight: item.gen_weight,
