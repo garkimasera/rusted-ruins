@@ -106,7 +106,7 @@ pub type ItemLocation = (ItemListLocation, u32);
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemList {
     pub limit: usize,
-    pub items: Vec<(Box<Item>, u32)>,
+    pub items: Vec<(Item, u32)>,
 }
 
 impl ItemList {
@@ -142,7 +142,7 @@ impl ItemList {
 
     /// Append item
     /// If the list doesn't have empty, returns given item.
-    pub fn append(&mut self, item: Box<Item>, n: u32) -> Option<Box<Item>> {
+    pub fn append(&mut self, item: Item, n: u32) -> Option<Item> {
         if self.limit <= self.items.len() + 1 {
             return Some(item)
         }
@@ -185,7 +185,7 @@ impl ItemList {
     }
 
     /// Remove an item from list and get its clone or moved value
-    pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) -> Box<Item> {
+    pub fn remove_and_get<T: Into<ItemMoveNum>>(&mut self, i: u32, n: T) -> Item {
         let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 >= n && n != 0);
@@ -217,7 +217,7 @@ impl ItemList {
     }
 
     /// Return item iterator
-    pub fn iter(&self) -> ::std::slice::Iter<(Box<Item>, u32)> {
+    pub fn iter(&self) -> ::std::slice::Iter<(Item, u32)> {
         self.items.iter()
     }
 }
@@ -350,7 +350,7 @@ impl EquipItemList {
     }
     
     /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
-    pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Box<Item>) -> Option<Box<Item>> {
+    pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Item) -> Option<Item> {
         assert!(self.slot_num(esk) > n);
         if let Some(i) = self.list_idx(esk, n) { // Replace existing item
             return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
@@ -441,7 +441,7 @@ impl<'a> Iterator for EquipSlotIter<'a> {
         }
         let slot = &self.equip_item_list.slots[self.n];
         let result = if let Some(i) = slot.list_idx {
-            (slot.esk, slot.n, Some(&*self.equip_item_list.item_list.items[i as usize].0))
+            (slot.esk, slot.n, Some(&self.equip_item_list.item_list.items[i as usize].0))
         } else {
             (slot.esk, slot.n, None)
         };
@@ -464,7 +464,7 @@ impl<'a> Iterator for EquipItemIter<'a> {
             }
             let slot = &self.equip_item_list.slots[self.n];
             if let Some(i) = slot.list_idx {
-                let result = (slot.esk, slot.n, &*self.equip_item_list.item_list.items[i as usize].0);
+                let result = (slot.esk, slot.n, &self.equip_item_list.item_list.items[i as usize].0);
                 self.n += 1;
                 return Some(result);
             }

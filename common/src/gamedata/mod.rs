@@ -150,7 +150,7 @@ impl GameData {
 
     pub fn get_item(&self, item_location: ItemLocation) -> (&Item, u32) {
         let a = &self.get_item_list(item_location.0).items[item_location.1 as usize];
-        (&*a.0, a.1)
+        (&a.0, a.1)
     }
 
     /// Remove item from list
@@ -164,7 +164,7 @@ impl GameData {
 
     /// Remove item from list and get its clone or moved value
     pub fn remove_item_and_get<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T)
-                                             -> Box<Item> {
+                                             -> Item {
         let result = {
             let item_list = self.get_item_list_mut(item_location.0);
             item_list.remove_and_get(item_location.1, n)

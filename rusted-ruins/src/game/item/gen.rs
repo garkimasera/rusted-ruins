@@ -4,16 +4,15 @@ use common::gobj;
 use common::objholder::ItemIdx;
 
 /// Generate new item on dungeon floor
-pub fn gen_dungeon_item(floor_level: u32) -> Box<Item> {
+pub fn gen_dungeon_item(floor_level: u32) -> Item {
     let idx = choose_item_by_floor_level(floor_level);
 
     let item_obj = gobj::get_obj(idx);
-    let item = Item {
+    Item {
         idx: idx,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
-    };
-    Box::new(item)
+    }
 }
 
 fn choose_item_by_floor_level(floor_level: u32) -> ItemIdx {

@@ -86,8 +86,8 @@ impl<'a> Iterator for FilteredItemList<'a> {
             let prev_count = self.count;
             self.count += 1;
 
-            if self.filter.judge(&*a.0) {
-                return Some(((self.location, prev_count as u32), &*a.0, a.1));
+            if self.filter.judge(&a.0) {
+                return Some(((self.location, prev_count as u32), &a.0, a.1));
             }
         }
     }
