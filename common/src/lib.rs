@@ -5,6 +5,8 @@ extern crate serde_derive;
 #[cfg(feature="global_state_obj")]
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate bitflags;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rmp;
 extern crate rmp_serde as rmps;

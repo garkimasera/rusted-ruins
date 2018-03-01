@@ -8,6 +8,7 @@ use std::cmp::{PartialOrd, Ord, Ordering};
 pub struct Item {
     pub idx: ItemIdx,
     pub kind: ItemKind,
+    pub flags: ItemFlags,
     pub quality: ItemQuality,
 }
 
@@ -57,6 +58,14 @@ pub enum ItemKind {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKindRough {
     Object, Potion, Weapon, Armor,
+}
+
+bitflags! {
+    pub struct ItemFlags: u64 {
+        const CURSED    = 1 << 0;
+        const EATABLE   = 1 << 1;
+        const DRINKABLE = 1 << 2;
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -469,6 +478,43 @@ impl<'a> Iterator for EquipItemIter<'a> {
                 return Some(result);
             }
             self.n += 1;
+        }
+    }
+}
+
+// Implement serialize & deserialize for ItemFlags
+mod impl_serde {
+    use serde::ser::{Serialize, Serializer};
+    use serde::de::{Deserialize, Deserializer, Visitor};
+    use std::fmt;
+    use super::ItemFlags;
+    
+    impl Serialize for ItemFlags {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+            let bits = self.bits();
+            serializer.serialize_u64(bits)
+        }
+    }
+
+    struct ItemFlagsVisitor;
+
+    impl<'de> Visitor<'de> for ItemFlagsVisitor {
+        type Value = ItemFlags;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("an integer")
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<ItemFlags, E> where E: ::serde::de::Error {
+            Ok(ItemFlags::from_bits_truncate(v))
+        }
+    }
+
+    impl<'de> Deserialize<'de> for ItemFlags {
+        fn deserialize<D>(deserializer: D) -> Result<ItemFlags, D::Error>
+        where D: Deserializer<'de>
+        {
+            deserializer.deserialize_u64(ItemFlagsVisitor)
         }
     }
 }
