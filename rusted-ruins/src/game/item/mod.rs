@@ -13,7 +13,9 @@ pub fn get_item_name(item: &Item) -> String {
 }
 
 /// Change specified character's equipment by given item
-pub fn change_equipment(gd: &mut GameData, cid: CharaId, slot: (ItemKind, u8), il: ItemLocation) -> bool {
+pub fn change_equipment(
+    gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) -> bool {
+    
     if !gd.get_item_list(il.0).has_empty() {
         return false;
     }

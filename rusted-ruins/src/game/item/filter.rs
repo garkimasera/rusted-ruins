@@ -7,7 +7,7 @@ use common::gamedata::item::*;
 #[derive(Clone, Copy, Debug)]
 pub struct ItemFilter {
     pub all: bool,
-    pub kind: Option<ItemKind>,
+    pub equip_slot_kind: Option<EquipSlotKind>,
 }
 
 impl ItemFilter {
@@ -26,15 +26,15 @@ impl ItemFilter {
         if self.all { return true; }
         let o = gobj::get_obj(item.idx);
         
-        if let Some(kind) = self.kind {
-            if o.content.kind() != kind { return false; }
+        if let Some(equip_slot_kind) = self.equip_slot_kind {
+            if o.kind.equip_slot_kind() != Some(equip_slot_kind) { return false; }
         }
         
         true
     }
 
-    pub fn kind(mut self, kind: ItemKind) -> ItemFilter {
-        self.kind = Some(kind);
+    pub fn equip_slot_kind(mut self, equip_slot_kind: EquipSlotKind) -> ItemFilter {
+        self.equip_slot_kind = Some(equip_slot_kind);
         self
     }
 }
@@ -43,7 +43,7 @@ impl Default for ItemFilter {
     fn default() -> ItemFilter {
         ItemFilter {
             all: false,
-            kind: None,
+            equip_slot_kind: None,
         }
     }
 }

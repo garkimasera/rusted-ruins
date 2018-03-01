@@ -152,7 +152,7 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     /// Change specified character's equipment by given item
-    pub fn change_equipment(&mut self, cid: CharaId, slot: (ItemKind, u8), il: ItemLocation) -> bool {
+    pub fn change_equipment(&mut self, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) -> bool {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)
     }
 

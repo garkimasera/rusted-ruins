@@ -1,6 +1,5 @@
 
 use std::fmt;
-use gamedata::item::*;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {
@@ -100,18 +99,7 @@ pub struct WallObject {
     pub symbol_color: (u8, u8, u8),
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct ItemObject {
-    pub id: String,
-    pub img: Img,
-    pub basic_price: f32,
-    /// The frequency of character generation for random map
-    pub gen_weight: f32,
-    /// Generation level
-    /// If it is higher, and the item will be generated on deeper floors
-    pub gen_level: u32,
-    pub content: ItemContent,
-}
+pub use gamedata::item::ItemObject;
 
 #[derive(Serialize, Deserialize)]
 pub struct Img {

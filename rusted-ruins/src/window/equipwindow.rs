@@ -21,7 +21,7 @@ pub struct EquipWindow {
     list: ListWidget,
     n_row: u32,
     cid: CharaId,
-    slots: Vec<(ItemKind, u8)>
+    slots: Vec<(EquipSlotKind, u8)>
 }
 
 impl EquipWindow {
@@ -49,8 +49,8 @@ impl EquipWindow {
 
         self.list.update_rows_by_func(|start, page_size| {
             slots.clear();
-            for (ik, ik_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
-                let kind = text::ui_txt(&format!("{:?}", ik)).to_owned();
+            for (esk, esk_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
+                let kind = text::ui_txt(&format!("{:?}", esk)).to_owned();
                 if let Some(item) = item {
                     let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
                     rows.push(ListRow::StrIconStr(kind, IconIdx::Item(item.idx), item_text));
@@ -60,7 +60,7 @@ impl EquipWindow {
                         IconIdx::Item(::common::objholder::ItemIdx(0)),
                         text::ui_txt("Empty").to_owned()));
                 }
-                slots.push((ik, ik_i));
+                slots.push((esk, esk_i));
             }
             rows
         });
@@ -96,7 +96,7 @@ impl DialogWindow for EquipWindow {
                     
                     let select_window = ItemWindow::new_select(
                         ItemListLocation::Chara { cid: CharaId::Player },
-                        ItemFilter::new().kind(self.slots[i as usize].0),
+                        ItemFilter::new().equip_slot_kind(self.slots[i as usize].0),
                         Box::new(equip_selected_item),
                         pa
                     );

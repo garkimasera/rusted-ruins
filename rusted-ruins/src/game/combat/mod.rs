@@ -45,15 +45,11 @@ struct WeaponData {
 }
 
 fn get_weapon_data(chara: &Chara) -> WeaponData {
-    if let Some(weapon) = chara.equip.item(ItemKind::Weapon, 0) {
+    if let Some(weapon) = chara.equip.item(EquipSlotKind::ShortRangeWeapon, 0) {
         let item_obj = gobj::get_obj(weapon.idx);
-        match item_obj.content {
-            ItemContent::Weapon { dice_n, dice_x, kind } => {
-                WeaponData {
-                    dice_n, dice_x
-                }
-            }
-            _ => unreachable!()
+        WeaponData {
+            dice_n: item_obj.dice_n.into(),
+            dice_x: item_obj.dice_x.into(),
         }
     } else {
         WeaponData {
@@ -63,16 +59,11 @@ fn get_weapon_data(chara: &Chara) -> WeaponData {
 }
 
 fn calc_defence(chara: &Chara) -> i32 {
-    let armor_power = if let Some(armor) = chara.equip.item(ItemKind::Armor, 0) {
+    let armor_power = if let Some(armor) = chara.equip.item(EquipSlotKind::BodyArmor, 0) {
         let item_obj = gobj::get_obj(armor.idx);
-        match item_obj.content {
-            ItemContent::Armor { def, .. } => {
-                def
-            }
-            _ => unreachable!()
-        }
+        item_obj.def
     } else {
         0
     };
-    armor_power
+    armor_power.into()
 }

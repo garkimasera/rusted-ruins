@@ -3,12 +3,33 @@ use array2d::Vec2d;
 use objholder::ItemIdx;
 use std::cmp::{PartialOrd, Ord, Ordering};
 
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 /// Game item
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct Item {
     pub idx: ItemIdx,
-    pub kind: ItemKindDetail,
+    pub kind: ItemKind,
     pub quality: ItemQuality,
+}
+
+/// ItemObject has detail data for one item
+#[derive(Serialize, Deserialize)]
+pub struct ItemObject {
+    pub id: String,
+    pub img: ::obj::Img,
+    pub kind: ItemKind,
+    pub basic_price: u32,
+    /// The frequency of character generation for random map
+    pub gen_weight: f32,
+    /// Generation level
+    /// If it is higher, and the item will be generated on deeper floors
+    pub gen_level: u32,
+    pub dice_n: u16,
+    pub dice_x: u16,
+    /// Defence
+    pub def: u16,
+    /// Magic Defence
+    pub mdf: u16,
+    pub medical_effect: Option<MedicalEffect>,
 }
 
 impl Ord for Item {
@@ -27,58 +48,15 @@ impl PartialOrd for Item {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum ItemKind {
-    Object, Potion, Weapon, Armor,
-}
-
 /// This is mainly used for item list sorting
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum ItemKindDetail {
-    Object, Potion(PotionKind), Weapon(WeaponKind), Armor(ArmorKind),
+pub enum ItemKind {
+    Object, Potion, Weapon(WeaponKind), Armor(ArmorKind),
 }
 
-/// Kind dependent data for a item
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub enum ItemContent {
-    Object,
-    Potion {
-        kind: PotionKind,
-        /// Effectiveness of this item
-        eff: i32,
-    },
-    Weapon {
-        kind: WeaponKind,
-        dice_n: i32,
-        dice_x: i32,
-    },
-    Armor {
-        kind: ArmorKind,
-        /// Defence
-        def: i32,
-        /// Magic Defence
-        mdf: i32,
-    }
-}
-
-impl ItemContent {
-    pub fn kind(&self) -> ItemKind {
-        match *self {
-            ItemContent::Object => ItemKind::Object,
-            ItemContent::Potion { .. } => ItemKind::Potion,
-            ItemContent::Weapon { .. } => ItemKind::Weapon,
-            ItemContent::Armor { .. } => ItemKind::Armor,
-        }
-    }
-
-    pub fn kind_detail(&self) -> ItemKindDetail {
-        match *self {
-            ItemContent::Object => ItemKindDetail::Object,
-            ItemContent::Potion { kind, .. } => ItemKindDetail::Potion(kind),
-            ItemContent::Weapon { kind, .. } => ItemKindDetail::Weapon(kind),
-            ItemContent::Armor { kind, .. } => ItemKindDetail::Armor(kind),
-        }
-    }
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ItemKindRough {
+    Object, Potion, Weapon, Armor,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -98,7 +76,7 @@ impl ItemQuality {
 
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum PotionKind {
+pub enum MedicalEffect {
     Heal,
 }
 
@@ -264,6 +242,45 @@ impl From<u32> for ItemMoveNum {
     }
 }
 
+//
+// Equipment handling types and routines
+//
+
+#[repr(u8)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+pub enum EquipSlotKind {
+    ShortRangeWeapon, LongRangeWeapon, BodyArmor, Shield,
+}
+
+impl ItemKind {
+    pub fn equip_slot_kind(self) -> Option<EquipSlotKind> {
+        match self {
+            ItemKind::Weapon(weapon_kind) => Some(weapon_kind.equip_slot_kind()),
+            ItemKind::Armor(armor_kind) => Some(armor_kind.equip_slot_kind()),
+            _ => None
+        }
+    }
+}
+
+impl WeaponKind {
+    pub fn equip_slot_kind(self) -> EquipSlotKind {
+        use self::WeaponKind::*;
+        match self {
+            Axe | Spear | Sword => EquipSlotKind::ShortRangeWeapon,
+            _ => EquipSlotKind::LongRangeWeapon,
+        }
+    }
+}
+
+impl ArmorKind {
+    pub fn equip_slot_kind(self) -> EquipSlotKind {
+        match self {
+            ArmorKind::Body => EquipSlotKind::BodyArmor,
+            ArmorKind::Shield => EquipSlotKind::Shield,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct EquipItemList {
     /// Slot infomation
@@ -274,7 +291,7 @@ pub struct EquipItemList {
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct SlotInfo {
     /// The kind of equipment
-    ik: ItemKind,
+    esk: EquipSlotKind,
     /// The index in this ItemKind
     n: u8,
     /// The Index at list
@@ -282,21 +299,21 @@ pub struct SlotInfo {
 }
 
 impl SlotInfo {
-    fn new(ik: ItemKind, n: u8) -> SlotInfo {
-        SlotInfo { ik, n, list_idx: None }
+    fn new(esk: EquipSlotKind, n: u8) -> SlotInfo {
+        SlotInfo { esk, n, list_idx: None }
     }
 }
 
 pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
 
 impl EquipItemList {
-    pub fn new(slots: &[(ItemKind, u8)]) -> EquipItemList {
+    pub fn new(slots: &[(EquipSlotKind, u8)]) -> EquipItemList {
         let mut slots = slots.to_vec();
         slots.sort_by_key(|&(ik, _)| ik);
         let mut new_slots = Vec::new();
-        for &(ik, n) in slots.iter() {
+        for &(esk, n) in slots.iter() {
             for i in 0..n {
-                new_slots.push(SlotInfo::new(ik, i));
+                new_slots.push(SlotInfo::new(esk, i));
             }
         }
         
@@ -307,15 +324,15 @@ impl EquipItemList {
     }
 
     /// Number of slots for specified ItemKind
-    pub fn slot_num(&self, ik: ItemKind) -> usize {
-        self.slots.iter().filter(|slot| slot.ik == ik).count()
+    pub fn slot_num(&self, esk: EquipSlotKind) -> usize {
+        self.slots.iter().filter(|slot| slot.esk == esk).count()
     }
     
     /// Specified slot is empty or not
     /// If specified slot doesn't exist, return false.
-    pub fn is_slot_empty(&self, ik: ItemKind, n: usize) -> bool {
+    pub fn is_slot_empty(&self, esk: EquipSlotKind, n: usize) -> bool {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
-        if let Some(a) = self.slots.iter().filter(|slot| slot.ik == ik).nth(n) {
+        if let Some(a) = self.slots.iter().filter(|slot| slot.esk == esk).nth(n) {
             a.list_idx.is_none()
         } else {
             false
@@ -323,9 +340,9 @@ impl EquipItemList {
     }
 
     /// Get specified equipped item
-    pub fn item(&self, ik: ItemKind, n: usize) -> Option<&Item> {
+    pub fn item(&self, esk: EquipSlotKind, n: usize) -> Option<&Item> {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
-        if let Some(a) = self.list_idx(ik, n) {
+        if let Some(a) = self.list_idx(esk, n) {
             Some(&self.item_list.items[a].0)
         } else {
             None
@@ -333,15 +350,15 @@ impl EquipItemList {
     }
     
     /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
-    pub fn equip(&mut self, ik: ItemKind, n: usize, item: Box<Item>) -> Option<Box<Item>> {
-        assert!(self.slot_num(ik) > n);
-        if let Some(i) = self.list_idx(ik, n) { // Replace existing item
+    pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Box<Item>) -> Option<Box<Item>> {
+        assert!(self.slot_num(esk) > n);
+        if let Some(i) = self.list_idx(esk, n) { // Replace existing item
             return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
         }
         
         if self.item_list.items.is_empty() { // If any item is not equipped.
             self.item_list.items.push((item, 1));
-            self.set_list_idx(ik, n, 0);
+            self.set_list_idx(esk, n, 0);
             return None;
         }
         
@@ -349,8 +366,8 @@ impl EquipItemList {
         let mut new_idx = 0;
         let mut processed_slot = 0;
         for i_slot in 0..self.slots.len() {
-            if self.slots[i_slot].ik == ik && self.slots[i_slot].n as usize == n {
-                self.set_list_idx(ik, n, new_idx);
+            if self.slots[i_slot].esk == esk && self.slots[i_slot].n as usize == n {
+                self.set_list_idx(esk, n, new_idx);
                 self.item_list.items.insert(new_idx, (item, 1));
                 processed_slot = i_slot;
                 break;
@@ -368,8 +385,8 @@ impl EquipItemList {
         None
     }
 
-    fn list_idx(&self, ik: ItemKind, n: usize) -> Option<usize> {
-        if let Some(slot) = self.slots.iter().find(|slot| slot.ik == ik && slot.n as usize == n) {
+    fn list_idx(&self, esk: EquipSlotKind, n: usize) -> Option<usize> {
+        if let Some(slot) = self.slots.iter().find(|slot| slot.esk == esk && slot.n as usize == n) {
             if let Some(list_idx) = slot.list_idx {
                 Some(list_idx as usize)
             } else {
@@ -380,8 +397,8 @@ impl EquipItemList {
         }
     }
 
-    fn set_list_idx(&mut self, ik: ItemKind, n: usize, idx: usize) {
-        if let Some(slot) = self.slots.iter_mut().find(|slot| slot.ik == ik && slot.n as usize == n) {
+    fn set_list_idx(&mut self, esk: EquipSlotKind, n: usize, idx: usize) {
+        if let Some(slot) = self.slots.iter_mut().find(|slot| slot.esk == esk && slot.n as usize == n) {
             slot.list_idx = Some(idx as u8);
         } else {
             panic!("set_list_idx for invalid slot");
@@ -417,16 +434,16 @@ pub struct EquipSlotIter<'a> {
 }
 
 impl<'a> Iterator for EquipSlotIter<'a> {
-    type Item = (ItemKind, u8, Option<&'a Item>);
+    type Item = (EquipSlotKind, u8, Option<&'a Item>);
     fn next(&mut self) -> Option<Self::Item> {
         if self.n >= self.equip_item_list.slots.len() {
             return None;
         }
         let slot = &self.equip_item_list.slots[self.n];
         let result = if let Some(i) = slot.list_idx {
-            (slot.ik, slot.n, Some(&*self.equip_item_list.item_list.items[i as usize].0))
+            (slot.esk, slot.n, Some(&*self.equip_item_list.item_list.items[i as usize].0))
         } else {
-            (slot.ik, slot.n, None)
+            (slot.esk, slot.n, None)
         };
         self.n += 1;
         return Some(result);
@@ -439,7 +456,7 @@ pub struct EquipItemIter<'a> {
 }
 
 impl<'a> Iterator for EquipItemIter<'a> {
-    type Item = (ItemKind, u8, &'a Item);
+    type Item = (EquipSlotKind, u8, &'a Item);
     fn next(&mut self) -> Option<Self::Item> {
         loop {
             if self.n >= self.equip_item_list.slots.len() {
@@ -447,7 +464,7 @@ impl<'a> Iterator for EquipItemIter<'a> {
             }
             let slot = &self.equip_item_list.slots[self.n];
             if let Some(i) = slot.list_idx {
-                let result = (slot.ik, slot.n, &*self.equip_item_list.item_list.items[i as usize].0);
+                let result = (slot.esk, slot.n, &*self.equip_item_list.item_list.items[i as usize].0);
                 self.n += 1;
                 return Some(result);
             }
