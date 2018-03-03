@@ -39,6 +39,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         dice_x: item.dice_x.unwrap_or(0),
         def: item.def.unwrap_or(0),
         mdf: item.mdf.unwrap_or(0),
+        eff: item.eff.unwrap_or(0),
         medical_effect: item.medical_effect,
     })
 }

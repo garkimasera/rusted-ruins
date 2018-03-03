@@ -33,6 +33,8 @@ pub struct ItemObject {
     pub def: u16,
     /// Magic Defence
     pub mdf: u16,
+    /// Effectiveness of this item
+    pub eff: u16,
     pub medical_effect: Option<MedicalEffect>,
 }
 
