@@ -1,11 +1,8 @@
 
-/// This is helper trait for some data objects that need to be printed in game.
-/// Returned text id is translated to appropriate words in text module.
-pub trait ToTextId {
-    fn to_textid(&self) -> &'static str;
-}
+use super::ToTextId;
+    
+use common::gamedata::site::DungeonKind;
 
-use gamedata::site::DungeonKind;
 impl ToTextId for DungeonKind {
     fn to_textid(&self) -> &'static str {
         match *self {

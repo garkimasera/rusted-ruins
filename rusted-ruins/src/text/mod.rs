@@ -7,7 +7,8 @@ use walkdir::WalkDir;
 use error::*;
 use config;
 use common::basic;
-use common::to_textid::ToTextId;
+
+mod text_id_impl;
 
 /// Initialize lazy static
 pub fn init() {
@@ -69,6 +70,12 @@ pub fn misc_txt<'a>(id: &'a str) -> &'a str {
 #[allow(unused)]
 pub fn misc_txt_checked(id: &str) -> Option<&'static str> {
     MISC_TXT_MAP.get(id).map(|txt| txt.as_ref())
+}
+
+/// This is helper trait for some data objects that need to be printed in game.
+/// Returned text id is translated to appropriate words in text module.
+pub trait ToTextId {
+    fn to_textid(&self) -> &'static str;
 }
 
 pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {

@@ -21,7 +21,6 @@ pub mod pakutil;
 #[macro_use]
 pub mod str2enum;
 pub mod gamedata;
-pub mod to_textid;
 pub mod maptemplate;
 pub mod event;
 pub mod regiongen;
