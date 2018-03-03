@@ -88,20 +88,17 @@ impl ItemQuality {
     }
 }
 
-#[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum MedicalEffect {
     Heal,
 }
 
-#[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum WeaponKind {
     Sword, Spear, Axe, Whip,
     Bow, Crossbow, Gun,
 }
 
-#[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ArmorKind {
     Body, Shield,
@@ -260,7 +257,6 @@ impl From<u32> for ItemMoveNum {
 // Equipment handling types and routines
 //
 
-#[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum EquipSlotKind {
     ShortRangeWeapon, LongRangeWeapon, BodyArmor, Shield,

@@ -6,7 +6,6 @@ use super::map::MapId;
 
 /// Character's races
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[repr(u32)]
 pub enum Race {
     Animal, Devil, Human, Phantom, Slime,
 }
@@ -33,7 +32,6 @@ impl Default for CharaClass {
 /// NEUTRAL |N|N|N|N
 /// HOSTILE |H|H|N|F
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[repr(u32)]
 pub enum Relationship {
     ALLY = 0,
     FRIENDLY,
@@ -116,7 +114,6 @@ pub struct CharaBaseParams {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[repr(u32)]
 enum CharaState {
     /// This character was removed from game.
     Disable,
