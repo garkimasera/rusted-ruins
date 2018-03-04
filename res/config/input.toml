@@ -1,6 +1,7 @@
 
 [normal]
 return = "Enter"
+d = "DrinkItem"
 i = "Openitemmenu"
 e = "OpenEquipWin"
 p = "PickUpItem"

@@ -252,6 +252,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         // If self.mode is OnGame
         let mut pa = DoPlayerAction::new(&mut self.game);
+        use self::itemwindow::*;
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
@@ -266,7 +267,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
             }
             Command::OpenItemMenu => {
-                use self::itemwindow::*;
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, &mut pa)));
             }
             Command::OpenEquipWin => {
@@ -278,10 +278,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
-                    use self::itemwindow::*;
                     let item_window = ItemWindow::new(ItemWindowMode::PickUp, &mut pa);
                     self.window_stack.push(Box::new(item_window));
                 }
+            }
+            Command::DrinkItem => {
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drink, &mut pa)));
             }
             _ => (),
         }

@@ -8,6 +8,7 @@ use common::gamedata::item::*;
 pub struct ItemFilter {
     pub all: bool,
     pub equip_slot_kind: Option<EquipSlotKind>,
+    pub flags: ItemFlags,
 }
 
 impl ItemFilter {
@@ -29,12 +30,19 @@ impl ItemFilter {
         if let Some(equip_slot_kind) = self.equip_slot_kind {
             if o.kind.equip_slot_kind() != Some(equip_slot_kind) { return false; }
         }
+
+        if !item.flags.contains(self.flags) { return false; }
         
         true
     }
 
     pub fn equip_slot_kind(mut self, equip_slot_kind: EquipSlotKind) -> ItemFilter {
         self.equip_slot_kind = Some(equip_slot_kind);
+        self
+    }
+
+    pub fn flags(mut self, flags: ItemFlags) -> ItemFilter {
+        self.flags = flags;
         self
     }
 }
@@ -44,6 +52,7 @@ impl Default for ItemFilter {
         ItemFilter {
             all: false,
             equip_slot_kind: None,
+            flags: ItemFlags::empty(),
         }
     }
 }

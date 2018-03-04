@@ -10,13 +10,14 @@ use eventhandler::InputMode;
 use super::widget::*;
 use super::miscwindow::PageWindow;
 use common::gobj;
-use common::gamedata::item::{ItemListLocation, ItemLocation};
+use common::gamedata::item::{ItemListLocation, ItemLocation, ItemFlags};
+use common::gamedata::chara::CharaId;
 use game::item::filter::*;
 use text;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
-    List, PickUp,
+    List, PickUp, Drink,
     Select {
         ill: ItemListLocation,
         filter: ItemFilter,
@@ -64,7 +65,7 @@ impl ItemWindow {
         
         match self.mode {
             ItemWindowMode::List => {
-                let ill = ItemListLocation::Chara { cid: ::common::gamedata::chara::CharaId::Player };
+                let ill = ItemListLocation::Chara { cid: CharaId::Player };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
                 self.update_list(filtered_list);
             }
@@ -74,6 +75,12 @@ impl ItemWindow {
                     pos: gd.player_pos(),
                 };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Drink => {
+                let ill = ItemListLocation::Chara { cid: CharaId::Player };
+                let filtered_list = gd
+                    .get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::DRINKABLE));
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Select { ill, filter, ..} => {
@@ -119,6 +126,10 @@ impl ItemWindow {
                     DialogResult::Close
                 };
                 result
+            }
+            ItemWindowMode::Drink => {
+                self.update_by_mode(pa);
+                DialogResult::Close
             }
             ItemWindowMode::Select { ref mut action, .. } => {
                 action(pa, il)
