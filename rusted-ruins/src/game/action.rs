@@ -67,7 +67,8 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     match item_obj.medical_effect {
         MedicalEffect::None => (),
         MedicalEffect::Heal => {
-            chara.hp += eff;
+            use std::cmp::min;
+            chara.hp = min(chara.params.max_hp, chara.hp + eff);
             game_log!("heal-hp"; chara=chara_name, value=eff);
         }
         _ => (),
