@@ -1,10 +1,16 @@
 
+//! Process characters action
+
 use std::collections::VecDeque;
 use super::Game;
 use super::Animation;
 use super::combat;
+use super::chara::CharaEx;
 use array2d::*;
+use common::gamedata::GameData;
 use common::gamedata::chara::*;
+use common::gamedata::item::*;
+use common::gobj;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) { return true; } // Move to current tile always success
@@ -45,6 +51,23 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     true
 }
 
+/// Drink one item
+pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
+    let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
+    let item_obj = gobj::get_obj(item.idx);
+    
+    game_log!("drink-item"; chara=gd.chara.get(cid).get_name());
+    
+    let chara = gd.chara.get_mut(cid);
 
-
+    if let Some(medical_effect) = item_obj.medical_effect {
+        use common::gamedata::item::MedicalEffect;
+        let eff: i32 = item_obj.eff.into();
+        match medical_effect {
+            MedicalEffect::Heal => {
+                chara.hp += eff;
+            }
+        }
+    }
+}
 

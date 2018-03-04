@@ -151,6 +151,11 @@ impl<'a> DoPlayerAction<'a> {
         true
     }
 
+    /// Drink one item
+    pub fn drink_item(&mut self, il: gamedata::item::ItemLocation) {
+        super::action::drink_item(self.gd_mut(), il, CharaId::Player);
+    }
+
     /// Change specified character's equipment by given item
     pub fn change_equipment(&mut self, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) -> bool {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)

@@ -128,6 +128,7 @@ impl ItemWindow {
                 result
             }
             ItemWindowMode::Drink => {
+                pa.drink_item(il);
                 self.update_by_mode(pa);
                 DialogResult::Close
             }
