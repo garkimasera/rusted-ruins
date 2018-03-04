@@ -155,6 +155,7 @@ impl<'a> DoPlayerAction<'a> {
     /// Drink one item
     pub fn drink_item(&mut self, il: gamedata::item::ItemLocation) {
         super::action::drink_item(self.gd_mut(), il, CharaId::Player);
+        self.0.finish_player_turn();
     }
 
     /// Change specified character's equipment by given item

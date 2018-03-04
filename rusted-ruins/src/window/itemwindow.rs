@@ -130,7 +130,7 @@ impl ItemWindow {
             ItemWindowMode::Drink => {
                 pa.drink_item(il);
                 self.update_by_mode(pa);
-                DialogResult::Close
+                DialogResult::CloseAll
             }
             ItemWindowMode::Select { ref mut action, .. } => {
                 action(pa, il)

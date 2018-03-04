@@ -239,7 +239,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                             continue;
                         }
                     }
-                    DialogResult::CloseAll => { self.window_stack.clear(); }
+                    DialogResult::CloseAll => {
+                        self.window_stack.clear();
+                    }
                     DialogResult::Quit => { return false; }
                     DialogResult::OpenChildDialog(child) => {
                         self.window_stack.push(child);
