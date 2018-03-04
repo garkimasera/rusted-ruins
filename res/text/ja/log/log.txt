@@ -8,5 +8,7 @@ $(target)は倒れた
 $(chara)は$(item)を装備した
 % item-pickup
 $(chara)は$(item)を拾った
+% drink-item
+$(chara)は$(item)を飲んだ
 % heal-hp
-$(chara)のHPが回復した ($(hp_increase))
+$(chara)のHPが回復した ($(value))

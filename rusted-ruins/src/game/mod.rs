@@ -119,3 +119,8 @@ pub enum DialogOpenRequest {
     Talk { chara_talk: gamedata::chara::CharaTalk, cid: gamedata::chara::CharaId },
     GameOver,
 }
+
+pub mod extrait {
+    pub use super::chara::CharaEx;
+    pub use super::item::ItemEx;
+}

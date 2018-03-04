@@ -6,10 +6,17 @@ use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
 use common::gamedata::item::*;
 use common::gobj;
-use game::chara::CharaEx;
+use game::extrait::*;
 
-pub fn get_item_name(item: &Item) -> String {
-    ::text::obj_txt(gobj::idx_to_id(item.idx)).to_owned()
+/// Additional Item methods
+pub trait ItemEx {
+    fn get_name(&self) -> String;
+}
+
+impl ItemEx for Item {
+    fn get_name(&self) -> String {
+        ::text::obj_txt(gobj::idx_to_id(self.idx)).to_owned()
+    }
 }
 
 /// Change specified character's equipment by given item
@@ -20,7 +27,7 @@ pub fn change_equipment(
         return false;
     }
     let item = gd.remove_item_and_get(il, 1);
-    let item_name = get_item_name(&item);
+    let item_name = item.get_name();
     if let Some(removed_equipment) = gd.get_equip_list_mut(cid).equip(slot.0, slot.1 as usize, item) {
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }

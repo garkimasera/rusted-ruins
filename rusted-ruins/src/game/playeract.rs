@@ -1,6 +1,7 @@
 
 use super::Game;
 use super::action;
+use super::extrait::*;
 use common::gamedata::{self, GameData};
 use common::gamedata::chara::{CharaId, Relationship};
 use common::gamedata::map::{MapId, SpecialTileKind, FLOOR_OUTSIDE};
@@ -145,7 +146,7 @@ impl<'a> DoPlayerAction<'a> {
     pub fn pick_up_item(&mut self, il: gamedata::item::ItemLocation, n: u32) -> bool {
         let gd = self.gd_mut();
         let player_item_list_location = gamedata::item::ItemListLocation::Chara { cid: CharaId::Player };
-        let item_name = super::item::get_item_name(gd.get_item(il).0);
+        let item_name = gd.get_item(il).0.get_name();
         gd.move_item(il, player_item_list_location, n);
         game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player).get_name(), item=item_name);
         true

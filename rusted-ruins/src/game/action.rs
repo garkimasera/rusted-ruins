@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use super::Game;
 use super::Animation;
 use super::combat;
-use super::chara::CharaEx;
+use super::extrait::*;
 use array2d::*;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
@@ -57,7 +57,7 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item_obj = gobj::get_obj(item.idx);
 
     let chara_name = gd.chara.get(cid).get_name().to_owned();
-    game_log!("drink-item"; chara=chara_name);
+    game_log!("drink-item"; chara=chara_name, item=item.get_name());
     
     let chara = gd.chara.get_mut(cid);
 
@@ -68,7 +68,7 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
         MedicalEffect::None => (),
         MedicalEffect::Heal => {
             chara.hp += eff;
-            game_log!("heal-hp"; chara=chara_name, hp_increase=eff);
+            game_log!("heal-hp"; chara=chara_name, value=eff);
         }
         _ => (),
     }
