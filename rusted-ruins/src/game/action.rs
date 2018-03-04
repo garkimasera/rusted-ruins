@@ -55,8 +55,9 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
 pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = gobj::get_obj(item.idx);
-    
-    game_log!("drink-item"; chara=gd.chara.get(cid).get_name());
+
+    let chara_name = gd.chara.get(cid).get_name().to_owned();
+    game_log!("drink-item"; chara=chara_name);
     
     let chara = gd.chara.get_mut(cid);
 
@@ -66,6 +67,7 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
         match medical_effect {
             MedicalEffect::Heal => {
                 chara.hp += eff;
+                game_log!("heal-hp"; chara=chara_name, hp_increase=eff);
             }
         }
     }

@@ -8,3 +8,5 @@ $(target)は倒れた
 $(chara)は$(item)を装備した
 % item-pickup
 $(chara)は$(item)を拾った
+% heal-hp
+$(chara)のHPが回復した ($(hp_increase))
