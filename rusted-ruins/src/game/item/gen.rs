@@ -59,7 +59,7 @@ impl CalcLevelWeightDist {
     
     fn calc(&self, l: u32) -> f64 {
         let l = l as f64;
-        if l < self.floor_level {
+        if l > self.floor_level {
             0.0
         } else {
             1.0
