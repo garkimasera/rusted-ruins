@@ -116,8 +116,12 @@ pub fn cfg_path(s: &str) -> PathBuf {
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct CfgRect {
-    pub x: i32, pub y: i32,
-    pub w: u32, pub h: u32,
+    pub x: i32,
+    pub y: i32,
+    #[serde(default)]
+    pub w: u32,
+    #[serde(default)]
+    pub h: u32,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
