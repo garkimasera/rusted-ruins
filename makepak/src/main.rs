@@ -68,8 +68,6 @@ fn main() {
     };
 
     compile::compile(&files, &output_file);
-
-    println!("{:?}", files);
 }
 
 fn print_info(files: &Vec<String>) {
