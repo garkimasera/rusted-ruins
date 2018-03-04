@@ -40,7 +40,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         def: item.def.unwrap_or(0),
         mdf: item.mdf.unwrap_or(0),
         eff: item.eff.unwrap_or(0),
-        medical_effect: item.medical_effect,
+        medical_effect: item.medical_effect.unwrap_or_default(),
     })
 }
 

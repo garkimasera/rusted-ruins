@@ -61,15 +61,16 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     
     let chara = gd.chara.get_mut(cid);
 
-    if let Some(medical_effect) = item_obj.medical_effect {
-        use common::gamedata::item::MedicalEffect;
-        let eff: i32 = item_obj.eff.into();
-        match medical_effect {
-            MedicalEffect::Heal => {
-                chara.hp += eff;
-                game_log!("heal-hp"; chara=chara_name, hp_increase=eff);
-            }
+    let eff: i32 = item_obj.eff.into();
+
+    use common::gamedata::item::MedicalEffect;
+    match item_obj.medical_effect {
+        MedicalEffect::None => (),
+        MedicalEffect::Heal => {
+            chara.hp += eff;
+            game_log!("heal-hp"; chara=chara_name, hp_increase=eff);
         }
+        _ => (),
     }
 }
 

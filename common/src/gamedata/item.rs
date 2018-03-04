@@ -35,7 +35,7 @@ pub struct ItemObject {
     pub mdf: u16,
     /// Effectiveness of this item
     pub eff: u16,
-    pub medical_effect: Option<MedicalEffect>,
+    pub medical_effect: MedicalEffect,
 }
 
 impl Ord for Item {
@@ -90,7 +90,13 @@ impl ItemQuality {
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum MedicalEffect {
-    Heal,
+    None, Heal, Poison,
+}
+
+impl Default for MedicalEffect {
+    fn default() -> MedicalEffect {
+        MedicalEffect::None
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
