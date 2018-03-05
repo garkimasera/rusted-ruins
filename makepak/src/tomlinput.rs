@@ -90,6 +90,7 @@ pub struct ItemDepInput {
     pub def: Option<u16>,
     /// For armor items
     pub mdf: Option<u16>,
+    pub nutrition: Option<u16>,
 }
 
 #[derive(Debug, Deserialize)]

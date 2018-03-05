@@ -16,6 +16,10 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
             flags |= ItemFlags::DRINKABLE;
             ItemKind::Potion
         }
+        "Food" => {
+            flags |= ItemFlags::EATABLE;
+            ItemKind::Food
+        }
         "Weapon" => {
             ItemKind::Weapon(get_optional_field!(item, weapon_kind))
         }
@@ -41,6 +45,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         mdf: item.mdf.unwrap_or(0),
         eff: item.eff.unwrap_or(0),
         medical_effect: item.medical_effect.unwrap_or_default(),
+        nutrition: item.nutrition.unwrap_or(0),
     })
 }
 

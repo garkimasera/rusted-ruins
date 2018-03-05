@@ -36,6 +36,8 @@ pub struct ItemObject {
     /// Effectiveness of this item
     pub eff: u16,
     pub medical_effect: MedicalEffect,
+    /// Character's nutrition will be increased by this value after eating this item
+    pub nutrition: u16,
 }
 
 impl Ord for Item {
@@ -57,12 +59,12 @@ impl PartialOrd for Item {
 /// This is mainly used for item list sorting
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object, Potion, Weapon(WeaponKind), Armor(ArmorKind),
+    Object, Potion, Food, Weapon(WeaponKind), Armor(ArmorKind),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKindRough {
-    Object, Potion, Weapon, Armor,
+    Object, Potion, Food, Weapon, Armor,
 }
 
 bitflags! {
