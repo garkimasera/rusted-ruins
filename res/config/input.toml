@@ -2,10 +2,11 @@
 [normal]
 return = "Enter"
 d = "DrinkItem"
+e = "EatItem"
 i = "Openitemmenu"
-e = "OpenEquipWin"
 p = "PickUpItem"
 s = "OpenStatusWin"
+w = "OpenEquipWin"
 escape = "OpenExitWin"
 
 [dialog]

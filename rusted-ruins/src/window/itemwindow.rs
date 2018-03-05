@@ -17,7 +17,7 @@ use text;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
-    List, PickUp, Drink,
+    List, PickUp, Drink, Eat,
     Select {
         ill: ItemListLocation,
         filter: ItemFilter,
@@ -83,6 +83,12 @@ impl ItemWindow {
                     .get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::DRINKABLE));
                 self.update_list(filtered_list);
             }
+            ItemWindowMode::Eat => {
+                let ill = ItemListLocation::Chara { cid: CharaId::Player };
+                let filtered_list = gd
+                    .get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
+                self.update_list(filtered_list);
+            }
             ItemWindowMode::Select { ill, filter, ..} => {
                 let filtered_list = gd.get_filtered_item_list(ill, filter);
                 self.update_list(filtered_list);
@@ -129,6 +135,11 @@ impl ItemWindow {
             }
             ItemWindowMode::Drink => {
                 pa.drink_item(il);
+                self.update_by_mode(pa);
+                DialogResult::CloseAll
+            }
+            ItemWindowMode::Eat => {
+                pa.eat_item(il);
                 self.update_by_mode(pa);
                 DialogResult::CloseAll
             }

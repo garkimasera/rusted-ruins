@@ -10,5 +10,7 @@ $(chara)は$(item)を装備した
 $(chara)は$(item)を拾った
 % drink-item
 $(chara)は$(item)を飲んだ
+% eat-item
+$(chara)は$(item)を食べた
 % heal-hp
 $(chara)のHPが回復した ($(value))

@@ -287,6 +287,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::DrinkItem => {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drink, &mut pa)));
             }
+            Command::EatItem => {
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Eat, &mut pa)));
+            }
             _ => (),
         }
         true

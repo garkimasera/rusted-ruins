@@ -272,6 +272,6 @@ impl_fromstr_for_enum!(
     Command;
     Enter, Cancel,
     OpenItemMenu, OpenExitWin, OpenEquipWin, OpenStatusWin,
-    DrinkItem, PickUpItem
+    DrinkItem, EatItem, PickUpItem
 );
 
