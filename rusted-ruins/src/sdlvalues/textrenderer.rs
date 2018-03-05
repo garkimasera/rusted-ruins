@@ -9,13 +9,21 @@ use config::visual::FontConfig;
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub enum FontKind {
-    Log, M, S,
+    /// For log window
+    Log,
+    /// For most of window texts
+    M,
+    /// For small UI texts
+    S,
+    /// For monospace texts. This font may include ascii characters only
+    MonoM,
 }
 
 pub struct TextRenderer<'sdl> {
     font_s: Font<'sdl, 'static>,
     font_m: Font<'sdl, 'static>,
     font_log: Font<'sdl, 'static>,
+    font_mono_m: Font<'sdl, 'static>,
 }
 
 pub const ERR_MSG_FONT_REND: &'static str = "Error occured during font rendering to surface";
@@ -35,6 +43,8 @@ impl<'sdl> TextRenderer<'sdl> {
             font_s: f(&font.s),
             font_m: f(&font.m),
             font_log: f(&font.log),
+            font_mono_m: sdl_context.ttf_context.load_font(
+                &font_path(&FONT_CFG.mono_font), font.m.size).expect(ERR_MSG)
         }
     }
 
@@ -56,6 +66,7 @@ impl<'sdl> TextRenderer<'sdl> {
             FontKind::Log => &self.font_log,
             FontKind::S => &self.font_s,
             FontKind::M => &self.font_m,
+            FontKind::MonoM => &self.font_mono_m,
         }
     }
 }

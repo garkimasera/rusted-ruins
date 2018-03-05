@@ -1,4 +1,6 @@
 
+mono_font = "NotoMono-Regular.ttf"
+
 [font_names]
 en = "NotoSans-Medium.ttf"
 ja = "NotoSansCJKjp-Medium.otf"

@@ -5,7 +5,8 @@ use super::CONFIG;
 /// Font name for each language
 #[derive(Debug, Deserialize)]
 pub struct FontConfig {
-    font_names: HashMap<String, String>
+    pub font_names: HashMap<String, String>,
+    pub mono_font: String,
 }
 
 impl FontConfig {
