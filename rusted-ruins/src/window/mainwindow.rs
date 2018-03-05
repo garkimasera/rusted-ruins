@@ -20,7 +20,7 @@ impl MainWindow {
 }
 
 impl Window for MainWindow {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
         

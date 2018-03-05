@@ -46,7 +46,7 @@ impl TalkWindow {
 }
 
 impl Window for TalkWindow {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 

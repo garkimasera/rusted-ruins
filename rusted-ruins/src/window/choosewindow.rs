@@ -37,7 +37,7 @@ impl ChooseWindow {
 
 impl Window for ChooseWindow {
     
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 
@@ -127,7 +127,7 @@ impl PagedChooseWindow {
 
 impl Window for PagedChooseWindow {
     
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 

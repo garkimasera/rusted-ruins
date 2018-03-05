@@ -80,7 +80,7 @@ impl Screen {
         self.canvas.set_viewport(None);
         self.canvas.set_draw_color(Color::RGB(0, 0, 0));
         self.canvas.clear();
-        window_manager.redraw(&mut self.canvas);
+        window_manager.draw(&mut self.canvas);
         self.canvas.present();
     }
 }

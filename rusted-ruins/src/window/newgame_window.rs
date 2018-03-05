@@ -32,7 +32,7 @@ impl NewGameWindow {
         }
     }
     
-    pub fn redraw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+    pub fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
                   _anim: Option<(&Animation, u32)>) {
 
         self.back_image.draw(canvas, sv);
@@ -58,15 +58,15 @@ impl DummyNewGameDialog {
 }
 
 impl Window for DummyNewGameDialog {
-    fn redraw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
               anim: Option<(&Animation, u32)>) {
 
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
-                self.name_input_dialog.as_mut().unwrap().redraw(canvas, game, sv, anim);
+                self.name_input_dialog.as_mut().unwrap().draw(canvas, game, sv, anim);
             }
             NewGameBuildStage::ChooseClass => {
-                self.choose_class_dialog.redraw(canvas, game, sv, anim);
+                self.choose_class_dialog.draw(canvas, game, sv, anim);
             }
         }
     }
@@ -137,11 +137,11 @@ impl ChooseClassDialog {
 
 impl Window for ChooseClassDialog {
     
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
        
-        self.choose_window.redraw(canvas, game, sv, anim);
+        self.choose_window.draw(canvas, game, sv, anim);
     }
 }
 

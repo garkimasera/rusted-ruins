@@ -23,7 +23,7 @@ impl MiniMapWindow {
 }
 
 impl Window for MiniMapWindow {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 

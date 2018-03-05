@@ -57,7 +57,7 @@ pub enum SpecialDialogResult {
 }
 
 pub trait Window {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>);
 }
@@ -150,7 +150,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         true
     }
 
-    pub fn redraw(&mut self, canvas: &mut WindowCanvas) {
+    pub fn draw(&mut self, canvas: &mut WindowCanvas) {
         let mut is_animation_over = false;
         if let Some(anim) = self.anim.as_mut() {
             if self.passed_frame >= anim.get_n_frame() {
@@ -170,19 +170,19 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         match self.mode {
             WindowManageMode::OnGame(ref mut game_windows) => {
                 self.game.update_before_drawing();
-                game_windows.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+                game_windows.draw(canvas, &self.game, &mut self.sdl_values, anim);
             }
             WindowManageMode::Start(ref mut start_window) => {
-                start_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+                start_window.draw(canvas, &self.game, &mut self.sdl_values, anim);
             }
             WindowManageMode::NewGame(ref mut newgame_window) => {
-                newgame_window.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+                newgame_window.draw(canvas, &self.game, &mut self.sdl_values, anim);
             }
         }
 
         // Draw dialog windows
         for w in &mut self.window_stack {
-            w.redraw(canvas, &self.game, &mut self.sdl_values, anim);
+            w.draw(canvas, &self.game, &mut self.sdl_values, anim);
         }
 
         if anim.is_some() {
@@ -414,14 +414,14 @@ impl GameWindows {
         }
     }
 
-    fn redraw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
               anim: Option<(&Animation, u32)>) {
         
-        self.main_window.redraw(canvas, game, sv, anim);
-        self.log_window.redraw(canvas, game, sv, anim);
-        self.minimap_window.redraw(canvas, game, sv, anim);
-        self.indicator.redraw(canvas, game, sv, anim);
-        self.floor_info.redraw(canvas, game, sv, anim);
+        self.main_window.draw(canvas, game, sv, anim);
+        self.log_window.draw(canvas, game, sv, anim);
+        self.minimap_window.draw(canvas, game, sv, anim);
+        self.indicator.draw(canvas, game, sv, anim);
+        self.floor_info.draw(canvas, game, sv, anim);
 
         for hborder in self.hborders.iter_mut() {
             hborder.draw(canvas, sv);

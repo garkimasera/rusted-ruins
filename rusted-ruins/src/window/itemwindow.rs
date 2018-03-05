@@ -141,13 +141,13 @@ impl ItemWindow {
 
 impl Window for ItemWindow {
     
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(canvas, self.rect);
         self.list.draw(canvas, sv);
-        self.page_window.redraw(canvas, game, sv, anim);
+        self.page_window.draw(canvas, game, sv, anim);
     }
 }
 

@@ -36,7 +36,7 @@ impl HPIndicator {
 }
 
 impl Window for HPIndicator {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 
@@ -64,7 +64,7 @@ impl FloorInfo {
 }
 
 impl Window for FloorInfo {
-    fn redraw(
+    fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         _anim: Option<(&Animation, u32)>) {
 

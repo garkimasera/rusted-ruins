@@ -18,7 +18,7 @@ impl StartWindow {
         }
     }
     
-    pub fn redraw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+    pub fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
                   _anim: Option<(&Animation, u32)>) {
 
         self.title_screen.draw(canvas, sv);
@@ -45,7 +45,7 @@ impl StartDialog {
 }
 
 impl Window for StartDialog {
-    fn redraw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+    fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
               _anim: Option<(&Animation, u32)>) {
 
         draw_rect_border(canvas, self.rect);
