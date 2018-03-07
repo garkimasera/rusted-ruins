@@ -2,6 +2,12 @@
 Extensible rouge like game. Players can explore the wilderness and ruins.
 This game is written in Rust.
 
+## Screenshot
+![exploring-caves](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/exploring-ruin.png)
+
+## Status
+This is a very early project. Many features for playing are not completed.
+
 ## Pak files
 In this game, most of image data and many assets are handled as *XXObject*.
 XXObject is packaged to pak files. Their file extension is "pak".
