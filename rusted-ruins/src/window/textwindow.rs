@@ -5,6 +5,7 @@ use sdlvalues::FontKind;
 
 pub struct TextWindow {
     rect: Rect,
+    min_w: i32,
     label: LabelWidget,
 }
 
@@ -12,6 +13,7 @@ impl TextWindow {
     pub fn new(rect: Rect, s: &str) -> TextWindow {
         TextWindow {
             rect,
+            min_w: rect.w,
             label: LabelWidget::wrapped(
                 (0, 0, rect.w as u32, 0), s, FontKind::M, rect.w as u32),
         }
@@ -29,7 +31,7 @@ impl Window for TextWindow {
         _anim: Option<(&Animation, u32)>) {
 
         let window_size = self.label.adjust_widget_size(sv);
-        self.rect.w = window_size.0 as i32;
+        self.rect.w = ::std::cmp::max(window_size.0 as i32, self.min_w);
         self.rect.h = window_size.1 as i32;
 
         draw_rect_border(canvas, self.rect);
