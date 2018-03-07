@@ -1,5 +1,5 @@
 
-lang = "ja"
+lang = "en"
 second_lang = "en"
 screen_config = "screen/800x600.toml"
 hardware_acceleration = true

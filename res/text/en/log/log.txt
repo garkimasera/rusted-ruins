@@ -1,4 +1,16 @@
 % start
 Welcome to Rusted Ruins! (version : $(version))
 % attack
-$(attacker) attacks $(target) ($(damage))
+$(attacker) attacks the $(target) ($(damage)).
+% killed-by-close-attack
+The $(target) is killed.
+% item-equip
+$(chara) equips $(item).
+% item-pickup
+$(chara) picks up $(item).
+% drink-item
+$(chara) drinks a $(item).
+% eat-item
+$(chara) eats a $(item).
+% heal-hp
+$(chara) is healed ($(value)).
