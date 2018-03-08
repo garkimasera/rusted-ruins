@@ -60,7 +60,7 @@ impl EquipWindow {
                     rows.push(ListRow::IconIconStr(
                         esk_icon,
                         IconIdx::Item(::common::objholder::ItemIdx(0)),
-                        text::ui_txt("Empty").to_owned()));
+                        "-".to_owned()));
                 }
                 slots.push((esk, esk_i));
             }
