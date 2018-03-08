@@ -111,6 +111,7 @@ macro_rules! impl_iconidx {
 }
 
 impl_iconidx! {
-    {Item, ItemIdx}
+    {Item, ItemIdx},
+    {UIImg, UIImgIdx}
 }
 

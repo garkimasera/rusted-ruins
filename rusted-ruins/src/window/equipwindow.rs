@@ -13,6 +13,7 @@ use common::gobj;
 use common::gamedata::item::ItemKind;
 use common::gamedata::chara::CharaId;
 use common::gamedata::item::*;
+use sdlvalues::IconIdx;
 use game::item::filter::*;
 use text;
 
@@ -31,7 +32,7 @@ impl EquipWindow {
         let mut equip_window = EquipWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::StrIconStr, vec![0, 100, 126],
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconIconStr, vec![0, 30, 60],
                 Some(UI_CFG.equip_window.n_row), 26),
             n_row: UI_CFG.equip_window.n_row,
             cid: cid,
@@ -50,13 +51,13 @@ impl EquipWindow {
         self.list.update_rows_by_func(|start, page_size| {
             slots.clear();
             for (esk, esk_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
-                let kind = text::ui_txt(&format!("{:?}", esk)).to_owned();
+                let esk_icon = slotkind_to_icon_idx(esk);
                 if let Some(item) = item {
                     let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
-                    rows.push(ListRow::StrIconStr(kind, IconIdx::Item(item.idx), item_text));
+                    rows.push(ListRow::IconIconStr(esk_icon, IconIdx::Item(item.idx), item_text));
                 } else {
-                    rows.push(ListRow::StrIconStr(
-                        kind,
+                    rows.push(ListRow::IconIconStr(
+                        esk_icon,
                         IconIdx::Item(::common::objholder::ItemIdx(0)),
                         text::ui_txt("Empty").to_owned()));
                 }
@@ -128,5 +129,15 @@ impl DialogWindow for EquipWindow {
         self.update_list(pa);
         DialogResult::Continue
     }
+}
+
+fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
+    let id = match esk {
+        EquipSlotKind::ShortRangeWeapon => "!icon-shortrangeweapon",
+        EquipSlotKind::LongRangeWeapon  => "!icon-longrangeweapon",
+        EquipSlotKind::BodyArmor        => "!icon-bodyarmor",
+        EquipSlotKind::Shield           => "!shield",
+    };
+    IconIdx::UIImg(gobj::id_to_idx(id))
 }
 
