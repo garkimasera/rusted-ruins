@@ -219,7 +219,7 @@ impl GameData {
     }
 }
 
-fn unknown_id_err<T: ::std::fmt::Debug>(id: T) -> String {
-    format!("Internal error: Unknown id - {:?}", id)
+fn unknown_id_err<T: ::std::fmt::Debug>(id: T) -> ! {
+    panic!("Internal error: Unknown id - {:?}", id)
 }
 

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use objholder::CharaTemplateIdx;
 use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
+use super::unknown_id_err;
 
 /// Character's races
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -167,11 +168,11 @@ impl CharaHolder {
     }
     
     pub fn get(&self, cid: CharaId) -> &Chara {
-        self.0.get(&cid).expect(&super::unknown_id_err(cid))
+        self.0.get(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub fn get_mut(&mut self, cid: CharaId) -> &mut Chara {
-        self.0.get_mut(&cid).expect(&super::unknown_id_err(cid))
+        self.0.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub fn iter_charaid(&self) -> ::std::collections::hash_map::Keys<CharaId, Chara> {

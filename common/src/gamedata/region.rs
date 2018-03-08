@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use array2d::*;
 use super::site::*;
 use super::map::*;
+use super::unknown_id_err;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct RegionId(pub(crate) u32);
@@ -39,11 +40,11 @@ impl RegionHolder {
     }
 
     pub fn get(&self, rid: RegionId) -> &Region {
-        self.0.get(&rid).expect(&super::unknown_id_err(rid))
+        self.0.get(&rid).unwrap_or_else(|| unknown_id_err(rid))
     }
 
     pub fn get_mut(&mut self, rid: RegionId) -> &mut Region {
-        self.0.get_mut(&rid).expect(&super::unknown_id_err(rid))
+        self.0.get_mut(&rid).unwrap_or_else(|| unknown_id_err(rid))
     }
 
     pub fn get_checked(&self, rid: RegionId) -> Option<&Region> {
@@ -55,18 +56,18 @@ impl RegionHolder {
     }
     
     pub fn get_site(&self, sid: SiteId) -> &Site {
-        let region = self.0.get(&sid.rid).expect(&super::unknown_id_err(sid.rid));
-        &region.sites.get(&sid).expect(&super::unknown_id_err(sid)).site
+        let region = self.0.get(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
+        &region.sites.get(&sid).unwrap_or_else(|| unknown_id_err(sid)).site
     }
 
     pub fn get_site_mut(&mut self, sid: SiteId) -> &mut Site {
-        let region = self.0.get_mut(&sid.rid).expect(&super::unknown_id_err(sid.rid));
-        &mut region.sites.get_mut(&sid).expect(&super::unknown_id_err(sid)).site
+        let region = self.0.get_mut(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
+        &mut region.sites.get_mut(&sid).unwrap_or_else(|| unknown_id_err(sid)).site
     }
 
     pub fn get_site_pos(&self, sid: SiteId) -> Vec2d {
-        let region = self.0.get(&sid.rid).expect(&super::unknown_id_err(sid.rid));
-        region.sites.get(&sid).expect(&super::unknown_id_err(sid)).pos
+        let region = self.0.get(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
+        region.sites.get(&sid).unwrap_or_else(|| unknown_id_err(sid)).pos
     }
 
     pub fn get_map(&self, mid: MapId) -> &Map {
