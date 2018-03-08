@@ -32,7 +32,8 @@ impl EquipWindow {
         let mut equip_window = EquipWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconIconStr, vec![0, 30, 60],
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconIconStr,
+                UI_CFG.equip_window.column_pos.clone(),
                 Some(UI_CFG.equip_window.n_row), 26),
             n_row: UI_CFG.equip_window.n_row,
             cid: cid,

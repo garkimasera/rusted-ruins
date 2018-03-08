@@ -41,7 +41,8 @@ impl ItemWindow {
         let mut item_window = ItemWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStr, vec![0, 26],
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStr,
+                UI_CFG.item_window.column_pos.clone(),
                 Some(UI_CFG.item_window.n_row), 26),
             mode: mode,
             n_row: UI_CFG.item_window.n_row,

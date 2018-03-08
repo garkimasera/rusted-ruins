@@ -119,6 +119,7 @@ pub struct ChooseClassDialogConfig {
 pub struct ItemWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
+    pub column_pos: Vec<i32>,
 }
 
 #[derive(Debug, Deserialize)]
