@@ -4,3 +4,7 @@ Do you exit from Rusted Ruins?
 You die...
 % dialog.move_floor
 Do you move from this floor?
+% newgame.inputplayername
+Who are you?
+% newgame.chooseclass
+Choose your class

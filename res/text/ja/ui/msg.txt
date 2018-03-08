@@ -2,3 +2,7 @@
 ゲームを終了しますか?
 % dialog.gameover
 あなたは力つきた･･･
+% newgame.inputplayername
+あなたの名前を入力してください
+% newgame.chooseclass
+クラスを選択してください

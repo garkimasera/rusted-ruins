@@ -5,6 +5,7 @@ use super::widget::*;
 use text;
 use common::gamedata::chara::CharaClass;
 use game::newgame::NewGameBuilder;
+use super::textwindow::TextWindow;
 use super::textinputdialog::TextInputDialog;
 use super::choosewindow::PagedChooseWindow;
 use super::widget::ListRow;
@@ -42,6 +43,7 @@ impl NewGameWindow {
 pub struct DummyNewGameDialog {
     builder: Option<NewGameBuilder>,
     stage: NewGameBuildStage,
+    explanation_text: TextWindow,
     name_input_dialog: Option<TextInputDialog>,
     choose_class_dialog: ChooseClassDialog,
 }
@@ -50,6 +52,7 @@ impl DummyNewGameDialog {
     pub fn new() -> DummyNewGameDialog {
         DummyNewGameDialog {
             builder: Some(NewGameBuilder::new()),
+            explanation_text: explanation_text_window("newgame.inputplayername"),
             stage: NewGameBuildStage::PlayerNameInput,
             name_input_dialog: Some(TextInputDialog::new()),
             choose_class_dialog: ChooseClassDialog::new(),
@@ -61,6 +64,8 @@ impl Window for DummyNewGameDialog {
     fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
               anim: Option<(&Animation, u32)>) {
 
+        self.explanation_text.draw(canvas, game, sv, anim);
+        
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
                 self.name_input_dialog.as_mut().unwrap().draw(canvas, game, sv, anim);
@@ -82,6 +87,7 @@ impl DialogWindow for DummyNewGameDialog {
                         let player_name = name_input_dialog.get_text();
                         if player_name != "" { // If input text is invalid for character name
                             self.builder.as_mut().unwrap().set_player_name(player_name);
+                            self.explanation_text = explanation_text_window("newgame.chooseclass");
                             self.stage = NewGameBuildStage::ChooseClass;
                         }
                         name_input_dialog.restart();
@@ -162,3 +168,8 @@ impl DialogWindow for ChooseClassDialog {
     }
 }
 
+fn explanation_text_window(s: &str) -> TextWindow {
+    TextWindow::new(
+        UI_CFG.newgame_dialog.explanation_text_rect.into(),
+        text::ui_txt(s))
+}

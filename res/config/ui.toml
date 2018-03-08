@@ -43,6 +43,9 @@ rect = { x = -999, y = -1000, w = 200, h = 72 }
 [text_input_dialog]
 rect = { x = -999, y = -999, w = 200, h = 40 }
 
+[newgame_dialog]
+explanation_text_rect = { x = -999, y = 50, w = 300 }
+
 [choose_class_dialog]
 rect = { x = -999, y = -999, w = 200, h = 200 }
 
