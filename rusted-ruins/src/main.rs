@@ -26,10 +26,11 @@ mod error;
 mod log;
 mod util;
 mod config;
-mod game;
 mod sdlvalues;
-mod draw;
+#[macro_use]
 mod text;
+mod game;
+mod draw;
 mod window;
 mod screen;
 mod eventhandler;

@@ -82,6 +82,19 @@ pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {
     misc_txt(a.to_textid())
 }
 
+macro_rules! replace_str {
+    ($original_text:expr; $($target:ident = $value:expr),*) => {{
+        let text_raw: &str = $original_text.as_ref();
+        let mut table: Vec<(&str, String)> = Vec::new();
+        $(
+            table.push((stringify!($target), $value.to_string()));
+        )*;
+        
+        let t = $crate::util::replace_str(text_raw, table.as_slice());
+        t
+    }}
+}
+
 fn load_trans_txt(kind: &str) -> HashMap<String, String> {
     let mut map = HashMap::new();
     let mut textdirs: Vec<PathBuf> = Vec::new();

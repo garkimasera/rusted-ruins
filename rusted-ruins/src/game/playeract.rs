@@ -73,28 +73,34 @@ impl<'a> DoPlayerAction<'a> {
     pub fn goto_next_floor(&mut self, dir: Direction) {
         // Use stairs
         if dir.is_none() {
-            let next_mid = {
+            let (next_mid, msg) = {
                 let gd = self.gd_mut();
                 let mid = gd.get_current_mapid();
                 let special_tile_kind
                     = &gd.get_current_map().tile[gd.player_pos()].special;
                 match *special_tile_kind {
                     SpecialTileKind::Stairs { dest_floor, .. } => { // Use stairs on map
-                        if dest_floor == FLOOR_OUTSIDE {
+                        let mid = if dest_floor == FLOOR_OUTSIDE {
                             MapId::from(mid.rid())
                         } else {
                             mid.set_floor(dest_floor)
-                        }
+                        };
+                        (mid, msg_switch_map(mid))
                     }
                     SpecialTileKind::SiteSymbol { .. } => { // Enter other site from region map
                         let pos = gd.player_pos();
                         let region = gd.region.get(mid.rid());
                         if let Some(sid) = region.get_id_by_pos(pos) {
-                            MapId::site_first_floor(sid)
+                            let mid = MapId::site_first_floor(sid);
+                            let site_name = gd.region.get_site(sid).get_name();
+                            let msg = replace_str!(
+                                ::text::ui_txt("dialog.enter_site");
+                                site_name=site_name);
+                            (mid, msg.into())
                         } else {
                             warn!("No site existed at {:?}", pos);
                             return;
-                        }                        
+                        }
                     }
                     _ => {
                         warn!("Tried to use stairs that don't exist");
@@ -108,7 +114,7 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg: ::text::ui_txt("dialog.move_floor").into(),
+                callback: cb, msg: msg,
             });
             
             return;
@@ -120,15 +126,15 @@ impl<'a> DoPlayerAction<'a> {
                 let b = map.get_boundary_by_tile_and_dir(player_pos, dir);
                 if let Some(b) = b { b } else { return; }
             };
-            let (next_mid, msg) = match boundary {
+            let next_mid = match boundary {
                 BoundaryBehavior::None => { return; },
                 BoundaryBehavior::RegionMap => {
                     let mid = MapId::from(self.gd().get_current_mapid().rid());
-                    (mid, "")
+                    mid
                 }
                 BoundaryBehavior::Floor(floor) => {
                     let mid = self.gd().get_current_mapid().set_floor(floor);
-                    (mid, "")
+                    mid
                 }
                 BoundaryBehavior::MapId(_, _) => { unimplemented!() }
             };
@@ -137,7 +143,7 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg: msg.into()
+                callback: cb, msg: msg_switch_map(next_mid),
             });
         }
     }
@@ -198,6 +204,14 @@ impl<'a> DoPlayerAction<'a> {
                 chara_talk, cid: cid.unwrap(),
             });
         }
+    }
+}
+
+pub fn msg_switch_map(next_mid: MapId) -> ::std::borrow::Cow<'static, str> {
+    if next_mid.is_region_map() {
+        ::text::ui_txt("dialog.exit_to_regionmap").into()
+    } else {
+        ::text::ui_txt("dialog.move_floor").into()
     }
 }
 
