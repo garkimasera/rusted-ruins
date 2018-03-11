@@ -30,8 +30,9 @@ pub fn create_talk_dialog(
     chara_talk: CharaTalk, cid: CharaId, game: &mut Game) -> Option<Box<DialogWindow>> {
         
     let talk_status = TalkStatus::new(chara_talk, cid, game)?;
+    let chara_template_idx = game.gd.chara.get(cid).template;
     
-    let talk_window = talkwindow::TalkWindow::new(talk_status);
+    let talk_window = talkwindow::TalkWindow::new(talk_status, chara_template_idx);
     Some(Box::new(talk_window))
 }
 

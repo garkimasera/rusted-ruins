@@ -3,6 +3,7 @@ use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
+use common::objholder::CharaTemplateIdx;
 
 pub struct PageWindow {
     rect: Rect,
@@ -35,6 +36,32 @@ impl Window for PageWindow {
 
         draw_rect_border(canvas, self.rect);
         self.label.draw(canvas, sv);
+    }
+}
+
+/// Displays one image
+pub struct ImageWindow {
+    rect: Rect,
+    image: ImageWidget,
+}
+
+impl ImageWindow {
+    pub fn chara(rect: Rect, chara: CharaTemplateIdx) -> ImageWindow {
+        use common::basic::TILE_SIZE;
+        ImageWindow {
+            rect,
+            image: ImageWidget::chara(Rect::new(0, 0, TILE_SIZE, TILE_SIZE), chara),
+        }
+    }
+}
+
+impl Window for ImageWindow {
+    fn draw(
+        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+
+        draw_rect_border(canvas, self.rect);
+        self.image.draw(canvas, sv);
     }
 }
 

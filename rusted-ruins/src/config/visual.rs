@@ -94,6 +94,10 @@ pub struct ExitWindowConfig {
 pub struct TalkWindowConfig {
     pub rect: CfgRect,
     pub n_default_line: usize,
+    /// Relative position to parent talk window
+    pub image_window_pos_x: i32,
+    /// Relative position to parent talk window
+    pub image_window_pos_y: i32,
 }
 
 #[derive(Debug, Deserialize)]

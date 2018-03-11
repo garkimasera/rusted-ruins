@@ -1,9 +1,12 @@
 
 use super::commonuse::*;
 use super::widget::*;
+use common::objholder::CharaTemplateIdx;
+use common::basic::TILE_SIZE;
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use game::talk::*;
+use super::miscwindow::ImageWindow;
 use text;
 
 pub struct TalkWindow {
@@ -13,14 +16,20 @@ pub struct TalkWindow {
     current_line: usize,
     n_line: usize,
     label: LineSpecifiedLabelWidget,
+    image_window: ImageWindow,
 }
 
 impl TalkWindow {
-    pub fn new(talk_status: TalkStatus) -> TalkWindow {
+    pub fn new(talk_status: TalkStatus, chara_template_idx: CharaTemplateIdx) -> TalkWindow {
         let rect: Rect = UI_CFG.talk_window.rect.into();
         let label = LineSpecifiedLabelWidget::new(
             Rect::new(0, 0, rect.width(), rect.height()),
             &[""], FontKind::M, UI_CFG.talk_window.n_default_line);
+        let rect_image_window = Rect::new(
+            rect.x + UI_CFG.talk_window.image_window_pos_x,
+            rect.y + UI_CFG.talk_window.image_window_pos_y,
+            TILE_SIZE,
+            TILE_SIZE * 2);
         let mut talk_window = TalkWindow {
             rect: rect,
             text: "".to_owned(),
@@ -28,6 +37,7 @@ impl TalkWindow {
             n_line: 0,
             talk_status: talk_status,
             label: label,
+            image_window: ImageWindow::chara(rect_image_window, chara_template_idx),
         };
         talk_window.update_text();
         talk_window
@@ -47,9 +57,10 @@ impl TalkWindow {
 
 impl Window for TalkWindow {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        anim: Option<(&Animation, u32)>) {
 
+        self.image_window.draw(canvas, game, sv, anim);
         draw_rect_border(canvas, self.rect);
         self.label.draw(canvas, sv);
     }

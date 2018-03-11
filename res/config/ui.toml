@@ -33,6 +33,8 @@ list_y = 52
 [talk_window]
 rect = { x = -999, y = 50, w = 450, h = 300 }
 n_default_line = 5
+image_window_pos_x = -55
+image_window_pos_y = 0
 
 [msg_dialog]
 rect = { x = -999, y = 120, w = 200, h = 0 }
