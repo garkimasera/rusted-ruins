@@ -19,6 +19,7 @@ pub struct TalkSection {
     pub text: Option<String>,
     pub reaction: TalkSectionReaction,
     pub sub_reaction: Vec<TalkSubReaction>,
+    pub special: SpecialTalkSection,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -41,5 +42,28 @@ pub struct TalkAnswer {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TalkSubReaction {
+}
+
+/// This holds data to represent special talk section.
+#[derive(Debug, Serialize, Deserialize)]
+pub enum SpecialTalkSection {
+    None,
+    /// Taught new ruins and dungeons locations by the informant
+    InformantRuins,
+}
+
+impl Default for SpecialTalkSection {
+    fn default() -> SpecialTalkSection {
+        SpecialTalkSection::None
+    }
+}
+
+impl SpecialTalkSection {
+    pub fn is_none(&self) -> bool {
+        match *self {
+            SpecialTalkSection::None => true,
+            _ => false,
+        }
+    }
 }
 

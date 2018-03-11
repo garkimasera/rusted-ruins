@@ -124,5 +124,7 @@ pub struct TalkScriptSectionInput {
     pub text: Option<String>,
     pub reaction: talkscript::TalkSectionReaction,
     pub sub_reaction: Option<Vec<talkscript::TalkSubReaction>>,
+    #[serde(default)]
+    pub special: talkscript::SpecialTalkSection,
 }
 
