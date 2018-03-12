@@ -10,7 +10,6 @@ use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
-use common::gamedata::item::ItemKind;
 use common::gamedata::chara::CharaId;
 use common::gamedata::item::*;
 use sdlvalues::IconIdx;
@@ -20,7 +19,6 @@ use text;
 pub struct EquipWindow {
     rect: Rect,
     list: ListWidget,
-    n_row: u32,
     cid: CharaId,
     slots: Vec<(EquipSlotKind, u8)>
 }
@@ -35,7 +33,6 @@ impl EquipWindow {
                 (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconIconStr,
                 UI_CFG.equip_window.column_pos.clone(),
                 Some(UI_CFG.equip_window.n_row), 26),
-            n_row: UI_CFG.equip_window.n_row,
             cid: cid,
             slots: Vec::new(),
         };

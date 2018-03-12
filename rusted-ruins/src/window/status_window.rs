@@ -6,7 +6,6 @@ use config::UI_CFG;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
 use game::chara::CharaEx;
-use text;
 
 /// Character status viewer
 pub struct StatusWindow {

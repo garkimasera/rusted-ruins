@@ -29,7 +29,6 @@ pub struct ItemWindow {
     rect: Rect,
     list: ListWidget,
     mode: ItemWindowMode,
-    n_row: u32,
     item_locations: Vec<ItemLocation>,
     page_window: PageWindow,
 }
@@ -45,7 +44,6 @@ impl ItemWindow {
                 UI_CFG.item_window.column_pos.clone(),
                 Some(UI_CFG.item_window.n_row), 26),
             mode: mode,
-            n_row: UI_CFG.item_window.n_row,
             item_locations: Vec::new(),
             page_window: PageWindow::new(None, Some(rect.bottom() + UI_CFG.page_window.margin_to_parent)),
         };
