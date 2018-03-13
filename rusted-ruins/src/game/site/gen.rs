@@ -18,7 +18,6 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             chara.talk = Some(CharaTalk {
                 id: talk_script_id.to_owned(),
                 section: "start".to_owned(),
-                event_data: None,
             });
         }
         

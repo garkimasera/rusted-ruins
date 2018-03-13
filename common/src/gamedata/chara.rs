@@ -205,8 +205,5 @@ pub struct CharaTalk {
     pub id: String,
     /// Section of the TalkScript
     pub section: String,
-    /// If the talk include custom event, for example shopping
-    /// This data will be used to specify that event
-    pub event_data: Option<String>,
 }
 

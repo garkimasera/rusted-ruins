@@ -11,7 +11,6 @@ pub struct TalkStatus {
     idx: TalkScriptIdx,
     /// The chara that player talks to
     cid: CharaId,
-    chara_talk: CharaTalk,
     current_section: String,
 }
 
@@ -26,8 +25,7 @@ impl TalkStatus {
         let current_section = chara_talk.section.clone();
 
         let mut talk_status = TalkStatus {
-            idx, cid, chara_talk,
-            current_section,
+            idx, cid, current_section,
         };
         talk_status.start(game);
         Some(talk_status)
