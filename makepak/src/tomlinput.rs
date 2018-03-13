@@ -120,11 +120,22 @@ pub struct SiteGenDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TalkScriptSectionInput {
-    pub is_empty: Option<bool>,
     pub text: Option<String>,
-    pub reaction: talkscript::TalkSectionReaction,
-    pub sub_reaction: Option<Vec<talkscript::TalkSubReaction>>,
+    pub reaction_kind: TalkReactionKind,
+    #[serde(default)]
+    pub answer_texts: Vec<String>,
+    #[serde(default)]
+    pub dest_sections: Vec<String>,
+    pub esc_answer: Option<u16>,
+    pub dest_section: Option<String>,
+    pub sub_reaction: Option<talkscript::TalkSubReaction>,
     #[serde(default)]
     pub special: talkscript::SpecialTalkSection,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all="lowercase")]
+pub enum TalkReactionKind {
+    End, Answers, Jump,
 }
 

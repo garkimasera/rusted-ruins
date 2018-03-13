@@ -17,27 +17,26 @@ impl TalkScriptObject {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TalkSection {
     pub text: Option<String>,
-    pub reaction: TalkSectionReaction,
-    pub sub_reaction: Vec<TalkSubReaction>,
+    pub reaction: TalkReaction,
+    pub sub_reaction: Option<TalkSubReaction>,
     pub special: SpecialTalkSection,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum TalkSectionReaction {
+pub enum TalkReaction {
     /// End this talk
     End,
     /// Answer from some choices
-    Answers(Vec<TalkAnswer>),
+    Answers {
+        answer_texts: Vec<String>,
+        dest_sections: Vec<String>,
+        /// This answer will be chosen when escape or cancel button is pressed
+        esc_answer: Option<u16>,
+    },
     /// Jump to another section
-    Jump(String, TalkSubReaction),
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct TalkAnswer {
-    text: String,
-    /// This reaction must not be 'Answers'
-    reaction: TalkSectionReaction,
-    sub_reaction: Vec<TalkSubReaction>,
+    Jump {
+        dest_section: String,
+    },
 }
 
 #[derive(Debug, Serialize, Deserialize)]

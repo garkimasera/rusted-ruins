@@ -35,8 +35,12 @@ impl TalkStatus {
 
     pub fn get_text(&self) -> &'static str {
         let tso = gobj::get_obj(self.idx);
-        let text = tso.get_section_text(&self.current_section).unwrap();
-        text::talk_txt(&text)
+        if let Some(text) = tso.get_section_text(&self.current_section) {
+            text::talk_txt(text)
+        } else {
+            let section_id = format!("{}.{}", tso.id, self.current_section);
+            text::talk_txt_checked(&section_id).unwrap_or(&tso.id)
+        }
     }
 
     pub fn proceed(&mut self, pa: &mut DoPlayerAction, choice: Option<usize>) -> TalkResult {
@@ -48,7 +52,7 @@ impl TalkStatus {
     fn execute_action(&mut self, _game: &mut Game, _choice: Option<usize>) -> TalkResult {
         let section = self.get_current_section();
         match section.reaction {
-            TalkSectionReaction::End => { TalkResult::End }
+            TalkReaction::End => { TalkResult::End }
             _ => unimplemented!()
         }
     }
