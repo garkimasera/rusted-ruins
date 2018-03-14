@@ -188,45 +188,31 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
 fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
     let talk_script_dep = get_optional_field!(tomlinput, talk_script);
     use std::collections::HashMap;
-    use tomlinput::TalkReactionKind;
     use common::talkscript::*;
     let mut sections: HashMap<String, TalkSection> = HashMap::new();
     for (k, v) in talk_script_dep.sections {
 
-        let reaction = match v.reaction_kind {
-            TalkReactionKind::End => TalkReaction::End,
-            TalkReactionKind::Answers => {
-                if v.answer_texts.len() == 0 {
-                    bail!("The number of items in answer_texts is zero");
-                }
-                if v.dest_sections.len() == 0 {
-                    bail!("The number of items in dest_sections is zero");
-                }
+        let section = match v.kind {
+            TalkSectionKind::Normal => {
                 if v.answer_texts.len() != v.dest_sections.len() {
                     bail!("Answer_texts and dest_sections have different length");
                 }
-                TalkReaction::Answers {
+                TalkSection::Normal {
+                    text: v.text,
                     answer_texts: v.answer_texts,
                     dest_sections: v.dest_sections,
-                    esc_answer: v.esc_answer,
+                    default_dest_section: v.default_dest_section,
                 }
             }
-            TalkReactionKind::Jump => {
-                TalkReaction::Jump {
-                    dest_section: get_optional_field!(v, dest_section),
-                }
+            TalkSectionKind::Reaction => {
+                unimplemented!()
+            }
+            TalkSectionKind::Special => {
+                unimplemented!()
             }
         };
         
-        sections.insert(
-            k,
-            TalkSection {
-                text: v.text,
-                reaction: reaction,
-                sub_reaction: v.sub_reaction,
-                special: v.special,
-            }
-        );
+        sections.insert(k, section);
     }
 
     Ok(TalkScriptObject {

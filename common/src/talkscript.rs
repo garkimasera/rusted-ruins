@@ -1,5 +1,6 @@
 
 use std::collections::HashMap;
+use std::borrow::Cow;
 
 /// Hold data of one taliking
 #[derive(Serialize, Deserialize)]
@@ -9,60 +10,54 @@ pub struct TalkScriptObject {
 }
 
 impl TalkScriptObject {
-    pub fn get_section_text<'a>(&'a self, section: &str) -> Option<&'a str> {
-        self.sections[section].text.as_ref().map(|t| t.as_ref())
+    /// Get text id of given section
+    pub fn get_section_text<'a>(&'a self, section: &str) -> Option<Cow<'a, str>> {
+        match self.sections[section] {
+            TalkSection::Normal { ref text, .. } =>  {
+                let s = if let Some(ref text) = *text {
+                    Cow::Borrowed(text.as_ref())
+                } else {
+                    Cow::Owned(format!("{}.{}", self.id, section))
+                };
+                Some(s)
+            }
+            _ => None,
+        }
     }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TalkSection {
-    pub text: Option<String>,
-    pub reaction: TalkReaction,
-    pub sub_reaction: Option<TalkSubReaction>,
-    pub special: SpecialTalkSection,
+pub enum TalkSection {
+    Normal {
+        text: Option<String>,
+        answer_texts: Vec<String>,
+        dest_sections: Vec<String>,
+        default_dest_section: Option<String>,
+    },
+    Reaction {
+        reaction: TalkReaction,
+        next_section: String,
+    },
+    Special {
+        special: SpecialTalkSection,
+        next_section: String,
+    },
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="kebab-case")]
+pub enum TalkSectionKind {
+    Normal, Reaction, Special,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TalkReaction {
-    /// End this talk
-    End,
-    /// Answer from some choices
-    Answers {
-        answer_texts: Vec<String>,
-        dest_sections: Vec<String>,
-        /// This answer will be chosen when escape or cancel button is pressed
-        esc_answer: Option<u16>,
-    },
-    /// Jump to another section
-    Jump {
-        dest_section: String,
-    },
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum TalkSubReaction {
 }
 
 /// This holds data to represent special talk section.
 #[derive(Debug, Serialize, Deserialize)]
 pub enum SpecialTalkSection {
-    None,
     /// Taught new ruins and dungeons locations by the informant
     InformantRuins,
-}
-
-impl Default for SpecialTalkSection {
-    fn default() -> SpecialTalkSection {
-        SpecialTalkSection::None
-    }
-}
-
-impl SpecialTalkSection {
-    pub fn is_none(&self) -> bool {
-        match *self {
-            SpecialTalkSection::None => true,
-            _ => false,
-        }
-    }
 }
 
