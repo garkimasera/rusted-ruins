@@ -1,10 +1,10 @@
 
+use std::borrow::Cow;
 use common::talkscript::*;
 use common::objholder::TalkScriptIdx;
 use common::gamedata::chara::{CharaId, CharaTalk};
 use common::gobj;
 use game::{Game, DoPlayerAction};
-use text;
 
 /// Hold data for talk handling
 pub struct TalkStatus {
@@ -27,39 +27,61 @@ impl TalkStatus {
         let mut talk_status = TalkStatus {
             idx, cid, current_section,
         };
-        talk_status.start(game);
+        talk_status.proceed_loop(game);
         Some(talk_status)
     }
 
-    pub fn get_text(&self) -> &'static str {
+    pub fn get_text(&self) -> Cow<'static, str> {
         let tso = gobj::get_obj(self.idx);
         if let Some(text) = tso.get_section_text(&self.current_section) {
-            text::talk_txt(&text)
+            text
         } else {
             unreachable!()
         }
     }
 
-    pub fn proceed(&mut self, pa: &mut DoPlayerAction, choice: Option<usize>) -> TalkResult {
-        self.execute_action(pa.0, choice)
+    /// Proceed to next section
+    pub fn proceed(&mut self, pa: &mut DoPlayerAction) -> TalkResult {
+        let game = &mut pa.0;
+        let section = self.get_current_section();
+        // Set next section
+        self.current_section = match *section {
+            TalkSection::Normal { ref default_dest_section, .. } => {
+                if let Some(ref default_dest_section) = *default_dest_section {
+                    default_dest_section.clone()
+                } else {
+                    return TalkResult::Continue;
+                }
+            }
+            TalkSection::Reaction { ref next_section, .. } => next_section.clone(),
+            TalkSection::Special { ref next_section, .. } => next_section.clone(),
+        };
+        self.proceed_loop(game)
     }
 
-    /// Execute action of current section
-    /// If current section has choices, choice must be specified
-    fn execute_action(&mut self, _game: &mut Game, _choice: Option<usize>) -> TalkResult {
-        let section = self.get_current_section();
-        match section {
-            TalkReaction::End => { TalkResult::End }
-            _ => unimplemented!()
+    /// Proceed until reaching a section that wait for player's input
+    fn proceed_loop(&mut self, _game: &mut Game) -> TalkResult {
+        loop {
+            // Empty section id means to finish the talk
+            if self.current_section == "" {
+                return TalkResult::End
+            }
+            let section = self.get_current_section();
+            match *section {
+                TalkSection::Normal {  .. } => {
+                    return TalkResult::Continue;
+                }
+                TalkSection::Reaction { ref next_section, .. } => {
+                    // process reaction here
+                    self.current_section = next_section.clone();
+                    continue;
+                }
+                TalkSection::Special { ref next_section, .. } => {
+                    self.current_section = next_section.clone();
+                    unimplemented!();
+                }
+            }
         }
-    }
-
-    /// If the first section doesn't have text,
-    /// executes action immediately
-    fn start(&mut self, game: &mut Game) {
-        let section = self.get_current_section();
-        if section.text.is_some() { return; }
-        self.execute_action(game, None);
     }
 
     fn get_current_section(&self) -> &'static TalkSection {

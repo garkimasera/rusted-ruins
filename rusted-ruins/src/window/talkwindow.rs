@@ -44,9 +44,10 @@ impl TalkWindow {
     }
 
     fn update_text(&mut self) {
-        let mut lines: Vec<&str> = Vec::new();
-        let s = text::talk_txt(self.talk_status.get_text());
+        let text_id = self.talk_status.get_text();
+        let s = text::talk_txt(&*text_id);
         self.n_line = s.lines().count();
+        let mut lines: Vec<&str> = Vec::new();
         for line in s.lines().skip(self.current_line).
             take(UI_CFG.talk_window.n_default_line) {
             lines.push(line);
@@ -73,7 +74,7 @@ impl DialogWindow for TalkWindow {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
                 if self.current_line + UI_CFG.talk_window.n_default_line >= self.n_line {
-                    match self.talk_status.proceed(pa, None) {
+                    match self.talk_status.proceed(pa) {
                         TalkResult::End => { DialogResult::Close },
                         TalkResult::Continue => { DialogResult::Continue },
                     }
