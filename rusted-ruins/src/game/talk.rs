@@ -43,7 +43,11 @@ impl TalkStatus {
     /// Proceed to next section
     pub fn proceed(&mut self, pa: &mut DoPlayerAction) -> TalkResult {
         let game = &mut pa.0;
-        let section = self.get_current_section();
+        let section = if let Some(section) = self.get_current_section() {
+            section
+        } else {
+            return TalkResult::End;
+        };
         // Set next section
         self.current_section = match *section {
             TalkSection::Normal { ref default_dest_section, .. } => {
@@ -66,7 +70,11 @@ impl TalkStatus {
             if self.current_section == "" {
                 return TalkResult::End
             }
-            let section = self.get_current_section();
+            let section = if let Some(section) = self.get_current_section() {
+                section
+            } else {
+                return TalkResult::End;
+            };
             match *section {
                 TalkSection::Normal {  .. } => {
                     return TalkResult::Continue;
@@ -84,9 +92,14 @@ impl TalkStatus {
         }
     }
 
-    fn get_current_section(&self) -> &'static TalkSection {
+    fn get_current_section(&self) -> Option<&'static TalkSection> {
         let tso = gobj::get_obj(self.idx);
-        &tso.sections[&self.current_section]
+        let section = tso.sections.get(&self.current_section);
+        if section.is_none() {
+            warn!("TalkSection \"{}\" is not found in TalkScript \"{}\"",
+                  self.current_section, gobj::idx_to_id(self.idx));
+        }
+        section
     }
 }
 
