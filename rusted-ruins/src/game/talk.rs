@@ -40,6 +40,15 @@ impl TalkStatus {
         }
     }
 
+    /// Return answers of the current section
+    pub fn get_answers(&self) -> Option<&'static [String]> {
+        let section = self.get_current_section().expect("Tried to get answers of finished talk");
+        match *section {
+            TalkSection::Normal { ref answer_texts, .. } => Some(answer_texts),
+            _ => None,
+        }
+    }
+
     /// Proceed to next section
     pub fn proceed(&mut self, pa: &mut DoPlayerAction) -> TalkResult {
         let game = &mut pa.0;
