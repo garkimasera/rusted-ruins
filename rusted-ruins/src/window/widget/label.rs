@@ -77,8 +77,8 @@ pub struct LineSpecifiedLabelWidget {
 }
 
 impl LineSpecifiedLabelWidget {
-    pub fn new<R: Into<Rect>>(
-        rect: R, s: &[&str], font: FontKind, max_line: usize) -> LineSpecifiedLabelWidget {
+    pub fn new<R: Into<Rect>, S: AsRef<str>>(
+        rect: R, s: &[S], font: FontKind, max_line: usize) -> LineSpecifiedLabelWidget {
         
         let rect = rect.into();
         let slice_len = ::std::cmp::min(s.len(), max_line);
@@ -88,7 +88,7 @@ impl LineSpecifiedLabelWidget {
         }
     }
 
-    pub fn set_text(&mut self, s: &[&str]) {
+    pub fn set_text<S: AsRef<str>>(&mut self, s: &[S]) {
         let slice_len = ::std::cmp::min(s.len(), self.max_line);
         let cache = TextCache::new(&s[0..slice_len], self.font, UI_CFG.color.normal_font.into());
         self.cache = cache;

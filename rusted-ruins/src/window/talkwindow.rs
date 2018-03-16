@@ -1,6 +1,7 @@
 
 use super::commonuse::*;
 use super::widget::*;
+use std::borrow::Cow;
 use common::objholder::CharaTemplateIdx;
 use common::basic::TILE_SIZE;
 use sdlvalues::FontKind;
@@ -11,12 +12,10 @@ use text;
 
 pub struct TalkWindow {
     rect: Rect,
-    text: String,
     talk_manager: TalkManager,
-    current_line: usize,
-    n_line: usize,
     label: LineSpecifiedLabelWidget,
     image_window: ImageWindow,
+    msg_text: MsgText,
 }
 
 impl TalkWindow {
@@ -32,27 +31,21 @@ impl TalkWindow {
             TILE_SIZE * 2);
         let mut talk_window = TalkWindow {
             rect: rect,
-            text: "".to_owned(),
-            current_line: 0,
-            n_line: 0,
             talk_manager: talk_manager,
             label: label,
             image_window: ImageWindow::chara(rect_image_window, chara_template_idx),
+            msg_text: MsgText::default(),
         };
-        talk_window.update_page();
+        talk_window.update_page(true);
         talk_window
     }
 
-    fn update_page(&mut self) {
-        let text_id = self.talk_manager.get_text();
-        let s = text::talk_txt(&*text_id);
-        self.n_line = s.lines().count();
-        let mut lines: Vec<&str> = Vec::new();
-        for line in s.lines().skip(self.current_line).
-            take(UI_CFG.talk_window.n_default_line) {
-            lines.push(line);
+    fn update_page(&mut self, section_changed: bool) {
+        if section_changed {
+            let text_id = self.talk_manager.get_text();
+            self.msg_text = MsgText::new(&*text_id);
         }
-        self.label.set_text(&lines);
+        self.label.set_text(self.msg_text.page_lines());
     }
 }
 
@@ -73,18 +66,18 @@ impl DialogWindow for TalkWindow {
             Command::Enter => {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
-                if self.current_line + UI_CFG.talk_window.n_default_line >= self.n_line {
+                if self.msg_text.is_final_page() {
                     match self.talk_manager.proceed(pa) {
                         TalkResult::End => DialogResult::Close,
                         TalkResult::NoChange => DialogResult::Continue,
                         TalkResult::Continue => {
-                            self.update_page();
+                            self.update_page(true);
                             DialogResult::Continue
                         },
                     }
                 } else {
-                    self.current_line += UI_CFG.talk_window.n_default_line;
-                    self.update_page();
+                    self.msg_text.next_page();
+                    self.update_page(false);
                     DialogResult::Continue
                 }
             },
@@ -96,3 +89,49 @@ impl DialogWindow for TalkWindow {
         InputMode::Dialog
     }
 }
+
+/// Manage lines of text message
+#[derive(Default)]
+struct MsgText {
+    lines: Vec<Cow<'static, str>>,
+    current_line: usize,
+    n_default_line: usize,
+}
+
+impl MsgText {
+    fn new(text_id: &str) -> MsgText {
+        let mut lines: Vec<Cow<'static, str>> = Vec::new();
+
+        if let Some(s) = text::talk_txt_checked(text_id) {
+            for line in s.lines() {
+                lines.push(line.into());
+            }
+        } else {
+            lines.push(text_id.to_owned().into());
+        }
+        
+        MsgText {
+            lines: lines,
+            current_line: 0,
+            n_default_line: UI_CFG.talk_window.n_default_line,
+        }
+    }
+
+    fn page_lines(&self) -> &[Cow<'static, str>] {
+        let e = ::std::cmp::min(self.n_line(), self.current_line + self.n_default_line);
+        &self.lines[self.current_line..e]
+    }
+
+    fn n_line(&self) -> usize {
+        self.lines.len()
+    }
+
+    fn next_page(&mut self) {
+        self.current_line += self.n_default_line;
+    }
+
+    fn is_final_page(&self) -> bool {
+        self.current_line + self.n_default_line >= self.n_line()
+    }
+}
+
