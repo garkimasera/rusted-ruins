@@ -75,8 +75,12 @@ impl DialogWindow for TalkWindow {
                 // proceeds the talk to next section
                 if self.current_line + UI_CFG.talk_window.n_default_line >= self.n_line {
                     match self.talk_status.proceed(pa) {
-                        TalkResult::End => { DialogResult::Close },
-                        TalkResult::Continue => { DialogResult::Continue },
+                        TalkResult::End => DialogResult::Close,
+                        TalkResult::NoChange => DialogResult::Continue,
+                        TalkResult::Continue => {
+                            self.update_text();
+                            DialogResult::Continue
+                        },
                     }
                 } else {
                     self.current_line += UI_CFG.talk_window.n_default_line;

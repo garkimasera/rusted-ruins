@@ -16,7 +16,7 @@ pub struct TalkStatus {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TalkResult {
-    Continue, End,
+    Continue, NoChange, End,
 }                    
 
 impl TalkStatus {
@@ -54,7 +54,7 @@ impl TalkStatus {
                 if let Some(ref default_dest_section) = *default_dest_section {
                     default_dest_section.clone()
                 } else {
-                    return TalkResult::Continue;
+                    return TalkResult::NoChange; // No need to update talk displaying
                 }
             }
             TalkSection::Reaction { ref next_section, .. } => next_section.clone(),
