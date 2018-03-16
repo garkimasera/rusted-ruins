@@ -7,7 +7,7 @@ use common::gobj;
 use game::{Game, DoPlayerAction};
 
 /// Hold data for talk handling
-pub struct TalkStatus {
+pub struct TalkManager {
     idx: TalkScriptIdx,
     /// The chara that player talks to
     cid: CharaId,
@@ -19,12 +19,12 @@ pub enum TalkResult {
     Continue, NoChange, End,
 }                    
 
-impl TalkStatus {
-    pub fn new(chara_talk: CharaTalk, cid: CharaId, game: &mut Game) -> Option<TalkStatus> {
+impl TalkManager {
+    pub fn new(chara_talk: CharaTalk, cid: CharaId, game: &mut Game) -> Option<TalkManager> {
         let idx = gobj::id_to_idx_checked(&chara_talk.id)?;
         let current_section = chara_talk.section.clone();
 
-        let mut talk_status = TalkStatus {
+        let mut talk_status = TalkManager {
             idx, cid, current_section,
         };
         talk_status.proceed_loop(game);

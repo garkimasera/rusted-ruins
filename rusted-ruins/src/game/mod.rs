@@ -26,7 +26,7 @@ pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
-pub use self::talk::TalkStatus;
+pub use self::talk::TalkManager;
 use self::turnloop::TurnLoopData;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
