@@ -8,6 +8,8 @@ use sdlvalues::FontKind;
 use config::UI_CFG;
 use game::talk::*;
 use super::miscwindow::ImageWindow;
+use super::choosewindow::ChooseWindow;
+use super::winpos::*;
 use text;
 
 pub struct TalkWindow {
@@ -16,6 +18,7 @@ pub struct TalkWindow {
     label: LineSpecifiedLabelWidget,
     image_window: ImageWindow,
     msg_text: MsgText,
+    choose_win: Option<ChooseWindow>,
 }
 
 impl TalkWindow {
@@ -35,6 +38,7 @@ impl TalkWindow {
             label: label,
             image_window: ImageWindow::chara(rect_image_window, chara_template_idx),
             msg_text: MsgText::default(),
+            choose_win: None,
         };
         talk_window.update_page(true);
         talk_window
@@ -44,7 +48,21 @@ impl TalkWindow {
         if section_changed {
             let text_id = self.talk_manager.get_text();
             self.msg_text = MsgText::new(&*text_id);
+            self.choose_win = None;
         }
+        
+        // Create answers
+        if self.msg_text.is_final_page() {
+            if let Some(answers) = self.talk_manager.get_answers() {
+                let winpos = WindowPos::new(
+                    WindowHPos::RightX(self.rect.right()),
+                    WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs));
+                let choices: Vec<String> =
+                    answers.iter().map(|a| text::talk_txt(&*a).to_owned()).collect();
+                self.choose_win = Some(ChooseWindow::new(winpos, choices, None));
+            }
+        }
+        
         self.label.set_text(self.msg_text.page_lines());
     }
 }
@@ -57,11 +75,38 @@ impl Window for TalkWindow {
         self.image_window.draw(canvas, game, sv, anim);
         draw_rect_border(canvas, self.rect);
         self.label.draw(canvas, sv);
+        if let Some(ref mut choose_win) = self.choose_win {
+            choose_win.draw(canvas, game, sv, anim);
+        }
     }
 }
 
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        let mut update_by_answer_choosing = false;
+        if let Some(ref mut choose_win) = self.choose_win {
+            match choose_win.process_command(command, pa) {
+                // When one answer is choosed
+                DialogResult::CloseWithValue(choosed_answer) => {
+                    if let Ok(choosed_answer) = choosed_answer.downcast::<u32>() {
+                        match self.talk_manager.choose_answer(*choosed_answer, pa) {
+                            TalkResult::End => { return DialogResult::Close; }
+                            TalkResult::NoChange => { return DialogResult::Continue; }
+                            TalkResult::Continue => {
+                                update_by_answer_choosing = true;
+                            }
+                        };
+                    }
+                }
+                _ => (),
+            }
+        }
+        if update_by_answer_choosing {
+            self.update_page(true);
+            return DialogResult::Continue;
+        }
+
+        
         match *command {
             Command::Enter => {
                 // If all text of the section has been displayed,
@@ -73,7 +118,7 @@ impl DialogWindow for TalkWindow {
                         TalkResult::Continue => {
                             self.update_page(true);
                             DialogResult::Continue
-                        },
+                        }
                     }
                 } else {
                     self.msg_text.next_page();

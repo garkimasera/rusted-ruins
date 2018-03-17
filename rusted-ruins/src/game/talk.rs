@@ -44,7 +44,7 @@ impl TalkManager {
     pub fn get_answers(&self) -> Option<&'static [String]> {
         let section = self.get_current_section().expect("Tried to get answers of finished talk");
         match *section {
-            TalkSection::Normal { ref answer_texts, .. } => Some(answer_texts),
+            TalkSection::Normal { ref answer_texts, .. } if answer_texts.len() > 0 => Some(answer_texts),
             _ => None,
         }
     }
@@ -98,6 +98,20 @@ impl TalkManager {
                     unimplemented!();
                 }
             }
+        }
+    }
+
+    pub fn choose_answer(&mut self, choosed_answer: u32, pa: &mut DoPlayerAction) -> TalkResult {
+        if let Some(section) = self.get_current_section() {
+            match *section {
+                TalkSection::Normal { ref dest_sections, .. } => {
+                    self.current_section = dest_sections[choosed_answer as usize].clone();
+                    self.proceed_loop(&mut pa.0)
+                }
+                _ => unreachable!(),
+            }
+        } else {
+            TalkResult::End
         }
     }
 
