@@ -57,7 +57,7 @@ impl<'sdl> TextRenderer<'sdl> {
         if let Some(w) = wrap {
             Ok(font.render(text).blended_wrapped(c, w)?)
         }else{
-            Ok(font.render(text).blended(c)?)
+            Ok(font.render(text.trim_right_matches('\n')).blended(c)?)
         }
     }
 
