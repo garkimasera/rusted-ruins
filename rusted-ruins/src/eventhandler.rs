@@ -20,11 +20,19 @@ pub struct EventHandler {
     vdir: VDirection,
     last_dir_changed: Option<Instant>,
     is_instant: bool,
+    prev_input_mode: InputMode,
+    waiting_dir_release: WaitingDirRelease,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum InputMode {
     Normal, Dialog, TextInput,
+}
+
+/// Used to prevent unintentional cursor moving after dialog opening
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum WaitingDirRelease {
+    No, Waiting, Skip,
 }
 
 #[derive(PartialEq, Eq, Hash, Debug)]
@@ -57,6 +65,8 @@ impl EventHandler {
             hdir: HDirection::None, vdir: VDirection::None,
             last_dir_changed: None,
             is_instant: false,
+            prev_input_mode: InputMode::Dialog,
+            waiting_dir_release: WaitingDirRelease::No,
         }
     }
     
@@ -79,16 +89,16 @@ impl EventHandler {
                 //self.update_dir(Some(HDirection::Right), None);
             },
             Event::KeyUp {keycode: Option::Some(Keycode::Up), ..} => {
-                //self.update_dir(None, Some(VDirection::None));
+                self.set_waiting_dir_release();
             },
             Event::KeyUp {keycode: Option::Some(Keycode::Down), ..} => {
-                //self.update_dir(None, Some(VDirection::None));
+                self.set_waiting_dir_release();
             },
             Event::KeyUp {keycode: Option::Some(Keycode::Left), ..} => {
-                //self.update_dir(Some(HDirection::None), None);
+                self.set_waiting_dir_release();
             },
             Event::KeyUp {keycode: Option::Some(Keycode::Right), ..} => {
-                //self.update_dir(Some(HDirection::None), None);
+                self.set_waiting_dir_release();
             },
             // Shortcut keys
             Event::KeyUp {keycode: Option::Some(keycode), ..} => {
@@ -98,6 +108,9 @@ impl EventHandler {
             Event::JoyButtonDown { button_idx, .. } => {
                 println!("ButtonDown: {}", button_idx);
             },
+            Event::JoyAxisMotion { .. } => {
+                self.set_waiting_dir_release();
+            }
             // Text input events
             Event::TextInput { text, .. } => {
                 self.command_queue.push_back(RawCommand::TextInput(text));
@@ -109,11 +122,30 @@ impl EventHandler {
     }
 
     pub fn get_command(&mut self, mode: InputMode) -> Option<Command> {
+        // If input mode switched normal, cursor shouldn't move until direction key released once
+        if mode == InputMode::Dialog && self.prev_input_mode == InputMode::Normal {
+            self.waiting_dir_release = WaitingDirRelease::Waiting;
+        }
+        self.prev_input_mode = mode;
+        
         if self.command_queue.is_empty() {
+            if mode == InputMode::Dialog {
+                match self.waiting_dir_release {
+                    WaitingDirRelease::No => (),
+                    WaitingDirRelease::Waiting => {
+                        return None;
+                    }
+                    WaitingDirRelease::Skip => {
+                        self.waiting_dir_release = WaitingDirRelease::No;
+                        return None;
+                    }
+                }
+            }
             if self.hdir != HDirection::None || self.vdir != VDirection::None {
                 
                 let c = Command::Move{ dir: Direction::new(self.hdir, self.vdir) };
-                
+
+                // Slow down cursor moving speed in dialog mode
                 if mode != InputMode::Normal {
                     let now = Instant::now();
                     let d = now.duration_since(self.last_dir_changed.unwrap());
@@ -180,6 +212,12 @@ impl EventHandler {
         if need_time_update {
             self.is_instant = true;
             self.last_dir_changed = Some(Instant::now());
+        }
+    }
+
+    fn set_waiting_dir_release(&mut self) {
+        if self.waiting_dir_release == WaitingDirRelease::Waiting {
+            self.waiting_dir_release = WaitingDirRelease::Skip;
         }
     }
 }
