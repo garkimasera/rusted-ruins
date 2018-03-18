@@ -44,7 +44,7 @@ impl TalkManager {
     pub fn get_answers(&self) -> Option<&'static [String]> {
         let section = self.get_current_section().expect("Tried to get answers of finished talk");
         match *section {
-            TalkSection::Normal { ref answer_texts, .. } if answer_texts.len() > 0 => Some(answer_texts),
+            TalkSection::Normal { ref answers, .. } if answers.len() > 0 => Some(answers),
             _ => None,
         }
     }

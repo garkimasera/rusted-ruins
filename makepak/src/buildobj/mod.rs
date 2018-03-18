@@ -194,12 +194,12 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
 
         let section = match v.kind {
             TalkSectionKind::Normal => {
-                if v.answer_texts.len() != v.dest_sections.len() {
+                if v.answers.len() != v.dest_sections.len() {
                     bail!("Answer_texts and dest_sections have different length");
                 }
                 TalkSection::Normal {
                     text: v.text,
-                    answer_texts: v.answer_texts,
+                    answers: v.answers,
                     dest_sections: v.dest_sections,
                     default_dest_section: v.default_dest_section,
                 }

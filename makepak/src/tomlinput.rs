@@ -123,7 +123,7 @@ pub struct TalkScriptSectionInput {
     pub kind: talkscript::TalkSectionKind,
     pub text: Option<String>,
     #[serde(default)]
-    pub answer_texts: Vec<String>,
+    pub answers: Vec<String>,
     #[serde(default)]
     pub dest_sections: Vec<String>,
     pub default_dest_section: Option<String>,

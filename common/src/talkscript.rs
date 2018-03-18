@@ -30,7 +30,7 @@ impl TalkScriptObject {
 pub enum TalkSection {
     Normal {
         text: Option<String>,
-        answer_texts: Vec<String>,
+        answers: Vec<String>,
         dest_sections: Vec<String>,
         default_dest_section: Option<String>,
     },
