@@ -94,7 +94,7 @@ impl TalkManager {
                     continue;
                 }
                 TalkSection::Special { ref special, ref dest_sections } => {
-                    unimplemented!();
+                    
                 }
             }
         }
@@ -122,6 +122,10 @@ impl TalkManager {
                   self.current_section, gobj::idx_to_id(self.idx));
         }
         section
+    }
+
+    fn process_special_section(&self, special: &SpecialTalkSection, dest_sections: &Vec<String>) {
+        
     }
 }
 

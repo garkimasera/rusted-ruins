@@ -45,7 +45,7 @@ pub enum TalkSection {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="kebab-case")]
+#[serde(rename_all="snake_case")]
 pub enum TalkSectionKind {
     Normal, Reaction, Special,
 }
@@ -56,6 +56,7 @@ pub enum TalkReaction {
 
 /// This holds data to represent special talk section.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum SpecialTalkSection {
     /// Taught new ruins and dungeons locations by the informant
     InformantRuins,

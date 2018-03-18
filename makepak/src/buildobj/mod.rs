@@ -208,7 +208,11 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
                 unimplemented!()
             }
             TalkSectionKind::Special => {
-                unimplemented!()
+                TalkSection::Special {
+                    special: get_optional_field!(v, special),
+                    dest_sections: v.dest_sections,
+                }
+                    
             }
         };
         
