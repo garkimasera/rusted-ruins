@@ -40,7 +40,7 @@ pub enum TalkSection {
     },
     Special {
         special: SpecialTalkSection,
-        next_section: String,
+        dest_sections: Vec<String>,
     },
 }
 

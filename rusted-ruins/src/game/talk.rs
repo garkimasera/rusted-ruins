@@ -67,13 +67,13 @@ impl TalkManager {
                 }
             }
             TalkSection::Reaction { ref next_section, .. } => next_section.clone(),
-            TalkSection::Special { ref next_section, .. } => next_section.clone(),
+            TalkSection::Special { .. } => unreachable!(),
         };
         self.proceed_loop(game)
     }
 
     /// Proceed until reaching a section that wait for player's input
-    fn proceed_loop(&mut self, _game: &mut Game) -> TalkResult {
+    fn proceed_loop(&mut self, game: &mut Game) -> TalkResult {
         loop {
             // Empty section id means to finish the talk
             if self.current_section == "" {
@@ -93,8 +93,7 @@ impl TalkManager {
                     self.current_section = next_section.clone();
                     continue;
                 }
-                TalkSection::Special { ref next_section, .. } => {
-                    self.current_section = next_section.clone();
+                TalkSection::Special { ref special, ref dest_sections } => {
                     unimplemented!();
                 }
             }
