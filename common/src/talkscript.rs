@@ -59,6 +59,6 @@ pub enum TalkReaction {
 #[serde(rename_all="snake_case")]
 pub enum SpecialTalkSection {
     /// Taught new ruins and dungeons locations by the informant
-    InformantRuins,
+    InformantDungeons,
 }
 

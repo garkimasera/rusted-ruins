@@ -94,7 +94,13 @@ impl TalkManager {
                     continue;
                 }
                 TalkSection::Special { ref special, ref dest_sections } => {
-                    
+                    match self.process_special_section(game, special) {
+                        SpecialSectionResult::Return => return TalkResult::Continue,
+                        SpecialSectionResult::NextSection(n) => {
+                            self.current_section = dest_sections[n].clone();
+                            continue;
+                        }
+                    }
                 }
             }
         }
@@ -124,8 +130,21 @@ impl TalkManager {
         section
     }
 
-    fn process_special_section(&self, special: &SpecialTalkSection, dest_sections: &Vec<String>) {
-        
+    fn process_special_section(
+        &self, game: &mut Game, special: &SpecialTalkSection) -> SpecialSectionResult {
+
+        match *special {
+            SpecialTalkSection::InformantDungeons => {
+                let mid = game.gd.get_current_mapid();
+                super::region::gen_dungeon_max(&mut game.gd, mid.rid());
+                SpecialSectionResult::NextSection(0)
+            }
+        }
     }
+}
+
+enum SpecialSectionResult {
+    Return,
+    NextSection(usize),
 }
 

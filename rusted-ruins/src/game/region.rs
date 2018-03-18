@@ -24,6 +24,20 @@ pub fn add_region(gd: &mut GameData, id: &str) {
     add_sites_from_genobj(gd, rg, rid);
 }
 
+/// Generate dungeons up to the max
+pub fn gen_dungeon_max(gd: &mut GameData, rid: RegionId) {
+    use common::basic::MAX_AUTO_GEN_DUNGEONS;
+    let n_autogen_dungeons = gd.region.get(rid).get_site_n(SiteKind::AutoGenDungeon);
+
+    if n_autogen_dungeons == MAX_AUTO_GEN_DUNGEONS {
+        return;
+    }
+    
+    for _ in 0..(MAX_AUTO_GEN_DUNGEONS - n_autogen_dungeons) {
+        gen_dungeon(gd, rid);
+    }
+}
+
 /// Generate one dungeon and add it to the region
 pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
     if MAX_AUTO_GEN_DUNGEONS <= gd.region.get(rid).get_site_n(SiteKind::AutoGenDungeon) { return; }
