@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use objholder::CharaTemplateIdx;
 use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
+use super::skill::SkillList;
 use super::unknown_id_err;
 
 /// Character's races
@@ -66,6 +67,7 @@ pub struct Chara {
     pub equip: EquipItemList,
     pub wait_time: u32,
     pub hp: i32,
+    pub skills: SkillList,
     /// Relationship to player character
     pub rel: Relationship,
     /// Trigger for event
@@ -136,6 +138,7 @@ impl Default for Chara {
             equip: EquipItemList::new(&[]),
             wait_time: ::basic::WAIT_TIME_START,
             hp: 100,
+            skills: SkillList::default(),
             rel: Relationship::NEUTRAL,
             trigger: None,
             talk: None,

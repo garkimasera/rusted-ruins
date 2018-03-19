@@ -6,6 +6,7 @@ pub mod site;
 pub mod town;
 pub mod region;
 pub mod shop;
+pub mod skill;
 
 use array2d::Vec2d;
 

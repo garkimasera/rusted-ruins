@@ -4,6 +4,7 @@ use common::objholder::CharaTemplateIdx;
 use common::gamedata::chara::*;
 use common::gamedata::item::{ItemList, EquipItemList};
 use common::gamedata::site::DungeonKind;
+use common::gamedata::skill::SkillList;
 use common::gobj;
 use rules::RULES;
 
@@ -35,6 +36,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_START,
         hp: max_hp,
+        skills: SkillList::default(),
         rel: Relationship::NEUTRAL,
         trigger: None,
         talk: None,

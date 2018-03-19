@@ -11,6 +11,7 @@ extern crate rusted_ruins_array2d as array2d;
 extern crate rmp;
 extern crate rmp_serde as rmps;
 extern crate tar;
+extern crate fnv;
 
 pub mod basic;
 pub mod obj;
