@@ -1,5 +1,5 @@
 
-use std::collections::HashMap;
+use hashmap::HashMap;
 use std::borrow::Cow;
 
 /// Hold data of one taliking

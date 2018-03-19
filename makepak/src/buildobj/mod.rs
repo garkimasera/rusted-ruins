@@ -187,9 +187,9 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
 
 fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
     let talk_script_dep = get_optional_field!(tomlinput, talk_script);
-    use std::collections::HashMap;
+    use common::hashmap::HashMap;
     use common::talkscript::*;
-    let mut sections: HashMap<String, TalkSection> = HashMap::new();
+    let mut sections: HashMap<String, TalkSection> = HashMap::default();
     for (k, v) in talk_script_dep.sections {
 
         let section = match v.kind {

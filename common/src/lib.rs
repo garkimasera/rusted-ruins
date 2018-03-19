@@ -14,6 +14,7 @@ extern crate tar;
 extern crate fnv;
 
 pub mod basic;
+pub mod hashmap;
 pub mod obj;
 pub mod objholder;
 #[cfg(feature="global_state_obj")]
