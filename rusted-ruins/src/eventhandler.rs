@@ -133,6 +133,9 @@ impl EventHandler {
                 match self.waiting_dir_release {
                     WaitingDirRelease::No => (),
                     WaitingDirRelease::Waiting => {
+                        if self.hdir == HDirection::None && self.vdir == VDirection::None {
+                            self.waiting_dir_release = WaitingDirRelease::No;
+                        }
                         return None;
                     }
                     WaitingDirRelease::Skip => {
