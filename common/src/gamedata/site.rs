@@ -94,6 +94,7 @@ impl SiteContent {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum SiteKind {
     AutoGenDungeon, Town, Other
 }

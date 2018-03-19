@@ -3,8 +3,8 @@
     "Cave": {
         "map_size": [32, 32],
         "npc_race_probability": {
-            "Slime": 0.7,
-            "Animal": 0.3
+            "slime": 0.7,
+            "animal": 0.3
         },
         "terrain": [
             ["!dirt", "!dirt.wall"]
@@ -14,7 +14,7 @@
     "Ruin": {
         "map_size": [32, 32],
         "npc_race_probability": {
-            "Slime": 1
+            "slime": 1
         },
         "terrain": [
             ["!concrete-rust", "!concrete-rust.wall"]

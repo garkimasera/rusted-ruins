@@ -11,19 +11,19 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
     let mut flags = ItemFlags::empty();
 
     let kind = match item.item_kind.as_str() {
-        "Object" => ItemKind::Object,
-        "Potion" => {
+        "object" => ItemKind::Object,
+        "potion" => {
             flags |= ItemFlags::DRINKABLE;
             ItemKind::Potion
         }
-        "Food" => {
+        "food" => {
             flags |= ItemFlags::EATABLE;
             ItemKind::Food
         }
-        "Weapon" => {
+        "weapon" => {
             ItemKind::Weapon(get_optional_field!(item, weapon_kind))
         }
-        "Armor" => {
+        "armor" => {
             ItemKind::Armor(get_optional_field!(item, armor_kind))
         }
         _ => {

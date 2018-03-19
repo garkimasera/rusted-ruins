@@ -8,12 +8,14 @@ use super::unknown_id_err;
 
 /// Character's races
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum Race {
     Animal, Devil, Human, Phantom, Slime,
 }
 
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum CharaClass {
     // Playable classes
     Archeologist, Rogue,

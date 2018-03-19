@@ -63,6 +63,7 @@ pub enum ItemKind {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum ItemKindRough {
     Object, Potion, Food, Weapon, Armor,
 }
@@ -91,6 +92,7 @@ impl ItemQuality {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum MedicalEffect {
     None, Heal, Poison,
 }
@@ -102,12 +104,14 @@ impl Default for MedicalEffect {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum WeaponKind {
     Sword, Spear, Axe, Whip,
     Bow, Crossbow, Gun,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum ArmorKind {
     Body, Shield,
 }
@@ -266,6 +270,7 @@ impl From<u32> for ItemMoveNum {
 //
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum EquipSlotKind {
     ShortRangeWeapon, LongRangeWeapon, BodyArmor, Shield,
 }

@@ -1,6 +1,6 @@
 
 {
     "default_equip_slots": {
-        "Human": [["ShortRangeWeapon", 1], ["BodyArmor", 1]]
+        "human": [["short_range_weapon", 1], ["body_armor", 1]]
     }
 } 

@@ -1,10 +1,10 @@
 
 {
-    "class_choices": ["Archeologist", "Rogue"],
+    "class_choices": ["archeologist", "rogue"],
     "start_region": "!east-coast",
     "start_pos": [1, 1],
     "chara_template_table": {
-        "Archeologist": "!archeologist.m",
-        "Rogue": "!rogue.m"
+        "archeologist": "!archeologist.m",
+        "rogue": "!rogue.m"
     }
 }
