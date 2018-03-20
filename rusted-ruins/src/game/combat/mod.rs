@@ -2,10 +2,12 @@
 use rng;
 use super::Game;
 use super::chara::CharaEx;
+use super::skill::SkillListEx;
 use super::animation::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
 use common::gamedata::chara::{CharaId, Chara};
+use common::gamedata::skill::SkillKind;
 use common::gamedata::item::*;
 
 pub enum DamageKind {
@@ -14,7 +16,7 @@ pub enum DamageKind {
 
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Damage calculation
-    let damage = {
+    let (damage, weapon_kind) = {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
         let weapon_data = get_weapon_data(attacker);
@@ -24,7 +26,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 
         let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
         let defence_power = calc_defence(target);
-        if damage < defence_power { 0 }else{ damage - defence_power }
+        (if damage < defence_power { 0 }else{ damage - defence_power }, weapon_data.kind)
     };
     // Logging
     {
@@ -34,6 +36,13 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     }
     // Damage processing
     super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);
+    // Exp processing
+    {
+        let attacker = game.gd.chara.get_mut(attacker);
+        if let Some(weapon_kind) = weapon_kind {
+            attacker.skills.add_exp(SkillKind::Weapon(weapon_kind), 1);
+        }
+    }
     // Animation pushing
     game.anim_queue.push_back(Animation::img_onetile(
         AnimImgIdx(0), game.gd.get_current_map().chara_pos(target).unwrap()));
@@ -42,18 +51,26 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 struct WeaponData {
     dice_n: i32,
     dice_x: i32,
+    /// For hand attack, this is None
+    kind: Option<WeaponKind>,
 }
 
 fn get_weapon_data(chara: &Chara) -> WeaponData {
     if let Some(weapon) = chara.equip.item(EquipSlotKind::ShortRangeWeapon, 0) {
         let item_obj = gobj::get_obj(weapon.idx);
+        let kind = match item_obj.kind {
+            ItemKind::Weapon(kind) => kind,
+            _ => unreachable!(),
+        };
         WeaponData {
             dice_n: item_obj.dice_n.into(),
             dice_x: item_obj.dice_x.into(),
+            kind: Some(kind),
         }
     } else {
         WeaponData {
-            dice_n: 4, dice_x: 4
+            dice_n: 4, dice_x: 4,
+            kind: None,
         }
     }
 }

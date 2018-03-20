@@ -8,6 +8,7 @@ mod region;
 pub mod site;
 mod map;
 pub mod chara;
+mod skill;
 mod infogetter;
 mod animation;
 pub mod newgame;

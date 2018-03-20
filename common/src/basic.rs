@@ -20,6 +20,9 @@ pub const MAX_EQUIP_SLOT: usize = 16;
 
 pub const WAIT_TIME_START: u32 = 10000;
 
+/// Needed exp value to level up
+pub const SKILL_EXP_LVUP: u16 = 10000;
+
 // Path settings
 pub const CFG_FILES_DIR: &'static str = "config";
 pub const OBJ_TXT_DIR: &'static str = "obj";
