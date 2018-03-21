@@ -11,7 +11,7 @@ use common::gamedata::skill::SkillKind;
 use common::gamedata::item::*;
 
 pub enum DamageKind {
-    CloseRangeAttack,
+    ShortRangeAttack,
 }
 
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
@@ -35,7 +35,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         game_log!("attack"; attacker=attacker.get_name(), target=target.get_name(), damage=damage);
     }
     // Damage processing
-    super::chara::damage(game, target, damage, DamageKind::CloseRangeAttack);
+    super::chara::damage(game, target, damage, DamageKind::ShortRangeAttack);
     // Exp processing
     {
         let attacker = game.gd.chara.get_mut(attacker);

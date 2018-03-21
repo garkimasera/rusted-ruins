@@ -7,8 +7,8 @@ use common::basic::TILE_SIZE;
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use game::talk::*;
-use super::miscwindow::ImageWindow;
-use super::choosewindow::ChooseWindow;
+use super::misc_window::ImageWindow;
+use super::choose_window::ChooseWindow;
 use super::winpos::*;
 use text;
 

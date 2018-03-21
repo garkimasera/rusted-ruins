@@ -1,23 +1,23 @@
 
-mod winpos;
-mod mainwindow;
-mod logwindow;
-mod textwindow;
-mod choosewindow;
-mod talkwindow;
-mod itemwindow;
-mod exitwindow;
-mod equipwindow;
-mod miscwindow;
-mod msgdialog;
-mod newgame_window;
-mod status_window;
-mod textinputdialog;
-mod indicator;
-mod minimap;
-mod startwindow;
 mod widget;
 mod dialogreq;
+mod winpos;
+mod choose_window;
+mod equip_window;
+mod exit_window;
+mod item_window;
+mod log_window;
+mod main_window;
+mod talk_window;
+mod text_window;
+mod misc_window;
+mod msg_dialog;
+mod newgame_window;
+mod start_window;
+mod status_window;
+mod text_input_dialog;
+mod indicator;
+mod minimap;
 
 use std::any::Any;
 use common::gamedata::GameData;
@@ -27,8 +27,8 @@ use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use sdl2::keyboard::TextInputUtil;
 use SdlContext;
-use self::mainwindow::MainWindow;
-use self::logwindow::LogWindow;
+use self::main_window::MainWindow;
+use self::log_window::LogWindow;
 use self::widget::WidgetTrait;
 use array2d::*;
 
@@ -75,7 +75,7 @@ pub trait DialogWindow: Window {
 /// The current main mode
 enum WindowManageMode {
     /// On start screen
-    Start(self::startwindow::StartWindow),
+    Start(self::start_window::StartWindow),
     /// Creating new game
     NewGame(self::newgame_window::NewGameWindow),
     /// Game playing
@@ -110,11 +110,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
-        window_stack.push(Box::new(startwindow::StartDialog::new()));
+        window_stack.push(Box::new(start_window::StartDialog::new()));
         
         WindowManager {
             game: game,
-            mode: WindowManageMode::Start(startwindow::StartWindow::new()),
+            mode: WindowManageMode::Start(start_window::StartWindow::new()),
             sdl_values: sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             anim: None,
@@ -254,7 +254,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         // If self.mode is OnGame
         let mut pa = DoPlayerAction::new(&mut self.game);
-        use self::itemwindow::*;
+        use self::item_window::*;
         match command {
             Command::Move{ dir } => {
                 pa.try_move(dir);
@@ -266,14 +266,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 }
             }
             Command::OpenExitWin => {
-                self.window_stack.push(Box::new(exitwindow::ExitWindow::new()));
+                self.window_stack.push(Box::new(exit_window::ExitWindow::new()));
             }
             Command::OpenItemMenu => {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, &mut pa)));
             }
             Command::OpenEquipWin => {
                 use common::gamedata::chara::CharaId;
-                self.window_stack.push(Box::new(equipwindow::EquipWindow::new(&mut pa, CharaId::Player)));
+                self.window_stack.push(Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player)));
             }
             Command::OpenStatusWin => {
                 self.window_stack.push(Box::new(status_window::StatusWindow::new(pa.gd())));
@@ -335,8 +335,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         info!("Return to start screen");
                         ::log::clear();
                         self.window_stack.clear();
-                        self.window_stack.push(Box::new(startwindow::StartDialog::new()));
-                        self.mode = WindowManageMode::Start(startwindow::StartWindow::new());
+                        self.window_stack.push(Box::new(start_window::StartDialog::new()));
+                        self.mode = WindowManageMode::Start(start_window::StartWindow::new());
                     }
                     _ => unreachable!(),
                 }

@@ -32,8 +32,8 @@ pub fn damage(game: &mut Game, target: CharaId, damage: i32, damage_kind: Damage
         game.dying_charas.push(target);
         // Logging
         match damage_kind {
-            DamageKind::CloseRangeAttack => {
-                game_log!("killed-by-close-attack"; target=t.get_name());
+            DamageKind::ShortRangeAttack => {
+                game_log!("killed-by-short-range-attack"; target=t.get_name());
             },
         }
     }

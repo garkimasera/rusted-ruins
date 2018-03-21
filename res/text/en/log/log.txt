@@ -2,7 +2,7 @@
 Welcome to Rusted Ruins! (version : $(version))
 % attack
 $(attacker) attacks the $(target) ($(damage)).
-% killed-by-close-attack
+% killed-by-short-range-attack
 The $(target) is killed.
 % item-equip
 $(chara) equips $(item).

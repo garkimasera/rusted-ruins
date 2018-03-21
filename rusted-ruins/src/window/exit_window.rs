@@ -2,8 +2,8 @@
 use sdl2::rect::Rect;
 use config::UI_CFG;
 use super::commonuse::*;
-use super::textwindow::TextWindow;
-use super::choosewindow::ChooseWindow;
+use super::text_window::TextWindow;
+use super::choose_window::ChooseWindow;
 use super::winpos::{WindowPos, WindowHPos, WindowVPos};
 use text;
 

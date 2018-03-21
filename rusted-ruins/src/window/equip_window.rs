@@ -83,7 +83,7 @@ impl DialogWindow for EquipWindow {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
-                    use super::itemwindow::ItemWindow;
+                    use super::item_window::ItemWindow;
 
                     // Callback function for selected item equipment
                     let slot = self.slots[i as usize];
