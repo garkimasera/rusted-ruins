@@ -18,6 +18,10 @@ impl<'a> DoPlayerAction<'a> {
         DoPlayerAction(game)
     }
 
+    pub fn game(&self) -> &Game {
+        &self.0
+    }
+
     pub fn gd(&self) -> &GameData {
         &self.0.gd
     }

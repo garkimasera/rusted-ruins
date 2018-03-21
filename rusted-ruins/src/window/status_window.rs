@@ -6,7 +6,22 @@ use config::UI_CFG;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
 use game::chara::CharaEx;
+use super::group_window::GroupWindow;
 use super::choose_window::PagedChooseWindow;
+
+const STATUS_WINDOW_GROUP_SIZE: usize = 2;
+
+pub fn create_status_window_group(game: &Game) -> GroupWindow {
+    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, create_members)
+}
+
+fn create_members(game: &Game, i: usize) -> Box<DialogWindow> {
+    match i {
+        0 => Box::new(StatusWindow::new(&game.gd)),
+        1 => Box::new(SkillWindow::new(&game.gd)),
+        _ => unreachable!(),
+    }
+}
 
 /// Character status viewer
 pub struct StatusWindow {

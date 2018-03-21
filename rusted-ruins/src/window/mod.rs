@@ -5,6 +5,7 @@ mod winpos;
 mod choose_window;
 mod equip_window;
 mod exit_window;
+mod group_window;
 mod item_window;
 mod log_window;
 mod main_window;
@@ -276,7 +277,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player)));
             }
             Command::OpenStatusWin => {
-                self.window_stack.push(Box::new(status_window::StatusWindow::new(pa.gd())));
+                self.window_stack.push(Box::new(status_window::create_status_window_group(pa.game())));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
