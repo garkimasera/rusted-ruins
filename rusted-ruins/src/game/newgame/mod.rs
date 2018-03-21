@@ -6,6 +6,7 @@ use common::gamedata::map::MapId;
 use common::gamedata::region::RegionId;
 use common::gobj;
 use rules::RULES;
+use super::skill::SkillListEx;
 
 pub struct NewGameBuilder {
     gd: GameData,
@@ -46,6 +47,8 @@ impl NewGameBuilder {
             let mut chara = super::chara::creation::create_chara(gobj::id_to_idx(chara_template_id));
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.unwrap());
+            chara.skills.learn_new_skill(::common::gamedata::skill::SkillKind::Weapon(
+                ::common::gamedata::item::WeaponKind::Sword));
             super::chara::update_params(&mut chara);
             /* Test code for equipment */
             use common::gamedata::chara::Race;

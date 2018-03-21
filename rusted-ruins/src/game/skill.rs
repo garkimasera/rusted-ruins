@@ -4,6 +4,7 @@ use common::gamedata::skill::*;
 
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, value: u32);
+    fn learn_new_skill(&mut self, kind: SkillKind);
 }
 
 impl SkillListEx for SkillList {
@@ -24,6 +25,18 @@ impl SkillListEx for SkillList {
                 } else {
                     sum as u16
                 };
+            }
+        }
+    }
+
+    /// Insert new skill slot
+    fn learn_new_skill(&mut self, kind: SkillKind) {
+        if !self.skills.contains_key(&kind) {
+            self.skills.insert(kind, 1);
+        }
+        if let Some(ref mut exp) = self.exp {
+            if !exp.contains_key(&kind) {
+                exp.insert(kind, 0);
             }
         }
     }

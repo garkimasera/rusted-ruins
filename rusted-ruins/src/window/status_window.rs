@@ -6,6 +6,7 @@ use config::UI_CFG;
 use common::gamedata::GameData;
 use common::gamedata::chara::*;
 use game::chara::CharaEx;
+use super::choose_window::PagedChooseWindow;
 
 /// Character status viewer
 pub struct StatusWindow {
@@ -81,3 +82,45 @@ impl DialogWindow for StatusWindow {
     }
 }
 
+/// Character skill viewer
+pub struct SkillWindow {
+    choose_window: PagedChooseWindow,
+}
+
+impl SkillWindow {
+    pub fn new(gd: &GameData) -> SkillWindow {
+        let rect: Rect = UI_CFG.skill_window.rect.into();
+        let chara = gd.chara.get(::common::gamedata::chara::CharaId::Player);
+        let mut choices: Vec<ListRow> = Vec::new();
+        for (k, v) in &chara.skills.skills {
+            let s = format!("{:?} {}", k, v);
+            choices.push(ListRow::Str(s));
+        }
+        let choose_window = PagedChooseWindow::new(
+            rect, choices, UI_CFG.skill_window.n_row, None);
+        
+        SkillWindow { choose_window }
+    }
+}
+
+impl Window for SkillWindow {
+    fn draw(
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        anim: Option<(&Animation, u32)>) {
+
+        self.choose_window.draw(canvas, game, sv, anim);
+    }
+}
+
+impl DialogWindow for SkillWindow {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match self.choose_window.process_command(&command, pa) {
+            DialogResult::Close => DialogResult::Close,
+            _ => DialogResult::Continue
+        }
+    }
+
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
+    }
+}

@@ -73,6 +73,10 @@ int_label_rect = { x = 5, y = 160 }
 wil_label_rect = { x = 5, y = 180 }
 cha_label_rect = { x = 5, y = 200 }
 
+[skill_window]
+rect = { x = -999, y = -999, w = 200, h = 200 }
+n_row = 10
+
 [page_window]
 rect = { x = -999, y = 0, w = 40, h = 22 }
 margin_to_parent = 8

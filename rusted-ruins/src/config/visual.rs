@@ -41,6 +41,7 @@ pub struct UIConfig {
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
     pub status_window: StatusWindowConfig,
+    pub skill_window: SkillWindowConfig,
     pub page_window: PageWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
@@ -151,6 +152,12 @@ pub struct StatusWindowConfig {
     pub int_label_rect: CfgRect,
     pub wil_label_rect: CfgRect,
     pub cha_label_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SkillWindowConfig {
+    pub rect: CfgRect,
+    pub n_row: u32,
 }
 
 #[derive(Debug, Deserialize)]
