@@ -12,3 +12,4 @@ escape = "OpenExitWin"
 [dialog]
 return = "Enter"
 escape = "Cancel"
+tab = "RotateWindowRight"

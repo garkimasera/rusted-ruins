@@ -25,16 +25,34 @@ impl GroupWindow {
             members: members,
             creator: creator,
         };
-        group_window.switch(game, init_win);
+        group_window.switch(init_win, game);
         group_window
     }
 
-    pub fn switch(&mut self, game: &Game, i_win: usize) {
+    pub fn switch(&mut self, i_win: usize, game: &Game) {
         assert!(i_win < self.size);
         self.current_window = i_win;
         if self.members[i_win].is_none() {
             self.members[i_win] = Some((self.creator)(game, i_win as usize));
         }
+    }
+
+    pub fn rotate_right(&mut self, game: &Game) {
+        let result = if self.current_window + 1 < self.size {
+            self.current_window + 1
+        } else {
+            0
+        };
+        self.switch(result, game);
+    }
+
+    pub fn rotate_left(&mut self, game: &Game) {
+        let result = if self.current_window > 0 {
+            self.current_window - 1
+        } else {
+            self.size - 1
+        };
+        self.switch(result, game);
     }
 }
 
@@ -51,6 +69,17 @@ impl Window for GroupWindow {
 
 impl DialogWindow for GroupWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match command {
+            &Command::RotateWindowRight => {
+                self.rotate_right(pa.game());
+                return DialogResult::Continue;
+            }
+            &Command::RotateWindowLeft => {
+                self.rotate_left(pa.game());
+                return DialogResult::Continue;
+            }
+            _ => (),
+        }
         if let Some(ref mut member) = self.members[self.current_window] {
             match member.process_command(command, pa) {
                 DialogResult::Close => DialogResult::Close,
