@@ -467,7 +467,8 @@ impl Iterator for MDistRangeIter {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum HDirection {
     None, Left, Right,
 }
@@ -497,7 +498,8 @@ impl Default for VDirection {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum VDirection {
     None, Up, Down,
 }
@@ -527,7 +529,7 @@ impl Default for HDirection {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
 pub struct Direction {
     pub hdir: HDirection,
     pub vdir: VDirection,

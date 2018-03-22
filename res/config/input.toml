@@ -1,15 +1,15 @@
 
 [normal]
-return = "Enter"
-d = "DrinkItem"
-e = "EatItem"
-i = "Openitemmenu"
-p = "PickUpItem"
-s = "OpenStatusWin"
-w = "OpenEquipWin"
-escape = "OpenExitWin"
+return = "enter"
+d = "drink_item"
+e = "eat_item"
+i = "open_item_menu"
+p = "pick_up_item"
+s = "open_status_win"
+w = "open_equip_win"
+escape = "open_exit_win"
 
 [dialog]
-return = "Enter"
-escape = "Cancel"
-tab = "RotateWindowRight"
+return = "enter"
+escape = "cancel"
+tab = "rotate_window_right"

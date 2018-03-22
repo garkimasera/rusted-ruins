@@ -238,16 +238,14 @@ impl CommandConvTable {
 
         for (k, v) in INPUT_CFG.normal.iter() {
             let k = conv_str_to_keycode(k);
-            let c = Command::from_str(v).expect("Unexpected command name");
 
-            normal.insert(RawCommand::KeyPress(k), c);
+            normal.insert(RawCommand::KeyPress(k), v.clone());
         }
 
         for (k, v) in INPUT_CFG.dialog.iter() {
             let k = conv_str_to_keycode(k);
-            let c = Command::from_str(v).expect("Unexpected command name");
 
-            dialog.insert(RawCommand::KeyPress(k), c);
+            dialog.insert(RawCommand::KeyPress(k), v.clone());
         }
 
         CommandConvTable {
@@ -307,13 +305,5 @@ macro_rules! impl_conv_str_to_keycode {
 impl_conv_str_to_keycode!(
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
     Space, Return, Tab, Escape
-);
-
-impl_fromstr_for_enum!(
-    Command;
-    Enter, Cancel,
-    RotateWindowRight,
-    OpenItemMenu, OpenExitWin, OpenEquipWin, OpenStatusWin,
-    DrinkItem, EatItem, PickUpItem
 );
 

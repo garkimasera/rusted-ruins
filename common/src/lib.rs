@@ -20,8 +20,6 @@ pub mod objholder;
 #[cfg(feature="global_state_obj")]
 pub mod gobj;
 pub mod pakutil;
-#[macro_use]
-pub mod str2enum;
 pub mod gamedata;
 pub mod maptemplate;
 pub mod event;

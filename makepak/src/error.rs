@@ -6,7 +6,6 @@ error_chain! {
         Io(::std::io::Error);
         Toml(::toml::de::Error);
         Image(::image::ImageError);
-        InvalidEnumMember(::common::str2enum::InvalidEnumMemberError);
     }
     errors {
         MissingField(t: String) {
