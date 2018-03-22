@@ -4,6 +4,7 @@ use common::basic::TILE_SIZE_I;
 use common::objholder::*;
 use cairo::Context;
 use gdk::prelude::ContextExt;
+use gdk_pixbuf::PixbufExt;
 use pixbuf_holder::PixbufHolder;
 use edit_map::EditingMap;
 

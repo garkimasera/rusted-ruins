@@ -1,5 +1,5 @@
 
-use gdk_pixbuf::{Pixbuf, PixbufLoader};
+use gdk_pixbuf::{Pixbuf, PixbufLoader, PixbufExt, PixbufLoaderExt};
 use common::obj::Img;
 use common::objholder::*;
 use common::gobj;
@@ -50,13 +50,14 @@ impl_pixbuf_holder! {
 }
 
 fn load_png(img: &Img) -> Pixbuf {
-    let loader = PixbufLoader::new_with_type("png").unwrap();
-    loader.loader_write(&img.data).unwrap();
-    loader.close().unwrap();
-    let pixbuf = loader.get_pixbuf().unwrap();
+    const ERR_MSG: &'static str = "Error occured while loading image";
+    let loader = PixbufLoader::new_with_type("png").expect(ERR_MSG);
+    loader.write(&img.data).expect(ERR_MSG);
+    loader.close().expect(ERR_MSG);
+    let pixbuf = loader.get_pixbuf().expect(ERR_MSG);
     if img.grid_w == 1 && img.grid_h == 1 {
         pixbuf
     } else {
-        pixbuf.new_subpixbuf(0, 0, img.w as i32, img.h as i32)
+        pixbuf.new_subpixbuf(0, 0, img.w as i32, img.h as i32).expect(ERR_MSG)
     }
 }
