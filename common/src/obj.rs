@@ -78,6 +78,7 @@ pub struct TileObject {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum TileKind {
     Ground, Water,
 }
