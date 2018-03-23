@@ -1,4 +1,4 @@
-# Rusted Ruins
+# Rusted Ruins [![Build Status](https://travis-ci.org/garkimasera/rusted-ruins.svg?branch=master)](https://travis-ci.org/garkimasera/rusted-ruins)
 Extensible rouge like game. Players can explore the wilderness and ruins.
 This game is written in Rust.
 
