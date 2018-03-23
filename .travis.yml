@@ -1,0 +1,19 @@
+language: rust
+
+rust:
+  - stable
+
+script:
+  - cargo build --verbose --all
+  - cargo test --verbose --all
+
+os:
+  - linux
+
+addons:
+  apt:
+    packages:
+      - libsdl2-dev
+      - libsdl2-image-dev
+      - libsdl2-ttf-dev
+      - libsdl2-mixer-dev
