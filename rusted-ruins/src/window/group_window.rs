@@ -1,8 +1,6 @@
 
-use sdl2::rect::Rect;
 use super::commonuse::*;
 use super::widget::*;
-use super::winpos::WindowPos;
 
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.

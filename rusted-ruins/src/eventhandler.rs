@@ -1,6 +1,5 @@
 
 use std::collections::{VecDeque, HashMap};
-use std::str::FromStr;
 use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
