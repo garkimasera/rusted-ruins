@@ -14,6 +14,12 @@ pub enum Animation {
         idx: AnimImgIdx,
         range: RectIter,
     },
+    Shot {
+        n_frame: u32,
+        idx: AnimImgIdx,
+        start: Vec2d,
+        target: Vec2d,
+    },
 }
 
 impl Animation {
@@ -21,6 +27,7 @@ impl Animation {
         match self {
             &Animation::PlayerMove { n_frame, .. } => n_frame,
             &Animation::Img { n_frame, .. } => n_frame,
+            &Animation::Shot { n_frame, .. } => n_frame,
         }
     }
     
@@ -36,6 +43,15 @@ impl Animation {
             n_frame: gobj::get_obj(idx).img.n_frame,
             idx: idx,
             range: RectIter::one(p),
+        }
+    }
+
+    pub fn shot(idx: AnimImgIdx, start: Vec2d, target: Vec2d) -> Animation {
+        Animation::Shot {
+            n_frame: 0,
+            idx: idx,
+            start: start,
+            target: target,
         }
     }
 }
