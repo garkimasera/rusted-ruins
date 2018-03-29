@@ -11,6 +11,7 @@ pub mod chara;
 mod skill;
 mod infogetter;
 mod animation;
+mod anim_queue;
 pub mod newgame;
 mod combat;
 mod town;
@@ -18,7 +19,6 @@ mod turnloop;
 pub mod talk;
 pub mod view;
 
-use std::collections::VecDeque;
 use std::borrow::Cow;
 use common::gamedata;
 use common::gamedata::GameData;
@@ -41,7 +41,7 @@ pub struct Game {
     pub gd: GameData,
     state: GameState,
     turn_loop_data: TurnLoopData,
-    anim_queue: VecDeque<Animation>,
+    anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
     pub view_map: view::ViewMap,
@@ -53,7 +53,7 @@ impl Game {
             gd: gd,
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
-            anim_queue: VecDeque::new(),
+            anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
             view_map: view::ViewMap::new(),
@@ -67,7 +67,7 @@ impl Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
-            anim_queue: VecDeque::new(),
+            anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
             view_map: view::ViewMap::new(),
@@ -99,7 +99,7 @@ impl Game {
     }
 
     pub fn pop_animation(&mut self) -> Option<Animation> {
-        self.anim_queue.pop_front()
+        self.anim_queue.pop()
     }
 
     pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {

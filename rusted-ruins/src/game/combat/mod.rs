@@ -3,9 +3,7 @@ use rng;
 use super::Game;
 use super::chara::CharaEx;
 use super::skill::SkillListEx;
-use super::animation::*;
 use common::gobj;
-use common::objholder::AnimImgIdx;
 use common::gamedata::chara::{CharaId, Chara};
 use common::gamedata::skill::SkillKind;
 use common::gamedata::item::*;
@@ -44,8 +42,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         }
     }
     // Animation pushing
-    game.anim_queue.push_back(Animation::img_onetile(
-        AnimImgIdx(0), game.gd.get_current_map().chara_pos(target).unwrap()));
+    game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
 }
 
 struct WeaponData {
