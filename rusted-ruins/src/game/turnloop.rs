@@ -4,6 +4,7 @@ use common::gamedata::chara::{Chara, CharaId};
 use common::basic::WAIT_TIME_START;
 use super::{Game, GameState};
 use super::chara::CharaEx;
+use super::chara::preturn::preturn;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 
@@ -44,6 +45,7 @@ pub fn turn_loop(game: &mut Game) {
             };
             
             if is_process_npc_turn {
+                preturn(game, cid);
                 process_npc_turn(game, cid);
                 
                 // If an animation is started, turn_loop is interrupted
@@ -55,6 +57,7 @@ pub fn turn_loop(game: &mut Game) {
 
         // If player's wait time becomes 0, player turn now.
         if decrease_wait_time(&mut game.gd.chara.get_mut(CharaId::Player)) {
+            preturn(game, CharaId::Player);
             game.state = GameState::PlayerTurn;
             game.update_before_player_turn();
             break;
