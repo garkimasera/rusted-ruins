@@ -2,7 +2,6 @@
 //! Process characters action
 
 use super::Game;
-use super::Animation;
 use super::combat;
 use super::extrait::*;
 use array2d::*;
