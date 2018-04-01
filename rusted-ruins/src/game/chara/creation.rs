@@ -37,6 +37,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         wait_time: WAIT_TIME_START,
         hp: max_hp,
         status: Vec::new(),
+        nutrition: 0,
         skills: SkillList::default(),
         rel: Relationship::NEUTRAL,
         trigger: None,

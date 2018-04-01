@@ -69,6 +69,7 @@ pub struct Chara {
     pub equip: EquipItemList,
     pub wait_time: u32,
     pub hp: i32,
+    pub nutrition: i32,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
     /// Relationship to player character
@@ -138,6 +139,7 @@ impl Default for Chara {
             equip: EquipItemList::new(&[]),
             wait_time: ::basic::WAIT_TIME_START,
             hp: 100,
+            nutrition: 0,
             status: Vec::new(),
             skills: SkillList::default(),
             rel: Relationship::NEUTRAL,
