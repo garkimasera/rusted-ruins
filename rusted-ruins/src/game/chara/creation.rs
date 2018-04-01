@@ -36,6 +36,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_START,
         hp: max_hp,
+        status: Vec::new(),
         skills: SkillList::default(),
         rel: Relationship::NEUTRAL,
         trigger: None,

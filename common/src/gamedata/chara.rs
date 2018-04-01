@@ -69,6 +69,7 @@ pub struct Chara {
     pub equip: EquipItemList,
     pub wait_time: u32,
     pub hp: i32,
+    pub status: Vec<CharaStatus>,
     pub skills: SkillList,
     /// Relationship to player character
     pub rel: Relationship,
@@ -118,14 +119,11 @@ pub struct CharaBaseParams {
     pub spd: u32,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-enum CharaState {
-    /// This character was removed from game.
-    Disable,
-    /// Its HP is under 0.
-    /// This character will be drawed, but the state will becomes Disable next turn.
-    Dying,
-    Normal,
+/// Represents chara status
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Hash, Serialize, Deserialize)]
+pub enum CharaStatus {
+    Hungry,
+    Asleep,
 }
 
 impl Default for Chara {
@@ -140,6 +138,7 @@ impl Default for Chara {
             equip: EquipItemList::new(&[]),
             wait_time: ::basic::WAIT_TIME_START,
             hp: 100,
+            status: Vec::new(),
             skills: SkillList::default(),
             rel: Relationship::NEUTRAL,
             trigger: None,
