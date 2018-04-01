@@ -10,6 +10,7 @@ extern crate serde_json;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 
+pub mod params;
 pub mod dungeon_gen;
 pub mod chara;
 pub mod charagen;
@@ -22,6 +23,7 @@ use serde::de::Deserialize;
 
 /// Contain game rules
 pub struct Rules {
+    pub params: params::Params,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
@@ -31,6 +33,7 @@ pub struct Rules {
 impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
         Rules {
+            params:      read_from_json(&rules_dir.join("params.json")),
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             chara:       read_from_json(&rules_dir.join("chara.json")),
             chara_gen:   read_from_json(&rules_dir.join("charagen.json")),
