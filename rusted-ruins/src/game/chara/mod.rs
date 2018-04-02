@@ -1,6 +1,7 @@
 
 pub mod creation;
 pub mod preturn;
+pub mod status;
 
 use super::Game;
 use super::combat::DamageKind;

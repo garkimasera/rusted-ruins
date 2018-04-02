@@ -125,6 +125,7 @@ pub struct CharaBaseParams {
 pub enum CharaStatus {
     Hungry,
     Asleep,
+    Poisoning,
 }
 
 impl Default for Chara {
