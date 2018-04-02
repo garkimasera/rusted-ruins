@@ -125,4 +125,5 @@ pub mod extrait {
     pub use super::chara::CharaEx;
     pub use super::item::ItemEx;
     pub use super::site::SiteEx;
+    pub use super::chara::status::{CharaStatusOperation, CharaStatusEx};
 }

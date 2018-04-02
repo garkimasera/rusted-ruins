@@ -88,7 +88,12 @@ fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
             chara.hp = min(chara.params.max_hp, chara.hp + eff);
             game_log!("heal-hp"; chara=chara.get_name(), value=eff);
         }
-        _ => (),
+        MedicalEffect::Sleep => {
+            chara.add_status(CharaStatus::Asleep);
+        }
+        MedicalEffect::Poison => {
+            chara.add_status(CharaStatus::Poisoning);
+        }
     }
 }
 
