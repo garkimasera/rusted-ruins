@@ -124,7 +124,7 @@ pub struct CharaBaseParams {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Hash, Serialize, Deserialize)]
 pub enum CharaStatus {
     Hungry,
-    Asleep,
+    Asleep { turn_left: u16 },
     Poisoning,
 }
 

@@ -15,10 +15,14 @@ impl CharaStatusOperation for Chara {
                 status.retain(|s| !s.about_nutrition()); // Remove nutrition status
                 status.push(new_status);
             }
-            CharaStatus::Asleep => {
+            CharaStatus::Asleep { turn_left: turn_left_new }=> {
                 for s in status {
                     match *s {
-                        CharaStatus::Asleep => {
+                        // Update left sleeping turn
+                        CharaStatus::Asleep { ref mut turn_left } => {
+                            if turn_left_new > *turn_left {
+                                *turn_left = turn_left_new;
+                            }
                             return;
                         }
                         _ => (),
