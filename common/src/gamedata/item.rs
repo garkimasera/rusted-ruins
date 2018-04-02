@@ -94,7 +94,7 @@ impl ItemQuality {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all="snake_case")]
 pub enum MedicalEffect {
-    None, Heal, Poison,
+    None, Heal, Sleep, Poison,
 }
 
 impl Default for MedicalEffect {
