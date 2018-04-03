@@ -45,8 +45,9 @@ pub fn turn_loop(game: &mut Game) {
             };
             
             if is_process_npc_turn {
-                preturn(game, cid);
-                process_npc_turn(game, cid);
+                if preturn(game, cid) {
+                    process_npc_turn(game, cid);
+                }
                 
                 // If an animation is started, turn_loop is interrupted
                 if !game.anim_queue.is_empty() {
@@ -57,10 +58,11 @@ pub fn turn_loop(game: &mut Game) {
 
         // If player's wait time becomes 0, player turn now.
         if decrease_wait_time(&mut game.gd.chara.get_mut(CharaId::Player)) {
-            preturn(game, CharaId::Player);
-            game.state = GameState::PlayerTurn;
-            game.update_before_player_turn();
-            break;
+            if preturn(game, CharaId::Player) {
+                game.state = GameState::PlayerTurn;
+                game.update_before_player_turn();
+                break;
+            }
         }
     }
 }

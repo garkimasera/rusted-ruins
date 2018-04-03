@@ -16,7 +16,7 @@ impl CharaStatusOperation for Chara {
                 status.push(new_status);
             }
             CharaStatus::Asleep { turn_left: turn_left_new }=> {
-                for s in status {
+                for s in status.iter_mut() {
                     match *s {
                         // Update left sleeping turn
                         CharaStatus::Asleep { ref mut turn_left } => {
@@ -30,7 +30,7 @@ impl CharaStatusOperation for Chara {
                 }
             }
             CharaStatus::Poisoning => {
-                for s in status {
+                for s in status.iter_mut() {
                     match *s {
                         CharaStatus::Poisoning => {
                             return;
@@ -40,6 +40,7 @@ impl CharaStatusOperation for Chara {
                 }
             }
         }
+        status.push(new_status);
     }
 }
 

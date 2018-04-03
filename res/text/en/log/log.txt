@@ -14,3 +14,7 @@ $(chara) drinks a $(item).
 $(chara) eats a $(item).
 % heal-hp
 $(chara) is healed ($(value)).
+$ fall-asleep
+$(chara) falls asleep.
+% asleep
+$(chara) is asleep.
