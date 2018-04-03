@@ -388,6 +388,7 @@ struct GameWindows {
     minimap_window: minimap::MiniMapWindow,
     indicator: indicator::HPIndicator,
     floor_info: indicator::FloorInfo,
+    status_info: indicator::StatusInfo,
     hborders: Vec<self::widget::HBorder>,
     vborders: Vec<self::widget::VBorder>,
 }
@@ -413,6 +414,7 @@ impl GameWindows {
             minimap_window: minimap::MiniMapWindow::new(),
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
+            status_info: indicator::StatusInfo::new(),
             hborders: hborders,
             vborders: vborders,
         }
@@ -426,6 +428,7 @@ impl GameWindows {
         self.minimap_window.draw(canvas, game, sv, anim);
         self.indicator.draw(canvas, game, sv, anim);
         self.floor_info.draw(canvas, game, sv, anim);
+        self.status_info.draw(canvas, game, sv, anim);
 
         for hborder in self.hborders.iter_mut() {
             hborder.draw(canvas, sv);

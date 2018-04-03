@@ -7,6 +7,7 @@ use super::widget::*;
 use common::gobj;
 use common::obj::UIImgObject;
 use common::gamedata::map::MapId;
+use common::gamedata::chara::{CharaId, CharaStatus};
 use sdlvalues::FontKind;
 
 pub struct HPIndicator {
@@ -86,6 +87,48 @@ impl Window for FloorInfo {
         
         canvas.set_viewport(self.rect);
         self.label.draw(canvas, sv);
+    }
+}
+
+pub struct StatusInfo {
+    labels: Vec<LabelWidget>,
+    status: Vec<CharaStatus>,
+}
+
+impl StatusInfo {
+    pub fn new() -> StatusInfo {
+        StatusInfo {
+            labels: Vec::new(),
+            status: Vec::new(),
+        }
+    }
+
+    fn update(&mut self, game: &Game) {
+        let player_chara = game.gd.chara.get(CharaId::Player);
+        if self.status != player_chara.status {
+            self.status.clone_from(&player_chara.status);
+
+            self.labels.clear();
+            for status in self.status.iter() {
+                let label = LabelWidget::new(
+                    Rect::new(0, 0, 1, 1), &format!("{:?}", status), FontKind::S);
+                self.labels.push(label);
+            }
+        }
+    }
+}
+
+impl Window for StatusInfo {
+    fn draw(
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+        
+        self.update(game);
+        
+        canvas.set_viewport(None);
+        for label in self.labels.iter_mut() {
+            label.draw(canvas, sv);
+        }
     }
 }
 
