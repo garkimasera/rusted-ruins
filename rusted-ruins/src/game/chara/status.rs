@@ -45,12 +45,36 @@ impl CharaStatusOperation for Chara {
 
 pub trait CharaStatusEx {
     fn about_nutrition(&self) -> bool;
+    fn advance_turn(&mut self, n: u16);
+    fn is_expired(&self) -> bool;
 }
 
 impl CharaStatusEx for CharaStatus {
     fn about_nutrition(&self) -> bool {
         match *self {
             CharaStatus::Hungry => true,
+            _ => false,
+        }
+    }
+
+    fn advance_turn(&mut self, n: u16) {
+        match *self {
+            CharaStatus::Asleep { ref mut turn_left } => {
+                if *turn_left > n {
+                    *turn_left -= n;
+                } else {
+                    *turn_left = 0;
+                }
+            }
+            _ => (),
+        }
+    }
+
+    /// If this status is expired, returns true.
+    /// Expired status will be removed from character.
+    fn is_expired(&self) -> bool {
+        match *self {
+            CharaStatus::Asleep { turn_left } if turn_left == 0 => true,
             _ => false,
         }
     }
