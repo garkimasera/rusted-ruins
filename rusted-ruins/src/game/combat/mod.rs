@@ -10,6 +10,7 @@ use common::gamedata::item::*;
 
 pub enum DamageKind {
     ShortRangeAttack,
+    Poison,
 }
 
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {

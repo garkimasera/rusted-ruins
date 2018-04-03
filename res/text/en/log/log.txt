@@ -3,7 +3,9 @@ Welcome to Rusted Ruins! (version : $(version))
 % attack
 $(attacker) attacks the $(target) ($(damage)).
 % killed-by-short-range-attack
-The $(target) is killed.
+The $(chara) is killed.
+% killed-by-poison-damage
+$(chara) is killed by poison
 % item-equip
 $(chara) equips $(item).
 % item-pickup
@@ -14,7 +16,11 @@ $(chara) drinks a $(item).
 $(chara) eats a $(item).
 % heal-hp
 $(chara) is healed ($(value)).
-$ fall-asleep
+% fall-asleep
 $(chara) falls asleep.
+% poisoned
+$(chara) is poisoned.
 % asleep
 $(chara) is asleep.
+% poison-damage
+$(chara) is damaged by poison ($(damage)).

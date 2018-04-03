@@ -94,6 +94,7 @@ fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
         }
         MedicalEffect::Poison => {
             chara.add_status(CharaStatus::Poisoning);
+            game_log!("poisoned"; chara=chara.get_name());
         }
     }
 }

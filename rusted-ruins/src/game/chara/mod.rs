@@ -25,18 +25,21 @@ impl CharaEx for Chara {
     }
 }
 
-pub fn damage(game: &mut Game, target: CharaId, damage: i32, damage_kind: DamageKind) {
-    let t = game.gd.chara.get_mut(target);
+pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) {
+    let chara = game.gd.chara.get_mut(cid);
     
-    t.hp -= damage;
+    chara.hp -= damage;
 
-    if t.hp < 0 {
-        game.dying_charas.push(target);
+    if chara.hp < 0 {
+        game.dying_charas.push(cid);
         // Logging
         match damage_kind {
             DamageKind::ShortRangeAttack => {
-                game_log!("killed-by-short-range-attack"; target=t.get_name());
-            },
+                game_log!("killed-by-short-range-attack"; chara=chara.get_name());
+            }
+            DamageKind::Poison => {
+                game_log!("killed-by-poison-damage"; chara=chara.get_name());
+            }
         }
     }
 }
