@@ -32,6 +32,11 @@ y = 0
 w = 200
 h = 18
 
+[status_info]
+x = 6
+y = 360
+h = 20
+
 [[hborders]]
 x = 0
 y = 420

@@ -11,6 +11,7 @@ pub struct ScreenConfig {
     pub minimap_window: CfgRect,
     pub hp_indicator: CfgRect,
     pub floor_info: CfgRect,
+    pub status_info: CfgRect,
     pub hborders: Vec<BorderConfig>,
     pub vborders: Vec<BorderConfig>,
 }

@@ -105,13 +105,17 @@ impl StatusInfo {
 
     fn update(&mut self, game: &Game) {
         let player_chara = game.gd.chara.get(CharaId::Player);
+        let rect: Rect = SCREEN_CFG.status_info.into();
+        
         if self.status != player_chara.status {
             self.status.clone_from(&player_chara.status);
 
             self.labels.clear();
-            for status in self.status.iter() {
+            for (i, status) in self.status.iter().enumerate() {
                 let label = LabelWidget::new(
-                    Rect::new(0, 0, 1, 1), &format!("{:?}", status), FontKind::S);
+                    Rect::new(rect.x + rect.h * i as i32, rect.y, 1, 1),
+                    &format!("{:?}", status),
+                    FontKind::S);
                 self.labels.push(label);
             }
         }

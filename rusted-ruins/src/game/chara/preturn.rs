@@ -17,7 +17,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     
     for s in chara.status.iter() {
         match *s {
-            CharaStatus::Poisoning => {
+            CharaStatus::Poisoned => {
                 let damage = chara.base_params.max_hp / 20;
                 game_log!("poison-damage"; chara=chara.get_name(), damage=damage);
                 // super::damage(game, cid, damage, DamageKind::Poison); // Need NLL

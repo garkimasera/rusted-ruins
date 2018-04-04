@@ -29,10 +29,10 @@ impl CharaStatusOperation for Chara {
                     }
                 }
             }
-            CharaStatus::Poisoning => {
+            CharaStatus::Poisoned => {
                 for s in status.iter_mut() {
                     match *s {
-                        CharaStatus::Poisoning => {
+                        CharaStatus::Poisoned => {
                             return;
                         }
                         _ => (),

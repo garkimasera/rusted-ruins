@@ -93,7 +93,7 @@ fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
             game_log!("fall-asleep"; chara=chara.get_name());
         }
         MedicalEffect::Poison => {
-            chara.add_status(CharaStatus::Poisoning);
+            chara.add_status(CharaStatus::Poisoned);
             game_log!("poisoned"; chara=chara.get_name());
         }
     }

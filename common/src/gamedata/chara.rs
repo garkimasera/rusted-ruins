@@ -125,7 +125,7 @@ pub struct CharaBaseParams {
 pub enum CharaStatus {
     Hungry,
     Asleep { turn_left: u16 },
-    Poisoning,
+    Poisoned,
 }
 
 impl Default for Chara {
