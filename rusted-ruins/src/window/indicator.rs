@@ -114,7 +114,7 @@ impl StatusInfo {
             for (i, status) in self.status.iter().enumerate() {
                 let label = LabelWidget::new(
                     Rect::new(rect.x + rect.h * i as i32, rect.y, 1, 1),
-                    &format!("{:?}", status),
+                    ::text::to_txt(status),
                     FontKind::S);
                 self.labels.push(label);
             }

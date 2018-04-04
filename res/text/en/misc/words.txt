@@ -1,4 +1,13 @@
+# Words for specific enums
+# DungeonKind
 % !dungeon_kind.cave
 Cave
 % !dungeon_kind.ruin
 Ruin
+# CharaStatus
+% !chara_status.hungry
+Hungry
+% !chara_status.asleep
+Asleep
+% !chara_status.poisoned
+Poisoned
