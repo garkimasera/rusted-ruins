@@ -11,6 +11,7 @@ pub struct LabelWidget {
     cache: TextCache,
     font: FontKind,
     wrap_w: Option<u32>,
+    is_bordered: bool,
 }
 
 impl LabelWidget {
@@ -19,7 +20,16 @@ impl LabelWidget {
         let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
         LabelWidget {
             rect, cache, font,
-            wrap_w: None,
+            wrap_w: None, is_bordered: false,
+        }
+    }
+
+    pub fn bordered<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
+        let rect = rect.into();
+        let cache = TextCache::one_bordered(s, font, UI_CFG.color.normal_font.into());
+        LabelWidget {
+            rect, cache, font,
+            wrap_w: None, is_bordered: true,
         }
     }
 
@@ -28,7 +38,7 @@ impl LabelWidget {
         let cache = TextCache::one_wrapped(s, font, UI_CFG.color.normal_font.into(), w);
         LabelWidget {
             rect, cache, font,
-            wrap_w: Some(w),
+            wrap_w: Some(w), is_bordered: false,
         }
     }
 
@@ -36,7 +46,11 @@ impl LabelWidget {
         let cache = if let Some(w) = self.wrap_w {
             TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
         }else{
-            TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
+            if self.is_bordered {
+                TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
+            } else {
+                TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
+            }
         };
         self.cache = cache;
     }

@@ -48,18 +48,24 @@ impl<'sdl> TextRenderer<'sdl> {
         }
     }
 
-    pub fn surface(&self, font_usage: FontKind, text: &str, c: Color, wrap: Option<u32>)
-                   -> Result<Surface<'static>, FontError> {
+    pub fn surface(&self, font_usage: FontKind, text: &str, c: Color,
+                   wrap: Option<u32>, is_bordered: bool) -> Result<Surface<'static>, FontError> {
         let text = if text != "" { text } else { " " };
         
         let font = self.select_font(font_usage);
 
-        if let Some(w) = wrap {
-            Ok(font.render(text).blended_wrapped(c, w)?)
+        let mut surface = if let Some(w) = wrap {
+            font.render(text).blended_wrapped(c, w)?
         }else{
-            Ok(font.render(text.trim_right_matches('\n')).blended(c)?)
+            font.render(text.trim_right_matches('\n')).blended(c)?
+        };
+        
+        if is_bordered {
+            border_text(&mut surface);
         }
-    }
+
+        Ok(surface)
+    }        
 
     fn select_font(&self, font_usage: FontKind) -> &Font {
         match font_usage {
@@ -77,3 +83,48 @@ fn font_path(fontname: &str) -> PathBuf {
     path
 }
 
+/// If opacity is larger than this, the pixel is handled as opacity
+const OPACITY_BORDER: u8 = 64;
+
+fn border_text(surface: &mut Surface) {
+    use sdl2::pixels::PixelFormatEnum;
+    
+    let size = surface.size();
+    let (w, h) = (size.0 as i32, size.1 as i32);
+    assert!(surface.pixel_format_enum() == PixelFormatEnum::ARGB8888);
+
+    surface.with_lock_mut(|pixel: &mut [u8]| {
+        assert!((w * h * 4) as usize == pixel.len());
+
+        let mut opacity: Vec<bool> = Vec::with_capacity((w * h) as usize);
+        for y in 0..h {
+            for x in 0..w {
+                let p = (w * y + x) as usize * 4;
+                opacity.push(pixel[p + 3] > OPACITY_BORDER);
+            }
+        }
+
+        let is_opaque = |x: i32, y: i32| -> bool {
+            if x < 0 || x >= w || y < 0 || y >= h {
+                false
+            } else {
+                opacity[(w * y + x) as usize]
+            }
+        };
+
+        for y in 0..h {
+            for x in 0..w {
+                if is_opaque(x - 1, y) || is_opaque(x + 1, y)
+                    || is_opaque(x, y - 1) || is_opaque(x, y + 1) {
+
+                        let p = (w * y + x) as usize * 4;
+                        let o = pixel[p + 3] as u32;
+                        pixel[p]     = (pixel[p]     as u32 * o / 0xFF) as u8;
+                        pixel[p + 1] = (pixel[p + 1] as u32 * o / 0xFF) as u8;
+                        pixel[p + 2] = (pixel[p + 2] as u32 * o / 0xFF) as u8;
+                        pixel[p + 3] = 255;
+                }
+            }
+        }
+    });
+}

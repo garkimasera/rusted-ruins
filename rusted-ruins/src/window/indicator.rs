@@ -59,7 +59,7 @@ pub struct FloorInfo {
 impl FloorInfo {
     pub fn new() -> FloorInfo {
         let rect: Rect = SCREEN_CFG.floor_info.into();
-        let label = LabelWidget::new(Rect::new(0, 0, rect.width(), rect.height()), "", FontKind::S);
+        let label = LabelWidget::bordered(Rect::new(0, 0, rect.width(), rect.height()), "", FontKind::S);
         FloorInfo { rect, label, mid: None, }
     }
 }
@@ -112,7 +112,7 @@ impl StatusInfo {
 
             self.labels.clear();
             for (i, status) in self.status.iter().enumerate() {
-                let label = LabelWidget::new(
+                let label = LabelWidget::bordered(
                     Rect::new(rect.x + rect.h * i as i32, rect.y, 1, 1),
                     ::text::to_txt(status),
                     FontKind::S);

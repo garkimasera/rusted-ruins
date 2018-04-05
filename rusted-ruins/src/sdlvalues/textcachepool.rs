@@ -30,6 +30,7 @@ pub struct TextCache {
     pub font: FontKind,
     pub color: Color,
     pub wrap_size: Option<u32>,
+    pub is_bordered: bool,
 }
 
 impl TextCache {
@@ -39,7 +40,7 @@ impl TextCache {
         TextCache {
             i: None,
             s: s,
-            font: font, color: color, wrap_size: None,
+            font: font, color: color, wrap_size: None, is_bordered: false,
         }
     }
 
@@ -47,7 +48,7 @@ impl TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
-            font: font, color: color, wrap_size: None,
+            font: font, color: color, wrap_size: None, is_bordered: false,
         }
     }
 
@@ -55,7 +56,15 @@ impl TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
-            font: font, color: color, wrap_size: Some(w),
+            font: font, color: color, wrap_size: Some(w), is_bordered: false,
+        }
+    }
+
+    pub fn one_bordered<S: Into<String>>(s: S, font: FontKind, color: Color) -> TextCache {
+        TextCache {
+            i: None,
+            s: vec![s.into()],
+            font: font, color: color, wrap_size: None, is_bordered: true,
         }
     }
 
@@ -113,7 +122,9 @@ impl<'t> TextCachePool<'t> {
         if c.i.is_none() { // Render and add cache
             let mut v = Vec::new();
             for ref s in c.s.iter() {
-                let surface = tr.surface(c.font, s, c.color, c.wrap_size).expect(ERR_MSG_FONT_REND);
+                let surface = tr
+                    .surface(c.font, s, c.color, c.wrap_size, c.is_bordered)
+                    .expect(ERR_MSG_FONT_REND);
                 let t = tc.create_texture_from_surface(surface).expect(ERR_MSG_FONT_TEX);
                 v.push(t);
             }
