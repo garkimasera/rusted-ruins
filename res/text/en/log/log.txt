@@ -1,9 +1,9 @@
 % start
 Welcome to Rusted Ruins! (version : $(version))
 % attack
-$(attacker) attacks the $(target) ($(damage)).
+$(attacker) attacks $(target) ($(damage)).
 % killed-by-short-range-attack
-The $(chara) is killed.
+$(chara) is killed.
 % killed-by-poison-damage
 $(chara) is killed by poison
 % item-equip
