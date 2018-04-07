@@ -6,5 +6,6 @@ use std::collections::HashMap;
 pub struct InputConfig {
     pub normal: HashMap<String, Command>,
     pub dialog: HashMap<String, Command>,
+    pub targeting: HashMap<String, Command>,
 }
 

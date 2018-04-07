@@ -25,7 +25,7 @@ pub struct EventHandler {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum InputMode {
-    Normal, Dialog, TextInput,
+    Normal, Dialog, Targeting, TextInput,
 }
 
 /// Used to prevent unintentional cursor moving after dialog opening
@@ -228,12 +228,14 @@ impl EventHandler {
 pub struct CommandConvTable {
     normal: HashMap<RawCommand, Command>,
     dialog: HashMap<RawCommand, Command>,
+    targeting: HashMap<RawCommand, Command>,
 }
 
 impl CommandConvTable {
     fn new() -> CommandConvTable {
         let mut normal = HashMap::new();
         let mut dialog = HashMap::new();
+        let mut targeting = HashMap::new();
 
         for (k, v) in INPUT_CFG.normal.iter() {
             let k = conv_str_to_keycode(k);
@@ -247,9 +249,16 @@ impl CommandConvTable {
             dialog.insert(RawCommand::KeyPress(k), v.clone());
         }
 
+        for (k, v) in INPUT_CFG.targeting.iter() {
+            let k = conv_str_to_keycode(k);
+
+            targeting.insert(RawCommand::KeyPress(k), v.clone());
+        }
+
         CommandConvTable {
             normal: normal,
             dialog: dialog,
+            targeting: targeting,
         }
     }
 
@@ -257,6 +266,7 @@ impl CommandConvTable {
         let table = match mode {
             InputMode::Normal => &self.normal,
             InputMode::Dialog => &self.dialog,
+            InputMode::Targeting => &self.targeting,
             InputMode::TextInput => {
                 return text_input_conv(raw);
             },

@@ -6,6 +6,7 @@ e = "eat_item"
 i = "open_item_menu"
 p = "pick_up_item"
 s = "open_status_win"
+t = "targeting_mode"
 w = "open_equip_win"
 escape = "open_exit_win"
 
@@ -13,3 +14,7 @@ escape = "open_exit_win"
 return = "enter"
 escape = "cancel"
 tab = "rotate_window_right"
+
+[targeting]
+return = "enter"
+escape = "cancel"

@@ -101,6 +101,7 @@ pub struct WindowManager<'sdl, 't> {
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<DialogWindow>>,
+    targeting_mode: bool,
 }
 
 impl<'sdl, 't> WindowManager<'sdl, 't> {
@@ -121,6 +122,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             anim: None,
             passed_frame: 0,
             window_stack: window_stack,
+            targeting_mode: false,
         }
     }
 
@@ -202,12 +204,21 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let mode = if self.window_stack.len() > 0 {
             self.window_stack[self.window_stack.len() - 1].mode()
         } else {
-            InputMode::Normal
+            if self.targeting_mode {
+                InputMode::Targeting
+            } else {
+                InputMode::Normal
+            }
         };
         
         let command = event_handler.get_command(mode);
         if command.is_none() { return true; }
         let command = command.unwrap();
+
+        if self.targeting_mode {
+            self.process_command_targeting_mode(command);
+            return true;
+        }
         
         use game::playeract::DoPlayerAction;
 
@@ -291,6 +302,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::EatItem => {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Eat, &mut pa)));
             }
+            Command::TargetingMode => {
+                info!("Start targeting mode");
+                self.targeting_mode = true;
+            }
             _ => (),
         }
         true
@@ -342,6 +357,17 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     _ => unreachable!(),
                 }
             }
+        }
+    }
+
+    fn process_command_targeting_mode(&mut self, command: Command) {
+        match command {
+            Command::Cancel => {
+                info!("End targeting mode");
+                self.targeting_mode = false;
+                return;
+            }
+            _ => (),
         }
     }
 }
