@@ -34,7 +34,7 @@ impl MainWinDrawer {
     }
 
     pub fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
-                anim: Option<(&Animation, u32)>) {
+                anim: Option<(&Animation, u32)>, centering_tile: Vec2d) {
         super::frame::next_frame();
         let mut player_move_dir = None;
 
@@ -51,7 +51,6 @@ impl MainWinDrawer {
             (0, 0)
         };
 
-        let centering_tile = game.gd.player_pos();
         let map = game.gd.get_current_map();
         self.update_draw_params((map.w as i32, map.h as i32),
                                 centering_tile, player_move_adjust);

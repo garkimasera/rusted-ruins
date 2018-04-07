@@ -303,8 +303,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Eat, &mut pa)));
             }
             Command::TargetingMode => {
-                info!("Start targeting mode");
                 self.targeting_mode = true;
+                match self.mode {
+                    WindowManageMode::OnGame(ref mut game_windows) => {
+                        game_windows.main_window.start_targeting_mode(pa.game());
+                    }
+                    _ => unreachable!(),
+                }
             }
             _ => (),
         }
@@ -362,9 +367,22 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
     fn process_command_targeting_mode(&mut self, command: Command) {
         match command {
+            Command::Move{ dir } => {
+                match self.mode {
+                    WindowManageMode::OnGame(ref mut game_windows) => {
+                        game_windows.main_window.move_centering_tile(dir, &self.game);
+                    }
+                    _ => unreachable!(),
+                }
+            }
             Command::Cancel => {
-                info!("End targeting mode");
                 self.targeting_mode = false;
+                match self.mode {
+                    WindowManageMode::OnGame(ref mut game_windows) => {
+                        game_windows.main_window.stop_targeting_mode();
+                    }
+                    _ => unreachable!(),
+                }
                 return;
             }
             _ => (),

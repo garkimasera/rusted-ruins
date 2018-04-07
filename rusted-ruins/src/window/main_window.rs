@@ -1,6 +1,7 @@
 
 use sdl2::render::WindowCanvas;
-use game::{Game, Animation};
+use array2d::*;
+use game::{Game, Animation, InfoGetter};
 use sdlvalues::SdlValues;
 use window::Window;
 use draw::mainwin::MainWinDrawer;
@@ -8,23 +9,75 @@ use config::SCREEN_CFG;
 
 pub struct MainWindow {
     drawer: MainWinDrawer,
+    centering_tile: Option<Vec2d>,
 }
 
 impl MainWindow {
     pub fn new() -> MainWindow {
         MainWindow {
             drawer: MainWinDrawer::new(SCREEN_CFG.main_window.into()),
+            centering_tile: None,
         }
     }
 
+    pub fn start_targeting_mode(&mut self, game: &Game) {
+        info!("Start targeting mode");
+        self.centering_tile = Some(game.gd.player_pos());
+    }
+
+    pub fn stop_targeting_mode(&mut self) {
+        info!("Stop targeting mode");
+        self.centering_tile = None;
+    }
+
+    pub fn move_centering_tile(&mut self, dir: Direction, game: &Game) {
+        let mut c = if let Some(c) = self.centering_tile { c } else { return; };
+        let limit = game.gd.map_size();
+        
+        match dir.hdir {
+            HDirection::Left => {
+                if c.0 > 0 {
+                    c.0 -= 1;
+                }
+            }
+            HDirection::Right => {
+                if c.0 < limit.0 as i32 - 1 {
+                    c.0 += 1;
+                }
+            }
+            HDirection::None => (),
+        }
+
+        match dir.vdir {
+            VDirection::Up => {
+                if c.1 > 0 {
+                    c.1 -= 1;
+                }
+            }
+            VDirection::Down => {
+                if c.1 < limit.1 as i32 - 1 {
+                    c.1 += 1;
+                }
+            }
+            VDirection::None => (),
+        }
+
+        self.centering_tile = Some(c);
+    }
 }
 
 impl Window for MainWindow {
     fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
+
+        let centering_tile = if let Some(centering_tile) = self.centering_tile {
+            centering_tile
+        } else {
+            game.gd.player_pos()
+        };
         
-        self.drawer.draw(canvas, game, sv, anim);
+        self.drawer.draw(canvas, game, sv, anim, centering_tile);
     }
 }
 

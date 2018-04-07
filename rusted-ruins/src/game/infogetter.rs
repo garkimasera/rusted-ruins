@@ -8,6 +8,8 @@ pub trait InfoGetter {
     fn player_pos(&self) -> Vec2d;
     /// Get player's (maxhp, hp)
     fn player_hp(&self) -> (i32, i32);
+    /// Get current map size
+    fn map_size(&self) -> (u32, u32);
     /// Player's current tile is entrance/exit or not
     fn on_map_entrance(&self) -> bool;
     /// Return item list in the tile that player stands on
@@ -20,11 +22,15 @@ impl InfoGetter for GameData {
     fn player_pos(&self) -> Vec2d {
         self.get_current_map().chara_pos(CharaId::Player).expect("Internal Error: Player position undefined")
     }
-
     
     fn player_hp(&self) -> (i32, i32) {
         let player =self.chara.get(CharaId::Player);
         (player.params.max_hp, player.hp)
+    }
+
+    fn map_size(&self) -> (u32, u32) {
+        let map = self.get_current_map();
+        (map.w, map.h)
     }
     
     fn on_map_entrance(&self) -> bool {
