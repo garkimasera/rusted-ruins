@@ -44,6 +44,8 @@ pub struct Game {
     anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
+    /// Player's current target of shot and similer actions
+    target_chara: Option<CharaId>,
     pub view_map: view::ViewMap,
 }
 
@@ -56,6 +58,7 @@ impl Game {
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            target_chara: None,
             view_map: view::ViewMap::new(),
         };
         
@@ -70,6 +73,7 @@ impl Game {
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            target_chara: None,
             view_map: view::ViewMap::new(),
         }
     }
