@@ -70,14 +70,8 @@ impl Window for MainWindow {
     fn draw(
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
-
-        let centering_tile = if let Some(centering_tile) = self.centering_tile {
-            centering_tile
-        } else {
-            game.gd.player_pos()
-        };
         
-        self.drawer.draw(canvas, game, sv, anim, centering_tile);
+        self.drawer.draw(canvas, game, sv, anim, self.centering_tile);
     }
 }
 

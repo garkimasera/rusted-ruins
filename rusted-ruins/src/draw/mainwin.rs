@@ -4,7 +4,7 @@ use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use array2d::*;
 use common::basic::{TILE_SIZE, TILE_SIZE_I};
-use common::objholder::Holder;
+use common::objholder::{Holder, UIImgIdx};
 use common::obj::*;
 use common::gobj;
 use common::gamedata::GameData;
@@ -34,9 +34,15 @@ impl MainWinDrawer {
     }
 
     pub fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
-                anim: Option<(&Animation, u32)>, centering_tile: Vec2d) {
+                anim: Option<(&Animation, u32)>, centering_tile: Option<Vec2d>) {
         super::frame::next_frame();
         let mut player_move_dir = None;
+
+        let ct = if let Some(ct) = centering_tile {
+            ct
+        } else {
+            game.gd.player_pos()
+        };
 
         let player_move_adjust = if let Some(anim) = anim {
             match anim.0 {
@@ -53,11 +59,15 @@ impl MainWinDrawer {
 
         let map = game.gd.get_current_map();
         self.update_draw_params((map.w as i32, map.h as i32),
-                                centering_tile, player_move_adjust);
+                                ct, player_move_adjust);
         self.draw_except_anim(canvas, game, sv, player_move_adjust, player_move_dir);
 
         if let Some(anim) = anim {
             self.draw_anim(canvas, game, sv, anim.0, anim.1);
+        }
+
+        if centering_tile.is_some() {
+            self.draw_tile_cursor(canvas, sv, ct);
         }
     }
 
@@ -255,6 +265,15 @@ impl MainWinDrawer {
             }
             _ => (),
         }
+    }
+
+    fn draw_tile_cursor(&self, canvas: &mut WindowCanvas, sv: &SdlValues, ct: Vec2d) {
+        let idx: UIImgIdx = gobj::id_to_idx_checked("!tile-cursor")
+            .expect("UIImg object \"!tile-cursor\" not found");
+        
+        let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
+        let dest = self.centering_at_tile(src, ct, 0, 0);
+        check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
     }
 
     fn update_draw_params(&mut self,
