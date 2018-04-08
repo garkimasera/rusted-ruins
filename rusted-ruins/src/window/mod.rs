@@ -366,24 +366,27 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     }
 
     fn process_command_targeting_mode(&mut self, command: Command) {
+        let main_window = match self.mode {
+            WindowManageMode::OnGame(ref mut game_windows) => {
+                &mut game_windows.main_window
+            }
+            _ => unreachable!(),
+        };
+        
         match command {
             Command::Move{ dir } => {
-                match self.mode {
-                    WindowManageMode::OnGame(ref mut game_windows) => {
-                        game_windows.main_window.move_centering_tile(dir, &self.game);
-                    }
-                    _ => unreachable!(),
-                }
+                main_window.move_centering_tile(dir, &self.game);
             }
             Command::Cancel => {
                 self.targeting_mode = false;
-                match self.mode {
-                    WindowManageMode::OnGame(ref mut game_windows) => {
-                        game_windows.main_window.stop_targeting_mode();
-                    }
-                    _ => unreachable!(),
+                main_window.stop_targeting_mode();
+            }
+            Command::Enter => { // Set target
+                let ct = main_window.get_current_centering_tile();
+                if self.game.set_target(ct) {
+                    self.targeting_mode = false;
+                    main_window.stop_targeting_mode();
                 }
-                return;
             }
             _ => (),
         }

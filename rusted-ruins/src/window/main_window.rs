@@ -29,6 +29,10 @@ impl MainWindow {
         info!("Stop targeting mode");
         self.centering_tile = None;
     }
+    
+    pub fn get_current_centering_tile(&mut self) -> Vec2d {
+        self.centering_tile.expect("get_current_centering tile must called when targeting mode")
+    }
 
     pub fn move_centering_tile(&mut self, dir: Direction, game: &Game) {
         let mut c = if let Some(c) = self.centering_tile { c } else { return; };

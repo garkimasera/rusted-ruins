@@ -20,6 +20,7 @@ pub mod talk;
 pub mod view;
 
 use std::borrow::Cow;
+use array2d::Vec2d;
 use common::gamedata;
 use common::gamedata::GameData;
 use common::gamedata::chara::CharaId;
@@ -115,6 +116,23 @@ impl Game {
             ::std::mem::replace(&mut self.dialog_open_request, None)
         } else {
             None
+        }
+    }
+
+    /// Set target chara by position.
+    /// If given tile position is empty, returns false.
+    pub fn set_target(&mut self, pos: Vec2d) -> bool {
+        use self::extrait::CharaEx;
+        
+        let map = self.gd.get_current_map();
+        if let Some(cid) = map.get_chara(pos) {
+            let player_name = self.gd.chara.get(CharaId::Player).get_name();
+            let target_name = self.gd.chara.get(cid).get_name();
+            game_log_i!("target-chara"; chara=player_name, target=target_name);
+            self.target_chara = Some(cid);
+            true
+        } else {
+            false
         }
     }
 }
