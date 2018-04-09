@@ -1,10 +1,11 @@
 
 [normal]
 return = "enter"
-d = "drink_item"
 e = "eat_item"
+f = "shot"
 i = "open_item_menu"
 p = "pick_up_item"
+q = "drink_item"
 s = "open_status_win"
 t = "targeting_mode"
 w = "open_equip_win"

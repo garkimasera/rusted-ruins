@@ -11,6 +11,7 @@ use game::chara::CharaEx;
 use array2d::*;
 
 /// Player actions are processed through this.
+/// Mutable access to Game or GameData is limited by this wrapper.
 pub struct DoPlayerAction<'a>(pub(in super) &'a mut Game);
 
 impl<'a> DoPlayerAction<'a> {
@@ -149,6 +150,15 @@ impl<'a> DoPlayerAction<'a> {
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
                 callback: cb, msg: msg_switch_map(next_mid),
             });
+        }
+    }
+
+    /// Shot to target using long range weapon
+    pub fn shot(&mut self) {
+        if let Some(target) = self.0.target_chara {
+            if super::action::shot_target(&mut self.0, CharaId::Player, target) {
+                self.0.finish_player_turn();
+            }
         }
     }
 

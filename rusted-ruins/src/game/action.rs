@@ -48,6 +48,11 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     true
 }
 
+/// Shot target
+pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
+    combat::shot_target(game, cid, target)
+}
+
 /// Drink one item
 pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1

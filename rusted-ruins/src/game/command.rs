@@ -10,6 +10,7 @@ pub enum Command {
     Enter,
     Cancel,
     RotateWindowRight, RotateWindowLeft,
+    Shot,
     OpenExitWin, OpenItemMenu, OpenEquipWin, OpenStatusWin, PickUpItem, DrinkItem, EatItem,
     TargetingMode,
     TextInput { text: String },

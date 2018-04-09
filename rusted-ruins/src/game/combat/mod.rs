@@ -10,6 +10,7 @@ use common::gamedata::item::*;
 
 pub enum DamageKind {
     ShortRangeAttack,
+    LongRangeAttack,
     Poison,
 }
 
@@ -44,6 +45,52 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
+}
+
+/// Shot target by long range weapons.
+/// If attacker actually do actions, returns true.
+pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool {
+    // Damage calculation
+    let (damage, weapon_kind) = {
+        let attacker = game.gd.chara.get(attacker);
+        let target = game.gd.chara.get(target);
+        let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::LongRangeWeapon, 0) {
+            weapon
+        } else { // If this chara doesn't equip long range weapon
+            return false;
+        };
+        let weapon_obj = gobj::get_obj(weapon.idx);
+        let weapon_kind = get_weapon_kind(weapon_obj);
+        let weapon_dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
+
+        let damage_coef = 256 + attacker.params.dex as i32 * 16;
+
+        let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
+        let defence_power = calc_defence(target);
+        (if damage < defence_power { 0 }else{ damage - defence_power }, weapon_kind)
+    };
+    // Logging
+    {
+        let attacker = game.gd.chara.get(attacker);
+        let target = game.gd.chara.get(target);
+        game_log!("shot-target"; attacker=attacker.get_name(), target=target.get_name(), damage=damage);
+    }
+    // Damage processing
+    super::chara::damage(game, target, damage, DamageKind::LongRangeAttack);
+    // Exp processing
+    {
+        let attacker = game.gd.chara.get_mut(attacker);
+        attacker.skills.add_exp(SkillKind::Weapon(weapon_kind), 1);
+    }
+    // Animation pushing
+    true
+}
+
+fn get_weapon_kind(item: &ItemObject) -> WeaponKind {
+    match item.kind {
+        ItemKind::Weapon(kind) => kind,
+        _ => unreachable!(),
+    }
 }
 
 struct WeaponData {

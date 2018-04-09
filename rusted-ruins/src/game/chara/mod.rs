@@ -37,6 +37,9 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
             DamageKind::ShortRangeAttack => {
                 game_log!("killed-by-short-range-attack"; chara=chara.get_name());
             }
+            DamageKind::LongRangeAttack => {
+                game_log!("killed-by-long-range-attack"; chara=chara.get_name());
+            }
             DamageKind::Poison => {
                 game_log!("killed-by-poison-damage"; chara=chara.get_name());
             }

@@ -277,6 +277,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     pa.goto_next_floor(Direction::none());
                 }
             }
+            Command::Shot => {
+                pa.shot();
+            }
             Command::OpenExitWin => {
                 self.window_stack.push(Box::new(exit_window::ExitWindow::new()));
             }

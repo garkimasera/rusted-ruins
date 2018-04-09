@@ -2,9 +2,13 @@
 Welcome to Rusted Ruins! (version : $(version))
 % attack
 $(attacker) attacks $(target) ($(damage)).
+% shot-target
+$(attacker) shots $(target) ($(damage)).
 % target-chara
 $(chara) targets $(target).
 % killed-by-short-range-attack
+$(chara) is killed.
+% killed-by-long-range-attack
 $(chara) is killed.
 % killed-by-poison-damage
 $(chara) is killed by poison
