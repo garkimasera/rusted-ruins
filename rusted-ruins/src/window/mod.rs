@@ -299,6 +299,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     self.window_stack.push(Box::new(item_window));
                 }
             }
+            Command::DropItem => {
+                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drop, &mut pa)));
+            }
             Command::DrinkItem => {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drink, &mut pa)));
             }

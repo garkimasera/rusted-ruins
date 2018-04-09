@@ -189,6 +189,7 @@ impl GameData {
             (src_list.remove_and_get(item_location.1, n), n)
         };
         {
+            self.create_item_list_on_tile(dest);
             let dest_list = self.get_item_list_mut(dest);
             if !dest_list.has_empty() { return false; }
             dest_list.append(item, n);
@@ -203,6 +204,19 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 if self.get_item_list(item_list_location).is_empty() {
                     self.region.get_map_mut(mid).tile[pos].item_list = None;
+                }
+            }
+            _ => (),
+        }
+    }
+
+    /// Create item list on tile if empty
+    fn create_item_list_on_tile(&mut self, item_list_location: ItemListLocation) {
+        match item_list_location {
+            ItemListLocation::OnMap { mid, pos } => {
+                if self.region.get_map_mut(mid).tile[pos].item_list.is_none() {
+                    self.region.get_map_mut(mid).tile[pos].item_list
+                        = Some(ItemList::new(::basic::MAX_ITEM_TILE));
                 }
             }
             _ => (),

@@ -16,6 +16,8 @@ $(chara) is killed by poison
 $(chara) equips $(item).
 % item-pickup
 $(chara) picks up $(item).
+% item-drop
+$(chara) drops $(item).
 % drink-item
 $(chara) drinks a $(item).
 % eat-item
