@@ -57,6 +57,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::LongRangeWeapon, 0) {
             weapon
         } else { // If this chara doesn't equip long range weapon
+            game_log_i!("no-long-range-weapon-equipped");
             return false;
         };
         let weapon_obj = gobj::get_obj(weapon.idx);
