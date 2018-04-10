@@ -100,6 +100,10 @@ fn remove_dying_charas(game: &mut Game) {
         if let Some((i, _)) = action_queue.iter().enumerate().find(|&(_, a)| *a == cid) {
             action_queue.remove(i);
         }
+        // If the current target is cid, remove it
+        if game.target_chara == Some(cid) {
+            game.target_chara = None;
+        }
     }
 }
 
