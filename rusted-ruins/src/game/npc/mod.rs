@@ -1,3 +1,6 @@
+//! Functions for NPC's AI and actions
+
+pub mod map_search;
 
 use array2d::*;
 use common::gamedata::chara::CharaId;
