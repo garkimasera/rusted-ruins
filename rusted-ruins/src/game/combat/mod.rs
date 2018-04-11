@@ -16,6 +16,8 @@ pub enum DamageKind {
 
 /// Attack neighbor enemy by short range weapon or bare hands
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
+    let skill_kind;
+    
     // Damage calculation
     let damage = {
         let attacker = game.gd.chara.get(attacker);
@@ -23,7 +25,8 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::ShortRangeWeapon, 0) {
             let weapon_obj = gobj::get_obj(weapon.idx);
-            let kind = get_weapon_kind(weapon_obj);
+            let weapon_kind = get_weapon_kind(weapon_obj);
+            skill_kind = SkillKind::Weapon(weapon_kind);
             
             let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
             let damage_coef = 256 + attacker.params.str as i32 * 16;
@@ -32,6 +35,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 
             if damage < defence_power { 0 } else { damage - defence_power }
         } else { // Attack by bare hands
+            skill_kind = SkillKind::BareHands;
             let dice_result = rng::dice(1, 1);
             let damage_coef = 256 + attacker.params.str as i32 * 16;
             let damage = dice_result.saturating_mul(damage_coef) / 256;
@@ -48,6 +52,11 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     }
     // Damage processing
     super::chara::damage(game, target, damage, DamageKind::ShortRangeAttack);
+    // Exp processing
+    {
+        let attacker = game.gd.chara.get_mut(attacker);
+        attacker.skills.add_exp(skill_kind, 1);
+    }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
 }
