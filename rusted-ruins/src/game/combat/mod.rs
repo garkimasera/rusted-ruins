@@ -65,7 +65,9 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 /// If attacker actually do actions, returns true.
 pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool {
     // Damage calculation
-    let (damage, weapon_kind) = {
+    let (damage, weapon_kind, attacker_pos, target_pos) = {
+        let attacker_pos = game.gd.get_current_map().chara_pos(attacker).unwrap();
+        let target_pos = game.gd.get_current_map().chara_pos(target).unwrap();
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
         let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::LongRangeWeapon, 0) {
@@ -82,7 +84,10 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
 
         let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
         let defence_power = calc_defence(target);
-        (if damage < defence_power { 0 }else{ damage - defence_power }, weapon_kind)
+        (
+            if damage < defence_power { 0 }else{ damage - defence_power }, weapon_kind,
+            attacker_pos, target_pos         
+        )
     };
     // Logging
     {
@@ -98,6 +103,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         attacker.skills.add_exp(SkillKind::Weapon(weapon_kind), 1);
     }
     // Animation pushing
+    game.anim_queue.push_shot(attacker_pos, target_pos);
     true
 }
 

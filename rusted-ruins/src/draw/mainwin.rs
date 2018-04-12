@@ -256,12 +256,24 @@ impl MainWinDrawer {
     fn draw_anim(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &SdlValues,
                  anim: &Animation, i_frame: u32) {
         match anim {
-            &Animation::Img{ idx, range, .. } => {
+            &Animation::Img { idx, range, .. } => {
                 for p in range {
                     let src = Rect::from(gobj::get_obj(idx).img_rect_nth(i_frame));
                     let dest = self.centering_at_tile(src, p, 0, 0);
                     check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
                 }
+            }
+            &Animation::Shot { n_frame, idx, start, target, dir } => {
+                let src = Rect::from(gobj::get_obj(idx).img_rect_nth(0));
+                let dest = if n_frame -1 == i_frame {
+                    let mut dest = self.centering_at_tile(src, start, 0, 0);
+                    dest.x += (dir.0 * (i_frame * TILE_SIZE) as f32) as i32;
+                    dest.y += (dir.1 * (i_frame * TILE_SIZE) as f32) as i32;
+                    dest
+                } else {
+                    self.centering_at_tile(src, start, 0, 0)
+                };
+                check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
             }
             _ => (),
         }

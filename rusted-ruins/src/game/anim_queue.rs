@@ -30,5 +30,10 @@ impl AnimQueue {
         let idx: AnimImgIdx = gobj::id_to_idx("!damage-blunt");
         self.push(Animation::img_onetile(idx, tile));
     }
+
+    pub fn push_shot(&mut self, start: Vec2d, target: Vec2d) {
+        let idx: AnimImgIdx = gobj::id_to_idx("!arrow");
+        self.push(Animation::shot(idx, start, target));
+    }
 }
 

@@ -17,6 +17,7 @@ pub enum Animation {
     Shot {
         n_frame: u32,
         idx: AnimImgIdx,
+        dir: (f32, f32),
         start: Vec2d,
         target: Vec2d,
     },
@@ -47,9 +48,18 @@ impl Animation {
     }
 
     pub fn shot(idx: AnimImgIdx, start: Vec2d, target: Vec2d) -> Animation {
+        let dx = (target.0 - start.0) as f32;
+        let dy = (target.1 - start.1) as f32;
+        let d = (dx * dx + dy * dy).sqrt();
+        let dir = (dx / d, dy / d);
+
+        const SHOT_ANIM_WIDTH: f32 = 1.0;
+        let n_frame = (d / SHOT_ANIM_WIDTH).ceil() as u32;
+        
         Animation::Shot {
-            n_frame: 0,
+            n_frame: n_frame,
             idx: idx,
+            dir: dir,
             start: start,
             target: target,
         }
