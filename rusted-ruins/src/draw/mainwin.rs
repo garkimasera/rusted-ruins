@@ -263,15 +263,15 @@ impl MainWinDrawer {
                     check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
                 }
             }
-            &Animation::Shot { n_frame, idx, start, target, dir } => {
-                let src = Rect::from(gobj::get_obj(idx).img_rect_nth(0));
-                let dest = if n_frame -1 == i_frame {
+            &Animation::Shot { n_frame, n_image, idx, start, target, dir } => {
+                let src = Rect::from(gobj::get_obj(idx).img_rect_nth(n_image));
+                let dest = if n_frame - 1 != i_frame {
                     let mut dest = self.centering_at_tile(src, start, 0, 0);
                     dest.x += (dir.0 * (i_frame * TILE_SIZE) as f32) as i32;
                     dest.y += (dir.1 * (i_frame * TILE_SIZE) as f32) as i32;
                     dest
                 } else {
-                    self.centering_at_tile(src, start, 0, 0)
+                    self.centering_at_tile(src, target, 0, 0)
                 };
                 check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
             }

@@ -16,6 +16,7 @@ pub enum Animation {
     },
     Shot {
         n_frame: u32,
+        n_image: u32,
         idx: AnimImgIdx,
         dir: (f32, f32),
         start: Vec2d,
@@ -55,13 +56,52 @@ impl Animation {
 
         const SHOT_ANIM_WIDTH: f32 = 1.0;
         let n_frame = (d / SHOT_ANIM_WIDTH).ceil() as u32;
+        let anim_obj = gobj::get_obj(idx);
+        let n_image = match anim_obj.img.n_frame {
+            8 => calc_arrow_dir(dir),
+            _ => 1,
+        };
         
         Animation::Shot {
             n_frame: n_frame,
+            n_image: n_image,
             idx: idx,
             dir: dir,
             start: start,
             target: target,
+        }
+    }
+}
+
+/// Calculates image number of arrow animation from dir vector
+fn calc_arrow_dir(dir: (f32, f32)) -> u32 {
+    use std::f32::consts::PI;
+    let degree = dir.0.acos();
+    const PI8: f32 = PI / 8.0;
+
+    if dir.1 > 0.0 {
+        if degree < PI8 {
+            0
+        } else if degree < PI8 * 3.0 {
+            1
+        } else if degree < PI8 * 5.0 {
+            2
+        } else if degree < PI8 * 7.0 {
+            3
+        } else {
+            4
+        }
+    } else {
+        if degree < PI8 {
+            0
+        } else if degree < PI8 * 3.0 {
+            7
+        } else if degree < PI8 * 5.0 {
+            6
+        } else if degree < PI8 * 7.0 {
+            5
+        } else {
+            4
         }
     }
 }
