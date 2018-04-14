@@ -1,8 +1,7 @@
 //! This module processes the view of characters
 
 use array2d::*;
-use common::gamedata::map::Map;
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 use game::Game;
 use game::InfoGetter;
 

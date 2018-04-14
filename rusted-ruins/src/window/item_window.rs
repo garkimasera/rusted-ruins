@@ -10,8 +10,7 @@ use eventhandler::InputMode;
 use super::widget::*;
 use super::misc_window::PageWindow;
 use common::gobj;
-use common::gamedata::item::{ItemListLocation, ItemLocation, ItemFlags};
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 use game::item::filter::*;
 use text;
 

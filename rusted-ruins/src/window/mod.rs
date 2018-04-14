@@ -21,7 +21,7 @@ mod indicator;
 mod minimap;
 
 use std::any::Any;
-use common::gamedata::GameData;
+use common::gamedata::*;
 use game::{GameState, DoPlayerAction, InfoGetter, Command};
 use eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
@@ -287,7 +287,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, &mut pa)));
             }
             Command::OpenEquipWin => {
-                use common::gamedata::chara::CharaId;
                 self.window_stack.push(Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player)));
             }
             Command::OpenStatusWin => {

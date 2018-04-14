@@ -3,7 +3,7 @@
 pub mod map_search;
 
 use array2d::*;
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 use super::Game;
 use super::action;
 use rng::*;

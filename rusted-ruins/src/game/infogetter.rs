@@ -1,7 +1,6 @@
 
 use array2d::*;
-use common::gamedata::GameData;
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {

@@ -1,6 +1,6 @@
 
 use super::Game;
-use common::gamedata::chara::*;
+use common::gamedata::*;
 use game::extrait::*;
 
 /// This function will be called before the character's turn

@@ -2,9 +2,7 @@
 pub mod filter;
 pub mod gen;
 
-use common::gamedata::GameData;
-use common::gamedata::chara::CharaId;
-use common::gamedata::item::*;
+use common::gamedata::*;
 use common::gobj;
 use game::extrait::*;
 

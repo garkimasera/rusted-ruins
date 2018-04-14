@@ -2,7 +2,7 @@
 use std::borrow::Cow;
 use common::talkscript::*;
 use common::objholder::TalkScriptIdx;
-use common::gamedata::chara::{CharaId, CharaTalk};
+use common::gamedata::*;
 use common::gobj;
 use game::{Game, DoPlayerAction};
 

@@ -5,9 +5,7 @@ use super::Game;
 use super::combat;
 use super::extrait::*;
 use array2d::*;
-use common::gamedata::GameData;
-use common::gamedata::chara::*;
-use common::gamedata::item::*;
+use common::gamedata::*;
 use common::gobj;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {

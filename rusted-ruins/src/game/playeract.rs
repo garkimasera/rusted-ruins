@@ -2,10 +2,7 @@
 use super::Game;
 use super::action;
 use super::extrait::*;
-use common::gamedata::{self, GameData};
-use common::gamedata::chara::{CharaId, Relationship};
-use common::gamedata::map::{MapId, SpecialTileKind, FLOOR_OUTSIDE};
-use common::gamedata::item::*;
+use common::gamedata::*;
 use game::{InfoGetter, DialogOpenRequest};
 use game::chara::CharaEx;
 use array2d::*;

@@ -4,9 +4,7 @@ use super::Game;
 use super::chara::CharaEx;
 use super::skill::SkillListEx;
 use common::gobj;
-use common::gamedata::chara::{CharaId, Chara};
-use common::gamedata::skill::SkillKind;
-use common::gamedata::item::*;
+use common::gamedata::*;
 
 pub enum DamageKind {
     ShortRangeAttack,

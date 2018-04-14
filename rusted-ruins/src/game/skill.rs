@@ -1,6 +1,6 @@
 
 use common::basic::SKILL_EXP_LVUP;
-use common::gamedata::skill::*;
+use common::gamedata::*;
 
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, value: u32);

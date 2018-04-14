@@ -1,20 +1,23 @@
 
-pub mod item;
 pub mod chara;
+pub mod item;
 pub mod map;
-pub mod site;
-pub mod town;
 pub mod region;
 pub mod shop;
+pub mod site;
 pub mod skill;
+pub mod town;
 
 use array2d::Vec2d;
 
-use self::chara::*;
-use self::map::*;
-use self::site::*;
-use self::item::*;
-use self::region::*;
+pub use self::chara::*;
+pub use self::item::*;
+pub use self::map::*;
+pub use self::region::*;
+pub use self::shop::*;
+pub use self::site::*;
+pub use self::skill::*;
+pub use self::town::*;
 
 /// Includes all data for one game
 #[derive(Serialize, Deserialize)]

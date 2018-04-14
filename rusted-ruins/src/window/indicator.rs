@@ -6,8 +6,7 @@ use super::commonuse::*;
 use super::widget::*;
 use common::gobj;
 use common::obj::UIImgObject;
-use common::gamedata::map::MapId;
-use common::gamedata::chara::{CharaId, CharaStatus};
+use common::gamedata::*;
 use sdlvalues::FontKind;
 
 pub struct HPIndicator {

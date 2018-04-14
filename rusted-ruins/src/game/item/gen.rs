@@ -1,5 +1,5 @@
 
-use common::gamedata::item::*;
+use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
 

@@ -1,9 +1,6 @@
 
 use game;
-use common::gamedata::GameData;
-use common::gamedata::site::SiteId;
-use common::gamedata::chara::*;
-use common::gamedata::map::MapId;
+use common::gamedata::*;
 use common::gobj;
 use common::sitegen::*;
 

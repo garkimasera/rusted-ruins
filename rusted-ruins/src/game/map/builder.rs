@@ -1,6 +1,6 @@
 
 use common::objholder::*;
-use common::gamedata::map::{Map, SpecialTileKind, StairsKind, FLOOR_OUTSIDE};
+use common::gamedata::map::*;
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
 
 #[derive(Default)]

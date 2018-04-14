@@ -2,8 +2,7 @@
 use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::objholder::*;
-use common::gamedata::map::Map;
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 use common::gobj;
 use common::obj::SpecialTileObject;
 use game::view::ViewMap;

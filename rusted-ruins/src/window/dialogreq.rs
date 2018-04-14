@@ -1,5 +1,5 @@
 
-use common::gamedata::chara::{CharaId, CharaTalk};
+use common::gamedata::{CharaId, CharaTalk};
 use game::{Game, DialogOpenRequest, TalkManager};
 use super::DialogWindow;
 use super::talk_window;

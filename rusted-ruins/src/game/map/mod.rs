@@ -4,11 +4,7 @@ pub mod from_template;
 
 use array2d::Vec2d;
 use common::basic::MAX_ITEM_FOR_DRAW;
-use common::gamedata::GameData;
-use common::gamedata::map::{Map, MapId};
-use common::gamedata::chara::CharaId;
-use common::gamedata::site::{SiteContent, DungeonKind};
-use common::gamedata::item::ItemList;
+use common::gamedata::*;
 use super::Game;
 use super::chara::CharaEx;
 use super::chara::creation::create_npc_chara;

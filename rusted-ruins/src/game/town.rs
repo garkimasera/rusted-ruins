@@ -1,11 +1,7 @@
 
 use array2d::Vec2d;
 use common::obj::SiteGenObject;
-use common::gamedata::GameData;
-use common::gamedata::region::RegionId;
-use common::gamedata::site::*;
-use common::gamedata::map::*;
-use common::gamedata::town::*;
+use common::gamedata::*;
 use common::gobj;
 
 /// Create town from SiteGenObect and add it to region map

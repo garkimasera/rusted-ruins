@@ -3,7 +3,7 @@ use config::SCREEN_CFG;
 use super::commonuse::*;
 use super::widget::*;
 use text;
-use common::gamedata::chara::CharaClass;
+use common::gamedata::*;
 use game::newgame::NewGameBuilder;
 use super::text_window::TextWindow;
 use super::text_input_dialog::TextInputDialog;

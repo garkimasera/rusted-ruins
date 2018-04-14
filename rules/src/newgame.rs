@@ -1,7 +1,7 @@
 
 use std::collections::HashMap;
 use array2d::Vec2d;
-use common::gamedata::chara::CharaClass;
+use common::gamedata::*;
 
 /// Rules for starting new game
 #[derive(Serialize, Deserialize)]

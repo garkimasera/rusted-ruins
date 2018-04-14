@@ -21,9 +21,7 @@ pub mod view;
 
 use std::borrow::Cow;
 use array2d::Vec2d;
-use common::gamedata;
-use common::gamedata::GameData;
-use common::gamedata::chara::CharaId;
+use common::gamedata::*;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
@@ -139,7 +137,7 @@ impl Game {
 
 pub enum DialogOpenRequest {
     YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
-    Talk { chara_talk: gamedata::chara::CharaTalk, cid: gamedata::chara::CharaId },
+    Talk { chara_talk: CharaTalk, cid: CharaId },
     GameOver,
 }
 

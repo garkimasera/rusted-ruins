@@ -1,7 +1,6 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
-use common::gamedata::GameData;
-use common::gamedata::chara::*;
+use common::gamedata::*;
 
 /// Search nearest other character from cid.
 /// If no character found, returns None.

@@ -3,9 +3,7 @@ pub mod gen;
 
 use std::borrow::Cow;
 use array2d::*;
-use common::gamedata::GameData;
-use common::gamedata::site::{Site, SiteId, SiteContent, SiteKind, DungeonKind};
-use common::gamedata::region::RegionId;
+use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
 use super::map::builder::MapBuilder;

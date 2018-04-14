@@ -5,8 +5,7 @@ pub mod status;
 
 use super::Game;
 use super::combat::DamageKind;
-use common::gamedata::GameData;
-use common::gamedata::chara::{Chara, CharaId};
+use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
 

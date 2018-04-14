@@ -1,9 +1,6 @@
 
 use common::basic::MAX_AUTO_GEN_DUNGEONS;
-use common::gamedata::GameData;
-use common::gamedata::region::*;
-use common::gamedata::site::{DungeonKind, SiteKind};
-use common::gamedata::map::*;
+use common::gamedata::*;
 use common::regiongen::*;
 use common::gobj;
 use super::map::choose_empty_tile;

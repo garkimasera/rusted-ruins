@@ -1,10 +1,7 @@
 
 use common::basic::WAIT_TIME_START;
 use common::objholder::CharaTemplateIdx;
-use common::gamedata::chara::*;
-use common::gamedata::item::{ItemList, EquipItemList};
-use common::gamedata::site::DungeonKind;
-use common::gamedata::skill::SkillList;
+use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
 

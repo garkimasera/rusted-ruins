@@ -1,8 +1,7 @@
 
 use std::collections::HashMap;
 use array2d::Vec2d;
-use common::gamedata::site::DungeonKind;
-use common::gamedata::chara::Race;
+use common::gamedata::*;
 
 /// Rules for map generation
 pub type DungeonGen = HashMap<DungeonKind, DungeonGenParams>;

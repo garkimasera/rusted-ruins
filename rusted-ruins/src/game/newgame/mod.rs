@@ -1,9 +1,6 @@
 
 use common::gamedata;
-use common::gamedata::GameData;
-use common::gamedata::chara::*;
-use common::gamedata::map::MapId;
-use common::gamedata::region::RegionId;
+use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
 use super::skill::SkillListEx;

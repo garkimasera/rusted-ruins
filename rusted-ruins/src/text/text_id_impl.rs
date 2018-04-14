@@ -1,8 +1,7 @@
 
 use super::ToTextId;
     
-use common::gamedata::site::DungeonKind;
-use common::gamedata::chara::CharaStatus;
+use common::gamedata::*;
 
 impl ToTextId for DungeonKind {
     fn to_textid(&self) -> &'static str {

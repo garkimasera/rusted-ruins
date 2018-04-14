@@ -1,6 +1,6 @@
 
 use std::collections::VecDeque;
-use common::gamedata::chara::{Chara, CharaId};
+use common::gamedata::*;
 use common::basic::WAIT_TIME_START;
 use super::{Game, GameState};
 use super::chara::CharaEx;

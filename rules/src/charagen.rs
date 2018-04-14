@@ -1,7 +1,6 @@
 
 use std::collections::HashMap;
-use common::gamedata::chara::Race;
-use common::gamedata::item::EquipSlotKind;
+use common::gamedata::*;
 
 /// Rules for character generation
 #[derive(Serialize, Deserialize)]
