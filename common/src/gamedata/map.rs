@@ -94,6 +94,8 @@ pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 pub struct TileInfo {
     /// Basic tile type
     pub tile: TileIdx,
+    /// Base image for this tile, if this is default value, skip drawing.
+    pub base_tile: TileIdx,
     /// If wall is presented, the tile is no walkable
     pub wall: Option<WallIdx>, 
     /// Decoration for this tile
@@ -146,7 +148,8 @@ impl Default for BoundaryBehavior {
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
-            tile: TileIdx(0),
+            tile: TileIdx::default(),
+            base_tile: TileIdx::default(),
             wall: None,
             deco: None,
             item_list: None,
