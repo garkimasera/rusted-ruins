@@ -9,6 +9,8 @@ pub struct MapTemplateObject {
     pub h: u32,
     /// Tile Id (String) <-> integer value conversion table
     pub tile_table: Vec<String>,
+    /// Array of tuples of base tile id and frame number
+    pub base_tile: Array2d<Option<(u32, u8)>>,
     pub tile: Array2d<u32>,
     /// Wall Id (String) <-> integer value conversion table
     pub wall_table: Vec<String>,

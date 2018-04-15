@@ -8,6 +8,7 @@ pub struct EditingMap {
     pub property: MapProperty,
     pub width: u32,
     pub height: u32,
+    pub base_tile: Array2d<Option<(TileIdx, u8)>>,
     pub tile: Array2d<TileIdx>,
     pub wall: Array2d<Option<WallIdx>>,
     pub deco: Array2d<Option<DecoIdx>>,
@@ -15,11 +16,12 @@ pub struct EditingMap {
 
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
+        let base_tile = Array2d::new(width, height, None);
         let tile = Array2d::new(width, height, TileIdx(0));
         let wall = Array2d::new(width, height, None);
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
-        EditingMap { property, width, height, tile, wall, deco }
+        EditingMap { property, width, height, base_tile, tile, wall, deco }
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, tile: TileIdx) {
@@ -42,6 +44,8 @@ impl EditingMap {
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
         self.width = new_w;
         self.height = new_h;
+        let base_tile = self.base_tile.clip_with_default((0, 0), (new_w, new_h), None);
+        self.base_tile = base_tile;
         let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), TileIdx(0));
         self.tile = tile;
         let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), None);
@@ -59,6 +63,9 @@ impl EditingMap {
                 tile_table.push(tile_id.to_owned());
             }
         }
+
+        let mut base_tile_map = Array2d::new(self.width, self.height, None);
+        
         let mut tile_map = Array2d::new(self.width, self.height, 0);
         for (pos, &tile_idx) in self.tile.iter_with_idx() {
             let tile_id = gobj::idx_to_id(tile_idx);
@@ -110,6 +117,7 @@ impl EditingMap {
             w: self.width,
             h: self.height,
             tile_table: tile_table,
+            base_tile: base_tile_map,
             tile: tile_map,
             wall_table: wall_table,
             wall: wall_map,
