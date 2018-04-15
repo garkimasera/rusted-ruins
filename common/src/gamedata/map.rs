@@ -110,6 +110,7 @@ pub struct TileInfo {
 /// These data will be updated every player turn based on player's view
 #[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
+    pub base_tile: TileIdx,
     pub tile: Option<TileIdx>,
     pub wall: Option<WallIdx>,
     pub deco: Option<DecoIdx>,

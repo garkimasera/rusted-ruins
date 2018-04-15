@@ -128,6 +128,7 @@ pub fn update_observed_map(game: &mut Game) {
         let tile = &map.tile[p];
         let observed_tile = &mut map.observed_tile[p];
 
+        observed_tile.base_tile = tile.base_tile;
         observed_tile.tile = Some(tile.tile);
         observed_tile.wall = tile.wall;
         observed_tile.deco = tile.deco;
