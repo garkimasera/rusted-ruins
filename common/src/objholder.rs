@@ -50,6 +50,13 @@ macro_rules! impl_idx {
                 $idx(0)
             }
         }
+
+        impl $idx {
+            pub fn is_default(self) -> bool {
+                self.0 == 0
+            }
+        }
+            
     }
 }
 
