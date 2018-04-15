@@ -91,9 +91,11 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
     let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
+    let n_pattern = tile_dep_input.n_pattern.unwrap_or(1);
     
     Ok(TileObject {
         id: tomlinput.id,
+        n_pattern: n_pattern,
         img: img,
         kind: tile_dep_input.kind,
         symbol_color: imgdata.calc_average_color(),

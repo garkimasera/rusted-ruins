@@ -60,6 +60,7 @@ pub struct CharaTemplateDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TileDepInput {
+    pub n_pattern: Option<u8>,
     pub kind: ::common::obj::TileKind,
 }
 

@@ -72,6 +72,7 @@ pub struct SpecialTileObject {
 #[derive(Serialize, Deserialize)]
 pub struct TileObject {
     pub id: String,
+    pub n_pattern: u8,
     pub img: Img,
     pub kind: TileKind,
     pub symbol_color: (u8, u8, u8),
