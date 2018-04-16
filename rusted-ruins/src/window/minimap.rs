@@ -53,8 +53,8 @@ fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, _sv: &mut Sd
             (255, 255, 0)
         } else if let Some(wall_idx) = map.observed_tile[p].wall {
             gobj::get_obj(wall_idx).symbol_color
-        } else if let Some(tile_idx) = map.observed_tile[p].tile {
-            gobj::get_obj(tile_idx).symbol_color
+        } else if let Some(tile) = map.observed_tile[p].tile {
+            gobj::get_obj(tile.idx[0]).symbol_color
         } else {
             continue;
         };

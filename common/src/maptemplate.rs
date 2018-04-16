@@ -9,9 +9,7 @@ pub struct MapTemplateObject {
     pub h: u32,
     /// Tile Id (String) <-> integer value conversion table
     pub tile_table: Vec<String>,
-    /// Array of tuples of base tile id and frame number
-    pub base_tile: Array2d<Option<(u32, u8)>>,
-    pub tile: Array2d<u32>,
+    pub tile: Array2d<OverlappedTileConverted>,
     /// Wall Id (String) <-> integer value conversion table
     pub wall_table: Vec<String>,
     pub wall: Array2d<Option<u32>>,
@@ -19,6 +17,13 @@ pub struct MapTemplateObject {
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
     pub boundary: MapTemplateBoundary,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
+pub struct OverlappedTileConverted {
+    pub len: u8,
+    pub i_pattern: [u8; 3],
+    pub idx: [u32; 3],
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

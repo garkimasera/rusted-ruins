@@ -23,6 +23,35 @@ pub struct Map {
     pub boundary: MapBoundary,
 }
 
+/// Represents base tile that is overlapped with multiple images.
+/// The maximum number of overlapped image is 3.
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct OverlappedTile {
+    pub len: u8,
+    pub i_pattern: [u8; 3],
+    pub idx: [TileIdx; 3],
+}
+
+impl Default for OverlappedTile {
+    fn default() -> OverlappedTile {
+        OverlappedTile {
+            len: 1,
+            i_pattern: [0; 3],
+            idx: [TileIdx::default(); 3],
+        }
+    }
+}
+
+impl From<TileIdx> for OverlappedTile {
+    fn from(idx: TileIdx) -> OverlappedTile {
+        OverlappedTile {
+            len: 1,
+            i_pattern: [0; 3],
+            idx: [idx, TileIdx::default(), TileIdx::default()],
+        }
+    }
+}
+
 /// This represents special objects on a tile. For example, stairs, doors, traps.
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum SpecialTileKind {
@@ -92,10 +121,8 @@ pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
-    /// Basic tile type
-    pub tile: TileIdx,
-    /// Base image for this tile, if this is default value, skip drawing.
-    pub base_tile: TileIdx,
+    /// Base tile
+    pub tile: OverlappedTile,
     /// If wall is presented, the tile is no walkable
     pub wall: Option<WallIdx>, 
     /// Decoration for this tile
@@ -110,8 +137,7 @@ pub struct TileInfo {
 /// These data will be updated every player turn based on player's view
 #[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
-    pub base_tile: TileIdx,
-    pub tile: Option<TileIdx>,
+    pub tile: Option<OverlappedTile>,
     pub wall: Option<WallIdx>,
     pub deco: Option<DecoIdx>,
     pub n_item: usize,
@@ -149,8 +175,7 @@ impl Default for BoundaryBehavior {
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
-            tile: TileIdx::default(),
-            base_tile: TileIdx::default(),
+            tile: OverlappedTile::default(),
             wall: None,
             deco: None,
             item_list: None,
@@ -290,12 +315,12 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> TileIdx {
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> OverlappedTile {
         if self.is_inside(pos) {
             return self.tile[pos].tile;
         }
         if let Some(outside_tile) = self.outside_tile {
-            outside_tile.tile
+            outside_tile.tile.into()
         } else {
             self.tile[self.nearest_existent_tile(pos)].tile
         }

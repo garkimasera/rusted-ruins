@@ -1,5 +1,6 @@
 
 use common::maptemplate::*;
+use common::objholder::TileIdx;
 use common::gamedata::map::*;
 use common::gobj;
 
@@ -17,9 +18,18 @@ pub fn from_template_id(id: &str) -> Option<Map> {
 fn create_terrain(t: &MapTemplateObject) -> Map {
     let mut map = Map::new(t.w, t.h);
 
-    for (pos, &i) in t.tile.iter_with_idx() { // Setting tiles
-        let tile_id = &t.tile_table[i as usize];
-        map.tile[pos].tile = gobj::id_to_idx(tile_id);
+    for (pos, c) in t.tile.iter_with_idx() { // Setting tiles
+        let mut tile = OverlappedTile::default();
+        tile.len = c.len;
+        tile.i_pattern = c.i_pattern;
+
+        for i in 0..(tile.len as usize) {
+            let tile_id = &t.tile_table[c.idx[i] as usize];
+            let tile_idx: TileIdx = gobj::id_to_idx(tile_id);
+            tile.idx[i] = tile_idx;
+        }
+        
+        map.tile[pos].tile = tile;
     }
 
     for (pos, i) in t.wall.iter_with_idx() { // Setting walls

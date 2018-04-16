@@ -25,7 +25,7 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 { continue; }
             
             // Draw tile
-            cr.set_source_pixbuf(pbh.get(map.tile[p]),
+            cr.set_source_pixbuf(pbh.get(map.tile[p].idx[0]),
                                  (ix * TILE_SIZE_I) as f64,
                                  (iy * TILE_SIZE_I) as f64);
             cr.paint();

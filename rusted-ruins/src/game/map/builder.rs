@@ -55,7 +55,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
     trace!("New map creating");
 
     for p in size.iter_from_zero() {
-        map.tile[p].tile = tile;
+        map.tile[p].tile = tile.into();
         match gm.tile[p] {
             TileKind::Wall => {
                 map.tile[p].wall = Some(wall);

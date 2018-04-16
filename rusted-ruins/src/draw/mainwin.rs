@@ -154,32 +154,16 @@ impl MainWinDrawer {
     fn draw_background_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
         let di = BackgroundDrawInfo::new(map, p);
 
-        if let Some(tile_idx) = di.base_tile { // Draw base tile
-            let o = gobj::get_obj(tile_idx);
-            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-            let dest = Rect::new(
-                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                TILE_SIZE, TILE_SIZE);
-            let texture = sv.tex().get(tile_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
-        }
-        if let Some(tile_idx) = di.tile { // Draw tile
-            let o = gobj::get_obj(tile_idx);
-            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-            let dest = Rect::new(
-                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                TILE_SIZE, TILE_SIZE);
-            let texture = sv.tex().get(tile_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
-        }
-        if let Some(tile_idx) = di.tile { // Draw tile
-            let o = gobj::get_obj(tile_idx);
-            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-            let dest = Rect::new(
-                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                TILE_SIZE, TILE_SIZE);
-            let texture = sv.tex().get(tile_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
+        if let Some(t) = di.tile { // Draw tile
+            for i in 0..(t.len as usize) {
+                let o = gobj::get_obj(t.idx[i]);
+                let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
+                let dest = Rect::new(
+                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
+                    TILE_SIZE, TILE_SIZE);
+                let texture = sv.tex().get(t.idx[0]);
+                check_draw!(canvas.copy(&texture, src, dest));
+            }
         }
         if let Some(deco_idx) = di.deco { // Draw deco
             let o = gobj::get_obj(deco_idx);

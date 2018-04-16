@@ -11,8 +11,7 @@ use game::view::ViewMap;
 /// "Background" means that they are drawed behind any characters
 #[derive(Default)]
 pub struct BackgroundDrawInfo {
-    pub base_tile: Option<TileIdx>,
-    pub tile: Option<TileIdx>,
+    pub tile: Option<OverlappedTile>,
     pub deco: Option<DecoIdx>,
     pub wall: Option<WallIdx>,
     pub special: Option<SpecialTileIdx>,
@@ -24,15 +23,11 @@ impl BackgroundDrawInfo {
         
         let (tile, deco, wall) = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
-
-            if !tinfo.base_tile.is_default() {
-                di.base_tile = Some(tinfo.base_tile);
-            }
             
             (tinfo.tile, tinfo.deco, tinfo.wall)
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
-                (Some(outside_tile.tile), outside_tile.deco, outside_tile.wall)
+                (Some(outside_tile.tile.into()), outside_tile.deco, outside_tile.wall)
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
