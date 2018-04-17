@@ -555,4 +555,14 @@ impl Direction {
     pub fn is_none(&self) -> bool {
         self.hdir.is_none() && self.vdir.is_none()
     }
+
+    pub const N:  Direction = Direction { hdir: HDirection::None,  vdir: VDirection::Up   };
+    pub const S:  Direction = Direction { hdir: HDirection::None,  vdir: VDirection::Down };
+    pub const E:  Direction = Direction { hdir: HDirection::Right, vdir: VDirection::None };
+    pub const W:  Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::None };
+    pub const NE: Direction = Direction { hdir: HDirection::Right, vdir: VDirection::Up   };
+    pub const NW: Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::Up   };
+    pub const SE: Direction = Direction { hdir: HDirection::Right, vdir: VDirection::Down };
+    pub const SW: Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::Down };
+    pub const NONE: Direction = Direction { hdir: HDirection::None,  vdir: VDirection::None };
 }
