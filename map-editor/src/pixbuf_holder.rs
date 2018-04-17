@@ -4,11 +4,18 @@ use common::obj::Img;
 use common::objholder::*;
 use common::gobj;
 
+pub struct PixbufSet {
+    /// Whole image
+    pub image: Pixbuf,
+    /// Clipped image used to icon
+    pub icon: Pixbuf,
+}
+
 macro_rules! impl_pixbuf_holder {
     ($({$mem:ident, $idx:ty}),*) => {
-        // Owns all SDL texture
+        // Owns Pixbuf data
         pub struct PixbufHolder {
-            $(pub $mem: Vec<Pixbuf>),*
+            $(pub $mem: Vec<PixbufSet>),*
         }
 
         impl PixbufHolder {
@@ -32,8 +39,8 @@ macro_rules! impl_pixbuf_holder {
 
         $(
             impl Holder<$idx> for PixbufHolder {
-                type ReturnType = Pixbuf;
-                fn get(&self, idx: $idx) -> &Pixbuf {
+                type ReturnType = PixbufSet;
+                fn get(&self, idx: $idx) -> &PixbufSet {
                     &self.$mem[idx.0 as usize]
                 }
             }
@@ -49,15 +56,21 @@ impl_pixbuf_holder! {
     {wall, WallIdx}
 }
 
-fn load_png(img: &Img) -> Pixbuf {
+fn load_png(img: &Img) -> PixbufSet {
     const ERR_MSG: &'static str = "Error occured while loading image";
     let loader = PixbufLoader::new_with_type("png").expect(ERR_MSG);
     loader.write(&img.data).expect(ERR_MSG);
     loader.close().expect(ERR_MSG);
     let pixbuf = loader.get_pixbuf().expect(ERR_MSG);
-    if img.grid_w == 1 && img.grid_h == 1 {
-        pixbuf
+    
+    let pixbuf_icon = if img.grid_w == 1 && img.grid_h == 1 {
+        pixbuf.clone()
     } else {
         pixbuf.new_subpixbuf(0, 0, img.w as i32, img.h as i32).expect(ERR_MSG)
+    };
+
+    PixbufSet {
+        image: pixbuf,
+        icon: pixbuf_icon,
     }
 }
