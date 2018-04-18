@@ -43,6 +43,8 @@ pub struct Ui {
     pub filepath: Rc<RefCell<Option<PathBuf>>>,
     /// If it is false, some signal will not be processed
     pub signal_mode: Rc<Cell<bool>>,
+    /// Shift key state
+    pub shift: Rc<Cell<bool>>,
 }
 
 macro_rules! get_object {
@@ -79,6 +81,7 @@ pub fn build_ui(application: &gtk::Application) {
         drag_mode: Rc::new(Cell::new(DragMode::None)),
         filepath: Rc::new(RefCell::new(None)),
         signal_mode: Rc::new(Cell::new(true)),
+        shift: Rc::new(Cell::new(true)),
     };
 
     let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
@@ -239,6 +242,26 @@ pub fn build_ui(application: &gtk::Application) {
             uic.map_redraw();
         });
     }
+    { // Key press
+        use gdk::enums::key::{Shift_L, Shift_R};
+        let uic = ui.clone();
+        ui.window.connect_key_press_event(move |_, event_key| {
+            let keyval = event_key.get_keyval();
+            if keyval == Shift_L || keyval == Shift_R {
+                uic.shift.set(true);
+            }
+            Inhibit(true)
+        });
+        let uic = ui.clone();
+        ui.window.connect_key_release_event(move |_, event_key| {
+            let keyval = event_key.get_keyval();
+            if keyval == Shift_L || keyval == Shift_R {
+                uic.shift.set(false);
+            }
+            Inhibit(true)
+        });
+    }
+    
 
     ::property_controls::connect_for_property_controls(&ui);
     ::iconview::set_iconview(&ui);
