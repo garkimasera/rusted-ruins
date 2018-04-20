@@ -1,7 +1,7 @@
 
 use array2d::*;
 use objholder::*;
-use basic::MAX_ITEM_FOR_DRAW;
+use basic::{MAX_ITEM_FOR_DRAW, MAX_TILE_IMG_OVERLAP};
 use gamedata::item::ItemList;
 use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
@@ -23,31 +23,44 @@ pub struct Map {
     pub boundary: MapBoundary,
 }
 
-/// Represents base tile that is overlapped with multiple images.
-/// The maximum number of overlapped image is 3.
+/// Represents overlapped tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct OverlappedTile {
-    pub len: u8,
-    pub i_pattern: [u8; 3],
-    pub idx: [TileIdx; 3],
+    pub piece_pattern: [[u8; 4]; MAX_TILE_IMG_OVERLAP],
+    pub idx: [TileIdx; MAX_TILE_IMG_OVERLAP],
 }
 
 impl Default for OverlappedTile {
     fn default() -> OverlappedTile {
         OverlappedTile {
-            len: 1,
-            i_pattern: [0; 3],
-            idx: [TileIdx::default(); 3],
+            piece_pattern: [[0; 4]; MAX_TILE_IMG_OVERLAP],
+            idx: [TileIdx::default(); MAX_TILE_IMG_OVERLAP],
         }
     }
 }
 
 impl From<TileIdx> for OverlappedTile {
-    fn from(idx: TileIdx) -> OverlappedTile {
+    fn from(tile_idx: TileIdx) -> OverlappedTile {
+        let mut idx = [TileIdx::default(); MAX_TILE_IMG_OVERLAP];
+        idx[0] = tile_idx;
         OverlappedTile {
-            len: 1,
-            i_pattern: [0; 3],
-            idx: [idx, TileIdx::default(), TileIdx::default()],
+            piece_pattern: [[0; 4]; MAX_TILE_IMG_OVERLAP],
+            idx: idx,
+        }
+    }
+}
+
+impl OverlappedTile {
+    pub fn len(&self) -> usize {
+        if self.idx[0] == TileIdx::default() {
+            1
+        } else {
+            for i in 1..MAX_TILE_IMG_OVERLAP {
+                if self.idx[i] == TileIdx::default() {
+                    return i;
+                }
+            }
+            MAX_TILE_IMG_OVERLAP
         }
     }
 }

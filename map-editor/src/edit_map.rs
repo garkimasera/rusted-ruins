@@ -1,5 +1,6 @@
 
 use array2d::*;
+use common::basic::MAX_TILE_IMG_OVERLAP;
 use common::maptemplate::*;
 use common::objholder::*;
 use common::gamedata::OverlappedTile;
@@ -55,8 +56,9 @@ impl EditingMap {
         let mut tile_table: Vec<String> = Vec::new();
         
         for &tile in self.tile.iter() {
-            for i in 0..tile.len as usize {
+            for i in 0..MAX_TILE_IMG_OVERLAP {
                 let tile_idx = tile.idx[i];
+                if tile_idx == TileIdx::default() { break; }
                 let tile_id = gobj::idx_to_id(tile_idx);
                 if tile_table.iter().all(|a| *a != tile_id) {
                     tile_table.push(tile_id.to_owned());
@@ -68,15 +70,16 @@ impl EditingMap {
         for (pos, tile) in self.tile.iter_with_idx() {
             let mut c = OverlappedTileConverted::default();
             
-            for i in 0..tile.len as usize {
+            for i in 0..MAX_TILE_IMG_OVERLAP {
+                if tile.idx[i] == TileIdx::default() { break; }
                 let tile_id = gobj::idx_to_id(tile.idx[i]);
+                
                 let converted_idx =
                     tile_table.iter().enumerate().find(|&(_, a)| a == tile_id).unwrap().0 as u32;
-                c.i_pattern[i] = tile.i_pattern[i];
+                c.piece_pattern[i] = tile.piece_pattern[i];
                 c.idx[i] = converted_idx;
             }
 
-            c.len = tile.len;
             tile_map[pos] = c;
         }
 
@@ -156,10 +159,10 @@ impl From<MapTemplateObject> for EditingMap {
 
         for (pos, c) in obj.tile.iter_with_idx() {
             let mut tile = OverlappedTile::default();
-            tile.len = c.len;
-            tile.i_pattern = c.i_pattern;
+            tile.piece_pattern = c.piece_pattern;
 
-            for i in 0..(tile.len as usize) {
+            for i in 0..MAX_TILE_IMG_OVERLAP {
+                if c.idx[i] == 0 { break; }
                 let tile_id = &obj.tile_table[c.idx[i] as usize];
                 let tile_idx: TileIdx = gobj::id_to_idx(tile_id);
                 tile.idx[i] = tile_idx;

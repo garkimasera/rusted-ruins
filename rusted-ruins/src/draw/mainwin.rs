@@ -155,7 +155,7 @@ impl MainWinDrawer {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile { // Draw tile
-            for i in 0..(t.len as usize) {
+            for i in 0..t.len() {
                 let o = gobj::get_obj(t.idx[i]);
                 let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
                 let dest = Rect::new(

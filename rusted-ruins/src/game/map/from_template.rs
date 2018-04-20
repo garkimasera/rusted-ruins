@@ -1,4 +1,5 @@
 
+use common::basic::MAX_TILE_IMG_OVERLAP;
 use common::maptemplate::*;
 use common::objholder::TileIdx;
 use common::gamedata::map::*;
@@ -20,10 +21,9 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
 
     for (pos, c) in t.tile.iter_with_idx() { // Setting tiles
         let mut tile = OverlappedTile::default();
-        tile.len = c.len;
-        tile.i_pattern = c.i_pattern;
+        tile.piece_pattern = c.piece_pattern;
 
-        for i in 0..(tile.len as usize) {
+        for i in 0..MAX_TILE_IMG_OVERLAP {
             let tile_id = &t.tile_table[c.idx[i] as usize];
             let tile_idx: TileIdx = gobj::id_to_idx(tile_id);
             tile.idx[i] = tile_idx;
