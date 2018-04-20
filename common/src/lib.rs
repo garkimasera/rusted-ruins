@@ -26,5 +26,5 @@ pub mod event;
 pub mod regiongen;
 pub mod sitegen;
 pub mod talkscript;
-pub mod tile_pattern;
+pub mod piece_pattern;
 
