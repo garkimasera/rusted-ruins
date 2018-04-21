@@ -4,6 +4,10 @@
 /// Size of one tile
 pub const TILE_SIZE: u32 = 48;
 pub const TILE_SIZE_I: i32 = TILE_SIZE as i32;
+/// Size of piece image
+/// One tile includes 4 pieces
+pub const PIECE_SIZE: u32 = TILE_SIZE / 2;
+pub const PIECE_SIZE_I: i32 = TILE_SIZE_I / 2;
 /// The maximum height of wall images
 pub const MAX_WALL_HEIGHT: u32 = 80;
 /// Icon size
