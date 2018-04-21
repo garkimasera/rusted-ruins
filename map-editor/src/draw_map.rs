@@ -1,7 +1,9 @@
 
 use array2d::*;
-use common::basic::TILE_SIZE_I;
+use common::basic::{TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::*;
+use common::gobj;
+use common::piece_pattern::PieceImgObject;
 use cairo::Context;
 use gdk::prelude::ContextExt;
 use gdk_pixbuf::{Pixbuf, PixbufExt};
@@ -25,11 +27,7 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 { continue; }
             
             // Draw tile
-            image_copy(cr, &pbh.get(map.tile[p].idx[0]).image,
-                       0, 0,
-                       ix * TILE_SIZE_I, iy * TILE_SIZE_I,
-                       TILE_SIZE_I, TILE_SIZE_I);
-            cr.fill();
+            draw_pieces(cr, pbh, map.tile[p].idx[0], [0; 4], ix, iy);
 
             // Draw wall
             if let Some(wall_idx) = map.wall[p] {
@@ -54,8 +52,44 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
     }
 }
 
+fn draw_pieces(cr: &Context, pbh: &PixbufHolder, idx: TileIdx, piece_pattern: [u8; 4], ix: i32, iy: i32) {
+    let image = &pbh.get(idx).image;
+    let tile_obj = gobj::get_obj(idx);
+
+    // Top left piece
+    let rect = tile_obj.piece_rect(piece_pattern[0], 0, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I, iy * TILE_SIZE_I,
+               rect.2, rect.3);
+    cr.fill();
+    // Top right piece
+    let rect = tile_obj.piece_rect(piece_pattern[1], 1, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I,
+               rect.2, rect.3);
+    cr.fill();
+    // Bottom left piece
+    let rect = tile_obj.piece_rect(piece_pattern[2], 2, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
+               rect.2, rect.3);
+    cr.fill();
+    // Bottom right piece
+    let rect = tile_obj.piece_rect(piece_pattern[3], 3, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
+               rect.2, rect.3);
+    cr.fill();
+}
+
 pub fn image_copy(cr: &Context, pixbuf: &Pixbuf,
-                  src_x: i32, src_y: i32, dest_x: i32, dest_y: i32, w: i32, h: i32) {
+                  src_x: i32, src_y: i32, dest_x: i32, dest_y: i32, w: u32, h: u32) {
+    let w = w as i32;
+    let h = h as i32;
     
     cr.set_source_pixbuf(pixbuf, (dest_x - src_x) as f64, (dest_y - src_y) as f64);
     cr.rectangle(dest_x as f64, dest_y as f64, w as f64, h as f64);
