@@ -66,6 +66,7 @@ pub struct TileDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct WallDepInput {
+    pub n_pattern: Option<u8>,
     pub base_draw: Option<bool>,
     pub always_background: Option<bool>,
 }

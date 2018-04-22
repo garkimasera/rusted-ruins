@@ -93,6 +93,7 @@ pub struct UIImgObject {
 #[derive(Serialize, Deserialize)]
 pub struct WallObject {
     pub id: String,
+    pub n_pattern: u8,
     /// If this is false, skips base tile drawing
     pub base_draw: bool,
     /// If this is true, this wall is always drawed as background of player character.

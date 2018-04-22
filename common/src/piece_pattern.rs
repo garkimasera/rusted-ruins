@@ -122,3 +122,9 @@ impl PieceImgObject for ::obj::TileObject {
     }
 }
 
+impl PieceImgObject for ::obj::WallObject {
+    fn n_pattern(&self) -> u8 {
+        self.n_pattern
+    }
+}
+
