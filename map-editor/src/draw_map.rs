@@ -25,9 +25,11 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
         for ix in 0..tile_nx {
             let p = Vec2d::new(ix + pos.0, iy + pos.1);
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 { continue; }
-            
-            // Draw tile
-            draw_pieces(cr, pbh, map.tile[p].idx[0], [0; 4], ix, iy);
+
+            for i_tile in 0..map.tile[p].len() {
+                // Draw tile
+                draw_pieces(cr, pbh, map.tile[p].idx[i_tile], map.tile[p].piece_pattern[i_tile], ix, iy);
+            }
 
             // Draw wall
             if let Some(wall_idx) = map.wall[p] {

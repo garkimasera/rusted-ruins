@@ -63,6 +63,10 @@ impl OverlappedTile {
             MAX_TILE_IMG_OVERLAP
         }
     }
+
+    pub fn main_tile(&self) -> TileIdx {
+        self.idx[self.len() - 1]
+    }
 }
 
 /// This represents special objects on a tile. For example, stairs, doors, traps.

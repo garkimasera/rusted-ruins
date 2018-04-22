@@ -81,7 +81,7 @@ pub fn build_ui(application: &gtk::Application) {
         drag_mode: Rc::new(Cell::new(DragMode::None)),
         filepath: Rc::new(RefCell::new(None)),
         signal_mode: Rc::new(Cell::new(true)),
-        shift: Rc::new(Cell::new(true)),
+        shift: Rc::new(Cell::new(false)),
     };
 
     let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
@@ -356,7 +356,11 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
     if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
-                ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
+                if ui.shift.get() {
+                    ui.map.borrow_mut().tile_overlap(Vec2d::new(ix, iy), idx);
+                } else {
+                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
+                }
             }
             SelectedItem::Wall(idx) => {
                 ui.map.borrow_mut().set_wall(Vec2d::new(ix, iy), Some(idx));
