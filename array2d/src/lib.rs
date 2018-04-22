@@ -129,6 +129,16 @@ impl<T> Array2d<T> {
         (self.w, self.h)
     }
 
+    /// If pos is out of range, returns None.
+    pub fn get<P: Into<Vec2d>>(&self, p: P) -> Option<&T> {
+        let p = p.into();
+        if self.in_range(p) {
+            Some(&self[p])
+        } else {
+            None
+        }
+    }
+
     pub fn iter<'a>(&'a self) -> Array2dIter<'a, T> {
         Array2dIter {
             array: &self,
