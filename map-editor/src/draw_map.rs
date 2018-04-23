@@ -3,7 +3,7 @@ use array2d::*;
 use common::basic::{TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::*;
 use common::gobj;
-use common::piece_pattern::PieceImgObject;
+use common::piece_pattern::*;
 use cairo::Context;
 use gdk::prelude::ContextExt;
 use gdk_pixbuf::{Pixbuf, PixbufExt};
@@ -54,33 +54,35 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
     }
 }
 
-fn draw_pieces(cr: &Context, pbh: &PixbufHolder, idx: TileIdx, piece_pattern: [u8; 4], ix: i32, iy: i32) {
+fn draw_pieces(
+    cr: &Context, pbh: &PixbufHolder, idx: TileIdx, piece_pattern: PiecePattern, ix: i32, iy: i32) {
+    
     let image = &pbh.get(idx).image;
     let tile_obj = gobj::get_obj(idx);
 
     // Top left piece
-    let rect = tile_obj.piece_rect(piece_pattern[0], 0, 0);
+    let rect = tile_obj.piece_rect(piece_pattern.top_left, 0, 0);
     image_copy(cr, image,
                rect.0, rect.1,
                ix * TILE_SIZE_I, iy * TILE_SIZE_I,
                rect.2, rect.3);
     cr.fill();
     // Top right piece
-    let rect = tile_obj.piece_rect(piece_pattern[1], 1, 0);
+    let rect = tile_obj.piece_rect(piece_pattern.top_right, 1, 0);
     image_copy(cr, image,
                rect.0, rect.1,
                ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I,
                rect.2, rect.3);
     cr.fill();
     // Bottom left piece
-    let rect = tile_obj.piece_rect(piece_pattern[2], 2, 0);
+    let rect = tile_obj.piece_rect(piece_pattern.bottom_left, 2, 0);
     image_copy(cr, image,
                rect.0, rect.1,
                ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
                rect.2, rect.3);
     cr.fill();
     // Bottom right piece
-    let rect = tile_obj.piece_rect(piece_pattern[3], 3, 0);
+    let rect = tile_obj.piece_rect(piece_pattern.bottom_right, 3, 0);
     image_copy(cr, image,
                rect.0, rect.1,
                ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,

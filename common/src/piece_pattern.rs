@@ -5,6 +5,42 @@ use array2d::*;
 use basic::{PIECE_SIZE, PIECE_SIZE_I};
 use obj::ImgObject;
 
+/// Represents 4 pieces pattern of tile images
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct PiecePattern {
+    pub top_left: u8,
+    pub top_right: u8,
+    pub bottom_left: u8,
+    pub bottom_right: u8,
+}
+
+impl Default for PiecePattern {
+    fn default() -> PiecePattern {
+        PiecePattern::SURROUNDED
+    }
+}
+
+impl PiecePattern {
+    pub fn is_empty(self) -> bool {
+        self == Self::EMPTY
+    }
+
+    pub const SURROUNDED: PiecePattern = PiecePattern {
+        top_left: 0,
+        top_right: 0,
+        bottom_left: 0,
+        bottom_right: 0,
+    };
+
+    /// Represents that the tile (or wall, etc) is empty
+    pub const EMPTY: PiecePattern = PiecePattern {
+        top_left: 0xFF,
+        top_right: 0xFF,
+        bottom_left: 0xFF,
+        bottom_right: 0xFF,
+    };
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct PiecePatternFlags(pub u8);
 
@@ -32,25 +68,25 @@ impl PiecePatternFlags {
         }
     }
 
-    pub fn to_piece_pattern(self) -> [u8; 4] {
-        [
-            get_corner_piece_pattern( // Top left
+    pub fn to_piece_pattern(self) -> PiecePattern {
+        PiecePattern {
+            top_left: get_corner_piece_pattern(
                 self.0 & Self::N,
                 self.0 & Self::NW,
                 self.0 & Self::W),
-            get_corner_piece_pattern( // Top right
+            top_right: get_corner_piece_pattern(
                 self.0 & Self::N,
                 self.0 & Self::NE,
                 self.0 & Self::E),
-            get_corner_piece_pattern( // Bottom left
+            bottom_left: get_corner_piece_pattern(
                 self.0 & Self::S,
                 self.0 & Self::SW,
                 self.0 & Self::W),
-            get_corner_piece_pattern( // Bottom right
+            bottom_right: get_corner_piece_pattern(
                 self.0 & Self::S,
                 self.0 & Self::SE,
                 self.0 & Self::E),
-        ]
+        }
     }
 
     const E:  u8 = 0b00000001;

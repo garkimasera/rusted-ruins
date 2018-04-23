@@ -5,7 +5,7 @@ use common::maptemplate::*;
 use common::objholder::*;
 use common::gamedata::OverlappedTile;
 use common::gobj;
-use common::piece_pattern::PiecePatternFlags;
+use common::piece_pattern::*;
 
 pub struct EditingMap {
     pub property: MapProperty,
@@ -46,10 +46,8 @@ impl EditingMap {
         let piece_pattern_flags = { // Workaround instead of NNL
             let f = |pos: Vec2d| {
                 if let Some(t) = self.tile.get(pos) {
-                    println!("{:?}", t.main_tile());
                     t.main_tile() == new_tile_idx
                 } else {
-                    println!("ahaha");
                     false
                 }
             };
@@ -64,14 +62,11 @@ impl EditingMap {
             piece_pattern_flags.set(Direction::NW, f(pos + (-1, -1)));
             piece_pattern_flags.set(Direction::SE, f(pos + (1, 1)));
             piece_pattern_flags.set(Direction::SW, f(pos + (-1,1)));
-            println!("{:?}", piece_pattern_flags);
             piece_pattern_flags
         };
 
         self.tile[pos].idx[1] = new_tile_idx;
-        self.tile[pos].piece_pattern[0] = [0; 4];
         self.tile[pos].piece_pattern[1] = piece_pattern_flags.to_piece_pattern();
-        println!("{:?}, {}", self.tile[pos], self.tile[pos].len());
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32) {

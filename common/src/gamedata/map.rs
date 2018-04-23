@@ -7,6 +7,8 @@ use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
 use gamedata::region::RegionId;
 
+pub use piece_pattern::PiecePattern;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map {
     pub w: u32,
@@ -26,14 +28,16 @@ pub struct Map {
 /// Represents overlapped tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct OverlappedTile {
-    pub piece_pattern: [[u8; 4]; MAX_TILE_IMG_OVERLAP],
+    pub piece_pattern: [PiecePattern; MAX_TILE_IMG_OVERLAP],
     pub idx: [TileIdx; MAX_TILE_IMG_OVERLAP],
 }
 
 impl Default for OverlappedTile {
     fn default() -> OverlappedTile {
+        let mut piece_pattern = [PiecePattern::EMPTY; MAX_TILE_IMG_OVERLAP];
+        piece_pattern[0] = PiecePattern::SURROUNDED;
         OverlappedTile {
-            piece_pattern: [[0; 4]; MAX_TILE_IMG_OVERLAP],
+            piece_pattern: piece_pattern,
             idx: [TileIdx::default(); MAX_TILE_IMG_OVERLAP],
         }
     }
@@ -43,8 +47,10 @@ impl From<TileIdx> for OverlappedTile {
     fn from(tile_idx: TileIdx) -> OverlappedTile {
         let mut idx = [TileIdx::default(); MAX_TILE_IMG_OVERLAP];
         idx[0] = tile_idx;
+        let mut piece_pattern = [PiecePattern::EMPTY; MAX_TILE_IMG_OVERLAP];
+        piece_pattern[0] = PiecePattern::SURROUNDED;
         OverlappedTile {
-            piece_pattern: [[0; 4]; MAX_TILE_IMG_OVERLAP],
+            piece_pattern: piece_pattern,
             idx: idx,
         }
     }
@@ -52,16 +58,12 @@ impl From<TileIdx> for OverlappedTile {
 
 impl OverlappedTile {
     pub fn len(&self) -> usize {
-        if self.idx[0] == TileIdx::default() {
-            1
-        } else {
-            for i in 1..MAX_TILE_IMG_OVERLAP {
-                if self.idx[i] == TileIdx::default() {
-                    return i;
-                }
+        for i in 0..MAX_TILE_IMG_OVERLAP {
+            if self.piece_pattern[i].is_empty() {
+                return i;
             }
-            MAX_TILE_IMG_OVERLAP
         }
+        MAX_TILE_IMG_OVERLAP
     }
 
     pub fn main_tile(&self) -> TileIdx {

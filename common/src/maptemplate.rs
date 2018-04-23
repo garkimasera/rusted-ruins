@@ -1,6 +1,7 @@
 
 use array2d::*;
 use basic::MAX_TILE_IMG_OVERLAP;
+use gamedata::map::PiecePattern;
 
 /// Data for constructing one map
 #[derive(Serialize, Deserialize)]
@@ -22,7 +23,7 @@ pub struct MapTemplateObject {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
 pub struct OverlappedTileConverted {
-    pub piece_pattern: [[u8; 4]; MAX_TILE_IMG_OVERLAP],
+    pub piece_pattern: [PiecePattern; MAX_TILE_IMG_OVERLAP],
     pub idx: [u32; MAX_TILE_IMG_OVERLAP],
 }
 
