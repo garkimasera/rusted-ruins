@@ -250,7 +250,7 @@ pub fn build_ui(application: &gtk::Application) {
             if keyval == Shift_L || keyval == Shift_R {
                 uic.shift.set(true);
             }
-            Inhibit(true)
+            Inhibit(false)
         });
         let uic = ui.clone();
         ui.window.connect_key_release_event(move |_, event_key| {
@@ -258,7 +258,7 @@ pub fn build_ui(application: &gtk::Application) {
             if keyval == Shift_L || keyval == Shift_R {
                 uic.shift.set(false);
             }
-            Inhibit(true)
+            Inhibit(false)
         });
     }
     
