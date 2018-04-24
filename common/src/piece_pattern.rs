@@ -4,6 +4,7 @@
 use array2d::*;
 use basic::{PIECE_SIZE, PIECE_SIZE_I};
 use obj::ImgObject;
+use objholder::{TileIdx, WallIdx};
 
 /// Represents 4 pieces pattern of tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -40,6 +41,32 @@ impl PiecePattern {
         bottom_right: 0xFF,
     };
 }
+
+/// TileIdx or WallIdx with piece pattern
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct IdxWithPiecePattern<T> {
+    pub idx: T,
+    pub piece_pattern: PiecePattern,
+}
+
+impl<T> IdxWithPiecePattern<T> {
+    pub fn is_empty(&self) -> bool {
+        self.piece_pattern.is_empty()
+    }
+}
+
+impl<T> Default for IdxWithPiecePattern<T> where T: Default {
+    fn default() -> IdxWithPiecePattern<T> {
+        IdxWithPiecePattern {
+            idx: T::default(),
+            piece_pattern: PiecePattern::EMPTY,
+        }
+    }
+}
+
+pub type TileIdxPP = IdxWithPiecePattern<TileIdx>;
+pub type WallIdxPP = IdxWithPiecePattern<WallIdx>;
+pub type ConvertedIdxPP = IdxWithPiecePattern<u32>;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct PiecePatternFlags(pub u8);
