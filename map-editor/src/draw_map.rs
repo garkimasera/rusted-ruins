@@ -28,7 +28,7 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
 
             for i_tile in 0..map.tile[p].len() {
                 // Draw tile
-                draw_pieces(cr, pbh, map.tile[p].idx[i_tile], map.tile[p].piece_pattern[i_tile], ix, iy);
+                draw_pieces(cr, pbh, map.tile[p][i_tile].idx, map.tile[p][i_tile].piece_pattern, ix, iy);
             }
 
             // Draw wall

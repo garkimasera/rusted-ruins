@@ -156,12 +156,12 @@ impl MainWinDrawer {
 
         if let Some(t) = di.tile { // Draw tile
             for i in 0..t.len() {
-                let o = gobj::get_obj(t.idx[i]);
+                let o = gobj::get_obj(t[i].idx);
                 let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
                 let dest = Rect::new(
                     p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
                     TILE_SIZE, TILE_SIZE);
-                let texture = sv.tex().get(t.idx[0]);
+                let texture = sv.tex().get(t[0].idx);
                 check_draw!(canvas.copy(&texture, src, dest));
             }
         }

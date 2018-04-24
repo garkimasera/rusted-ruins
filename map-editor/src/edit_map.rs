@@ -1,6 +1,5 @@
 
 use array2d::*;
-use common::basic::MAX_TILE_IMG_OVERLAP;
 use common::maptemplate::*;
 use common::objholder::*;
 use common::gamedata::OverlappedTile;
@@ -65,8 +64,8 @@ impl EditingMap {
             piece_pattern_flags
         };
 
-        self.tile[pos].idx[1] = new_tile_idx;
-        self.tile[pos].piece_pattern[1] = piece_pattern_flags.to_piece_pattern();
+        self.tile[pos][1].idx = new_tile_idx;
+        self.tile[pos][1].piece_pattern = piece_pattern_flags.to_piece_pattern();
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
@@ -82,33 +81,22 @@ impl EditingMap {
 
     pub fn create_mapobj(&self) -> MapTemplateObject {
         let mut tile_table: Vec<String> = Vec::new();
-        
+
+        // Create table for TileIdx
         for &tile in self.tile.iter() {
-            for i in 0..MAX_TILE_IMG_OVERLAP {
-                let tile_idx = tile.idx[i];
-                if tile_idx == TileIdx::default() { break; }
+            for i in 0..tile.len() {
+                let tile_idx = tile[i].idx;
                 let tile_id = gobj::idx_to_id(tile_idx);
                 if tile_table.iter().all(|a| *a != tile_id) {
                     tile_table.push(tile_id.to_owned());
                 }
             }
         }
-        
+
+        // Create converted tile map
         let mut tile_map = Array2d::new(self.width, self.height, OverlappedTileConverted::default());
         for (pos, tile) in self.tile.iter_with_idx() {
-            let mut c = OverlappedTileConverted::default();
-            
-            for i in 0..MAX_TILE_IMG_OVERLAP {
-                if tile.idx[i] == TileIdx::default() { break; }
-                let tile_id = gobj::idx_to_id(tile.idx[i]);
-                
-                let converted_idx =
-                    tile_table.iter().enumerate().find(|&(_, a)| a == tile_id).unwrap().0 as u32;
-                c.piece_pattern[i] = tile.piece_pattern[i];
-                c.idx[i] = converted_idx;
-            }
-
-            tile_map[pos] = c;
+            tile_map[pos] = tile.conv_into(&tile_table);
         }
 
         let mut wall_table: Vec<String> = Vec::new();
@@ -186,17 +174,7 @@ impl From<MapTemplateObject> for EditingMap {
         let mut map = EditingMap::new(&obj.id, obj.w, obj.h);
 
         for (pos, c) in obj.tile.iter_with_idx() {
-            let mut tile = OverlappedTile::default();
-            tile.piece_pattern = c.piece_pattern;
-
-            for i in 0..MAX_TILE_IMG_OVERLAP {
-                if c.idx[i] == 0 { break; }
-                let tile_id = &obj.tile_table[c.idx[i] as usize];
-                let tile_idx: TileIdx = gobj::id_to_idx(tile_id);
-                tile.idx[i] = tile_idx;
-            }
-            
-            map.tile[pos] = tile;
+            map.tile[pos] = OverlappedTile::conv_from(*c, &obj.tile_table);
         }
 
         for (pos, i) in obj.wall.iter_with_idx() {

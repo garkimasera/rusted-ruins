@@ -1,4 +1,5 @@
 
+use std::ops::{Index, IndexMut};
 use array2d::*;
 use objholder::*;
 use basic::{MAX_ITEM_FOR_DRAW, MAX_TILE_IMG_OVERLAP};
@@ -7,7 +8,7 @@ use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
 use gamedata::region::RegionId;
 
-pub use piece_pattern::PiecePattern;
+use piece_pattern::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map {
@@ -27,39 +28,45 @@ pub struct Map {
 
 /// Represents overlapped tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct OverlappedTile {
-    pub piece_pattern: [PiecePattern; MAX_TILE_IMG_OVERLAP],
-    pub idx: [TileIdx; MAX_TILE_IMG_OVERLAP],
-}
+pub struct OverlappedTile(pub [TileIdxPP; MAX_TILE_IMG_OVERLAP]);
 
 impl Default for OverlappedTile {
     fn default() -> OverlappedTile {
-        let mut piece_pattern = [PiecePattern::EMPTY; MAX_TILE_IMG_OVERLAP];
-        piece_pattern[0] = PiecePattern::SURROUNDED;
-        OverlappedTile {
-            piece_pattern: piece_pattern,
-            idx: [TileIdx::default(); MAX_TILE_IMG_OVERLAP],
-        }
+        let tile = TileIdxPP {
+            idx: TileIdx::default(),
+            piece_pattern: PiecePattern::EMPTY,
+        };
+        let mut overlapped_tile = [tile; MAX_TILE_IMG_OVERLAP];
+        overlapped_tile[0].piece_pattern = PiecePattern::SURROUNDED;
+        OverlappedTile(overlapped_tile)
     }
 }
 
 impl From<TileIdx> for OverlappedTile {
     fn from(tile_idx: TileIdx) -> OverlappedTile {
-        let mut idx = [TileIdx::default(); MAX_TILE_IMG_OVERLAP];
-        idx[0] = tile_idx;
-        let mut piece_pattern = [PiecePattern::EMPTY; MAX_TILE_IMG_OVERLAP];
-        piece_pattern[0] = PiecePattern::SURROUNDED;
-        OverlappedTile {
-            piece_pattern: piece_pattern,
-            idx: idx,
-        }
+        let mut overlapped_tile = OverlappedTile::default();
+        overlapped_tile[0].idx = tile_idx;
+        overlapped_tile
+    }
+}
+
+impl Index<usize> for OverlappedTile {
+    type Output = TileIdxPP;
+    fn index(&self, index: usize) -> &TileIdxPP {
+        &self.0[index]
+    }
+}
+
+impl IndexMut<usize> for OverlappedTile {
+    fn index_mut(&mut self, index: usize) -> &mut TileIdxPP {
+        &mut self.0[index]
     }
 }
 
 impl OverlappedTile {
     pub fn len(&self) -> usize {
         for i in 0..MAX_TILE_IMG_OVERLAP {
-            if self.piece_pattern[i].is_empty() {
+            if self[i].is_empty() {
                 return i;
             }
         }
@@ -67,7 +74,8 @@ impl OverlappedTile {
     }
 
     pub fn main_tile(&self) -> TileIdx {
-        self.idx[self.len() - 1]
+        assert!(self.len() > 0);
+        self[self.len() - 1].idx
     }
 }
 
