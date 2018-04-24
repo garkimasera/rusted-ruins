@@ -24,14 +24,14 @@ impl BackgroundDrawInfo {
         let (tile, deco, wall) = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
             
-            (tinfo.tile, tinfo.deco, tinfo.wall)
+            (tinfo.tile, tinfo.deco, tinfo.wall.idx())
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
                 (Some(outside_tile.tile.into()), outside_tile.deco, outside_tile.wall)
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
-                (tinfo.tile, tinfo.deco, tinfo.wall)
+                (tinfo.tile, tinfo.deco, tinfo.wall.idx())
             }
         };
         
@@ -89,13 +89,13 @@ impl ForegroundDrawInfo {
         }
 
         let wall = if map.is_inside(pos) {
-            map.observed_tile[pos].wall
+            map.observed_tile[pos].wall.idx()
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
                 outside_tile.wall
             } else {
                 let pos = map.nearest_existent_tile(pos);
-                map.observed_tile[pos].wall
+                map.observed_tile[pos].wall.idx()
             }
         };
 

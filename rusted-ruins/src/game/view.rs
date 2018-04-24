@@ -62,7 +62,7 @@ pub fn update_view_map(game: &mut Game) {
 
         for p in LineIter::new(player_pos, pos).skip(1) {
             view_map.visible[p] = true;
-            if map.tile[p].wall.is_some() {
+            if !map.tile[p].wall.is_empty() {
                 break;
             }
         }
@@ -71,7 +71,7 @@ pub fn update_view_map(game: &mut Game) {
 
 pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> {
     for pos in LineIter::new(orig, dist) {
-        if map.tile[pos].wall.is_some() {
+        if !map.tile[pos].wall.is_empty() {
             return None;
         }
     }

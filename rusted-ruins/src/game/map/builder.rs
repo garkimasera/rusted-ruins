@@ -58,7 +58,10 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
         map.tile[p].tile = tile.into();
         match gm.tile[p] {
             TileKind::Wall => {
-                map.tile[p].wall = Some(wall);
+                map.tile[p].wall = WallIdxPP {
+                    idx: wall,
+                    piece_pattern: PiecePattern::SURROUNDED,
+                };
             },
             _ => (),
         }

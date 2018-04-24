@@ -61,19 +61,23 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
 pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     use rng::gen_range;
     const MAX_TRY: usize = 10;
+
+    let is_tile_empty = |tile: &TileInfo| {
+        tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none()
+    };
     
     for _ in 0..MAX_TRY {
         let p = Vec2d::new(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
         let tile = &map.tile[p];
 
         // Empty tile don't has wall, chara, and isn't special tile.
-        if tile.wall.is_none() && tile.chara.is_none() && tile.special.is_none() {
+        if is_tile_empty(tile) {
             return Some(p);
         }
     }
 
     // If random tile choosing is failed many times, count empty tiles and choose
-    let n_empty_tile = map.tile.iter().filter(|t| t.wall.is_none() && t.chara.is_none()).count();
+    let n_empty_tile = map.tile.iter().filter(|t| is_tile_empty(t)).count();
     if n_empty_tile == 0 {
         None
     } else {
@@ -81,7 +85,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
         let r = gen_range(0, n_empty_tile);
         let p = map.tile
             .iter_with_idx()
-            .filter(|&(_, t)| t.wall.is_none() && t.chara.is_none() && t.special.is_none() )
+            .filter(|&(_, t)| is_tile_empty(t) )
             .skip(r)
             .next()
             .unwrap()
@@ -106,7 +110,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
     for p in map.tile.iter_idx() {
         let tile = &mut map.tile[p];
-        if tile.wall.is_some() { continue; } // Skip tile with wall
+        if !tile.wall.is_empty() { continue; } // Skip tile with wall
 
         let mut item_list = ItemList::new(10);
 

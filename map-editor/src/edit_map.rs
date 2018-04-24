@@ -11,14 +11,14 @@ pub struct EditingMap {
     pub width: u32,
     pub height: u32,
     pub tile: Array2d<OverlappedTile>,
-    pub wall: Array2d<Option<WallIdx>>,
+    pub wall: Array2d<WallIdxPP>,
     pub deco: Array2d<Option<DecoIdx>>,
 }
 
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
         let tile = Array2d::new(width, height, OverlappedTile::default());
-        let wall = Array2d::new(width, height, None);
+        let wall = Array2d::new(width, height, WallIdxPP::default());
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
         EditingMap { property, width, height, tile, wall, deco }
@@ -29,7 +29,14 @@ impl EditingMap {
     }
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
-        self.wall[pos] = wall;
+        if let Some(idx) = wall {
+            self.wall[pos] = WallIdxPP {
+                idx: idx,
+                piece_pattern: PiecePattern::SURROUNDED
+            };
+        } else {
+            self.wall[pos] = WallIdxPP::default();
+        }
     }
 
     pub fn set_deco(&mut self, pos: Vec2d, deco: Option<DecoIdx>) {
@@ -37,7 +44,7 @@ impl EditingMap {
     }
 
     pub fn erase(&mut self, pos: Vec2d) {
-        self.wall[pos] = None;
+        self.wall[pos] = WallIdxPP::default();
         self.deco[pos] = None;
     }
 
@@ -73,7 +80,7 @@ impl EditingMap {
         self.height = new_h;
         let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), OverlappedTile::default());
         self.tile = tile;
-        let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), None);
+        let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), WallIdxPP::default());
         self.wall = wall;
         let deco = self.deco.clip_with_default((0, 0), (new_w, new_h), None);
         self.deco = deco;
@@ -99,23 +106,20 @@ impl EditingMap {
             tile_map[pos] = tile.conv_into(&tile_table);
         }
 
+        // Create table for WallIdx
         let mut wall_table: Vec<String> = Vec::new();
-        for wall_idx in self.wall.iter() {
-            if let Some(wall_idx) = *wall_idx {
-                let wall_id = gobj::idx_to_id(wall_idx);
+        for wall in self.wall.iter() {
+            if !wall.is_empty() {
+                let wall_id = gobj::idx_to_id(wall.idx);
                 if wall_table.iter().all(|a| *a != wall_id) {
                     wall_table.push(wall_id.to_owned());
                 }
             }
         }
-        let mut wall_map = Array2d::new(self.width, self.height, None);
-        for (pos, wall_idx) in self.wall.iter_with_idx() {
-            if let Some(wall_idx) = *wall_idx {
-                let wall_id = gobj::idx_to_id(wall_idx);
-                let converted_idx =
-                    wall_table.iter().enumerate().find(|&(_, a)| a == wall_id).unwrap().0 as u32;
-                wall_map[pos] = Some(converted_idx);
-            }
+        // Create converted wall map
+        let mut wall_map = Array2d::new(self.width, self.height, ConvertedIdxPP::default());
+        for (pos, wall) in self.wall.iter_with_idx() {
+            wall_map[pos] = wall.conv_into(&wall_table);
         }
 
         let mut deco_table: Vec<String> = Vec::new();
@@ -177,11 +181,8 @@ impl From<MapTemplateObject> for EditingMap {
             map.tile[pos] = OverlappedTile::conv_from(*c, &obj.tile_table);
         }
 
-        for (pos, i) in obj.wall.iter_with_idx() {
-            if let Some(i) = *i {
-                let wall_id = &obj.wall_table[i as usize];
-                map.wall[pos] = Some(gobj::id_to_idx(wall_id));
-            }
+        for (pos, c) in obj.wall.iter_with_idx() {
+            map.wall[pos] = WallIdxPP::conv_from(*c, &obj.wall_table);
         }
 
         for (pos, i) in obj.deco.iter_with_idx() {

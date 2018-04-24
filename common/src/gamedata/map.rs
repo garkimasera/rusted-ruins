@@ -8,7 +8,7 @@ use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
 use gamedata::region::RegionId;
 
-use piece_pattern::*;
+pub use piece_pattern::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map {
@@ -151,7 +151,7 @@ pub struct TileInfo {
     /// Base tile
     pub tile: OverlappedTile,
     /// If wall is presented, the tile is no walkable
-    pub wall: Option<WallIdx>, 
+    pub wall: WallIdxPP, 
     /// Decoration for this tile
     pub deco: Option<DecoIdx>,
     /// Items on this tile
@@ -165,7 +165,7 @@ pub struct TileInfo {
 #[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
     pub tile: Option<OverlappedTile>,
-    pub wall: Option<WallIdx>,
+    pub wall: WallIdxPP,
     pub deco: Option<DecoIdx>,
     pub n_item: usize,
     pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
@@ -203,7 +203,7 @@ impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
             tile: OverlappedTile::default(),
-            wall: None,
+            wall: WallIdxPP::default(),
             deco: None,
             item_list: None,
             chara: None,
@@ -252,11 +252,7 @@ impl Map {
             return false;
         }
 
-        if self.tile[pos].wall.is_some() {
-            false
-        }else{
-            true
-        }
+        self.tile[pos].wall.is_empty()
     }
 
     /// Return given pos is inside map or not
@@ -353,12 +349,19 @@ impl Map {
         }
     }
 
-    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> Option<WallIdx> {
+    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> WallIdxPP {
         if self.is_inside(pos) {
             return self.tile[pos].wall;
         }
         if let Some(outside_tile) = self.outside_tile {
-            outside_tile.wall
+            if let Some(idx) = outside_tile.wall {
+                WallIdxPP {
+                    idx: idx,
+                    piece_pattern: PiecePattern::SURROUNDED,
+                }
+            } else {
+                WallIdxPP::default()
+            }
         } else {
             self.tile[self.nearest_existent_tile(pos)].wall
         }

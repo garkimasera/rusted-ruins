@@ -21,11 +21,8 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
         map.tile[pos].tile = OverlappedTile::conv_from(*c, &t.tile_table);
     }
 
-    for (pos, i) in t.wall.iter_with_idx() { // Setting walls
-        if let Some(i) = *i {
-            let wall_id = &t.wall_table[i as usize];
-            map.tile[pos].wall = Some(gobj::id_to_idx(wall_id));
-        }
+    for (pos, c) in t.wall.iter_with_idx() { // Setting walls
+        map.tile[pos].wall = WallIdxPP::conv_from(*c, &t.wall_table);
     }
 
     for (pos, i) in t.deco.iter_with_idx() { // Setting decos

@@ -51,7 +51,7 @@ fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, _sv: &mut Sd
     for p in RectIter::new(top_left, bottom_right) {
         let color = if p == center_p {
             (255, 255, 0)
-        } else if let Some(wall_idx) = map.observed_tile[p].wall {
+        } else if let Some(wall_idx) = map.observed_tile[p].wall.idx() {
             gobj::get_obj(wall_idx).symbol_color
         } else if let Some(tile) = map.observed_tile[p].tile {
             gobj::get_obj(tile[0].idx).symbol_color

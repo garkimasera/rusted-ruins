@@ -32,8 +32,8 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
             }
 
             // Draw wall
-            if let Some(wall_idx) = map.wall[p] {
-                let pixbuf = &pbh.get(wall_idx).image;
+            if !map.wall[p].is_empty() {
+                let pixbuf = &pbh.get(map.wall[p].idx).image;
                 let height = pixbuf.get_height();
                 cr.set_source_pixbuf(pixbuf,
                                      (ix * TILE_SIZE_I) as f64,

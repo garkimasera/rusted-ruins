@@ -55,6 +55,16 @@ impl<T> IdxWithPiecePattern<T> {
     }
 }
 
+impl<T> IdxWithPiecePattern<T> where T: Copy {
+    pub fn idx(&self) -> Option<T> {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self.idx)
+        }
+    }
+}
+
 impl<T> Default for IdxWithPiecePattern<T> where T: Default {
     fn default() -> IdxWithPiecePattern<T> {
         IdxWithPiecePattern {
