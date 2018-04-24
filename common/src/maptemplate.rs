@@ -3,7 +3,9 @@ use std::ops::{Index, IndexMut};
 use array2d::*;
 use basic::MAX_TILE_IMG_OVERLAP;
 use piece_pattern::*;
+#[cfg(feature="global_state_obj")]
 use gamedata::map::OverlappedTile;
+#[cfg(feature="global_state_obj")]
 use objholder::ObjectIndex;
 
 /// Data for constructing one map
