@@ -575,4 +575,8 @@ impl Direction {
     pub const SE: Direction = Direction { hdir: HDirection::Right, vdir: VDirection::Down };
     pub const SW: Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::Down };
     pub const NONE: Direction = Direction { hdir: HDirection::None,  vdir: VDirection::None };
+
+    pub const EIGHT_DIRS: [Direction; 8] = [
+        Self::E, Self::SE, Self::S, Self::SW, Self::W, Self::NW, Self::N, Self::NE
+    ];
 }
