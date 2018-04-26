@@ -38,6 +38,8 @@ pub struct ImgInput {
     pub grid_w: Option<u32>,
     pub grid_h: Option<u32>,
     pub n_frame: Option<u32>,
+    pub n_pattern: Option<u32>,
+    pub n_anim_frame: Option<u32>,
     pub duration: Option<u32>,
 }
 
@@ -60,13 +62,11 @@ pub struct CharaTemplateDepInput {
 
 #[derive(Debug, Deserialize)]
 pub struct TileDepInput {
-    pub n_pattern: Option<u8>,
     pub kind: ::common::obj::TileKind,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct WallDepInput {
-    pub n_pattern: Option<u8>,
     pub base_draw: Option<bool>,
     pub always_background: Option<bool>,
 }

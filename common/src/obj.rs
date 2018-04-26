@@ -72,7 +72,6 @@ pub struct SpecialTileObject {
 #[derive(Serialize, Deserialize)]
 pub struct TileObject {
     pub id: String,
-    pub n_pattern: u8,
     pub img: Img,
     pub kind: TileKind,
     pub symbol_color: (u8, u8, u8),
@@ -93,7 +92,6 @@ pub struct UIImgObject {
 #[derive(Serialize, Deserialize)]
 pub struct WallObject {
     pub id: String,
-    pub n_pattern: u8,
     /// If this is false, skips base tile drawing
     pub base_draw: bool,
     /// If this is true, this wall is always drawed as background of player character.
@@ -112,6 +110,8 @@ pub struct Img {
     pub grid_w: u32,
     pub grid_h: u32,
     pub n_frame: u32,
+    pub n_pattern: u32,
+    pub n_anim_frame: u32,
     pub duration: u32,
 }
 

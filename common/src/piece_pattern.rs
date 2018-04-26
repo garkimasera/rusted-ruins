@@ -154,13 +154,10 @@ fn get_corner_piece_pattern(ns: u8, between: u8, ew: u8) -> u8 {
 }
 
 pub trait PieceImgObject: ImgObject {
-    fn n_pattern(&self) -> u8;
-    
     /// Get rect of the specified piece
     fn piece_rect(&self, i_pattern: u8, i_piece: u32, i_anim_frame: u32) -> (i32, i32, u32, u32) {
-        let n_frame = self.get_img().n_frame;
-        let n_pattern = self.n_pattern() as u32;
-        let n_anim_frame = n_frame / n_pattern;
+        let img = self.get_img();
+        let n_anim_frame = img.n_anim_frame;
         let img_rect = self.img_rect_nth(n_anim_frame * i_pattern as u32 + i_anim_frame);
 
         match i_piece {
@@ -189,15 +186,6 @@ pub trait PieceImgObject: ImgObject {
     }
 }
 
-impl PieceImgObject for ::obj::TileObject {
-    fn n_pattern(&self) -> u8 {
-        self.n_pattern
-    }
-}
-
-impl PieceImgObject for ::obj::WallObject {
-    fn n_pattern(&self) -> u8 {
-        self.n_pattern
-    }
-}
+impl PieceImgObject for ::obj::TileObject { }
+impl PieceImgObject for ::obj::WallObject { }
 
