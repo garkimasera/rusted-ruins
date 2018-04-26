@@ -38,17 +38,10 @@ impl EditingMap {
                         false
                     }
                 };
-
                 let mut piece_pattern_flags = PiecePatternFlags::new();
-
-                piece_pattern_flags.set(Direction::N, f(pos + (0, -1)));
-                piece_pattern_flags.set(Direction::S, f(pos + (0, 1)));
-                piece_pattern_flags.set(Direction::E, f(pos + (1, 0)));
-                piece_pattern_flags.set(Direction::W, f(pos + (-1,0)));
-                piece_pattern_flags.set(Direction::NE, f(pos + (1, -1)));
-                piece_pattern_flags.set(Direction::NW, f(pos + (-1, -1)));
-                piece_pattern_flags.set(Direction::SE, f(pos + (1, 1)));
-                piece_pattern_flags.set(Direction::SW, f(pos + (-1,1)));
+                for dir in &Direction::EIGHT_DIRS {
+                    piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
+                }
                 piece_pattern_flags.to_piece_pattern()
             };
             
@@ -68,7 +61,7 @@ impl EditingMap {
     }
 
     pub fn tile_overlap(&mut self, pos: Vec2d, new_tile_idx: TileIdx) {
-        let piece_pattern_flags = { // Workaround instead of NNL
+        let piece_pattern = {
             let f = |pos: Vec2d| {
                 if let Some(t) = self.tile.get(pos) {
                     t.main_tile() == new_tile_idx
@@ -76,22 +69,15 @@ impl EditingMap {
                     false
                 }
             };
-
             let mut piece_pattern_flags = PiecePatternFlags::new();
-
-            piece_pattern_flags.set(Direction::N, f(pos + (0, -1)));
-            piece_pattern_flags.set(Direction::S, f(pos + (0, 1)));
-            piece_pattern_flags.set(Direction::E, f(pos + (1, 0)));
-            piece_pattern_flags.set(Direction::W, f(pos + (-1,0)));
-            piece_pattern_flags.set(Direction::NE, f(pos + (1, -1)));
-            piece_pattern_flags.set(Direction::NW, f(pos + (-1, -1)));
-            piece_pattern_flags.set(Direction::SE, f(pos + (1, 1)));
-            piece_pattern_flags.set(Direction::SW, f(pos + (-1,1)));
-            piece_pattern_flags
+            for dir in &Direction::EIGHT_DIRS {
+                piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
+            }
+            piece_pattern_flags.to_piece_pattern()
         };
 
         self.tile[pos][1].idx = new_tile_idx;
-        self.tile[pos][1].piece_pattern = piece_pattern_flags.to_piece_pattern();
+        self.tile[pos][1].piece_pattern = piece_pattern;
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
