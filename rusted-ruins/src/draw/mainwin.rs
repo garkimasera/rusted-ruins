@@ -2,8 +2,9 @@
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
+use sdl2::render::Texture;
 use array2d::*;
-use common::basic::{TILE_SIZE, TILE_SIZE_I};
+use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::{Holder, UIImgIdx};
 use common::obj::*;
 use common::gobj;
@@ -156,13 +157,9 @@ impl MainWinDrawer {
 
         if let Some(t) = di.tile { // Draw tile
             for i in 0..t.len() {
-                let o = gobj::get_obj(t[i].idx);
-                let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-                let dest = Rect::new(
-                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                    TILE_SIZE, TILE_SIZE);
-                let texture = sv.tex().get(t[0].idx);
-                check_draw!(canvas.copy(&texture, src, dest));
+                let obj = gobj::get_obj(t[i].idx);
+                let tex = sv.tex().get(t[i].idx);
+                self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern);
             }
         }
         if let Some(deco_idx) = di.deco { // Draw deco
@@ -277,6 +274,38 @@ impl MainWinDrawer {
             }
             _ => (),
         }
+    }
+
+    fn draw_pieces<T: PieceImgObject>(
+        &self, canvas: &mut WindowCanvas, tex: &Texture, obj: &T,
+        p: Vec2d, piece_pattern: PiecePattern) {
+        
+        let img = obj.get_img();
+        let i_anim_frame = calc_frame(img);
+        // Top left corner (x ,y)
+        let tlcx = TILE_SIZE_I * p.0 + self.dx;
+        let tlcy = TILE_SIZE_I * p.1 + self.dy;
+        
+        // Top left piece
+        let src = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame);
+        let dest = Rect::new(tlcx, tlcy, src.2, src.3);
+        let src = Rect::from(src);
+        check_draw!(canvas.copy(tex, src, dest));
+        // Top right piece
+        let src = obj.piece_rect(piece_pattern.top_right, 1, i_anim_frame);
+        let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy, src.2, src.3);
+        let src = Rect::from(src);
+        check_draw!(canvas.copy(tex, src, dest));
+        // Bottom left piece
+        let src = obj.piece_rect(piece_pattern.bottom_left, 2, i_anim_frame);
+        let dest = Rect::new(tlcx, tlcy + PIECE_SIZE_I, src.2, src.3);
+        let src = Rect::from(src);
+        check_draw!(canvas.copy(tex, src, dest));
+        // Bottom right piece
+        let src = obj.piece_rect(piece_pattern.bottom_right, 3, i_anim_frame);
+        let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy + PIECE_SIZE_I, src.2, src.3);
+        let src = Rect::from(src);
+        check_draw!(canvas.copy(tex, src, dest));
     }
 
     fn draw_tile_cursor(&self, canvas: &mut WindowCanvas, sv: &SdlValues, ct: Vec2d) {
