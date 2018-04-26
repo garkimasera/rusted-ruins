@@ -19,16 +19,16 @@ pub fn build_img(input: ImgInput) -> Result<(Img, ImgData)> {
     let imgdata = ImgData::load(&newpath)?;
     let w = input.w.unwrap_or(imgdata.dimensions.0);
     let h = input.h.unwrap_or(imgdata.dimensions.1);
-    let grid_w = input.grid_w.unwrap_or(1);
-    let grid_h = input.grid_h.unwrap_or(1);
+    let grid_nx = input.grid_nx.unwrap_or(1);
+    let grid_ny = input.grid_ny.unwrap_or(1);
     let n_pattern = input.n_pattern.unwrap_or(1);
     let n_anim_frame = input.n_anim_frame.unwrap_or(1);
     let n_frame = input.n_frame.unwrap_or(n_pattern * n_anim_frame);
     let duration = input.duration.unwrap_or(0);
     
     ensure!(
-        w * grid_w == imgdata.dimensions.0 && h * grid_h == imgdata.dimensions.1,
-        ErrorKind::ImageSizeError((w * grid_w, h * grid_h), imgdata.dimensions));
+        w * grid_nx == imgdata.dimensions.0 && h * grid_ny == imgdata.dimensions.1,
+        ErrorKind::ImageSizeError((w * grid_nx, h * grid_ny), imgdata.dimensions));
     assert!(n_frame == n_pattern * n_anim_frame); // TODO: Make these asserts ensure!()
     assert!(n_frame > 0);
     assert!(n_pattern > 0);
@@ -39,8 +39,8 @@ pub fn build_img(input: ImgInput) -> Result<(Img, ImgData)> {
             data: load_as_vec(&newpath)?,
             w: w,
             h: h,
-            grid_w: grid_w,
-            grid_h: grid_h,
+            grid_nx: grid_nx,
+            grid_ny: grid_ny,
             n_frame: n_frame,
             n_pattern: n_pattern,
             n_anim_frame: n_anim_frame,

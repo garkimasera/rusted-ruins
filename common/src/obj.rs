@@ -107,8 +107,8 @@ pub struct Img {
     pub data: Vec<u8>,
     pub w: u32,
     pub h: u32,
-    pub grid_w: u32,
-    pub grid_h: u32,
+    pub grid_nx: u32,
+    pub grid_ny: u32,
     pub n_frame: u32,
     pub n_pattern: u32,
     pub n_anim_frame: u32,
@@ -179,13 +179,13 @@ pub trait ImgObject {
     /// Returns rect for nth image of grid
     fn img_rect_nth(&self, n: u32) -> (i32, i32, u32, u32) {
         let img = self.get_img();
-        let n = if n < img.grid_w * img.grid_h {
+        let n = if n < img.grid_nx * img.grid_ny {
             n
         } else {
             0
         };
-        let grid_x = n % img.grid_w;
-        let grid_y = n / img.grid_w;
+        let grid_x = n % img.grid_nx;
+        let grid_y = n / img.grid_nx;
         ((img.w * grid_x) as i32, (img.h * grid_y) as i32, img.w, img.h)
     }
 }
