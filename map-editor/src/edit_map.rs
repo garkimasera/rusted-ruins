@@ -30,10 +30,29 @@ impl EditingMap {
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
         if let Some(idx) = wall {
-            self.wall[pos] = WallIdxPP {
-                idx: idx,
-                piece_pattern: PiecePattern::SURROUNDED
+            let piece_pattern = {
+                let f = |pos: Vec2d| {
+                    if let Some(w) = self.wall.get(pos) {
+                        w.idx == idx
+                    } else {
+                        false
+                    }
+                };
+
+                let mut piece_pattern_flags = PiecePatternFlags::new();
+
+                piece_pattern_flags.set(Direction::N, f(pos + (0, -1)));
+                piece_pattern_flags.set(Direction::S, f(pos + (0, 1)));
+                piece_pattern_flags.set(Direction::E, f(pos + (1, 0)));
+                piece_pattern_flags.set(Direction::W, f(pos + (-1,0)));
+                piece_pattern_flags.set(Direction::NE, f(pos + (1, -1)));
+                piece_pattern_flags.set(Direction::NW, f(pos + (-1, -1)));
+                piece_pattern_flags.set(Direction::SE, f(pos + (1, 1)));
+                piece_pattern_flags.set(Direction::SW, f(pos + (-1,1)));
+                piece_pattern_flags.to_piece_pattern()
             };
+            
+            self.wall[pos] = WallIdxPP { idx, piece_pattern };
         } else {
             self.wall[pos] = WallIdxPP::default();
         }

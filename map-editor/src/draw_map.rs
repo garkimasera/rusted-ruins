@@ -4,6 +4,7 @@ use common::basic::{TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::*;
 use common::gobj;
 use common::piece_pattern::*;
+use common::obj::ImgObject;
 use cairo::Context;
 use gdk::prelude::ContextExt;
 use gdk_pixbuf::{Pixbuf, PixbufExt};
@@ -33,12 +34,7 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
 
             // Draw wall
             if !map.wall[p].is_empty() {
-                let pixbuf = &pbh.get(map.wall[p].idx).image;
-                let height = pixbuf.get_height();
-                cr.set_source_pixbuf(pixbuf,
-                                     (ix * TILE_SIZE_I) as f64,
-                                     (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64);
-                cr.paint();
+                draw_wall_pieces(cr, pbh, map.wall[p].idx, map.wall[p].piece_pattern, ix, iy);
             }
 
             // Draw deco
@@ -86,6 +82,43 @@ fn draw_pieces(
     image_copy(cr, image,
                rect.0, rect.1,
                ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
+               rect.2, rect.3);
+    cr.fill();
+}
+
+fn draw_wall_pieces(
+    cr: &Context, pbh: &PixbufHolder, idx: WallIdx, piece_pattern: PiecePattern, ix: i32, iy: i32) {
+    
+    let image = &pbh.get(idx).image;
+    let wall_obj = gobj::get_obj(idx);
+    let h = wall_obj.get_img().h as i32 - TILE_SIZE_I;
+
+    // Top left piece
+    let rect = wall_obj.piece_rect(piece_pattern.top_left, 0, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I, iy * TILE_SIZE_I - h,
+               rect.2, rect.3);
+    cr.fill();
+    // Top right piece
+    let rect = wall_obj.piece_rect(piece_pattern.top_right, 1, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I - h,
+               rect.2, rect.3);
+    cr.fill();
+    // Bottom left piece
+    let rect = wall_obj.piece_rect(piece_pattern.bottom_left, 2, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
+               rect.2, rect.3);
+    cr.fill();
+    // Bottom right piece
+    let rect = wall_obj.piece_rect(piece_pattern.bottom_right, 3, 0);
+    image_copy(cr, image,
+               rect.0, rect.1,
+               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
                rect.2, rect.3);
     cr.fill();
 }
