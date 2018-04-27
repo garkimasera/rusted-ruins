@@ -35,7 +35,7 @@ impl EditingMap {
                     if let Some(w) = self.wall.get(pos) {
                         w.idx == idx
                     } else {
-                        false
+                        true
                     }
                 };
                 let mut piece_pattern_flags = PiecePatternFlags::new();
@@ -66,7 +66,7 @@ impl EditingMap {
                 if let Some(t) = self.tile.get(pos) {
                     t.main_tile() == new_tile_idx
                 } else {
-                    false
+                    true
                 }
             };
             let mut piece_pattern_flags = PiecePatternFlags::new();
