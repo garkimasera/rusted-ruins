@@ -13,7 +13,6 @@ use game::view::ViewMap;
 pub struct BackgroundDrawInfo {
     pub tile: Option<OverlappedTile>,
     pub deco: Option<DecoIdx>,
-    pub wall: Option<WallIdx>,
     pub special: Option<SpecialTileIdx>,
 }
 
@@ -21,31 +20,21 @@ impl BackgroundDrawInfo {
     pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo {
         let mut di = BackgroundDrawInfo::default();
         
-        let (tile, deco, wall) = if map.is_inside(pos) {
+        let (tile, deco) = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
             
-            (tinfo.tile, tinfo.deco, tinfo.wall.idx())
+            (tinfo.tile, tinfo.deco)
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
-                (Some(outside_tile.tile.into()), outside_tile.deco, outside_tile.wall)
+                (Some(outside_tile.tile.into()), outside_tile.deco)
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
-                (tinfo.tile, tinfo.deco, tinfo.wall.idx())
+                (tinfo.tile, tinfo.deco)
             }
         };
         
-        if let Some(wall) = wall {
-            let wall_obj = gobj::get_obj(wall);
-            if wall_obj.base_draw {
-                di.tile = tile;
-            }
-            if wall_obj.always_background {
-                di.wall = Some(wall);
-            }
-        } else {
-            di.tile = tile;
-        };
+        di.tile = tile;
         di.deco = deco;
 
         if map.is_inside(pos) {
@@ -68,7 +57,7 @@ impl BackgroundDrawInfo {
 #[derive(Default)]
 pub struct ForegroundDrawInfo {
     pub special: Option<SpecialTileIdx>,
-    pub wall: Option<WallIdx>,
+    pub wallpp: WallIdxPP,
     pub n_item: usize,
     pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
     pub chara: Option<CharaId>,
@@ -88,23 +77,23 @@ impl ForegroundDrawInfo {
             }
         }
 
-        let wall = if map.is_inside(pos) {
-            map.observed_tile[pos].wall.idx()
+        di.wallpp = if map.is_inside(pos) {
+            map.observed_tile[pos].wall
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
-                outside_tile.wall
+                if let Some(wall_idx) = outside_tile.wall {
+                    WallIdxPP {
+                        idx: wall_idx,
+                        piece_pattern: PiecePattern::SURROUNDED,
+                    }
+                } else {
+                    WallIdxPP::default()
+                }
             } else {
                 let pos = map.nearest_existent_tile(pos);
-                map.observed_tile[pos].wall.idx()
+                map.observed_tile[pos].wall
             }
         };
-
-        if let Some(wall) = wall {
-            let wall_obj = gobj::get_obj(wall);
-            if !wall_obj.always_background {
-                di.wall = Some(wall);
-            }
-        }
 
         if view_map.get_tile_visible(pos) {
             di.chara = map.get_chara(pos);

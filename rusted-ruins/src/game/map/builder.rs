@@ -1,4 +1,5 @@
 
+use array2d::*;
 use common::objholder::*;
 use common::gamedata::map::*;
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
@@ -58,9 +59,23 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
         map.tile[p].tile = tile.into();
         match gm.tile[p] {
             TileKind::Wall => {
+                let piece_pattern = {
+                    let f = |pos: Vec2d| {
+                        if let Some(t) = gm.tile.get(pos) {
+                            *t == TileKind::Wall
+                        } else {
+                            true
+                        }
+                    };
+                    let mut piece_pattern_flags = PiecePatternFlags::new();
+                    for dir in &Direction::EIGHT_DIRS {
+                        piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
+                    }
+                    piece_pattern_flags.to_piece_pattern()
+                };
                 map.tile[p].wall = WallIdxPP {
                     idx: wall,
-                    piece_pattern: PiecePattern::SURROUNDED,
+                    piece_pattern: piece_pattern,
                 };
             },
             _ => (),

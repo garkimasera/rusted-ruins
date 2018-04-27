@@ -169,13 +169,6 @@ impl MainWinDrawer {
             let texture = sv.tex().get(deco_idx);
             check_draw!(canvas.copy(&texture, src, dest));
         }
-        if let Some(wall_idx) = di.wall { // Draw wall
-            let o = gobj::get_obj(wall_idx);
-            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            let texture = sv.tex().get(wall_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
-        }
         if let Some(special_tile_idx) = di.special { // Draw tile special
             let texture = sv.tex().get(special_tile_idx);
             let query = texture.query();
@@ -198,12 +191,10 @@ impl MainWinDrawer {
             let dest = self.bottom_at_tile(src, p, 0, 0);
             check_draw!(canvas.copy(&texture, src, dest));
         }
-        if let Some(wall_idx) = di.wall { // Draw wall
-            let o = gobj::get_obj(wall_idx);
-            let src = Rect::from(o.img_rect_nth(super::frame::calc_frame(&o.img)));
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            let texture = sv.tex().get(wall_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
+        if let Some(wall_idx) = di.wallpp.idx() { // Draw wall
+            let obj = gobj::get_obj(wall_idx);
+            let tex = sv.tex().get(wall_idx);
+            self.draw_pieces(canvas, tex, obj, p, di.wallpp.piece_pattern);
         }
 
         // Draw items
@@ -282,9 +273,10 @@ impl MainWinDrawer {
         
         let img = obj.get_img();
         let i_anim_frame = calc_frame(img);
+        let dy = TILE_SIZE_I - img.h as i32;
         // Top left corner (x ,y)
         let tlcx = TILE_SIZE_I * p.0 + self.dx;
-        let tlcy = TILE_SIZE_I * p.1 + self.dy;
+        let tlcy = TILE_SIZE_I * p.1 + self.dy + dy;
         
         // Top left piece
         let src = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame);
