@@ -17,8 +17,8 @@ pub fn calc_frame(img: &Img) -> u32 {
     if img.n_anim_frame == 1 { return 0; }
     
     let frame_count = FRAME_COUNT.with(|frame_count| frame_count.get());
-    let a = frame_count % (img.duration * img.n_frame);
+    let a = frame_count % (img.duration * img.n_anim_frame);
     let n = a / img.duration;
-    debug_assert!(n < img.n_frame);
+    debug_assert!(n < img.n_anim_frame);
     n
 }
