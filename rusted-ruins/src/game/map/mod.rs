@@ -2,7 +2,7 @@
 pub mod builder;
 pub mod from_template;
 
-use array2d::Vec2d;
+use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use super::Game;
@@ -10,6 +10,29 @@ use super::chara::CharaEx;
 use super::chara::creation::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
+
+pub trait MapEx {
+    fn is_passable(&self, chara: &Chara, pos: Vec2d) -> bool;
+    fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool;
+}
+
+impl MapEx for Map {
+    fn is_passable(&self, _chara: &Chara, pos: Vec2d) -> bool {
+        if !self.is_inside(pos) {
+            return false;
+        }
+        self.tile[pos].wall.is_empty()
+    }
+    
+    fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
+        if let Some(p) = self.chara_pos(cid) {
+            let new_p = p + dir.as_vec();
+            self.swap_chara(p, new_p)
+        } else {
+            false
+        }
+    }
+}
 
 /// Switch current map to the specified map
 pub fn switch_map(game: &mut Game, mid: MapId) {

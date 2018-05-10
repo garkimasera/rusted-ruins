@@ -247,14 +247,6 @@ impl Map {
         self.charaid.iter()
     }
 
-    pub fn is_movable(&self, pos: Vec2d) -> bool {
-        if !self.is_inside(pos) {
-            return false;
-        }
-
-        self.tile[pos].wall.is_empty()
-    }
-
     /// Return given pos is inside map or not
     #[inline]
     pub fn is_inside(&self, pos: Vec2d) -> bool {
@@ -281,22 +273,17 @@ impl Map {
         None
     }
 
-    pub fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
-        use std::mem::replace;
-        if let Some(p) = self.chara_pos(cid) {
-            let new_p = p + dir.as_vec();
-            if self.is_movable(p + dir.as_vec()) { // Swap charas of the two tiles
-                let temp0 = replace(&mut self.tile[p].chara,     None);
-                let temp1 = replace(&mut self.tile[new_p].chara, None);
-                replace(&mut self.tile[p].chara,     temp1);
-                replace(&mut self.tile[new_p].chara, temp0);
-                true
-            }else{
-                false
-            }
-        }else{
-            false
+    /// Swaps characters on given tiles
+    pub fn swap_chara(&mut self, a: Vec2d, b: Vec2d) -> bool {
+        if !(self.is_inside(a) && self.is_inside(b)) {
+            return false
         }
+        use std::mem::replace;
+        let temp0 = replace(&mut self.tile[a].chara, None);
+        let temp1 = replace(&mut self.tile[b].chara, None);
+        replace(&mut self.tile[a].chara, temp1);
+        replace(&mut self.tile[b].chara, temp0);
+        true
     }
 
     /// Locate a character at given position.

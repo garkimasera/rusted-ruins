@@ -12,7 +12,7 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) { return true; } // Move to current tile always success
     let dest_tile = game.gd.get_current_map().chara_pos(chara_id).unwrap() + dir.as_vec();
 
-    if !game.gd.get_current_map().is_movable(dest_tile) {
+    if !game.gd.get_current_map().is_passable(game.gd.chara.get(chara_id), dest_tile) {
         return false;
     }
 
