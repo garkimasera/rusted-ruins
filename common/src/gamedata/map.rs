@@ -133,10 +133,10 @@ impl SpecialTileKind {
             }
             SpecialTileKind::SiteSymbol { kind } => {
                 match kind {
-                    SiteSymbolKind::Cave =>    "!rm.cave",
-                    SiteSymbolKind::Tower =>   "!rm.tower",
-                    SiteSymbolKind::Town =>    "!rm.town",
-                    SiteSymbolKind::Village => "!rm.village",
+                    SiteSymbolKind::Cave =>    "!rm-cave",
+                    SiteSymbolKind::Tower =>   "!rm-tower",
+                    SiteSymbolKind::Town =>    "!rm-town",
+                    SiteSymbolKind::Village => "!rm-village",
                 }
             }
         })

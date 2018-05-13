@@ -8,7 +8,7 @@
             "animal": 0.2
         },
         "terrain": [
-            ["!dirt", "!dirt.wall"]
+            ["dirt", "dirt-wall"]
         ],
         "item_gen_probability": 45
     },
@@ -19,7 +19,7 @@
             "slime": 0.5
         },
         "terrain": [
-            ["!concrete-rust", "!concrete-rust.wall"]
+            ["concrete-rust", "concrete-rust-wall"]
         ],
         "item_gen_probability": 60
     }
