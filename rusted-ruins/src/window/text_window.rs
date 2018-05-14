@@ -39,3 +39,42 @@ impl Window for TextWindow {
     }
 }
 
+pub struct ScrollingTextWindow {
+    rect: Rect,
+    elapsed_frame: u64,
+    labels: Vec<LabelWidget>,
+}
+
+impl ScrollingTextWindow {
+    pub fn new(rect: Rect, s: &str) -> ScrollingTextWindow {
+        let mut labels = Vec::new();
+
+        for line in s.lines() {
+            let widget_rect = Rect::new(0, 0, 0, 0);
+            labels.push(LabelWidget::bordered(widget_rect, line, FontKind::M));
+        }
+        
+        ScrollingTextWindow {
+            rect: rect,
+            elapsed_frame: 0,
+            labels: labels,
+        }
+    }   
+}
+
+impl Window for ScrollingTextWindow {
+    
+    fn draw(
+        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+
+        /*let window_size = self.label.adjust_widget_size(sv);
+        self.rect.w = ::std::cmp::max(window_size.0 as i32, self.min_w);
+        self.rect.h = window_size.1 as i32;
+
+        draw_rect_border(canvas, self.rect);*/
+        for label in self.labels.iter_mut() {
+            label.draw(canvas, sv);
+        }
+    }
+}

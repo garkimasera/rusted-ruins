@@ -5,7 +5,7 @@ use super::widget::*;
 use text;
 use common::gamedata::*;
 use game::newgame::NewGameBuilder;
-use super::text_window::TextWindow;
+use super::text_window::{TextWindow, ScrollingTextWindow};
 use super::text_input_dialog::TextInputDialog;
 use super::choose_window::PagedChooseWindow;
 use super::widget::ListRow;
@@ -18,6 +18,7 @@ use rules::RULES;
 enum NewGameBuildStage {
     PlayerNameInput,
     ChooseClass,
+    OpeningText,
 }
 
 pub struct NewGameWindow {
@@ -46,6 +47,7 @@ pub struct DummyNewGameDialog {
     explanation_text: TextWindow,
     name_input_dialog: Option<TextInputDialog>,
     choose_class_dialog: ChooseClassDialog,
+    opening_text: ScrollingTextWindow,
 }
 
 impl DummyNewGameDialog {
@@ -56,6 +58,7 @@ impl DummyNewGameDialog {
             stage: NewGameBuildStage::PlayerNameInput,
             name_input_dialog: Some(TextInputDialog::new()),
             choose_class_dialog: ChooseClassDialog::new(),
+            opening_text: opening_text_window(),
         }
     }
 }
@@ -63,15 +66,18 @@ impl DummyNewGameDialog {
 impl Window for DummyNewGameDialog {
     fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
               anim: Option<(&Animation, u32)>) {
-
-        self.explanation_text.draw(canvas, game, sv, anim);
         
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
+                self.explanation_text.draw(canvas, game, sv, anim);
                 self.name_input_dialog.as_mut().unwrap().draw(canvas, game, sv, anim);
             }
             NewGameBuildStage::ChooseClass => {
+                self.explanation_text.draw(canvas, game, sv, anim);
                 self.choose_class_dialog.draw(canvas, game, sv, anim);
+            }
+            NewGameBuildStage::OpeningText => {
+                self.opening_text.draw(canvas, game, sv, anim);
             }
         }
     }
@@ -101,11 +107,20 @@ impl DialogWindow for DummyNewGameDialog {
                     DialogResult::CloseWithValue(chara_class) => {
                         let chara_class = chara_class.downcast::<CharaClass>().unwrap();
                         self.builder.as_mut().unwrap().set_chara_class(*chara_class);
+                        self.stage = NewGameBuildStage::OpeningText;
+                    }
+                    _ => (),
+                }
+                return DialogResult::Continue;
+            }
+            NewGameBuildStage::OpeningText => {
+                match command {
+                    Command::Enter => {
                         let builder = self.builder.take().unwrap();
                         let gd = builder.build();
-                        return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
+                        DialogResult::Special(SpecialDialogResult::NewGameStart(gd))
                     }
-                    _ => DialogResult::Continue
+                    _ => DialogResult::Continue,
                 }
             }
         }
@@ -172,4 +187,12 @@ fn explanation_text_window(s: &str) -> TextWindow {
     TextWindow::new(
         UI_CFG.newgame_dialog.explanation_text_rect.into(),
         text::ui_txt(s))
+}
+
+/// Create scrolling text window that displays opening text
+fn opening_text_window() -> ScrollingTextWindow {
+    ScrollingTextWindow::new(
+        Rect::new(0, 0, 100, 100),
+        "TestOpeningText\nAAAA"
+    )
 }
