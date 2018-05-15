@@ -65,6 +65,14 @@ impl LabelWidget {
         self.rect = rect;
         (w, h)
     }
+
+    pub fn rect(&self) -> Rect {
+        self.rect
+    }
+
+    pub fn set_rect(&mut self, rect: Rect) {
+        self.rect = rect;
+    }
 }
 
 impl WidgetTrait for LabelWidget {

@@ -192,7 +192,7 @@ fn explanation_text_window(s: &str) -> TextWindow {
 /// Create scrolling text window that displays opening text
 fn opening_text_window() -> ScrollingTextWindow {
     ScrollingTextWindow::new(
-        Rect::new(0, 0, 100, 100),
+        SCREEN_CFG.main_window.into(),
         "TestOpeningText\nAAAA"
     )
 }

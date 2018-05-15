@@ -41,6 +41,7 @@ pub struct UIConfig {
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
+    pub scrolling_text_window: ScrollingTextWindowConfig,
     pub status_window: StatusWindowConfig,
     pub skill_window: SkillWindowConfig,
     pub page_window: PageWindowConfig,
@@ -105,6 +106,12 @@ pub struct TalkWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct MsgDialogConfig {
     pub rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ScrollingTextWindowConfig {
+    pub line_space: i32,
+    pub speed: f64,
 }
 
 #[derive(Debug, Deserialize)]
