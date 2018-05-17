@@ -116,12 +116,16 @@ impl DialogWindow for DummyNewGameDialog {
             NewGameBuildStage::OpeningText => {
                 match command {
                     Command::Enter => {
-                        let builder = self.builder.take().unwrap();
-                        let gd = builder.build();
-                        DialogResult::Special(SpecialDialogResult::NewGameStart(gd))
+                        if !self.opening_text.is_finished() {
+                            return DialogResult::Continue;
+                        }
                     }
-                    _ => DialogResult::Continue,
+                    Command::Cancel => (),
+                    _ => { return DialogResult::Continue; }
                 }
+                let builder = self.builder.take().unwrap();
+                let gd = builder.build();
+                return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
             }
         }
     }
