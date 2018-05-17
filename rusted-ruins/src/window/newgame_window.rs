@@ -197,6 +197,6 @@ fn explanation_text_window(s: &str) -> TextWindow {
 fn opening_text_window() -> ScrollingTextWindow {
     ScrollingTextWindow::new(
         SCREEN_CFG.main_window.into(),
-        "TestOpeningText\nAAAA"
+        text::misc_txt("!op-scroll")
     )
 }

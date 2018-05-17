@@ -134,14 +134,14 @@ fn load_trans_txt(kind: &str) -> HashMap<String, String> {
                     continue;
                 }
             
-            let _ = add_file(f.path(), &mut map, kind != "talk");
+            let _ = add_file(f.path(), &mut map);
         }
     }
     
     map
 }
 
-fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>, ignore_newline: bool) -> Result<()> {
+fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<()> {
     let p = p.as_ref();
     let file = fs::File::open(p)?;
     let file = BufReader::new(file);
@@ -153,26 +153,30 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>, ignore_newl
         let line = line?;
         let mut is_key = false;
 
-        if let Some(first_char) =  line.chars().next() {
+        if let Some(first_char) = line.chars().next() {
             if first_char == '#' { continue; } // Skip comment line
             if first_char == '%' { is_key = true; }
-        }else{
+        } else {
             continue; // Skip empty line
         }
 
         if is_key {
             if key.is_some() {
+                let c = value.pop(); // Remove newline of the last line
+                if let Some(c) = c {
+                    if c != '\n' {
+                        value.push(c)
+                    }
+                }
                 map.insert(::std::mem::replace(&mut key, None).unwrap(), value.clone());
                 value.clear();
-            }else{
-                
+            } else {
+                // Unnecessary line before the first key line
             }
             key = Some(line[1..].trim_left().to_string());
-        }else{
+        } else {
             value.push_str(&line);
-            if !ignore_newline {
-                value.push('\n');
-            }
+            value.push('\n');
         }
     }
     
