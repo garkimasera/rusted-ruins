@@ -5,6 +5,8 @@ pub mod from_template;
 use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
+use common::gobj;
+use common::obj::TileKind;
 use super::Game;
 use super::chara::CharaEx;
 use super::chara::creation::create_npc_chara;
@@ -12,6 +14,7 @@ use super::item::gen::gen_dungeon_item;
 use rules::RULES;
 
 pub trait MapEx {
+    /// The tile is passable for given character or not.
     fn is_passable(&self, chara: &Chara, pos: Vec2d) -> bool;
     fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool;
 }
@@ -21,7 +24,16 @@ impl MapEx for Map {
         if !self.is_inside(pos) {
             return false;
         }
-        self.tile[pos].wall.is_empty()
+        
+        if self.tile[pos].wall.is_empty() {
+            let tile = gobj::get_obj(self.tile[pos].tile.main_tile());
+            match tile.kind {
+                TileKind::Ground => true,
+                TileKind::Water => false,
+            }
+        } else {
+            false
+        }
     }
     
     fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
