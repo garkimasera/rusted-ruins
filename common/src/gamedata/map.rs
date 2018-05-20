@@ -117,7 +117,7 @@ pub enum StairsKind {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum SiteSymbolKind {
-    Cave, Tower, Town, Village,
+    Cave, Ruin, Tower, Town, Village,
 }
 
 impl SpecialTileKind {
@@ -134,6 +134,7 @@ impl SpecialTileKind {
             SpecialTileKind::SiteSymbol { kind } => {
                 match kind {
                     SiteSymbolKind::Cave =>    "!rm-cave",
+                    SiteSymbolKind::Ruin =>    "!rm-ruin",
                     SiteSymbolKind::Tower =>   "!rm-tower",
                     SiteSymbolKind::Town =>    "!rm-town",
                     SiteSymbolKind::Village => "!rm-village",

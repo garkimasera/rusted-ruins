@@ -53,7 +53,11 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
     
     super::site::add_dungeon_site(gd, dungeon_kind, pos);
     let region_map = gd.region.get_map_mut(MapId::from(rid));
-    region_map.tile[pos].special = SpecialTileKind::SiteSymbol { kind: SiteSymbolKind::Cave };
+    let site_symbol_kind = match dungeon_kind {
+        DungeonKind::Cave => SiteSymbolKind::Cave,
+        _ => SiteSymbolKind::Ruin,
+    };
+    region_map.tile[pos].special = SpecialTileKind::SiteSymbol { kind: site_symbol_kind };
 }
 
 fn add_sites_from_genobj(gd: &mut GameData, rg: &RegionGenObject, rid: RegionId) {
