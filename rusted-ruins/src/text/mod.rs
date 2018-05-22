@@ -162,12 +162,7 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
 
         if is_key {
             if key.is_some() {
-                let c = value.pop(); // Remove newline of the last line
-                if let Some(c) = c {
-                    if c != '\n' {
-                        value.push(c)
-                    }
-                }
+                remove_last_newline(&mut value);
                 map.insert(::std::mem::replace(&mut key, None).unwrap(), value.clone());
                 value.clear();
             } else {
@@ -181,9 +176,20 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
     }
     
     if key.is_some() {
+        remove_last_newline(&mut value);
         map.insert(key.unwrap(), value);
     }
 
     Ok(())
+}
+
+/// Remove newline of the last line
+fn remove_last_newline(s: &mut String) {
+    let c = s.pop();
+    if let Some(c) = c {
+        if c != '\n' {
+            s.push(c)
+        }
+    }
 }
 
