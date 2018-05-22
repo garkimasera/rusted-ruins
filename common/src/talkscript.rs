@@ -17,7 +17,7 @@ impl TalkScriptObject {
                 let s = if let Some(ref text) = *text {
                     Cow::Borrowed(text.as_ref())
                 } else {
-                    Cow::Owned(format!("{}.{}", self.id, section))
+                    Cow::Owned(format!("{}-{}", self.id, section))
                 };
                 Some(s)
             }
