@@ -31,6 +31,7 @@ macro_rules! get_optional_field {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ImgInput {
     pub path: String,
     pub w: Option<u32>,
@@ -46,6 +47,7 @@ pub struct ImgInput {
 // Type dependent fields
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct CharaTemplateDepInput {
     pub race: gamedata::chara::Race,
     pub gen_weight: f32,
@@ -61,21 +63,25 @@ pub struct CharaTemplateDepInput {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TileDepInput {
     pub kind: ::common::obj::TileKind,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct WallDepInput {
     pub base_draw: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SpecialTileDepInput {
     pub always_background: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ItemDepInput {
     pub item_kind: String,
     pub basic_price: u32,
@@ -95,23 +101,27 @@ pub struct ItemDepInput {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TalkScriptDepInput {
     pub sections: HashMap<String, TalkScriptSectionInput>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct RegionGenDepInput {
     pub map_template_id: String,
     pub towns: Vec<SiteGenIdAndPos>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SiteGenIdAndPos {
     pub id: String,
     pub pos: Vec2d,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
     pub map_template_id: Vec<String>,
@@ -120,6 +130,7 @@ pub struct SiteGenDepInput {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TalkScriptSectionInput {
     pub kind: talkscript::TalkSectionKind,
     pub text: Option<String>,
