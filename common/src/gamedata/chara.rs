@@ -68,6 +68,7 @@ pub struct Chara {
     pub item_list: ItemList,
     pub equip: EquipItemList,
     pub wait_time: u32,
+    pub ai: CharaAI,
     pub hp: i32,
     pub nutrition: i32,
     pub status: Vec<CharaStatus>,
@@ -139,6 +140,7 @@ impl Default for Chara {
             item_list: ItemList::for_chara(),
             equip: EquipItemList::new(&[]),
             wait_time: ::basic::WAIT_TIME_START,
+            ai: CharaAI::default(),
             hp: 100,
             nutrition: 0,
             status: Vec::new(),
@@ -164,6 +166,31 @@ pub enum CharaId {
     Player,
     /// Indexed for a map. This character don't appear on other maps
     OnMap { mid: MapId, n: u32 },
+}
+
+/// Data to determine NPC character's actions
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub struct CharaAI {
+    kind: NpcAIKind,
+}
+
+/// Rough kind of NPC AI
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub enum NpcAIKind {
+    /// This npc does not do anything.
+    None,
+    /// This npc will not move
+    NoMove,
+    /// This npc will chase near enemies, and try melee atacks
+    Melee,
+}
+
+impl Default for CharaAI {
+    fn default() -> CharaAI {
+        CharaAI {
+            kind: NpcAIKind::None,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]

@@ -32,6 +32,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         item_list: ItemList::for_chara(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_START,
+        ai: CharaAI::default(),
         hp: max_hp,
         status: Vec::new(),
         nutrition: RULES.params.default_nutrition,
