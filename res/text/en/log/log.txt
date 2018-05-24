@@ -4,13 +4,13 @@ Welcome to Rusted Ruins! (version : $(version))
 $(attacker) attacks $(target) ($(damage)).
 % shot-target
 $(attacker) shots $(target) ($(damage)).
-% no-long-range-weapon-equipped
-No long range weapon equipped!
+% no-ranged-weapon-equipped
+No ranged weapon equipped!
 % target-chara
 $(chara) targets $(target).
-% killed-by-short-range-attack
+% killed-by-melee-attack
 $(chara) is killed.
-% killed-by-long-range-attack
+% killed-by-ranged-attack
 $(chara) is killed.
 % killed-by-poison-damage
 $(chara) is killed by poison

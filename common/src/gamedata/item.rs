@@ -272,7 +272,7 @@ impl From<u32> for ItemMoveNum {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all="snake_case")]
 pub enum EquipSlotKind {
-    ShortRangeWeapon, LongRangeWeapon, BodyArmor, Shield,
+    MeleeWeapon, RangedWeapon, BodyArmor, Shield,
 }
 
 impl ItemKind {
@@ -289,8 +289,8 @@ impl WeaponKind {
     pub fn equip_slot_kind(self) -> EquipSlotKind {
         use self::WeaponKind::*;
         match self {
-            Axe | Spear | Sword => EquipSlotKind::ShortRangeWeapon,
-            _ => EquipSlotKind::LongRangeWeapon,
+            Axe | Spear | Sword => EquipSlotKind::MeleeWeapon,
+            _ => EquipSlotKind::RangedWeapon,
         }
     }
 }

@@ -130,10 +130,10 @@ impl DialogWindow for EquipWindow {
 
 fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
     let id = match esk {
-        EquipSlotKind::ShortRangeWeapon => "!icon-shortrangeweapon",
-        EquipSlotKind::LongRangeWeapon  => "!icon-longrangeweapon",
-        EquipSlotKind::BodyArmor        => "!icon-bodyarmor",
-        EquipSlotKind::Shield           => "!shield",
+        EquipSlotKind::MeleeWeapon  => "!icon-melee-weapon",
+        EquipSlotKind::RangedWeapon => "!icon-ranged-weapon",
+        EquipSlotKind::BodyArmor    => "!icon-bodyarmor",
+        EquipSlotKind::Shield       => "!icon-shield",
     };
     IconIdx::UIImg(gobj::id_to_idx(id))
 }

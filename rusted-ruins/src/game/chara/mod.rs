@@ -33,11 +33,11 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
         game.dying_charas.push(cid);
         // Logging
         match damage_kind {
-            DamageKind::ShortRangeAttack => {
-                game_log!("killed-by-short-range-attack"; chara=chara.get_name());
+            DamageKind::MeleeAttack => {
+                game_log!("killed-by-melee-attack"; chara=chara.get_name());
             }
-            DamageKind::LongRangeAttack => {
-                game_log!("killed-by-long-range-attack"; chara=chara.get_name());
+            DamageKind::RangedAttack => {
+                game_log!("killed-by-ranged-attack"; chara=chara.get_name());
             }
             DamageKind::Poison => {
                 game_log!("killed-by-poison-damage"; chara=chara.get_name());
