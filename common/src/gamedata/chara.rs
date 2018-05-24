@@ -171,11 +171,12 @@ pub enum CharaId {
 /// Data to determine NPC character's actions
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct CharaAI {
-    kind: NpcAIKind,
+    pub kind: NpcAIKind,
 }
 
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum NpcAIKind {
     /// This npc does not do anything.
     None,

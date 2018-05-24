@@ -1,5 +1,6 @@
 
 use std::fmt;
+use gamedata;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {
@@ -34,12 +35,14 @@ pub struct CharaTemplateObject {
     pub id: String,
     pub img: Img,
     /// Character's race
-    pub race: ::gamedata::chara::Race,
+    pub race: gamedata::Race,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
     /// Generation level
     /// If it is higher, and the character will be generated on deeper floors
     pub gen_level: u32,
+    /// Default AI kind for this character
+    pub default_ai_kind: gamedata::NpcAIKind,
     pub max_hp: i32,
     pub str: u32,
     pub vit: u32,

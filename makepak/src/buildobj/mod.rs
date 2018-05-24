@@ -4,6 +4,7 @@ mod item;
 
 use array2d::Vec2d;
 use common::obj::*;
+use common::gamedata;
 use tomlinput::TomlInput;
 use error::*;
 use self::img::*;
@@ -136,6 +137,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
+        default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or(gamedata::NpcAIKind::None),
         max_hp: chara_dep_input.max_hp,
         str: chara_dep_input.str,
         vit: chara_dep_input.vit,

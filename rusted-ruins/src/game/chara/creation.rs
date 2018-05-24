@@ -32,7 +32,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         item_list: ItemList::for_chara(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_START,
-        ai: CharaAI::default(),
+        ai: create_ai(ct.default_ai_kind),
         hp: max_hp,
         status: Vec::new(),
         nutrition: RULES.params.default_nutrition,
@@ -113,6 +113,13 @@ impl CalcLevelWeightDist {
             let a = -(l / self.upper_margin) + 1.0 + (self.floor_level / self.upper_margin);
             if a < 0.0 { 0.0 } else { a }
         }
+    }
+}
+
+/// Create AI parameters
+pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
+    CharaAI {
+        kind: ai_kind,
     }
 }
 
