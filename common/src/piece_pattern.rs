@@ -35,12 +35,14 @@ impl PiecePattern {
 
     /// Represents that the tile (or wall, etc) is empty
     pub const EMPTY: PiecePattern = PiecePattern {
-        top_left: 0xFF,
-        top_right: 0xFF,
-        bottom_left: 0xFF,
-        bottom_right: 0xFF,
+        top_left: EMPTY_PIECE,
+        top_right: EMPTY_PIECE,
+        bottom_left: EMPTY_PIECE,
+        bottom_right: EMPTY_PIECE,
     };
 }
+
+pub const EMPTY_PIECE: u8 = 0xFF;
 
 /// TileIdx or WallIdx with piece pattern
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
