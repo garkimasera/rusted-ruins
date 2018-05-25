@@ -157,33 +157,38 @@ fn get_corner_piece_pattern(ns: u8, between: u8, ew: u8) -> u8 {
 
 pub trait PieceImgObject: ImgObject {
     /// Get rect of the specified piece
-    fn piece_rect(&self, i_pattern: u8, i_piece: u32, i_anim_frame: u32) -> (i32, i32, u32, u32) {
+    fn piece_rect(&self, i_pattern: u8, i_piece: u32, i_anim_frame: u32) -> Option<(i32, i32, u32, u32)> {
         let img = self.get_img();
         let n_anim_frame = img.n_anim_frame;
         let img_rect = self.img_rect_nth(n_anim_frame * i_pattern as u32 + i_anim_frame);
+        const EMPTY_PIECE_U8: u32 = EMPTY_PIECE as u32;
 
         match i_piece {
-            0 => ( // Top left piece
+            0 => Some(( // Top left piece
                 img_rect.0,
                 img_rect.1,
                 PIECE_SIZE,
-                PIECE_SIZE),
-            1 => ( // Top right piece
+                PIECE_SIZE)),
+            1 => Some(( // Top right piece
                 img_rect.0 + PIECE_SIZE_I,
                 img_rect.1,
                 PIECE_SIZE,
-                PIECE_SIZE),
-            2 => ( // Bottom left piece
+                PIECE_SIZE)),
+            2 => Some(( // Bottom left piece
                 img_rect.0,
                 img_rect.1 + PIECE_SIZE_I,
                 PIECE_SIZE,
-                img_rect.3 - PIECE_SIZE),
-            3 => ( // Bottom right piece
+                img_rect.3 - PIECE_SIZE)),
+            3 => Some(( // Bottom right piece
                 img_rect.0 + PIECE_SIZE_I,
                 img_rect.1 + PIECE_SIZE_I,
                 PIECE_SIZE,
-                img_rect.3 - PIECE_SIZE),
-            _ => unreachable!(),
+                img_rect.3 - PIECE_SIZE)),
+            EMPTY_PIECE_U8 => None,
+            _ => {
+                warn!("unknown piece index {}", i_piece);
+                None
+            }
         }
     }
 }

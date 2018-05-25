@@ -279,25 +279,29 @@ impl MainWinDrawer {
         let tlcy = TILE_SIZE_I * p.1 + self.dy + dy;
         
         // Top left piece
-        let src = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame);
-        let dest = Rect::new(tlcx, tlcy, src.2, src.3);
-        let src = Rect::from(src);
-        check_draw!(canvas.copy(tex, src, dest));
+        if let Some(src) = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame) {
+            let dest = Rect::new(tlcx, tlcy, src.2, src.3);
+            let src = Rect::from(src);
+            check_draw!(canvas.copy(tex, src, dest));
+        }
         // Top right piece
-        let src = obj.piece_rect(piece_pattern.top_right, 1, i_anim_frame);
-        let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy, src.2, src.3);
-        let src = Rect::from(src);
-        check_draw!(canvas.copy(tex, src, dest));
+        if let Some(src) = obj.piece_rect(piece_pattern.top_right, 1, i_anim_frame) {
+            let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy, src.2, src.3);
+            let src = Rect::from(src);
+            check_draw!(canvas.copy(tex, src, dest));
+        }
         // Bottom left piece
-        let src = obj.piece_rect(piece_pattern.bottom_left, 2, i_anim_frame);
-        let dest = Rect::new(tlcx, tlcy + PIECE_SIZE_I, src.2, src.3);
-        let src = Rect::from(src);
-        check_draw!(canvas.copy(tex, src, dest));
+        if let Some(src) = obj.piece_rect(piece_pattern.bottom_left, 2, i_anim_frame) {
+            let dest = Rect::new(tlcx, tlcy + PIECE_SIZE_I, src.2, src.3);
+            let src = Rect::from(src);
+            check_draw!(canvas.copy(tex, src, dest));
+        }
         // Bottom right piece
-        let src = obj.piece_rect(piece_pattern.bottom_right, 3, i_anim_frame);
-        let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy + PIECE_SIZE_I, src.2, src.3);
-        let src = Rect::from(src);
-        check_draw!(canvas.copy(tex, src, dest));
+        if let Some(src) = obj.piece_rect(piece_pattern.bottom_right, 3, i_anim_frame) {
+            let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy + PIECE_SIZE_I, src.2, src.3);
+            let src = Rect::from(src);
+            check_draw!(canvas.copy(tex, src, dest));
+        }
     }
 
     fn draw_tile_cursor(&self, canvas: &mut WindowCanvas, sv: &SdlValues, ct: Vec2d) {

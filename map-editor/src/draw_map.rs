@@ -57,33 +57,37 @@ fn draw_pieces(
     let tile_obj = gobj::get_obj(idx);
 
     // Top left piece
-    let rect = tile_obj.piece_rect(piece_pattern.top_left, 0, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I, iy * TILE_SIZE_I,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = tile_obj.piece_rect(piece_pattern.top_left, 0, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I, iy * TILE_SIZE_I,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Top right piece
-    let rect = tile_obj.piece_rect(piece_pattern.top_right, 1, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = tile_obj.piece_rect(piece_pattern.top_right, 1, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Bottom left piece
-    let rect = tile_obj.piece_rect(piece_pattern.bottom_left, 2, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = tile_obj.piece_rect(piece_pattern.bottom_left, 2, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Bottom right piece
-    let rect = tile_obj.piece_rect(piece_pattern.bottom_right, 3, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = tile_obj.piece_rect(piece_pattern.bottom_right, 3, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I,
+                   rect.2, rect.3);
+        cr.fill();
+    }
 }
 
 fn draw_wall_pieces(
@@ -94,33 +98,37 @@ fn draw_wall_pieces(
     let h = wall_obj.get_img().h as i32 - TILE_SIZE_I;
 
     // Top left piece
-    let rect = wall_obj.piece_rect(piece_pattern.top_left, 0, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I, iy * TILE_SIZE_I - h,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = wall_obj.piece_rect(piece_pattern.top_left, 0, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I, iy * TILE_SIZE_I - h,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Top right piece
-    let rect = wall_obj.piece_rect(piece_pattern.top_right, 1, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I - h,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = wall_obj.piece_rect(piece_pattern.top_right, 1, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I - h,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Bottom left piece
-    let rect = wall_obj.piece_rect(piece_pattern.bottom_left, 2, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = wall_obj.piece_rect(piece_pattern.bottom_left, 2, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
+                   rect.2, rect.3);
+        cr.fill();
+    }
     // Bottom right piece
-    let rect = wall_obj.piece_rect(piece_pattern.bottom_right, 3, 0);
-    image_copy(cr, image,
-               rect.0, rect.1,
-               ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
-               rect.2, rect.3);
-    cr.fill();
+    if let Some(rect) = wall_obj.piece_rect(piece_pattern.bottom_right, 3, 0) {
+        image_copy(cr, image,
+                   rect.0, rect.1,
+                   ix * TILE_SIZE_I + PIECE_SIZE_I, iy * TILE_SIZE_I + PIECE_SIZE_I - h,
+                   rect.2, rect.3);
+        cr.fill();
+    }
 }
 
 pub fn image_copy(cr: &Context, pixbuf: &Pixbuf,
