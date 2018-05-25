@@ -14,7 +14,7 @@ pub struct DungeonGenParams {
     pub npc_race_probability: HashMap<Race, f32>,
     /// Tile and wall ids
     pub terrain: Vec<[String; 2]>,
-    /// Items on a map is generated with a probability of 1/ item_gen_probability
-    pub item_gen_probability: u32,
+    /// Items generatation probability on each tile
+    pub item_gen_probability: f64,
 }
 

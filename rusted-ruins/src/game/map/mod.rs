@@ -138,8 +138,14 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
             SiteContent::AutoGenDungeon { dungeon_kind } => {
                 RULES.dungeon_gen[&dungeon_kind].item_gen_probability
             }
-            _ => 0,
+            _ => { return; } // No item generation
         }
+    };
+    let item_gen_probability = if 0.0 <= item_gen_probability && item_gen_probability <= 1.0 {
+        item_gen_probability
+    } else {
+        warn!("invalid value {} for item_gen_probablility", item_gen_probability);
+        return;
     };
     let map = gd.region.get_map_mut(mid);
 
@@ -149,7 +155,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 
         let mut item_list = ItemList::new(10);
 
-        if get_rng().gen_weighted_bool(item_gen_probability) {
+        if get_rng().gen_bool(item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor()), 1);
             tile.item_list = Some(item_list);
         }

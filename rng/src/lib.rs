@@ -5,17 +5,18 @@ extern crate rand;
 use std::cell::RefCell;
 use rand::{SeedableRng, XorShiftRng};
 use rand::distributions::range::SampleRange;
+use rand::{RngCore, thread_rng};
 pub use rand::Rng;
 
 #[derive(Debug, Clone, Copy)]
 pub struct GameRng;
 
 thread_local!(static XORSHIFT_RNG: RefCell<XorShiftRng> = {
-    let xorshift_rng = XorShiftRng::new_unseeded();
+    let xorshift_rng = XorShiftRng::from_seed([0; 16]);
     RefCell::new(xorshift_rng)
 });
 
-impl Rng for GameRng {
+impl RngCore for GameRng {
     #[inline]
     fn next_u32(&mut self) -> u32 {
         XORSHIFT_RNG.with(|xorshift_rng| {
@@ -29,25 +30,28 @@ impl Rng for GameRng {
             xorshift_rng.borrow_mut().next_u64()
         })
     }
+
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        XORSHIFT_RNG.with(|xorshift_rng| {
+            xorshift_rng.borrow_mut().fill_bytes(dest)
+        })
+    }
+
+    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), ::rand::Error> {
+        XORSHIFT_RNG.with(|xorshift_rng| {
+            xorshift_rng.borrow_mut().try_fill_bytes(dest)
+        })
+    }
 }
 
 pub fn get_rng() -> GameRng {
     GameRng
 }
 
-/// Reseed by 32bit integer
-pub fn reseed(s: u32) {
-    const A: u32 = 1103515245;
-    const B: u32 = 12345;
-
-    let a = s.wrapping_mul(A).wrapping_add(B);
-    let b = a.wrapping_mul(A).wrapping_add(B);
-    let c = b.wrapping_mul(A).wrapping_add(B);
-    let d = c.wrapping_mul(A).wrapping_add(B);
-
-    println!("{:x}\n{:x}\n{:x}\n{:x}", a, b, c, d);
+/// Reseed
+pub fn reseed() {
     XORSHIFT_RNG.with(|xorshift_rng| {
-        xorshift_rng.borrow_mut().reseed([a, b, c, d]);
+        xorshift_rng.replace(XorShiftRng::from_rng(thread_rng()).expect("reseed from thread rng failed"));
     })
 }
 

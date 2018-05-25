@@ -10,7 +10,7 @@
         "terrain": [
             ["dirt", "dirt-wall"]
         ],
-        "item_gen_probability": 45
+        "item_gen_probability": 0.02
     },
     "Ruin": {
         "map_size": [32, 32],
@@ -21,6 +21,6 @@
         "terrain": [
             ["concrete-rust", "concrete-rust-wall"]
         ],
-        "item_gen_probability": 60
+        "item_gen_probability": 0.02
     }
 }

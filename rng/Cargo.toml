@@ -8,4 +8,4 @@ name = "rusted_ruins_rng"
 crate-type = ["rlib"]
 
 [dependencies]
-rand = "0.4"
+rand = "0.5"
