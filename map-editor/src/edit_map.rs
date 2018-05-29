@@ -42,8 +42,11 @@ impl EditingMap {
                 for dir in &Direction::EIGHT_DIRS {
                     piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
                 }
-                piece_pattern_flags.to_piece_pattern()
+                let wall_obj = gobj::get_obj(idx);
+                piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
             };
+
+            if piece_pattern.is_empty() { return; }
             
             self.wall[pos] = WallIdxPP { idx, piece_pattern };
         } else {
@@ -73,8 +76,11 @@ impl EditingMap {
             for dir in &Direction::EIGHT_DIRS {
                 piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
             }
-            piece_pattern_flags.to_piece_pattern()
+            let tile_obj = gobj::get_obj(new_tile_idx);
+            piece_pattern_flags.to_piece_pattern(tile_obj.img.n_pattern)
         };
+
+        if piece_pattern.is_empty() { return; }
 
         self.tile[pos][1].idx = new_tile_idx;
         self.tile[pos][1].piece_pattern = piece_pattern;

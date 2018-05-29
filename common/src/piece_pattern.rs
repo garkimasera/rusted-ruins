@@ -107,21 +107,25 @@ impl PiecePatternFlags {
         }
     }
 
-    pub fn to_piece_pattern(self) -> PiecePattern {
+    pub fn to_piece_pattern(self, n_pattern: u32) -> PiecePattern {
         PiecePattern {
             top_left: get_corner_piece_pattern(
+                n_pattern,
                 self.0 & Self::N,
                 self.0 & Self::NW,
                 self.0 & Self::W),
             top_right: get_corner_piece_pattern(
+                n_pattern,
                 self.0 & Self::N,
                 self.0 & Self::NE,
                 self.0 & Self::E),
             bottom_left: get_corner_piece_pattern(
+                n_pattern,
                 self.0 & Self::S,
                 self.0 & Self::SW,
                 self.0 & Self::W),
             bottom_right: get_corner_piece_pattern(
+                n_pattern,
                 self.0 & Self::S,
                 self.0 & Self::SE,
                 self.0 & Self::E),
@@ -138,20 +142,32 @@ impl PiecePatternFlags {
     const NE: u8 = 0b10000000;
 }
 
-fn get_corner_piece_pattern(ns: u8, between: u8, ew: u8) -> u8 {
+fn get_corner_piece_pattern(n_pattern: u32, ns: u8, between: u8, ew: u8) -> u8 {
     let ns = ns != 0;
     let between = between != 0;
     let ew = ew != 0;
     
-    match (ns, between, ew) {
-        (false, false, false) => 3,
-        (false, false, true ) => 1,
-        (false, true , false) => 3,
-        (false, true , true ) => 1,
-        (true , false, false) => 2,
-        (true , false, true ) => 4,
-        (true , true , false) => 2,
-        (true , true , true ) => 0,
+    match n_pattern {
+        1 => {
+            if (ns || ew) && between {
+                0
+            } else {
+                EMPTY_PIECE
+            }
+        }
+        5 => {
+            match (ns, between, ew) {
+                (false, false, false) => 3,
+                (false, false, true ) => 1,
+                (false, true , false) => 3,
+                (false, true , true ) => 1,
+                (true , false, false) => 2,
+                (true , false, true ) => 4,
+                (true , true , false) => 2,
+                (true , true , true ) => 0,
+            }
+        }
+        _ => 0,
     }
 }
 
@@ -161,7 +177,10 @@ pub trait PieceImgObject: ImgObject {
         let img = self.get_img();
         let n_anim_frame = img.n_anim_frame;
         let img_rect = self.img_rect_nth(n_anim_frame * i_pattern as u32 + i_anim_frame);
-        const EMPTY_PIECE_U8: u32 = EMPTY_PIECE as u32;
+
+        if i_pattern == EMPTY_PIECE {
+            return None;
+        }
 
         match i_piece {
             0 => Some(( // Top left piece
@@ -184,7 +203,6 @@ pub trait PieceImgObject: ImgObject {
                 img_rect.1 + PIECE_SIZE_I,
                 PIECE_SIZE,
                 img_rect.3 - PIECE_SIZE)),
-            EMPTY_PIECE_U8 => None,
             _ => {
                 warn!("unknown piece index {}", i_piece);
                 None

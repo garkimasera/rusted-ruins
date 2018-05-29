@@ -2,6 +2,7 @@
 use array2d::*;
 use common::objholder::*;
 use common::gamedata::map::*;
+use common::gobj;
 use map_generator::{MapGenerator, GeneratedMap, TileKind};
 
 #[derive(Default)]
@@ -71,7 +72,8 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
                     for dir in &Direction::EIGHT_DIRS {
                         piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
                     }
-                    piece_pattern_flags.to_piece_pattern()
+                    let wall_obj = gobj::get_obj(wall);
+                    piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
                 map.tile[p].wall = WallIdxPP {
                     idx: wall,
