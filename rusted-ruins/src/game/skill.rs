@@ -21,7 +21,7 @@ impl SkillListEx for SkillList {
                     if let Some(skill_level) = self.skills.get_mut(&kind) {
                         *skill_level += 1;
                     }
-                    (sum - SKILL_EXP_LVUP as u32) as u16
+                    0
                 } else {
                     sum as u16
                 };
