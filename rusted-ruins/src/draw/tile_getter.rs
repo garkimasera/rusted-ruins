@@ -90,8 +90,10 @@ impl ForegroundDrawInfo {
                     WallIdxPP::default()
                 }
             } else {
-                let pos = map.nearest_existent_tile(pos);
-                map.observed_tile[pos].wall
+                let nearest_pos = map.nearest_existent_tile(pos);
+                let mut wallpp = map.observed_tile[nearest_pos].wall;
+                adjust_pattern_from_nearest(&mut wallpp.piece_pattern, pos, nearest_pos);
+                wallpp
             }
         };
 
@@ -129,5 +131,10 @@ impl EffectDrawInfo {
 
         di
     }
+}
+
+/// Adjust piece pattern when getting piece pattern from the nearest tile.
+fn adjust_pattern_from_nearest(pp: &mut PiecePattern, _pos: Vec2d, _nearest_pos: Vec2d) {
+    *pp = PiecePattern::SURROUNDED;
 }
 
