@@ -19,6 +19,9 @@ macro_rules! impl_texture_holder {
             pub fn new(
                 objholder: &ObjectHolder,
                 texture_creator: &'a TextureCreator<WindowContext>) -> TextureHolder<'a> {
+
+                info!("Start loading textures");
+                
                 let tc = TextureCreatorW::new(texture_creator);
 
                 let mut th = TextureHolder {
