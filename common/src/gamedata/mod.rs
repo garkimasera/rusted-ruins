@@ -26,6 +26,7 @@ pub use self::town::*;
 pub struct GameData {
     pub chara: CharaHolder,
     pub region: RegionHolder,
+    pub base_level: BaseLevel,
     current_mapid: MapId,
 }
 
@@ -34,6 +35,7 @@ impl GameData {
         GameData {
             chara: CharaHolder::new(),
             region: RegionHolder::new(),
+            base_level: BaseLevel::default(),
             current_mapid: MapId::default(),
         }
     }
