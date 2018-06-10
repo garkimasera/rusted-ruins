@@ -13,7 +13,7 @@ use dir;
 use tomlinput::TomlInput;
 use buildobj::build_object;
 
-pub fn compile(files: &Vec<String>, output_file: &String) {
+pub fn compile(files: &[&str], output_file: &String) {
     let out = File::create(output_file).unwrap();
     let mut builder = tar::Builder::new(out);
     

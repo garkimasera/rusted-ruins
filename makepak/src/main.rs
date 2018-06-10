@@ -6,14 +6,10 @@ extern crate toml;
 extern crate tar;
 #[macro_use]
 extern crate error_chain;
-extern crate getopts;
+extern crate clap;
 extern crate image;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
-
-use getopts::Options;
-use std::env;
-use std::process::exit;
 
 mod verbose;
 #[macro_use]
@@ -24,68 +20,64 @@ mod dir;
 mod error;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let program = args[0].clone();
+    let matches = create_matches();
 
-    let opts = create_opts();
-
-    let matches = match opts.parse(&args[1..]) {
-        Ok(m) => m,
-        Err(f) => {
-            println!("{}", f.to_string());
-            exit(1);
-        }
-    };
-    if matches.opt_present("h") {
-        print_usage(&program, opts);
-        return;
-    }
-    
-    let files = matches.free.clone();
+    // Input files
+    let files: Vec<&str> = matches.values_of("INPUT").unwrap().collect();
     if files.is_empty() {
-        print_usage(&program, opts);
         return;
     }
 
     // Verbose mode
-    if matches.opt_present("v") {
+    if matches.is_present("verbose") {
         verbose::set_verbose(true);
     }
 
     // Print infomation of pak files
-    if matches.opt_present("i") {
+    if matches.is_present("info") {
         print_info(&files);
         return;
     }
 
-    let output_file: String = match matches.opt_str("o") {
-        Some(f) => f.to_string(),
-        None => {
-            let mut f = files[0].clone();
-            f.push_str(".pak");
-            f
-        },
+    let output_file: String = if let Some(f) = matches.value_of("output") {
+        f.to_owned()
+    } else {
+        let mut f = files[0].to_string();
+        f.push_str(".pak");
+        f
     };
 
     compile::compile(&files, &output_file);
 }
 
-fn print_info(files: &Vec<String>) {
+fn print_info(files: &[&str]) {
     println!("Infomation of {:?} will be printed", files);
 }
 
-fn create_opts() -> Options {
-    let mut opts = Options::new();
-    opts.optflag("h", "help", "Print this help");
-    opts.optflag("v", "verbose", "Verbose mode");
-    opts.optflag("i", "info", "Print given pakage file information");
-    opts.optopt("o", "", "Set output pakage file name", "NAME");
-    opts
+fn create_matches() -> clap::ArgMatches<'static> {
+    use clap::{App, Arg};
+    
+    App::new("rusted-ruins-makepak")
+        .about("Pak file maker for Rusted Ruins")
+        .arg(Arg::with_name("verbose")
+             .short("v")
+             .long("verbose")
+             .help("Verbose mode"))
+        .arg(Arg::with_name("info")
+             .short("i")
+             .long("info")
+             .help("Print given pak file information"))
+        .arg(Arg::with_name("output")
+             .short("o")
+             .long("output")
+             .value_name("FILE")
+             .help("Set output pakage file name")
+             .takes_value(true))
+        .arg(Arg::with_name("INPUT")
+             .help("Input toml files")
+             .index(1)
+             .multiple(true)
+             .required(true))
+        .get_matches()
 }
-
-fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] FILE", program);
-    print!("{}", opts.usage(&brief));
-}
-
 
