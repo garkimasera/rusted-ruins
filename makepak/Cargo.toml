@@ -10,7 +10,7 @@ error-chain = "0.11"
 toml = "0.4"
 tar = "0.4"
 getopts = "0.2"
-image = "0.18"
+image = "0.19"
 
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
