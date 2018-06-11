@@ -5,6 +5,7 @@ use super::chara::CharaEx;
 use super::skill::SkillListEx;
 use common::gobj;
 use common::gamedata::*;
+use rules::RULES;
 
 pub enum DamageKind {
     MeleeAttack,
@@ -53,7 +54,10 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Exp processing
     {
         let attacker = game.gd.chara.get_mut(attacker);
-        attacker.skills.add_exp(skill_kind, 1);
+        attacker.skills.add_exp(
+            skill_kind,
+            RULES.exp.attack,
+            game.gd.base_level.level());
     }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
@@ -98,7 +102,10 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     // Exp processing
     {
         let attacker = game.gd.chara.get_mut(attacker);
-        attacker.skills.add_exp(SkillKind::Weapon(weapon_kind), 1);
+        attacker.skills.add_exp(
+            SkillKind::Weapon(weapon_kind),
+            RULES.exp.attack,
+            game.gd.base_level.level());
     }
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);

@@ -3,12 +3,12 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 
 pub trait SkillListEx {
-    fn add_exp(&mut self, kind: SkillKind, value: u32);
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
     fn learn_new_skill(&mut self, kind: SkillKind);
 }
 
-impl SkillListEx for SkillList {
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32) {
+impl SkillListEx for SkillList {    
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
         if let Some(ref mut exp) = self.exp {
             if let Some(skill_exp) = exp.get_mut(&kind) {
                 let add_exp = if add_exp > SKILL_EXP_LVUP as u32 {

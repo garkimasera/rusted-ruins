@@ -10,11 +10,12 @@ extern crate serde_json;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 
-pub mod params;
-pub mod dungeon_gen;
 pub mod chara;
 pub mod charagen;
+pub mod dungeon_gen;
+pub mod exp;
 pub mod newgame;
+pub mod params;
 
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -23,21 +24,23 @@ use serde::de::Deserialize;
 
 /// Contain game rules
 pub struct Rules {
-    pub params: params::Params,
-    pub dungeon_gen: dungeon_gen::DungeonGen,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
+    pub dungeon_gen: dungeon_gen::DungeonGen,
+    pub exp: exp::Exp,
     pub newgame: newgame::NewGame,
+    pub params: params::Params,
 }
 
 impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
         Rules {
-            params:      read_from_json(&rules_dir.join("params.json")),
-            dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             chara:       read_from_json(&rules_dir.join("chara.json")),
             chara_gen:   read_from_json(&rules_dir.join("charagen.json")),
+            dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
+            exp:         read_from_json(&rules_dir.join("exp.json")),
             newgame:     read_from_json(&rules_dir.join("newgame.json")),
+            params:      read_from_json(&rules_dir.join("params.json")),
         }
     }
 }
