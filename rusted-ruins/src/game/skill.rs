@@ -9,9 +9,19 @@ pub trait SkillListEx {
 
 impl SkillListEx for SkillList {    
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
+        if self.exp.is_none() { return; }
+        // Adjusting by base_level
+        let skill_level = if let Some(skill_level) = self.skills.get(&kind) {
+            *skill_level
+        } else {
+            return;
+        };
+        let add_exp = (add_exp as f32 * search_adjust_coeff(base_level, skill_level)) as u32;
+
+        // Add exp
         if let Some(ref mut exp) = self.exp {
             if let Some(skill_exp) = exp.get_mut(&kind) {
-                let add_exp = if add_exp > SKILL_EXP_LVUP as u32 {
+                let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
                     SKILL_EXP_LVUP as u32
                 } else {
                     add_exp
@@ -39,6 +49,21 @@ impl SkillListEx for SkillList {
                 exp.insert(kind, 0);
             }
         }
+    }
+}
+
+fn search_adjust_coeff(base_level: u16, skill_level: u16) -> f32 {
+    use rules::RULES;
+    let diff = skill_level as isize - base_level as isize;
+    let i = RULES.exp.begin_adjust_coeff - diff;
+    let adjust_coeff = &RULES.exp.adjust_coeff;
+    assert!(!adjust_coeff.is_empty());
+    if i < 0 {
+        adjust_coeff[0]
+    } else if i as usize >= RULES.exp.adjust_coeff.len() {
+        *adjust_coeff.last().unwrap()
+    } else {
+        adjust_coeff[i as usize]
     }
 }
 
