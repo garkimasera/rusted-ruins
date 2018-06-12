@@ -4,6 +4,7 @@ use objholder::CharaTemplateIdx;
 use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
 use super::skill::SkillList;
+use super::event::EventTrigger;
 use super::unknown_id_err;
 
 /// Character's races
@@ -230,7 +231,7 @@ pub enum CharaTriggerKind {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum TriggerAction {
     /// Trigger for event handling
-    Event(::event::EventTrigger),
+    Event(EventTrigger),
 }
 
 /// When a chara is talked to, talk will be start from the section of specified TalkScript

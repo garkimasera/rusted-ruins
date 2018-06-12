@@ -1,20 +1,45 @@
 
-//! This module includes functions for handling game events
+//! This module includes functions for handling game events.
+//!
+//! An event consists of its identifier (name + idx) and current stage name.
+//! The progress of events are represented by their stage name.
+//! EventTrigger is used to change the stages.
 
-/// Represent a series of events
+use std::collections::BTreeMap;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Event {
-    pub id: String,
-    pub stages: Vec<EventStage>,
+pub struct EventHolder {
+    /// Ongoing events
+    pub ongoing: BTreeMap<EventId, Event>,
 }
 
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
+pub enum EventId {
+    Scenario {
+        name: String,
+    },
+    FreeMission,
+}
+
+/// Represent an ongoing event
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct EventStage {
-    pub id: String,
+pub struct Event {
+    pub current_stage: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum EventTrigger {
-    StartEvent(String),
+    Start {
+        id: EventId,
+        first_stage: String,
+    },
+    ProceedStage {
+        id: EventId,
+        name: String,
+    },
+    End {
+        id: EventId,
+    },
 }
 
