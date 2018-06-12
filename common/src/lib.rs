@@ -24,7 +24,6 @@ pub mod gobj;
 pub mod pakutil;
 pub mod gamedata;
 pub mod maptemplate;
-pub mod event;
 pub mod regiongen;
 pub mod sitegen;
 pub mod talkscript;
