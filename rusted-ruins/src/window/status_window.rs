@@ -106,8 +106,17 @@ impl SkillWindow {
         let rect: Rect = UI_CFG.skill_window.rect.into();
         let chara = gd.chara.get(::common::gamedata::chara::CharaId::Player);
         let mut choices: Vec<ListRow> = Vec::new();
-        for (k, v) in &chara.skills.skills {
-            let s = format!("{:?} {}", k, v);
+        for (skill_kind, level) in &chara.skills.skills {
+            let e = if let Some(exp) = chara.skills.exp.as_ref() {
+                if let Some(e) = exp.get(skill_kind) {
+                    *e
+                } else {
+                    0
+                }
+            } else {
+                0
+            };
+            let s = format!("{:?} {}  {}%", skill_kind, level, e / 100);
             choices.push(ListRow::Str(s));
         }
         let choose_window = PagedChooseWindow::new(
