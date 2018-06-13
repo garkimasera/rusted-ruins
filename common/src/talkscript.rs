@@ -1,6 +1,7 @@
 
 use hashmap::HashMap;
 use std::borrow::Cow;
+use gamedata::event::EventTrigger;
 
 /// Hold data of one taliking
 #[derive(Serialize, Deserialize)]
@@ -52,6 +53,9 @@ pub enum TalkSectionKind {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TalkReaction {
+    EventTrigger {
+        trigger: EventTrigger
+    },
 }
 
 /// This holds data to represent special talk section.
