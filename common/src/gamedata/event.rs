@@ -14,7 +14,8 @@ pub struct EventHolder {
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "kind")]
 pub enum EventId {
     Scenario {
         name: String,
@@ -29,6 +30,8 @@ pub struct Event {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "kind")]
 pub enum EventTrigger {
     Start {
         id: EventId,

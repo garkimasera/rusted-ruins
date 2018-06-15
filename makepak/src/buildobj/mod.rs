@@ -206,7 +206,17 @@ fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
                 }
             }
             TalkSectionKind::Reaction => {
-                unimplemented!()
+                if let Some(trigger) = v.trigger {
+                    let reaction = TalkReaction::EventTrigger {
+                        trigger: trigger,
+                    };
+                    TalkSection::Reaction {
+                        reaction,
+                        next_section: get_optional_field!(v, next_section),
+                    }
+                } else {
+                    bail!("field for reaction needed");
+                }
             }
             TalkSectionKind::Special => {
                 TalkSection::Special {

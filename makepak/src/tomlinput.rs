@@ -141,7 +141,8 @@ pub struct TalkScriptSectionInput {
     pub dest_sections: Vec<String>,
     pub default_dest_section: Option<String>,
     pub next_section: Option<String>,
-    pub reaction: Option<talkscript::TalkReaction>,
+    // For reaction section
+    pub trigger: Option<gamedata::EventTrigger>,
     pub special: Option<talkscript::SpecialTalkSection>,
 }
 

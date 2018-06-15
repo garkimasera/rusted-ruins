@@ -52,6 +52,8 @@ pub enum TalkSectionKind {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
+#[serde(tag = "kind")]
 pub enum TalkReaction {
     EventTrigger {
         trigger: EventTrigger
