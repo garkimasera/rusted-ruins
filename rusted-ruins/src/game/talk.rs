@@ -88,8 +88,13 @@ impl TalkManager {
                 TalkSection::Normal {  .. } => {
                     return TalkResult::Continue;
                 }
-                TalkSection::Reaction { ref next_section, .. } => {
-                    // process reaction here
+                TalkSection::Reaction { ref next_section, ref reaction } => {
+                    match reaction {
+                        TalkReaction::EventTrigger { trigger } => {
+                            use game::event::process_event_trigger;
+                            process_event_trigger(game, trigger); // process event
+                        }
+                    }
                     self.current_section = next_section.clone();
                     continue;
                 }
