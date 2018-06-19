@@ -53,11 +53,12 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     super::chara::damage(game, target, damage, DamageKind::MeleeAttack);
     // Exp processing
     {
+        let target_level = game.gd.chara.get(target).base_params.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.skills.add_exp(
             skill_kind,
             RULES.exp.attack,
-            game.gd.base_level.level());
+            target_level);
     }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
@@ -101,11 +102,12 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     super::chara::damage(game, target, damage, DamageKind::RangedAttack);
     // Exp processing
     {
+        let target_level = game.gd.chara.get(target).base_params.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.skills.add_exp(
             SkillKind::Weapon(weapon_kind),
             RULES.exp.attack,
-            game.gd.base_level.level());
+            target_level);
     }
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);

@@ -90,19 +90,19 @@ pub struct CharaParams {
     /// Max HP
     pub max_hp: i32,
     /// Strength
-    pub str: u32,
+    pub str: u16,
     /// Vitality
-    pub vit: u32,
+    pub vit: u16,
     /// Dexterity
-    pub dex: u32,
+    pub dex: u16,
     /// Intelligence
-    pub int: u32,
+    pub int: u16,
     /// Will
-    pub wil: u32,
+    pub wil: u16,
     /// Charisma
-    pub cha: u32,
+    pub cha: u16,
     /// Speed
-    pub spd: u32,
+    pub spd: u16,
     /// Range of view in tile
     pub view_range: i32,
 }
@@ -111,15 +111,15 @@ pub struct CharaParams {
 #[derive(Serialize, Deserialize, Default)]
 pub struct CharaBaseParams {
     /// Character level
-    pub level: u32,
+    pub level: u16,
     pub max_hp: i32,
-    pub str: u32,
-    pub vit: u32,
-    pub dex: u32,
-    pub int: u32,
-    pub wil: u32,
-    pub cha: u32,
-    pub spd: u32,
+    pub str: u16,
+    pub vit: u16,
+    pub dex: u16,
+    pub int: u16,
+    pub wil: u16,
+    pub cha: u16,
+    pub spd: u16,
 }
 
 /// Represents chara status
