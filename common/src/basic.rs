@@ -43,6 +43,6 @@ pub const MAX_AUTO_GEN_DUNGEONS: u32 = 20;
 /// remaining items will be not drawed.
 pub const MAX_ITEM_FOR_DRAW: usize = 5;
 
-/// Maximum number of overlapped tile images
-pub const MAX_TILE_IMG_OVERLAP: usize = 3;
+/// The number of tile image layers
+pub const N_TILE_IMG_LAYER: usize = 4;
 

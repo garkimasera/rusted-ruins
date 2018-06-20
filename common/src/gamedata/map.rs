@@ -2,7 +2,7 @@
 use std::ops::{Index, IndexMut};
 use array2d::*;
 use objholder::*;
-use basic::{MAX_ITEM_FOR_DRAW, MAX_TILE_IMG_OVERLAP};
+use basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
 use gamedata::item::ItemList;
 use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
@@ -26,56 +26,52 @@ pub struct Map {
     pub boundary: MapBoundary,
 }
 
-/// Represents overlapped tile images
+/// Represents tile image layers
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct OverlappedTile(pub [TileIdxPP; MAX_TILE_IMG_OVERLAP]);
+pub struct TileLayers(pub [TileIdxPP; N_TILE_IMG_LAYER]);
 
-impl Default for OverlappedTile {
-    fn default() -> OverlappedTile {
+impl Default for TileLayers {
+    fn default() -> TileLayers {
         let tile = TileIdxPP {
             idx: TileIdx::default(),
             piece_pattern: PiecePattern::EMPTY,
         };
-        let mut overlapped_tile = [tile; MAX_TILE_IMG_OVERLAP];
-        overlapped_tile[0].piece_pattern = PiecePattern::SURROUNDED;
-        OverlappedTile(overlapped_tile)
+        let mut tile_layers = [tile; N_TILE_IMG_LAYER];
+        tile_layers[0].piece_pattern = PiecePattern::SURROUNDED;
+        TileLayers(tile_layers)
     }
 }
 
-impl From<TileIdx> for OverlappedTile {
-    fn from(tile_idx: TileIdx) -> OverlappedTile {
-        let mut overlapped_tile = OverlappedTile::default();
+impl From<TileIdx> for TileLayers {
+    fn from(tile_idx: TileIdx) -> TileLayers {
+        let mut overlapped_tile = TileLayers::default();
         overlapped_tile[0].idx = tile_idx;
         overlapped_tile
     }
 }
 
-impl Index<usize> for OverlappedTile {
+impl Index<usize> for TileLayers {
     type Output = TileIdxPP;
     fn index(&self, index: usize) -> &TileIdxPP {
         &self.0[index]
     }
 }
 
-impl IndexMut<usize> for OverlappedTile {
+impl IndexMut<usize> for TileLayers {
     fn index_mut(&mut self, index: usize) -> &mut TileIdxPP {
         &mut self.0[index]
     }
 }
 
-impl OverlappedTile {
-    pub fn len(&self) -> usize {
-        for i in 0..MAX_TILE_IMG_OVERLAP {
-            if self[i].is_empty() {
-                return i;
+impl TileLayers {
+    pub fn main_tile(&self) -> TileIdx {
+        for t in &self.0 {
+            if !t.is_empty() {
+                return t.idx;
             }
         }
-        MAX_TILE_IMG_OVERLAP
-    }
-
-    pub fn main_tile(&self) -> TileIdx {
-        assert!(self.len() > 0);
-        self[self.len() - 1].idx
+        warn!("Every tile layer is empty. Use default index.");
+        TileIdx::default()
     }
 }
 
@@ -150,7 +146,7 @@ pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
     /// Base tile
-    pub tile: OverlappedTile,
+    pub tile: TileLayers,
     /// If wall is presented, the tile is no walkable
     pub wall: WallIdxPP, 
     /// Decoration for this tile
@@ -165,7 +161,7 @@ pub struct TileInfo {
 /// These data will be updated every player turn based on player's view
 #[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
-    pub tile: Option<OverlappedTile>,
+    pub tile: Option<TileLayers>,
     pub wall: WallIdxPP,
     pub deco: Option<DecoIdx>,
     pub n_item: usize,
@@ -203,7 +199,7 @@ impl Default for BoundaryBehavior {
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
-            tile: OverlappedTile::default(),
+            tile: TileLayers::default(),
             wall: WallIdxPP::default(),
             deco: None,
             item_list: None,
@@ -326,7 +322,7 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> OverlappedTile {
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> TileLayers {
         if self.is_inside(pos) {
             return self.tile[pos].tile;
         }

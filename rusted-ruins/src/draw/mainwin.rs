@@ -4,7 +4,7 @@ use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use sdl2::render::Texture;
 use array2d::*;
-use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I};
+use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I, N_TILE_IMG_LAYER};
 use common::objholder::{Holder, UIImgIdx};
 use common::obj::*;
 use common::gobj;
@@ -156,7 +156,8 @@ impl MainWinDrawer {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile { // Draw tile
-            for i in 0..t.len() {
+            for i in 0..N_TILE_IMG_LAYER {
+                if t[i].is_empty() { continue; }
                 let obj = gobj::get_obj(t[i].idx);
                 let tex = sv.tex().get(t[i].idx);
                 self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern);

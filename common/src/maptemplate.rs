@@ -1,10 +1,10 @@
 
 use std::ops::{Index, IndexMut};
 use array2d::*;
-use basic::MAX_TILE_IMG_OVERLAP;
+use basic::N_TILE_IMG_LAYER;
 use piece_pattern::*;
 #[cfg(feature="global_state_obj")]
-use gamedata::map::OverlappedTile;
+use gamedata::map::TileLayers;
 #[cfg(feature="global_state_obj")]
 use objholder::ObjectIndex;
 
@@ -16,7 +16,7 @@ pub struct MapTemplateObject {
     pub h: u32,
     /// Tile Id (String) <-> integer value conversion table
     pub tile_table: Vec<String>,
-    pub tile: Array2d<OverlappedTileConverted>,
+    pub tile: Array2d<TileLayersConverted>,
     /// Wall Id (String) <-> integer value conversion table
     pub wall_table: Vec<String>,
     pub wall: Array2d<ConvertedIdxPP>,
@@ -27,27 +27,16 @@ pub struct MapTemplateObject {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
-pub struct OverlappedTileConverted([ConvertedIdxPP; MAX_TILE_IMG_OVERLAP]);
+pub struct TileLayersConverted([ConvertedIdxPP; N_TILE_IMG_LAYER]);
 
-impl OverlappedTileConverted {
-    pub fn len(&self) -> usize {
-        for i in 0..MAX_TILE_IMG_OVERLAP {
-            if self[i].is_empty() {
-                return i;
-            }
-        }
-        MAX_TILE_IMG_OVERLAP
-    }
-}
-
-impl Index<usize> for OverlappedTileConverted {
+impl Index<usize> for TileLayersConverted {
     type Output = ConvertedIdxPP;
     fn index(&self, index: usize) -> &ConvertedIdxPP {
         &self.0[index]
     }
 }
 
-impl IndexMut<usize> for OverlappedTileConverted {
+impl IndexMut<usize> for TileLayersConverted {
     fn index_mut(&mut self, index: usize) -> &mut ConvertedIdxPP {
         &mut self.0[index]
     }
@@ -130,20 +119,20 @@ impl<T> IdxWithPiecePattern<T> where T: ObjectIndex + Default {
 }
 
 #[cfg(feature="global_state_obj")]
-impl OverlappedTile {
-    pub fn conv_into(self, table: &Vec<String>) -> OverlappedTileConverted {
-        let mut c = [ConvertedIdxPP::default(); MAX_TILE_IMG_OVERLAP];
-        for i in 0..self.len() {
+impl TileLayers {
+    pub fn conv_into(self, table: &Vec<String>) -> TileLayersConverted {
+        let mut c = [ConvertedIdxPP::default(); N_TILE_IMG_LAYER];
+        for i in 0..N_TILE_IMG_LAYER {
             c[i] = self[i].conv_into(table);
         }
-        OverlappedTileConverted(c)
+        TileLayersConverted(c)
     }
 
-    pub fn conv_from(c: OverlappedTileConverted, table: &Vec<String>) -> OverlappedTile {
-        let mut o = [TileIdxPP::default(); MAX_TILE_IMG_OVERLAP];
-        for i in 0..c.len() {
+    pub fn conv_from(c: TileLayersConverted, table: &Vec<String>) -> TileLayers {
+        let mut o = [TileIdxPP::default(); N_TILE_IMG_LAYER];
+        for i in 0..N_TILE_IMG_LAYER {
             o[i] = TileIdxPP::conv_from(c[i], table);
         }
-        OverlappedTile(o)
+        TileLayers(o)
     }
 }

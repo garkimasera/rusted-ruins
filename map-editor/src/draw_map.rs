@@ -1,6 +1,6 @@
 
 use array2d::*;
-use common::basic::{TILE_SIZE_I, PIECE_SIZE_I};
+use common::basic::{TILE_SIZE_I, PIECE_SIZE_I, N_TILE_IMG_LAYER};
 use common::objholder::*;
 use common::gobj;
 use common::piece_pattern::*;
@@ -27,7 +27,7 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
             let p = Vec2d::new(ix + pos.0, iy + pos.1);
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 { continue; }
 
-            for i_tile in 0..map.tile[p].len() {
+            for i_tile in 0..N_TILE_IMG_LAYER {
                 // Draw tile
                 draw_pieces(cr, pbh, map.tile[p][i_tile].idx, map.tile[p][i_tile].piece_pattern, ix, iy);
             }

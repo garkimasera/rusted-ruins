@@ -1,8 +1,9 @@
 
 use array2d::*;
+use common::basic::N_TILE_IMG_LAYER;
 use common::maptemplate::*;
 use common::objholder::*;
-use common::gamedata::OverlappedTile;
+use common::gamedata::TileLayers;
 use common::gobj;
 use common::piece_pattern::*;
 
@@ -10,14 +11,14 @@ pub struct EditingMap {
     pub property: MapProperty,
     pub width: u32,
     pub height: u32,
-    pub tile: Array2d<OverlappedTile>,
+    pub tile: Array2d<TileLayers>,
     pub wall: Array2d<WallIdxPP>,
     pub deco: Array2d<Option<DecoIdx>>,
 }
 
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
-        let tile = Array2d::new(width, height, OverlappedTile::default());
+        let tile = Array2d::new(width, height, TileLayers::default());
         let wall = Array2d::new(width, height, WallIdxPP::default());
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
@@ -89,7 +90,7 @@ impl EditingMap {
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
         self.width = new_w;
         self.height = new_h;
-        let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), OverlappedTile::default());
+        let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), TileLayers::default());
         self.tile = tile;
         let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), WallIdxPP::default());
         self.wall = wall;
@@ -102,7 +103,7 @@ impl EditingMap {
 
         // Create table for TileIdx
         for &tile in self.tile.iter() {
-            for i in 0..tile.len() {
+            for i in 0..N_TILE_IMG_LAYER {
                 let tile_idx = tile[i].idx;
                 let tile_id = gobj::idx_to_id(tile_idx);
                 if tile_table.iter().all(|a| *a != tile_id) {
@@ -112,7 +113,7 @@ impl EditingMap {
         }
 
         // Create converted tile map
-        let mut tile_map = Array2d::new(self.width, self.height, OverlappedTileConverted::default());
+        let mut tile_map = Array2d::new(self.width, self.height, TileLayersConverted::default());
         for (pos, tile) in self.tile.iter_with_idx() {
             tile_map[pos] = tile.conv_into(&tile_table);
         }
@@ -189,7 +190,7 @@ impl From<MapTemplateObject> for EditingMap {
         let mut map = EditingMap::new(&obj.id, obj.w, obj.h);
 
         for (pos, c) in obj.tile.iter_with_idx() {
-            map.tile[pos] = OverlappedTile::conv_from(*c, &obj.tile_table);
+            map.tile[pos] = TileLayers::conv_from(*c, &obj.tile_table);
         }
 
         for (pos, c) in obj.wall.iter_with_idx() {

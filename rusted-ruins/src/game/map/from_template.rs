@@ -18,7 +18,7 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
     let mut map = Map::new(t.w, t.h);
 
     for (pos, c) in t.tile.iter_with_idx() { // Setting tiles
-        map.tile[pos].tile = OverlappedTile::conv_from(*c, &t.tile_table);
+        map.tile[pos].tile = TileLayers::conv_from(*c, &t.tile_table);
     }
 
     for (pos, c) in t.wall.iter_with_idx() { // Setting walls

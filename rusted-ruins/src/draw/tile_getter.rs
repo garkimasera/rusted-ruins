@@ -11,7 +11,7 @@ use game::view::ViewMap;
 /// "Background" means that they are drawed behind any characters
 #[derive(Default)]
 pub struct BackgroundDrawInfo {
-    pub tile: Option<OverlappedTile>,
+    pub tile: Option<TileLayers>,
     pub deco: Option<DecoIdx>,
     pub special: Option<SpecialTileIdx>,
 }
