@@ -25,8 +25,9 @@ impl EditingMap {
         EditingMap { property, width, height, tile, wall, deco }
     }
 
-    pub fn set_tile(&mut self, pos: Vec2d, tile: TileIdx) {
-        self.tile[pos] = tile.into();
+    pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
+        self.tile[pos][layer].idx = idx;
+        self.tile[pos][layer].piece_pattern = PiecePattern::SURROUNDED;
     }
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
@@ -64,11 +65,11 @@ impl EditingMap {
         self.deco[pos] = None;
     }
 
-    pub fn tile_overlap(&mut self, pos: Vec2d, new_tile_idx: TileIdx) {
+    pub fn tile_layer_draw(&mut self, pos: Vec2d, new_tile_idx: TileIdx, layer: usize) {
         let piece_pattern = {
             let f = |pos: Vec2d| {
                 if let Some(t) = self.tile.get(pos) {
-                    t.main_tile() == new_tile_idx
+                    t[layer].idx == new_tile_idx
                 } else {
                     true
                 }
@@ -83,8 +84,8 @@ impl EditingMap {
 
         if piece_pattern.is_empty() { return; }
 
-        self.tile[pos][1].idx = new_tile_idx;
-        self.tile[pos][1].piece_pattern = piece_pattern;
+        self.tile[pos][layer].idx = new_tile_idx;
+        self.tile[pos][layer].piece_pattern = piece_pattern;
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32) {

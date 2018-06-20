@@ -34,6 +34,10 @@ pub struct Ui {
     pub adjustment_map_pos_y: gtk::Adjustment,
     pub label_cursor_pos:    gtk::Label,
     pub label_selected_item: gtk::Label,
+    pub radiobutton_layer0: gtk::RadioButton,
+    pub radiobutton_layer1: gtk::RadioButton,
+    pub radiobutton_layer2: gtk::RadioButton,
+    pub radiobutton_layer3: gtk::RadioButton,
     pub iconview: IconView,
     pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
@@ -45,6 +49,8 @@ pub struct Ui {
     pub signal_mode: Rc<Cell<bool>>,
     /// Shift key state
     pub shift: Rc<Cell<bool>>,
+    /// Current layer to draw
+    pub current_layer: Rc<Cell<usize>>,
 }
 
 macro_rules! get_object {
@@ -73,6 +79,10 @@ pub fn build_ui(application: &gtk::Application) {
         adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
         label_cursor_pos:    get_object!(builder, "label-cursor-pos"),
         label_selected_item: get_object!(builder, "label-selected-item"),
+        radiobutton_layer0: get_object!(builder, "radiobutton-layer0"),
+        radiobutton_layer1: get_object!(builder, "radiobutton-layer1"),
+        radiobutton_layer2: get_object!(builder, "radiobutton-layer2"),
+        radiobutton_layer3: get_object!(builder, "radiobutton-layer3"),
         iconview: IconView::build(&builder),
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
@@ -82,6 +92,7 @@ pub fn build_ui(application: &gtk::Application) {
         filepath: Rc::new(RefCell::new(None)),
         signal_mode: Rc::new(Cell::new(true)),
         shift: Rc::new(Cell::new(false)),
+        current_layer: Rc::new(Cell::new(0)),
     };
 
     let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
@@ -261,6 +272,24 @@ pub fn build_ui(application: &gtk::Application) {
             Inhibit(false)
         });
     }
+    { // Layer bottons
+        let uic = ui.clone();
+        ui.radiobutton_layer0.connect_toggled(move |_| { // Layer 0
+            uic.current_layer.set(0);
+        });
+        let uic = ui.clone();
+        ui.radiobutton_layer1.connect_toggled(move |_| { // Layer 1
+            uic.current_layer.set(1);
+        });
+        let uic = ui.clone();
+        ui.radiobutton_layer2.connect_toggled(move |_| { // Layer 2
+            uic.current_layer.set(2);
+        });
+        let uic = ui.clone();
+        ui.radiobutton_layer3.connect_toggled(move |_| { // Layer 3
+            uic.current_layer.set(3);
+        });
+    }
     
 
     ::property_controls::connect_for_property_controls(&ui);
@@ -357,9 +386,9 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
                 if ui.shift.get() {
-                    ui.map.borrow_mut().tile_overlap(Vec2d::new(ix, iy), idx);
+                    ui.map.borrow_mut().tile_layer_draw(Vec2d::new(ix, iy), idx, ui.current_layer.get());
                 } else {
-                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx);
+                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx, ui.current_layer.get());
                 }
             }
             SelectedItem::Wall(idx) => {
