@@ -65,13 +65,18 @@ impl IndexMut<usize> for TileLayers {
 
 impl TileLayers {
     pub fn main_tile(&self) -> TileIdx {
+        let mut idx: Option<TileIdx> = None;
         for t in &self.0 {
             if !t.is_empty() {
-                return t.idx;
+                idx = Some(t.idx);
             }
         }
-        warn!("Every tile layer is empty. Use default index.");
-        TileIdx::default()
+        if let Some(idx) = idx {
+            idx
+        } else {
+            warn!("Every tile layer is empty. Use default index.");
+            TileIdx::default()
+        }
     }
 }
 
