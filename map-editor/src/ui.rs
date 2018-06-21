@@ -38,6 +38,10 @@ pub struct Ui {
     pub radiobutton_layer1: gtk::RadioButton,
     pub radiobutton_layer2: gtk::RadioButton,
     pub radiobutton_layer3: gtk::RadioButton,
+    pub checkbutton_layer0: gtk::CheckButton,
+    pub checkbutton_layer1: gtk::CheckButton,
+    pub checkbutton_layer2: gtk::CheckButton,
+    pub checkbutton_layer3: gtk::CheckButton,
     pub iconview: IconView,
     pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
@@ -51,6 +55,7 @@ pub struct Ui {
     pub shift: Rc<Cell<bool>>,
     /// Current layer to draw
     pub current_layer: Rc<Cell<usize>>,
+    pub layer_visible: Rc<RefCell<[bool; 4]>>,
 }
 
 macro_rules! get_object {
@@ -83,6 +88,10 @@ pub fn build_ui(application: &gtk::Application) {
         radiobutton_layer1: get_object!(builder, "radiobutton-layer1"),
         radiobutton_layer2: get_object!(builder, "radiobutton-layer2"),
         radiobutton_layer3: get_object!(builder, "radiobutton-layer3"),
+        checkbutton_layer0: get_object!(builder, "checkbutton-layer0"),
+        checkbutton_layer1: get_object!(builder, "checkbutton-layer1"),
+        checkbutton_layer2: get_object!(builder, "checkbutton-layer2"),
+        checkbutton_layer3: get_object!(builder, "checkbutton-layer3"),
         iconview: IconView::build(&builder),
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
@@ -93,6 +102,7 @@ pub fn build_ui(application: &gtk::Application) {
         signal_mode: Rc::new(Cell::new(true)),
         shift: Rc::new(Cell::new(false)),
         current_layer: Rc::new(Cell::new(0)),
+        layer_visible: Rc::new(RefCell::new([true; 4])),
     };
 
     let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
@@ -118,7 +128,8 @@ pub fn build_ui(application: &gtk::Application) {
             let height = widget.get_allocated_height();
             let map = uic.map.borrow();
             let pos = uic.get_map_pos();
-            ::draw_map::draw_map(context, &*map, &*uic.pbh, width, height, pos);
+            ::draw_map::draw_map(
+                context, &*map, &*uic.pbh, width, height, pos, *uic.layer_visible.borrow());
             Inhibit(false)
         });
     }
@@ -290,7 +301,28 @@ pub fn build_ui(application: &gtk::Application) {
             uic.current_layer.set(3);
         });
     }
-    
+    { // Layer check bottons
+        let uic = ui.clone();
+        ui.checkbutton_layer0.connect_toggled(move |b| { // Layer 0
+            uic.layer_visible.borrow_mut()[0] = b.get_active();
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_layer1.connect_toggled(move |b| { // Layer 1
+            uic.layer_visible.borrow_mut()[1] = b.get_active();
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_layer2.connect_toggled(move |b| { // Layer 2
+            uic.layer_visible.borrow_mut()[2] = b.get_active();
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_layer3.connect_toggled(move |b| { // Layer 3
+            uic.layer_visible.borrow_mut()[3] = b.get_active();
+            uic.map_redraw();
+        });
+    }
 
     ::property_controls::connect_for_property_controls(&ui);
     ::iconview::set_iconview(&ui);

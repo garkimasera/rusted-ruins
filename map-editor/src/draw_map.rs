@@ -13,7 +13,7 @@ use edit_map::EditingMap;
 
 /// Draw tiles and objects on map
 pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
-                width: i32, height: i32, pos: (i32, i32)) {
+                width: i32, height: i32, pos: (i32, i32), layer_visible: [bool; N_TILE_IMG_LAYER]) {
     
     let tile_nx = width / TILE_SIZE_I + 1;
     let tile_ny = height / TILE_SIZE_I + 1;
@@ -28,6 +28,9 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 { continue; }
 
             for i_tile in 0..N_TILE_IMG_LAYER {
+                if !layer_visible[i_tile] {
+                    continue;
+                }
                 // Draw tile
                 draw_pieces(cr, pbh, map.tile[p][i_tile].idx, map.tile[p][i_tile].piece_pattern, ix, iy);
             }
