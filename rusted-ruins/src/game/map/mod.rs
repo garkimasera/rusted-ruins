@@ -97,8 +97,15 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     use rng::gen_range;
     const MAX_TRY: usize = 10;
 
+    // Function to determine the tile is empty or not
     let is_tile_empty = |tile: &TileInfo| {
-        tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none()
+        if tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none() {
+            let tile_idx = tile.tile.main_tile();
+            let tile_obj = gobj::get_obj(tile_idx);
+            tile_obj.kind == TileKind::Ground
+        } else {
+            false
+        }
     };
     
     for _ in 0..MAX_TRY {
