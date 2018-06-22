@@ -377,6 +377,7 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
     if file_chooser.run() == gtk::ResponseType::Ok.into() {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
         file_chooser.destroy();
+        ui.map_redraw();
         return Some(filename);
     }
     file_chooser.destroy();
