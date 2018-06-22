@@ -65,6 +65,10 @@ impl EditingMap {
         self.deco[pos] = None;
     }
 
+    pub fn erase_layer(&mut self, pos: Vec2d, layer: usize) {
+        self.tile[pos][layer] = TileIdxPP::default();
+    }
+
     pub fn tile_layer_draw(&mut self, pos: Vec2d, new_tile_idx: TileIdx, layer: usize) {
         let piece_pattern = {
             let f = |pos: Vec2d| {

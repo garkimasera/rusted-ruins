@@ -437,10 +437,18 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
 
 fn try_erase(ui: &Ui, pos: (f64, f64)) {
     let (ix, iy) = ui.cursor_to_tile_pos(pos);
-    if ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32 {
-        ui.map.borrow_mut().erase(Vec2d::new(ix, iy));
-        ui.map_redraw();
+    if !(ix < ui.map.borrow().width as i32 && iy < ui.map.borrow().height as i32) {
+        return;
     }
+    match ui.selected_item.get() {
+        SelectedItem::Tile(_) => {
+            ui.map.borrow_mut().erase_layer(Vec2d::new(ix, iy), ui.current_layer.get());
+        }
+        _ => {
+            ui.map.borrow_mut().erase(Vec2d::new(ix, iy));
+        }
+    }
+    ui.map_redraw();
 }
 
 fn centering_to(ui: &Ui, pos: (i32, i32)) {
