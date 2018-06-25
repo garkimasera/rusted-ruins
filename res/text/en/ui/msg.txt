@@ -1,14 +1,14 @@
 % dialog.exit
 Do you exit from Rusted Ruins?
-% dialog.gameover
-You die...
 % dialog.exit_to_regionmap
 Do you exit to region map?
+% dialog.gameover
+You die...
 % dialog.move_floor
 Do you move from this floor?
 % dialog.enter_site
 Do you enter $(site_name)?
-% newgame.inputplayername
-Who are you?
 % newgame.chooseclass
 Choose your class
+% newgame.inputplayername
+Who are you?

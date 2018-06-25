@@ -1,8 +1,14 @@
 % dialog.exit
 ゲームを終了しますか?
+% dialog.exit_to_regionmap
+地域マップに出ますか?
 % dialog.gameover
 あなたは力つきた･･･
-% newgame.inputplayername
-あなたの名前を入力してください
+% dialog.move_floor
+この階層から移動しますか?
+% dialog.enter_site
+$(site_name)に入りますか?
 % newgame.chooseclass
 クラスを選択してください
+% newgame.inputplayername
+あなたの名前を入力してください
