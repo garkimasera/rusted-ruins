@@ -2,19 +2,29 @@
 use std::collections::VecDeque;
 use common::gamedata::*;
 use common::basic::WAIT_TIME_START;
+use rules::RULES;
 use super::{Game, GameState};
 use super::chara::CharaEx;
 use super::chara::preturn::preturn;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 
+/// Game time will advance when clock_count reaches this
+const CLOCK_COUNT_MAX: u64 = 100;
+
 /// Contains interruption data of charaid iterator
 #[derive(Clone)]
-pub struct TurnLoopData(VecDeque<CharaId>);
+pub struct TurnLoopData {
+    action_queue: VecDeque<CharaId>,
+    clock_count: u64,
+}
 
 impl TurnLoopData {
     pub fn new() -> TurnLoopData {
-        TurnLoopData(VecDeque::new())
+        TurnLoopData {
+            action_queue: VecDeque::new(),
+            clock_count: 0,
+        }
     }
 }
     
@@ -25,19 +35,19 @@ pub fn turn_loop(game: &mut Game) {
     'turn_loop:
     loop {
         // Add chara ids that are on the current map
-        if game.turn_loop_data.0.is_empty() {
+        if game.turn_loop_data.action_queue.is_empty() {
             let map = game.gd.get_current_map();
             for cid in map.iter_charaid() {
                 match *cid {
                     CharaId::OnMap { .. } => {
-                        game.turn_loop_data.0.push_back(*cid);
+                        game.turn_loop_data.action_queue.push_back(*cid);
                     },
                     CharaId::Player => (),
                 }
             }
         }
         
-        while let Some(cid) = game.turn_loop_data.0.pop_front() {
+        while let Some(cid) = game.turn_loop_data.action_queue.pop_front() {
             
             let is_process_npc_turn = {
                 let chara = game.gd.chara.get_mut(cid);
@@ -54,6 +64,13 @@ pub fn turn_loop(game: &mut Game) {
                     return;
                 }
             }
+        }
+
+        // Advance game date and time
+        game.turn_loop_data.clock_count += 1;
+        if game.turn_loop_data.clock_count >= CLOCK_COUNT_MAX {
+            advance_game_date(game);
+            game.turn_loop_data.clock_count = 0;
         }
 
         // If player's wait time becomes 0, player turn now.
@@ -96,7 +113,7 @@ fn remove_dying_charas(game: &mut Game) {
         // Remove from gamedata
         game.gd.remove_chara(cid);
         // Remove from action queue
-        let action_queue = &mut game.turn_loop_data.0;
+        let action_queue = &mut game.turn_loop_data.action_queue;
         if let Some((i, _)) = action_queue.iter().enumerate().find(|&(_, a)| *a == cid) {
             action_queue.remove(i);
         }
@@ -105,5 +122,17 @@ fn remove_dying_charas(game: &mut Game) {
             game.target_chara = None;
         }
     }
+}
+
+/// Advance game date and time
+fn advance_game_date(game: &mut Game) {
+    let mid = game.gd.get_current_mapid();
+    let advance_minutes = if mid.is_region_map() {
+        RULES.params.minutes_per_turn_region
+    } else {
+        RULES.params.minutes_per_turn_normal
+    };
+
+    let _changed = game.gd.time.advance_by(advance_minutes);
 }
 

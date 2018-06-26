@@ -8,6 +8,7 @@ pub mod region;
 pub mod shop;
 pub mod site;
 pub mod skill;
+pub mod time;
 pub mod town;
 
 use array2d::Vec2d;
@@ -21,6 +22,7 @@ pub use self::region::*;
 pub use self::shop::*;
 pub use self::site::*;
 pub use self::skill::*;
+pub use self::time::*;
 pub use self::town::*;
 
 /// Includes all data for one game
@@ -28,6 +30,7 @@ pub use self::town::*;
 pub struct GameData {
     pub chara: CharaHolder,
     pub region: RegionHolder,
+    pub time: Time,
     current_mapid: MapId,
 }
 
@@ -36,6 +39,7 @@ impl GameData {
         GameData {
             chara: CharaHolder::new(),
             region: RegionHolder::new(),
+            time: Time::default(),
             current_mapid: MapId::default(),
         }
     }

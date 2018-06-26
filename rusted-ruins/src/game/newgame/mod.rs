@@ -53,6 +53,13 @@ impl NewGameBuilder {
             let equip = gamedata::item::EquipItemList::new(slots);
             chara.equip = equip;
             gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
+
+            // Initial date setting
+            gd.time = Time::new(
+                RULES.params.initial_date_year,
+                RULES.params.initial_date_month,
+                RULES.params.initial_date_day,
+                RULES.params.initial_date_hour);
         }
         self.gd
     }

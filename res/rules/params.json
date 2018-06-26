@@ -1,4 +1,10 @@
  
 {
-    "default_nutrition": 10000
+    "default_nutrition": 10000,
+    "minutes_per_turn_normal": 1.0,
+    "minutes_per_turn_region": 10,
+    "initial_date_year": 100,
+    "initial_date_month": 1,
+    "initial_date_day": 1,
+    "initial_date_hour": 1
 }
