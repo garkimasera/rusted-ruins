@@ -441,6 +441,7 @@ struct GameWindows {
     indicator: indicator::HPIndicator,
     floor_info: indicator::FloorInfo,
     status_info: indicator::StatusInfo,
+    time_info: indicator::TimeInfo,
     hborders: Vec<self::widget::HBorder>,
     vborders: Vec<self::widget::VBorder>,
 }
@@ -467,6 +468,7 @@ impl GameWindows {
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
             status_info: indicator::StatusInfo::new(),
+            time_info: indicator::TimeInfo::new(),
             hborders: hborders,
             vborders: vborders,
         }
@@ -481,6 +483,7 @@ impl GameWindows {
         self.indicator.draw(canvas, game, sv, anim);
         self.floor_info.draw(canvas, game, sv, anim);
         self.status_info.draw(canvas, game, sv, anim);
+        self.time_info.draw(canvas, game, sv, anim);
 
         for hborder in self.hborders.iter_mut() {
             hborder.draw(canvas, sv);

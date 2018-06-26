@@ -89,6 +89,69 @@ impl Window for FloorInfo {
     }
 }
 
+pub struct TimeInfo {
+    date_label: LabelWidget,
+    time_label: LabelWidget,
+    year: u32,
+    month: u32,
+    day: u32,
+    hour: u32,
+    minute: u32,
+}
+
+impl TimeInfo {
+    pub fn new() -> TimeInfo {
+        let rect: Rect = SCREEN_CFG.date_info.into();
+        let date_label = LabelWidget::bordered(rect, "", FontKind::S);
+        let rect: Rect = SCREEN_CFG.time_info.into();
+        let time_label = LabelWidget::bordered(rect, "", FontKind::M);
+        TimeInfo {
+            date_label,
+            time_label,
+            year: 0, month: 0, day: 0, hour: 0, minute: 0,
+        }
+    }
+}
+
+impl Window for TimeInfo {
+    fn draw(
+        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
+
+        let time = &game.gd.time;
+        let mut date_changed = false;
+        if self.year != time.year() {
+            self.year = time.year();
+            date_changed = true;
+        }
+        if self.month != time.month() {
+            self.month = time.month();
+            date_changed = true;
+        }
+        if self.day != time.day() {
+            self.day = time.day();
+            date_changed = true;
+        }
+        let mut time_changed = false;
+        if self.hour != time.hour() {
+            self.hour = time.hour();
+            time_changed = true;
+        }
+        if self.minute != time.minute() {
+            self.minute = time.minute();
+            time_changed = true;
+        }
+        if date_changed {
+            self.date_label.set_text(&format!("{}/{:02}/{:02}", self.year, self.month, self.day))
+        }
+        if time_changed {
+            self.time_label.set_text(&format!("{:02}:{:02}", self.hour, self.minute))
+        }
+        self.date_label.draw(canvas, sv);
+        self.time_label.draw(canvas, sv);
+    }
+}
+
 pub struct StatusInfo {
     labels: Vec<LabelWidget>,
     status: Vec<CharaStatus>,

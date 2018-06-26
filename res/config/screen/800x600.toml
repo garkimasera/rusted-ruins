@@ -37,6 +37,14 @@ x = 6
 y = 360
 h = 20
 
+[date_info]
+x = 4
+y = 3
+
+[time_info]
+x = 4
+y = 16
+
 [[hborders]]
 x = 0
 y = 420
