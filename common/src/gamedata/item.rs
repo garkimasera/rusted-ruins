@@ -22,10 +22,13 @@ pub struct ItemObject {
     /// They are set at making object based on object setting files
     pub default_flags: ItemFlags,
     pub basic_price: u32,
-    /// The frequency of character generation for random map
+    /// The frequency of item generation in random map
     pub gen_weight: f32,
+    /// The frequency of item generation in shops
+    pub store_weight: f32,
     /// Generation level
-    /// If it is higher, and the item will be generated on deeper floors
+    /// If it is higher, and the item will be generated on deeper floors.
+    /// This parameter will be used for shops also.
     pub gen_level: u32,
     pub dice_n: u16,
     pub dice_x: u16,
