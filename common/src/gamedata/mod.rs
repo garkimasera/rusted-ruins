@@ -4,6 +4,7 @@ pub mod defs;
 pub mod event;
 pub mod item;
 pub mod map;
+pub mod player;
 pub mod region;
 pub mod shop;
 pub mod site;
@@ -18,6 +19,7 @@ pub use self::defs::*;
 pub use self::event::*;
 pub use self::item::*;
 pub use self::map::*;
+pub use self::player::*;
 pub use self::region::*;
 pub use self::shop::*;
 pub use self::site::*;
@@ -31,6 +33,7 @@ pub struct GameData {
     pub chara: CharaHolder,
     pub region: RegionHolder,
     pub time: Time,
+    pub player: Player,
     current_mapid: MapId,
 }
 
@@ -40,6 +43,7 @@ impl GameData {
             chara: CharaHolder::new(),
             region: RegionHolder::new(),
             time: Time::default(),
+            player: Player::default(),
             current_mapid: MapId::default(),
         }
     }
