@@ -144,6 +144,12 @@ impl TalkManager {
                 super::region::gen_dungeon_max(&mut game.gd, mid.rid());
                 SpecialSectionResult::NextSection(0)
             }
+            SpecialTalkSection::ShopBuy => {
+                SpecialSectionResult::NextSection(0)
+            }
+            SpecialTalkSection::ShopSell => {
+                SpecialSectionResult::NextSection(0)
+            }
         }
     }
 }

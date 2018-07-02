@@ -66,5 +66,9 @@ pub enum TalkReaction {
 pub enum SpecialTalkSection {
     /// Taught new ruins and dungeons locations by the informant
     InformantDungeons,
+    /// Open shop window (buy)
+    ShopBuy,
+    /// Open shop window (sell)
+    ShopSell,
 }
 
