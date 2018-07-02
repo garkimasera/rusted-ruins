@@ -26,7 +26,6 @@ pub struct UniqueCitizenGenData {
 /// Data to generate a shop on the site
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ShopGenData {
-    pub pos: Vec2d,
     pub floor: u32,
     pub kind: ShopKind,
 }
