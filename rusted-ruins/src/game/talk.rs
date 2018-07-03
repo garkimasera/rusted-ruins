@@ -4,7 +4,7 @@ use common::talkscript::*;
 use common::objholder::TalkScriptIdx;
 use common::gamedata::*;
 use common::gobj;
-use game::{Game, DoPlayerAction};
+use game::{Game, DoPlayerAction, DialogOpenRequest};
 
 /// Hold data for talk handling
 pub struct TalkManager {
@@ -145,9 +145,11 @@ impl TalkManager {
                 SpecialSectionResult::NextSection(0)
             }
             SpecialTalkSection::ShopBuy => {
+                game.request_dialog_open(DialogOpenRequest::ShopBuy { cid: self.cid });
                 SpecialSectionResult::NextSection(0)
             }
             SpecialTalkSection::ShopSell => {
+                game.request_dialog_open(DialogOpenRequest::ShopSell);
                 SpecialSectionResult::NextSection(0)
             }
         }
