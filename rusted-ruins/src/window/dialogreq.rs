@@ -1,6 +1,6 @@
 
 use common::gamedata::{CharaId, CharaTalk};
-use game::{Game, DialogOpenRequest, TalkManager};
+use game::{Game, DialogOpenRequest, TalkManager, DoPlayerAction};
 use super::DialogWindow;
 use super::talk_window;
 use super::msg_dialog;
@@ -24,7 +24,9 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
             return None;
         }
         DialogOpenRequest::ShopSell => {
-            return None;
+            use super::item_window::*;
+            let mut pa = DoPlayerAction::new(game);
+            Box::new(ItemWindow::new(ItemWindowMode::ShopSell, &mut pa))
         }
         DialogOpenRequest::GameOver => {
             Box::new(super::exit_window::GameOverWindow::new())
