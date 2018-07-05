@@ -37,6 +37,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
         default_flags: flags,
         kind: kind,
         basic_price: item.basic_price,
+        w: item.w,
         gen_weight: item.gen_weight,
         store_weight: item.store_weight.unwrap_or(item.gen_weight),
         gen_level: item.gen_level,

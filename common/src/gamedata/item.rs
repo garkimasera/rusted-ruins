@@ -22,6 +22,8 @@ pub struct ItemObject {
     /// They are set at making object based on object setting files
     pub default_flags: ItemFlags,
     pub basic_price: u32,
+    /// Item weight (gram)
+    pub w: u32,
     /// The frequency of item generation in random map
     pub gen_weight: f32,
     /// The frequency of item generation in shops
