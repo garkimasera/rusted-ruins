@@ -1,5 +1,5 @@
 
-use window::{Window, DialogWindow, DialogResult};
+use window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use sdlvalues::*;
@@ -205,6 +205,10 @@ impl DialogWindow for ItemWindow {
 
     fn mode(&self) -> InputMode {
         InputMode::Dialog
+    }
+
+    fn draw_mode(&self) -> WindowDrawMode {
+        WindowDrawMode::SkipUnderWindows
     }
 }
 

@@ -34,7 +34,7 @@ use self::widget::WidgetTrait;
 use array2d::*;
 
 mod commonuse {
-    pub use window::{Window, DialogWindow, DialogResult};
+    pub use window::{Window, DialogWindow, DialogResult, WindowDrawMode};
     pub use sdl2::render::WindowCanvas;
     pub use sdl2::rect::Rect;
     pub use sdlvalues::SdlValues;
@@ -71,6 +71,9 @@ pub trait DialogWindow: Window {
         &mut self, _result: Option<Box<Any>>, _pa: &mut DoPlayerAction) -> DialogResult {
         DialogResult::Continue
     }
+    fn draw_mode(&self) -> WindowDrawMode {
+        WindowDrawMode::Normal
+    }
 }
 
 /// The current main mode
@@ -81,6 +84,11 @@ enum WindowManageMode {
     NewGame(self::newgame_window::NewGameWindow),
     /// Game playing
     OnGame(GameWindows),
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum WindowDrawMode {
+    Normal, SkipUnderWindows
 }
 
 impl WindowManageMode {
@@ -184,8 +192,19 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         // Draw dialog windows
-        for w in &mut self.window_stack {
-            w.draw(canvas, &self.game, &mut self.sdl_values, anim);
+        let mut windows_to_draw = Vec::new();
+        for (i, w) in &mut self.window_stack.iter().enumerate() {
+            match w.draw_mode() {
+                WindowDrawMode::Normal => windows_to_draw.push(i),
+                WindowDrawMode::SkipUnderWindows => {
+                    windows_to_draw.clear();
+                    windows_to_draw.push(i);
+                }
+            }
+        }
+        
+        for i in &windows_to_draw {
+            self.window_stack[*i].draw(canvas, &self.game, &mut self.sdl_values, anim);
         }
 
         if anim.is_some() {
