@@ -18,6 +18,7 @@ mod town;
 mod turnloop;
 pub mod talk;
 pub mod view;
+mod shop;
 mod event;
 
 use std::borrow::Cow;

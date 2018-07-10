@@ -157,6 +157,7 @@ impl ItemWindow {
                 DialogResult::CloseAll
             }
             ItemWindowMode::ShopSell => {
+                pa.sell_item(il);
                 self.update_by_mode(pa);
                 DialogResult::Continue
             }

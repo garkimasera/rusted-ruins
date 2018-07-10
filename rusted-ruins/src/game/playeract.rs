@@ -194,6 +194,11 @@ impl<'a> DoPlayerAction<'a> {
         self.0.finish_player_turn();
     }
 
+    /// Sell item
+    pub fn sell_item(&mut self, il: ItemLocation) {
+        super::shop::sell_item(self.gd_mut(), il);
+    }
+
     /// Change specified character's equipment by given item
     pub fn change_equipment(&mut self, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) -> bool {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)
