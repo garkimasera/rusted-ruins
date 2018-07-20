@@ -108,6 +108,11 @@ impl DialogWindow for DummyNewGameDialog {
                         let chara_class = chara_class.downcast::<CharaClass>().unwrap();
                         self.builder.as_mut().unwrap().set_chara_class(*chara_class);
                         self.stage = NewGameBuildStage::OpeningText;
+                        { // Skip OP text
+                            let builder = self.builder.take().unwrap();
+                            let gd = builder.build();
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
+                        }
                     }
                     _ => (),
                 }
