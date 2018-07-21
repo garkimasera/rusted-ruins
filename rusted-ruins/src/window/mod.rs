@@ -16,6 +16,7 @@ mod msg_dialog;
 mod newgame_window;
 mod start_window;
 mod status_window;
+mod game_info_window;
 mod text_input_dialog;
 mod indicator;
 mod minimap;
@@ -310,6 +311,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenStatusWin => {
                 self.window_stack.push(Box::new(status_window::create_status_window_group(pa.game())));
+            }
+            Command::OpenGameInfoWin => {
+                self.window_stack.push(Box::new(game_info_window::GameInfoWindow::new(pa.game())));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
