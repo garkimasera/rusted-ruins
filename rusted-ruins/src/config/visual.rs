@@ -168,6 +168,7 @@ pub struct StatusWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct GameInfoWindowConfig {
     pub rect: CfgRect,
+    pub money_label_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

@@ -5,3 +5,9 @@ pub struct Player {
     money: i64,
 }
 
+impl Player {
+    pub fn money(&self) -> i64 {
+        self.money
+    }
+}
+
