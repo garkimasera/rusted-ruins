@@ -2,7 +2,7 @@
 {
     "class_choices": ["archeologist", "rogue"],
     "start_region": "south-coast",
-    "start_pos": [1, 1],
+    "start_pos": [5, 10],
     "chara_template_table": {
         "archeologist": "archeologist-m",
         "rogue": "rogue-m"
