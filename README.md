@@ -34,15 +34,25 @@ RUSTED_RUINS_APP_DIR=./res cargo run -p rusted-ruins
 ## Keys
 
 Arrow keys - Move
+
 d - Drop items
+
 e - Eat an item
+
 i - View inventory
+
 p - Pick up items
+
 q - Drink an item
+
 s - Open status window
-t - Targettin mode
+
+t - Targetting mode
+
 w - Open equipment window
+
 f - Shot
+
 escape - Open exit window
 
 ## License
