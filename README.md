@@ -1,5 +1,5 @@
 # Rusted Ruins [![Build Status](https://travis-ci.org/garkimasera/rusted-ruins.svg?branch=master)](https://travis-ci.org/garkimasera/rusted-ruins)
-Extensible rouge like game. Players can explore the wilderness and ruins.
+Extensible rouge like game with pixel art. Players can explore the wilderness and ruins.
 This game is written in Rust.
 
 ## Screenshot
@@ -30,6 +30,20 @@ cd rusted-ruins
 ./download-pak.sh
 RUSTED_RUINS_APP_DIR=./res cargo run -p rusted-ruins
 ```
+
+## Keys
+
+Arrow keys - Move
+d - Drop items
+e - Eat an item
+i - View inventory
+p - Pick up items
+q - Drink an item
+s - Open status window
+t - Targettin mode
+w - Open equipment window
+f - Shot
+escape - Open exit window
 
 ## License
 GPL v3
