@@ -29,7 +29,7 @@ pub fn compile(files: &[&str], output_file: &String) {
             Ok(o) => o,
             Err(echain) => {
                 eprintln!("Cannot process \"{}\"", f.to_string_lossy());
-                for e in echain.iter() {
+                for e in echain.causes() {
                     eprintln!("{}", e);
                 }
                 continue;
@@ -41,7 +41,7 @@ pub fn compile(files: &[&str], output_file: &String) {
     builder.finish().unwrap();
 }
 
-fn read_toml<P: AsRef<Path>>(path: P) -> Result<Object> {
+fn read_toml<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
     let s = {
         let mut f = File::open(path.as_ref())?;
         let mut s = String::new();
@@ -58,10 +58,12 @@ fn read_toml<P: AsRef<Path>>(path: P) -> Result<Object> {
     Ok(object)
 }
 
-fn write_to_vec(obj: &Object) -> Result<Vec<u8>> {
+fn write_to_vec(obj: &Object) -> Result<Vec<u8>, Error> {
     let mut v = Vec::new();
-    write_object(&mut v, obj)?;
-    Ok(v)
+    match write_object(&mut v, obj) {
+        Ok(_) => Ok(v),
+        Err(e) => bail!(PakCompileError::ObjWriteError { description: e }),
+    }
 }
 
 fn write_data_to_tar<W: Write>(builder: &mut tar::Builder<W>, data: &[u8], path: &str) {

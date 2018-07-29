@@ -2,7 +2,7 @@
 use std::path::Path;
 use error::*;
 
-pub fn read_file_as_string<P: AsRef<Path>>(path: P) -> Result<String> {
+pub fn read_file_as_string<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     use std::io::Read;
     use std::fs::File;
     

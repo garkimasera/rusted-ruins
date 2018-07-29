@@ -8,7 +8,7 @@ use dir;
 use error::*;
 use tomlinput::*;
 
-pub fn build_img(input: ImgInput) -> Result<(Img, ImgData)> {
+pub fn build_img(input: ImgInput) -> Result<(Img, ImgData), Error> {
     let path = Path::new(&input.path);
     let newpath = if path.is_relative() {
         dir::path_from_src_dir(&path)
@@ -28,7 +28,12 @@ pub fn build_img(input: ImgInput) -> Result<(Img, ImgData)> {
     
     ensure!(
         w * grid_nx == imgdata.dimensions.0 && h * grid_ny == imgdata.dimensions.1,
-        ErrorKind::ImageSizeError((w * grid_nx, h * grid_ny), imgdata.dimensions));
+        PakCompileError::ImageSizeError{
+            input_x: w * grid_nx,
+            input_y: h * grid_ny,
+            image_x: imgdata.dimensions.0,
+            image_y: imgdata.dimensions.1,
+        });
     assert!(n_frame == n_pattern * n_anim_frame); // TODO: Make these asserts ensure!()
     assert!(n_frame > 0);
     assert!(n_pattern > 0);
@@ -55,8 +60,8 @@ pub struct ImgData {
 }
 
 impl ImgData {
-    fn load(filepath: &Path) -> Result<ImgData> {
-        let img = image::open(filepath).chain_err(|| "Error at image file loading")?;
+    fn load(filepath: &Path) -> Result<ImgData, Error> {
+        let img = image::open(filepath).context("Error at image file loading")?;
         let dimensions = img.dimensions();
 
         Ok(ImgData {
@@ -83,7 +88,7 @@ impl ImgData {
     }
 }
 
-fn load_as_vec(filepath: &Path) -> Result<Vec<u8>> {
+fn load_as_vec(filepath: &Path) -> Result<Vec<u8>, Error> {
     let mut file = File::open(filepath)?;
     let mut v = Vec::new();
 

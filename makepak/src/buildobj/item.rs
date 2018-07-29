@@ -5,7 +5,7 @@ use common::obj::*;
 use common::gamedata::item::*;
 use super::img::build_img;
 
-pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
+pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let item = get_optional_field!(tomlinput, item);
     let mut flags = ItemFlags::empty();
@@ -27,7 +27,9 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject> {
             ItemKind::Armor(get_optional_field!(item, armor_kind))
         }
         _ => {
-            bail!(ErrorKind::UnexpectedValue("item_kind".to_owned(), item.item_kind.clone()));
+            bail!(PakCompileError::UnexpectedValue {
+                field_name: "item_kind".to_owned(),
+                value: item.item_kind.clone()});
         },
     };
 

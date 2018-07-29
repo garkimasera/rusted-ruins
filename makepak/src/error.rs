@@ -1,26 +1,28 @@
 
-#![allow(unused_doc_comment)]
+pub use failure::{Error, ResultExt};
 
-error_chain! {
-    foreign_links {
-        Io(::std::io::Error);
-        Toml(::toml::de::Error);
-        Image(::image::ImageError);
-    }
-    errors {
-        MissingField(t: String) {
-            description("Missing necessary field")
-            display("Missing necessary field : {}", t)
-        }
-        UnexpectedValue(field: String, value: String) {
-            description("Unexpected name")
-            display("Unexpected value \"{}\" for field {}", value, field)
-        }
-        ImageSizeError(input: (u32, u32), image: (u32, u32)) {
-            description("Contradiction between toml input and image file")
-            display("Expected size is ({}, {}), but png file size is ({}, {})",
-                        input.0, input.1, image.0, image.1)
-        }
+#[derive(Debug, Fail)]
+pub enum PakCompileError {
+    #[fail(display = "missing field: {}", field_name)]
+    MissingField {
+        field_name: String,
+    },
+    #[fail(display = "unexpected value \"{}\" for field \"{}\"", value, field_name)]
+    UnexpectedValue {
+        field_name: String,
+        value: String
+    },
+    #[fail(display = "image size error: expected size is ({}, {}), but png file size is ({}, {})",
+           input_x, input_y, image_x, image_y)]
+    ImageSizeError {
+        input_x: u32,
+        input_y: u32,
+        image_x: u32,
+        image_y: u32,
+    },
+    #[fail(display = "object writing error\n{}", description)]
+    ObjWriteError {
+        description: String,
     }
 }
 

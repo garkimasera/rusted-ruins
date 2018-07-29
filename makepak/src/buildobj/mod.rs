@@ -10,7 +10,7 @@ use error::*;
 use self::img::*;
 use self::item::build_item_object;
 
-pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
+pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
     let object_type = tomlinput.object_type.clone();
     match object_type.as_ref() {
         "anim_img" => {
@@ -55,7 +55,7 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object> {
     }
 }
 
-fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
+fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     
     Ok(DecoObject {
@@ -64,7 +64,7 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject> {
     })
 }
 
-fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject> {
+fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     
     Ok(EffectObject {
@@ -73,7 +73,7 @@ fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject> {
     })
 }
 
-fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> {
+fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let always_background = if let Some(special_tile) = tomlinput.special_tile {
         special_tile.always_background.unwrap_or(false)
@@ -88,7 +88,7 @@ fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject> 
     })
 }
 
-fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
+fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject, Error> {
     let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
@@ -101,7 +101,7 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject> {
     })
 }
 
-fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject> {
+fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     
     Ok(UIImgObject {
@@ -110,7 +110,7 @@ fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject> {
     })
 }
 
-fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
+fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
     let base_draw = if let Some(wall) = tomlinput.wall {
@@ -127,7 +127,7 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject> {
     })
 }
 
-fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject> {    
+fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject, Error> {    
     let chara_dep_input = get_optional_field!(tomlinput, chara_template);
     let img = get_optional_field!(tomlinput, image);
     
@@ -149,7 +149,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
     })
 }
 
-fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
+fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
     Ok(AnimImgObject {
@@ -158,7 +158,7 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject> {
     })
 }
 
-fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject> {
+fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Error> {
     let rg = get_optional_field!(tomlinput, region_gen);
     use tomlinput::SiteGenIdAndPos;
 
@@ -174,7 +174,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject> {
     })
 }
 
-fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
+fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject, Error> {
     let sg = get_optional_field!(tomlinput, site_gen);
 
     Ok(SiteGenObject {
@@ -186,7 +186,7 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject> {
     })
 }
 
-fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject> {
+fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject, Error> {
     let talk_script_dep = get_optional_field!(tomlinput, talk_script);
     use common::hashmap::HashMap;
     use common::talkscript::*;

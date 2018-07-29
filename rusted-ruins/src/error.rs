@@ -1,15 +1,5 @@
 
-#![allow(unused_doc_comment)]
-
-error_chain! {
-    foreign_links {
-        Io(::std::io::Error);
-        Toml(::toml::de::Error);
-    }
-    errors {
-        
-    }
-}
+pub use failure::Error;
 
 macro_rules! check_draw {
     ($rst:expr) => {

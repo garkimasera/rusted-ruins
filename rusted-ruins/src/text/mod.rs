@@ -141,7 +141,7 @@ fn load_trans_txt(kind: &str) -> HashMap<String, String> {
     map
 }
 
-fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<()> {
+fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(), Error> {
     let p = p.as_ref();
     let file = fs::File::open(p)?;
     let file = BufReader::new(file);

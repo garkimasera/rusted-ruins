@@ -5,7 +5,7 @@ extern crate serde_derive;
 extern crate toml;
 extern crate tar;
 #[macro_use]
-extern crate error_chain;
+extern crate failure;
 extern crate clap;
 extern crate image;
 extern crate rusted_ruins_array2d as array2d;

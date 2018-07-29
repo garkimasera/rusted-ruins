@@ -25,7 +25,9 @@ macro_rules! get_optional_field {
     ($tomlinput:expr, $field:ident) => {
         match $tomlinput.$field {
             Some(i) => i,
-            None => bail!($crate::error::ErrorKind::MissingField(stringify!($field).into())),
+            None => bail!($crate::error::PakCompileError::MissingField {
+                field_name: stringify!($field).into()
+            }),
         }
     }
 }
