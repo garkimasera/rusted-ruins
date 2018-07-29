@@ -12,7 +12,7 @@ pub fn gen_dungeon_item(floor_level: u32) -> Item {
         idx: idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
-        quality: ItemQuality::default(),
+        rank: ItemRank::default(),
     }
 }
 
