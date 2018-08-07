@@ -29,7 +29,7 @@ pub fn compile(files: &[&str], output_file: &String) {
             Ok(o) => o,
             Err(echain) => {
                 eprintln!("Cannot process \"{}\"", f.to_string_lossy());
-                for e in echain.causes() {
+                for e in echain.iter_chain() {
                     eprintln!("{}", e);
                 }
                 continue;
