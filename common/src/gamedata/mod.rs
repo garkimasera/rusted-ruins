@@ -145,6 +145,9 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 &self.region.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
             }
+            ItemListLocation::Shop { sid, n } => {
+                &self.get_shop(sid, n).items
+            }
         }
     }
 
@@ -160,6 +163,9 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 self.region.get_map_mut(mid).tile[pos].item_list.as_mut()
                     .expect("Get item list to empty tile")
+            }
+            ItemListLocation::Shop { sid, n } => {
+                &mut self.get_shop_mut(sid, n).items
             }
         }
     }
@@ -246,6 +252,28 @@ impl GameData {
     pub fn get_equip_list_mut(&mut self, cid: CharaId) -> &mut EquipItemList {
         let chara = self.chara.get_mut(cid);
         &mut chara.equip
+    }
+
+    pub fn get_shop(&self, sid: SiteId, n: u32) -> &Shop {
+        let site = self.region.get_site(sid);
+        match &site.content {
+            SiteContent::Town { ref town } => {
+                town.shops.get(&n)
+                    .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
+            }
+            _ => unreachable!("Tried to get shop in a site that is not town"),
+        }
+    }
+
+    pub fn get_shop_mut(&mut self, sid: SiteId, n: u32) -> &mut Shop {
+        let site = self.region.get_site_mut(sid);
+        match &mut site.content {
+            SiteContent::Town { ref mut town } => {
+                town.shops.get_mut(&n)
+                    .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
+            }
+            _ => unreachable!("Tried to get shop in a site that is not town"),
+        }
     }
 }
 

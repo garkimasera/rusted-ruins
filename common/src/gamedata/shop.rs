@@ -10,7 +10,9 @@ pub enum ShopKind {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Shop {
-    kind: ShopKind,
-    items: ItemList,
+    pub kind: ShopKind,
+    pub items: ItemList,
+    /// Shop level is used to choose shop items
+    pub level: u32,
 }
 

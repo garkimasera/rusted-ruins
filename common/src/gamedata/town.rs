@@ -1,18 +1,18 @@
 
-use std::collections::HashMap;
-use gamedata::shop::Shop;
+use gamedata::shop::*;
+use fnv::FnvHashMap;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Town {
     id: String,
-    pub shops: HashMap<String, Shop>,
+    pub shops: FnvHashMap<u32, Shop>,
 }
 
 impl Town {
     pub fn new(id: &str) -> Town {
         Town {
             id: id.to_owned(),
-            shops: HashMap::new(),
+            shops: FnvHashMap::default(),
         }
     }
 
