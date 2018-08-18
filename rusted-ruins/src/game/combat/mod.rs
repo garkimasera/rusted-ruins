@@ -28,19 +28,21 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
             skill_kind = SkillKind::Weapon(weapon_kind);
             
             let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
-            let damage_coef = 256 + attacker.params.str as i32 * 16;
-            let damage = dice_result.saturating_mul(damage_coef) / 256;
-            let defence_power = calc_defence(target);
-
-            if damage < defence_power { 0 } else { damage - defence_power }
+            let weapon_skill_level = attacker.skills.get(skill_kind);
+            let attack_power = calc_attack_power(dice_result, attacker.params.str, weapon_skill_level);
+            let equip_defence = calc_equip_defence(target, Element::Physical);
+            let defence_skill_level = target.skills.get(SkillKind::Defence);
+            let defence_power = calc_defence_power(equip_defence, target.params.vit, defence_skill_level);
+            (attack_power / defence_power) as i32
         } else { // Attack by bare hands
             skill_kind = SkillKind::BareHands;
             let dice_result = rng::dice(1, 1);
-            let damage_coef = 256 + attacker.params.str as i32 * 16;
-            let damage = dice_result.saturating_mul(damage_coef) / 256;
-            let defence_power = calc_defence(target);
-
-            if damage < defence_power { 0 } else { damage - defence_power }
+            let weapon_skill_level = attacker.skills.get(skill_kind);
+            let attack_power = calc_attack_power(dice_result, attacker.params.str, weapon_skill_level);
+            let equip_defence = calc_equip_defence(target, Element::Physical);
+            let defence_skill_level = target.skills.get(SkillKind::Defence);
+            let defence_power = calc_defence_power(equip_defence, target.params.vit, defence_skill_level);
+            (attack_power / defence_power) as i32
         }
     };
     // Logging
@@ -81,16 +83,16 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         };
         let weapon_obj = gobj::get_obj(weapon.idx);
         let weapon_kind = get_weapon_kind(weapon_obj);
-        let weapon_dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
-
-        let damage_coef = 256 + attacker.params.dex as i32 * 16;
-
-        let damage = weapon_dice_result.saturating_mul(damage_coef) / 256;
-        let defence_power = calc_defence(target);
-        (
-            if damage < defence_power { 0 }else{ damage - defence_power }, weapon_kind,
-            attacker_pos, target_pos         
-        )
+        let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
+        
+        let weapon_skill_level = attacker.skills.get(SkillKind::Weapon(weapon_kind));
+        let attack_power = calc_attack_power(dice_result, attacker.params.dex, weapon_skill_level);
+        let equip_defence = calc_equip_defence(target, Element::Physical);
+        let defence_skill_level = target.skills.get(SkillKind::Defence);
+        let defence_power = calc_defence_power(equip_defence, target.params.vit, defence_skill_level);
+        let damage = (attack_power / defence_power) as i32;
+        
+        (damage, weapon_kind, attacker_pos, target_pos)
     };
     // Logging
     {
@@ -121,12 +123,27 @@ fn get_weapon_kind(item: &ItemObject) -> WeaponKind {
     }
 }
 
-fn calc_defence(chara: &Chara) -> i32 {
-    let armor_power = if let Some(armor) = chara.equip.item(EquipSlotKind::BodyArmor, 0) {
-        let item_obj = gobj::get_obj(armor.idx);
-        item_obj.def
-    } else {
-        0
-    };
-    armor_power.into()
+fn calc_equip_defence(chara: &Chara, _e: Element) -> f64 {
+    10.0
+}
+
+/// Calculate attack power
+fn calc_attack_power(dice: i32, chara_param: u16, skill_level: u16) -> f64 {
+    assert!(dice > 0);
+    assert!(chara_param > 0);
+    let dice = dice as f64;
+    let chara_param = chara_param as f64;
+    let skill_level = skill_level as f64;
+    
+    dice * chara_param * chara_param * (skill_level + 8.0).powf(1.5)
+}
+
+/// Calculate defence power
+fn calc_defence_power(equip_defence: f64, chara_param: u16, skill_level: u16) -> f64 {
+    assert!(equip_defence > 0.0);
+    assert!(chara_param > 0);
+    let chara_param = chara_param as f64;
+    let skill_level = skill_level as f64;
+
+    (equip_defence + 16.0) * chara_param * (skill_level + 8.0)
 }

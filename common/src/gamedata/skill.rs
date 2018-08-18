@@ -4,6 +4,7 @@ use super::item::WeaponKind;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum SkillKind {
+    Defence,
     BareHands,
     Weapon(WeaponKind),
 }
