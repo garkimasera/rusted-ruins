@@ -1,4 +1,5 @@
 
+use fnv::FnvHashMap;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 
@@ -48,10 +49,15 @@ impl SkillListEx for SkillList {
         if !self.skills.contains_key(&kind) {
             self.skills.insert(kind, 1);
         }
+        if self.exp.is_none() {
+            self.exp = Some(FnvHashMap::default());
+        }
         if let Some(ref mut exp) = self.exp {
             if !exp.contains_key(&kind) {
                 exp.insert(kind, 0);
             }
+        } else {
+            unreachable!();
         }
     }
 }

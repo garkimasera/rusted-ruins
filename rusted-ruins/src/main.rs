@@ -9,6 +9,7 @@ extern crate rusted_ruins_map_generator as map_generator;
 #[macro_use]
 extern crate lazy_static;
 extern crate failure;
+extern crate fnv;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
