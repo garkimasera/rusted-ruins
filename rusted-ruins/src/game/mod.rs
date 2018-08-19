@@ -151,4 +151,5 @@ pub mod extrait {
     pub use super::map::MapEx;
     pub use super::site::SiteEx;
     pub use super::chara::status::{CharaStatusOperation, CharaStatusEx};
+    pub use super::skill::SkillListEx;
 }

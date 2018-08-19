@@ -3,18 +3,20 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 
 pub trait SkillListEx {
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> u32;
     fn learn_new_skill(&mut self, kind: SkillKind);
 }
 
-impl SkillListEx for SkillList {    
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
-        if self.exp.is_none() { return; }
+impl SkillListEx for SkillList {
+    /// Add exp to specified skill
+    /// Returns actual added exp value
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> u32 {
+        if self.exp.is_none() { return 0; }
         // Adjusting by base_level
         let skill_level = if let Some(skill_level) = self.skills.get(&kind) {
             *skill_level
         } else {
-            return;
+            return 0;
         };
         let add_exp = (add_exp as f32 * search_adjust_coeff(base_level, skill_level)) as u32;
 
@@ -35,8 +37,10 @@ impl SkillListEx for SkillList {
                 } else {
                     sum as u16
                 };
+                return add_exp;
             }
         }
+        0
     }
 
     /// Insert new skill slot

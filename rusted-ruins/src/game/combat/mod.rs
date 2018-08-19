@@ -57,7 +57,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     {
         let target_level = game.gd.chara.get(target).base_params.level;
         let attacker = game.gd.chara.get_mut(attacker);
-        attacker.skills.add_exp(
+        attacker.add_skill_exp(
             skill_kind,
             RULES.exp.attack,
             target_level);
@@ -106,7 +106,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     {
         let target_level = game.gd.chara.get(target).base_params.level;
         let attacker = game.gd.chara.get_mut(attacker);
-        attacker.skills.add_exp(
+        attacker.add_skill_exp(
             SkillKind::Weapon(weapon_kind),
             RULES.exp.attack,
             target_level);

@@ -4,6 +4,7 @@ pub mod preturn;
 pub mod status;
 
 use super::Game;
+use super::extrait::*;
 use super::combat::DamageKind;
 use common::gamedata::*;
 use common::gobj;
@@ -12,6 +13,7 @@ use rules::RULES;
 /// Additional Chara method
 pub trait CharaEx {
     fn get_name(&self) -> &str;
+    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
 }
 
 impl CharaEx for Chara {
@@ -21,6 +23,11 @@ impl CharaEx for Chara {
         } else {
             ::text::obj_txt(gobj::idx_to_id(self.template))
         }
+    }
+
+    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
+        let e = self.skills.add_exp(kind, add_exp, base_level);
+        trace!("{} gains {} exp for {:?}", self.get_name(), e, kind);
     }
 }
 
