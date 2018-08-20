@@ -6,5 +6,8 @@
     "chara_template_table": {
         "archeologist": "archeologist-m",
         "rogue": "rogue-m"
-    }
+    },
+    "common_initial_skills": [
+        "defence", "bare_hands", { "weapon": "sword" }
+    ]
 }

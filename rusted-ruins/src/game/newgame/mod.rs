@@ -44,8 +44,7 @@ impl NewGameBuilder {
             let mut chara = super::chara::creation::create_chara(gobj::id_to_idx(chara_template_id));
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.unwrap());
-            chara.skills.learn_new_skill(::common::gamedata::skill::SkillKind::Weapon(
-                ::common::gamedata::item::WeaponKind::Sword));
+            set_initial_skills(&mut chara);
             super::chara::update_params(&mut chara);
             /* Test code for equipment */
             use common::gamedata::chara::Race;
@@ -62,6 +61,13 @@ impl NewGameBuilder {
                 RULES.params.initial_date_hour);
         }
         self.gd
+    }
+}
+
+/// Set initial skills from rule
+fn set_initial_skills(chara: &mut Chara) {
+    for skill in &RULES.newgame.common_initial_skills {
+        chara.skills.learn_new_skill(*skill);
     }
 }
 

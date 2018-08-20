@@ -3,6 +3,7 @@ use fnv::FnvHashMap;
 use super::item::WeaponKind;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum SkillKind {
     Defence,
     BareHands,
