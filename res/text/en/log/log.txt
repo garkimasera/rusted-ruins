@@ -1,5 +1,7 @@
 % start
 Welcome to Rusted Ruins! (version : $(version))
+% skill-level-up
+$(chara)'s $(skill) level increase.
 % attack
 $(attacker) attacks $(target) ($(damage)).
 % shot-target

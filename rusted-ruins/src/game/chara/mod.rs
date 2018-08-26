@@ -26,8 +26,12 @@ impl CharaEx for Chara {
     }
 
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
-        let e = self.skills.add_exp(kind, add_exp, base_level);
-        trace!("{} gains {} exp for {:?}", self.get_name(), e, kind);
+        let result = self.skills.add_exp(kind, add_exp, base_level);
+        trace!("{} gains {} exp for {:?}", self.get_name(), result.1, kind);
+        if result.0 { // If level up
+            trace!("{} level up ({:?})", self.get_name(), kind);
+            game_log!("skill-level-up"; chara=self.get_name(), skill=format!("{:?}", kind));
+        }
     }
 }
 

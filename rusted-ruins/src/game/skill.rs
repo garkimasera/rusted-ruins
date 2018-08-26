@@ -4,26 +4,27 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 
 pub trait SkillListEx {
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> u32;
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32);
     fn learn_new_skill(&mut self, kind: SkillKind);
 }
 
 impl SkillListEx for SkillList {
     /// Add exp to specified skill
-    /// Returns actual added exp value
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> u32 {
-        if self.exp.is_none() { return 0; }
+    /// Returns level up result and actual added exp value
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32) {
+        if self.exp.is_none() { return (false, 0); }
         // Adjusting by base_level
         let skill_level = if let Some(skill_level) = self.skills.get(&kind) {
             *skill_level
         } else {
-            return 0;
+            return (false, 0);
         };
         let add_exp = (add_exp as f32 * search_adjust_coeff(base_level, skill_level)) as u32;
 
         // Add exp
         if let Some(ref mut exp) = self.exp {
             if let Some(skill_exp) = exp.get_mut(&kind) {
+                let is_level_up;
                 let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
                     SKILL_EXP_LVUP as u32
                 } else {
@@ -34,14 +35,16 @@ impl SkillListEx for SkillList {
                     if let Some(skill_level) = self.skills.get_mut(&kind) {
                         *skill_level += 1;
                     }
+                    is_level_up = true;
                     0
                 } else {
+                    is_level_up = false;
                     sum as u16
                 };
-                return add_exp;
+                return (is_level_up, add_exp);
             }
         }
-        0
+        (false, 0)
     }
 
     /// Insert new skill slot
