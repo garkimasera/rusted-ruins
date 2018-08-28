@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use objholder::CharaTemplateIdx;
 use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
+use super::site::SiteId;
 use super::skill::SkillList;
 use super::event::EventTrigger;
 use super::unknown_id_err;
@@ -165,7 +166,11 @@ pub enum CharaKind {
 pub enum CharaId {
     /// Player is unique character in the game
     Player,
-    /// Indexed for a map. This character don't appear on other maps
+    /// Indexed for a site. This character is associated one site.
+    /// Citizens on a town use this id.
+    OnSite { sid: SiteId, n: u32 },
+    /// Indexed for a map. This character don't appear on other maps.
+    /// Randomly generated characters use this id.
     OnMap { mid: MapId, n: u32 },
 }
 

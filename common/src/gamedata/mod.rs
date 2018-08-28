@@ -102,6 +102,8 @@ impl GameData {
         }
     }
 
+    /// Remove specified character from game.
+    /// If the character is in the current map, remove from map data
     pub fn remove_chara(&mut self, cid: CharaId) {
         match cid {
             CharaId::Player => {
@@ -109,11 +111,13 @@ impl GameData {
             }
             CharaId::OnMap { mid, .. } => {
                 let map = self.region.get_map_mut(mid);
-                
-                self.chara.remove_chara(cid);
                 map.remove_chara(cid);
             }
+            _ => {
+                self.get_current_map_mut().remove_chara(cid);
+            },
         }
+        self.chara.remove_chara(cid);
     }
 
     pub fn add_site(&mut self, site: Site, kind: SiteKind, rid: RegionId, pos: Vec2d) -> Option<SiteId> {

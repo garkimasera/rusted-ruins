@@ -39,10 +39,8 @@ pub fn turn_loop(game: &mut Game) {
             let map = game.gd.get_current_map();
             for cid in map.iter_charaid() {
                 match *cid {
-                    CharaId::OnMap { .. } => {
-                        game.turn_loop_data.action_queue.push_back(*cid);
-                    },
                     CharaId::Player => (),
+                    _ => game.turn_loop_data.action_queue.push_back(*cid),
                 }
             }
         }
