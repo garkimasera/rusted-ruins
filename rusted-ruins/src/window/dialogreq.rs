@@ -3,6 +3,7 @@ use common::gamedata::{CharaId, CharaTalk};
 use game::{Game, DialogOpenRequest, TalkManager, DoPlayerAction};
 use super::DialogWindow;
 use super::talk_window;
+use super::item_window::*;
 use super::msg_dialog;
 
 pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Option<Box<DialogWindow>> {
@@ -24,7 +25,6 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
             return None;
         }
         DialogOpenRequest::ShopSell => {
-            use super::item_window::*;
             let mut pa = DoPlayerAction::new(game);
             Box::new(ItemWindow::new(ItemWindowMode::ShopSell, &mut pa))
         }

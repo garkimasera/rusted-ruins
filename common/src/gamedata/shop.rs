@@ -6,6 +6,8 @@ use gamedata::item::ItemList;
 pub enum ShopKind {
     /// Sells weapons and armors
     Equipment,
+    /// Sells potions
+    Potion,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
