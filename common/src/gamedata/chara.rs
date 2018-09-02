@@ -158,7 +158,11 @@ impl Default for Chara {
 pub enum CharaKind {
     /// Player is unique character in the game
     Player,
-    /// Indexed for a map. This character don't appear on other maps
+    /// Indexed for a site. This character is associated one site.
+    /// Citizens on a town use this id.
+    OnSite,
+    /// Indexed for a map. This character don't appear on other maps.
+    /// Randomly generated characters use this id.
     OnMap,
 }
 

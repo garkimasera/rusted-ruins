@@ -79,6 +79,9 @@ impl GameData {
                 self.chara.0.insert(CharaId::Player, chara);
                 CharaId::Player
             }
+            CharaKind::OnSite => {
+                panic!("Adding OnSite chara without id is unavailable")
+            }
             CharaKind::OnMap => {
                 panic!("Adding OnMap chara without mapid is unavailable")
             }
@@ -93,6 +96,7 @@ impl GameData {
                 map.add_chara(pos, CharaId::Player);
                 CharaId::Player
             }
+            CharaKind::OnSite => panic!(),
             CharaKind::OnMap => {
                 let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
                 self.chara.0.insert(cid, chara);
@@ -100,6 +104,12 @@ impl GameData {
                 cid
             }
         }
+    }
+
+    pub fn add_chara_to_site(&mut self, chara: Chara, sid: SiteId, n: u32) -> CharaId {
+        let cid = CharaId::OnSite { sid, n };
+        self.chara.0.insert(cid, chara);
+        cid
     }
 
     /// Remove specified character from game.
