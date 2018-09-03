@@ -28,7 +28,8 @@ pub struct UniqueCitizenGenData {
 /// Data to generate a shop on the site
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ShopGenData {
-    pub floor: u32,
+    /// Shopkeeper's id (n)
+    pub chara_n: u32,
     pub kind: ShopKind,
 }
 
