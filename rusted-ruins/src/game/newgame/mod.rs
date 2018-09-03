@@ -51,7 +51,8 @@ impl NewGameBuilder {
             let slots = &RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
             let equip = gamedata::item::EquipItemList::new(slots);
             chara.equip = equip;
-            gd.add_chara_to_map(chara, gamedata::chara::CharaKind::Player, mid, start_pos);
+            let cid = gd.add_chara(chara, CharaKind::Player);
+            gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
 
             // Initial date setting
             gd.time = Time::new(

@@ -88,24 +88,14 @@ impl GameData {
         }
     }
 
-    pub fn add_chara_to_map(&mut self, chara: Chara, kind: CharaKind, mid: MapId, pos: Vec2d) -> CharaId {
-        match kind {
-            CharaKind::Player => {
-                self.chara.0.insert(CharaId::Player, chara);
-                let map = self.region.get_map_mut(mid);
-                map.add_chara(pos, CharaId::Player);
-                CharaId::Player
-            }
-            CharaKind::OnSite => panic!(),
-            CharaKind::OnMap => {
-                let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
-                self.chara.0.insert(cid, chara);
-                self.region.get_map_mut(mid).add_chara(pos, cid);
-                cid
-            }
-        }
+    /// Add chara as OnMap
+    pub fn add_chara_to_map(&mut self, chara: Chara, mid: MapId) -> CharaId {
+        let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
+        self.chara.0.insert(cid, chara);
+        cid
     }
 
+    /// Add chara as OnSite
     pub fn add_chara_to_site(&mut self, chara: Chara, sid: SiteId, n: u32) -> CharaId {
         let cid = CharaId::OnSite { sid, n };
         self.chara.0.insert(cid, chara);

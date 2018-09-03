@@ -18,7 +18,8 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             });
         }
         
-        gd.add_chara_to_map(chara, CharaKind::OnMap, mid, uc.pos);
+        let cid = gd.add_chara_to_site(chara, sid, uc.n);
+        gd.region.get_map_mut(mid).locate_chara(cid, uc.pos);
     }
 }
 
