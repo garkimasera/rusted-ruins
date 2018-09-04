@@ -1,6 +1,7 @@
 
 use gamedata::shop::*;
 use fnv::FnvHashMap;
+use std::collections::hash_map::{Values, ValuesMut};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Town {
@@ -26,6 +27,14 @@ impl Town {
 
     pub fn get_shop_mut(&mut self, n: u32) -> Option<&mut Shop> {
         self.shops.get_mut(&n)
+    }
+
+    pub fn iter_shops(&self) -> Values<u32, Shop> {
+        self.shops.values()
+    }
+
+    pub fn iter_shops_mut(&mut self) -> ValuesMut<u32, Shop> {
+        self.shops.values_mut()
     }
 
     pub fn add_shop(&mut self, shop: Shop, n: u32) {

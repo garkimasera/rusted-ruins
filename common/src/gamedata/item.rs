@@ -258,6 +258,11 @@ impl ItemList {
         true
     }
 
+    /// Clear all item in list
+    pub fn clear(&mut self) {
+        self.items.clear();
+    }
+
     /// Return item iterator
     pub fn iter(&self) -> ::std::slice::Iter<(Item, u32)> {
         self.items.iter()

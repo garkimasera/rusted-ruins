@@ -16,6 +16,7 @@ pub mod dungeon_gen;
 pub mod exp;
 pub mod newgame;
 pub mod params;
+pub mod town;
 
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -30,6 +31,7 @@ pub struct Rules {
     pub exp: exp::Exp,
     pub newgame: newgame::NewGame,
     pub params: params::Params,
+    pub town: town::Town,
 }
 
 impl Rules {
@@ -41,6 +43,7 @@ impl Rules {
             exp:         read_from_json(&rules_dir.join("exp.json")),
             newgame:     read_from_json(&rules_dir.join("newgame.json")),
             params:      read_from_json(&rules_dir.join("params.json")),
+            town:        read_from_json(&rules_dir.join("town.json")),
         }
     }
 }
