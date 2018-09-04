@@ -139,7 +139,7 @@ pub enum ItemListLocation {
     OnMap { mid: super::map::MapId, pos: Vec2d },
     Chara { cid: super::chara::CharaId },
     Equip { cid: super::chara::CharaId },
-    Shop { sid: super::SiteId, n: u32 },
+    Shop { cid: super::CharaId },
 }
 
 pub type ItemLocation = (ItemListLocation, u32);

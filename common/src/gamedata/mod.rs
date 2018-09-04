@@ -149,8 +149,8 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 &self.region.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
             }
-            ItemListLocation::Shop { sid, n } => {
-                &self.get_shop(sid, n).items
+            ItemListLocation::Shop { cid } => {
+                &self.get_shop(cid).items
             }
         }
     }
@@ -168,8 +168,8 @@ impl GameData {
                 self.region.get_map_mut(mid).tile[pos].item_list.as_mut()
                     .expect("Get item list to empty tile")
             }
-            ItemListLocation::Shop { sid, n } => {
-                &mut self.get_shop_mut(sid, n).items
+            ItemListLocation::Shop { cid } => {
+                &mut self.get_shop_mut(cid).items
             }
         }
     }
@@ -258,22 +258,30 @@ impl GameData {
         &mut chara.equip
     }
 
-    pub fn get_shop(&self, sid: SiteId, n: u32) -> &Shop {
+    pub fn get_shop(&self, cid: CharaId) -> &Shop {
+        let (sid, n) = match cid {
+            CharaId::OnSite { sid, n } => (sid, n),
+            _ => panic!("Tried to get shop according to no OnSite character"),
+        };
         let site = self.region.get_site(sid);
         match &site.content {
             SiteContent::Town { ref town } => {
-                town.shops.get(&n)
+                town.get_shop(n)
                     .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
             }
             _ => unreachable!("Tried to get shop in a site that is not town"),
         }
     }
 
-    pub fn get_shop_mut(&mut self, sid: SiteId, n: u32) -> &mut Shop {
+    pub fn get_shop_mut(&mut self, cid: CharaId) -> &mut Shop {
+        let (sid, n) = match cid {
+            CharaId::OnSite { sid, n } => (sid, n),
+            _ => panic!("Tried to get shop according to no OnSite character"),
+        };
         let site = self.region.get_site_mut(sid);
         match &mut site.content {
             SiteContent::Town { ref mut town } => {
-                town.shops.get_mut(&n)
+                town.get_shop_mut(n)
                     .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
             }
             _ => unreachable!("Tried to get shop in a site that is not town"),
