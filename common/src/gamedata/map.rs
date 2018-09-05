@@ -259,12 +259,6 @@ impl Map {
         }
     }
 
-    /// Add one character on this map.
-    pub(crate) fn add_chara(&mut self, pos: Vec2d, id: CharaId) {
-        self.charaid.push(id);
-        self.tile[pos].chara = Some(id);
-    }
-
     /// Get character position
     pub fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
         for p in self.tile.iter_idx() {
@@ -291,6 +285,10 @@ impl Map {
     /// Locate a character at given position.
     /// If the new position is not empty, this function will fail and return false
     pub fn locate_chara(&mut self, cid: CharaId, pos: Vec2d) -> bool {
+        if !self.charaid.iter().any(|a| *a == cid) {
+            self.charaid.push(cid);
+        }
+        
         if self.tile[pos].chara.is_some() { return false; }
             
         if let Some(old_pos) = self.chara_pos(cid) {
