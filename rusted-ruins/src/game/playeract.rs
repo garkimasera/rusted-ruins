@@ -194,6 +194,11 @@ impl<'a> DoPlayerAction<'a> {
         self.0.finish_player_turn();
     }
 
+    /// Buy item
+    pub fn buy_item(&mut self, il: ItemLocation) {
+        super::shop::buy_item(self.gd_mut(), il);
+    }
+
     /// Sell item
     pub fn sell_item(&mut self, il: ItemLocation) {
         super::shop::sell_item(self.gd_mut(), il);

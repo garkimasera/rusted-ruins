@@ -32,6 +32,25 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
         let map = gd.region.get_map_mut(MapId::from(rid));
         map.tile[pos].special = SpecialTileKind::SiteSymbol { kind: SiteSymbolKind::Town };
     }
+
+    // Shop settings
+    let sg: &SiteGenObject = gobj::get_by_id(town_id);
+    {
+        let town = match gd.region.get_site_mut(sid).content {
+            SiteContent::Town { ref mut town } => town,
+            _ => unreachable!(),
+        };
+        
+        for shop_gen_data in &sg.shops {
+            let shop = Shop {
+                kind: shop_gen_data.kind,
+                items: ItemList::new(100),
+                level: 1,
+            };
+            town.add_shop(shop, shop_gen_data.chara_n);
+        }
+    }
+    update_shops(gd, sid);
 }
 
 /// Update shop states
