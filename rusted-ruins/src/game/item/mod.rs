@@ -8,10 +8,24 @@ use game::extrait::*;
 
 /// Additional Item methods
 pub trait ItemEx {
+    /// Calculate item price
+    fn price(&self) -> i64;
+    /// Calculate item selling price
+    fn selling_price(&self) -> i64;
     fn get_name(&self) -> String;
 }
 
 impl ItemEx for Item {
+    fn price(&self) -> i64 {
+        let item_obj = gobj::get_obj(self.idx);
+
+        item_obj.basic_price as i64
+    }
+
+    fn selling_price(&self) -> i64 {
+        self.price() / 2
+    }
+    
     fn get_name(&self) -> String {
         ::text::obj_txt(gobj::idx_to_id(self.idx)).to_owned()
     }

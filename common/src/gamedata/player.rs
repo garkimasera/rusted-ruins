@@ -9,5 +9,17 @@ impl Player {
     pub fn money(&self) -> i64 {
         self.money
     }
+
+    pub fn add_money(&mut self, diff: i64) {
+        self.money += diff;
+    }
+
+    pub fn sub_money(&mut self, diff: i64) {
+        self.money -= diff;
+    }
+
+    pub fn has_money(&self, a: i64) -> bool {
+        self.money >= a
+    }
 }
 
