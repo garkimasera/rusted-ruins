@@ -46,6 +46,9 @@ impl NewGameBuilder {
             chara.name = Some(self.player_name.unwrap());
             set_initial_skills(&mut chara);
             super::chara::update_params(&mut chara);
+
+            gd.player.set_money(RULES.newgame.start_money as i64);
+            
             /* Test code for equipment */
             use common::gamedata::chara::Race;
             let slots = &RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();

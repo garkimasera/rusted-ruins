@@ -10,6 +10,7 @@ pub struct NewGame {
     pub class_choices: Vec<CharaClass>,
     pub start_region: String,
     pub start_pos: Vec2d,
+    pub start_money: u32,
     pub chara_template_table: HashMap<CharaClass, String>,
     pub common_initial_skills: Vec<SkillKind>,
 }

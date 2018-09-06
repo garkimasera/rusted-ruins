@@ -10,6 +10,11 @@ impl Player {
         self.money
     }
 
+    pub fn set_money(&mut self, a: i64) {
+        assert!(a >= 0);
+        self.money = a;
+    }
+
     pub fn add_money(&mut self, diff: i64) {
         self.money += diff;
     }
