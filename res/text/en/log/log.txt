@@ -36,3 +36,5 @@ $(chara) is poisoned.
 $(chara) is asleep.
 % poison-damage
 $(chara) is damaged by poison ($(damage)).
+% shop-lack-of-money
+$(chara) do not have enough money to buy it.

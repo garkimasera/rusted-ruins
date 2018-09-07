@@ -7,6 +7,8 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
     if gd.player.has_money(price) {
         gd.player.sub_money(price);
         gd.move_item(il, ItemListLocation::Chara { cid: CharaId::Player }, 1);
+    } else {
+        game_log_i!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player).get_name());
     }
 }
 
