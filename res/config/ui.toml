@@ -54,7 +54,7 @@ rect = { x = -999, y = -999, w = 200, h = 200 }
 [item_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
 n_row = 3
-column_pos = [1, 27]
+column_pos = [1, 27, 380]
 
 [equip_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }

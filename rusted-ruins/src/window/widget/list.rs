@@ -25,7 +25,7 @@ pub struct ListWidget {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ListRowKind {
-    Str, IconStr, IconIconStr
+    Str, IconStr, IconIconStr, IconStrStr
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -33,6 +33,7 @@ pub enum ListRow {
     Str(String),
     IconStr(IconIdx, String),
     IconIconStr(IconIdx, IconIdx, String),
+    IconStrStr(IconIdx, String, String),
 }
 
 impl ListRow {
@@ -41,6 +42,7 @@ impl ListRow {
             ListRow::Str(_) => ListRowKind::Str,
             ListRow::IconStr(_, _) => ListRowKind::IconStr,
             ListRow::IconIconStr(_, _, _) => ListRowKind::IconIconStr,
+            ListRow::IconStrStr(_, _, _) => ListRowKind::IconStrStr,
         }
     }
 }
@@ -60,7 +62,8 @@ impl ListWidget {
 
         assert!((kind == ListRowKind::Str && column_pos.len() == 1) ||
                 (kind == ListRowKind::IconStr && column_pos.len() == 2) ||
-                (kind == ListRowKind::IconIconStr && column_pos.len() == 3));
+                (kind == ListRowKind::IconIconStr && column_pos.len() == 3) ||
+                (kind == ListRowKind::IconStrStr && column_pos.len() == 3));
 
         ListWidget {
             rect: rect,
@@ -106,6 +109,9 @@ impl ListWidget {
                 }
                 ListRow::IconIconStr(_, _, ref s) => {
                     cache.push(TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()));
+                }
+                ListRow::IconStrStr(_, ref s0, ref s1) => {
+                    cache.push(TextCache::new(&[s0, s1], FontKind::M, UI_CFG.color.normal_font.into()));
                 }
             }
         }
@@ -177,6 +183,9 @@ impl ListWidget {
                 unimplemented!()
             }
             ListRowKind::IconIconStr => {
+                unimplemented!()
+            }
+            ListRowKind::IconStrStr => {
                 unimplemented!()
             }
         };
@@ -315,6 +324,19 @@ impl WidgetTrait for ListWidget {
                     
                     let tex = sv.tt_group(&mut self.cache[i]);
                     draw_text(&tex[0], canvas, self.rect,
+                              self.column_pos[2] + left_margin, h,
+                              self.rect.width() - self.column_pos[2] as u32);
+                }
+                ListRow::IconStrStr(icon0, _, _) => {
+                    let h = h_row * i as i32;
+                    draw_icon(sv, icon0, canvas, self.rect,
+                              self.column_pos[0] + left_margin, h);
+                    
+                    let tex = sv.tt_group(&mut self.cache[i]);
+                    draw_text(&tex[0], canvas, self.rect,
+                              self.column_pos[1] + left_margin, h,
+                              (self.column_pos[2] - self.column_pos[1]) as u32);
+                    draw_text(&tex[1], canvas, self.rect,
                               self.column_pos[2] + left_margin, h,
                               self.rect.width() - self.column_pos[2] as u32);
                 }

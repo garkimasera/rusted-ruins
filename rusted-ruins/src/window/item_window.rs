@@ -4,6 +4,7 @@ use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use sdlvalues::*;
 use game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
+use game::extrait::*;
 use config::UI_CFG;
 use draw::border::draw_rect_border;
 use eventhandler::InputMode;
@@ -42,7 +43,7 @@ impl ItemWindow {
         let mut item_window = ItemWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStr,
+                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStrStr,
                 UI_CFG.item_window.column_pos.clone(),
                 Some(UI_CFG.item_window.n_row), 26),
             mode: mode,
@@ -125,9 +126,12 @@ impl ItemWindow {
             for (item_location, item, n_item) in list.skip(start as usize).take(page_size as usize) {
                 let item_text = format!(
                     "{} x {}",
-                    text::obj_txt(&gobj::get_obj(item.idx).id).to_owned(),
+                    item.get_name(),
                     n_item);
-                rows.push(ListRow::IconStr(IconIdx::Item(item.idx), item_text));
+
+                let additional_info = format!("{}kg", item.w() as f32 / 1000.0);
+                
+                rows.push(ListRow::IconStrStr(IconIdx::Item(item.idx), item_text, additional_info));
                 item_locations.push(item_location);
             }
             rows

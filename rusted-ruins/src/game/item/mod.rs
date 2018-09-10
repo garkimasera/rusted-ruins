@@ -13,6 +13,7 @@ pub trait ItemEx {
     /// Calculate item selling price
     fn selling_price(&self) -> i64;
     fn get_name(&self) -> String;
+    fn w(&self) -> u32;
 }
 
 impl ItemEx for Item {
@@ -28,6 +29,12 @@ impl ItemEx for Item {
     
     fn get_name(&self) -> String {
         ::text::obj_txt(gobj::idx_to_id(self.idx)).to_owned()
+    }
+
+    fn w(&self) -> u32 {
+        let item_obj = gobj::get_obj(self.idx);
+
+        item_obj.w
     }
 }
 
