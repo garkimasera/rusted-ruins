@@ -64,6 +64,8 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
+    // Sound effect
+    ::audio::play_sound("punch");
 }
 
 /// Shot target by long range weapons.

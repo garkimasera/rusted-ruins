@@ -60,7 +60,7 @@ impl SdlContext {
             sdl_context: sdl2::init().expect("Init Failed : SDL Context"),
             ttf_context: sdl2::ttf::init().expect("Init Failed : SDL_ttf Context"),
             _image: sdl2::image::init(sdl2::image::INIT_PNG).expect("Init Failed : SDL_Image"),
-            _audio_context: audio::init(&[&*config::APP_DIR]),
+            _audio_context: audio::init(&config::get_data_dirs()),
         }
     }
 }
