@@ -1,6 +1,7 @@
 
 pub mod playeract;
 pub mod item;
+pub mod frequent_tex;
 mod npc;
 mod action;
 mod command;
@@ -48,6 +49,7 @@ pub struct Game {
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
     pub view_map: view::ViewMap,
+    pub frequent_tex: self::frequent_tex::FrequentTextures,
 }
 
 impl Game {
@@ -61,6 +63,7 @@ impl Game {
             dying_charas: Vec::new(),
             target_chara: None,
             view_map: view::ViewMap::new(),
+            frequent_tex: self::frequent_tex::FrequentTextures::new(),
         };
         
         game
@@ -76,6 +79,7 @@ impl Game {
             dying_charas: Vec::new(),
             target_chara: None,
             view_map: view::ViewMap::new(),
+            frequent_tex: self::frequent_tex::FrequentTextures::new(),
         }
     }
 

@@ -60,6 +60,7 @@ impl MainWinDrawer {
         self.update_draw_params((map.w as i32, map.h as i32),
                                 ct, player_move_adjust);
         self.draw_except_anim(canvas, game, sv, player_move_adjust, player_move_dir);
+        self.draw_effect_filter_all(canvas, game, sv);
 
         if let Some(anim) = anim {
             self.draw_anim(canvas, game, sv, anim.0, anim.1);
@@ -239,6 +240,24 @@ impl MainWinDrawer {
                 TILE_SIZE, TILE_SIZE);
             let texture = sv.tex().get(fog_idx);
             check_draw!(canvas.copy(&texture, src, dest));
+        }
+    }
+
+    /// Draw effect filter for all tiles
+    fn draw_effect_filter_all(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues) {
+        use game::frequent_tex::*;
+        let idx = game.frequent_tex.overlay_idx(Overlay::Night);
+        let texture = sv.tex().get(idx);
+        let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
+        let (nx, ny) = self.calc_tile_num();
+
+        for iy in 0..ny {
+            for ix in 0..nx {
+                let dest = Rect::new(
+                    ix * TILE_SIZE_I, iy * TILE_SIZE_I,
+                    TILE_SIZE, TILE_SIZE);
+                check_draw!(canvas.copy(&texture, src, dest));
+            }
         }
     }
 
