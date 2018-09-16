@@ -118,23 +118,6 @@ impl ForegroundDrawInfo {
 
 }
 
-#[derive(Default)]
-pub struct EffectDrawInfo {
-    pub fog: Option<EffectIdx>
-}
-
-impl EffectDrawInfo {
-    pub fn new(view_map: &ViewMap, pos: Vec2d) -> EffectDrawInfo {
-        let mut di = EffectDrawInfo::default();
-
-        if !view_map.get_tile_visible(pos) {
-            di.fog = Some(EffectIdx(0));
-        }
-
-        di
-    }
-}
-
 /// Adjust piece pattern when getting piece pattern from the nearest tile.
 fn adjust_pattern_from_nearest(pp: &mut PiecePattern, _pos: Vec2d, _nearest_pos: Vec2d) {
     *pp = PiecePattern::SURROUNDED;

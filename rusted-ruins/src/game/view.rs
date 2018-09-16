@@ -34,7 +34,11 @@ impl ViewMap {
     }
 
     pub fn get_tile_visible(&self, pos: Vec2d) -> bool {
-        self.visible[pos]
+        if self.visible.in_range(pos) {
+            self.visible[pos]
+        } else {
+            false
+        }
     }
 }
 

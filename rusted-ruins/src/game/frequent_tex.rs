@@ -11,6 +11,8 @@ impl FrequentTextures {
     pub fn new() -> FrequentTextures {
         // Set Effect Object indices
         let mut effect_idx = Vec::new();
+        effect_idx.push(gobj::id_to_idx("overlay-fog")); // Fog
+        effect_idx.push(gobj::id_to_idx("overlay-fog-dark")); // Fog (dark)
         effect_idx.push(gobj::id_to_idx("overlay-night")); // Night
 
         FrequentTextures {
@@ -25,6 +27,8 @@ impl FrequentTextures {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Overlay {
-    Night = 0,
+    Fog = 0,
+    FogDark,
+    Night,
 }
 

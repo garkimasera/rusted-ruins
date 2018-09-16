@@ -213,4 +213,5 @@ pub trait PieceImgObject: ImgObject {
 
 impl PieceImgObject for ::obj::TileObject { }
 impl PieceImgObject for ::obj::WallObject { }
+impl PieceImgObject for ::obj::EffectObject { }
 

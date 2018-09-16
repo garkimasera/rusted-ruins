@@ -204,7 +204,7 @@ macro_rules! impl_img_object {
 }
 
 impl_img_object!(
-    AnimImgObject, CharaTemplateObject, DecoObject, ItemObject, SpecialTileObject, TileObject,
-    UIImgObject, WallObject
+    AnimImgObject, EffectObject, CharaTemplateObject, DecoObject, ItemObject,
+    SpecialTileObject, TileObject, UIImgObject, WallObject
 );
 

@@ -14,6 +14,7 @@ use game::view::ViewMap;
 use sdlvalues::SdlValues;
 use super::tile_getter::*;
 use super::frame::calc_frame;
+use super::overlay;
 
 pub struct MainWinDrawer {
     rect: Rect,
@@ -60,7 +61,7 @@ impl MainWinDrawer {
         self.update_draw_params((map.w as i32, map.h as i32),
                                 ct, player_move_adjust);
         self.draw_except_anim(canvas, game, sv, player_move_adjust, player_move_dir);
-        self.draw_effect_filter_all(canvas, game, sv);
+        self.draw_overlay_all(canvas, game, sv);
 
         if let Some(anim) = anim {
             self.draw_anim(canvas, game, sv, anim.0, anim.1);
@@ -148,7 +149,7 @@ impl MainWinDrawer {
         }
         // Draw background parts
         for p in tile_range {
-            self.draw_effect_filter(canvas, &game.view_map, sv, p);
+            self.draw_overlay(canvas, game, sv, p);
         }
     }
 
@@ -228,25 +229,35 @@ impl MainWinDrawer {
         }
     }
 
-    /// Draw effect filter for tile
-    fn draw_effect_filter(&self, canvas: &mut WindowCanvas, view_map: &ViewMap,
-                             sv: &SdlValues, p: Vec2d) {
-        let di = EffectDrawInfo::new(view_map, p);
-        
-        if let Some(fog_idx) = di.fog {
-            let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
-            let dest = Rect::new(
-                p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                TILE_SIZE, TILE_SIZE);
-            let texture = sv.tex().get(fog_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
+    /// Draw overlay for a tile
+    fn draw_overlay(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues, p: Vec2d) {
+
+        match overlay::view_fog(game, p) {
+            overlay::FogPattern::None => (),
+            overlay::FogPattern::PiecePattern(idx, pp) => {
+                let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
+                let dest = Rect::new(
+                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
+                    TILE_SIZE, TILE_SIZE);
+                let tex = sv.tex().get(idx);
+                let obj = gobj::get_obj(idx);
+                self.draw_pieces(canvas, tex, obj, p, pp);
+            }
+            overlay::FogPattern::Fog(idx) => {
+                // src rect is fixed at right-bottom corner of image
+                let src = Rect::new(TILE_SIZE_I, TILE_SIZE_I * 2, TILE_SIZE, TILE_SIZE);
+                let dest = Rect::new(
+                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
+                    TILE_SIZE, TILE_SIZE);
+                let tex = sv.tex().get(idx);
+                check_draw!(canvas.copy(&tex, src, dest));
+            }
         }
     }
 
-    /// Draw effect filter for all tiles
-    fn draw_effect_filter_all(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues) {
-        use game::frequent_tex::*;
-        let idx = game.frequent_tex.overlay_idx(Overlay::Night);
+    /// Draw overlay for all tiles
+    fn draw_overlay_all(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues) {
+        let idx = if let Some(idx) = overlay::all(game) { idx } else { return; };
         let texture = sv.tex().get(idx);
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let (nx, ny) = self.calc_tile_num();
