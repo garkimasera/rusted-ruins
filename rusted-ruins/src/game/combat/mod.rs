@@ -114,6 +114,8 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     }
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);
+    // Sound effect
+    ::audio::play_sound("arrow");
     true
 }
 
