@@ -71,6 +71,7 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
     
         gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
     }
+    ::audio::play_sound("floor-change");
     super::view::update_view_map(game);
 }
 
