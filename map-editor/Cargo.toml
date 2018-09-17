@@ -7,10 +7,10 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 rusted-ruins-array2d = { path = "../array2d" }
 rusted-ruins-common = { path = "../common", features = ["global_state_obj"] }
 
-gtk = { version = "0.4", features = ["v3_10"] }
-gdk = "0.8"
-gio = "0.4"
-gdk-pixbuf = "0.4"
-cairo-rs = "0.4"
+gtk = { version = "0.5", features = ["v3_10"] }
+gdk = "0.9"
+gio = "0.5"
+gdk-pixbuf = "0.5"
+cairo-rs = "0.5"
 tar = "0.4"
 
