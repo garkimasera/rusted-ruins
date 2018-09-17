@@ -39,11 +39,29 @@ pub fn all(game: &Game) -> Option<EffectIdx> {
     }
     
     let hour = game.gd.time.hour();
+    let minute = game.gd.time.minute();
+    let dawn_hour = 5;
+    let dusk_hour = 18;
+    assert!(dawn_hour < dusk_hour);
 
-    if 6 <= hour && hour <= 18 {
+    if dawn_hour < hour && hour < dusk_hour { // Daytime
         None
-    } else {
+    } else if hour == dawn_hour {
+        Some(game.frequent_tex.overlay_idx(twilight(minute)))
+    } else if hour == dusk_hour {
+        Some(game.frequent_tex.overlay_idx(twilight(60 - minute)))
+    } else { // Night
         Some(game.frequent_tex.overlay_idx(Overlay::Night))
+    }
+}
+
+fn twilight(minute: u32) -> Overlay {
+    if minute < 20 {
+        Overlay::Twilight0
+    } else if minute < 40 {
+        Overlay::Twilight1
+    } else {
+        Overlay::Twilight2
     }
 }
 
