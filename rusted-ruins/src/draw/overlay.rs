@@ -2,7 +2,7 @@
 use array2d::*;
 use common::piece_pattern::*;
 use common::objholder::EffectIdx;
-use game::Game;
+use game::{Game, InfoGetter};
 use game::view::ViewMap;
 use game::frequent_tex::Overlay;
 
@@ -33,6 +33,11 @@ pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
 }
 
 pub fn all(game: &Game) -> Option<EffectIdx> {
+    // If current map is indoor, don't draw night overlay
+    if !game.gd.is_open_air(game.gd.get_current_mapid()) {
+        return None;
+    }
+    
     let hour = game.gd.time.hour();
 
     if 6 <= hour && hour <= 18 {

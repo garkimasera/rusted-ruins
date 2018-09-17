@@ -15,6 +15,8 @@ pub trait InfoGetter {
     fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList>;
     /// Return any item exist or not on player tile
     fn is_item_on_player_tile(&self) -> bool;
+    /// Judge given map is open-air or not
+    fn is_open_air(&self, mid: MapId) -> bool;
 }
 
 impl InfoGetter for GameData {
@@ -53,6 +55,21 @@ impl InfoGetter for GameData {
     fn is_item_on_player_tile(&self) -> bool {
         let list = self.item_on_player_tile();
         !(list.is_none() || list.unwrap().is_empty())
+    }
+
+    fn is_open_air(&self, mid: MapId) -> bool {
+        match mid {
+            MapId::SiteMap { sid, floor } => {
+                match sid.kind {
+                    SiteKind::AutoGenDungeon => false,
+                    SiteKind::Town => {
+                        floor == 0
+                    }
+                    SiteKind::Other => false,
+                }
+            }
+            MapId::RegionMap { .. } => true
+        }
     }
 }
 
