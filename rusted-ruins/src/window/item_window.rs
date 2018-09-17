@@ -115,13 +115,14 @@ impl ItemWindow {
 
     fn update_list(&mut self, list: FilteredItemList) {
         self.list.set_n_item(list.clone().count() as u32);
+        let list = &list;
         
         let item_locations = &mut self.item_locations;
         self.list.update_rows_by_func(|start, page_size| {
             let mut rows = Vec::new();
             item_locations.clear();
 
-            for (item_location, item, n_item) in list.skip(start as usize).take(page_size as usize) {
+            for (item_location, item, n_item) in list.clone().skip(start as usize).take(page_size as usize) {
                 let item_text = format!(
                     "{} x {}",
                     item.get_name(),

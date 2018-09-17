@@ -40,12 +40,12 @@ impl EquipWindow {
     }
 
     fn update_list(&mut self, pa: &mut DoPlayerAction) {
-        let mut rows = Vec::new();
         let equips = pa.gd().get_equip_list(self.cid);
         self.list.set_n_item(equips.n_slots());
         let slots = &mut self.slots;
 
         self.list.update_rows_by_func(|start, page_size| {
+            let mut rows = Vec::new();
             slots.clear();
             for (esk, esk_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
                 let esk_icon = slotkind_to_icon_idx(esk);

@@ -120,10 +120,32 @@ impl ListWidget {
         self.cache = cache;
     }
 
-    /// Update rows for this page
-    pub fn update_rows_by_func<F>(&mut self, f: F) where F: FnOnce(u32, u32) -> Vec<ListRow> {
+    /// Update rows for this page.
+    pub fn update_rows_by_func<F: FnMut(u32, u32) -> Vec<ListRow>>(&mut self, mut f: F) {
+        
         let page_size = self.page_size.unwrap_or(self.n_item);
-        let rows = f(page_size * self.current_page, page_size);
+        let mut is_page_changed = false;
+        let mut rows = Vec::new();
+        loop {
+            rows = f(page_size * self.current_page, page_size);
+            // If rows is empty, decrease current_page,
+            // and searches the maximum page that has items
+            if rows.len() > 0 || self.current_page == 0 {
+                break;
+            }
+            self.current_page -= 1;
+            is_page_changed = true
+        }
+        if is_page_changed {
+            self.max_page = self.current_page;
+        }
+        if rows.len() <= self.current_choice as usize {
+            if rows.len() > 0 {
+                self.current_choice = rows.len() as u32 - 1;
+            } else {
+                self.current_choice = 0;
+            }
+        }
         self.set_rows(rows);
     }
 
