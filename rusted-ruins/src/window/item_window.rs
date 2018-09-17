@@ -10,10 +10,8 @@ use draw::border::draw_rect_border;
 use eventhandler::InputMode;
 use super::widget::*;
 use super::misc_window::PageWindow;
-use common::gobj;
 use common::gamedata::*;
 use game::item::filter::*;
-use text;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {

@@ -2,7 +2,6 @@
 use rng;
 use super::Game;
 use super::chara::CharaEx;
-use super::skill::SkillListEx;
 use common::gobj;
 use common::gamedata::*;
 use rules::RULES;
@@ -125,7 +124,7 @@ fn get_weapon_kind(item: &ItemObject) -> WeaponKind {
     }
 }
 
-fn calc_equip_defence(chara: &Chara, _e: Element) -> f64 {
+fn calc_equip_defence(_chara: &Chara, _e: Element) -> f64 {
     10.0
 }
 

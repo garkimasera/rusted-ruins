@@ -235,10 +235,6 @@ impl MainWinDrawer {
         match overlay::view_fog(game, p) {
             overlay::FogPattern::None => (),
             overlay::FogPattern::PiecePattern(idx, pp) => {
-                let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
-                let dest = Rect::new(
-                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                    TILE_SIZE, TILE_SIZE);
                 let tex = sv.tex().get(idx);
                 let obj = gobj::get_obj(idx);
                 self.draw_pieces(canvas, tex, obj, p, pp);

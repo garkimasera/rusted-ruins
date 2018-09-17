@@ -3,7 +3,6 @@ use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
-use common::gamedata::*;
 
 /// Game play information viewer
 pub struct GameInfoWindow {

@@ -71,7 +71,6 @@ pub fn update_shops(gd: &mut GameData, sid: SiteId) {
 
 /// Update items on a shop
 fn update_items_on_shop(shop: &mut Shop) {
-    use std::cmp::{min, max};
     use game::item::gen::gen_dungeon_item;
     
     shop.items.clear();

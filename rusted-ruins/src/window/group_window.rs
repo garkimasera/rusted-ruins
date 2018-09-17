@@ -1,6 +1,5 @@
 
 use super::commonuse::*;
-use super::widget::*;
 
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.

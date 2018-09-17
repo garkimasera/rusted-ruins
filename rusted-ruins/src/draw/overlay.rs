@@ -3,7 +3,6 @@ use array2d::*;
 use common::piece_pattern::*;
 use common::objholder::EffectIdx;
 use game::{Game, InfoGetter};
-use game::view::ViewMap;
 use game::frequent_tex::Overlay;
 
 pub enum FogPattern {
