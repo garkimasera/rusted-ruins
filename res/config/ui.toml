@@ -31,7 +31,7 @@ rect = { x = -999, y = 120, w = 200, h = 100 }
 list_y = 52
 
 [talk_window]
-rect = { x = -999, y = 50, w = 450, h = 300 }
+rect = { x = -999, y = 50, w = 450, h = 200 }
 n_default_line = 5
 image_window_pos_x = -55
 image_window_pos_y = 0
@@ -52,13 +52,13 @@ explanation_text_rect = { x = -999, y = 50, w = 300 }
 rect = { x = -999, y = -999, w = 200, h = 200 }
 
 [item_window]
-rect = { x = -999, y = -999, w = 450, h = 300 }
-n_row = 3
+rect = { x = -999, y = -999, w = 450, h = 260 }
+n_row = 10
 column_pos = [1, 27, 380]
 
 [equip_window]
-rect = { x = -999, y = -999, w = 450, h = 300 }
-n_row = 16
+rect = { x = -999, y = -999, w = 450, h = 260 }
+n_row = 10
 column_pos = [1, 28, 58]
 
 [scrolling_text_window]
