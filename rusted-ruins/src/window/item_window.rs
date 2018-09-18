@@ -118,6 +118,8 @@ impl ItemWindow {
         let list = &list;
         
         let item_locations = &mut self.item_locations;
+        let mode = &self.mode;
+        
         self.list.update_rows_by_func(|start, page_size| {
             let mut rows = Vec::new();
             item_locations.clear();
@@ -128,7 +130,18 @@ impl ItemWindow {
                     item.get_name(),
                     n_item);
 
-                let additional_info = format!("{}kg", item.w() as f32 / 1000.0);
+                // Infomation displayed in the right column
+                let additional_info = match mode {
+                    ItemWindowMode::ShopBuy { .. } => {
+                        format!("{}G", item.price())
+                    }
+                    ItemWindowMode::ShopSell => {
+                        format!("{}G", item.selling_price())
+                    }
+                    _ => {
+                        format!("{:.2}kg", item.w() as f32 / 1000.0)
+                    }
+                };
                 
                 rows.push(ListRow::IconStrStr(IconIdx::Item(item.idx), item_text, additional_info));
                 item_locations.push(item_location);
