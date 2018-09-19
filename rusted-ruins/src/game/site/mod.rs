@@ -21,6 +21,7 @@ pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d
 /// Extend dungion site by one floor
 pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     let floor = gd.region.get_site(sid).floor_num();
+    let is_deepest_floor = floor >= gd.region.get_site(sid).max_floor() - 1;
     let map = match gd.region.get_site(sid).content {
         SiteContent::AutoGenDungeon { dungeon_kind } => {
             let map_size = RULES.dungeon_gen[&dungeon_kind].map_size;
@@ -30,7 +31,7 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
                 .floor(floor)
                 .tile(tile_idx)
                 .wall(wall_idx)
-                .deepest_floor(floor >= gd.region.get_site(sid).max_floor() - 1)
+                .deepest_floor(is_deepest_floor)
                 .build()
         }
         _ => {
@@ -41,6 +42,10 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     let mid = gd.add_map(map, sid);
     super::map::gen_npcs(gd, mid, 10, mid.floor());
     super::map::gen_items(gd, mid);
+    
+    if is_deepest_floor {
+        self::gen::add_for_deepest_floor(gd, mid);
+    }
 }
 
 /// Additional Site method

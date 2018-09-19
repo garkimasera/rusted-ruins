@@ -26,6 +26,9 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         "armor" => {
             ItemKind::Armor(get_optional_field!(item, armor_kind))
         }
+        "special" => {
+            ItemKind::Special
+        }
         _ => {
             bail!(PakCompileError::UnexpectedValue {
                 field_name: "item_kind".to_owned(),
