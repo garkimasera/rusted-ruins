@@ -3,6 +3,7 @@ pub mod gen;
 
 use std::borrow::Cow;
 use array2d::*;
+use rng;
 use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
@@ -10,7 +11,8 @@ use super::map::builder::MapBuilder;
 use text;
 
 pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d) -> SiteId {
-    let mut site = Site::new(10);
+    let floor_range = &RULES.dungeon_gen[&dungeon_kind].floor_range;
+    let mut site = Site::new(rng::gen_range(floor_range[0], floor_range[1]));
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
     let sid = gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap();
     extend_site_floor(gd, sid);

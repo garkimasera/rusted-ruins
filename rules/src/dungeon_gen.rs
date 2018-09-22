@@ -16,5 +16,7 @@ pub struct DungeonGenParams {
     pub terrain: Vec<[String; 2]>,
     /// Items generatation probability on each tile
     pub item_gen_probability: f64,
+    /// The range of number of floor of auto generated dungeons
+    pub floor_range: [u32; 2],
 }
 
