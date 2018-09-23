@@ -21,6 +21,7 @@ pub mod talk;
 pub mod view;
 mod shop;
 mod event;
+mod dungeon_gen;
 
 use std::borrow::Cow;
 use array2d::Vec2d;

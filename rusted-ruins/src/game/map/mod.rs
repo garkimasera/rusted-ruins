@@ -55,7 +55,7 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
         // If next_mid floor doesn't exist, create new floor
         if !mid.is_region_map() && gd.region.get_map_checked(mid).is_none() {
             info!("{:?} is not exist, so try to create new floor", mid);
-            super::site::extend_site_floor(gd, mid.sid());
+            super::dungeon_gen::extend_site_floor(gd, mid.sid());
         }
         let prev_mid = gd.get_current_mapid();
         gd.set_current_mapid(mid);

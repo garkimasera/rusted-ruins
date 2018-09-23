@@ -51,7 +51,7 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
     };
     let dungeon_kind = *rng::get_rng().choose(&[DungeonKind::Cave, DungeonKind::Ruin]).unwrap();
     
-    super::site::add_dungeon_site(gd, dungeon_kind, pos);
+    super::dungeon_gen::add_dungeon_site(gd, dungeon_kind, pos);
     let region_map = gd.region.get_map_mut(MapId::from(rid));
     let site_symbol_kind = match dungeon_kind {
         DungeonKind::Cave => SiteSymbolKind::Cave,
