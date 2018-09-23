@@ -1,6 +1,7 @@
 
 pub mod builder;
 pub mod from_template;
+pub mod search;
 
 use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
