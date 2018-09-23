@@ -98,16 +98,19 @@ macro_rules! game_log {
     ($textid:expr) => {
         $crate::log::push($crate::text::log_txt($textid).to_owned());
     };
-    ($textid:expr; $($target:ident = $value:expr),*) => {
+    ($textid:expr; $($target:ident = $value:expr),*) => {{
+        use std::borrow::Cow;
+        use text::ToText;
+        
         let text_raw = $crate::text::log_txt($textid);
-        let mut table: Vec<(&str, String)> = Vec::new();
+        let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
-            table.push((stringify!($target), $value.to_string()));
+            table.push((stringify!($target), $value.to_text()));
         )*;
         
         let t = $crate::util::replace_str(text_raw, table.as_slice());
         $crate::log::push(t);
-    }
+    }}
 }
 
 /// Instantly add a new line after logging
@@ -116,16 +119,19 @@ macro_rules! game_log_i {
         $crate::log::push($crate::text::log_txt($textid).to_owned());
         $crate::log::new_line()
     };
-    ($textid:expr; $($target:ident = $value:expr),*) => {
+    ($textid:expr; $($target:ident = $value:expr),*) => {{
+        use std::borrow::Cow;
+        use text::ToText;
+        
         let text_raw = $crate::text::log_txt($textid);
-        let mut table: Vec<(&str, String)> = Vec::new();
+        let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
-            table.push((stringify!($target), $value.to_string()));
+            table.push((stringify!($target), $value.to_text()));
         )*;
         
         let t = $crate::util::replace_str(text_raw, table.as_slice());
         $crate::log::push(t);
         $crate::log::new_line();
-    }
+    }}
 }
 

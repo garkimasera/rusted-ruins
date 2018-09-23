@@ -127,13 +127,12 @@ impl Game {
     /// Set target chara by position.
     /// If given tile position is empty, returns false.
     pub fn set_target(&mut self, pos: Vec2d) -> bool {
-        use self::extrait::CharaEx;
         
         let map = self.gd.get_current_map();
         if let Some(cid) = map.get_chara(pos) {
-            let player_name = self.gd.chara.get(CharaId::Player).get_name();
-            let target_name = self.gd.chara.get(cid).get_name();
-            game_log_i!("target-chara"; chara=player_name, target=target_name);
+            let player = self.gd.chara.get(CharaId::Player);
+            let target = self.gd.chara.get(cid);
+            game_log_i!("target-chara"; chara=player, target=target);
             self.target_chara = Some(cid);
             true
         } else {

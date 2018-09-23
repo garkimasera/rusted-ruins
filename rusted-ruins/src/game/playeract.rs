@@ -1,10 +1,8 @@
 
 use super::Game;
 use super::action;
-use super::extrait::*;
 use common::gamedata::*;
 use game::{InfoGetter, DialogOpenRequest};
-use game::chara::CharaEx;
 use array2d::*;
 
 /// Player actions are processed through this.
@@ -94,10 +92,10 @@ impl<'a> DoPlayerAction<'a> {
                         let region = gd.region.get(mid.rid());
                         if let Some(sid) = region.get_id_by_pos(pos) {
                             let mid = MapId::site_first_floor(sid);
-                            let site_name = gd.region.get_site(sid).get_name();
+                            let site = gd.region.get_site(sid);
                             let msg = replace_str!(
                                 ::text::ui_txt("dialog.enter_site");
-                                site_name=site_name);
+                                site_name=site);
                             (mid, msg.into())
                         } else {
                             warn!("No site existed at {:?}", pos);
@@ -163,9 +161,8 @@ impl<'a> DoPlayerAction<'a> {
     pub fn pick_up_item(&mut self, il: ItemLocation, n: u32) -> bool {
         let gd = self.gd_mut();
         let player_item_list_location = ItemListLocation::Chara { cid: CharaId::Player };
-        let item_name = gd.get_item(il).0.get_name();
+        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
         gd.move_item(il, player_item_list_location, n);
-        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player).get_name(), item=item_name);
         true
     }
 
@@ -176,9 +173,8 @@ impl<'a> DoPlayerAction<'a> {
             mid: gd.get_current_mapid(),
             pos: gd.player_pos(),
         };
-        let item_name = gd.get_item(il).0.get_name();
+        game_log_i!("item-drop"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
         gd.move_item(il, tile_list_location, n);
-        game_log_i!("item-drop"; chara=gd.chara.get(CharaId::Player).get_name(), item=item_name);
         true
     }
 

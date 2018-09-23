@@ -1,4 +1,7 @@
 
+mod text_id_impl;
+mod to_text;
+
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::fs;
@@ -7,8 +10,6 @@ use walkdir::WalkDir;
 use error::*;
 use config;
 use common::basic;
-
-mod text_id_impl;
 
 /// Initialize lazy static
 pub fn init() {
@@ -73,6 +74,12 @@ pub fn misc_txt_checked(id: &str) -> Option<&'static str> {
 }
 
 /// This is helper trait for some data objects that need to be printed in game.
+/// Logging macros use this.
+pub trait ToText {
+    fn to_text(&self) -> ::std::borrow::Cow<str>;
+}
+
+/// Types that have text id.
 /// Returned text id is translated to appropriate words in text module.
 pub trait ToTextId {
     fn to_textid(&self) -> &'static str;
@@ -84,10 +91,12 @@ pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {
 
 macro_rules! replace_str {
     ($original_text:expr; $($target:ident = $value:expr),*) => {{
+        use std::borrow::Cow;
+        use text::ToText;
         let text_raw: &str = $original_text.as_ref();
-        let mut table: Vec<(&str, String)> = Vec::new();
+        let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
-            table.push((stringify!($target), $value.to_string()));
+            table.push((stringify!($target), $value.to_text()));
         )*;
         
         let t = $crate::util::replace_str(text_raw, table.as_slice());

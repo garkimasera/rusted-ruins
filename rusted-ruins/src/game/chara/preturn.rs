@@ -19,7 +19,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         match *s {
             CharaStatus::Poisoned => {
                 let damage = chara.base_params.max_hp / 20;
-                game_log!("poison-damage"; chara=chara.get_name(), damage=damage);
+                game_log!("poison-damage"; chara=chara, damage=damage);
                 // super::damage(game, cid, damage, DamageKind::Poison); // Need NLL
             }
             _ => (),
@@ -34,7 +34,7 @@ fn can_act(chara: &Chara) -> bool {
     for s in chara.status.iter() {
         match *s {
             CharaStatus::Asleep { .. } => {
-                game_log_i!("asleep"; chara=chara.get_name());
+                game_log_i!("asleep"; chara=chara);
                 return false;
             }
             _ => (),

@@ -3,34 +3,25 @@ pub mod creation;
 pub mod preturn;
 pub mod status;
 
+use common::gamedata::*;
+use rules::RULES;
+use text::ToText;
 use super::Game;
 use super::extrait::*;
 use super::combat::DamageKind;
-use common::gamedata::*;
-use common::gobj;
-use rules::RULES;
 
 /// Additional Chara method
 pub trait CharaEx {
-    fn get_name(&self) -> &str;
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
 }
 
 impl CharaEx for Chara {
-    fn get_name(&self) -> &str {
-        if let Some(ref name) = self.name {
-            name
-        } else {
-            ::text::obj_txt(gobj::idx_to_id(self.template))
-        }
-    }
-
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
         let result = self.skills.add_exp(kind, add_exp, base_level);
-        trace!("{} gains {} exp for {:?}", self.get_name(), result.1, kind);
+        trace!("{} gains {} exp for {:?}", self.to_text(), result.1, kind);
         if result.0 { // If level up
-            trace!("{} level up ({:?})", self.get_name(), kind);
-            game_log!("skill-level-up"; chara=self.get_name(), skill=format!("{:?}", kind));
+            trace!("{} level up ({:?})", self.to_text(), kind);
+            game_log!("skill-level-up"; chara=self, skill=kind);
         }
     }
 }
@@ -45,13 +36,13 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
         // Logging
         match damage_kind {
             DamageKind::MeleeAttack => {
-                game_log!("killed-by-melee-attack"; chara=chara.get_name());
+                game_log!("killed-by-melee-attack"; chara=chara);
             }
             DamageKind::RangedAttack => {
-                game_log!("killed-by-ranged-attack"; chara=chara.get_name());
+                game_log!("killed-by-ranged-attack"; chara=chara);
             }
             DamageKind::Poison => {
-                game_log!("killed-by-poison-damage"; chara=chara.get_name());
+                game_log!("killed-by-poison-damage"; chara=chara);
             }
         }
     }

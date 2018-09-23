@@ -22,3 +22,29 @@ impl ToTextId for CharaStatus {
         }
     }
 }
+
+impl ToTextId for SkillKind {
+   fn to_textid(&self) -> &'static str {
+       match self {
+           SkillKind::BareHands     => "!skill_kind.bare_hands",
+           SkillKind::Defence       => "!skill_kind.defence",
+           SkillKind::Weapon(weapon_kind) => {
+               weapon_kind.to_textid()
+           }
+       }
+   }
+}
+
+impl ToTextId for WeaponKind {
+    fn to_textid(&self) -> &'static str {
+        match self {
+            WeaponKind::Axe      => "!weapon_kind.axe",
+            WeaponKind::Bow      => "!weapon_kind.bow",
+            WeaponKind::Crossbow => "!weapon_kind.cross_bow",
+            WeaponKind::Gun      => "!weapon_kind.gun",
+            WeaponKind::Spear    => "!weapon_kind.spear",
+            WeaponKind::Sword    => "!weapon_kind.sword",
+            WeaponKind::Whip     => "!weapon_kind.whip",
+        }
+    }
+}

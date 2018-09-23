@@ -48,7 +48,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        game_log!("attack"; attacker=attacker.get_name(), target=target.get_name(), damage=damage);
+        game_log!("attack"; attacker=attacker, target=target, damage=damage);
     }
     // Damage processing
     super::chara::damage(game, target, damage, DamageKind::MeleeAttack);
@@ -99,7 +99,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        game_log!("shot-target"; attacker=attacker.get_name(), target=target.get_name(), damage=damage);
+        game_log!("shot-target"; attacker=attacker, target=target, damage=damage);
     }
     // Damage processing
     super::chara::damage(game, target, damage, DamageKind::RangedAttack);

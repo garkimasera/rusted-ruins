@@ -55,13 +55,9 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
 pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = gobj::get_obj(item.idx);
-
-    {
-        let chara_name = gd.chara.get(cid).get_name().to_owned();
-        game_log!("drink-item"; chara=chara_name, item=item.get_name());
-    }
     
     let chara = gd.chara.get_mut(cid);
+    game_log!("drink-item"; chara=chara, item=item);
 
     let eff: i32 = item_obj.eff.into();
     apply_medical_effect(chara, item_obj.medical_effect, eff);
@@ -71,13 +67,9 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = gobj::get_obj(item.idx);
-
-    {
-        let chara_name = gd.chara.get(cid).get_name().to_owned();
-        game_log!("eat-item"; chara=chara_name, item=item.get_name());
-    }
     
     let chara = gd.chara.get_mut(cid);
+    game_log!("eat-item"; chara=chara, item=item);
 
     let eff: i32 = item_obj.eff.into();
     apply_medical_effect(chara, item_obj.medical_effect, eff);
@@ -89,15 +81,15 @@ fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
         MedicalEffect::Heal => {
             use std::cmp::min;
             chara.hp = min(chara.params.max_hp, chara.hp + eff);
-            game_log!("heal-hp"; chara=chara.get_name(), value=eff);
+            game_log!("heal-hp"; chara=chara, value=eff);
         }
         MedicalEffect::Sleep => {
             chara.add_status(CharaStatus::Asleep { turn_left: eff as u16 });
-            game_log!("fall-asleep"; chara=chara.get_name());
+            game_log!("fall-asleep"; chara=chara);
         }
         MedicalEffect::Poison => {
             chara.add_status(CharaStatus::Poisoned);
-            game_log!("poisoned"; chara=chara.get_name());
+            game_log!("poisoned"; chara=chara);
         }
     }
 }

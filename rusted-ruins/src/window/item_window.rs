@@ -3,6 +3,7 @@ use window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use sdlvalues::*;
+use text::ToText;
 use game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
 use game::extrait::*;
 use config::UI_CFG;
@@ -127,7 +128,7 @@ impl ItemWindow {
             for (item_location, item, n_item) in list.clone().skip(start as usize).take(page_size as usize) {
                 let item_text = format!(
                     "{} x {}",
-                    item.get_name(),
+                    item.to_text(),
                     n_item);
 
                 // Infomation displayed in the right column

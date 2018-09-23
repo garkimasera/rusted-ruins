@@ -4,7 +4,7 @@ use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use common::gamedata::*;
-use game::chara::CharaEx;
+use text::ToText;
 use super::group_window::GroupWindow;
 use super::choose_window::PagedChooseWindow;
 
@@ -42,7 +42,7 @@ impl StatusWindow {
         let rect: Rect = cfg.rect.into();
         let chara = gd.chara.get(CharaId::Player);
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
-        let name_label = LabelWidget::new(cfg.name_label_rect, chara.get_name(), FontKind::M);
+        let name_label = LabelWidget::new(cfg.name_label_rect, &chara.to_text(), FontKind::M);
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect, &format!("HP  {} / {}", chara.hp, chara.params.max_hp), FontKind::MonoM);
         let str_label = LabelWidget::new(
@@ -116,7 +116,7 @@ impl SkillWindow {
             } else {
                 0
             };
-            let s = format!("{:?} {}  {}%", skill_kind, level, e / 100);
+            let s = format!("{} {}  {}%", skill_kind.to_text(), level, e / 100);
             choices.push(ListRow::Str(s));
         }
         let choose_window = PagedChooseWindow::new(

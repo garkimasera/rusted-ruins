@@ -7,8 +7,8 @@ use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::TileKind;
+use text::ToText;
 use super::Game;
-use super::chara::CharaEx;
 use super::chara::creation::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
@@ -84,7 +84,7 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     for _ in 0..n {
         if let Some(p) = choose_empty_tile(gd.region.get_map(mid)) {
             let chara = create_npc_chara(dungeon_kind, floor_level);
-            trace!("Generate new npc {}", chara.get_name());
+            trace!("Generate new npc {}", chara.to_text());
             let cid = gd.add_chara_to_map(chara, mid);
             let map = gd.region.get_map_mut(mid);
             map.locate_chara(cid, p);

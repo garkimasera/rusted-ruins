@@ -1,7 +1,7 @@
 
 use config::{SCREEN_CFG, UI_CFG};
 use game::InfoGetter;
-use game::site::SiteEx;
+use text::ToText;
 use super::commonuse::*;
 use super::widget::*;
 use common::gobj;
@@ -75,7 +75,7 @@ impl Window for FloorInfo {
             match current_mid {
                 MapId::SiteMap { sid, floor }=> {
                     let site = game.gd.region.get_site(sid);
-                    self.label.set_text(&format!("{} ({})", site.get_name(), floor + 1));
+                    self.label.set_text(&format!("{} ({})", site.to_text(), floor + 1));
                 }
                 MapId::RegionMap { rid } => {
                     let region = game.gd.region.get(rid);
