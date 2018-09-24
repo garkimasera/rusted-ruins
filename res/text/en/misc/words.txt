@@ -11,3 +11,23 @@ Hungry
 Asleep
 % !chara_status.poisoned
 Poisoned
+# SkillKind
+% !skill_kind.bare_hands
+Bare Hands
+% !skill_kind.defence
+Defence
+# WeaponKind
+% !weapon_kind.axe
+Axe
+% !weapon_kind.bow
+Bow
+% !weapon_kind.cross_bow
+Cross Bow
+% !weapon_kind.gun
+Gun
+% !weapon_kind.spear
+Spear
+% !weapon_kind.sword
+Sword
+% !weapon_kind.whip
+Whip
