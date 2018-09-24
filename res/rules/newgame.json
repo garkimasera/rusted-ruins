@@ -1,12 +1,14 @@
 
 {
-    "class_choices": ["archeologist", "rogue"],
+    "class_choices": ["adventurer", "rogue", "sorcerer", "warrior"],
     "start_region": "south-coast",
     "start_pos": [5, 10],
     "start_money": 1000,
     "chara_template_table": {
-        "archeologist": "archeologist-m",
-        "rogue": "rogue-m"
+        "adventurer": "adventurer-m",
+        "rogue": "rogue-m",
+        "sorcerer": "sorcerer-m",
+        "warrior": "warrior-m"
     },
     "common_initial_skills": [
         "defence", "bare_hands", { "weapon": "sword" }

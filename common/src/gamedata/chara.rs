@@ -20,7 +20,7 @@ pub enum Race {
 #[serde(rename_all="snake_case")]
 pub enum CharaClass {
     // Playable classes
-    Archeologist, Rogue,
+    Adventurer, Rogue, Sorcerer, Warrior,
     // Npc classes
     Civilian,
 }
