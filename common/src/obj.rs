@@ -20,6 +20,7 @@ pub enum Object {
     Wall(WallObject),
     MapTemplate(MapTemplateObject),
     RegionGen(RegionGenObject),
+    Script(ScriptObject),
     SiteGen(SiteGenObject),
     TalkScript(TalkScriptObject),
 }
@@ -125,8 +126,9 @@ pub struct Icon {
 // No image objects
 
 pub use maptemplate::MapTemplateObject;
-pub use sitegen::SiteGenObject;
 pub use regiongen::RegionGenObject;
+pub use script::ScriptObject;
+pub use sitegen::SiteGenObject;
 pub use talkscript::TalkScriptObject;
 
 macro_rules! impl_object {
@@ -145,7 +147,7 @@ impl_object!(
     AnimImgObject, CharaTemplateObject, DecoObject, EffectObject,
     ItemObject, SpecialTileObject, TileObject,
     UIImgObject, WallObject,
-    MapTemplateObject, RegionGenObject, SiteGenObject, TalkScriptObject
+    MapTemplateObject, RegionGenObject, SiteGenObject, ScriptObject, TalkScriptObject
 );
 
 impl Object {
@@ -162,6 +164,7 @@ impl Object {
             Object::Wall(ref o) => &o.id,
             Object::MapTemplate(ref o) => &o.id,
             Object::RegionGen(ref o) => &o.id,
+            Object::Script(ref o) => &o.id,
             Object::SiteGen(ref o) => &o.id,
             Object::TalkScript(ref o) => &o.id,
         }
