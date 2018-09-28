@@ -182,10 +182,10 @@ named!(section<CompleteStr, (String, Vec<Instruction>)>,
 named!(pub parse<CompleteStr, Script>,
     fold_many0!(
         complete!(section),
-        HashMap::default(),
-        | mut map: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>) | {
-            map.insert(section.0, section.1);
-            map
+        Script(HashMap::default()),
+        | mut s: Script, section: (String, Vec<Instruction>) | {
+            s.0.insert(section.0, section.1);
+            s
         })
 );
 
