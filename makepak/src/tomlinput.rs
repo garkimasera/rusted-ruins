@@ -16,6 +16,7 @@ pub struct TomlInput {
     pub wall: Option<WallDepInput>,
     pub special_tile: Option<SpecialTileDepInput>,
     pub region_gen: Option<RegionGenDepInput>,
+    pub script: Option<ScriptDepInput>,
     pub site_gen: Option<SiteGenDepInput>,
     pub talk_script: Option<TalkScriptDepInput>,
 }
@@ -132,6 +133,12 @@ pub struct SiteGenDepInput {
     pub map_template_id: Vec<String>,
     pub unique_citizens: Option<Vec<sitegen::UniqueCitizenGenData>>,
     pub shops: Option<Vec<sitegen::ShopGenData>>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ScriptDepInput {
+    pub script: String,
 }
 
 #[derive(Debug, Deserialize)]
