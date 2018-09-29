@@ -2,8 +2,8 @@
 mod parser;
 
 use std::ops::Index;
+use std::fmt;
 use hashmap::HashMap;
-use nom::Err;
 use nom::types::CompleteStr;
 
 /// Instructions are executed in Game.
@@ -23,7 +23,7 @@ pub enum Instruction {
 
 /// Script consists of one or more sections.
 /// One section includes one or more instructions.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct Script(HashMap<String, Vec<Instruction>>);
 
 impl Script {
@@ -53,7 +53,27 @@ pub struct ScriptObject {
     pub script: Script,
 }
 
-pub fn parse(input: &str) -> Result<Script, Err<CompleteStr, u32>> {
-    self::parser::parse(CompleteStr(input)).map(|result| result.1)
+#[derive(Clone, Debug)]
+pub struct ScriptParseError {
+    description: String,
+}
+
+impl ::std::error::Error for ScriptParseError {}
+
+impl fmt::Display for ScriptParseError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "script parse error : {}", self.description)
+    }
+}
+
+pub fn parse(input: &str) -> Result<Script, ScriptParseError> {
+    match self::parser::parse(CompleteStr(input)) {
+        Ok(o) => Ok(o.1),
+        Err(e) => {
+            Err(ScriptParseError {
+                description: e.to_string(),
+            })
+        }
+    }
 }
 

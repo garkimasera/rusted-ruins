@@ -180,10 +180,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
 fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
     use common::script;
     let s = get_optional_field!(tomlinput, script);
-    let script = match script::parse(&s.script) {
-        Ok(o) => o,
-        Err(e) => bail!(PakCompileError::ScriptParseError { description: e.to_string() } ),
-    };
+    let script =  script::parse(&s.script)?;
 
     Ok(ScriptObject {
         id: tomlinput.id,
