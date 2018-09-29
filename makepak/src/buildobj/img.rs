@@ -2,7 +2,7 @@
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
-use image::{self, GenericImage};
+use image::{self, GenericImageView};
 use common::obj::*;
 use dir;
 use error::*;
