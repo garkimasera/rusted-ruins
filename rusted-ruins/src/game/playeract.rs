@@ -37,7 +37,7 @@ impl<'a> DoPlayerAction<'a> {
                     let other_chara = gd.chara.get(other_chara);
                     match player_chara.rel.relative(other_chara.rel) {
                         Relationship::ALLY | Relationship::FRIENDLY => {
-                            if !other_chara.talk.is_none() {
+                            if !other_chara.trigger_talk.is_none() {
                                 true
                             } else {
                                 false
@@ -215,7 +215,7 @@ impl<'a> DoPlayerAction<'a> {
     pub fn try_talk(&mut self, dir: Direction) {
         if dir.as_vec() == (0, 0) { return; }
 
-        let mut chara_talk = None;
+        let mut trigger_talk = None;
         let mut cid = None;
         {
             let gd = self.gd();
@@ -226,18 +226,19 @@ impl<'a> DoPlayerAction<'a> {
                 let other_chara = gd.chara.get(other_chara);
                 match player_chara.rel.relative(other_chara.rel) {
                     Relationship::ALLY | Relationship::FRIENDLY => {
-                        if let Some(ref t) = other_chara.talk {
-                            chara_talk = Some(t.clone())
+                        if let Some(ref t) = other_chara.trigger_talk {
+                            trigger_talk = Some(t.clone())
                         }
                     }
                     _ => (),
                 }
             }
         }
-        if let Some(chara_talk) = chara_talk {
-            self.0.request_dialog_open(DialogOpenRequest::Talk {
-                chara_talk, cid: cid.unwrap(),
-            });
+        if let Some(trigger_talk) = trigger_talk {
+            self.0.start_script(&trigger_talk);
+            // self.0.request_dialog_open(DialogOpenRequest::Talk {
+            //     talk, cid: cid.unwrap(),
+            // });
         }
     }
 }

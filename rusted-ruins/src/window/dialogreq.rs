@@ -18,8 +18,9 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
             );
             Box::new(msgdialog)
         }
-        DialogOpenRequest::Talk { chara_talk, cid } => {
-            create_talk_dialog(chara_talk, cid, game)?
+        DialogOpenRequest::Talk { cid, text_id, choices, } => {
+            unimplemented!()
+            //create_talk_dialog(chara_talk, cid, game)?
         }
         DialogOpenRequest::ShopBuy { cid } => {
             let mut pa = DoPlayerAction::new(game);

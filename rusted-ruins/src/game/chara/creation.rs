@@ -38,8 +38,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         nutrition: RULES.params.default_nutrition,
         skills: SkillList::default(),
         rel: Relationship::NEUTRAL,
-        trigger: None,
-        talk: None,
+        trigger_talk: None,
     };
     super::update_params(&mut chara);
     chara.hp = chara.base_params.max_hp;

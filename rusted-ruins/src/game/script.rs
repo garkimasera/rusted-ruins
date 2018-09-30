@@ -1,15 +1,15 @@
 //! Script engine implementation
 
 use common::gobj;
+use common::gamedata::*;
 use common::script::*;
-use super::Game;
 
 pub struct ScriptEngine {
     script: &'static Script,
     pos: ScriptPos,
 }
 
-#[derive(Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub enum ExecResult {
     Talk(&'static str, &'static [(String, String)]),
     Finish,
@@ -27,7 +27,7 @@ impl ScriptEngine {
         }
     }
 
-    pub fn exec(&mut self, game: &mut Game) -> ExecResult {
+    pub fn exec(&mut self, gd: &mut GameData) -> ExecResult {
         let result = loop {
             let instruction = if let Some(instruction) = self.script.get(&self.pos) {
                 instruction

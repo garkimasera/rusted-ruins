@@ -5,7 +5,6 @@ use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::SkillList;
-use super::event::EventTrigger;
 use super::unknown_id_err;
 
 /// Character's races
@@ -77,10 +76,8 @@ pub struct Chara {
     pub skills: SkillList,
     /// Relationship to player character
     pub rel: Relationship,
-    /// Trigger for event
-    pub trigger: Option<(CharaTriggerKind, TriggerAction)>,
-    /// Talk attribute
-    pub talk: Option<CharaTalk>,
+    /// When talked, execute this script
+    pub trigger_talk: Option<String>,
 }
 
 /// Character parameters
@@ -148,8 +145,7 @@ impl Default for Chara {
             status: Vec::new(),
             skills: SkillList::default(),
             rel: Relationship::NEUTRAL,
-            trigger: None,
-            talk: None,
+            trigger_talk: None,
         }
     }
 }
@@ -227,20 +223,6 @@ impl CharaHolder {
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {
         self.0.remove(&cid);
     }
-}
-
-/// Represents triggers for one chara
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub enum CharaTriggerKind {
-    /// When the chara is died
-    Die,
-}
-
-/// Action after trigger occured
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub enum TriggerAction {
-    /// Trigger for event handling
-    Event(EventTrigger),
 }
 
 /// When a chara is talked to, talk will be start from the section of specified TalkScript

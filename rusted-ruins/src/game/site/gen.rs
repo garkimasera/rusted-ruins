@@ -12,10 +12,7 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
         chara.rel = ::common::gamedata::chara::Relationship::FRIENDLY;
         
         if let Some(talk_script_id) = uc.talk_script_id.as_ref() { // Talk script setting
-            chara.talk = Some(CharaTalk {
-                id: talk_script_id.to_owned(),
-                section: "start".to_owned(),
-            });
+            chara.trigger_talk = Some(talk_script_id.to_owned());
         }
         
         let cid = gd.add_chara_to_site(chara, sid, uc.n);

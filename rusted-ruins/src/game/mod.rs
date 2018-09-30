@@ -33,6 +33,7 @@ pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
 pub use self::talk::TalkManager;
 use self::turnloop::TurnLoopData;
+use self::script::{ScriptEngine, ExecResult};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum GameState {
@@ -48,6 +49,7 @@ pub struct Game {
     anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
+    script: Option<ScriptEngine>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
     pub view_map: view::ViewMap,
@@ -63,6 +65,7 @@ impl Game {
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            script: None,
             target_chara: None,
             view_map: view::ViewMap::new(),
             frequent_tex: self::frequent_tex::FrequentTextures::new(),
@@ -79,6 +82,7 @@ impl Game {
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
+            script: None,
             target_chara: None,
             view_map: view::ViewMap::new(),
             frequent_tex: self::frequent_tex::FrequentTextures::new(),
@@ -125,6 +129,22 @@ impl Game {
         }
     }
 
+    pub fn start_script(&mut self, id: &str) {
+        self.script = Some(ScriptEngine::new(id));
+        self.advance_script();
+    }
+
+    pub fn advance_script(&mut self) {
+        match self.script.as_mut().expect("advance_script() when script is None").exec(&mut self.gd) {
+            ExecResult::Finish => {
+                self.script = None;
+            }
+            ExecResult::Talk(_, _) => {
+                return;
+            }
+        }
+    }
+
     /// Set target chara by position.
     /// If given tile position is empty, returns false.
     pub fn set_target(&mut self, pos: Vec2d) -> bool {
@@ -144,7 +164,7 @@ impl Game {
 
 pub enum DialogOpenRequest {
     YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
-    Talk { chara_talk: CharaTalk, cid: CharaId },
+    Talk { cid: CharaId, text_id: &'static str, choices: &'static [(String, String)] },
     ShopBuy { cid: CharaId },
     ShopSell,
     GameOver,
