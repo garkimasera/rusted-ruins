@@ -27,6 +27,10 @@ pub enum Instruction {
 pub struct Script(HashMap<String, Vec<Instruction>>);
 
 impl Script {
+    pub fn get(&self, pos: &ScriptPos) -> Option<&Instruction> {
+        self.0[&pos.section].get(pos.i)
+    }
+    
     pub fn section(&self, s: &str) -> &[Instruction] {
         self.0[s].as_ref()
     }
@@ -36,6 +40,12 @@ impl Script {
 pub struct ScriptPos {
     pub section: String,
     pub i: usize,
+}
+
+impl ScriptPos {
+    pub fn advance(&mut self) {
+        self.i += 1;
+    }
 }
 
 impl<'a> Index<&'a ScriptPos> for Script {
