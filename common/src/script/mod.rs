@@ -46,6 +46,11 @@ impl ScriptPos {
     pub fn advance(&mut self) {
         self.i += 1;
     }
+
+    pub fn jump(&mut self, section: &str) {
+        self.i = 0;
+        self.section = section.to_string();
+    }
 }
 
 impl<'a> Index<&'a ScriptPos> for Script {

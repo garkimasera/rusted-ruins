@@ -31,9 +31,10 @@ pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
+pub use self::script::TalkText;
 pub use self::talk::TalkManager;
 use self::turnloop::TurnLoopData;
-use self::script::{ScriptEngine, ExecResult};
+use self::script::*;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum GameState {
@@ -129,18 +130,33 @@ impl Game {
         }
     }
 
-    pub fn start_script(&mut self, id: &str) {
-        self.script = Some(ScriptEngine::new(id));
-        self.advance_script();
+    pub fn start_script(&mut self, id: &str, cid: Option<CharaId>) {
+        self.script = Some(ScriptEngine::new(id, cid));
+        self.advance_script(None);
     }
 
-    pub fn advance_script(&mut self) {
-        match self.script.as_mut().expect("advance_script() when script is None").exec(&mut self.gd) {
+    pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> Option<TalkText> {
+        let result = { // TODO: may be able to simplify if NLL enabled
+            let script = self.script.as_mut().expect("advance_script() when script is None");
+            if let Some(choice) = choice {
+                script.continue_talk(&mut self.gd, choice)
+            } else {
+                script.exec(&mut self.gd)
+            }
+        };
+        
+        match result {
             ExecResult::Finish => {
                 self.script = None;
+                None
             }
-            ExecResult::Talk(_, _) => {
-                return;
+            ExecResult::Talk(cid, talk_text, need_open_talk_dialog) => {
+                if need_open_talk_dialog {
+                    self.request_dialog_open(
+                        DialogOpenRequest::Talk { cid, talk_text }
+                    );
+                }
+                Some(talk_text)
             }
         }
     }
@@ -164,7 +180,7 @@ impl Game {
 
 pub enum DialogOpenRequest {
     YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
-    Talk { cid: CharaId, text_id: &'static str, choices: &'static [(String, String)] },
+    Talk { cid: CharaId, talk_text: TalkText },
     ShopBuy { cid: CharaId },
     ShopSell,
     GameOver,

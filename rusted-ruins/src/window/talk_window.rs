@@ -4,9 +4,9 @@ use super::widget::*;
 use std::borrow::Cow;
 use common::objholder::CharaTemplateIdx;
 use common::basic::TILE_SIZE;
+use game::TalkText;
 use sdlvalues::FontKind;
 use config::UI_CFG;
-use game::talk::*;
 use super::misc_window::ImageWindow;
 use super::choose_window::ChooseWindow;
 use super::winpos::*;
@@ -14,7 +14,7 @@ use text;
 
 pub struct TalkWindow {
     rect: Rect,
-    talk_manager: TalkManager,
+    talk_text: TalkText,
     label: LineSpecifiedLabelWidget,
     image_window: ImageWindow,
     msg_text: MsgText,
@@ -22,7 +22,8 @@ pub struct TalkWindow {
 }
 
 impl TalkWindow {
-    pub fn new(talk_manager: TalkManager, chara_template_idx: CharaTemplateIdx) -> TalkWindow {
+    pub fn new(talk_text: TalkText, chara_template_idx: CharaTemplateIdx) -> TalkWindow {
+        
         let rect: Rect = UI_CFG.talk_window.rect.into();
         let label = LineSpecifiedLabelWidget::new(
             Rect::new(0, 0, rect.width(), rect.height()),
@@ -33,32 +34,32 @@ impl TalkWindow {
             TILE_SIZE,
             TILE_SIZE * 2);
         let mut talk_window = TalkWindow {
-            rect: rect,
-            talk_manager: talk_manager,
-            label: label,
+            rect,
+            talk_text,
+            label,
             image_window: ImageWindow::chara(rect_image_window, chara_template_idx),
             msg_text: MsgText::default(),
             choose_win: None,
         };
-        talk_window.update_page(true);
+        talk_window.update_page(Some(talk_text));
         talk_window
     }
 
-    fn update_page(&mut self, section_changed: bool) {
-        if section_changed {
-            let text_id = self.talk_manager.get_text();
-            self.msg_text = MsgText::new(&*text_id);
+    fn update_page(&mut self, talk_text: Option<TalkText>) {
+        if let Some(talk_text) = talk_text {
+            self.talk_text = talk_text;
+            self.msg_text = MsgText::new(&*talk_text.text_id);
             self.choose_win = None;
         }
         
         // Create answers
         if self.msg_text.is_final_page() {
-            if let Some(answers) = self.talk_manager.get_answers() {
+            if let Some(choices) = self.talk_text.choices {
                 let winpos = WindowPos::new(
                     WindowHPos::RightX(self.rect.right()),
                     WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs));
                 let choices: Vec<String> =
-                    answers.iter().map(|a| text::talk_txt(&*a).to_owned()).collect();
+                    choices.iter().map(|a| text::talk_txt(&*a.0).to_owned()).collect();
                 self.choose_win = Some(ChooseWindow::new(winpos, choices, None));
             }
         }
@@ -83,46 +84,46 @@ impl Window for TalkWindow {
 
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        let mut update_by_answer_choosing = false;
+
+        let mut new_talk_text = None; // TODO: Workaround for lack of NLL
+        
         if let Some(ref mut choose_win) = self.choose_win {
             match choose_win.process_command(command, pa) {
                 // When one answer is choosed
                 DialogResult::CloseWithValue(choosed_answer) => {
                     if let Ok(choosed_answer) = choosed_answer.downcast::<u32>() {
-                        match self.talk_manager.choose_answer(*choosed_answer, pa) {
-                            TalkResult::End => { return DialogResult::Close; }
-                            TalkResult::NoChange => { return DialogResult::Continue; }
-                            TalkResult::Continue => {
-                                update_by_answer_choosing = true;
-                            }
-                        };
+                        if let Some(talk_text) = pa.advance_talk(Some(*choosed_answer)) {
+                            // TODO: Workaround for lack of NLL
+                            // self.update_page(Some(talk_text));
+                            new_talk_text = Some(talk_text);
+                        } else {
+                            return DialogResult::Close;
+                        }
                     }
                 }
                 _ => (),
             }
         }
-        if update_by_answer_choosing {
-            self.update_page(true);
+
+        if let Some(talk_text) = new_talk_text { // TODO: Workaround for lack of NLL
+            self.update_page(Some(talk_text));
             return DialogResult::Continue;
         }
-
         
         match *command {
             Command::Enter => {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
                 if self.msg_text.is_final_page() {
-                    match self.talk_manager.proceed(pa) {
-                        TalkResult::End => DialogResult::Close,
-                        TalkResult::NoChange => DialogResult::Continue,
-                        TalkResult::Continue => {
-                            self.update_page(true);
-                            DialogResult::Continue
-                        }
+                    if let Some(talk_text) = pa.advance_talk(None) {
+                        self.update_page(Some(talk_text));
+                        return DialogResult::Continue;
+                    } else {
+                        return DialogResult::Close;
                     }
                 } else {
                     self.msg_text.next_page();
-                    self.update_page(false);
+                    self.update_page(None);
                     DialogResult::Continue
                 }
             },
