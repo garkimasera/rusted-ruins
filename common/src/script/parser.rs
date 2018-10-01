@@ -199,7 +199,7 @@ jump(test_section1)
 talk(textid1,
      [(aaa, bbb), (ccc, ddd)])
 "#;
-    let mut result: Script = HashMap::default();
+    let mut result = HashMap::default();
 
     result.insert(
         "test_section0".to_owned(),
@@ -216,6 +216,6 @@ talk(textid1,
                 vec![("aaa".to_owned(), "bbb".to_owned()), ("ccc".to_owned(), "ddd".to_owned())]),
         ]);
 
-    assert_eq!(parse(CompleteStr(script)), Ok((CompleteStr(""), result)))
+    assert_eq!(parse(CompleteStr(script)), Ok((CompleteStr(""), Script(result))))
 }
 
