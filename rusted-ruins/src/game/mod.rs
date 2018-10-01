@@ -135,6 +135,8 @@ impl Game {
         self.advance_script(None);
     }
 
+    /// Advance current script.
+    /// When called by advance_talk, give player's choice.
     pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> Option<TalkText> {
         let result = { // TODO: may be able to simplify if NLL enabled
             let script = self.script.as_mut().expect("advance_script() when script is None");
