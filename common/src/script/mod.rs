@@ -47,7 +47,7 @@ impl ScriptPos {
         self.i += 1;
     }
 
-    pub fn jump(&mut self, section: &str) {
+    pub fn jump<S: ToString>(&mut self, section: S) {
         self.i = 0;
         self.section = section.to_string();
     }

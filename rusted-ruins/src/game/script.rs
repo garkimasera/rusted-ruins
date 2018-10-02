@@ -25,6 +25,30 @@ pub struct TalkText {
     pub choices: Option<&'static [(String, String)]>,
 }
 
+/// Jump to the given section and continue loop.
+macro_rules! jump {
+    ($s:expr, $section:expr) => {{
+        match $section.as_ref() {
+            "" => { return ExecResult::Finish }
+            _ => (),
+        }
+        $s.pos.jump($section);
+        continue;
+    }}
+}
+
+/// Get cid or return.
+macro_rules! cid {
+    ($s:expr) => {{
+        if let Some(cid) = $s.cid {
+            cid
+        } else {
+            warn!("script error: CharaId is not specified");
+            return ExecResult::Finish;
+        }
+    }}
+}
+
 impl ScriptEngine {
     pub fn new(id: &str, cid: Option<CharaId>) -> ScriptEngine {
         let script_obj: &ScriptObject = gobj::get_by_id(id);
@@ -49,17 +73,11 @@ impl ScriptEngine {
 
             match instruction {
                 Instruction::Jump(section) => {
-                    self.pos.jump(&section);
+                    jump!(self, section);
                     continue;
                 }
                 Instruction::Talk(text_id, choices) => {
-                    let cid = if let Some(cid) = self.cid {
-                        cid
-                    } else {
-                        warn!("script error: CharaId is not specified");
-                        return ExecResult::Finish;
-                    };
-
+                    let cid = cid!(self);
                     let need_open_talk_dialog = if self.talking {
                         false
                     } else {
@@ -72,13 +90,7 @@ impl ScriptEngine {
                         cid, TalkText { text_id, choices }, need_open_talk_dialog );
                 }
                 Instruction::ShopBuy => {
-                    let cid = if let Some(cid) = self.cid {
-                        cid
-                    } else {
-                        warn!("script error: CharaId is not specified");
-                        return ExecResult::Finish;
-                    };
-                    break ExecResult::ShopBuy(cid);
+                    break ExecResult::ShopBuy(cid!(self));
                 }
                 Instruction::ShopSell => {
                     break ExecResult::ShopSell;
