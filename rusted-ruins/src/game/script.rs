@@ -14,6 +14,8 @@ pub struct ScriptEngine {
 #[derive(PartialEq, Eq, Debug)]
 pub enum ExecResult {
     Talk(CharaId, TalkText, bool),
+    ShopBuy(CharaId),
+    ShopSell,
     Finish,
 }
 
@@ -46,6 +48,10 @@ impl ScriptEngine {
             };
 
             match instruction {
+                Instruction::Jump(section) => {
+                    self.pos.jump(&section);
+                    continue;
+                }
                 Instruction::Talk(text_id, choices) => {
                     let cid = if let Some(cid) = self.cid {
                         cid
@@ -64,6 +70,18 @@ impl ScriptEngine {
                     let choices = if choices.is_empty() { None } else { Some(choices.as_ref()) };
                     return ExecResult::Talk(
                         cid, TalkText { text_id, choices }, need_open_talk_dialog );
+                }
+                Instruction::ShopBuy => {
+                    let cid = if let Some(cid) = self.cid {
+                        cid
+                    } else {
+                        warn!("script error: CharaId is not specified");
+                        return ExecResult::Finish;
+                    };
+                    break ExecResult::ShopBuy(cid);
+                }
+                Instruction::ShopSell => {
+                    break ExecResult::ShopSell;
                 }
                 _ => unimplemented!(),
             }

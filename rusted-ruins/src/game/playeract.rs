@@ -2,7 +2,7 @@
 use super::Game;
 use super::action;
 use common::gamedata::*;
-use game::{InfoGetter, DialogOpenRequest, TalkText};
+use game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
 use array2d::*;
 
 /// Player actions are processed through this.
@@ -236,16 +236,18 @@ impl<'a> DoPlayerAction<'a> {
         }
         if let Some(trigger_talk) = trigger_talk {
             self.0.start_script(&trigger_talk, cid);
-            // self.0.request_dialog_open(DialogOpenRequest::Talk {
-            //     talk, cid: cid.unwrap(),
-            // });
         }
     }
 
     /// Advance current talk. Give player's choice if the talk has choices.
     /// If returns new text, continue talk dialog.
-    pub fn advance_talk(&mut self, choice: Option<u32>) -> Option<TalkText> {
+    pub fn advance_talk(&mut self, choice: Option<u32>) -> AdvanceScriptResult {
         self.0.advance_script(Some(choice))
+    }
+
+    /// Shotcut to Game::advance_talk
+    pub fn advance_script(&mut self) -> AdvanceScriptResult {
+        self.0.advance_script(None)
     }
 }
 

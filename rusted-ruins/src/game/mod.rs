@@ -137,7 +137,7 @@ impl Game {
 
     /// Advance current script.
     /// When called by advance_talk, give player's choice.
-    pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> Option<TalkText> {
+    pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> AdvanceScriptResult {
         let result = { // TODO: may be able to simplify if NLL enabled
             let script = self.script.as_mut().expect("advance_script() when script is None");
             if let Some(choice) = choice {
@@ -150,7 +150,7 @@ impl Game {
         match result {
             ExecResult::Finish => {
                 self.script = None;
-                None
+                AdvanceScriptResult::Quit
             }
             ExecResult::Talk(cid, talk_text, need_open_talk_dialog) => {
                 if need_open_talk_dialog {
@@ -158,7 +158,15 @@ impl Game {
                         DialogOpenRequest::Talk { cid, talk_text }
                     );
                 }
-                Some(talk_text)
+                AdvanceScriptResult::UpdateTalkText(talk_text)
+            }
+            ExecResult::ShopBuy(cid) => {
+                self.request_dialog_open(DialogOpenRequest::ShopBuy { cid });
+                AdvanceScriptResult::Continue
+            }
+            ExecResult::ShopSell => {
+                self.request_dialog_open(DialogOpenRequest::ShopSell);
+                AdvanceScriptResult::Continue
             }
         }
     }
@@ -186,6 +194,12 @@ pub enum DialogOpenRequest {
     ShopBuy { cid: CharaId },
     ShopSell,
     GameOver,
+}
+
+pub enum AdvanceScriptResult {
+    Continue,
+    UpdateTalkText(TalkText),
+    Quit,
 }
 
 pub mod extrait {

@@ -36,7 +36,7 @@ impl Script {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ScriptPos {
     pub section: String,
     pub i: usize,

@@ -2,9 +2,10 @@
 use super::commonuse::*;
 use super::widget::*;
 use std::borrow::Cow;
+use std::any::Any;
 use common::objholder::CharaTemplateIdx;
 use common::basic::TILE_SIZE;
-use game::TalkText;
+use game::{TalkText, AdvanceScriptResult};
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use super::misc_window::ImageWindow;
@@ -92,12 +93,18 @@ impl DialogWindow for TalkWindow {
                 // When one answer is choosed
                 DialogResult::CloseWithValue(choosed_answer) => {
                     if let Ok(choosed_answer) = choosed_answer.downcast::<u32>() {
-                        if let Some(talk_text) = pa.advance_talk(Some(*choosed_answer)) {
-                            // TODO: Workaround for lack of NLL
-                            // self.update_page(Some(talk_text));
-                            new_talk_text = Some(talk_text);
-                        } else {
-                            return DialogResult::Close;
+                        match pa.advance_talk(Some(*choosed_answer)) {
+                            AdvanceScriptResult::UpdateTalkText(talk_text) => {
+                                // TODO: Workaround for lack of NLL
+                                // self.update_page(Some(talk_text));
+                                new_talk_text = Some(talk_text);
+                            }
+                            AdvanceScriptResult::Continue => {
+                                return DialogResult::Continue;
+                            }
+                            AdvanceScriptResult::Quit => {
+                                return DialogResult::Close;
+                            }
                         }
                     }
                 }
@@ -115,11 +122,17 @@ impl DialogWindow for TalkWindow {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
                 if self.msg_text.is_final_page() {
-                    if let Some(talk_text) = pa.advance_talk(None) {
-                        self.update_page(Some(talk_text));
-                        return DialogResult::Continue;
-                    } else {
-                        return DialogResult::Close;
+                    match pa.advance_talk(None) {
+                        AdvanceScriptResult::UpdateTalkText(talk_text) => {
+                            self.update_page(Some(talk_text));
+                            return DialogResult::Continue;
+                        }
+                        AdvanceScriptResult::Continue => {
+                            return DialogResult::Continue;
+                        }
+                        AdvanceScriptResult::Quit => {
+                            return DialogResult::Close;
+                        }
                     }
                 } else {
                     self.msg_text.next_page();
@@ -133,6 +146,24 @@ impl DialogWindow for TalkWindow {
 
     fn mode(&self) -> InputMode {
         InputMode::Dialog
+    }
+
+    /// When child window is closed, call advance_script(), and update text.
+    fn callback_child_closed(
+        &mut self, _result: Option<Box<Any>>, pa: &mut DoPlayerAction) -> DialogResult {
+
+        match pa.advance_script() {
+            AdvanceScriptResult::UpdateTalkText(talk_text) => {
+                self.update_page(Some(talk_text));
+                DialogResult::Continue
+            }
+            AdvanceScriptResult::Continue => {
+                DialogResult::Continue
+            }
+            AdvanceScriptResult::Quit => {
+                DialogResult::Close
+            }
+        }
     }
 }
 
