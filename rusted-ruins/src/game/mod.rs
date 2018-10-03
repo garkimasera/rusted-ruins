@@ -148,7 +148,7 @@ impl Game {
         };
         
         match result {
-            ExecResult::Finish => {
+            ExecResult::Quit => {
                 self.script = None;
                 AdvanceScriptResult::Quit
             }

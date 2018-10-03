@@ -16,7 +16,7 @@ pub enum ExecResult {
     Talk(CharaId, TalkText, bool),
     ShopBuy(CharaId),
     ShopSell,
-    Finish,
+    Quit,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -29,10 +29,10 @@ pub struct TalkText {
 macro_rules! jump {
     ($s:expr, $section:expr) => {{
         match $section.as_ref() {
-            "" => { return ExecResult::Finish }
+            QUIT_SECTION => { return ExecResult::Quit }
             _ => (),
         }
-        $s.pos.jump($section);
+        $s.pos.set_section($section);
         continue;
     }}
 }
@@ -44,7 +44,7 @@ macro_rules! cid {
             cid
         } else {
             warn!("script error: CharaId is not specified");
-            return ExecResult::Finish;
+            return ExecResult::Quit;
         }
     }}
 }
@@ -68,13 +68,12 @@ impl ScriptEngine {
             let instruction = if let Some(instruction) = self.script.get(&self.pos) {
                 instruction
             } else {
-                break ExecResult::Finish;
+                break ExecResult::Quit;
             };
 
             match instruction {
                 Instruction::Jump(section) => {
                     jump!(self, section);
-                    continue;
                 }
                 Instruction::Talk(text_id, choices) => {
                     let cid = cid!(self);
@@ -111,7 +110,11 @@ impl ScriptEngine {
         match self.script.get(&self.pos).expect("instruction not found") {
             Instruction::Talk(text_id, choices) => {
                 if let Some(c) = choice {
-                    self.pos.jump(&choices[c as usize].1);
+                    let next_section = &choices[c as usize].1;
+                    if next_section == QUIT_SECTION {
+                        return ExecResult::Quit;
+                    }
+                    self.pos.set_section(next_section);
                 } else {
                     assert!(choices.is_empty());
                     self.pos.advance();

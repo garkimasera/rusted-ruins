@@ -36,6 +36,8 @@ impl Script {
     }
 }
 
+pub const QUIT_SECTION: &'static str = "quit";
+
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ScriptPos {
     pub section: String,
@@ -47,9 +49,13 @@ impl ScriptPos {
         self.i += 1;
     }
 
-    pub fn jump<S: ToString>(&mut self, section: S) {
+    pub fn set_section<S: ToString>(&mut self, section: S) {
+        let section = section.to_string();
+
+        assert_ne!(section, QUIT_SECTION);
+        
         self.i = 0;
-        self.section = section.to_string();
+        self.section = section;
     }
 }
 
