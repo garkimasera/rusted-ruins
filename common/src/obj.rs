@@ -22,7 +22,6 @@ pub enum Object {
     RegionGen(RegionGenObject),
     Script(ScriptObject),
     SiteGen(SiteGenObject),
-    TalkScript(TalkScriptObject),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -129,7 +128,6 @@ pub use maptemplate::MapTemplateObject;
 pub use regiongen::RegionGenObject;
 pub use script::ScriptObject;
 pub use sitegen::SiteGenObject;
-pub use talkscript::TalkScriptObject;
 
 macro_rules! impl_object {
     ( $($i:ty),* ) => {
@@ -147,7 +145,7 @@ impl_object!(
     AnimImgObject, CharaTemplateObject, DecoObject, EffectObject,
     ItemObject, SpecialTileObject, TileObject,
     UIImgObject, WallObject,
-    MapTemplateObject, RegionGenObject, SiteGenObject, ScriptObject, TalkScriptObject
+    MapTemplateObject, RegionGenObject, SiteGenObject, ScriptObject
 );
 
 impl Object {
@@ -166,7 +164,6 @@ impl Object {
             Object::RegionGen(ref o) => &o.id,
             Object::Script(ref o) => &o.id,
             Object::SiteGen(ref o) => &o.id,
-            Object::TalkScript(ref o) => &o.id,
         }
     }
 }

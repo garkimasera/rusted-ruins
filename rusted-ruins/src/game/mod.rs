@@ -17,7 +17,6 @@ pub mod newgame;
 mod combat;
 mod town;
 mod turnloop;
-pub mod talk;
 pub mod view;
 mod script;
 mod shop;
@@ -32,7 +31,6 @@ pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
 pub use self::script::TalkText;
-pub use self::talk::TalkManager;
 use self::turnloop::TurnLoopData;
 use self::script::*;
 

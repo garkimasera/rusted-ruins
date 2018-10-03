@@ -1,8 +1,6 @@
 
 use array2d::Vec2d;
-use std::collections::HashMap;
 use common::gamedata;
-use common::talkscript;
 use common::sitegen;
 
 #[derive(Debug, Deserialize)]
@@ -18,7 +16,6 @@ pub struct TomlInput {
     pub region_gen: Option<RegionGenDepInput>,
     pub script: Option<ScriptDepInput>,
     pub site_gen: Option<SiteGenDepInput>,
-    pub talk_script: Option<TalkScriptDepInput>,
 }
 
 /// If tomlinput has specified optional field, return it. If not, return error.
@@ -108,12 +105,6 @@ pub struct ItemDepInput {
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct TalkScriptDepInput {
-    pub sections: HashMap<String, TalkScriptSectionInput>,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct RegionGenDepInput {
     pub map_template_id: String,
     pub towns: Vec<SiteGenIdAndPos>,
@@ -139,21 +130,5 @@ pub struct SiteGenDepInput {
 #[serde(deny_unknown_fields)]
 pub struct ScriptDepInput {
     pub script: String,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct TalkScriptSectionInput {
-    pub kind: talkscript::TalkSectionKind,
-    pub text: Option<String>,
-    #[serde(default)]
-    pub answers: Vec<String>,
-    #[serde(default)]
-    pub dest_sections: Vec<String>,
-    pub default_dest_section: Option<String>,
-    pub next_section: Option<String>,
-    // For reaction section
-    pub trigger: Option<gamedata::EventTrigger>,
-    pub special: Option<talkscript::SpecialTalkSection>,
 }
 

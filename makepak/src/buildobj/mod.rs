@@ -49,9 +49,6 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
         "site_gen" => {
             return build_site_gen_object(tomlinput).map(|o| Object::SiteGen(o));
         }
-        "talk_script" => {
-            return build_talk_script_object(tomlinput).map(|o| Object::TalkScript(o));
-        }
         _ => {
             bail!("Unknown object_type");
         }
@@ -197,56 +194,6 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject, Error> {
         map_template_id: sg.map_template_id,
         unique_citizens: sg.unique_citizens.unwrap_or(vec![]),
         shops: sg.shops.unwrap_or(vec![]),
-    })
-}
-
-fn build_talk_script_object(tomlinput: TomlInput) -> Result<TalkScriptObject, Error> {
-    let talk_script_dep = get_optional_field!(tomlinput, talk_script);
-    use common::hashmap::HashMap;
-    use common::talkscript::*;
-    let mut sections: HashMap<String, TalkSection> = HashMap::default();
-    for (k, v) in talk_script_dep.sections {
-
-        let section = match v.kind {
-            TalkSectionKind::Normal => {
-                if v.answers.len() != v.dest_sections.len() {
-                    bail!("Answer_texts and dest_sections have different length");
-                }
-                TalkSection::Normal {
-                    text: v.text,
-                    answers: v.answers,
-                    dest_sections: v.dest_sections,
-                    default_dest_section: v.default_dest_section,
-                }
-            }
-            TalkSectionKind::Reaction => {
-                if let Some(trigger) = v.trigger {
-                    let reaction = TalkReaction::EventTrigger {
-                        trigger: trigger,
-                    };
-                    TalkSection::Reaction {
-                        reaction,
-                        next_section: get_optional_field!(v, next_section),
-                    }
-                } else {
-                    bail!("field for reaction needed");
-                }
-            }
-            TalkSectionKind::Special => {
-                TalkSection::Special {
-                    special: get_optional_field!(v, special),
-                    dest_sections: v.dest_sections,
-                }
-                    
-            }
-        };
-        
-        sections.insert(k, section);
-    }
-
-    Ok(TalkScriptObject {
-        id: tomlinput.id,
-        sections: sections,
     })
 }
 

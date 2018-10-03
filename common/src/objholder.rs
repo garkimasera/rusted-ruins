@@ -122,8 +122,7 @@ impl_objholder! {
     {MapTemplate, MapTemplateObject, map_template, MapTemplateIdx},
     {RegionGen, RegionGenObject, region_gen, RegionGenIdx},
     {Script, ScriptObject, script, ScriptIdx},
-    {SiteGen, SiteGenObject, site_gen, SiteGenIdx},
-    {TalkScript, TalkScriptObject, talk_script, TalkScriptIdx}
+    {SiteGen, SiteGenObject, site_gen, SiteGenIdx}
 }
 
 pub trait ObjectIndex: Sized {

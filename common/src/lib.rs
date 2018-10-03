@@ -27,8 +27,7 @@ pub mod pakutil;
 pub mod gamedata;
 pub mod maptemplate;
 pub mod regiongen;
-pub mod sitegen;
-pub mod talkscript;
-pub mod piece_pattern;
 pub mod script;
+pub mod sitegen;
+pub mod piece_pattern;
 
