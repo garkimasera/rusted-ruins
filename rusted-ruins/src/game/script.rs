@@ -95,7 +95,10 @@ impl ScriptEngine {
                 Instruction::ShopSell => {
                     break ExecResult::ShopSell;
                 }
-                _ => unimplemented!(),
+                Instruction::GetDungeonLocation => {
+                    let mid = gd.get_current_mapid();
+                    super::region::gen_dungeon_max(gd, mid.rid());
+                }
             }
             self.pos.advance();
         };
