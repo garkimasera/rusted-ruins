@@ -108,7 +108,7 @@ impl ScriptEngine {
 
     pub fn continue_talk(&mut self, gd: &mut GameData, choice: Option<u32>) -> ExecResult {
         match self.script.get(&self.pos).expect("instruction not found") {
-            Instruction::Talk(text_id, choices) => {
+            Instruction::Talk(_, choices) => {
                 if let Some(c) = choice {
                     let next_section = &choices[c as usize].1;
                     if next_section == QUIT_SECTION {

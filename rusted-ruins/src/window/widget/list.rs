@@ -125,7 +125,7 @@ impl ListWidget {
         
         let page_size = self.page_size.unwrap_or(self.n_item);
         let mut is_page_changed = false;
-        let mut rows = Vec::new();
+        let mut rows;
         loop {
             rows = f(page_size * self.current_page, page_size);
             // If rows is empty, decrease current_page,
