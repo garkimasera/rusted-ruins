@@ -6,6 +6,7 @@ use hashmap::HashMap;
 use super::{Instruction, Script};
 
 const CUSTOM_ERR_SYMBOL: u32 = 100;
+const CUSTOM_ERR_ID: u32 = 101;
 
 /// Symbols in script.
 /// The first character must be alphabetic, and can include '_' and '-'.
@@ -29,11 +30,38 @@ fn symbol(input: CompleteStr) -> IResult<CompleteStr, String> {
     }
 }
 
+/// Id as String in script.
+/// The first character must be alphabetic, and can include '_', '-', and '.'.
+fn id(input: CompleteStr) -> IResult<CompleteStr, String> {
+    use nom::{Err, Needed, ErrorKind};
+    
+    if input.len() < 1 {
+        Err(Err::Incomplete(Needed::Size(1)))
+    } else {
+        let c = input.chars().next().unwrap();
+        if !c.is_alphabetic() {
+            return Err(Err::Error(error_position!(input, ErrorKind::Custom(CUSTOM_ERR_ID))));
+        }
+        for (i, c) in input.char_indices() {
+            if !(c.is_alphabetic() || c.is_digit(10) || c == '_' || c == '-' || c == '.') {
+                let slices = input.split_at(i);
+                return Ok((CompleteStr(slices.1), slices.0.to_string()));
+            }
+        }
+        Ok((CompleteStr(""), input[..].to_string()))
+    }
+}
+
 #[test]
 fn symbol_test() {
     assert_eq!(symbol(CompleteStr("abc")), Ok((CompleteStr(""), "abc".to_string())));
     assert_eq!(symbol(CompleteStr("a0d0  ")), Ok((CompleteStr("  "), "a0d0".to_string())));
     assert!(symbol(CompleteStr("01ab")).is_err());
+}
+
+#[test]
+fn id_test() {
+    assert_eq!(id(CompleteStr("ab.c")), Ok((CompleteStr(""), "ab.c".to_string())));
 }
 
 named!(end_line<CompleteStr, ()>,
@@ -127,9 +155,9 @@ fn shop_instruction_test() {
 named!(talk_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
-        s: delimited!(tag!("("), ws!(symbol), tag!(")")) >>
+        text_id: delimited!(tag!("("), ws!(id), tag!(")")) >>
         end_line >>
-        (Instruction::Talk(s, Vec::new()))
+        (Instruction::Talk(text_id, Vec::new()))
     )
 );
 
@@ -137,26 +165,26 @@ named!(talk_instruction_with_choices<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
         tag!("(") >>
-        section: ws!(symbol) >>
+        text_id: ws!(id) >>
         tag!(",") >>
         choices: array!(delimited!(
-            char!('('), separated_pair!(ws!(symbol), char!(','), ws!(symbol)), char!(')') )) >>
+            char!('('), separated_pair!(ws!(id), char!(','), ws!(symbol)), char!(')') )) >>
 /*        choices: ws!(delimited!(char!('['), separated_list!(
             char!(','),
             ws!(delimited!(char!('('), separated_pair!(ws!(symbol), char!(','), ws!(symbol)), char!(')')))), char!(']'))) >>*/
         tag!(")") >>
         end_line >>
-        (Instruction::Talk(section, choices))
+        (Instruction::Talk(text_id, choices))
     )
 );
 
 #[test]
 fn talk_instruction_test() {
     let result = Instruction::Talk(
-        "text_id".to_owned(),
+        "text-id".to_owned(),
         vec![("a".to_owned(), "b".to_owned()), ("c".to_owned(), "d".to_owned())]);
     assert_eq!(
-        talk_instruction_with_choices(CompleteStr("talk(text_id, [(a, b), (c, d)])\n")),
+        talk_instruction_with_choices(CompleteStr("talk(text-id, [(a, b), (c, d)])\n")),
         Ok((CompleteStr(""), result)));
 }
 
