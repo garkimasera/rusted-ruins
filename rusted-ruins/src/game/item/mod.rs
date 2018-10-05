@@ -34,17 +34,13 @@ impl ItemEx for Item {
 
 /// Change specified character's equipment by given item
 pub fn change_equipment(
-    gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) -> bool {
+    gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8), il: ItemLocation) {
     
-    if !gd.get_item_list(il.0).has_empty() {
-        return false;
-    }
     let item = gd.remove_item_and_get(il, 1);
     
     game_log_i!("item-equip"; chara=gd.chara.get(cid), item=item);
     if let Some(removed_equipment) = gd.get_equip_list_mut(cid).equip(slot.0, slot.1 as usize, item) {
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }
-    true
 }
 

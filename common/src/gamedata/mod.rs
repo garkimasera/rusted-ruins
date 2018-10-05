@@ -200,9 +200,8 @@ impl GameData {
     }
 
     /// Move item to dest
-    /// If destination list is full, returns false and does nothing
     pub fn move_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation,
-                                           dest: ItemListLocation, n: T) -> bool {
+                                           dest: ItemListLocation, n: T) {
         let (item, n) = {
             let src_list = self.get_item_list_mut(item_location.0);
             let n = match n.into() {
@@ -213,14 +212,14 @@ impl GameData {
             };
             (src_list.remove_and_get(item_location.1, n), n)
         };
-        {
-            self.create_item_list_on_tile(dest);
+        
+        self.create_item_list_on_tile(dest);
+        { // TODO: Remove this with NLL
             let dest_list = self.get_item_list_mut(dest);
-            if !dest_list.has_empty() { return false; }
             dest_list.append(item, n);
         }
+        
         self.check_item_list_on_tile(item_location.0);
-        true
     }
 
     /// Checks item list on tile is empty or not. If so, delete
@@ -241,7 +240,7 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 if self.region.get_map_mut(mid).tile[pos].item_list.is_none() {
                     self.region.get_map_mut(mid).tile[pos].item_list
-                        = Some(ItemList::new(::basic::MAX_ITEM_TILE));
+                        = Some(ItemList::new());
                 }
             }
             _ => (),

@@ -13,10 +13,6 @@ pub const MAX_WALL_HEIGHT: u32 = 80;
 /// Icon size
 pub const ICON_SIZE: u32 = 24;
 
-/// Maximum number of one character's items
-pub const MAX_ITEM_CHARA: usize = 32;
-/// Maximum number of players's items
-pub const MAX_ITEM_PLAYER: usize = 32;
 /// Maximum number of items on one tile
 pub const MAX_ITEM_TILE: usize = 256;
 /// Maximum number of equipment slots

@@ -164,7 +164,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
         let tile = &mut map.tile[p];
         if !tile.wall.is_empty() { continue; } // Skip tile with wall
 
-        let mut item_list = ItemList::new(10);
+        let mut item_list = ItemList::new();
 
         if get_rng().gen_bool(item_gen_probability) {
             item_list.append(gen_dungeon_item(mid.floor()), 1);

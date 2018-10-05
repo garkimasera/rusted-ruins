@@ -136,7 +136,7 @@ impl Default for Chara {
             base_params: CharaBaseParams::default(),
             template: CharaTemplateIdx(0),
             class: CharaClass::default(),
-            item_list: ItemList::for_chara(),
+            item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),
             wait_time: ::basic::WAIT_TIME_START,
             ai: CharaAI::default(),

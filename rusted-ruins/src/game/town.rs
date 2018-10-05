@@ -44,7 +44,7 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
         for shop_gen_data in &sg.shops {
             let shop = Shop {
                 kind: shop_gen_data.kind,
-                items: ItemList::new(100),
+                items: ItemList::new(),
                 level: 1,
             };
             town.add_shop(shop, shop_gen_data.chara_n);

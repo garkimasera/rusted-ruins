@@ -147,24 +147,14 @@ pub type ItemLocation = (ItemListLocation, u32);
 /// Item list that records all items owned by one character or one tile
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemList {
-    pub limit: usize,
     pub items: Vec<(Item, u32)>,
 }
 
 impl ItemList {
-    pub fn new(limit: usize) -> ItemList {
+    pub fn new() -> ItemList {
         ItemList {
-            limit, items: Vec::new(),
+            items: Vec::new(),
         }
-    }    
-
-    pub fn for_chara() -> ItemList {
-        Self::new(::basic::MAX_ITEM_CHARA)
-    }
-
-    /// Inventory for player has larger size
-    pub fn for_player() -> ItemList {
-        Self::new(::basic::MAX_ITEM_PLAYER)
     }
 
     /// Get the number of item
@@ -177,32 +167,23 @@ impl ItemList {
         self.items.is_empty()
     }
 
-    /// This list has empty slot or not
-    pub fn has_empty(&self) -> bool {
-        self.limit > self.items.len() + 1
-    }
-
     /// Append item
-    /// If the list doesn't have empty, returns given item.
-    pub fn append(&mut self, item: Item, n: u32) -> Option<Item> {
-        if self.limit <= self.items.len() + 1 {
-            return Some(item)
-        }
-
+    pub fn append(&mut self, item: Item, n: u32) {
+        
         if self.items.is_empty() {
             self.items.push((item, n));
-            return None;
+            return;
         }
 
         for i in 0..self.items.len() {
             match item.cmp(&self.items[i].0) { 
                 Ordering::Equal => { // If this list has the same item, increases the number
                     self.items[i].1 += n;
-                    return None;
+                    return;
                 }
                 Ordering::Less => {
                     self.items.insert(i, (item, n));
-                    return None;
+                    return;
                 }
                 Ordering::Greater => {
                     continue;
@@ -210,7 +191,6 @@ impl ItemList {
             }
         }
         self.items.push((item, n));
-        None
     }
 
     /// Remove an item from list
@@ -241,10 +221,9 @@ impl ItemList {
     }
 
     /// Move an item to the other item list
-    pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) -> bool {
+    pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) {
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 >= n && n != 0);
-        if !dest.has_empty() { return false; }
         
         self.items[i].1 -= n;
 
@@ -255,7 +234,6 @@ impl ItemList {
         };
 
         dest.append(item, n);
-        true
     }
 
     /// Clear all item in list
@@ -366,7 +344,7 @@ impl EquipItemList {
         
         EquipItemList {
             slots: new_slots,
-            item_list: ItemList::new(::basic::MAX_EQUIP_SLOT),
+            item_list: ItemList::new(),
         }
     }
 
