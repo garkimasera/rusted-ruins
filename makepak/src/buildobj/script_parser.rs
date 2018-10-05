@@ -1,69 +1,11 @@
 
-use nom::{IResult, space, line_ending};
+use nom::{space, line_ending};
 use nom::types::CompleteStr;
 use common::hashmap::HashMap;
 
-use common::script::{Instruction, Script};
+use common::script::*;
 use error::PakCompileError;
-
-const CUSTOM_ERR_SYMBOL: u32 = 100;
-const CUSTOM_ERR_ID: u32 = 101;
-
-/// Symbols in script.
-/// The first character must be alphabetic, and can include '_' and '-'.
-fn symbol(input: CompleteStr) -> IResult<CompleteStr, String> {
-    use nom::{Err, Needed, ErrorKind};
-    
-    if input.len() < 1 {
-        Err(Err::Incomplete(Needed::Size(1)))
-    } else {
-        let c = input.chars().next().unwrap();
-        if !c.is_alphabetic() {
-            return Err(Err::Error(error_position!(input, ErrorKind::Custom(CUSTOM_ERR_SYMBOL))));
-        }
-        for (i, c) in input.char_indices() {
-            if !(c.is_alphabetic() || c.is_digit(10) || c == '_' || c == '-') {
-                let slices = input.split_at(i);
-                return Ok((CompleteStr(slices.1), slices.0.to_string()));
-            }
-        }
-        Ok((CompleteStr(""), input[..].to_string()))
-    }
-}
-
-/// Id as String in script.
-/// The first character must be alphabetic, and can include '_', '-', and '.'.
-fn id(input: CompleteStr) -> IResult<CompleteStr, String> {
-    use nom::{Err, Needed, ErrorKind};
-    
-    if input.len() < 1 {
-        Err(Err::Incomplete(Needed::Size(1)))
-    } else {
-        let c = input.chars().next().unwrap();
-        if !c.is_alphabetic() {
-            return Err(Err::Error(error_position!(input, ErrorKind::Custom(CUSTOM_ERR_ID))));
-        }
-        for (i, c) in input.char_indices() {
-            if !(c.is_alphabetic() || c.is_digit(10) || c == '_' || c == '-' || c == '.') {
-                let slices = input.split_at(i);
-                return Ok((CompleteStr(slices.1), slices.0.to_string()));
-            }
-        }
-        Ok((CompleteStr(""), input[..].to_string()))
-    }
-}
-
-#[test]
-fn symbol_test() {
-    assert_eq!(symbol(CompleteStr("abc")), Ok((CompleteStr(""), "abc".to_string())));
-    assert_eq!(symbol(CompleteStr("a0d0  ")), Ok((CompleteStr("  "), "a0d0".to_string())));
-    assert!(symbol(CompleteStr("01ab")).is_err());
-}
-
-#[test]
-fn id_test() {
-    assert_eq!(id(CompleteStr("ab.c")), Ok((CompleteStr(""), "ab.c".to_string())));
-}
+use super::expr_parser::*;
 
 named!(end_line<CompleteStr, ()>,
     do_parse!(
@@ -117,11 +59,28 @@ named!(jump_instruction<CompleteStr, Instruction>,
     )
 );
 
+named!(jump_if_instruction<CompleteStr, Instruction>,
+    do_parse!(
+        ws!(tag!("jump_if")) >>
+        char!('(') >>
+        s: ws!(symbol) >>
+        char!(',') >>
+        e: ws!(expr) >>
+        char!(')') >>
+        end_line >>
+        (Instruction::JumpIf(s, e))
+    )
+);
+
 #[test]
 fn jump_instruction_test() {
     assert_eq!(
         jump_instruction(CompleteStr(" jump ( other_section ) \n")),
         Ok((CompleteStr(""), Instruction::Jump("other_section".to_owned()))));
+    assert_eq!(
+        jump_if_instruction(CompleteStr("jump_if(has-key, has_item(key))\n")),
+        Ok((CompleteStr(""), Instruction::JumpIf(
+            "has-key".to_owned(), Expr::HasItem("key".to_owned())))));
 }
 
 macro_rules! define_parser_for_noarg_instructions {
@@ -170,9 +129,6 @@ named!(talk_instruction_with_choices<CompleteStr, Instruction>,
         tag!(",") >>
         choices: array!(delimited!(
             char!('('), separated_pair!(ws!(id), char!(','), ws!(symbol)), char!(')') )) >>
-/*        choices: ws!(delimited!(char!('['), separated_list!(
-            char!(','),
-            ws!(delimited!(char!('('), separated_pair!(ws!(symbol), char!(','), ws!(symbol)), char!(')')))), char!(']'))) >>*/
         tag!(")") >>
         end_line >>
         (Instruction::Talk(text_id, choices))
@@ -192,6 +148,7 @@ fn talk_instruction_test() {
 named!(instruction<CompleteStr, Instruction>,
     alt!(
         jump_instruction |
+        jump_if_instruction |
         talk_instruction_with_choices |
         talk_instruction |
         shop_buy_instruction |

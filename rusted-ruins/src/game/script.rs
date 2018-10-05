@@ -4,6 +4,8 @@ use common::gobj;
 use common::gamedata::*;
 use common::script::*;
 
+use game::eval_expr::EvalExpr;
+
 pub struct ScriptEngine {
     script: &'static Script,
     pos: ScriptPos,
@@ -23,6 +25,18 @@ pub enum ExecResult {
 pub struct TalkText {
     pub text_id: &'static str,
     pub choices: Option<&'static [(String, String)]>,
+}
+
+/// Unwrap Value as bool
+macro_rules! as_bool {
+    ($v:expr) => {{
+        match $v {
+            Value::Bool(v) => v,
+            _ => {
+                return ExecResult::Quit;
+            }
+        }
+    }}
 }
 
 /// Jump to the given section and continue loop.
@@ -74,6 +88,11 @@ impl ScriptEngine {
             match instruction {
                 Instruction::Jump(section) => {
                     jump!(self, section);
+                }
+                Instruction::JumpIf(section, expr) => {
+                    if as_bool!(expr.eval(gd)) {
+                        jump!(self, section);
+                    }
                 }
                 Instruction::Talk(text_id, choices) => {
                     let cid = cid!(self);

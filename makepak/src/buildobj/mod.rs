@@ -1,6 +1,7 @@
 
 mod img;
 mod item;
+mod expr_parser;
 mod script_parser;
 
 use array2d::Vec2d;

@@ -8,6 +8,8 @@ use hashmap::HashMap;
 pub enum Instruction {
     /// Jump to given section
     Jump(String),
+    /// Jump if given expr is true
+    JumpIf(String, Expr),
     /// Talk instruction (textid, Vec<choice's textid, destination section>)
     Talk(String, Vec<(String, String)>),
     /// Special instruction to start buying at a shop
@@ -16,6 +18,19 @@ pub enum Instruction {
     ShopSell,
     /// Special instruction to get locations of dungeons
     GetDungeonLocation,
+}
+
+/// Instructions are executed in Game.
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum Expr {
+    HasItem(String),
+}
+
+/// Instructions are executed in Game.
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum Value {
+    Bool(bool),
+    Error,
 }
 
 /// Script consists of one or more sections.

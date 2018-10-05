@@ -19,6 +19,7 @@ mod town;
 mod turnloop;
 pub mod view;
 mod script;
+mod eval_expr;
 mod shop;
 mod event;
 mod dungeon_gen;
