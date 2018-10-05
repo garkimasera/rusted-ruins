@@ -8,6 +8,8 @@ extern crate tar;
 extern crate failure;
 extern crate clap;
 extern crate image;
+#[macro_use]
+extern crate nom;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 

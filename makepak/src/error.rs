@@ -24,5 +24,9 @@ pub enum PakCompileError {
     ObjWriteError {
         description: String,
     },
+    #[fail(display = "script parse error\n{}", description)]
+    ScriptParseError {
+        description: String,
+    },
 }
 

@@ -1,6 +1,7 @@
 
 mod img;
 mod item;
+mod script_parser;
 
 use array2d::Vec2d;
 use common::obj::*;
@@ -175,9 +176,8 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
 }
 
 fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
-    use common::script;
     let s = get_optional_field!(tomlinput, script);
-    let script =  script::parse(&s.script)?;
+    let script =  script_parser::parse(&s.script)?;
 
     Ok(ScriptObject {
         id: tomlinput.id,

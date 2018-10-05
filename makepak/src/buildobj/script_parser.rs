@@ -1,9 +1,10 @@
 
 use nom::{IResult, space, line_ending};
 use nom::types::CompleteStr;
-use hashmap::HashMap;
+use common::hashmap::HashMap;
 
-use super::{Instruction, Script};
+use common::script::{Instruction, Script};
+use error::PakCompileError;
 
 const CUSTOM_ERR_SYMBOL: u32 = 100;
 const CUSTOM_ERR_ID: u32 = 101;
@@ -207,15 +208,28 @@ named!(section<CompleteStr, (String, Vec<Instruction>)>,
     )
 );
 
-named!(pub parse<CompleteStr, Script>,
-    fold_many0!(
-        complete!(section),
-        Script(HashMap::default()),
-        | mut s: Script, section: (String, Vec<Instruction>) | {
-            s.0.insert(section.0, section.1);
+named!(sections<CompleteStr, HashMap<String, Vec<Instruction>>>,
+    exact!(fold_many0!(
+        section,
+        HashMap::default(),
+        | mut s: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>) | {
+            s.insert(section.0, section.1);
             s
-        })
+        }))
 );
+
+pub fn parse(input: &str) -> Result<Script, PakCompileError> {
+    match sections(CompleteStr(input)) {
+        Ok(o) => {
+            Ok(Script::from_map(o.1))
+        }
+        Err(e) => {
+            Err(PakCompileError::ScriptParseError {
+                description: e.to_string()
+            })
+        }
+    }
+}
 
 #[test]
 fn parse_test() {
@@ -244,6 +258,6 @@ talk(textid1,
                 vec![("aaa".to_owned(), "bbb".to_owned()), ("ccc".to_owned(), "ddd".to_owned())]),
         ]);
 
-    assert_eq!(parse(CompleteStr(script)), Ok((CompleteStr(""), Script(result))))
+    assert_eq!(sections(CompleteStr(script)), Ok((CompleteStr(""), result)))
 }
 

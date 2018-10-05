@@ -14,8 +14,6 @@ extern crate rmp;
 extern crate rmp_serde as rmps;
 extern crate tar;
 extern crate fnv;
-#[macro_use]
-extern crate nom;
 
 pub mod basic;
 pub mod hashmap;

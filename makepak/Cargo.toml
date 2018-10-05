@@ -11,6 +11,7 @@ toml = "0.4"
 tar = "0.4"
 clap = "2"
 image = "0.20"
+nom = "4"
 
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
