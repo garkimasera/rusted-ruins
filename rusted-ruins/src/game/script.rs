@@ -40,6 +40,18 @@ macro_rules! as_bool {
     }}
 }
 
+/// Unwrap Value as int
+macro_rules! as_int {
+    ($v:expr) => {{
+        match $v {
+            Value::Int(v) => v,
+            _ => {
+                return ExecResult::Quit;
+            }
+        }
+    }}
+}
+
 /// Jump to the given section and continue loop.
 macro_rules! jump {
     ($s:expr, $section:expr) => {{
@@ -107,6 +119,10 @@ impl ScriptEngine {
                     let choices = if choices.is_empty() { None } else { Some(choices.as_ref()) };
                     return ExecResult::Talk(
                         cid, TalkText { text_id, choices }, need_open_talk_dialog );
+                }
+                Instruction::RecieveMoney(v) => {
+                    let v = v.eval(gd);
+                    gd.player.add_money(as_int!(v) as i64);
                 }
                 Instruction::RemoveItem(item_id) => {
                     let il = ur!(gd.player_item_location(item_id), "cannot find item");

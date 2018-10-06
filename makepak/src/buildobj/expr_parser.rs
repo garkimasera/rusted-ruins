@@ -1,6 +1,6 @@
 
-use common::script::Expr;
-use nom::IResult;
+use common::script::{Expr, Value};
+use nom::{digit1, space, IResult};
 use nom::types::CompleteStr;
 
 const CUSTOM_ERR_SYMBOL: u32 = 100;
@@ -62,16 +62,32 @@ fn id_test() {
     assert_eq!(id(CompleteStr("ab.c")), Ok((CompleteStr(""), "ab.c".to_string())));
 }
 
-named!(pub expr<CompleteStr, Expr>,
+named!(integer<CompleteStr, Expr>,
     do_parse!(
-        ws!(tag!("has_item")) >>
+        i: digit1 >>
+        (Expr::Value(Value::Int(i32::from_str_radix(&i, 10).unwrap())))
+    )
+);
+
+named!(has_item<CompleteStr, Expr>,
+    do_parse!(
+        tag!("has_item") >>
+        opt!(space) >>
         s: delimited!(tag!("("), ws!(id), tag!(")")) >>
         (Expr::HasItem(s))
     )
 );
 
+named!(pub expr<CompleteStr, Expr>,
+    alt!(
+        integer |
+        has_item
+    )
+);
+
 #[test]
 fn expr_test() {
+    assert_eq!(expr(CompleteStr("1234")), Ok((CompleteStr(""), Expr::Value(Value::Int(1234)))));
     let a = Expr::HasItem("box".to_owned());
     assert_eq!(expr(CompleteStr("has_item(box)")), Ok((CompleteStr(""), a)));
 }

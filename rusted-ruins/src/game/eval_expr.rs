@@ -10,6 +10,7 @@ pub trait EvalExpr {
 impl EvalExpr for Expr {
     fn eval(&self, gd: &GameData) -> Value {
         match self {
+            Expr::Value(value) => value.clone(),
             Expr::HasItem(item_id) => {
                 if let Some(idx) = gobj::id_to_idx_checked(item_id) {
                     let item_list = gd.get_item_list(ItemListLocation::Chara { cid: CharaId::Player });

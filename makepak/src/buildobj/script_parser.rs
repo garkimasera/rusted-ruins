@@ -135,6 +135,15 @@ named!(talk_instruction_with_choices<CompleteStr, Instruction>,
     )
 );
 
+named!(recieve_money_instruction<CompleteStr, Instruction>,
+    do_parse!(
+        ws!(tag!("recieve_money")) >>
+        e: delimited!(char!('('), ws!(expr), char!(')')) >>
+        end_line >>
+        (Instruction::RecieveMoney(e))
+    )
+);
+
 named!(remove_item_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("remove_item")) >>
@@ -160,6 +169,7 @@ named!(instruction<CompleteStr, Instruction>,
         jump_if_instruction |
         talk_instruction_with_choices |
         talk_instruction |
+        recieve_money_instruction |
         remove_item_instruction |
         shop_buy_instruction |
         shop_sell_instruction |

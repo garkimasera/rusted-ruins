@@ -12,6 +12,8 @@ pub enum Instruction {
     JumpIf(String, Expr),
     /// Talk instruction (textid, Vec<choice's textid, destination section>)
     Talk(String, Vec<(String, String)>),
+    /// Player recieve money
+    RecieveMoney(Expr),
     /// Remove item form player's inventory
     RemoveItem(String),
     /// Special instruction to start buying at a shop
@@ -25,6 +27,7 @@ pub enum Instruction {
 /// Instructions are executed in Game.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Expr {
+    Value(Value),
     HasItem(String),
 }
 
@@ -32,6 +35,7 @@ pub enum Expr {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Value {
     Bool(bool),
+    Int(i32),
     Error,
 }
 
