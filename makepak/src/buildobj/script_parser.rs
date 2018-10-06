@@ -115,7 +115,7 @@ fn shop_instruction_test() {
 named!(talk_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
-        text_id: delimited!(tag!("("), ws!(id), tag!(")")) >>
+        text_id: delimited!(char!('('), ws!(id), char!(')')) >>
         end_line >>
         (Instruction::Talk(text_id, Vec::new()))
     )
@@ -124,14 +124,23 @@ named!(talk_instruction<CompleteStr, Instruction>,
 named!(talk_instruction_with_choices<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
-        tag!("(") >>
+        char!('(') >>
         text_id: ws!(id) >>
-        tag!(",") >>
+        char!(',') >>
         choices: array!(delimited!(
             char!('('), separated_pair!(ws!(id), char!(','), ws!(symbol)), char!(')') )) >>
-        tag!(")") >>
+        char!(')') >>
         end_line >>
         (Instruction::Talk(text_id, choices))
+    )
+);
+
+named!(remove_item_instruction<CompleteStr, Instruction>,
+    do_parse!(
+        ws!(tag!("remove_item")) >>
+        item_id: delimited!(char!('('), ws!(id), char!(')')) >>
+        end_line >>
+        (Instruction::RemoveItem(item_id))
     )
 );
 
@@ -151,6 +160,7 @@ named!(instruction<CompleteStr, Instruction>,
         jump_if_instruction |
         talk_instruction_with_choices |
         talk_instruction |
+        remove_item_instruction |
         shop_buy_instruction |
         shop_sell_instruction |
         get_dungeon_location_instruction

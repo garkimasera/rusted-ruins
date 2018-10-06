@@ -4,6 +4,7 @@ pub mod gen;
 
 use common::gamedata::*;
 use common::gobj;
+use common::objholder::ItemIdx;
 
 /// Additional Item methods
 pub trait ItemEx {
@@ -31,6 +32,23 @@ impl ItemEx for Item {
         item_obj.w
     }
 }
+
+pub trait ItemListEx {
+    /// Return the first item found
+    fn find(&self, idx: ItemIdx) -> Option<u32>;
+}
+
+impl ItemListEx for ItemList {
+    fn find(&self, idx: ItemIdx) -> Option<u32> {
+        for (i, (item, _)) in self.iter().enumerate() {
+            if item.idx == idx {
+                return Some(i as u32);
+            }
+        }
+        None
+    }
+}
+
 
 /// Change specified character's equipment by given item
 pub fn change_equipment(

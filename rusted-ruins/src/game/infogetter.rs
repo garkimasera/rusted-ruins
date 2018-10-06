@@ -1,12 +1,17 @@
 
 use array2d::*;
 use common::gamedata::*;
+use common::gobj;
+use common::objholder::*;
+use game::extrait::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {
     fn player_pos(&self) -> Vec2d;
     /// Get player's (maxhp, hp)
     fn player_hp(&self) -> (i32, i32);
+    /// Get item location that player has
+    fn player_item_location(&self, id: &str) -> Option<ItemLocation>;
     /// Get current map size
     fn map_size(&self) -> (u32, u32);
     /// Player's current tile is entrance/exit or not
@@ -27,6 +32,15 @@ impl InfoGetter for GameData {
     fn player_hp(&self) -> (i32, i32) {
         let player =self.chara.get(CharaId::Player);
         (player.params.max_hp, player.hp)
+    }
+
+    fn player_item_location(&self, id: &str) -> Option<ItemLocation> {
+        let idx: ItemIdx = gobj::id_to_idx_checked(id)?;
+        let ill = ItemListLocation::Chara { cid: CharaId::Player };
+        let il = self.get_item_list(ill);
+
+        let i = il.find(idx)?;
+        Some((ill, i))
     }
 
     fn map_size(&self) -> (u32, u32) {

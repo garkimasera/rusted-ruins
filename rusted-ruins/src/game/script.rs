@@ -5,6 +5,7 @@ use common::gamedata::*;
 use common::script::*;
 
 use game::eval_expr::EvalExpr;
+use game::InfoGetter;
 
 pub struct ScriptEngine {
     script: &'static Script,
@@ -51,13 +52,13 @@ macro_rules! jump {
     }}
 }
 
-/// Get cid or return.
-macro_rules! cid {
-    ($s:expr) => {{
-        if let Some(cid) = $s.cid {
-            cid
+/// Unwrap or return with warning message.
+macro_rules! ur {
+    ($a:expr, $e:expr) => {{
+        if let Some(a) = $a {
+            a
         } else {
-            warn!("script error: CharaId is not specified");
+            warn!(concat!("script error: ", $e));
             return ExecResult::Quit;
         }
     }}
@@ -95,7 +96,7 @@ impl ScriptEngine {
                     }
                 }
                 Instruction::Talk(text_id, choices) => {
-                    let cid = cid!(self);
+                    let cid = ur!(self.cid, "cid is needed");
                     let need_open_talk_dialog = if self.talking {
                         false
                     } else {
@@ -107,8 +108,12 @@ impl ScriptEngine {
                     return ExecResult::Talk(
                         cid, TalkText { text_id, choices }, need_open_talk_dialog );
                 }
+                Instruction::RemoveItem(item_id) => {
+                    let il = ur!(gd.player_item_location(item_id), "cannot find item");
+                    gd.remove_item(il, 1);
+                }
                 Instruction::ShopBuy => {
-                    break ExecResult::ShopBuy(cid!(self));
+                    break ExecResult::ShopBuy(ur!(self.cid, "cid is needed"));
                 }
                 Instruction::ShopSell => {
                     break ExecResult::ShopSell;

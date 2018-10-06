@@ -12,6 +12,8 @@ pub enum Instruction {
     JumpIf(String, Expr),
     /// Talk instruction (textid, Vec<choice's textid, destination section>)
     Talk(String, Vec<(String, String)>),
+    /// Remove item form player's inventory
+    RemoveItem(String),
     /// Special instruction to start buying at a shop
     ShopBuy,
     /// Special instruction to start selling at a shop
