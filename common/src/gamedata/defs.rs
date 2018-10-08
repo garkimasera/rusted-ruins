@@ -15,8 +15,11 @@ pub enum Element {
     Spirit = 5,
 }
 
+pub const ELEMENTS: [Element; Element::Spirit as usize + 1] = [
+    Element::Physical, Element::Fire, Element::Cold, Element::Shock, Element::Poison, Element::Spirit];
+
 /// This array has the same size as element types.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
 pub struct ElementArray<T>(pub [T; Element::Spirit as usize + 1]);
 
 impl<T> Index<Element> for ElementArray<T> {
