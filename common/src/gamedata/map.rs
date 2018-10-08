@@ -177,8 +177,7 @@ pub struct ObservedTileInfo {
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
     pub tile: TileIdx,
-    pub wall: Option<WallIdx>, 
-    pub deco: Option<DecoIdx>,
+    pub wall: Option<WallIdx>,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -351,17 +350,6 @@ impl Map {
             }
         } else {
             self.tile[self.nearest_existent_tile(pos)].wall
-        }
-    }
-
-    pub fn get_deco_extrapolated(&self, pos: Vec2d) -> Option<DecoIdx> {
-        if self.is_inside(pos) {
-            return self.tile[pos].deco;
-        }
-        if let Some(outside_tile) = self.outside_tile {
-            outside_tile.deco
-        } else {
-            self.tile[self.nearest_existent_tile(pos)].deco
         }
     }
 

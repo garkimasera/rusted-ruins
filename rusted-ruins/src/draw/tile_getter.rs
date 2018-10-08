@@ -12,7 +12,6 @@ use game::view::ViewMap;
 #[derive(Default)]
 pub struct BackgroundDrawInfo {
     pub tile: Option<TileLayers>,
-    pub deco: Option<DecoIdx>,
     pub special: Option<SpecialTileIdx>,
 }
 
@@ -20,22 +19,21 @@ impl BackgroundDrawInfo {
     pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo {
         let mut di = BackgroundDrawInfo::default();
         
-        let (tile, deco) = if map.is_inside(pos) {
+        let tile = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
             
-            (tinfo.tile, tinfo.deco)
+            tinfo.tile
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
-                (Some(outside_tile.tile.into()), outside_tile.deco)
+                Some(outside_tile.tile.into())
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
-                (tinfo.tile, tinfo.deco)
+                tinfo.tile
             }
         };
         
         di.tile = tile;
-        di.deco = deco;
 
         if map.is_inside(pos) {
             if let Some(special_tile_id) = map.observed_tile[pos].special.obj_id() {
@@ -58,6 +56,7 @@ impl BackgroundDrawInfo {
 pub struct ForegroundDrawInfo {
     pub special: Option<SpecialTileIdx>,
     pub wallpp: WallIdxPP,
+    pub deco: Option<DecoIdx>,
     pub n_item: usize,
     pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
     pub chara: Option<CharaId>,
@@ -78,6 +77,7 @@ impl ForegroundDrawInfo {
         }
 
         di.wallpp = if map.is_inside(pos) {
+            di.deco = map.observed_tile[pos].deco;
             map.observed_tile[pos].wall
         } else {
             if let Some(ref outside_tile) = map.outside_tile {

@@ -165,13 +165,6 @@ impl MainWinDrawer {
                 self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern);
             }
         }
-        if let Some(deco_idx) = di.deco { // Draw deco
-            let o = gobj::get_obj(deco_idx);
-            let src = Rect::from(o.img_rect_nth(calc_frame(&o.img)));
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            let texture = sv.tex().get(deco_idx);
-            check_draw!(canvas.copy(&texture, src, dest));
-        }
         if let Some(special_tile_idx) = di.special { // Draw tile special
             let texture = sv.tex().get(special_tile_idx);
             let query = texture.query();
@@ -188,16 +181,24 @@ impl MainWinDrawer {
         let di = ForegroundDrawInfo::new(map, view_map, p);
 
         if let Some(special_tile_idx) = di.special { // Draw tile special
-            let texture = sv.tex().get(special_tile_idx);
-            let query = texture.query();
+            let tex = sv.tex().get(special_tile_idx);
+            let query = tex.query();
             let src = Rect::new(0, 0, query.width, query.height);
             let dest = self.bottom_at_tile(src, p, 0, 0);
-            check_draw!(canvas.copy(&texture, src, dest));
+            check_draw!(canvas.copy(&tex, src, dest));
         }
         if let Some(wall_idx) = di.wallpp.idx() { // Draw wall
             let obj = gobj::get_obj(wall_idx);
             let tex = sv.tex().get(wall_idx);
             self.draw_pieces(canvas, tex, obj, p, di.wallpp.piece_pattern);
+        }
+
+        if let Some(deco_idx) = di.deco { // Draw decoration
+            let tex = sv.tex().get(deco_idx);
+            let query = tex.query();
+            let src = Rect::new(0, 0, query.width, query.height);
+            let dest = self.bottom_at_tile(src, p, 0, 0);
+            check_draw!(canvas.copy(&tex, src, dest));
         }
 
         // Draw items
