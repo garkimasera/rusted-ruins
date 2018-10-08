@@ -74,9 +74,8 @@ pub enum ItemKindRough {
 
 bitflags! {
     pub struct ItemFlags: u64 {
-        const CURSED    = 1 << 0;
-        const EATABLE   = 1 << 1;
-        const DRINKABLE = 1 << 2;
+        const EATABLE   = 1 << 0;
+        const DRINKABLE = 1 << 1;
     }
 }
 
