@@ -3,7 +3,13 @@ Extensible rouge like game with pixel art. Players can explore the wilderness an
 This game is written in Rust.
 
 ## Screenshot
-![exploring-caves](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/exploring-ruin.png)
+Ruin
+
+![exploring-ruin](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/exploring-ruin.png)
+
+Town
+
+![exploring-ruin](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/town.png)
 
 ## Status
 This is a very early project. Many features for playing are not completed.
