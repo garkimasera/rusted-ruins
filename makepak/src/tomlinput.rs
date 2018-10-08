@@ -1,6 +1,6 @@
 
 use array2d::Vec2d;
-use common::gamedata;
+use common::gamedata::{self, ElementArray};
 use common::sitegen;
 
 #[derive(Debug, Deserialize)]
@@ -97,9 +97,7 @@ pub struct ItemDepInput {
     pub armor_kind: Option<gamedata::item::ArmorKind>,
     pub medical_effect: Option<gamedata::item::MedicalEffect>,
     /// For armor items
-    pub def: Option<u16>,
-    /// For armor items
-    pub mdf: Option<u16>,
+    pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,
 }
 

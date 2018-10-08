@@ -2,6 +2,7 @@
 use error::*;
 use tomlinput::*;
 use common::obj::*;
+use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
 use super::img::build_img;
 
@@ -48,8 +49,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         gen_level: item.gen_level,
         dice_n: item.dice_n.unwrap_or(0),
         dice_x: item.dice_x.unwrap_or(0),
-        def: item.def.unwrap_or(0),
-        mdf: item.mdf.unwrap_or(0),
+        def: item.def.unwrap_or(ElementArray([0, 0, 0, 0, 0, 0])),
         eff: item.eff.unwrap_or(0),
         medical_effect: item.medical_effect.unwrap_or_default(),
         nutrition: item.nutrition.unwrap_or(0),

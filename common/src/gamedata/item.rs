@@ -2,6 +2,7 @@
 use array2d::Vec2d;
 use objholder::ItemIdx;
 use std::cmp::{PartialOrd, Ord, Ordering};
+use super::defs::ElementArray;
 
 /// Game item
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -35,9 +36,7 @@ pub struct ItemObject {
     pub dice_n: u16,
     pub dice_x: u16,
     /// Defence
-    pub def: u16,
-    /// Magic Defence
-    pub mdf: u16,
+    pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
     pub medical_effect: MedicalEffect,
