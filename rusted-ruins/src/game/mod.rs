@@ -21,7 +21,6 @@ pub mod view;
 mod script;
 mod eval_expr;
 mod shop;
-mod event;
 mod dungeon_gen;
 
 use std::borrow::Cow;

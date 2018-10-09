@@ -1,7 +1,6 @@
 
 pub mod chara;
 pub mod defs;
-pub mod event;
 pub mod item;
 pub mod map;
 pub mod player;
@@ -16,7 +15,6 @@ use array2d::Vec2d;
 
 pub use self::chara::*;
 pub use self::defs::*;
-pub use self::event::*;
 pub use self::item::*;
 pub use self::map::*;
 pub use self::player::*;
