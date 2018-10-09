@@ -16,6 +16,8 @@ use super::tile_getter::*;
 use super::frame::calc_frame;
 use super::overlay;
 
+const CHARA_DRAW_OFFSET: i32 = 16;
+
 pub struct MainWinDrawer {
     rect: Rect,
     w: u32, h: u32,
@@ -142,9 +144,10 @@ impl MainWinDrawer {
                 let chara = gd.chara.get(CharaId::Player);
                 let ct = gobj::get_obj(chara.template);
                 let src = Rect::from(ct.img_rect());
-                let dest = self.centering_at_tile(src, player_pos,
-                                                  -player_move_adjust.0, -player_move_adjust.1);
-                canvas.copy(sv.tex().get(chara.template), src, dest).unwrap();
+                let mut dest = self.centering_at_tile(
+                    src, player_pos,
+                    -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET);
+                check_draw!(canvas.copy(sv.tex().get(chara.template), src, dest));
             }
         }
         // Draw background parts
@@ -221,9 +224,10 @@ impl MainWinDrawer {
             
             if !(chara_id == CharaId::Player && is_player_moving) {
                 let dest = if chara_id == CharaId::Player {
-                    self.centering_at_tile(src, p, -player_move_adjust.0, -player_move_adjust.1)
+                    self.centering_at_tile(
+                        src, p, -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET)
                 }else{
-                    self.centering_at_tile(src, p, 0, 0)
+                    self.centering_at_tile(src, p, 0, -CHARA_DRAW_OFFSET)
                 };
                 check_draw!(canvas.copy(sv.tex().get(chara.template), src, dest));
             }
