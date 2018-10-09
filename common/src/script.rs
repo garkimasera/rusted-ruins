@@ -50,7 +50,12 @@ impl Script {
     }
     
     pub fn get(&self, pos: &ScriptPos) -> Option<&Instruction> {
-        self.0[&pos.section].get(pos.i)
+        if let Some(v) = self.0.get(&pos.section) {
+            v.get(pos.i)
+        } else {
+            warn!("script error: unknown section {}", pos.section);
+            None
+        }
     }
     
     pub fn section(&self, s: &str) -> &[Instruction] {
@@ -59,6 +64,7 @@ impl Script {
 }
 
 pub const QUIT_SECTION: &'static str = "quit";
+pub const CONTINUE_SECTION: &'static str = "continue";
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ScriptPos {
@@ -75,6 +81,7 @@ impl ScriptPos {
         let section = section.to_string();
 
         assert_ne!(section, QUIT_SECTION);
+        assert_ne!(section, CONTINUE_SECTION);
         
         self.i = 0;
         self.section = section;

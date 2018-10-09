@@ -57,6 +57,10 @@ macro_rules! jump {
     ($s:expr, $section:expr) => {{
         match $section.as_ref() {
             QUIT_SECTION => { return ExecResult::Quit }
+            CONTINUE_SECTION => {
+                $s.pos.advance();
+                continue;
+            }
             _ => (),
         }
         $s.pos.set_section($section);
@@ -154,7 +158,11 @@ impl ScriptEngine {
                     if next_section == QUIT_SECTION {
                         return ExecResult::Quit;
                     }
-                    self.pos.set_section(next_section);
+                    if next_section == CONTINUE_SECTION {
+                        self.pos.advance();
+                    } else {
+                        self.pos.set_section(next_section);
+                    }
                 } else {
                     assert!(choices.is_empty());
                     self.pos.advance();
