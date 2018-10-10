@@ -38,7 +38,7 @@ named!(section_start<CompleteStr, String>,
     do_parse!(
         tag!("---") >>
         space >>
-        s: symbol >>
+        s: id >>
         end_line >>
         (s)
     )
@@ -53,7 +53,7 @@ fn section_start_test() {
 named!(jump_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("jump")) >>
-        s: delimited!(tag!("("), ws!(symbol), tag!(")")) >>
+        s: delimited!(tag!("("), ws!(id), tag!(")")) >>
         end_line >>
         (Instruction::Jump(s))
     )
@@ -63,7 +63,7 @@ named!(jump_if_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("jump_if")) >>
         char!('(') >>
-        s: ws!(symbol) >>
+        s: ws!(id) >>
         char!(',') >>
         e: ws!(expr) >>
         char!(')') >>
@@ -128,7 +128,7 @@ named!(talk_instruction_with_choices<CompleteStr, Instruction>,
         text_id: ws!(id) >>
         char!(',') >>
         choices: array!(delimited!(
-            char!('('), separated_pair!(ws!(id), char!(','), ws!(symbol)), char!(')') )) >>
+            char!('('), separated_pair!(ws!(id), char!(','), ws!(id)), char!(')') )) >>
         char!(')') >>
         end_line >>
         (Instruction::Talk(text_id, choices))

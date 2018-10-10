@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
+lazy_static = "1"
+regex = "1"
 serde = "1"
 serde_derive = "1"
 failure = "0.1.1"
@@ -11,7 +13,7 @@ toml = "0.4"
 tar = "0.4"
 clap = "2"
 image = "0.20"
-nom = "4"
+nom = { version = "4.1", features = ["regexp_macros"] }
 
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"

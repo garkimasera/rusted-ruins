@@ -1,65 +1,21 @@
 
 use common::script::{Expr, Value};
-use nom::{digit1, space, IResult};
+use nom::{digit1, space};
 use nom::types::CompleteStr;
 
-const CUSTOM_ERR_SYMBOL: u32 = 100;
-const CUSTOM_ERR_ID: u32 = 101;
-
-/// Symbols in script.
-/// The first character must be alphabetic, and can include '_' and '-'.
-pub fn symbol(input: CompleteStr) -> IResult<CompleteStr, String> {
-    use nom::{Err, Needed, ErrorKind};
-    
-    if input.len() < 1 {
-        Err(Err::Incomplete(Needed::Size(1)))
-    } else {
-        let c = input.chars().next().unwrap();
-        if !c.is_alphabetic() {
-            return Err(Err::Error(error_position!(input, ErrorKind::Custom(CUSTOM_ERR_SYMBOL))));
-        }
-        for (i, c) in input.char_indices() {
-            if !(c.is_alphabetic() || c.is_digit(10) || c == '_' || c == '-') {
-                let slices = input.split_at(i);
-                return Ok((CompleteStr(slices.1), slices.0.to_string()));
-            }
-        }
-        Ok((CompleteStr(""), input[..].to_string()))
-    }
-}
-
 /// Id as String in script.
-/// The first character must be alphabetic, and can include '_', '-', and '.'.
-pub fn id(input: CompleteStr) -> IResult<CompleteStr, String> {
-    use nom::{Err, Needed, ErrorKind};
-    
-    if input.len() < 1 {
-        Err(Err::Incomplete(Needed::Size(1)))
-    } else {
-        let c = input.chars().next().unwrap();
-        if !c.is_alphabetic() {
-            return Err(Err::Error(error_position!(input, ErrorKind::Custom(CUSTOM_ERR_ID))));
-        }
-        for (i, c) in input.char_indices() {
-            if !(c.is_alphabetic() || c.is_digit(10) || c == '_' || c == '-' || c == '.') {
-                let slices = input.split_at(i);
-                return Ok((CompleteStr(slices.1), slices.0.to_string()));
-            }
-        }
-        Ok((CompleteStr(""), input[..].to_string()))
-    }
-}
-
-#[test]
-fn symbol_test() {
-    assert_eq!(symbol(CompleteStr("abc")), Ok((CompleteStr(""), "abc".to_string())));
-    assert_eq!(symbol(CompleteStr("a0d0  ")), Ok((CompleteStr("  "), "a0d0".to_string())));
-    assert!(symbol(CompleteStr("01ab")).is_err());
-}
+/// The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
+named!(pub id<CompleteStr, String>,
+    do_parse!(
+        s: re_find_static!("[a-zA-Z0-9][a-zA-Z0-9_.-]*") >>
+        (s.to_string())
+    )
+);
 
 #[test]
 fn id_test() {
     assert_eq!(id(CompleteStr("ab.c")), Ok((CompleteStr(""), "ab.c".to_string())));
+    assert_eq!(id(CompleteStr("abc-def ")), Ok((CompleteStr(" "), "abc-def".to_string())));
 }
 
 named!(integer<CompleteStr, Expr>,
