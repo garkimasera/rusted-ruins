@@ -135,6 +135,19 @@ named!(talk_instruction_with_choices<CompleteStr, Instruction>,
     )
 );
 
+named!(gset_instruction<CompleteStr, Instruction>,
+    do_parse!(
+        ws!(tag!("gset")) >>
+        char!('(') >>
+        var_name: ws!(id) >>
+        char!(',') >>
+        value: ws!(expr) >>
+        char!(')') >>
+        end_line >>
+        (Instruction::GSet(var_name, value))
+    )
+);
+
 named!(recieve_money_instruction<CompleteStr, Instruction>,
     do_parse!(
         ws!(tag!("recieve_money")) >>
@@ -169,6 +182,7 @@ named!(instruction<CompleteStr, Instruction>,
         jump_if_instruction |
         talk_instruction_with_choices |
         talk_instruction |
+        gset_instruction |
         recieve_money_instruction |
         remove_item_instruction |
         shop_buy_instruction |

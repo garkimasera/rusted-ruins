@@ -12,6 +12,8 @@ pub enum Instruction {
     JumpIf(String, Expr),
     /// Talk instruction (textid, Vec<choice's textid, destination section>)
     Talk(String, Vec<(String, String)>),
+    /// Set global variable
+    GSet(String, Expr),
     /// Player recieve money
     RecieveMoney(Expr),
     /// Remove item form player's inventory
@@ -28,6 +30,8 @@ pub enum Instruction {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Expr {
     Value(Value),
+    /// Reference to global variable
+    GVar(String),
     HasItem(String),
 }
 
@@ -36,6 +40,7 @@ pub enum Expr {
 pub enum Value {
     Bool(bool),
     Int(i32),
+    RefUnknownVar,
     Error,
 }
 

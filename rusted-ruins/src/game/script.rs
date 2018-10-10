@@ -33,6 +33,7 @@ macro_rules! as_bool {
     ($v:expr) => {{
         match $v {
             Value::Bool(v) => v,
+            Value::RefUnknownVar => false,
             _ => {
                 return ExecResult::Quit;
             }
@@ -123,6 +124,10 @@ impl ScriptEngine {
                     let choices = if choices.is_empty() { None } else { Some(choices.as_ref()) };
                     return ExecResult::Talk(
                         cid, TalkText { text_id, choices }, need_open_talk_dialog );
+                }
+                Instruction::GSet(name, v) => {
+                    let v = v.eval(gd);
+                    gd.vars.set_global_var(name, v);
                 }
                 Instruction::RecieveMoney(v) => {
                     let v = v.eval(gd);
