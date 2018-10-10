@@ -10,6 +10,7 @@ pub mod site;
 pub mod skill;
 pub mod time;
 pub mod town;
+pub mod variables;
 
 use array2d::Vec2d;
 
@@ -24,6 +25,7 @@ pub use self::site::*;
 pub use self::skill::*;
 pub use self::time::*;
 pub use self::town::*;
+pub use self::variables::*;
 
 /// Includes all data for one game
 #[derive(Serialize, Deserialize)]
@@ -32,6 +34,7 @@ pub struct GameData {
     pub region: RegionHolder,
     pub time: Time,
     pub player: Player,
+    pub vars: Variables,
     current_mapid: MapId,
 }
 
@@ -42,6 +45,7 @@ impl GameData {
             region: RegionHolder::new(),
             time: Time::default(),
             player: Player::default(),
+            vars: Variables::new(),
             current_mapid: MapId::default(),
         }
     }
