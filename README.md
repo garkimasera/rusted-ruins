@@ -3,13 +3,13 @@ Extensible rouge like game with pixel art. Players can explore the wilderness an
 This game is written in Rust.
 
 ## Screenshot
-Ruin
+Ruin (Example of auto generated map)
 
 ![exploring-ruin](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/exploring-ruin.png)
 
-Town
+Town (Example of created map by map-editor)
 
-![exploring-ruin](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/town.png)
+![town](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/town.png)
 
 ## Game Objective
 
@@ -17,6 +17,14 @@ The player arrives a continent recently discovered continent where a lot of ruin
 
 ## Status
 This is a very early project. Many features for playing are not completed.
+
+## Design
+
+* Play with 2D graphical interface.
+* Easy to extend by the pak file system. Most of assets are packaged as pak file. Pak file can be created by makepak. Users can add new characters, items and dungeons easily by pak file system.
+* Provide map editor to create new map.
+* Script to describe talks and events in game. This is flexible way to construct game.
+* Provide many playing style for players. The game objective will be different by players.
 
 ## Pak files
 In this game, most of image data and many assets are handled as *XXObject*.
