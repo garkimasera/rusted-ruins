@@ -1,6 +1,7 @@
 
 use super::Game;
 use super::action;
+use text::ToText;
 use common::gamedata::*;
 use game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
 use array2d::*;
@@ -71,6 +72,14 @@ impl<'a> DoPlayerAction<'a> {
     /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.
     pub fn goto_next_floor(&mut self, dir: Direction) {
+        enum LogMessage {
+            ExitToOutside,
+            EnterSite(String),
+            ChangeFloor,
+        }
+
+        let log_msg: LogMessage;
+        
         // Use stairs
         if dir.is_none() {
             let (next_mid, msg) = {
@@ -81,8 +90,10 @@ impl<'a> DoPlayerAction<'a> {
                 match *special_tile_kind {
                     SpecialTileKind::Stairs { dest_floor, .. } => { // Use stairs on map
                         let mid = if dest_floor == FLOOR_OUTSIDE {
+                            log_msg = LogMessage::ExitToOutside;
                             MapId::from(mid.rid())
                         } else {
+                            log_msg = LogMessage::ChangeFloor;
                             mid.set_floor(dest_floor)
                         };
                         (mid, msg_switch_map(mid))
@@ -96,6 +107,7 @@ impl<'a> DoPlayerAction<'a> {
                             let msg = replace_str!(
                                 ::text::ui_txt("dialog.enter_site");
                                 site_name=site);
+                            log_msg = LogMessage::EnterSite(site.to_text().to_string());
                             (mid, msg.into())
                         } else {
                             warn!("No site existed at {:?}", pos);
@@ -111,6 +123,17 @@ impl<'a> DoPlayerAction<'a> {
 
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
                 if !result { return; }
+                match &log_msg {
+                    LogMessage::ExitToOutside => {
+                        game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
+                    }
+                    LogMessage::EnterSite(s) => {
+                        game_log_i!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
+                    }
+                    LogMessage::ChangeFloor => {
+                        game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
+                    }
+                }
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
@@ -119,6 +142,7 @@ impl<'a> DoPlayerAction<'a> {
             
             return;
         } else { // Crossing boundary
+            let log_msg: LogMessage;
             use common::gamedata::map::BoundaryBehavior;
             let boundary = {
                 let player_pos = self.gd().player_pos();
@@ -129,10 +153,12 @@ impl<'a> DoPlayerAction<'a> {
             let next_mid = match boundary {
                 BoundaryBehavior::None => { return; },
                 BoundaryBehavior::RegionMap => {
+                    log_msg = LogMessage::ExitToOutside;
                     let mid = MapId::from(self.gd().get_current_mapid().rid());
                     mid
                 }
                 BoundaryBehavior::Floor(floor) => {
+                    log_msg = LogMessage::ChangeFloor;
                     let mid = self.gd().get_current_mapid().set_floor(floor);
                     mid
                 }
@@ -140,6 +166,17 @@ impl<'a> DoPlayerAction<'a> {
             };
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
                 if !result { return; }
+                match &log_msg {
+                    LogMessage::ExitToOutside => {
+                        game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
+                    }
+                    LogMessage::EnterSite(s) => {
+                        game_log_i!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
+                    }
+                    LogMessage::ChangeFloor => {
+                        game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
+                    }
+                }
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
