@@ -14,6 +14,8 @@ pub trait InfoGetter {
     fn player_item_location(&self, id: &str) -> Option<ItemLocation>;
     /// Get current map size
     fn map_size(&self) -> (u32, u32);
+    /// Character position on the current map
+    fn chara_pos(&self, cid: CharaId) -> Option<Vec2d>;
     /// Player's current tile is entrance/exit or not
     fn on_map_entrance(&self) -> bool;
     /// Return item list in the tile that player stands on
@@ -46,6 +48,11 @@ impl InfoGetter for GameData {
     fn map_size(&self) -> (u32, u32) {
         let map = self.get_current_map();
         (map.w, map.h)
+    }
+
+    fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
+        let map = self.get_current_map();
+        map.chara_pos(cid)
     }
     
     fn on_map_entrance(&self) -> bool {
