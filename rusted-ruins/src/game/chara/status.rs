@@ -12,7 +12,7 @@ impl CharaStatusOperation for Chara {
 
         match new_status {
             CharaStatus::Hungry => {
-                status.retain(|s| !s.about_nutrition()); // Remove nutrition status
+                status.retain(|s| !s.about_sp()); // Remove sp status
                 status.push(new_status);
             }
             CharaStatus::Asleep { turn_left: turn_left_new }=> {
@@ -45,13 +45,13 @@ impl CharaStatusOperation for Chara {
 }
 
 pub trait CharaStatusEx {
-    fn about_nutrition(&self) -> bool;
+    fn about_sp(&self) -> bool;
     fn advance_turn(&mut self, n: u16);
     fn is_expired(&self) -> bool;
 }
 
 impl CharaStatusEx for CharaStatus {
-    fn about_nutrition(&self) -> bool {
+    fn about_sp(&self) -> bool {
         match *self {
             CharaStatus::Hungry => true,
             _ => false,

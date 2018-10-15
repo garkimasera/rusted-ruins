@@ -2,8 +2,8 @@
 /// Various parameters for game playing
 #[derive(Serialize, Deserialize)]
 pub struct Params {
-    /// Default nutrition when a new character is created.
-    pub default_nutrition: i32,
+    /// Default sp when a new character is created.
+    pub default_sp: i32,
     /// Minutes per one turn on maps in sites
     pub minutes_per_turn_normal: f32,
     /// Minutes per one turn on region maps
