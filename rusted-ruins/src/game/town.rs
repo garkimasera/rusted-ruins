@@ -55,6 +55,8 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
 
 /// Update shop states
 pub fn update_shops(gd: &mut GameData, sid: SiteId) {
+    use game::shop::update_items_on_shop;
+    
     let site = gd.region.get_site_mut(sid);
     let town = match &mut site.content {
         SiteContent::Town { ref mut town } => town,
@@ -66,19 +68,6 @@ pub fn update_shops(gd: &mut GameData, sid: SiteId) {
 
     for shop in town.iter_shops_mut() {
         update_items_on_shop(shop)
-    }
-}
-
-/// Update items on a shop
-fn update_items_on_shop(shop: &mut Shop) {
-    use game::item::gen::gen_dungeon_item;
-    
-    shop.items.clear();
-
-    let n_gen_item = ::rng::gen_range(RULES.town.min_shop_items, RULES.town.max_shop_items);
-    
-    for _ in 0..n_gen_item {
-        shop.items.append(gen_dungeon_item(1), 1);
     }
 }
 

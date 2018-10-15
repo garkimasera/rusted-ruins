@@ -20,7 +20,7 @@ mod turnloop;
 pub mod view;
 mod script;
 mod eval_expr;
-mod shop;
+pub mod shop;
 mod dungeon_gen;
 
 use std::borrow::Cow;
