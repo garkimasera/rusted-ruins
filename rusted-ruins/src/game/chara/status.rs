@@ -12,8 +12,7 @@ impl CharaStatusOperation for Chara {
 
         match new_status {
             CharaStatus::Hungry => {
-                status.retain(|s| !s.about_sp()); // Remove sp status
-                status.push(new_status);
+                status.retain(|s| s.about_sp()); // Remove sp status
             }
             CharaStatus::Asleep { turn_left: turn_left_new }=> {
                 for s in status.iter_mut() {

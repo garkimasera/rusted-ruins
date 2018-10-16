@@ -13,6 +13,8 @@ use super::combat::DamageKind;
 /// Additional Chara method
 pub trait CharaEx {
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
+    /// sp increase/decrease.
+    fn add_sp(&mut self, v: i32, cid: CharaId);
 }
 
 impl CharaEx for Chara {
@@ -22,6 +24,25 @@ impl CharaEx for Chara {
         if result.0 { // If level up
             trace!("{} level up ({:?})", self.to_text(), kind);
             game_log!("skill-level-up"; chara=self, skill=kind);
+        }
+    }
+
+    fn add_sp(&mut self, v: i32, cid: CharaId) {
+        let old_sp = self.sp;
+        let new_sp = self.sp + v;
+        self.sp = new_sp;
+
+        match cid {
+            CharaId::Player => {
+                if new_sp <= 0 && old_sp > 0 {
+                    self.add_status(CharaStatus::Hungry);
+                }
+            }
+            _ => {
+                if new_sp < 0 {
+                    self.sp = 0;
+                }
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
 
 {
-    "default_view_range": 5
+    "default_view_range": 5,
+    "default_sp": 1000,
+    "sp_consumption": 5
 }
