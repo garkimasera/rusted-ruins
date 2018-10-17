@@ -3,6 +3,7 @@ use common::basic::WAIT_TIME_START;
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::*;
 use common::gobj;
+use game::extrait::*;
 use rules::RULES;
 
 /// Create character from chara_template
@@ -48,6 +49,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
 /// Create npc character from the race
 pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {    
     let mut chara = create_chara(choose_npc_chara_template(dungeon, floor_level));
+    set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     return chara;
 }
@@ -119,6 +121,18 @@ impl CalcLevelWeightDist {
 pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
     CharaAI {
         kind: ai_kind,
+    }
+}
+
+/// Set skills to npc
+fn set_skill(chara: &mut Chara) {
+    let ct = gobj::get_obj(chara.template);
+    
+    match ct.race {
+        Race::Animal | Race::Bug | Race::Slime => {
+            chara.skills.set_skill_level(SkillKind::BareHands, ct.gen_level as u16 / 2 + 5)
+        }
+        _ => (),
     }
 }
 

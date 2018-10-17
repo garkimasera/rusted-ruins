@@ -6,6 +6,7 @@ use common::gamedata::*;
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32);
     fn learn_new_skill(&mut self, kind: SkillKind);
+    fn set_skill_level(&mut self, kind: SkillKind, lv: u16);
 }
 
 impl SkillListEx for SkillList {
@@ -62,6 +63,11 @@ impl SkillListEx for SkillList {
         } else {
             unreachable!();
         }
+    }
+    
+    /// Set skill level directly. Do not add exp.
+    fn set_skill_level(&mut self, kind: SkillKind, lv: u16) {
+        self.skills.insert(kind, lv);
     }
 }
 
