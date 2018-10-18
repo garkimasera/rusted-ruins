@@ -23,6 +23,6 @@
             ["concrete-rust", "concrete-rust-wall"]
         ],
         "item_gen_probability": 0.02,
-        "floor_range": [2, 3]
+        "floor_range": [3, 11]
     }
 }
