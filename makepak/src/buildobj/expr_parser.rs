@@ -1,7 +1,25 @@
 
-use common::script::{Expr, Value};
+use common::script::{Expr, Value, Operator};
 use nom::{digit1, space};
 use nom::types::CompleteStr;
+
+trait Join {
+    fn join(self, op: Operator, e: Expr) -> Expr;
+}
+
+impl Join for Expr {
+    fn join(self, op: Operator, e: Expr) -> Expr {
+        match self {
+            Expr::Term(mut v) => {
+                v.push((op, e));
+                Expr::Term(v)
+            }
+            _ => {
+                Expr::Term(vec![(Operator::None, self), (op, e)])
+            }
+        }
+    }
+}
 
 /// Id as String in script.
 /// The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
@@ -53,18 +71,41 @@ named!(has_item<CompleteStr, Expr>,
     do_parse!(
         tag!("has_item") >>
         opt!(space) >>
-        s: delimited!(tag!("("), ws!(id), tag!(")")) >>
+        s: delimited!(char!('('), ws!(id), char!(')')) >>
         (Expr::HasItem(s))
     )
 );
 
-named!(pub expr<CompleteStr, Expr>,
-    alt!(
+named!(factor<CompleteStr, Expr>,
+    ws!(alt_complete!(
         true_literal |
         false_literal |
         integer |
         gvar |
-        has_item
+        has_item |
+        parens
+    ))
+);
+
+named!(parens<CompleteStr, Expr>,
+    delimited!(
+        char!('('),
+        ws!(expr),
+        char!(')')
+    )
+);
+
+named!(pub expr<CompleteStr, Expr>,
+    do_parse!(
+        init: factor >>
+        res: fold_many0!(
+            pair!(char!('+'), factor),
+            init,
+            |a: Expr, (_op, e): (char, Expr)| {
+                a.join(Operator::Add, e)
+            }
+        ) >>
+        (res)
     )
 );
 
@@ -76,5 +117,13 @@ fn expr_test() {
     assert_eq!(expr(CompleteStr("$(aa)")), Ok((CompleteStr(""), Expr::GVar("aa".to_owned()))));
     let a = Expr::HasItem("box".to_owned());
     assert_eq!(expr(CompleteStr("has_item(box)")), Ok((CompleteStr(""), a)));
+    assert_eq!(
+        expr(CompleteStr("1 + 2 + 3")),
+        Ok((CompleteStr(""),
+            Expr::Term(vec![
+                (Operator::None, Expr::Value(Value::Int(1))),
+                (Operator::Add, Expr::Value(Value::Int(2))),
+                (Operator::Add, Expr::Value(Value::Int(3)))])
+        )));
 }
 

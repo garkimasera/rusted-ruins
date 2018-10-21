@@ -26,22 +26,34 @@ pub enum Instruction {
     GetDungeonLocation,
 }
 
-/// Instructions are executed in Game.
+/// Expression in script.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Expr {
     Value(Value),
+    Term(Vec<(Operator, Expr)>),
     /// Reference to global variable
     GVar(String),
     HasItem(String),
 }
 
-/// Instructions are executed in Game.
+/// Value is the result of evaluation of Expr.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Value {
     Bool(bool),
     Int(i32),
+    /// Referenced for unknown variable. This can be changed to 0 or false.
     RefUnknownVar,
-    Error,
+    Error(ExprErrorKind),
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum Operator {
+    None, Add,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum ExprErrorKind {
+    InvalidType, UnknownIdRef, Other,
 }
 
 /// Script consists of one or more sections.
