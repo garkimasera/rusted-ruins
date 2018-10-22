@@ -37,7 +37,7 @@ pub enum Expr {
 }
 
 /// Value is the result of evaluation of Expr.
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Value {
     Bool(bool),
     Int(i32),
@@ -48,10 +48,16 @@ pub enum Value {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Operator {
-    None, Add,
+    None,
+    Or,
+    And,
+    Eq, NotEq,
+    Less, LessEq, Greater, GreaterEq,
+    Add, Sub,
+    Mul, Div,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ExprErrorKind {
     InvalidType, UnknownIdRef, Other,
 }

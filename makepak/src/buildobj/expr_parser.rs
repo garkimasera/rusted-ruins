@@ -95,18 +95,113 @@ named!(parens<CompleteStr, Expr>,
     )
 );
 
-named!(pub expr<CompleteStr, Expr>,
-    do_parse!(
+// Operator precedence is the same as C.
+// term_mul > term_plus > term_ord > term_eq > term_and > expr
+
+named!(term_mul<CompleteStr, Expr>,
+    ws!(do_parse!(
         init: factor >>
         res: fold_many0!(
-            pair!(char!('+'), factor),
+            pair!(alt!(char!('*') | char!('/')), factor),
             init,
-            |a: Expr, (_op, e): (char, Expr)| {
-                a.join(Operator::Add, e)
+            |a: Expr, (op, e): (char, Expr)| {
+                let op = match op {
+                    '*' => Operator::Mul,
+                    '/' => Operator::Div,
+                    _ => unreachable!(),
+                };
+                a.join(op, e)
             }
         ) >>
         (res)
-    )
+    ))
+);
+
+named!(term_plus<CompleteStr, Expr>,
+    ws!(do_parse!(
+        init: term_mul >>
+        res: fold_many0!(
+            pair!(alt!(char!('+') | char!('-')), term_mul),
+            init,
+            |a: Expr, (op, e): (char, Expr)| {
+                let op = match op {
+                    '+' => Operator::Add,
+                    '-' => Operator::Sub,
+                    _ => unreachable!(),
+                };
+                a.join(op, e)
+            }
+        ) >>
+        (res)
+    ))
+);
+
+named!(term_ord<CompleteStr, Expr>,
+    ws!(do_parse!(
+        init: term_plus >>
+        res: fold_many0!(
+            pair!(alt!(tag!("<=") | tag!(">=") | tag!("<") | tag!(">")), term_plus),
+            init,
+            |a: Expr, (op, e): (CompleteStr, Expr)| {
+                let op = match op {
+                    CompleteStr("<") => Operator::Less,
+                    CompleteStr("<=") => Operator::LessEq,
+                    CompleteStr(">") => Operator::Greater,
+                    CompleteStr(">=") => Operator::GreaterEq,
+                    _ => unreachable!(),
+                };
+                a.join(op, e)
+            }
+        ) >>
+        (res)
+    ))
+);
+
+named!(term_eq<CompleteStr, Expr>,
+    ws!(do_parse!(
+        init: term_ord >>
+        res: fold_many0!(
+            pair!(alt!(tag!("==") | tag!("!=")), term_ord),
+            init,
+            |a: Expr, (op, e): (CompleteStr, Expr)| {
+                let op = match op {
+                    CompleteStr("==") => Operator::Eq,
+                    CompleteStr("!=") => Operator::NotEq,
+                    _ => unreachable!(),
+                };
+                a.join(op, e)
+            }
+        ) >>
+        (res)
+    ))
+);
+
+named!(term_and<CompleteStr, Expr>,
+    ws!(do_parse!(
+        init: term_eq >>
+        res: fold_many0!(
+            pair!(tag!("&&"), term_eq),
+            init,
+            |a: Expr, (_, e): (CompleteStr, Expr)| {
+                a.join(Operator::And, e)
+            }
+        ) >>
+        (res)
+    ))
+);
+
+named!(pub expr<CompleteStr, Expr>,
+    ws!(do_parse!(
+        init: term_and >>
+        res: fold_many0!(
+            pair!(tag!("||"), term_and),
+            init,
+            |a: Expr, (_, e): (CompleteStr, Expr)| {
+                a.join(Operator::Or, e)
+            }
+        ) >>
+        (res)
+    ))
 );
 
 #[test]
@@ -118,12 +213,55 @@ fn expr_test() {
     let a = Expr::HasItem("box".to_owned());
     assert_eq!(expr(CompleteStr("has_item(box)")), Ok((CompleteStr(""), a)));
     assert_eq!(
-        expr(CompleteStr("1 + 2 + 3")),
+        expr(CompleteStr("1 * 2 + 3")),
         Ok((CompleteStr(""),
             Expr::Term(vec![
                 (Operator::None, Expr::Value(Value::Int(1))),
-                (Operator::Add, Expr::Value(Value::Int(2))),
+                (Operator::Mul, Expr::Value(Value::Int(2))),
                 (Operator::Add, Expr::Value(Value::Int(3)))])
+        )));
+    assert_eq!(
+        expr(CompleteStr("1 + 2 * 3")),
+        Ok((CompleteStr(""),
+            Expr::Term(vec![
+                (Operator::None, Expr::Value(Value::Int(1))),
+                (Operator::Add, Expr::Term(vec![
+                    (Operator::None, Expr::Value(Value::Int(2))),
+                    (Operator::Mul, Expr::Value(Value::Int(3))),
+                ]))
+            ])
+        )));
+   assert_eq!(
+        expr(CompleteStr("3 == 1 + 2")),
+        Ok((CompleteStr(""),
+            Expr::Term(vec![
+                (Operator::None, Expr::Value(Value::Int(3))),
+                (Operator::Eq, Expr::Term(vec![
+                    (Operator::None, Expr::Value(Value::Int(1))),
+                    (Operator::Add, Expr::Value(Value::Int(2))),
+                ])),
+            ])
+        )));
+    let term_ne_example = Expr::Term(vec![
+        (Operator::None, Expr::Value(Value::Int(1))),
+        (Operator::NotEq, Expr::Value(Value::Int(2)))]);
+    assert_eq!(
+        expr(CompleteStr("1 != 2")),
+        Ok((CompleteStr(""), term_ne_example)));
+    let term_ord_example = Expr::Term(vec![
+        (Operator::None, Expr::Value(Value::Int(1))),
+        (Operator::LessEq, Expr::Value(Value::Int(2)))]);
+    assert_eq!(
+        expr(CompleteStr("1 <= 2")),
+        Ok((CompleteStr(""), term_ord_example.clone())));
+    assert_eq!(
+        expr(CompleteStr("1 != 2 || 1 <= 2")),
+        Ok((CompleteStr(""),
+            Expr::Term(vec![
+                (Operator::None, Expr::Value(Value::Int(1))),
+                (Operator::NotEq, Expr::Value(Value::Int(2))),
+                (Operator::Or, term_ord_example),
+            ])
         )));
 }
 
