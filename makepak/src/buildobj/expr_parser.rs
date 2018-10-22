@@ -1,6 +1,6 @@
 
 use common::script::{Expr, Value, Operator};
-use nom::{digit1, space};
+use nom::{digit1, multispace0};
 use nom::types::CompleteStr;
 
 trait Join {
@@ -70,7 +70,7 @@ named!(gvar<CompleteStr, Expr>,
 named!(has_item<CompleteStr, Expr>,
     do_parse!(
         tag!("has_item") >>
-        opt!(space) >>
+        multispace0 >>
         s: delimited!(char!('('), ws!(id), char!(')')) >>
         (Expr::HasItem(s))
     )
@@ -231,7 +231,7 @@ fn expr_test() {
                 ]))
             ])
         )));
-   assert_eq!(
+    assert_eq!(
         expr(CompleteStr("3 == 1 + 2")),
         Ok((CompleteStr(""),
             Expr::Term(vec![
