@@ -27,6 +27,9 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         "armor" => {
             ItemKind::Armor(get_optional_field!(item, armor_kind))
         }
+        "material" => {
+            ItemKind::Material
+        }
         "special" => {
             ItemKind::Special
         }
