@@ -11,6 +11,7 @@ pub struct Item {
     pub kind: ItemKind,
     pub flags: ItemFlags,
     pub rank: ItemRank,
+    pub attributes: Vec<ItemAttribute>,
 }
 
 /// ItemObject has detail data for one item
@@ -50,7 +51,9 @@ impl Ord for Item {
         if order != Ordering::Equal { return order; }
         let order = self.idx.cmp(&other.idx);
         if order != Ordering::Equal { return order; }
-        self.rank.cmp(&other.rank)
+        let order = self.rank.cmp(&other.rank);
+        if order != Ordering::Equal { return order; }
+        self.attributes.cmp(&other.attributes)
     }
 }
 
@@ -105,6 +108,12 @@ impl ItemRank {
     pub fn as_int(&self) -> i32 {
         self.base as i32 + self.enchant as i32 + self.damage as i32
     }
+}
+
+/// Items can have zero or more attributes.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ItemAttribute {
+    
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

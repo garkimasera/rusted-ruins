@@ -19,6 +19,7 @@ pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F) -> Item
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         rank: ItemRank::default(),
+        attributes: vec![],
     }
 }
 
