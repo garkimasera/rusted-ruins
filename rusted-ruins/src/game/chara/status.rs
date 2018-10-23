@@ -4,18 +4,18 @@ use common::gamedata::chara::*;
 
 pub trait CharaStatusOperation {
     fn add_status(&mut self, new_status: CharaStatus);
+    fn remove_sp_status(&mut self);
 }
 
 impl CharaStatusOperation for Chara {
     fn add_status(&mut self, new_status: CharaStatus) {
-        let status = &mut self.status;
 
         match new_status {
             CharaStatus::Hungry => {
-                status.retain(|s| s.about_sp()); // Remove sp status
+                self.remove_sp_status();
             }
             CharaStatus::Asleep { turn_left: turn_left_new }=> {
-                for s in status.iter_mut() {
+                for s in self.status.iter_mut() {
                     match *s {
                         // Update left sleeping turn
                         CharaStatus::Asleep { ref mut turn_left } => {
@@ -29,7 +29,7 @@ impl CharaStatusOperation for Chara {
                 }
             }
             CharaStatus::Poisoned => {
-                for s in status.iter_mut() {
+                for s in self.status.iter_mut() {
                     match *s {
                         CharaStatus::Poisoned => {
                             return;
@@ -39,7 +39,12 @@ impl CharaStatusOperation for Chara {
                 }
             }
         }
-        status.push(new_status);
+        self.status.push(new_status);
+    }
+
+    // Remove sp status
+    fn remove_sp_status(&mut self) {
+        self.status.retain(|s| !s.about_sp());
     }
 }
 

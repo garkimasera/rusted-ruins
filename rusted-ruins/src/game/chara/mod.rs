@@ -37,6 +37,9 @@ impl CharaEx for Chara {
                 if new_sp <= 0 && old_sp > 0 {
                     self.add_status(CharaStatus::Hungry);
                 }
+                if new_sp > 0 && old_sp <= 0 {
+                    self.remove_sp_status();
+                }
             }
             _ => {
                 if new_sp < 0 {
