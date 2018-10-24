@@ -175,7 +175,7 @@ impl StatusInfo {
             self.labels.clear();
             for (i, status) in self.status.iter().enumerate() {
                 let label = LabelWidget::bordered(
-                    Rect::new(rect.x, rect.y + rect.h * i as i32, 1, 1),
+                    Rect::new(rect.x, rect.y - rect.h * i as i32, 1, 1),
                     ::text::to_txt(status),
                     FontKind::S);
                 self.labels.push(label);
