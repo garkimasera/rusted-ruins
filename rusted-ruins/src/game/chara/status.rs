@@ -11,7 +11,7 @@ impl CharaStatusOperation for Chara {
     fn add_status(&mut self, new_status: CharaStatus) {
 
         match new_status {
-            CharaStatus::Hungry => {
+            CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => {
                 self.remove_sp_status();
             }
             CharaStatus::Asleep { turn_left: turn_left_new }=> {
@@ -57,7 +57,7 @@ pub trait CharaStatusEx {
 impl CharaStatusEx for CharaStatus {
     fn about_sp(&self) -> bool {
         match *self {
-            CharaStatus::Hungry => true,
+            CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => true,
             _ => false,
         }
     }

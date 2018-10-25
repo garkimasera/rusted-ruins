@@ -17,6 +17,8 @@ impl ToTextId for CharaStatus {
     fn to_textid(&self) -> &'static str {
         match *self {
             CharaStatus::Hungry        => "!chara_status.hungry",
+            CharaStatus::Weak          => "!chara_status.weak",
+            CharaStatus::Starving      => "!chara_status.starving",
             CharaStatus::Asleep { .. } => "!chara_status.asleep",
             CharaStatus::Poisoned      => "!chara_status.poisoned",
         }

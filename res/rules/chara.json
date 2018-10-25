@@ -1,6 +1,9 @@
 
 {
     "default_view_range": 5,
-    "default_sp": 1000,
-    "sp_consumption": 5
+    "default_sp": 3000,
+    "sp_consumption": 1,
+    "sp_hungry": 1000,
+    "sp_weak": 0,
+    "sp_starving": -1000
 }

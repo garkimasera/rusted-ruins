@@ -1,6 +1,6 @@
  
 {
-    "minutes_per_turn_normal": 1.0,
+    "minutes_per_turn_normal": 0.5,
     "minutes_per_turn_region": 10,
     "initial_date_year": 100,
     "initial_date_month": 1,

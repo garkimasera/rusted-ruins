@@ -31,14 +31,28 @@ impl CharaEx for Chara {
         let old_sp = self.sp;
         let new_sp = self.sp + v;
         self.sp = new_sp;
+        let r = &RULES.chara;
 
+        // Update status about sp
         match cid {
             CharaId::Player => {
-                if new_sp <= 0 && old_sp > 0 {
-                    self.add_status(CharaStatus::Hungry);
-                }
-                if new_sp > 0 && old_sp <= 0 {
-                    self.remove_sp_status();
+                if v < 0 {
+                    if new_sp <= r.sp_hungry && old_sp > r.sp_hungry {
+                        self.add_status(CharaStatus::Hungry);
+                    }
+                    if new_sp <= r.sp_weak && old_sp > r.sp_weak {
+                        self.add_status(CharaStatus::Weak);
+                    }
+                    if new_sp <= r.sp_starving && old_sp > r.sp_starving {
+                        self.add_status(CharaStatus::Starving);
+                    }
+                } else if v > 0 {
+                    if new_sp > r.sp_hungry && old_sp <= r.sp_hungry {
+                        self.remove_sp_status();
+                    }
+                    if new_sp > r.sp_weak && old_sp <= r.sp_weak {
+                        self.add_status(CharaStatus::Weak);
+                    }
                 }
             }
             _ => {

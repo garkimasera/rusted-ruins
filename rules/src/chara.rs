@@ -9,5 +9,11 @@ pub struct Chara {
     pub default_sp: i32,
     /// Character's sp is decreased by this value per turn.
     pub sp_consumption: i32,
+    /// sp border of hungry
+    pub sp_hungry: i32,
+    /// sp border of weak
+    pub sp_weak: i32,
+    /// sp border of starving
+    pub sp_starving: i32,
 }
 

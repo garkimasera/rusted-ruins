@@ -7,6 +7,10 @@ Ruin
 # CharaStatus
 % !chara_status.hungry
 Hungry
+% !chara_status.weak
+Weak
+% !chara_status.starving
+Starving
 % !chara_status.asleep
 Asleep
 % !chara_status.poisoned
