@@ -1,5 +1,5 @@
 # Rusted Ruins [![Build Status](https://travis-ci.org/garkimasera/rusted-ruins.svg?branch=master)](https://travis-ci.org/garkimasera/rusted-ruins)
-Extensible rouge like game with pixel art. Players can explore the wilderness and ruins.
+Extensible open world rouge like game with pixel art. Players can explore the wilderness and ruins.
 This game is written in Rust.
 
 ## Screenshot
@@ -20,11 +20,11 @@ This is a very early project. Many features for playing are not completed.
 
 ## Design
 
-* Play with 2D graphical interface.
+* 2D graphics.
 * Easy to extend by the pak file system. Most of assets are packaged as pak file. Pak file can be created by makepak. Users can add new characters, items and dungeons easily by pak file system.
-* Provide map editor to create new map.
-* Script to describe talks and events in game. This is flexible way to construct game.
-* Provide many playing style for players. The game objective will be different by players.
+* Map editor to create new map.
+* Script to describe talks and events in game.
+* Open world. Provide many playing style for players. The game objective will be different by players.
 
 ## Pak files
 In this game, most of image data and many assets are handled as *XXObject*.
