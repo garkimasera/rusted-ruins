@@ -41,6 +41,8 @@ pub enum GameState {
     PlayerTurn,
 }
 
+/// Holds all game state.
+/// The difference to GameData is that Game includes temporary data in this process.
 pub struct Game {
     pub gd: GameData,
     state: GameState,
@@ -73,6 +75,7 @@ impl Game {
         game
     }
 
+    /// Create empty Game. This is used before starting actual gameplay.
     pub fn empty() -> Game {        
         Game {
             gd: GameData::empty(),

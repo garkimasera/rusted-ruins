@@ -27,7 +27,8 @@ pub use self::time::*;
 pub use self::town::*;
 pub use self::variables::*;
 
-/// Includes all data for one game
+/// Includes all data for one game world.
+/// This can be a snapshot of the current game, so it must implement Serialize and Deserialize.
 #[derive(Serialize, Deserialize)]
 pub struct GameData {
     pub chara: CharaHolder,
