@@ -1,11 +1,13 @@
 
 use common::maptemplate::*;
-use common::gamedata::map::*;
+use common::gamedata::*;
 use common::gobj;
+use game::item::gen::from_item_gen;
 
 pub fn from_template(t: &MapTemplateObject) -> Map {
     let mut map = create_terrain(t);
     set_boundary(&mut map, t, 0);
+    gen_items(&mut map, t);
     map
 }
 
@@ -57,5 +59,19 @@ pub fn set_boundary(map: &mut Map, t: &MapTemplateObject, floor: u32) {
     f(&mut map.boundary.s, t.boundary.s);
     f(&mut map.boundary.e, t.boundary.e);
     f(&mut map.boundary.w, t.boundary.w);
+}
+
+/// Generate items
+fn gen_items(map: &mut Map, t: &MapTemplateObject) {
+    for item_gen in &t.items {
+        let item = if let Some(item) = from_item_gen(item_gen) {
+            item
+        } else {
+            continue;
+        };
+
+        // Locate item at the specified tile
+        map.locate_item(item, item_gen.pos, 1);
+    }
 }
 

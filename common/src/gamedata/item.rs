@@ -141,6 +141,13 @@ pub enum ArmorKind {
     Body, Shield,
 }
 
+/// Data to generate an item.
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct ItemGen {
+    pub pos: Vec2d,
+    pub id: String,
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ItemListLocation {
     OnMap { mid: super::map::MapId, pos: Vec2d },

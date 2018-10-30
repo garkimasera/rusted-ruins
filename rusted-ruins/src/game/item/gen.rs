@@ -76,3 +76,20 @@ impl CalcLevelWeightDist {
     }
 }
 
+/// Generate item from ItemGen.
+pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
+    if let Some(idx) = gobj::id_to_idx_checked::<ItemIdx>(&item_gen.id) {
+        let item_obj = gobj::get_obj(idx);
+
+        Some(Item {
+            idx: idx,
+            flags: item_obj.default_flags,
+            kind: item_obj.kind,
+            rank: ItemRank::default(),
+            attributes: vec![],
+        })
+    } else {
+        None
+    }
+}
+

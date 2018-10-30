@@ -3,7 +3,7 @@ use std::ops::{Index, IndexMut};
 use array2d::*;
 use objholder::*;
 use basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
-use gamedata::item::ItemList;
+use gamedata::item::{Item, ItemList};
 use gamedata::chara::CharaId;
 use gamedata::site::SiteId;
 use gamedata::region::RegionId;
@@ -295,6 +295,18 @@ impl Map {
         }
         self.tile[pos].chara = Some(cid);
         true
+    }
+
+    /// Locate item at the specified tile.
+    /// Usually should use GameData functions instead of this to move and append item.
+    pub fn locate_item(&mut self, item: Item, pos: Vec2d, n: u32) {
+        if let Some(ref mut item_list) = self.tile[pos].item_list {
+            item_list.append(item, n);
+            return;
+        }
+        let mut item_list = ItemList::new();
+        item_list.append(item, n);
+        self.tile[pos].item_list = Some(item_list)
     }
 
     pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {

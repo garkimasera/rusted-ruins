@@ -11,7 +11,7 @@ use std::fmt;
 const OUT_OF_BOUNDS_ERR_MSG: &'static str = "Array2d: index out of bounds";
 
 /// Represents coordinates on a 2D array
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Vec2d(pub i32, pub i32);
 
 impl Vec2d {

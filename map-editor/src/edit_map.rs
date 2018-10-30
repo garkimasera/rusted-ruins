@@ -169,6 +169,7 @@ impl EditingMap {
             deco_table: deco_table,
             deco: deco_map,
             boundary: self.property.boundary,
+            items: vec![],
         }
     }
 }

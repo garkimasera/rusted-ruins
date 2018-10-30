@@ -3,6 +3,7 @@ use std::ops::{Index, IndexMut};
 use array2d::*;
 use basic::N_TILE_IMG_LAYER;
 use piece_pattern::*;
+use gamedata::ItemGen;
 #[cfg(feature="global_state_obj")]
 use gamedata::map::TileLayers;
 #[cfg(feature="global_state_obj")]
@@ -24,6 +25,7 @@ pub struct MapTemplateObject {
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
     pub boundary: MapTemplateBoundary,
+    pub items: Vec<ItemGen>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
@@ -136,3 +138,4 @@ impl TileLayers {
         TileLayers(o)
     }
 }
+
