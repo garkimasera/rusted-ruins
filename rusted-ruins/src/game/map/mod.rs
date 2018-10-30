@@ -161,14 +161,13 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
     let map = gd.region.get_map_mut(mid);
 
     for p in map.tile.iter_idx() {
-        let tile = &mut map.tile[p];
-        if !tile.wall.is_empty() { continue; } // Skip tile with wall
-
-        let mut item_list = ItemList::new();
+        { // TODO: This block may be unnecessary with NLL
+            let tile = &mut map.tile[p];
+            if !tile.wall.is_empty() { continue; } // Skip tile with wall
+        }
 
         if get_rng().gen_bool(item_gen_probability) {
-            item_list.append(gen_dungeon_item(mid.floor()), 1);
-            tile.item_list = Some(item_list);
+            map.locate_item(gen_dungeon_item(mid.floor()), p, 1);
         }
     }
     
