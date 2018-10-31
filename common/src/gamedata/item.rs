@@ -142,9 +142,8 @@ pub enum ArmorKind {
 }
 
 /// Data to generate an item.
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct ItemGen {
-    pub pos: Vec2d,
     pub id: String,
 }
 

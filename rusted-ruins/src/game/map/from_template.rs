@@ -63,7 +63,7 @@ pub fn set_boundary(map: &mut Map, t: &MapTemplateObject, floor: u32) {
 
 /// Generate items
 fn gen_items(map: &mut Map, t: &MapTemplateObject) {
-    for item_gen in &t.items {
+    for (pos, item_gen) in &t.items {
         let item = if let Some(item) = from_item_gen(item_gen) {
             item
         } else {
@@ -71,7 +71,7 @@ fn gen_items(map: &mut Map, t: &MapTemplateObject) {
         };
 
         // Locate item at the specified tile
-        map.locate_item(item, item_gen.pos, 1);
+        map.locate_item(item, *pos, 1);
     }
 }
 

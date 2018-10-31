@@ -25,7 +25,7 @@ pub struct MapTemplateObject {
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
     pub boundary: MapTemplateBoundary,
-    pub items: Vec<ItemGen>,
+    pub items: Vec<(Vec2d, ItemGen)>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
