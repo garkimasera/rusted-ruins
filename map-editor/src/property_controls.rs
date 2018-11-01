@@ -1,8 +1,11 @@
 
+use std::rc::Rc;
+use std::cell::Cell;
 use gtk;
 use gtk::prelude::*;
 use edit_map::EditingMap;
-use ui::Ui;
+use ui::{Ui, SelectedItem};
+use array2d::Vec2d;
 use common::maptemplate::MapTemplateBoundaryBehavior;
 
 #[derive(Clone)]
@@ -25,6 +28,10 @@ pub struct PropertyControls {
     pub boundary_w_next:   gtk::RadioButton,
     pub boundary_w_prev:   gtk::RadioButton, 
     pub boundary_w_region: gtk::RadioButton,
+    pub button_select_tile_mode: gtk::Button,
+    pub label_selected_tile: gtk::Label,
+    pub entry_item_id:     gtk::Entry,
+    pub selected_tile: Rc<Cell<Vec2d>>,
 }
 
 impl PropertyControls {
@@ -48,13 +55,16 @@ impl PropertyControls {
             boundary_w_next:   get_object!(builder, "property-boundary-w-next"),
             boundary_w_prev:   get_object!(builder, "property-boundary-w-prev"),
             boundary_w_region: get_object!(builder, "property-boundary-w-region"),
+            button_select_tile_mode: get_object!(builder, "button-select-tile-mode"),
+            label_selected_tile: get_object!(builder, "label-selected-tile"),
+            entry_item_id:     get_object!(builder, "entry-item-id"),
+            selected_tile: Rc::new(Cell::new(Vec2d::new(0, 0))),
         }
     }
 
     pub fn update(&self, map: &EditingMap) {
         self.map_id.set_text(&map.property.id);
         self.region_map.set_active(map.property.is_region_map);
-        println!("{:?}", map.property.boundary);
         match map.property.boundary.n {
             MapTemplateBoundaryBehavior::None      => { self.boundary_n_none.set_active(true); }
             MapTemplateBoundaryBehavior::NextFloor => { self.boundary_n_next.set_active(true); }
@@ -79,6 +89,11 @@ impl PropertyControls {
             MapTemplateBoundaryBehavior::PrevFloor => { self.boundary_w_prev.set_active(true); }
             MapTemplateBoundaryBehavior::RegionMap => { self.boundary_w_region.set_active(true); }
         }
+        if let Some(item_gen) = map.get_item(self.selected_tile.get()) {
+            self.entry_item_id.set_text(&item_gen.id);
+        } else {
+            self.entry_item_id.set_text("");
+        }
     }
 }
 
@@ -102,6 +117,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
     });
 
     connect_for_boundary_radio_bottons(ui);
+    connect_for_tile_edit_controls(ui);
 }
 
 fn connect_for_boundary_radio_bottons(ui: &Ui) {
@@ -203,3 +219,22 @@ fn connect_for_boundary_radio_bottons(ui: &Ui) {
     });
 }
 
+fn connect_for_tile_edit_controls(ui: &Ui) {
+    let uic = ui.clone();
+    ui.property_controls.button_select_tile_mode.connect_clicked(move |_| {
+        uic.selected_item.set(SelectedItem::SelectTile);
+    });
+    let uic = ui.clone();
+    ui.property_controls.entry_item_id.connect_changed(move |widget| {
+        if uic.get_signal_mode() {
+            let text = widget.get_text();
+            let item_gen = if text.is_none() || text.as_ref().unwrap() == ""  {
+                None
+            } else {
+                use common::gamedata::ItemGen;
+                Some(ItemGen { id: text.unwrap().to_owned() })
+            };
+            uic.map.borrow_mut().set_item(uic.property_controls.selected_tile.get(), item_gen);
+        }
+    });
+}

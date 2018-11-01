@@ -430,6 +430,14 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
             SelectedItem::Deco(idx) => {
                 ui.map.borrow_mut().set_deco(Vec2d::new(ix, iy), Some(idx));
             }
+            SelectedItem::SelectTile => {
+                ui.property_controls.selected_tile.set(Vec2d::new(ix, iy));
+                ui.property_controls.label_selected_tile.set_text(&format!(
+                    "Selected Tile ({}, {})", ix, iy));
+                ui.set_signal_mode(false);
+                ui.property_controls.update(&*ui.map.borrow());
+                ui.set_signal_mode(true);
+            }
         }
         ui.map_redraw();
     }
@@ -509,6 +517,6 @@ impl Ui {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum SelectedItem {
-    Tile(TileIdx), Wall(WallIdx), Deco(DecoIdx),
+    Tile(TileIdx), Wall(WallIdx), Deco(DecoIdx), SelectTile,
 }
 

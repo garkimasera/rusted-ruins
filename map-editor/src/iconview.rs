@@ -138,6 +138,7 @@ impl Ui {
             SelectedItem::Deco(idx) => {
                 format!("{} (deco)", gobj::idx_to_id(idx))
             }
+            _ => { return; },
         };
         self.label_selected_item.set_text(&new_text);
     }

@@ -3,7 +3,7 @@ use array2d::*;
 use common::basic::N_TILE_IMG_LAYER;
 use common::maptemplate::*;
 use common::objholder::*;
-use common::gamedata::TileLayers;
+use common::gamedata::{TileLayers, ItemGen};
 use common::gobj;
 use common::piece_pattern::*;
 
@@ -14,6 +14,7 @@ pub struct EditingMap {
     pub tile: Array2d<TileLayers>,
     pub wall: Array2d<WallIdxPP>,
     pub deco: Array2d<Option<DecoIdx>>,
+    pub items: Array2d<Vec<ItemGen>>,
 }
 
 impl EditingMap {
@@ -22,7 +23,8 @@ impl EditingMap {
         let wall = Array2d::new(width, height, WallIdxPP::default());
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
-        EditingMap { property, width, height, tile, wall, deco }
+        let items = Array2d::new(width, height, vec![]);
+        EditingMap { property, width, height, tile, wall, deco, items }
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
@@ -58,6 +60,18 @@ impl EditingMap {
 
     pub fn set_deco(&mut self, pos: Vec2d, deco: Option<DecoIdx>) {
         self.deco[pos] = deco;
+    }
+
+    pub fn set_item(&mut self, pos: Vec2d, item_gen: Option<ItemGen>) {
+        if let Some(item_gen) = item_gen {
+            self.items[pos] = vec![item_gen];
+        } else {
+            self.items[pos] = vec![];
+        }
+    }
+
+    pub fn get_item(&self, pos: Vec2d) -> Option<&ItemGen> {
+        self.items[pos].get(0)
     }
 
     pub fn erase(&mut self, pos: Vec2d) {
@@ -158,6 +172,15 @@ impl EditingMap {
             }
         }
 
+        // Create items
+        let mut items = Vec::new();
+        for (pos, item_gens) in self.items.iter_with_idx() {
+            for item_gen in item_gens {
+                items.push((pos, item_gen.clone()));
+            }
+        }
+        items.sort();
+
         MapTemplateObject {
             id: self.property.id.to_owned(),
             w: self.width,
@@ -169,7 +192,7 @@ impl EditingMap {
             deco_table: deco_table,
             deco: deco_map,
             boundary: self.property.boundary,
-            items: vec![],
+            items,
         }
     }
 }
@@ -208,6 +231,10 @@ impl From<MapTemplateObject> for EditingMap {
                 let deco_id = &obj.deco_table[i as usize];
                 map.deco[pos] = Some(gobj::id_to_idx(deco_id));
             }
+        }
+
+        for (pos, item_gen) in &obj.items {
+            map.set_item(*pos, Some(item_gen.clone()));
         }
 
         map.property.boundary = obj.boundary;
