@@ -113,7 +113,9 @@ impl ItemRank {
 /// Items can have zero or more attributes.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemAttribute {
-    
+    /// Data to generate the contents.
+    /// Used to fix generated contents when this item is opened.
+    ContentGen { level: u32, seed: u32 },
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
