@@ -219,7 +219,7 @@ impl Map {
             w: w, h: h,
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
-            player_pos: Vec2d::new(0, 0), entrance: Vec2d::new(0, 0),
+            player_pos: Vec2d(0, 0), entrance: Vec2d(0, 0),
             charaid: Vec::new(),
             outside_tile: None,
             boundary: MapBoundary::default(),
@@ -373,7 +373,7 @@ impl Map {
         let (w, h) = (self.w as i32, self.h as i32);
         let x = if pos.0 < 0 { 0 } else if pos.0 >= w { w - 1 } else { pos.0 };
         let y = if pos.1 < 0 { 0 } else if pos.1 >= h { h - 1 } else { pos.1 };
-        Vec2d::new(x, y)
+        Vec2d(x, y)
     }
 
     /// Search stairs that is connected to given floor

@@ -52,7 +52,7 @@ pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
     let edge_bias = [3.0, 1.5, 1.0, 0.5];
     for (i, b) in edge_bias.iter().enumerate() {
         let i = i as i32;
-        write_rect(&mut map, *b, Vec2d::new(i, i), Vec2d::new(size.0 - i - 1, size.1 - i - 1));
+        write_rect(&mut map, *b, Vec2d(i, i), Vec2d(size.0 - i - 1, size.1 - i - 1));
     }
 
     write_block(&mut map, 8, 1.0);
@@ -99,8 +99,8 @@ fn write_block(map: &mut Array2d<f32>, block_size: u32, weight: f32) {
 }
 
 fn write_rect(map: &mut Array2d<f32>, value: f32, top_left: Vec2d, bottom_right: Vec2d) {
-    let top_right = Vec2d::new(bottom_right.0, top_left.1);
-    let bottom_left = Vec2d::new(top_left.0, bottom_right.1);
+    let top_right = Vec2d(bottom_right.0, top_left.1);
+    let bottom_left = Vec2d(top_left.0, bottom_right.1);
 
     for p in LineIter::new(top_left, top_right) {
         map[p] = value;

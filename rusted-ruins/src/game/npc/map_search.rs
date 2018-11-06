@@ -77,6 +77,6 @@ pub fn dir_2pos(p1: Vec2d, p2: Vec2d) -> Direction {
 
 #[test]
 fn dir_2pos_test() {
-    assert_eq!(dir_2pos(Vec2d::new(1, 1), Vec2d::new(2, 2)), Direction::SE);
+    assert_eq!(dir_2pos(Vec2d(1, 1), Vec2d(2, 2)), Direction::SE);
 }
 

@@ -30,7 +30,7 @@ impl MainWinDrawer {
         MainWinDrawer {
             rect: rect,
             w: rect.width(), h: rect.height(),
-            topleft: Vec2d::new(0, 0),
+            topleft: Vec2d(0, 0),
             dx: 0, dy: 0,
         }
     }
@@ -117,7 +117,7 @@ impl MainWinDrawer {
         // Draw foreground parts
         for ny in tile_range.iter1() {
             for nx in tile_range.iter0() {
-                let p = Vec2d::new(nx, ny);
+                let p = Vec2d(nx, ny);
 
                 // Control the order of drawing foreground parts
                 // because foreground parts on player's original or destination tiles
@@ -367,7 +367,7 @@ impl MainWinDrawer {
         } else {
             center_p.1 - win_h / 2
         };
-        let top_left_tile = Vec2d::new(left / TILE_SIZE_I, top / TILE_SIZE_I);
+        let top_left_tile = Vec2d(left / TILE_SIZE_I, top / TILE_SIZE_I);
         self.dx = -left;
         self.dy = -top;
         self.topleft = top_left_tile;
@@ -401,7 +401,7 @@ impl MainWinDrawer {
     fn tile_range(&self) -> RectIter {
         let (nx, ny) = self.calc_tile_num();
         let top_left = self.topleft;
-        let bottom_right = Vec2d::new(nx + top_left.0, ny + top_left.1 + 1);
+        let bottom_right = Vec2d(nx + top_left.0, ny + top_left.1 + 1);
         RectIter::new(top_left, bottom_right)
     }
 }

@@ -419,19 +419,19 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
                 if ui.shift.get() {
-                    ui.map.borrow_mut().tile_layer_draw(Vec2d::new(ix, iy), idx, ui.current_layer.get());
+                    ui.map.borrow_mut().tile_layer_draw(Vec2d(ix, iy), idx, ui.current_layer.get());
                 } else {
-                    ui.map.borrow_mut().set_tile(Vec2d::new(ix, iy), idx, ui.current_layer.get());
+                    ui.map.borrow_mut().set_tile(Vec2d(ix, iy), idx, ui.current_layer.get());
                 }
             }
             SelectedItem::Wall(idx) => {
-                ui.map.borrow_mut().set_wall(Vec2d::new(ix, iy), Some(idx));
+                ui.map.borrow_mut().set_wall(Vec2d(ix, iy), Some(idx));
             }
             SelectedItem::Deco(idx) => {
-                ui.map.borrow_mut().set_deco(Vec2d::new(ix, iy), Some(idx));
+                ui.map.borrow_mut().set_deco(Vec2d(ix, iy), Some(idx));
             }
             SelectedItem::SelectTile => {
-                ui.property_controls.selected_tile.set(Vec2d::new(ix, iy));
+                ui.property_controls.selected_tile.set(Vec2d(ix, iy));
                 ui.property_controls.label_selected_tile.set_text(&format!(
                     "Selected Tile ({}, {})", ix, iy));
                 ui.set_signal_mode(false);
@@ -450,10 +450,10 @@ fn try_erase(ui: &Ui, pos: (f64, f64)) {
     }
     match ui.selected_item.get() {
         SelectedItem::Tile(_) => {
-            ui.map.borrow_mut().erase_layer(Vec2d::new(ix, iy), ui.current_layer.get());
+            ui.map.borrow_mut().erase_layer(Vec2d(ix, iy), ui.current_layer.get());
         }
         _ => {
-            ui.map.borrow_mut().erase(Vec2d::new(ix, iy));
+            ui.map.borrow_mut().erase(Vec2d(ix, iy));
         }
     }
     ui.map_redraw();

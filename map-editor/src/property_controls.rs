@@ -58,7 +58,7 @@ impl PropertyControls {
             button_select_tile_mode: get_object!(builder, "button-select-tile-mode"),
             label_selected_tile: get_object!(builder, "label-selected-tile"),
             entry_item_id:     get_object!(builder, "entry-item-id"),
-            selected_tile: Rc::new(Cell::new(Vec2d::new(0, 0))),
+            selected_tile: Rc::new(Cell::new(Vec2d(0, 0))),
         }
     }
 

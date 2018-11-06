@@ -113,7 +113,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     };
     
     for _ in 0..MAX_TRY {
-        let p = Vec2d::new(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
+        let p = Vec2d(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
         let tile = &map.tile[p];
 
         // Empty tile don't has wall, chara, and isn't special tile.

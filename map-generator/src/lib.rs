@@ -47,7 +47,7 @@ impl MapGenerator {
         let size = size.into();
         let map = GeneratedMap {
             size, tile: Array2d::new(size.0 as u32, size.1 as u32, TileKind::Floor),
-            entrance: Vec2d::new(0, 0),
+            entrance: Vec2d(0, 0),
             exit: None,
         };
         MapGenerator {
@@ -105,7 +105,7 @@ impl std::fmt::Display for GeneratedMap {
             for nx in 0..self.size.0 {
                 let c = if self.entrance == (nx, ny) {
                     '<'
-                }else if self.exit == Some(Vec2d::new(nx, ny)) {
+                }else if self.exit == Some(Vec2d(nx, ny)) {
                     '>'
                 }else{
                     match self.tile[(nx, ny)] {

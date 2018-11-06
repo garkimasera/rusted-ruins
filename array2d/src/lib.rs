@@ -343,7 +343,7 @@ impl RectIter {
         RectIter {
             top_left:     top_left,
             right_bottom: right_bottom,
-            value:        Vec2d::new(top_left.0 - 1, top_left.1),
+            value:        Vec2d(top_left.0 - 1, top_left.1),
         }
     }
 
@@ -353,7 +353,7 @@ impl RectIter {
         RectIter {
             top_left:     t,
             right_bottom: t,
-            value:        Vec2d::new(t.0 - 1, t.1),
+            value:        Vec2d(t.0 - 1, t.1),
         }
     }
 
@@ -431,10 +431,10 @@ impl Iterator for LineIter {
         
         let returnval = if self.slope_mode {
             let y = self.a * self.p as f64 + self.b as f64;
-            Vec2d::new(self.p, y.round() as i32)
+            Vec2d(self.p, y.round() as i32)
         }else{
             let x = self.a * self.p as f64 + self.b as f64;
-            Vec2d::new(x.round() as i32, self.p)
+            Vec2d(x.round() as i32, self.p)
         };
         self.p += self.dir;
         Some(returnval)
@@ -454,8 +454,8 @@ impl MDistRangeIter {
         assert!(r >= 0);
         let center = center.into();
 
-        let top_left = Vec2d::new(center.0 - r, center.1 - r);
-        let right_bottom = Vec2d::new(center.0 + r, center.1 + r);
+        let top_left = Vec2d(center.0 - r, center.1 - r);
+        let right_bottom = Vec2d(center.0 + r, center.1 + r);
 
         MDistRangeIter {
             center, r,
@@ -493,7 +493,7 @@ impl HDirection {
 
     #[inline]
     pub fn as_vec(&self) -> Vec2d {
-        Vec2d::new(self.as_int(), 0)
+        Vec2d(self.as_int(), 0)
     }
 
     #[inline]
@@ -524,7 +524,7 @@ impl VDirection {
 
     #[inline]
     pub fn as_vec(&self) -> Vec2d {
-        Vec2d::new(0, self.as_int())
+        Vec2d(0, self.as_int())
     }
 
     #[inline]
