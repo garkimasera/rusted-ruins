@@ -7,11 +7,11 @@ Welcome to Rusted Ruins! (version : $(version))
 # Message when moving on map
 #
 % exit-to-outside
-$(player) exits to outside.
+$(player) exited to outside.
 % enter-site
-$(player) enters $(site).
+$(player) entered $(site).
 % change-floor
-$(player) moves to the next floor.
+$(player) moved to the next floor.
 #
 # Message about character status
 #
