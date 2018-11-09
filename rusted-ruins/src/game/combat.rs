@@ -12,7 +12,7 @@ pub enum DamageKind {
     Poison,
 }
 
-/// Attack neighbor enemy by short range weapon or bare hands
+/// Attack neighbor enemy by short range weapon or martial arts
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     let skill_kind;
     
@@ -34,8 +34,8 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
             let defence_skill_level = target.skills.get(SkillKind::Defence);
             let defence_power = calc_defence_power(equip_def[Element::Physical], target.params.vit, defence_skill_level);
             (attack_power / defence_power) as i32
-        } else { // Attack by bare hands
-            skill_kind = SkillKind::BareHands;
+        } else { // Attack by martial arts
+            skill_kind = SkillKind::MartialArts;
             let weapon_skill_level = attacker.skills.get(skill_kind);
             let dice_result = rng::dice(1, weapon_skill_level as i32 / 3 + 1);
             let attack_power = calc_attack_power(dice_result, attacker.params.str, weapon_skill_level);

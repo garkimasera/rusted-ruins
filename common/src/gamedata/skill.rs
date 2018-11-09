@@ -6,7 +6,7 @@ use super::item::WeaponKind;
 #[serde(rename_all="snake_case")]
 pub enum SkillKind {
     Defence,
-    BareHands,
+    MartialArts,
     Weapon(WeaponKind),
 }
 

@@ -130,7 +130,7 @@ fn set_skill(chara: &mut Chara) {
     
     match ct.race {
         Race::Animal | Race::Bug | Race::Slime => {
-            chara.skills.set_skill_level(SkillKind::BareHands, ct.gen_level as u16 / 2 + 5)
+            chara.skills.set_skill_level(SkillKind::MartialArts, ct.gen_level as u16 / 2 + 5)
         }
         _ => (),
     }

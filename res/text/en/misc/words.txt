@@ -16,8 +16,8 @@ Asleep
 % !chara_status.poisoned
 Poisoned
 # SkillKind
-% !skill_kind.bare_hands
-Bare Hands
+% !skill_kind.martial_arts
+Martial Arts
 % !skill_kind.defence
 Defence
 # WeaponKind
