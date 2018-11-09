@@ -53,6 +53,8 @@ RUSTED_RUINS_APP_DIR=./res cargo run -p rusted-ruins
 
 Arrow keys - Move
 
+Enter key - Enter towns or dungeons, walk up/down stairs, and select an answer when talking.
+
 d - Drop items
 
 e - Eat an item
