@@ -13,7 +13,7 @@ Town (Example of created map by map-editor)
 
 ## Game Objective
 
-The player arrives a continent recently discovered continent where a lot of ruins remain. The player will explore ruins and fight against monsters. By collecting relics in ruins, the player can earn money and fame, and solve the mystery of the ruined nation.
+The player arrives at a recently discovered continent where a lot of ruins remain. The player will explore ruins and fight against monsters. By collecting relics in ruins, the player can earn money and fame, and solve the mystery of the ruined nation.
 
 ## Status
 This is a very early project. Many features for playing are not completed.
