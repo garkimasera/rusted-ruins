@@ -46,7 +46,7 @@ After that, clone this repository, download pak files, and run.
 git clone https://github.com/garkimasera/rusted-ruins.git
 cd rusted-ruins
 ./download-pak.sh
-RUSTED_RUINS_APP_DIR=./res cargo run -p rusted-ruins
+RUSTED_RUINS_APP_DIR=./res cargo run --release -p rusted-ruins
 ```
 
 ## Keys
