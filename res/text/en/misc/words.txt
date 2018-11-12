@@ -1,5 +1,7 @@
 # Words for specific enums
+#
 # DungeonKind
+#
 % !dungeon_kind.cave
 Cave
 % !dungeon_kind.ruin
@@ -15,12 +17,20 @@ Starving
 Asleep
 % !chara_status.poisoned
 Poisoned
+#
 # SkillKind
+#
+% !skill_kind.endurance
+Endurance
+% !skill_kind.healing
+Healing
 % !skill_kind.martial_arts
 Martial Arts
 % !skill_kind.defence
 Defence
+#
 # WeaponKind
+#
 % !weapon_kind.axe
 Axe
 % !weapon_kind.bow

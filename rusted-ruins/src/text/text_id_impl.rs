@@ -28,6 +28,8 @@ impl ToTextId for CharaStatus {
 impl ToTextId for SkillKind {
    fn to_textid(&self) -> &'static str {
        match self {
+           SkillKind::Endurance     => "!skill_kind.endurance",
+           SkillKind::Healing       => "!skill_kind.healing",
            SkillKind::MartialArts   => "!skill_kind.martial_arts",
            SkillKind::Defence       => "!skill_kind.defence",
            SkillKind::Weapon(weapon_kind) => {
