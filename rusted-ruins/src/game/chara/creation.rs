@@ -1,5 +1,6 @@
 
 use common::basic::WAIT_TIME_START;
+use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::*;
 use common::gobj;
@@ -7,7 +8,7 @@ use game::extrait::*;
 use rules::RULES;
 
 /// Create character from chara_template
-pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
+pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
     let max_hp = ct.max_hp;
@@ -37,7 +38,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
         hp: max_hp,
         status: Vec::new(),
         sp: RULES.chara.default_sp,
-        skills: SkillList::default(),
+        skills: gen_skill_list(ct, lv),
         rel: Relationship::NEUTRAL,
         trigger_talk: None,
     };
@@ -48,7 +49,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx) -> Chara {
 
 /// Create npc character from the race
 pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {    
-    let mut chara = create_chara(choose_npc_chara_template(dungeon, floor_level));
+    let mut chara = create_chara(choose_npc_chara_template(dungeon, floor_level), floor_level);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     return chara;
@@ -136,3 +137,14 @@ fn set_skill(chara: &mut Chara) {
     }
 }
 
+/// Generate skill list based on floor level and CharaTemplateObject
+fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32) -> SkillList {
+    let mut skill_list = SkillList::default();
+    let common_skills = &RULES.chara_gen.common_skills;
+
+    for skill_kind in common_skills {
+        skill_list.set_skill_level(*skill_kind, lv as u16)
+    }
+    
+    skill_list
+}

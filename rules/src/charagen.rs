@@ -5,7 +5,9 @@ use common::gamedata::*;
 /// Rules for character generation
 #[derive(Serialize, Deserialize)]
 pub struct CharaGen {
-    /// Items on a map is generated with a probability of 1/ item_gen_probability
+    /// List of skills all character must have
+    pub common_skills: Vec<SkillKind>,
+    /// Default equipment slots by race
     pub default_equip_slots: HashMap<Race, Vec<(EquipSlotKind, u8)>>,
 }
 

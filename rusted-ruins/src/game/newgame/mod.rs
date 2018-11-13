@@ -41,7 +41,7 @@ impl NewGameBuilder {
             super::region::gen_dungeon(&mut gd, mid.rid());
 
             let chara_template_id = &RULES.newgame.chara_template_table[&self.chara_class.unwrap()];
-            let mut chara = super::chara::creation::create_chara(gobj::id_to_idx(chara_template_id));
+            let mut chara = super::chara::creation::create_chara(gobj::id_to_idx(chara_template_id), 1);
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.unwrap());
             set_initial_skills(&mut chara);

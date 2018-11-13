@@ -7,7 +7,7 @@ use common::sitegen::*;
 /// Add unique citizens from SiteGenObject
 pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
     for uc in &sg.unique_citizens {
-        let mut chara = game::chara::creation::create_chara(gobj::id_to_idx(&uc.chara_template_id));
+        let mut chara = game::chara::creation::create_chara(gobj::id_to_idx(&uc.chara_template_id), 1);
         let mid = MapId::SiteMap { sid: sid, floor: uc.floor };
         chara.rel = ::common::gamedata::chara::Relationship::FRIENDLY;
         
