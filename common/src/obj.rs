@@ -43,7 +43,7 @@ pub struct CharaTemplateObject {
     pub gen_level: u32,
     /// Default AI kind for this character
     pub default_ai_kind: gamedata::NpcAIKind,
-    pub max_hp: i32,
+    pub base_hp: i32,
     pub str: u16,
     pub vit: u16,
     pub dex: u16,

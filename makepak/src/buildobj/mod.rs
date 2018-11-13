@@ -140,7 +140,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
         default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or(gamedata::NpcAIKind::None),
-        max_hp: chara_dep_input.max_hp,
+        base_hp: chara_dep_input.base_hp,
         str: chara_dep_input.str,
         vit: chara_dep_input.vit,
         dex: chara_dep_input.dex,

@@ -11,7 +11,7 @@ use rules::RULES;
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
-    let max_hp = ct.max_hp;
+    let max_hp = ct.base_hp;
 
     let base_params = CharaBaseParams {
         level: 1,

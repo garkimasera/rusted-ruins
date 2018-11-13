@@ -53,7 +53,7 @@ pub struct CharaTemplateDepInput {
     pub gen_weight: f32,
     pub gen_level: u32,
     pub default_ai_kind: Option<gamedata::NpcAIKind>,
-    pub max_hp: i32,
+    pub base_hp: i32,
     pub str: u16,
     pub vit: u16,
     pub dex: u16,
