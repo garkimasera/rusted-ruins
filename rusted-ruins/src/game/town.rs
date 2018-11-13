@@ -3,7 +3,6 @@ use array2d::Vec2d;
 use common::obj::SiteGenObject;
 use common::gamedata::*;
 use common::gobj;
-use rules::RULES;
 
 /// Create town from SiteGenObect and add it to region map
 pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {

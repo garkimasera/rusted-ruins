@@ -11,11 +11,8 @@ use rules::RULES;
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
-    let max_hp = ct.base_hp;
-
     let base_params = CharaBaseParams {
         level: 1,
-        max_hp: max_hp,
         str: ct.str,
         vit: ct.vit,
         dex: ct.dex,
@@ -35,15 +32,16 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_START,
         ai: create_ai(ct.default_ai_kind),
-        hp: max_hp,
+        hp: 1,
         status: Vec::new(),
         sp: RULES.chara.default_sp,
         skills: gen_skill_list(ct, lv),
         rel: Relationship::NEUTRAL,
         trigger_talk: None,
     };
-    super::update_params(&mut chara);
-    chara.hp = chara.base_params.max_hp;
+    
+    chara.update();
+    chara.hp = chara.params.max_hp;
     chara
 }
 

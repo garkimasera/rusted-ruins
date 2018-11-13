@@ -2,6 +2,7 @@
 pub mod creation;
 pub mod preturn;
 pub mod status;
+mod update;
 
 use common::gamedata::*;
 use rules::RULES;
@@ -15,6 +16,8 @@ pub trait CharaEx {
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: i32, cid: CharaId);
+    /// Update character parameters by its status
+    fn update(&mut self);
 }
 
 impl CharaEx for Chara {
@@ -62,6 +65,10 @@ impl CharaEx for Chara {
             }
         }
     }
+
+    fn update(&mut self) {
+        update::update_params(self);
+    }
 }
 
 pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) {
@@ -84,21 +91,5 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
             }
         }
     }
-}
-
-pub fn update_params_by_id(gd: &mut GameData, cid: CharaId) {
-    update_params(gd.chara.get_mut(cid));
-}
-
-pub fn update_params(chara: &mut Chara) {
-    chara.params.max_hp = chara.base_params.max_hp;
-    chara.params.str = chara.base_params.str;
-    chara.params.vit = chara.base_params.vit;
-    chara.params.dex = chara.base_params.dex;
-    chara.params.int = chara.base_params.int;
-    chara.params.wil = chara.base_params.wil;
-    chara.params.cha = chara.base_params.cha;
-    chara.params.spd = chara.base_params.spd;
-    chara.params.view_range = RULES.chara.default_view_range;
 }
 

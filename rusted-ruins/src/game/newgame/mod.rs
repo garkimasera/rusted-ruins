@@ -3,6 +3,7 @@ use common::gamedata;
 use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
+use super::extrait::*;
 use super::skill::SkillListEx;
 
 pub struct NewGameBuilder {
@@ -45,7 +46,7 @@ impl NewGameBuilder {
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.unwrap());
             set_initial_skills(&mut chara);
-            super::chara::update_params(&mut chara);
+            chara.update();
 
             gd.player.set_money(RULES.newgame.start_money as i64);
             

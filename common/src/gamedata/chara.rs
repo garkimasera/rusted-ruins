@@ -110,7 +110,6 @@ pub struct CharaParams {
 pub struct CharaBaseParams {
     /// Character level
     pub level: u16,
-    pub max_hp: i32,
     pub str: u16,
     pub vit: u16,
     pub dex: u16,
