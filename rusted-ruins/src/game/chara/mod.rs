@@ -13,7 +13,11 @@ use super::combat::DamageKind;
 
 /// Additional Chara method
 pub trait CharaEx {
+    /// Add exp to specified skill. This method should be used in this module only.
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
+    /// Add exp when this character attacks.
+    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u16);
+    /// Add exp when damaged.
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u16);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: i32, cid: CharaId);
@@ -30,6 +34,10 @@ impl CharaEx for Chara {
             game_log!("skill-level-up"; chara=self, skill=kind);
             self.update();
         }
+    }
+
+    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u16) {
+        self.add_skill_exp(kind, RULES.exp.attack, target_level);
     }
 
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u16) {
