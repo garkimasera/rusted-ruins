@@ -6,6 +6,8 @@ pub struct Exp {
     pub begin_adjust_coeff: isize,
     /// Coefficient to adjust exp by difference skill level between base level
     pub adjust_coeff: Vec<f32>,
+    /// All exp is multiplied by this value
+    pub base_factor: f32,
     /// Base exp to weapon skills after attacking
     pub attack: u32,
     /// Base exp to Endurance skill when attacked

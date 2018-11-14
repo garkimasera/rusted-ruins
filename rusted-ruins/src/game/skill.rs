@@ -2,6 +2,7 @@
 use fnv::FnvHashMap;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
+use rules::RULES;
 
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32);
@@ -20,7 +21,10 @@ impl SkillListEx for SkillList {
         } else {
             return (false, 0);
         };
-        let add_exp = (add_exp as f32 * search_adjust_coeff(base_level, skill_level)) as u32;
+        let add_exp = add_exp as f32 * search_adjust_coeff(base_level, skill_level);
+
+        // Multiply by base_factor
+        let add_exp = (add_exp * RULES.exp.base_factor) as u32;
 
         // Add exp
         if let Some(ref mut exp) = self.exp {
