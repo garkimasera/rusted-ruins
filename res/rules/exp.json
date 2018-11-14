@@ -2,5 +2,6 @@
 {
     "begin_adjust_coeff": -4,
     "adjust_coeff": [2.0, 1.75, 1.5, 1.25, 1.0, 0.5, 0.25, 0.125, 0.065, 0.03125, 0.015625],
-    "attack": 30
+    "attack": 30,
+    "endurance": 1000
 }

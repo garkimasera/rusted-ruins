@@ -14,6 +14,7 @@ use super::combat::DamageKind;
 /// Additional Chara method
 pub trait CharaEx {
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
+    fn add_damage_exp(&mut self, damage: i32, attacker_level: u16);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: i32, cid: CharaId);
     /// Update character parameters by its status
@@ -27,7 +28,14 @@ impl CharaEx for Chara {
         if result.0 { // If level up
             trace!("{} level up ({:?})", self.to_text(), kind);
             game_log!("skill-level-up"; chara=self, skill=kind);
+            self.update();
         }
+    }
+
+    fn add_damage_exp(&mut self, damage: i32, attacker_level: u16) {
+        let rel_damage = damage as f32 / self.params.max_hp as f32;
+        let exp = rel_damage * RULES.exp.endurance as f32;
+        self.add_skill_exp(SkillKind::Endurance, exp as u32, attacker_level);
     }
 
     fn add_sp(&mut self, v: i32, cid: CharaId) {

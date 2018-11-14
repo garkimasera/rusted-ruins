@@ -24,26 +24,29 @@ impl SkillListEx for SkillList {
 
         // Add exp
         if let Some(ref mut exp) = self.exp {
-            if let Some(skill_exp) = exp.get_mut(&kind) {
-                let is_level_up;
-                let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
-                    SKILL_EXP_LVUP as u32
-                } else {
-                    add_exp
-                };
-                let sum = *skill_exp as u32 + add_exp;
-                *skill_exp = if sum >= SKILL_EXP_LVUP.into() { // Level up
-                    if let Some(skill_level) = self.skills.get_mut(&kind) {
-                        *skill_level += 1;
-                    }
-                    is_level_up = true;
-                    0
-                } else {
-                    is_level_up = false;
-                    sum as u16
-                };
-                return (is_level_up, add_exp);
+            if exp.get_mut(&kind).is_none() {
+                exp.insert(kind, 0);
             }
+            
+            let mut skill_exp = exp.get_mut(&kind).unwrap();
+            let is_level_up;
+            let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
+                SKILL_EXP_LVUP as u32
+            } else {
+                add_exp
+            };
+            let sum = *skill_exp as u32 + add_exp;
+            *skill_exp = if sum >= SKILL_EXP_LVUP.into() { // Level up
+                if let Some(skill_level) = self.skills.get_mut(&kind) {
+                    *skill_level += 1;
+                }
+                is_level_up = true;
+                0
+            } else {
+                is_level_up = false;
+                sum as u16
+            };
+            return (is_level_up, add_exp);
         }
         (false, 0)
     }

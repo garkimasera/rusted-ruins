@@ -61,6 +61,11 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
             RULES.exp.attack,
             target_level);
     }
+    {
+        let attacker_level = game.gd.chara.get(attacker).base_params.level;
+        let target = game.gd.chara.get_mut(target);
+        target.add_damage_exp(damage, attacker_level);
+    }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
     // Sound effect
@@ -112,6 +117,11 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
             SkillKind::Weapon(weapon_kind),
             RULES.exp.attack,
             target_level);
+    }
+    {
+        let attacker_level = game.gd.chara.get(attacker).base_params.level;
+        let target = game.gd.chara.get_mut(target);
+        target.add_damage_exp(damage, attacker_level);
     }
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);
