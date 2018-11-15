@@ -8,7 +8,7 @@
             "animal": 0.2
         },
         "terrain": [
-            ["dirt", "dirt-wall"]
+            ["soil-1", "soil-wall-1"]
         ],
         "item_gen_probability": 0.02,
         "floor_range": [2, 3]
