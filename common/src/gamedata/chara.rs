@@ -108,8 +108,8 @@ pub struct CharaParams {
 /// Character base parameters
 #[derive(Serialize, Deserialize, Default)]
 pub struct CharaBaseParams {
-    /// Character level
-    pub level: u16,
+    /// Character level when generated
+    pub level: u32,
     pub str: u16,
     pub vit: u16,
     pub dex: u16,

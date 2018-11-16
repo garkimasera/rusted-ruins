@@ -12,7 +12,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
     let base_params = CharaBaseParams {
-        level: 1,
+        level: lv,
         str: ct.str,
         vit: ct.vit,
         dex: ct.dex,

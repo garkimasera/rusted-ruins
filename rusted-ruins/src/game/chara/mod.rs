@@ -14,11 +14,11 @@ use super::combat::DamageKind;
 /// Additional Chara method
 pub trait CharaEx {
     /// Add exp to specified skill. This method should be used in this module only.
-    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16);
+    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32);
     /// Add exp when this character attacks.
-    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u16);
+    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u32);
     /// Add exp when damaged.
-    fn add_damage_exp(&mut self, damage: i32, attacker_level: u16);
+    fn add_damage_exp(&mut self, damage: i32, attacker_level: u32);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: i32, cid: CharaId);
     /// Update character parameters by its status
@@ -26,7 +26,7 @@ pub trait CharaEx {
 }
 
 impl CharaEx for Chara {
-    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) {
+    fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) {
         let result = self.skills.add_exp(kind, add_exp, base_level);
         trace!("{} gains {} exp for {:?}", self.to_text(), result.1, kind);
         if result.0 { // If level up
@@ -36,11 +36,11 @@ impl CharaEx for Chara {
         }
     }
 
-    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u16) {
+    fn add_attack_exp(&mut self, kind: SkillKind, target_level: u32) {
         self.add_skill_exp(kind, RULES.exp.attack, target_level);
     }
 
-    fn add_damage_exp(&mut self, damage: i32, attacker_level: u16) {
+    fn add_damage_exp(&mut self, damage: i32, attacker_level: u32) {
         let rel_damage = damage as f32 / self.params.max_hp as f32;
         let exp = rel_damage * RULES.exp.endurance as f32;
         self.add_skill_exp(SkillKind::Endurance, exp as u32, attacker_level);

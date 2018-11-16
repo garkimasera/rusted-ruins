@@ -5,7 +5,7 @@ use common::gamedata::*;
 use rules::RULES;
 
 pub trait SkillListEx {
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32);
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32);
     fn learn_new_skill(&mut self, kind: SkillKind);
     fn set_skill_level(&mut self, kind: SkillKind, lv: u16);
 }
@@ -13,7 +13,7 @@ pub trait SkillListEx {
 impl SkillListEx for SkillList {
     /// Add exp to specified skill
     /// Returns level up result and actual added exp value
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u16) -> (bool, u32) {
+    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32) {
         if self.exp.is_none() { return (false, 0); }
         // Adjusting by base_level
         let skill_level = if let Some(skill_level) = self.skills.get(&kind) {
@@ -78,7 +78,7 @@ impl SkillListEx for SkillList {
     }
 }
 
-fn search_adjust_coeff(base_level: u16, skill_level: u16) -> f32 {
+fn search_adjust_coeff(base_level: u32, skill_level: u16) -> f32 {
     use rules::RULES;
     let diff = skill_level as isize - base_level as isize;
     let i = RULES.exp.begin_adjust_coeff - diff;
