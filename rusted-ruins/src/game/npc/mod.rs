@@ -35,8 +35,8 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
 /// Move npc at random
 fn random_walk(game: &mut Game, cid: CharaId) {
     let dir = Direction::new(
-        *get_rng().choose(&[HDirection::Left, HDirection::None, HDirection::Right]).unwrap(),
-        *get_rng().choose(&[VDirection::Up, VDirection::None, VDirection::Down]).unwrap());
+        *[HDirection::Left, HDirection::None, HDirection::Right].choose(&mut get_rng()).unwrap(),
+        *[VDirection::Up, VDirection::None, VDirection::Down].choose(&mut get_rng()).unwrap());
     action::try_move(game, cid, dir);
 }
 

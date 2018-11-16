@@ -4,7 +4,7 @@ use common::gamedata::*;
 use common::regiongen::*;
 use common::gobj;
 use super::map::choose_empty_tile;
-use rng::{self, Rng};
+use rng::*;
 
 pub fn add_region(gd: &mut GameData, id: &str) {
     let rg: &RegionGenObject = gobj::get_by_id(id);
@@ -49,7 +49,7 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
             }
         }
     };
-    let dungeon_kind = *rng::get_rng().choose(&[DungeonKind::Cave, DungeonKind::Ruin]).unwrap();
+    let dungeon_kind = *[DungeonKind::Cave, DungeonKind::Ruin].choose(&mut get_rng()).unwrap();
     
     super::dungeon_gen::add_dungeon_site(gd, dungeon_kind, pos);
     let region_map = gd.region.get_map_mut(MapId::from(rid));

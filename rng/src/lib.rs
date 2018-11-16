@@ -1,12 +1,15 @@
 //! Helper crate for using thread local and fast random number generator
 
 extern crate rand;
+extern crate rand_xorshift;
 
 use std::cell::RefCell;
-use rand::{SeedableRng, XorShiftRng};
-use rand::distributions::range::SampleRange;
+use rand::SeedableRng;
+use rand::distributions::uniform::{SampleUniform, SampleBorrow};
 use rand::{RngCore, thread_rng};
+use rand_xorshift::XorShiftRng;
 pub use rand::Rng;
+pub use rand::seq::SliceRandom;
 
 #[derive(Debug, Clone, Copy)]
 pub struct GameRng;
@@ -60,7 +63,7 @@ pub fn next_u32() -> u32 {
     rng.next_u32()
 }
 
-pub fn gen_range<T: PartialOrd + SampleRange>(low: T, high: T) -> T {
+pub fn gen_range<T: SampleUniform, B: SampleBorrow<T> + Sized>(low: B, high: B) -> T {
     let mut rng = GameRng;
     rng.gen_range(low, high)
 }

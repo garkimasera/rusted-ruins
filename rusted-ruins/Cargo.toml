@@ -12,7 +12,7 @@ serde = "1"
 serde_derive = "1"
 toml = "0.4"
 log = "0.4"
-env_logger = "0.5"
+env_logger = "0.6"
 walkdir = "2"
 
 [dependencies.rusted-ruins-array2d]

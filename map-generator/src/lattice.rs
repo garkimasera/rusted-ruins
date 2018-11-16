@@ -1,6 +1,7 @@
 
 use array2d::*;
 use rng::*;
+
 use super::{GeneratedMap, TileKind};
 
 pub struct Lattice {
@@ -147,7 +148,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
                 next_rooms.push(Dir::S);
             }
             // Random select which wall will be opened.
-            if let Some(next_room) = get_rng().choose(&next_rooms) {
+            if let Some(next_room) = next_rooms.choose(&mut get_rng()) {
                 match *next_room {
                     Dir::W => {
                         lattice.ew_open[(room.0 - 1, room.1)] = true;
@@ -209,7 +210,7 @@ fn random_walk(room: Vec2d,
         return;
     }
 
-    if let Some(next_room) = get_rng().choose(&next_rooms) {
+    if let Some(next_room) = next_rooms.choose(&mut get_rng()) {
         match *next_room {
             Dir::W => {
                 lattice.ew_open[(room.0 - 1, room.1)] = true;
