@@ -46,8 +46,10 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
 }
 
 /// Create npc character from the race
-pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {    
-    let mut chara = create_chara(choose_npc_chara_template(dungeon, floor_level), floor_level);
+pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
+    let idx = choose_npc_chara_template(dungeon, floor_level);
+    let ct = gobj::get_obj(idx);    
+    let mut chara = create_chara(idx, ct.gen_level);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     return chara;
