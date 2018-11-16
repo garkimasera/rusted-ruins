@@ -146,7 +146,7 @@ fn calc_equip_defence(gd: &GameData, cid: CharaId) -> ElementArray<u16> {
 }
 
 /// Calculate attack power
-fn calc_attack_power(dice: i32, chara_param: u16, skill_level: u16) -> f64 {
+fn calc_attack_power(dice: i32, chara_param: u16, skill_level: u32) -> f64 {
     assert!(dice > 0);
     assert!(chara_param > 0);
     let dice = dice as f64;
@@ -157,7 +157,7 @@ fn calc_attack_power(dice: i32, chara_param: u16, skill_level: u16) -> f64 {
 }
 
 /// Calculate defence power
-fn calc_defence_power(equip_def: u16, chara_param: u16, skill_level: u16) -> f64 {
+fn calc_defence_power(equip_def: u16, chara_param: u16, skill_level: u32) -> f64 {
     assert!(chara_param > 0);
     let equip_def = equip_def as f64;
     let chara_param = chara_param as f64;

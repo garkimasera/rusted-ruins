@@ -14,7 +14,7 @@ pub enum SkillKind {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SkillList {
-    pub skills: FnvHashMap<SkillKind, u16>,
+    pub skills: FnvHashMap<SkillKind, u32>,
     pub exp: Option<FnvHashMap<SkillKind, u16>>
 }
 
@@ -28,7 +28,7 @@ impl Default for SkillList {
 }
 
 impl SkillList {
-    pub fn get(&self, kind: SkillKind) -> u16 {
+    pub fn get(&self, kind: SkillKind) -> u32 {
         if let Some(skill) = self.skills.get(&kind) {
             *skill
         } else {

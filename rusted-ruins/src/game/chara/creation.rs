@@ -129,7 +129,7 @@ fn set_skill(chara: &mut Chara) {
     
     match ct.race {
         Race::Animal | Race::Bug | Race::Slime => {
-            chara.skills.set_skill_level(SkillKind::MartialArts, ct.gen_level as u16 / 2 + 5)
+            chara.skills.set_skill_level(SkillKind::MartialArts, ct.gen_level / 2 + 5)
         }
         _ => (),
     }
@@ -141,7 +141,7 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32) -> SkillList {
     let common_skills = &RULES.chara_gen.common_skills;
 
     for skill_kind in common_skills {
-        skill_list.set_skill_level(*skill_kind, lv as u16)
+        skill_list.set_skill_level(*skill_kind, lv)
     }
     
     skill_list

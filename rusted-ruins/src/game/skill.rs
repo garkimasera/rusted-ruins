@@ -7,7 +7,7 @@ use rules::RULES;
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32);
     fn learn_new_skill(&mut self, kind: SkillKind);
-    fn set_skill_level(&mut self, kind: SkillKind, lv: u16);
+    fn set_skill_level(&mut self, kind: SkillKind, lv: u32);
 }
 
 impl SkillListEx for SkillList {
@@ -73,12 +73,12 @@ impl SkillListEx for SkillList {
     }
     
     /// Set skill level directly. Do not add exp.
-    fn set_skill_level(&mut self, kind: SkillKind, lv: u16) {
+    fn set_skill_level(&mut self, kind: SkillKind, lv: u32) {
         self.skills.insert(kind, lv);
     }
 }
 
-fn search_adjust_coeff(base_level: u32, skill_level: u16) -> f32 {
+fn search_adjust_coeff(base_level: u32, skill_level: u32) -> f32 {
     use rules::RULES;
     let diff = skill_level as isize - base_level as isize;
     let i = RULES.exp.begin_adjust_coeff - diff;
