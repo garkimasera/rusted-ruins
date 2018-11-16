@@ -10,7 +10,7 @@ use common::gobj;
 use common::obj::TileKind;
 use text::ToText;
 use super::Game;
-use super::chara::creation::create_npc_chara;
+use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use rules::RULES;
 
