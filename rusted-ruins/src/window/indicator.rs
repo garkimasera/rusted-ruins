@@ -11,14 +11,13 @@ use sdlvalues::FontKind;
 
 pub struct HPIndicator {
     rect: Rect,
-    guage: GuageWidget,
+    guage: GaugeWidget,
     label: ImageWidget,
 }
 
 impl HPIndicator {
     pub fn new() -> HPIndicator {
         let rect: Rect = SCREEN_CFG.hp_indicator.into();
-        let color = UI_CFG.color.guage_hp;
 
         // Label is drawed over the guage
         let label_id = "!label-hp";
@@ -29,7 +28,8 @@ impl HPIndicator {
         
         HPIndicator {
             rect,
-            guage: GuageWidget::new(Rect::new(0, 0, rect.width(), rect.height()), 0.0, 1.0, color.into()),
+            guage: GaugeWidget::new(
+                Rect::new(0, 0, rect.width(), rect.height()), 0.0, 1.0, GaugeColorMode::Hp),
             label: ImageWidget::ui_img(label_rect, label_id),
         }
     }

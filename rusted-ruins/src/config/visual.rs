@@ -63,10 +63,10 @@ pub struct UIColorConfig {
     pub log_window_bg: CfgColor,
     pub log_font: CfgColor,
     pub normal_font: CfgColor,
-    pub guage_border_light: CfgColor,
-    pub guage_border_dark: CfgColor,
-    pub guage_bg: CfgColor,
-    pub guage_hp: CfgColor,
+    pub gauge_border_light: CfgColor,
+    pub gauge_border_dark: CfgColor,
+    pub gauge_bg: CfgColor,
+    pub gauge_hp: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]

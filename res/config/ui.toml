@@ -12,10 +12,10 @@ window_bg_highlight = { r=34, g=40, b=60 }
 log_window_bg = { r=20, g=4, b=4 }
 log_font = { r=250, g=250, b=250 }
 normal_font = { r=250, g=250, b=250 }
-guage_border_light = { r=229, g=211, b =4 }
-guage_border_dark = { r=153, g=116, b =20 }
-guage_bg = { r=7, g=7, b =7 }
-guage_hp = { r=237, g=47, b =37 }
+gauge_border_light = { r=229, g=211, b =4 }
+gauge_border_dark = { r=153, g=116, b =20 }
+gauge_bg = { r=7, g=7, b =7 }
+gauge_hp = { r=237, g=47, b =37 }
 
 [font]
 s = { size=11 }
