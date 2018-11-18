@@ -1,9 +1,11 @@
 
+use common::basic::SKILL_EXP_LVUP;
 use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
 use config::UI_CFG;
 use common::gamedata::*;
+use game::extrait::*;
 use text::ToText;
 use super::group_window::GroupWindow;
 use super::choose_window::PagedChooseWindow;
@@ -98,31 +100,51 @@ impl DialogWindow for StatusWindow {
 
 /// Character skill viewer
 pub struct SkillWindow {
-    choose_window: PagedChooseWindow,
+    rect: Rect,
+    /// Gauge widget to display skill level and exp
+    gauges: Vec<GaugeWidget>,
+    /// Skill name label
+    labels: Vec<LabelWidget>,
 }
 
 impl SkillWindow {
     pub fn new(gd: &GameData) -> SkillWindow {
         let rect: Rect = UI_CFG.skill_window.rect.into();
-        let chara = gd.chara.get(::common::gamedata::chara::CharaId::Player);
-        let mut choices: Vec<ListRow> = Vec::new();
-        for (skill_kind, level) in &chara.skills.skills {
-            let e = if let Some(exp) = chara.skills.exp.as_ref() {
-                if let Some(e) = exp.get(skill_kind) {
-                    *e
-                } else {
-                    0
-                }
-            } else {
-                0
-            };
-            let s = format!("{} {}  {}%", skill_kind.to_text(), level, e / 100);
-            choices.push(ListRow::Str(s));
-        }
-        let choose_window = PagedChooseWindow::new(
-            rect, choices, UI_CFG.skill_window.n_row, None);
+        let mut gauges: Vec<GaugeWidget> = Vec::new();
+        let mut labels: Vec<LabelWidget> = Vec::new();
         
-        SkillWindow { choose_window }
+        let chara = gd.chara.get(::common::gamedata::chara::CharaId::Player);
+        for (i, skill_kind) in chara.skills.skills.keys().enumerate() {
+            let (skill_level, exp) = chara.skills.get_level_exp(*skill_kind);
+            let i0 = i as i32 / UI_CFG.skill_window.n_row as i32;
+            let i1 = i as i32 % UI_CFG.skill_window.n_row as i32;
+
+            let pos_x = i0 * UI_CFG.skill_window.gauge_w;
+            let pos_y = i1 * UI_CFG.skill_window.gauge_h;
+
+            let mut label_rect: Rect = UI_CFG.skill_window.label_rect.into();
+            label_rect.offset(pos_x, pos_y);
+
+            let label_text = skill_kind.to_text();
+            let label = LabelWidget::new(label_rect, &label_text, FontKind::S);
+            labels.push(label);
+
+            let mut gauge_rect: Rect = UI_CFG.skill_window.gauge_rect.into();
+            gauge_rect.offset(pos_x, pos_y);
+
+            let level_text = format!("{}", skill_level);
+
+            let mut gauge = GaugeWidget::with_label(
+                gauge_rect, 0.0, 1.0, GaugeColorMode::Exp, &level_text);
+            gauge.set_value(exp as f32 / SKILL_EXP_LVUP as f32);
+            gauges.push(gauge);
+        }
+        
+        SkillWindow {
+            rect,
+            gauges,
+            labels,
+        }
     }
 }
 
@@ -131,15 +153,21 @@ impl Window for SkillWindow {
         &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
         anim: Option<(&Animation, u32)>) {
 
-        self.choose_window.draw(canvas, game, sv, anim);
+        draw_rect_border(canvas, self.rect);
+        for w in &mut self.gauges {
+            w.draw(canvas, sv);
+        }
+        for w in &mut self.labels {
+            w.draw(canvas, sv);
+        }
     }
 }
 
 impl DialogWindow for SkillWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match self.choose_window.process_command(&command, pa) {
-            DialogResult::Close => DialogResult::Close,
-            _ => DialogResult::Continue
+        match *command {
+            Command::Cancel => DialogResult::Close,
+            _ => DialogResult::Continue,
         }
     }
 

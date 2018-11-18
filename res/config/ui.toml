@@ -16,6 +16,7 @@ gauge_border_light = { r=229, g=211, b =4 }
 gauge_border_dark = { r=153, g=116, b =20 }
 gauge_bg = { r=7, g=7, b =7 }
 gauge_hp = { r=237, g=47, b =37 }
+gauge_exp = { r=153, g=153, b=117 }
 
 [font]
 s = { size=11 }
@@ -83,7 +84,12 @@ money_label_rect = { x = 5, y = 5 }
 
 [skill_window]
 rect = { x = -999, y = -999, w = 200, h = 200 }
+gauge_rect = { x = 80, y = 2, w = 50, h = 15 }
+label_rect = { x = 5, y = 2, w = 80, h = 15 }
+gauge_w = 140
+gauge_h = 24
 n_row = 10
+n_column = 3
 
 [page_window]
 rect = { x = -999, y = 0, w = 40, h = 22 }

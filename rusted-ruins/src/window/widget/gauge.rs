@@ -16,7 +16,7 @@ pub struct GaugeWidget {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum GaugeColorMode {
-    Hp,
+    Hp, Exp,
 }
 
 impl GaugeColorMode {
@@ -24,6 +24,12 @@ impl GaugeColorMode {
         match self {
             GaugeColorMode::Hp => Colors {
                 bar: UI_CFG.color.gauge_hp.into(),
+                bg: UI_CFG.color.gauge_bg.into(),
+                border_light: UI_CFG.color.border_light.into(),
+                border_dark: UI_CFG.color.border_dark.into(),
+            },
+            GaugeColorMode::Exp => Colors {
+                bar: UI_CFG.color.gauge_exp.into(),
                 bg: UI_CFG.color.gauge_bg.into(),
                 border_light: UI_CFG.color.border_light.into(),
                 border_dark: UI_CFG.color.border_dark.into(),
@@ -64,6 +70,10 @@ impl GaugeWidget {
         self.max = max;
         self.min = min;
     }
+
+    pub fn set_value(&mut self, value: f32) {
+        self.value = value;
+    }
 }
 
 impl WidgetTrait for GaugeWidget {
@@ -77,7 +87,7 @@ impl WidgetTrait for GaugeWidget {
         let value = if self.value >= self.min { self.value } else { self.min };
         let bar_width =
             ((self.rect.w - 4) as f32 * ((value - self.min) / (self.max - self.min))) as u32;
-        let bar_rect = Rect::new(2, 2, bar_width, self.rect.height() - 2);
+        let bar_rect = Rect::new(self.rect.x + 2, self.rect.y + 2, bar_width, self.rect.height() - 2);
 
         canvas.set_draw_color(self.colors.bar);
         check_draw!(canvas.fill_rect(bar_rect));

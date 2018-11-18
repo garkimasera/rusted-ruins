@@ -8,6 +8,7 @@ pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32);
     fn learn_new_skill(&mut self, kind: SkillKind);
     fn set_skill_level(&mut self, kind: SkillKind, lv: u32);
+    fn get_level_exp(&self, kind: SkillKind) -> (u32, u16);
 }
 
 impl SkillListEx for SkillList {
@@ -75,6 +76,29 @@ impl SkillListEx for SkillList {
     /// Set skill level directly. Do not add exp.
     fn set_skill_level(&mut self, kind: SkillKind, lv: u32) {
         self.skills.insert(kind, lv);
+    }
+
+    /// Get (skill_level, exp)
+    fn get_level_exp(&self, kind: SkillKind) -> (u32, u16) {
+        if !self.skills.contains_key(&kind) {
+            return (0, 0);
+        }
+
+        if let Some(skill_level) = self.skills.get(&kind) {
+            let skill_level = *skill_level;
+            let exp = if let Some(exp) = self.exp.as_ref() {
+                if let Some(exp) = exp.get(&kind) {
+                    *exp
+                } else {
+                    0
+                }
+            } else {
+                0
+            };
+            (skill_level, exp)
+        } else {
+            (0, 0)
+        }
     }
 }
 

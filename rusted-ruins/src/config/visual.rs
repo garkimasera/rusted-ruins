@@ -67,6 +67,7 @@ pub struct UIColorConfig {
     pub gauge_border_dark: CfgColor,
     pub gauge_bg: CfgColor,
     pub gauge_hp: CfgColor,
+    pub gauge_exp: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]
@@ -174,7 +175,12 @@ pub struct GameInfoWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct SkillWindowConfig {
     pub rect: CfgRect,
+    pub label_rect: CfgRect,
+    pub gauge_rect: CfgRect,
+    pub gauge_w: i32,
+    pub gauge_h: i32,
     pub n_row: u32,
+    pub n_column: u32,
 }
 
 #[derive(Debug, Deserialize)]
