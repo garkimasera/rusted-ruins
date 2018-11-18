@@ -6,6 +6,7 @@ use common::gamedata::*;
 use common::gobj;
 use game::extrait::*;
 use rules::RULES;
+use rng::gen_range;
 
 /// Create character from chara_template
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
@@ -76,11 +77,11 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
     }
 
     // Choose one chara
-    if sum == 0.0 {
+    if !(sum > 0.0) {
         return CharaTemplateIdx(first_available_ct_idx
                                 .expect("Any appropriate chara_template not found") as u32);
     }
-    let r = ::rng::gen_range(0.0, sum);
+    let r = gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {
