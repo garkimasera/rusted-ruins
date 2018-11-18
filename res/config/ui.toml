@@ -84,8 +84,8 @@ money_label_rect = { x = 5, y = 5 }
 
 [skill_window]
 rect = { x = -999, y = -999, w = 200, h = 200 }
-gauge_rect = { x = 80, y = 2, w = 50, h = 15 }
-label_rect = { x = 5, y = 2, w = 80, h = 15 }
+gauge_rect = { x = 80, y = 2, w = 50, h = 18 }
+label_rect = { x = 5, y = 2, w = 80, h = 18 }
 gauge_w = 140
 gauge_h = 24
 n_row = 10

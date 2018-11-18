@@ -60,7 +60,7 @@ impl GaugeWidget {
         GaugeWidget {
             rect,
             colors: mode.colors(),
-            label: Some(LabelWidget::bordered(rect, text, FontKind::MonoM)),
+            label: Some(LabelWidget::bordered(rect, text, FontKind::MonoM).centering()),
             value: min, min, max,
         }
     }

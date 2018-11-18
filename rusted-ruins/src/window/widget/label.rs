@@ -12,6 +12,7 @@ pub struct LabelWidget {
     font: FontKind,
     wrap_w: Option<u32>,
     is_bordered: bool,
+    centering: bool,
 }
 
 impl LabelWidget {
@@ -21,6 +22,7 @@ impl LabelWidget {
         LabelWidget {
             rect, cache, font,
             wrap_w: None, is_bordered: false,
+            centering: false,
         }
     }
 
@@ -30,6 +32,7 @@ impl LabelWidget {
         LabelWidget {
             rect, cache, font,
             wrap_w: None, is_bordered: true,
+            centering: false,
         }
     }
 
@@ -39,6 +42,7 @@ impl LabelWidget {
         LabelWidget {
             rect, cache, font,
             wrap_w: Some(w), is_bordered: false,
+            centering: false,
         }
     }
 
@@ -73,6 +77,11 @@ impl LabelWidget {
     pub fn set_rect(&mut self, rect: Rect) {
         self.rect = rect;
     }
+
+    pub fn centering(mut self) -> LabelWidget {
+        self.centering = true;
+        self
+    }
 }
 
 impl WidgetTrait for LabelWidget {
@@ -83,7 +92,14 @@ impl WidgetTrait for LabelWidget {
 
         let w = tex.query().width;
         let h = tex.query().height;
-        let dest = Rect::new(self.rect.x + UI_CFG.label_widget.left_margin, self.rect.y, w, h);
+        let dest = if self.centering {
+            Rect::new(
+                self.rect.x + (self.rect.w - w as i32) / 2,
+                self.rect.y + (self.rect.h - h as i32) / 2,
+                w, h)
+        } else {
+            Rect::new(self.rect.x + UI_CFG.label_widget.left_margin, self.rect.y, w, h)
+        };
         
         check_draw!(canvas.copy(tex, None, dest));
         
