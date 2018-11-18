@@ -11,7 +11,9 @@ use super::unknown_id_err;
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all="snake_case")]
 pub enum Race {
-    Animal, Devil, Human, Bug, Phantom, Slime,
+    Animal, Human, Bug, Slime,
+    Devil, Phantom,
+    Ghost,
 }
 
 /// Character classes

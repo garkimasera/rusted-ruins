@@ -5,7 +5,8 @@
         "npc_race_probability": {
             "bug": 0.4,
             "slime": 0.4,
-            "animal": 0.2
+            "animal": 0.2,
+            "ghost": 0.4
         },
         "terrain": [
             ["soil-1", "soil-wall-1"]
@@ -17,7 +18,8 @@
         "map_size": [32, 32],
         "npc_race_probability": {
             "bug": 0.5,
-            "slime": 0.5
+            "slime": 0.5,
+            "ghost": 0.6
         },
         "terrain": [
             ["concrete-rust", "concrete-rust-wall"]
