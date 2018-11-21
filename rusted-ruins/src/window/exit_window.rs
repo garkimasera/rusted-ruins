@@ -19,9 +19,17 @@ impl ExitWindow {
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+        let choose_win = ChooseWindow::new(
+            winpos,
+            vec![
+                text::ui_txt("dialog.choice.save_game").to_owned(),
+                text::ui_txt("dialog.choice.exit_game").to_owned(),
+                text::ui_txt("dialog.choice.close").to_owned(),
+            ],
+            Some(0));
         ExitWindow {
-            text_win: text_win,
-            choose_win: ChooseWindow::with_yesno(winpos, None),
+            text_win,
+            choose_win,
         }
     }
 }
@@ -55,8 +63,9 @@ impl DialogWindow for ExitWindow {
             DialogResult::CloseWithValue(v) => { // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 match n {
-                    0 => { return DialogResult::Quit }
-                    1 => { return DialogResult::Close }
+                    0 => { unimplemented!() }
+                    1 => { return DialogResult::Quit }
+                    2 => { return DialogResult::Close }
                     _ => panic!(),
                 }
             }
