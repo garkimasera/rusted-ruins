@@ -36,6 +36,7 @@ macro_rules! load_config_file {
 pub fn init() {
     use lazy_static::initialize;
     initialize(&APP_DIR);
+    initialize(&USER_DIR);
     initialize(&CONFIG);
     initialize(&SCREEN_CFG);
     initialize(&UI_CFG);
@@ -45,6 +46,7 @@ pub fn init() {
 
 lazy_static! {
     pub static ref APP_DIR: PathBuf = get_app_dir().expect("Cannot get data directory path");
+    pub static ref USER_DIR: PathBuf = get_user_dir();
     pub static ref ADDON_DIR: Option<PathBuf> = get_addon_dir();
     pub static ref CONFIG: Config = load_config_file!("config.toml");
     pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!("screen/800x600.toml");
@@ -76,6 +78,12 @@ fn get_app_dir() -> Option<PathBuf> {
         return Some(cdir);
     }
     None
+}
+
+fn get_user_dir() -> PathBuf {
+    let mut path = dirs::data_dir().expect("Failed to get user data diractory");
+    path.push(basic::APP_DIR_NAME);
+    path
 }
 
 /// Get addon directory

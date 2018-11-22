@@ -18,6 +18,7 @@ extern crate log as applog;
 extern crate env_logger;
 extern crate toml;
 extern crate walkdir;
+extern crate dirs;
 
 #[macro_use]
 mod error;

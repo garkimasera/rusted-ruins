@@ -24,6 +24,7 @@ pub const WAIT_TIME_START: u32 = 10000;
 pub const SKILL_EXP_LVUP: u16 = 10000;
 
 // Path settings
+pub const APP_DIR_NAME: &'static str = "rusted-ruins";
 pub const CFG_FILES_DIR: &'static str = "config";
 pub const OBJ_TXT_DIR: &'static str = "obj";
 pub const LOG_TXT_DIR: &'static str = "log";
