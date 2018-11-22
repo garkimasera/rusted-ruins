@@ -22,8 +22,10 @@ mod script;
 mod eval_expr;
 pub mod shop;
 mod dungeon_gen;
+mod saveload;
 
 use std::borrow::Cow;
+use std::path::Path;
 use array2d::Vec2d;
 use common::gamedata::*;
 pub use self::command::Command;

@@ -63,7 +63,10 @@ impl DialogWindow for ExitWindow {
             DialogResult::CloseWithValue(v) => { // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 match n {
-                    0 => { unimplemented!() }
+                    0 => {
+                        pa.game().save_file();
+                        return DialogResult::Close;
+                    }
                     1 => { return DialogResult::Quit }
                     2 => { return DialogResult::Close }
                     _ => panic!(),

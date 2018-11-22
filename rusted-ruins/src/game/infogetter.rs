@@ -7,6 +7,9 @@ use game::extrait::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {
+    /// Get player's name
+    fn player_name(&self) -> &str;
+    /// Get player's position
     fn player_pos(&self) -> Vec2d;
     /// Get player's (maxhp, hp)
     fn player_hp(&self) -> (i32, i32);
@@ -27,6 +30,10 @@ pub trait InfoGetter {
 }
 
 impl InfoGetter for GameData {
+    fn player_name(&self) -> &str {
+        self.chara.get(CharaId::Player).name.as_ref().expect("player's name is None")
+    }
+    
     fn player_pos(&self) -> Vec2d {
         self.get_current_map().chara_pos(CharaId::Player).expect("Internal Error: Player position undefined")
     }

@@ -10,6 +10,7 @@ extern crate log;
 #[macro_use]
 extern crate bitflags;
 extern crate rusted_ruins_array2d as array2d;
+extern crate serde_cbor;
 extern crate rmp;
 extern crate rmp_serde as rmps;
 extern crate tar;
@@ -25,6 +26,7 @@ pub mod pakutil;
 pub mod gamedata;
 pub mod maptemplate;
 pub mod regiongen;
+pub mod saveload;
 pub mod script;
 pub mod sitegen;
 pub mod piece_pattern;
