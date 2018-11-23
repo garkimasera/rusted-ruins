@@ -6,21 +6,21 @@ use serde_cbor::from_reader;
 use gamedata::*;
 
 impl GameData {
-    pub fn save_file<P: AsRef<Path>>(&self, path: P) -> Result<(), ()> {
+    pub fn save_file<P: AsRef<Path>>(&self, path: P) -> Result<(), String> {
         if cfg!(debug_assertions) {
             print_save_data_size(self); // Debug code for save file size optimization
         }
         
-        let mut file = File::create(path).unwrap();
-        to_writer_packed(&mut file, &self).unwrap();
+        let mut file = File::create(path).map_err(|e| e.to_string())?;
+        to_writer_packed(&mut file, &self).map_err(|e| e.to_string())?;
 
         Ok(())
     }
 
-    pub fn load_file<P: AsRef<Path>>(path: P) -> Result<GameData, ()> {
-        let file = File::open(path).unwrap();
+    pub fn load_file<P: AsRef<Path>>(path: P) -> Result<GameData, String> {
+        let file = File::open(path).map_err(|e| e.to_string())?;
 
-        Ok(from_reader(&file).unwrap())
+        from_reader(&file).map_err(|e| e.to_string())
     }
 }
 

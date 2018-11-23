@@ -24,8 +24,10 @@ impl Game {
 
         let path = save_dir.join(save_file_name);
         
-        self.gd.save_file(&path);
-        info!("Saved to {:?}", path.to_string_lossy())
+        match self.gd.save_file(&path) {
+            Ok(_) => info!("Saved to {:?}", path.to_string_lossy()),
+            Err(e) => warn!("Faild to saving to {:?}: {}", path.to_string_lossy(), e),
+        }
     }
 
     pub fn load_file<P: AsRef<Path>>(path: P) -> Game {
