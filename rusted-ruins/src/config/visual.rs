@@ -40,6 +40,7 @@ pub struct UIConfig {
     pub msg_dialog: MsgDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
     pub newgame_dialog: NewGameDialogConfig,
+    pub choose_save_file_dialog: ChooseSaveFileDialogConfig,
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
@@ -131,6 +132,12 @@ pub struct TextInputDialogConfig {
 #[derive(Debug, Deserialize)]
 pub struct NewGameDialogConfig {
     pub explanation_text_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ChooseSaveFileDialogConfig {
+    pub rect: CfgRect,
+    pub list_size: u32,
 }
 
 #[derive(Debug, Deserialize)]

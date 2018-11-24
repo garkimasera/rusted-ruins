@@ -1,8 +1,13 @@
 
+use std::ffi::OsStr;
+use std::path::PathBuf;
+use common::gamedata::GameData;
 use config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
+use super::winpos::WindowPos;
 use super::SpecialDialogResult;
+use super::choose_window::PagedChooseWindow;
 use text;
 
 pub struct StartWindow {
@@ -72,6 +77,69 @@ impl DialogWindow for StartDialog {
             return DialogResult::Continue;
         }
         
+        DialogResult::Continue
+    }
+
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
+    }
+}
+
+pub struct ChooseSaveFileDialog {
+    choose_window: PagedChooseWindow,
+    save_files: Vec<PathBuf>,
+}
+
+impl ChooseSaveFileDialog {
+    pub fn new() -> ChooseSaveFileDialog {
+        let save_files = ::game::saveload::save_file_list().expect("Error at reading save file directory");
+        
+        let file_name_list: Vec<ListRow> = save_files
+            .iter()
+            .map(|path| path.file_stem().unwrap_or(OsStr::new("")).to_string_lossy().into_owned())
+            .map(|filename| ListRow::Str(filename))
+            .collect();
+        
+        ChooseSaveFileDialog {
+            choose_window: PagedChooseWindow::new(
+                UI_CFG.choose_save_file_dialog.rect.into(),
+                file_name_list,
+                UI_CFG.choose_save_file_dialog.list_size,
+                None
+            ),
+            save_files,
+        }
+    }
+}
+
+impl Window for ChooseSaveFileDialog {
+    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
+            anim: Option<(&Animation, u32)>) {
+        
+        self.choose_window.draw(canvas, game, sv, anim);
+    }
+}
+
+impl DialogWindow for ChooseSaveFileDialog {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match self.choose_window.process_command(&command, pa) {
+            DialogResult::Close => { return DialogResult::Close; }
+            DialogResult::CloseWithValue(v) => {
+                let i = *v.downcast::<u32>().unwrap() as usize;
+
+                match GameData::load_file(&self.save_files[i]) {
+                    Ok(o) => {
+                        return DialogResult::Special(SpecialDialogResult::NewGameStart(o));
+                    }
+                    Err(e) => {
+                        warn!("Failed to load a save file: {}", e);
+                        return DialogResult::Continue;
+                    }
+                }
+            }
+            _ => (),
+        }
+
         DialogResult::Continue
     }
 

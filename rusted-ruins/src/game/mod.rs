@@ -22,7 +22,7 @@ mod script;
 mod eval_expr;
 pub mod shop;
 mod dungeon_gen;
-mod saveload;
+pub mod saveload;
 
 use std::borrow::Cow;
 use std::path::Path;

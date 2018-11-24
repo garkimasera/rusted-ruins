@@ -358,10 +358,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     }
                     // Load game from saved data
                     SpecialDialogResult::StartDialogLoadGame => {
-                        info!("Load game");
+                        self.window_stack.push(Box::new(start_window::ChooseSaveFileDialog::new()));
+                    }
+                    // Load from file
+                    SpecialDialogResult::NewGameStart(gd) => {
+                        info!("Load game from file");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
-                        let game = Game::load_file("test.rrsve");
+
+                        let game = Game::new(gd);
                         self.game = game;
                         self.game.update_before_player_turn();
                         game_log_i!("start"; version="0.0.1");
