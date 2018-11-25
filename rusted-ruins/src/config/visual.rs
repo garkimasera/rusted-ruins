@@ -69,6 +69,8 @@ pub struct UIColorConfig {
     pub gauge_bg: CfgColor,
     pub gauge_hp: CfgColor,
     pub gauge_exp: CfgColor,
+    pub tab_select_border_light: CfgColor,
+    pub tab_select_border_dark: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]

@@ -12,6 +12,12 @@ pub const PIECE_SIZE_I: i32 = TILE_SIZE_I / 2;
 pub const MAX_WALL_HEIGHT: u32 = 80;
 /// Icon size
 pub const ICON_SIZE: u32 = 24;
+/// Tab icon width
+pub const TAB_ICON_W: u32 = 48;
+/// Tab icon height
+pub const TAB_ICON_H: u32 = 32;
+/// Tab text height
+pub const TAB_TEXT_H: u32 = 16;
 
 /// Maximum number of items on one tile
 pub const MAX_ITEM_TILE: usize = 256;

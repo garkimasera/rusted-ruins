@@ -1,5 +1,6 @@
 
 use common::basic::SKILL_EXP_LVUP;
+use common::gobj;
 use super::commonuse::*;
 use super::widget::*;
 use sdlvalues::FontKind;
@@ -7,21 +8,25 @@ use config::UI_CFG;
 use common::gamedata::*;
 use game::extrait::*;
 use text::ToText;
-use super::group_window::GroupWindow;
+use super::group_window::*;
 use super::choose_window::PagedChooseWindow;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
 
 pub fn create_status_window_group(game: &Game) -> GroupWindow {
-    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, create_members)
-}
-
-fn create_members(game: &Game, i: usize) -> Box<DialogWindow> {
-    match i {
-        0 => Box::new(StatusWindow::new(&game.gd)),
-        1 => Box::new(SkillWindow::new(&game.gd)),
-        _ => unreachable!(),
-    }
+    let mem_info = vec![
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-chara-stats"),
+            text_id: "tab_text.chara_stats",
+            creator: |game| Box::new(StatusWindow::new(&game.gd)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-chara-skills"),
+            text_id: "tab_text.chara_skills",
+            creator: |game| Box::new(SkillWindow::new(&game.gd)),
+        },
+    ];
+    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, mem_info)
 }
 
 /// Character status viewer

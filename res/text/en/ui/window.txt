@@ -1,0 +1,4 @@
+% tab_text.chara_stats
+Stats
+% tab_text.chara_skills
+Skills
