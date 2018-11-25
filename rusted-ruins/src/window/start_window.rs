@@ -5,7 +5,6 @@ use common::gamedata::GameData;
 use config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
-use super::winpos::WindowPos;
 use super::SpecialDialogResult;
 use super::choose_window::PagedChooseWindow;
 use text;

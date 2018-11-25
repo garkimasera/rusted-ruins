@@ -29,14 +29,6 @@ impl Game {
             Err(e) => warn!("Faild to saving to {:?}: {}", path.to_string_lossy(), e),
         }
     }
-
-    pub fn load_file<P: AsRef<Path>>(path: P) -> Game {
-        let gd = GameData::load_file(path).unwrap();
-
-        let mut game = Game::empty();
-        game.gd = gd;
-        game
-    }
 }
 
 pub fn save_file_list() -> Result<Vec<PathBuf>, ::std::io::Error> {

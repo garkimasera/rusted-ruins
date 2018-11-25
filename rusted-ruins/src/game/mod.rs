@@ -25,7 +25,6 @@ mod dungeon_gen;
 pub mod saveload;
 
 use std::borrow::Cow;
-use std::path::Path;
 use array2d::Vec2d;
 use common::gamedata::*;
 pub use self::command::Command;

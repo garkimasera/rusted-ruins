@@ -9,7 +9,6 @@ use common::gamedata::*;
 use game::extrait::*;
 use text::ToText;
 use super::group_window::*;
-use super::choose_window::PagedChooseWindow;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
 
@@ -155,8 +154,8 @@ impl SkillWindow {
 
 impl Window for SkillWindow {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
+        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
+        _anim: Option<(&Animation, u32)>) {
 
         draw_rect_border(canvas, self.rect);
         for w in &mut self.gauges {
@@ -169,7 +168,7 @@ impl Window for SkillWindow {
 }
 
 impl DialogWindow for SkillWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         match *command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
