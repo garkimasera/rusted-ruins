@@ -4,20 +4,20 @@ use common::obj::CharaTemplateObject;
 use common::gobj;
 use rules::RULES;
 
-/// Update character parameters by its status
-pub fn update_params(chara: &mut Chara) {
+/// Update character attributes by its status
+pub fn update_attributes(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.template);
     
-    chara.params.max_hp = calc_max_hp(chara, ct);
+    chara.attr.max_hp = calc_max_hp(chara, ct);
     
-    chara.params.str = chara.base_params.str;
-    chara.params.vit = chara.base_params.vit;
-    chara.params.dex = chara.base_params.dex;
-    chara.params.int = chara.base_params.int;
-    chara.params.wil = chara.base_params.wil;
-    chara.params.cha = chara.base_params.cha;
-    chara.params.spd = chara.base_params.spd;
-    chara.params.view_range = RULES.chara.default_view_range;
+    chara.attr.str = chara.base_attr.str;
+    chara.attr.vit = chara.base_attr.vit;
+    chara.attr.dex = chara.base_attr.dex;
+    chara.attr.int = chara.base_attr.int;
+    chara.attr.wil = chara.base_attr.wil;
+    chara.attr.cha = chara.base_attr.cha;
+    chara.attr.spd = chara.base_attr.spd;
+    chara.attr.view_range = RULES.chara.default_view_range;
 }
 
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {

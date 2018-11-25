@@ -33,7 +33,7 @@ pub fn search_nearest_target(gd: &GameData, center_cid: CharaId, rel: Relationsh
             continue;
         };
 
-        if visual_distance <= chara.params.view_range && visual_distance < min_distance {
+        if visual_distance <= chara.attr.view_range && visual_distance < min_distance {
             target_cid = Some(*cid);
             min_distance = visual_distance;
         }

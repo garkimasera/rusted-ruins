@@ -57,7 +57,7 @@ pub fn update_view_map(game: &mut Game) {
     view_map.fill(w, h, false); // Fill by false
 
     let player_pos = game.gd.player_pos();
-    let player_view_range = game.gd.chara.get(CharaId::Player).params.view_range;
+    let player_view_range = game.gd.chara.get(CharaId::Player).attr.view_range;
 
     view_map.visible[player_pos] = true;
 

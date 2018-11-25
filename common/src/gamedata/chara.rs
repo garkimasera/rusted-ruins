@@ -64,8 +64,8 @@ impl Relationship {
 #[derive(Serialize, Deserialize)]
 pub struct Chara {
     pub name: Option<String>,
-    pub params: CharaParams,
-    pub base_params: CharaBaseParams,
+    pub attr: CharaAttributes,
+    pub base_attr: CharaBaseAttributes,
     pub template: CharaTemplateIdx,
     pub class: CharaClass,
     pub item_list: ItemList,
@@ -82,11 +82,11 @@ pub struct Chara {
     pub trigger_talk: Option<String>,
 }
 
-/// Character parameters
+/// Character attributes
 /// These values are calculated from base params and other factors
 /// They are updated by some actions
 #[derive(Serialize, Deserialize, Default)]
-pub struct CharaParams {
+pub struct CharaAttributes {
     /// Max HP
     pub max_hp: i32,
     /// Strength
@@ -107,9 +107,9 @@ pub struct CharaParams {
     pub view_range: i32,
 }
 
-/// Character base parameters
+/// Character base attributes
 #[derive(Serialize, Deserialize, Default)]
-pub struct CharaBaseParams {
+pub struct CharaBaseAttributes {
     /// Character level when generated
     pub level: u32,
     pub str: u16,
@@ -138,8 +138,8 @@ impl Default for Chara {
     fn default() -> Chara {
         Chara {
             name: None,
-            params: CharaParams::default(),
-            base_params: CharaBaseParams::default(),
+            attr: CharaAttributes::default(),
+            base_attr: CharaBaseAttributes::default(),
             template: CharaTemplateIdx(0),
             class: CharaClass::default(),
             item_list: ItemList::new(),

@@ -51,19 +51,19 @@ impl StatusWindow {
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
         let name_label = LabelWidget::new(cfg.name_label_rect, &chara.to_text(), FontKind::M);
         let hp_label = LabelWidget::new(
-            cfg.hp_label_rect, &format!("HP  {} / {}", chara.hp, chara.params.max_hp), FontKind::MonoM);
+            cfg.hp_label_rect, &format!("HP  {} / {}", chara.hp, chara.attr.max_hp), FontKind::MonoM);
         let str_label = LabelWidget::new(
-            cfg.str_label_rect, &format!("STR  {}", chara.params.str), FontKind::MonoM);
+            cfg.str_label_rect, &format!("STR  {}", chara.attr.str), FontKind::MonoM);
         let vit_label = LabelWidget::new(
-            cfg.vit_label_rect, &format!("VIT  {}", chara.params.vit), FontKind::MonoM);
+            cfg.vit_label_rect, &format!("VIT  {}", chara.attr.vit), FontKind::MonoM);
         let dex_label = LabelWidget::new(
-            cfg.dex_label_rect, &format!("DEX  {}", chara.params.dex), FontKind::MonoM);
+            cfg.dex_label_rect, &format!("DEX  {}", chara.attr.dex), FontKind::MonoM);
         let int_label = LabelWidget::new(
-            cfg.int_label_rect, &format!("INT  {}", chara.params.int), FontKind::MonoM);
+            cfg.int_label_rect, &format!("INT  {}", chara.attr.int), FontKind::MonoM);
         let wil_label = LabelWidget::new(
-            cfg.wil_label_rect, &format!("WIL  {}", chara.params.wil), FontKind::MonoM);
+            cfg.wil_label_rect, &format!("WIL  {}", chara.attr.wil), FontKind::MonoM);
         let cha_label = LabelWidget::new(
-            cfg.cha_label_rect, &format!("CHA  {}", chara.params.cha), FontKind::MonoM);
+            cfg.cha_label_rect, &format!("CHA  {}", chara.attr.cha), FontKind::MonoM);
         StatusWindow {
             rect,
             image, name_label, hp_label,

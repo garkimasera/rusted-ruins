@@ -30,17 +30,17 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
             
             let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
             let weapon_skill_level = attacker.skills.get(skill_kind);
-            let attack_power = calc_attack_power(dice_result, attacker.params.str, weapon_skill_level);
+            let attack_power = calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level);
             let defence_skill_level = target.skills.get(SkillKind::Defence);
-            let defence_power = calc_defence_power(equip_def[Element::Physical], target.params.vit, defence_skill_level);
+            let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
             (attack_power / defence_power) as i32
         } else { // Attack by martial arts
             skill_kind = SkillKind::MartialArts;
             let weapon_skill_level = attacker.skills.get(skill_kind);
             let dice_result = rng::dice(1, weapon_skill_level as i32 / 3 + 1);
-            let attack_power = calc_attack_power(dice_result, attacker.params.str, weapon_skill_level);
+            let attack_power = calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level);
             let defence_skill_level = target.skills.get(SkillKind::Defence);
-            let defence_power = calc_defence_power(equip_def[Element::Physical], target.params.vit, defence_skill_level);
+            let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
             (attack_power / defence_power) as i32
         }
     };
@@ -54,12 +54,12 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     super::chara::damage(game, target, damage, DamageKind::MeleeAttack);
     // Exp processing
     {
-        let target_level = game.gd.chara.get(target).base_params.level;
+        let target_level = game.gd.chara.get(target).base_attr.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.add_attack_exp(skill_kind, target_level);
     }
     {
-        let attacker_level = game.gd.chara.get(attacker).base_params.level;
+        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
         let target = game.gd.chara.get_mut(target);
         target.add_damage_exp(damage, attacker_level);
     }
@@ -91,9 +91,9 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
         
         let weapon_skill_level = attacker.skills.get(SkillKind::Weapon(weapon_kind));
-        let attack_power = calc_attack_power(dice_result, attacker.params.dex, weapon_skill_level);
+        let attack_power = calc_attack_power(dice_result, attacker.attr.dex, weapon_skill_level);
         let defence_skill_level = target.skills.get(SkillKind::Defence);
-        let defence_power = calc_defence_power(equip_def[Element::Physical], target.params.vit, defence_skill_level);
+        let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
         let damage = (attack_power / defence_power) as i32;
         
         (damage, weapon_kind, attacker_pos, target_pos)
@@ -108,12 +108,12 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     super::chara::damage(game, target, damage, DamageKind::RangedAttack);
     // Exp processing
     {
-        let target_level = game.gd.chara.get(target).base_params.level;
+        let target_level = game.gd.chara.get(target).base_attr.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.add_attack_exp(SkillKind::Weapon(weapon_kind), target_level);
     }
     {
-        let attacker_level = game.gd.chara.get(attacker).base_params.level;
+        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
         let target = game.gd.chara.get_mut(target);
         target.add_damage_exp(damage, attacker_level);
     }

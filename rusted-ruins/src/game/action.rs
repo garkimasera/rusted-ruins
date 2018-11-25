@@ -81,7 +81,7 @@ fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
         MedicalEffect::None => (),
         MedicalEffect::Heal => {
             use std::cmp::min;
-            chara.hp = min(chara.params.max_hp, chara.hp + eff);
+            chara.hp = min(chara.attr.max_hp, chara.hp + eff);
             game_log!("heal-hp"; chara=chara, value=eff);
         }
         MedicalEffect::Sleep => {

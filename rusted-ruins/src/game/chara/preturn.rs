@@ -33,7 +33,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     if is_poisoned {
         let damage = {
             let chara = game.gd.chara.get_mut(cid);
-            let damage = chara.params.max_hp / 20;
+            let damage = chara.attr.max_hp / 20;
             game_log!("poison-damage"; chara=chara, damage=damage);
             damage
         }; // TODO: This block may be unnecessary with NLL

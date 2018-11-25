@@ -41,7 +41,7 @@ impl CharaEx for Chara {
     }
 
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u32) {
-        let rel_damage = damage as f32 / self.params.max_hp as f32;
+        let rel_damage = damage as f32 / self.attr.max_hp as f32;
         let exp = rel_damage * RULES.exp.endurance as f32;
         self.add_skill_exp(SkillKind::Endurance, exp as u32, attacker_level);
     }
@@ -83,7 +83,7 @@ impl CharaEx for Chara {
     }
 
     fn update(&mut self) {
-        update::update_params(self);
+        update::update_attributes(self);
     }
 }
 

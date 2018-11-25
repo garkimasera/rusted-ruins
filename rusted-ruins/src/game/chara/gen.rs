@@ -12,7 +12,7 @@ use rng::gen_range;
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
-    let base_params = CharaBaseParams {
+    let base_attr = CharaBaseAttributes {
         level: lv,
         str: ct.str,
         vit: ct.vit,
@@ -25,8 +25,8 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     
     let mut chara = Chara {
         name: None,
-        params: CharaParams::default(),
-        base_params: base_params,
+        attr: CharaAttributes::default(),
+        base_attr,
         template: chara_template_idx,
         class: CharaClass::Civilian,
         item_list: ItemList::new(),
@@ -42,7 +42,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     };
     
     chara.update();
-    chara.hp = chara.params.max_hp;
+    chara.hp = chara.attr.max_hp;
     chara
 }
 

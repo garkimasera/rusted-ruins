@@ -40,7 +40,7 @@ impl InfoGetter for GameData {
     
     fn player_hp(&self) -> (i32, i32) {
         let player =self.chara.get(CharaId::Player);
-        (player.params.max_hp, player.hp)
+        (player.attr.max_hp, player.hp)
     }
 
     fn player_item_location(&self, id: &str) -> Option<ItemLocation> {

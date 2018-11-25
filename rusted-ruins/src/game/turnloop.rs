@@ -84,7 +84,7 @@ pub fn turn_loop(game: &mut Game) {
 
 /// Returns true if chara's wait_time becomes 0
 fn decrease_wait_time(chara: &mut Chara) -> bool {
-    let spd = chara.params.spd as u32;
+    let spd = chara.attr.spd as u32;
 
     if chara.wait_time < spd {
         if spd < WAIT_TIME_START {
