@@ -18,6 +18,8 @@ The player arrives at a recently discovered continent where a lot of ruins remai
 ## Status
 This is a very early project. Many features for playing are not completed.
 
+Binary format of pak files and save files may be changed before version 1.0.
+
 ## Design
 
 * 2D graphics.
@@ -59,9 +61,13 @@ d - Drop items
 
 e - Eat an item
 
+f - Shot
+
+g - Pick up items
+
 i - View inventory
 
-p - Pick up items
+o - Open game information window
 
 q - Drink an item
 
@@ -70,8 +76,6 @@ s - Open status window
 t - Targetting mode
 
 w - Open equipment window
-
-f - Shot
 
 escape - Open exit window
 
