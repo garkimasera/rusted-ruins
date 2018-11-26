@@ -96,7 +96,7 @@ pub fn build_ui(application: &gtk::Application) {
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
         map: Rc::new(RefCell::new(EditingMap::new("newmap", 16, 16))),
-        selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx(0)))),
+        selected_item: Rc::new(Cell::new(SelectedItem::Tile(TileIdx::default()))),
         drag_mode: Rc::new(Cell::new(DragMode::None)),
         filepath: Rc::new(RefCell::new(None)),
         signal_mode: Rc::new(Cell::new(true)),

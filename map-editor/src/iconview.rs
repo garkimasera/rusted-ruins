@@ -106,21 +106,21 @@ fn update_liststore(ui: &Ui) {
         liststore_tile.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(TileIdx(i as u32)).icon, &tile.id]);
+            &[&pbh.get(TileIdx::from_usize(i)).icon, &tile.id]);
     }
     let liststore_wall = &ui.iconview.liststore_wall;
     for (i, wall) in objholder.wall.iter().enumerate() {
         liststore_wall.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(WallIdx(i as u32)).icon, &wall.id]);
+            &[&pbh.get(WallIdx::from_usize(i)).icon, &wall.id]);
     }
     let liststore_deco = &ui.iconview.liststore_deco;
     for (i, deco) in objholder.deco.iter().enumerate() {
         liststore_deco.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(DecoIdx(i as u32)).icon, &deco.id]);
+            &[&pbh.get(DecoIdx::from_usize(i)).icon, &deco.id]);
     }
 }
 

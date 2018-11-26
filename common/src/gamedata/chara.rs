@@ -140,7 +140,7 @@ impl Default for Chara {
             name: None,
             attr: CharaAttributes::default(),
             base_attr: CharaBaseAttributes::default(),
-            template: CharaTemplateIdx(0),
+            template: CharaTemplateIdx::default(),
             class: CharaClass::default(),
             item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),

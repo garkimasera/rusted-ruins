@@ -1,24 +1,27 @@
 
 use obj::*;
 use pakutil::load_objs_dir;
+use std::num::NonZeroU32;
 use std::path::Path;
+
+const NON_ZERO_U32_1: NonZeroU32 = unsafe { NonZeroU32::new_unchecked(1) };
 
 macro_rules! impl_idx {
     ($idx:ident, $obj:ty, $mem:ident) => {
         impl ObjectIndex for $idx {
             type ObjectType = $obj;
             fn get_obj_from_objholder<'a>(&self, objholder: &'a ObjectHolder) -> &'a $obj {
-                &objholder.$mem[self.0 as usize]
+                &objholder.$mem[self.as_usize()]
             }
 
             fn to_id<'a>(&self, objholder: &'a ObjectHolder) -> &'a str {
-                &objholder.$mem[self.0 as usize].id
+                &objholder.$mem[self.as_usize()].id
             }
 
             fn search_idx(id: &str, objholder: &ObjectHolder) -> Option<$idx> {
                 for (i, ref o) in (&objholder.$mem).into_iter().enumerate() {
                     if o.id == id {
-                        return Some($idx(i as u32));
+                        return Some($idx::from_usize(i));
                     }
                 }
                 None
@@ -41,22 +44,35 @@ macro_rules! impl_idx {
         impl Holder<$idx> for ObjectHolder {
             type ReturnType = $obj;
             fn get<'a>(&'a self, idx: $idx) -> &'a $obj {
-                &self.$mem[idx.0 as usize]
+                &self.$mem[idx.as_usize()]
             }
         }
 
         impl Default for $idx {
+            #[inline(always)]
             fn default() -> $idx {
-                $idx(0)
+                $idx(NON_ZERO_U32_1)
             }
         }
 
         impl $idx {
+            /// Return inner value as usize
+            #[inline(always)]
+            pub fn as_usize(self) -> usize {
+                self.0.get() as usize - 1
+            }
+
+            /// Creae from usize
+            #[inline(always)]
+            pub fn from_usize(i: usize) -> Self {
+                $idx(unsafe { NonZeroU32::new_unchecked((i + 1) as u32) })
+            }
+
+            #[inline(always)]
             pub fn is_default(self) -> bool {
-                self.0 == 0
+                self.0 == NON_ZERO_U32_1
             }
         }
-            
     }
 }
 
@@ -102,7 +118,7 @@ macro_rules! impl_objholder {
         // Index type is an integer type that represents object index in ObjectHolder
         $(
             #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-            pub struct $idx(pub u32);
+            pub struct $idx(NonZeroU32);
 
             impl_idx!($idx, $obj, $mem);
         )*

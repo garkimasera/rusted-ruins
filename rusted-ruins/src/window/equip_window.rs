@@ -55,7 +55,7 @@ impl EquipWindow {
                 } else {
                     rows.push(ListRow::IconIconStr(
                         esk_icon,
-                        IconIdx::Item(::common::objholder::ItemIdx(0)),
+                        IconIdx::Item(::common::objholder::ItemIdx::default()),
                         "-".to_owned()));
                 }
                 slots.push((esk, esk_i));

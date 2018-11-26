@@ -41,7 +41,7 @@ macro_rules! impl_pixbuf_holder {
             impl Holder<$idx> for PixbufHolder {
                 type ReturnType = PixbufSet;
                 fn get(&self, idx: $idx) -> &PixbufSet {
-                    &self.$mem[idx.0 as usize]
+                    &self.$mem[idx.as_usize()]
                 }
             }
         )*

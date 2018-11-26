@@ -78,8 +78,8 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
 
     // Choose one chara
     if !(sum > 0.0) {
-        return CharaTemplateIdx(first_available_ct_idx
-                                .expect("Any appropriate chara_template not found") as u32);
+        return CharaTemplateIdx::from_usize(first_available_ct_idx
+                                            .expect("Any appropriate chara_template not found"));
     }
     let r = gen_range(0.0, sum);
     let mut sum = 0.0;
@@ -87,12 +87,12 @@ fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTem
         if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
             if r < sum {
-                return CharaTemplateIdx(i as u32);
+                return CharaTemplateIdx::from_usize(i);
             }
         }
     }
 
-    CharaTemplateIdx(first_available_ct_idx.unwrap() as u32)
+    CharaTemplateIdx::from_usize(first_available_ct_idx.unwrap())
 }
 
 struct CalcLevelWeightDist {

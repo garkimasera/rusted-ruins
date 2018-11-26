@@ -48,11 +48,11 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(floor_level: u32, mu
     for (i, item) in items.iter().enumerate() {
         sum += weight_dist.calc(item.gen_level) * item.gen_weight as f64 * f(item);
         if r < sum {
-            return ItemIdx(i as u32);
+            return ItemIdx::from_usize(i);
         }
     }
 
-    ItemIdx(first_available_item_idx.unwrap() as u32)
+    ItemIdx::from_usize(first_available_item_idx.unwrap())
 }
 
 struct CalcLevelWeightDist {
