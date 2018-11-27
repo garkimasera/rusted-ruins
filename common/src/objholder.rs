@@ -26,6 +26,14 @@ macro_rules! impl_idx {
                 }
                 None
             }
+
+            fn as_raw_int(&self) -> u32 {
+                self.0.get()
+            }
+
+            fn from_raw_int(i: u32) -> Option<Self> {
+                Some($idx(NonZeroU32::new(i)?))
+            }
         }
 
         impl FromId for $obj {
@@ -146,6 +154,8 @@ pub trait ObjectIndex: Sized {
     fn get_obj_from_objholder<'a>(&self, objholder: &'a ObjectHolder) -> &'a Self::ObjectType;
     fn to_id<'a>(&self, objholder: &'a ObjectHolder) -> &'a str;
     fn search_idx(id: &str, objholder: &ObjectHolder) -> Option<Self>;
+    fn as_raw_int(&self) -> u32;
+    fn from_raw_int(i: u32) -> Option<Self>;
 }
 
 pub trait FromId {
