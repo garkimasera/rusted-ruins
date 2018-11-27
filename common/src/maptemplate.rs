@@ -90,32 +90,22 @@ impl<T> ConvertableIndex for T where T: ObjectIndex + Default {
 #[cfg(feature="global_state_obj")]
 impl<T> IdxWithPiecePattern<T> where T: ObjectIndex + Default {
     pub fn conv_into(self, table: &Vec<String>) -> ConvertedIdxPP {
-        if !self.is_empty() {
-            let cidx = self.idx.conv_into(table);
-            ConvertedIdxPP {
-                idx: cidx,
-                piece_pattern: self.piece_pattern
-            }
+        if let Some((idx, pp)) = self.get() {
+            let cidx = idx.conv_into(table);
+            let mut c = ConvertedIdxPP::from_raw_int(cidx + 1);
+            c.set_piece_pattern(pp);
+            c
         } else {
-            ConvertedIdxPP {
-                idx: 0,
-                piece_pattern: PiecePattern::EMPTY,
-            }
+            ConvertedIdxPP::default()
         }
     }
 
     pub fn conv_from(c: ConvertedIdxPP, table: &Vec<String>) -> IdxWithPiecePattern<T> {
         if !c.is_empty() {
-            let idx = T::conv_from(c.idx, table);
-            IdxWithPiecePattern {
-                idx: idx,
-                piece_pattern: c.piece_pattern,
-            }
+            let idx = T::conv_from(c.as_raw_int() - 1, table);
+            IdxWithPiecePattern::with_piece_pattern(idx, c.piece_pattern())
         } else {
-            IdxWithPiecePattern {
-                idx: T::default(),
-                piece_pattern: PiecePattern::EMPTY,
-            }
+            IdxWithPiecePattern::default()
         }
     }
 }

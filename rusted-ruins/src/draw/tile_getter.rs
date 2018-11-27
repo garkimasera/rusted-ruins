@@ -82,10 +82,7 @@ impl ForegroundDrawInfo {
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
                 if let Some(wall_idx) = outside_tile.wall {
-                    WallIdxPP {
-                        idx: wall_idx,
-                        piece_pattern: PiecePattern::SURROUNDED,
-                    }
+                    WallIdxPP::new(wall_idx)
                 } else {
                     WallIdxPP::default()
                 }
@@ -93,7 +90,7 @@ impl ForegroundDrawInfo {
                 let nearest_pos = map.nearest_existent_tile(pos);
                 let mut wallpp = map.observed_tile[nearest_pos].wall;
                 if !wallpp.is_empty() {
-                    adjust_pattern_from_nearest(&mut wallpp.piece_pattern, pos, nearest_pos);
+                    adjust_pattern_from_nearest(&mut wallpp.piece_pattern(), pos, nearest_pos);
                 }
                 wallpp
             }

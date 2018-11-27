@@ -32,12 +32,8 @@ pub struct TileLayers(pub [TileIdxPP; N_TILE_IMG_LAYER]);
 
 impl Default for TileLayers {
     fn default() -> TileLayers {
-        let tile = TileIdxPP {
-            idx: TileIdx::default(),
-            piece_pattern: PiecePattern::EMPTY,
-        };
-        let mut tile_layers = [tile; N_TILE_IMG_LAYER];
-        tile_layers[0].piece_pattern = PiecePattern::SURROUNDED;
+        let mut tile_layers = [TileIdxPP::default(); N_TILE_IMG_LAYER];
+        tile_layers[0] = TileIdxPP::new(TileIdx::default());
         TileLayers(tile_layers)
     }
 }
@@ -45,7 +41,7 @@ impl Default for TileLayers {
 impl From<TileIdx> for TileLayers {
     fn from(tile_idx: TileIdx) -> TileLayers {
         let mut overlapped_tile = TileLayers::default();
-        overlapped_tile[0].idx = tile_idx;
+        overlapped_tile[0] = TileIdxPP::new(tile_idx);
         overlapped_tile
     }
 }
@@ -67,9 +63,7 @@ impl TileLayers {
     pub fn main_tile(&self) -> TileIdx {
         let mut idx: Option<TileIdx> = None;
         for t in &self.0 {
-            if !t.is_empty() {
-                idx = Some(t.idx);
-            }
+            idx = t.idx();
         }
         if let Some(idx) = idx {
             idx
@@ -353,10 +347,7 @@ impl Map {
         }
         if let Some(outside_tile) = self.outside_tile {
             if let Some(idx) = outside_tile.wall {
-                WallIdxPP {
-                    idx: idx,
-                    piece_pattern: PiecePattern::SURROUNDED,
-                }
+                WallIdxPP::new(idx)
             } else {
                 WallIdxPP::default()
             }

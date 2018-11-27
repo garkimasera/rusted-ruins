@@ -75,10 +75,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
                     let wall_obj = gobj::get_obj(wall);
                     piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
-                map.tile[p].wall = WallIdxPP {
-                    idx: wall,
-                    piece_pattern: piece_pattern,
-                };
+                map.tile[p].wall = WallIdxPP::with_piece_pattern(wall, piece_pattern);
             },
             _ => (),
         }

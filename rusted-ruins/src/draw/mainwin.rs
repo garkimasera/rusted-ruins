@@ -163,9 +163,10 @@ impl MainWinDrawer {
         if let Some(t) = di.tile { // Draw tile
             for i in 0..N_TILE_IMG_LAYER {
                 if t[i].is_empty() { continue; }
-                let obj = gobj::get_obj(t[i].idx);
-                let tex = sv.tex().get(t[i].idx);
-                self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern);
+                let idx = t[i].idx().unwrap();
+                let obj = gobj::get_obj(idx);
+                let tex = sv.tex().get(idx);
+                self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern());
             }
         }
         if let Some(special_tile_idx) = di.special { // Draw tile special
@@ -193,7 +194,7 @@ impl MainWinDrawer {
         if let Some(wall_idx) = di.wallpp.idx() { // Draw wall
             let obj = gobj::get_obj(wall_idx);
             let tex = sv.tex().get(wall_idx);
-            self.draw_pieces(canvas, tex, obj, p, di.wallpp.piece_pattern);
+            self.draw_pieces(canvas, tex, obj, p, di.wallpp.piece_pattern());
         }
 
         if let Some(deco_idx) = di.deco { // Draw decoration

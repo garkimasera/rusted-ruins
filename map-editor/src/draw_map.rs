@@ -31,13 +31,19 @@ pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,
                 if !layer_visible[i_tile] {
                     continue;
                 }
-                // Draw tile
-                draw_pieces(cr, pbh, map.tile[p][i_tile].idx, map.tile[p][i_tile].piece_pattern, ix, iy);
+                if let Some((idx, pp)) = map.tile[p][i_tile].get() {
+                    // Draw tile
+                    draw_pieces(cr, pbh, idx, pp, ix, iy);
+                }
             }
 
             // Draw wall
             if !map.wall[p].is_empty() {
-                draw_wall_pieces(cr, pbh, map.wall[p].idx, map.wall[p].piece_pattern, ix, iy);
+                draw_wall_pieces(
+                    cr, pbh,
+                    map.wall[p].idx().unwrap(),
+                    map.wall[p].piece_pattern(),
+                    ix, iy);
             }
 
             // Draw deco

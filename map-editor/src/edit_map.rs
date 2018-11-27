@@ -28,8 +28,7 @@ impl EditingMap {
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
-        self.tile[pos][layer].idx = idx;
-        self.tile[pos][layer].piece_pattern = PiecePattern::SURROUNDED;
+        self.tile[pos][layer] = TileIdxPP::new(idx);
     }
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
@@ -37,7 +36,7 @@ impl EditingMap {
             let piece_pattern = {
                 let f = |pos: Vec2d| {
                     if let Some(w) = self.wall.get(pos) {
-                        w.idx == idx
+                        w.idx() == Some(idx)
                     } else {
                         true
                     }
@@ -49,10 +48,8 @@ impl EditingMap {
                 let wall_obj = gobj::get_obj(idx);
                 piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
             };
-
-            if piece_pattern.is_empty() { return; }
             
-            self.wall[pos] = WallIdxPP { idx, piece_pattern };
+            self.wall[pos] = WallIdxPP::with_piece_pattern(idx, piece_pattern);
         } else {
             self.wall[pos] = WallIdxPP::default();
         }
@@ -87,7 +84,7 @@ impl EditingMap {
         let piece_pattern = {
             let f = |pos: Vec2d| {
                 if let Some(t) = self.tile.get(pos) {
-                    t[layer].idx == new_tile_idx
+                    t[layer].idx() == Some(new_tile_idx)
                 } else {
                     true
                 }
@@ -100,10 +97,7 @@ impl EditingMap {
             piece_pattern_flags.to_piece_pattern(tile_obj.img.n_pattern)
         };
 
-        if piece_pattern.is_empty() { return; }
-
-        self.tile[pos][layer].idx = new_tile_idx;
-        self.tile[pos][layer].piece_pattern = piece_pattern;
+        self.tile[pos][layer] = TileIdxPP::with_piece_pattern(new_tile_idx, piece_pattern);
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
@@ -123,7 +117,7 @@ impl EditingMap {
         // Create table for TileIdx
         for &tile in self.tile.iter() {
             for i in 0..N_TILE_IMG_LAYER {
-                let tile_idx = tile[i].idx;
+                let tile_idx = if let Some(idx) = tile[i].idx() { idx } else { continue; };
                 let tile_id = gobj::idx_to_id(tile_idx);
                 if tile_table.iter().all(|a| *a != tile_id) {
                     tile_table.push(tile_id.to_owned());
@@ -141,7 +135,7 @@ impl EditingMap {
         let mut wall_table: Vec<String> = Vec::new();
         for wall in self.wall.iter() {
             if !wall.is_empty() {
-                let wall_id = gobj::idx_to_id(wall.idx);
+                let wall_id = gobj::idx_to_id(wall.idx().unwrap());
                 if wall_table.iter().all(|a| *a != wall_id) {
                     wall_table.push(wall_id.to_owned());
                 }

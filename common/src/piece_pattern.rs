@@ -1,10 +1,14 @@
 //! Tile pattern will be defined by surround 8 tiles.
 //! TilePatternFlag helps to search appropriate pattern.
 
+use std::marker::PhantomData;
 use array2d::*;
 use basic::{PIECE_SIZE, PIECE_SIZE_I};
 use obj::ImgObject;
-use objholder::{TileIdx, WallIdx};
+use objholder::{TileIdx, WallIdx, ObjectIndex};
+
+const INDEX_BIT: u32         = 0b11111111_11111111_11110000_00000000;
+const PIECE_PATTERN_BIT: u32 = 0b00000000_00000000_00001111_11111111;
 
 /// Represents 4 pieces pattern of tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -22,56 +26,106 @@ impl Default for PiecePattern {
 }
 
 impl PiecePattern {
-    pub fn is_empty(self) -> bool {
-        self == Self::EMPTY
+    pub fn as_int(&self) -> u32 {
+        let a = (self.top_left as u32) << 9
+            | (self.top_right as u32) << 6
+            | (self.bottom_left as u32) << 3
+            | self.bottom_right as u32;
+        assert!(a <= 0b111111111111);
+        a
     }
 
+    pub fn from_int(i: u32) -> PiecePattern {
+        PiecePattern {
+            top_left:     ((i & 0b111000000000) >> 9) as u8,
+            top_right:    ((i & 0b000111000000) >> 6) as u8,
+            bottom_left:  ((i & 0b000000111000) >> 3) as u8,
+            bottom_right: (i & 0b000000000111) as u8,
+        }
+    }
+    
     pub const SURROUNDED: PiecePattern = PiecePattern {
         top_left: 0,
         top_right: 0,
         bottom_left: 0,
         bottom_right: 0,
     };
-
-    /// Represents that the tile (or wall, etc) is empty
-    pub const EMPTY: PiecePattern = PiecePattern {
-        top_left: EMPTY_PIECE,
-        top_right: EMPTY_PIECE,
-        bottom_left: EMPTY_PIECE,
-        bottom_right: EMPTY_PIECE,
-    };
 }
 
-pub const EMPTY_PIECE: u8 = 0xFF;
+pub const EMPTY_PIECE: u8 = 0b111;
 
 /// TileIdx or WallIdx with piece pattern
+/// This is 32bit integer. Upper 20bit is for index. Lower 12 bit is for piece pattern.
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct IdxWithPiecePattern<T> {
-    pub idx: T,
-    pub piece_pattern: PiecePattern,
+    i: u32,
+    #[serde(skip)]
+    _p: PhantomData<T>,
 }
 
 impl<T> IdxWithPiecePattern<T> {
     pub fn is_empty(&self) -> bool {
-        self.piece_pattern.is_empty()
+        self.i == 0
+    }
+
+    pub fn piece_pattern(&self) -> PiecePattern {
+        PiecePattern::from_int(self.i)
+    }
+
+    pub fn set_piece_pattern(&mut self, piece_pattern: PiecePattern) {
+        self.i = (self.i & INDEX_BIT) | piece_pattern.as_int();
+    }
+
+    pub(crate) fn as_raw_int(&self) -> u32 {
+        self.i >> 12
+    }
+    
+    pub(crate) fn from_raw_int(i: u32) -> Self {
+        IdxWithPiecePattern {
+            i: i << 12,
+            _p: PhantomData,
+        }
     }
 }
 
-impl<T> IdxWithPiecePattern<T> where T: Copy {
+impl<T> IdxWithPiecePattern<T> where T: ObjectIndex {
+    pub fn new(idx: T) -> Self {
+        IdxWithPiecePattern {
+            i: idx.as_raw_int() << 12,
+            _p: PhantomData,
+        }
+    }
+
+    pub fn with_piece_pattern(idx: T, pp: PiecePattern) -> Self {
+        IdxWithPiecePattern {
+            i: idx.as_raw_int() << 12 | pp.as_int(),
+            _p: PhantomData,
+        }
+    }
+    
     pub fn idx(&self) -> Option<T> {
         if self.is_empty() {
             None
         } else {
-            Some(self.idx)
+            T::from_raw_int(self.i >> 12)
         }
+    }
+
+    pub fn set_idx(&mut self, idx: T) {
+        let pp = self.i & PIECE_PATTERN_BIT;
+        self.i = pp | (idx.as_raw_int() << 12);
+    }
+
+    pub fn get(&self) -> Option<(T, PiecePattern)> {
+        self.idx().map(|idx| (idx, self.piece_pattern()))
     }
 }
 
 impl<T> Default for IdxWithPiecePattern<T> where T: Default {
     fn default() -> IdxWithPiecePattern<T> {
         IdxWithPiecePattern {
-            idx: T::default(),
-            piece_pattern: PiecePattern::EMPTY,
+            i: 0,
+            _p: PhantomData,
         }
     }
 }

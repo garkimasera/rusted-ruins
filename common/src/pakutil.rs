@@ -22,6 +22,7 @@ use std::path::Path;
 use std::fs;
 use tar;
 
+#[derive(Debug)]
 pub enum PakLoadingError {
     Io(::std::io::Error),
     Rmps(::rmps::decode::Error),
