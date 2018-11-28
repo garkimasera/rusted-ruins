@@ -63,7 +63,9 @@ impl TileLayers {
     pub fn main_tile(&self) -> TileIdx {
         let mut idx: Option<TileIdx> = None;
         for t in &self.0 {
-            idx = t.idx();
+            if let Some(i) = t.idx() {
+                idx = Some(i)
+            }
         }
         if let Some(idx) = idx {
             idx

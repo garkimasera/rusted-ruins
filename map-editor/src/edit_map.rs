@@ -19,7 +19,7 @@ pub struct EditingMap {
 
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
-        let tile = Array2d::new(width, height, TileLayers::default());
+        let tile = Array2d::new(width, height, TileLayers::from(TileIdx::default()));
         let wall = Array2d::new(width, height, WallIdxPP::default());
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
