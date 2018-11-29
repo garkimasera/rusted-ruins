@@ -11,8 +11,6 @@ extern crate log;
 extern crate bitflags;
 extern crate rusted_ruins_array2d as array2d;
 extern crate serde_cbor;
-extern crate rmp;
-extern crate rmp_serde as rmps;
 extern crate tar;
 extern crate fnv;
 

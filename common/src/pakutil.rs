@@ -1,18 +1,17 @@
 
 use std::io::{Read, Write};
-use rmps::encode::write;
-use rmps::decode::from_read;
+use serde_cbor::{from_reader, ser::to_writer_packed};
 
 use super::obj::Object;
 
 /// Read object from msgpack bytes
-pub fn read_object<R: Read>(r: R) -> Result<Object, ::rmps::decode::Error> {
-    from_read(r)
+pub fn read_object<R: Read>(r: R) -> Result<Object, ::serde_cbor::error::Error> {
+    from_reader(r)
 }
 
 /// Write object as msgpack
 pub fn write_object<W: Write>(w: &mut W, obj: &Object) -> Result<(), String> {
-    write(w, obj).map_err(|e| e.to_string())
+    to_writer_packed(w, obj).map_err(|e| e.to_string())
 }
 
 /*
@@ -25,7 +24,7 @@ use tar;
 #[derive(Debug)]
 pub enum PakLoadingError {
     Io(::std::io::Error),
-    Rmps(::rmps::decode::Error),
+    Cbor(::serde_cbor::error::Error),
 }
 
 
@@ -96,7 +95,7 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
         let object = match read_object(file) {
             Ok(o) => o,
             Err(e) => {
-                err_stack.push(PakLoadingError::Rmps(e));
+                err_stack.push(PakLoadingError::Cbor(e));
                 continue;
             }
         };
