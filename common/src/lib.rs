@@ -7,6 +7,7 @@ extern crate serde_derive;
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
+extern crate arrayvec;
 #[macro_use]
 extern crate bitflags;
 extern crate rusted_ruins_array2d as array2d;

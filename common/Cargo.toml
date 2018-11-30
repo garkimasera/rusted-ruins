@@ -22,4 +22,5 @@ log = "0.4"
 bitflags = "1"
 tar = "0.4"
 fnv = "1"
+arrayvec = { version = "0.4", features = ["serde-1", "use_union"] }
 

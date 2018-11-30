@@ -27,7 +27,7 @@ impl MapEx for Map {
         }
         
         if self.tile[pos].wall.is_empty() {
-            let tile = gobj::get_obj(self.tile[pos].tile.main_tile());
+            let tile = gobj::get_obj(self.tile[pos].main_tile());
             match tile.kind {
                 TileKind::Ground => true,
                 TileKind::Water => false,
@@ -104,7 +104,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     // Function to determine the tile is empty or not
     let is_tile_empty = |tile: &TileInfo| {
         if tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none() {
-            let tile_idx = tile.tile.main_tile();
+            let tile_idx = tile.main_tile();
             let tile_obj = gobj::get_obj(tile_idx);
             tile_obj.kind == TileKind::Ground
         } else {
@@ -183,7 +183,7 @@ pub fn update_observed_map(game: &mut Game) {
         let tile = &map.tile[p];
         let observed_tile = &mut map.observed_tile[p];
 
-        observed_tile.tile = Some(tile.tile);
+        observed_tile.tile = Some(tile.tile.clone());
         observed_tile.wall = tile.wall;
         observed_tile.deco = tile.deco;
         observed_tile.special = tile.special;

@@ -161,12 +161,11 @@ impl MainWinDrawer {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile { // Draw tile
-            for i in 0..N_TILE_IMG_LAYER {
-                if t[i].is_empty() { continue; }
-                let idx = t[i].idx().unwrap();
+            for tile_idxpp in t.iter() {
+                let idx = tile_idxpp.idx().unwrap();
                 let obj = gobj::get_obj(idx);
                 let tex = sv.tex().get(idx);
-                self.draw_pieces(canvas, tex, obj, p, t[i].piece_pattern());
+                self.draw_pieces(canvas, tex, obj, p, tile_idxpp.piece_pattern());
             }
         }
         if let Some(special_tile_idx) = di.special { // Draw tile special

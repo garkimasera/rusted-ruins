@@ -1,5 +1,6 @@
 
 use std::ops::{Index, IndexMut};
+use arrayvec::ArrayVec;
 use array2d::*;
 use objholder::*;
 use basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
@@ -25,6 +26,8 @@ pub struct Map {
     pub outside_tile: Option<OutsideTileInfo>,
     pub boundary: MapBoundary,
 }
+
+pub type TileArray = ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]>;
 
 /// Represents tile image layers
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -59,20 +62,23 @@ impl IndexMut<usize> for TileLayers {
     }
 }
 
-impl TileLayers {
-    pub fn main_tile(&self) -> TileIdx {
-        let mut idx: Option<TileIdx> = None;
-        for t in &self.0 {
-            if let Some(i) = t.idx() {
-                idx = Some(i)
+impl From<TileIdx> for TileArray {
+    fn from(idx: TileIdx) -> TileArray {
+        let mut v = ArrayVec::new();
+        v.push(TileIdxPP::new(idx));
+        v
+    }
+}
+
+impl Into<TileArray> for TileLayers {
+    fn into(self) -> TileArray {
+        let mut v = ArrayVec::new();
+        for idxpp in self.0.into_iter() {
+            if !idxpp.is_empty() {
+                v.push(*idxpp);
             }
         }
-        if let Some(idx) = idx {
-            idx
-        } else {
-            warn!("Every tile layer is empty. Use default index.");
-            TileIdx::default()
-        }
+        v
     }
 }
 
@@ -147,7 +153,7 @@ pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
     /// Base tile
-    pub tile: TileLayers,
+    pub tile: TileArray,
     /// If wall is presented, the tile is no walkable
     pub wall: WallIdxPP, 
     /// Decoration for this tile
@@ -160,9 +166,9 @@ pub struct TileInfo {
 
 /// The data for map drawing
 /// These data will be updated every player turn based on player's view
-#[derive(Clone, Copy, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
-    pub tile: Option<TileLayers>,
+    pub tile: Option<TileArray>,
     pub wall: WallIdxPP,
     pub deco: Option<DecoIdx>,
     pub n_item: usize,
@@ -170,9 +176,9 @@ pub struct ObservedTileInfo {
     pub special: SpecialTileKind,
 }
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
-    pub tile: TileIdx,
+    pub tile: ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]>,
     pub wall: Option<WallIdx>,
 }
 
@@ -199,12 +205,23 @@ impl Default for BoundaryBehavior {
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
-            tile: TileLayers::default(),
+            tile: ArrayVec::new(),
             wall: WallIdxPP::default(),
             deco: None,
             item_list: None,
             chara: None,
             special: SpecialTileKind::None,
+        }
+    }
+}
+
+impl TileInfo {
+    pub fn main_tile(&self) -> TileIdx {
+        if let Some(idxpp) = self.tile.iter().last() {
+            idxpp.idx().expect("TileInfo::tile has empty tile")
+        } else {
+            warn!("Every tile layer is empty. Use default index.");
+            TileIdx::default()
         }
     }
 }
@@ -332,14 +349,14 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> TileLayers {
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]> {
         if self.is_inside(pos) {
-            return self.tile[pos].tile;
+            return &self.tile[pos].tile;
         }
-        if let Some(outside_tile) = self.outside_tile {
-            outside_tile.tile.into()
+        if let Some(outside_tile) = self.outside_tile.as_ref() {
+            &outside_tile.tile
         } else {
-            self.tile[self.nearest_existent_tile(pos)].tile
+            &self.tile[self.nearest_existent_tile(pos)].tile
         }
     }
 
@@ -347,7 +364,7 @@ impl Map {
         if self.is_inside(pos) {
             return self.tile[pos].wall;
         }
-        if let Some(outside_tile) = self.outside_tile {
+        if let Some(outside_tile) = self.outside_tile.as_ref() {
             if let Some(idx) = outside_tile.wall {
                 WallIdxPP::new(idx)
             } else {
