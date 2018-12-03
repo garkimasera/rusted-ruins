@@ -10,26 +10,27 @@ use game::view::ViewMap;
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
 #[derive(Default)]
-pub struct BackgroundDrawInfo {
-    pub tile: Option<TileArray>,
+pub struct BackgroundDrawInfo<'a> {
+    pub tile: Option<&'a TileArray>,
     pub special: Option<SpecialTileIdx>,
 }
 
-impl BackgroundDrawInfo {
+impl<'a> BackgroundDrawInfo<'a> {
     pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo {
         let mut di = BackgroundDrawInfo::default();
         
         let tile = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
             
-            tinfo.tile.clone()
+            tinfo.tile.as_ref()
         } else {
             if let Some(ref outside_tile) = map.outside_tile {
-                Some(outside_tile.tile.clone().into())
+                unimplemented!()
+                //Some(outside_tile.tile.clone().into())
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
-                tinfo.tile.clone()
+                tinfo.tile.as_ref()
             }
         };
         
