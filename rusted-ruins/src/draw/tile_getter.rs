@@ -54,17 +54,16 @@ impl<'a> BackgroundDrawInfo<'a> {
 /// "Foreground" means that they are drawed infront characters
 /// whose are on the prev row
 #[derive(Default)]
-pub struct ForegroundDrawInfo {
+pub struct ForegroundDrawInfo<'a> {
     pub special: Option<SpecialTileIdx>,
     pub wallpp: WallIdxPP,
     pub deco: Option<DecoIdx>,
-    pub n_item: usize,
-    pub items: [ItemIdx; MAX_ITEM_FOR_DRAW],
+    pub items: &'a [ItemIdx],
     pub chara: Option<CharaId>,
 }
 
-impl ForegroundDrawInfo {
-    pub fn new(map: &Map, view_map: &ViewMap, pos: Vec2d) -> ForegroundDrawInfo {
+impl<'a> ForegroundDrawInfo<'a> {
+    pub fn new(map: &'a Map, view_map: &ViewMap, pos: Vec2d) -> ForegroundDrawInfo<'a> {
         let mut di = ForegroundDrawInfo::default();
 
         if map.is_inside(pos) {
@@ -103,12 +102,7 @@ impl ForegroundDrawInfo {
 
         // Set items
         if map.is_inside(pos) {
-            let tinfo = &map.observed_tile[pos];
-            let n_item = tinfo.n_item;
-            for i in 0..n_item {
-                di.items[i] = tinfo.items[i];
-            }
-            di.n_item = n_item;
+            di.items = &map.observed_tile[pos].items.as_slice();
         }
         
         di

@@ -187,12 +187,11 @@ pub fn update_observed_map(game: &mut Game) {
         observed_tile.wall = tile.wall;
         observed_tile.deco = tile.deco;
         observed_tile.special = tile.special;
-        observed_tile.n_item = 0;
 
         if let Some(ref item_list) = tile.item_list {
+            observed_tile.items.clear();
             for (i, &(ref item, _)) in item_list.iter().take(MAX_ITEM_FOR_DRAW).enumerate() {
-                observed_tile.items[i] = item.idx;
-                observed_tile.n_item += 1;
+                observed_tile.items.push(item.idx);
             }
         }
     }

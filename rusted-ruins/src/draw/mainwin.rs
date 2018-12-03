@@ -205,9 +205,8 @@ impl MainWinDrawer {
         }
 
         // Draw items
-        for i in 0..di.n_item {
-            let item_idx = di.items[i];
-            let texture = sv.tex().get(item_idx);
+        for item_idx in di.items {
+            let texture = sv.tex().get(*item_idx);
 
             let query = texture.query();
             let src = Rect::new(0, 0, query.width, query.height);
