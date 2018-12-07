@@ -3,6 +3,7 @@
 members = [
     "array2d",
     "common",
+    "filebox",
     "makepak",
     "audio",
     "map-generator",

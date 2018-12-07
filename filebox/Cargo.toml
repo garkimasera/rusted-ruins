@@ -1,0 +1,8 @@
+[package]
+name = "filebox"
+version = "0.1.0"
+authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
+
+[dependencies]
+fnv = "1"
+serde = "1"
