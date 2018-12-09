@@ -374,7 +374,7 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
         ("Cancel", gtk::ResponseType::Cancel.into()),
     ]);
     file_chooser.add_filter(&create_file_filter());
-    if file_chooser.run() == gtk::ResponseType::Ok.into() {
+    if file_chooser.run() == Into::<i32>::into(gtk::ResponseType::Ok) {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
         file_chooser.destroy();
         ui.map_redraw();
@@ -392,7 +392,7 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
         ("Cancel", gtk::ResponseType::Cancel.into()),
     ]);
     file_chooser.add_filter(&create_file_filter());
-    if file_chooser.run() == gtk::ResponseType::Ok.into() {
+    if file_chooser.run() == Into::<i32>::into(gtk::ResponseType::Ok) {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
         file_chooser.destroy();
         return Some(filename);
