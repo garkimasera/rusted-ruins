@@ -33,6 +33,7 @@ pub use self::variables::*;
 /// This can be a snapshot of the current game, so it must implement Serialize and Deserialize.
 #[derive(Serialize, Deserialize)]
 pub struct GameData {
+    #[serde(skip)]
     pub meta: MetaData,
     pub chara: CharaHolder,
     pub region: RegionHolder,

@@ -19,6 +19,7 @@ path = "../filebox"
 [dependencies]
 serde = "1"
 serde_derive = "1"
+serde_json = "1"
 serde_cbor = "0.9"
 lazy_static = "1"
 log = "0.4"

@@ -4,12 +4,14 @@ use super::map::{Map, MapId};
 use super::region::RegionId;
 use super::town::Town;
 
+pub type BoxedMap = HashNamedFileBox<Map>;
+
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Site {
     pub name: Option<String>,
-    map: Vec<HashNamedFileBox<Map>>,
+    map: Vec<BoxedMap>,
     /// The maximum nubmer of floor
     max_floor: u32,
     /// Site kind specific data
@@ -84,6 +86,12 @@ impl Site {
 
     pub fn max_floor(&self) -> u32 {
         self.max_floor
+    }
+
+    pub fn visit_maps<F: FnMut(u32, &BoxedMap)>(&self, mut f: F) {
+        for (i, map) in self.map.iter().enumerate() {
+            f(i as u32, map)
+        }
     }
 }
 

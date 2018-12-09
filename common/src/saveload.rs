@@ -1,26 +1,50 @@
 
-use std::path::Path;
-use std::fs::File;
+use std::path::{Path, PathBuf};
+use std::fs::{File, create_dir_all};
+use std::io::BufWriter;
 use serde_cbor::ser::to_writer_packed;
 use serde_cbor::from_reader;
+use basic::SAVE_EXTENSION;
 use gamedata::*;
 
 impl GameData {
-    pub fn save_file<P: AsRef<Path>>(&self, path: P) -> Result<(), String> {
+    /// Save game data to the specified directory
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<::std::error::Error>> {
         if cfg!(debug_assertions) {
             print_save_data_size(self); // Debug code for save file size optimization
         }
-        
-        let mut file = File::create(path).map_err(|e| e.to_string())?;
-        to_writer_packed(&mut file, &self).map_err(|e| e.to_string())?;
+
+        let save_dir = path.as_ref();
+
+        // Create directory
+        create_dir_all(&save_dir)?;
+
+        // Write metadata file
+        let mut file = BufWriter::new(File::create(save_dir.join("metadata"))?);
+        serde_json::to_writer_pretty(&mut file, &self.meta)?;
+
+        // Write GameData
+        let mut file = BufWriter::new(File::create(save_dir.join("gamedata"))?);
+        to_writer_packed(&mut file, &self)?;
+
+        // Write maps
+        // let map_dir = save_dir.join("maps");
+        // let mut errors = Vec::new();
+        // self.region.visit_all_maps(|mid, map| {
+        // });
 
         Ok(())
     }
 
-    pub fn load_file<P: AsRef<Path>>(path: P) -> Result<GameData, String> {
+    /// Load game data from specified directory
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, String> {
         let file = File::open(path).map_err(|e| e.to_string())?;
 
         from_reader(&file).map_err(|e| e.to_string())
+    }
+
+    pub fn save_dir<P: AsRef<Path>>(&self, path: P) -> PathBuf {
+        path.as_ref().join(format!("{}.{}", self.meta.save_name(), SAVE_EXTENSION))
     }
 }
 

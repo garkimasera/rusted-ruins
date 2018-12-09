@@ -1,7 +1,7 @@
 
 use std::fs;
 use std::path::{Path, PathBuf};
-use common::basic::{SAVE_DIR_NAME, SAVE_EXTENSION};
+use common::basic::{SAVE_EXTENSION, SAVE_DIR_NAME};
 use common::gamedata::GameData;
 use config::USER_DIR;
 use game::{Game, InfoGetter};
@@ -19,12 +19,10 @@ impl Game {
                 }
             }
         }
-        
-        let save_file_name = format!("{}.{}", self.gd.player_name(), SAVE_EXTENSION);
 
-        let path = save_dir.join(save_file_name);
+        let path = self.gd.save_dir(save_dir);
         
-        match self.gd.save_file(&path) {
+        match self.gd.save(&path) {
             Ok(_) => info!("Saved to {:?}", path.to_string_lossy()),
             Err(e) => warn!("Faild to saving to {:?}: {}", path.to_string_lossy(), e),
         }

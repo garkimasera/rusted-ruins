@@ -126,7 +126,7 @@ impl DialogWindow for ChooseSaveFileDialog {
             DialogResult::CloseWithValue(v) => {
                 let i = *v.downcast::<u32>().unwrap() as usize;
 
-                match GameData::load_file(&self.save_files[i]) {
+                match GameData::load(&self.save_files[i]) {
                     Ok(o) => {
                         return DialogResult::Special(SpecialDialogResult::NewGameStart(o));
                     }

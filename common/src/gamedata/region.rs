@@ -1,6 +1,7 @@
 
 use std::collections::HashMap;
 use array2d::*;
+use filebox::HashNamedFileBox;
 use super::site::*;
 use super::map::*;
 use super::unknown_id_err;
@@ -15,7 +16,7 @@ pub struct Region {
     id: RegionId,
     pub(crate) sites: HashMap<SiteId, SiteInfo>,
     /// An map to represents this region
-    pub(crate) map: Map,
+    pub(crate) map: BoxedMap,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -142,6 +143,20 @@ impl RegionHolder {
         }
         unreachable!()
     }
+
+    pub fn visit_all_maps<F: FnMut(MapId, &BoxedMap)>(&self, mut f: F) {
+        for (&rid, region) in &self.0 {
+            let mid = MapId::RegionMap { rid };
+            f(mid, &region.map);
+
+            for (&sid, siteinfo) in &region.sites {
+                siteinfo.site.visit_maps(|floor, map| {
+                    let mid = MapId::SiteMap { sid, floor };
+                    f(mid, map);
+                });
+            }
+        }
+    }
 }
 
 impl Region {
@@ -151,7 +166,7 @@ impl Region {
             name: name.to_owned(),
             id: RegionId(0),
             sites: HashMap::new(),
-            map: map,
+            map: HashNamedFileBox::new(MapId::RegionMap { rid: RegionId::default() }, map),
         }
     }
 
