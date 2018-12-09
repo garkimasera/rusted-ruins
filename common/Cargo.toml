@@ -13,6 +13,9 @@ global_state_obj = []
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
 
+[dependencies.filebox]
+path = "../filebox"
+
 [dependencies]
 serde = "1"
 serde_derive = "1"

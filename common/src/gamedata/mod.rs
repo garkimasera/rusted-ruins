@@ -130,7 +130,7 @@ impl GameData {
 
     pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
         let site = self.region.get_site_mut(sid);
-        let floor = site.add_map(map);
+        let floor = site.add_map(map, sid);
         MapId::SiteMap { sid, floor }
     }
 

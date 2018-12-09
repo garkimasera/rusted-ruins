@@ -1,14 +1,15 @@
 
-use super::map::Map;
+use filebox::HashNamedFileBox;
+use super::map::{Map, MapId};
 use super::region::RegionId;
 use super::town::Town;
 
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Site {
     pub name: Option<String>,
-    map: Vec<Map>,
+    map: Vec<HashNamedFileBox<Map>>,
     /// The maximum nubmer of floor
     max_floor: u32,
     /// Site kind specific data
@@ -52,17 +53,20 @@ impl Site {
     }
 
     pub fn get_map_checked(&self, floor: u32) -> Option<&Map> {
-        self.map.get(floor as usize)
+        use std::ops::Deref;
+        self.map.get(floor as usize).map(|a| a.deref())
     }
 
     pub fn get_map_mut_checked(&mut self, floor: u32) -> Option<&mut Map> {
-        self.map.get_mut(floor as usize)
+        use std::ops::DerefMut;
+        self.map.get_mut(floor as usize).map(|a| a.deref_mut())
     }
 
-    pub(crate) fn add_map(&mut self, map: Map) -> u32 {
+    pub(crate) fn add_map(&mut self, map: Map, sid: SiteId) -> u32 {
         assert!(self.map.len() as u32 + 1 <= self.max_floor);
-        self.map.push(map);
-        self.map.len() as u32 - 1
+        let floor = self.map.len() as u32;
+        self.map.push(HashNamedFileBox::new(MapId::SiteMap { sid, floor }, map));
+        floor
     }
     
     pub fn is_underground(&self) -> bool {

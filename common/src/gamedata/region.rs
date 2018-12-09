@@ -5,11 +5,11 @@ use super::site::*;
 use super::map::*;
 use super::unknown_id_err;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct RegionId(pub(crate) u32);
 
 /// Region represents "Region Map", and sites on it
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Region {
     pub name: String,
     id: RegionId,
@@ -18,7 +18,7 @@ pub struct Region {
     pub(crate) map: Map,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SiteInfo {
     site: Site,
     /// Position on the region map

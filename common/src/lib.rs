@@ -12,6 +12,7 @@ extern crate arrayvec;
 extern crate bitflags;
 extern crate rusted_ruins_array2d as array2d;
 extern crate serde_cbor;
+extern crate filebox;
 extern crate tar;
 extern crate fnv;
 
@@ -23,6 +24,7 @@ pub mod objholder;
 pub mod gobj;
 pub mod pakutil;
 pub mod gamedata;
+pub mod impl_filebox;
 pub mod maptemplate;
 pub mod regiongen;
 pub mod saveload;
