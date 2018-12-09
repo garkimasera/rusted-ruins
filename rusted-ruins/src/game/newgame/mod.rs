@@ -44,7 +44,7 @@ impl NewGameBuilder {
             let chara_template_id = &RULES.newgame.chara_template_table[&self.chara_class.unwrap()];
             let mut chara = super::chara::gen::create_chara(gobj::id_to_idx(chara_template_id), 1);
             chara.rel = gamedata::chara::Relationship::ALLY;
-            chara.name = Some(self.player_name.unwrap());
+            chara.name = Some(self.player_name.as_ref().unwrap().clone());
             set_initial_skills(&mut chara);
             chara.update();
 
@@ -59,6 +59,8 @@ impl NewGameBuilder {
             gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
 
             // Initial date setting
+            gd.meta.set_save_name(&self.player_name.unwrap());
+            
             gd.time = Time::new(
                 RULES.params.initial_date_year,
                 RULES.params.initial_date_month,

@@ -1,4 +1,5 @@
 
+pub mod meta;
 pub mod chara;
 pub mod defs;
 pub mod item;
@@ -14,6 +15,7 @@ pub mod variables;
 
 use array2d::Vec2d;
 
+pub use self::meta::*;
 pub use self::chara::*;
 pub use self::defs::*;
 pub use self::item::*;
@@ -31,6 +33,7 @@ pub use self::variables::*;
 /// This can be a snapshot of the current game, so it must implement Serialize and Deserialize.
 #[derive(Serialize, Deserialize)]
 pub struct GameData {
+    pub meta: MetaData,
     pub chara: CharaHolder,
     pub region: RegionHolder,
     pub time: Time,
@@ -42,6 +45,7 @@ pub struct GameData {
 impl GameData {
     pub fn empty() -> GameData {
         GameData {
+            meta: MetaData::default(),
             chara: CharaHolder::new(),
             region: RegionHolder::new(),
             time: Time::default(),
