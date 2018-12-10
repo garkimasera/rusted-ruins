@@ -1,10 +1,10 @@
 
-use filebox::HashNamedFileBox;
-use super::map::{Map, MapId};
+use filebox::FileBox;
+use super::map::Map;
 use super::region::RegionId;
 use super::town::Town;
 
-pub type BoxedMap = HashNamedFileBox<Map>;
+pub type BoxedMap = FileBox<Map>;
 
 /// Site represents a dungeon, town, or other facility
 /// It is consist of one or multiple maps
@@ -64,10 +64,10 @@ impl Site {
         self.map.get_mut(floor as usize).map(|a| a.deref_mut())
     }
 
-    pub(crate) fn add_map(&mut self, map: Map, sid: SiteId) -> u32 {
+    pub(crate) fn add_map(&mut self, map: Map, map_random_id: u64) -> u32 {
         assert!(self.map.len() as u32 + 1 <= self.max_floor);
         let floor = self.map.len() as u32;
-        self.map.push(HashNamedFileBox::new(MapId::SiteMap { sid, floor }, map));
+        self.map.push(FileBox::new(map_random_id, map));
         floor
     }
     

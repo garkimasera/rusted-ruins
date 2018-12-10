@@ -1,33 +1,29 @@
 /// Helper crate to save maps for each file.
 
-extern crate fnv;
 extern crate serde;
 
 mod ser;
 
 use std::cell::Cell;
 use std::fmt::Debug;
-use std::hash::{Hash, Hasher};
 use std::path::{PathBuf, Path};
 use std::io::{Write, Read, BufReader, BufWriter};
 use std::fs::File;
 use std::ops::{Deref, DerefMut};
-use fnv::FnvHasher;
 
 pub trait WithId: Sized {
-    type ID;
     type Error: From<std::io::Error>;
     fn write<W: Write>(w: W, a: &Self) -> Result<(), Self::Error>;
     fn read<R: Read>(r: R) -> Result<Self, Self::Error>;
 }
 
-pub struct HashNamedFileBox<T: WithId> {
-    id: T::ID,
+pub struct FileBox<T> {
+    id: u64,
     changed: Cell<bool>,
     inner: Option<Box<T>>,
 }
 
-impl<T: WithId> Deref for HashNamedFileBox<T> where T::ID: Debug {
+impl<T: WithId> Deref for FileBox<T> {
     type Target = T;
     fn deref(&self) -> &T {
         if let Some(ref inner) = self.inner {
@@ -38,7 +34,7 @@ impl<T: WithId> Deref for HashNamedFileBox<T> where T::ID: Debug {
     }
 }
 
-impl<T: WithId> DerefMut for HashNamedFileBox<T> where T::ID: Debug {
+impl<T: WithId> DerefMut for FileBox<T> {
     fn deref_mut(&mut self) -> &mut T {
         if let Some(ref mut inner) = self.inner {
             self.changed.set(true);
@@ -49,31 +45,31 @@ impl<T: WithId> DerefMut for HashNamedFileBox<T> where T::ID: Debug {
     }
 }
 
-impl<T: WithId> Debug for HashNamedFileBox<T> where T::ID: Debug {
+impl<T: WithId> Debug for FileBox<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{:?}", self.id)
     }
 }
 
-impl<T: WithId> HashNamedFileBox<T> where T::ID: Hash {
-    pub fn new(id: T::ID, data: T) -> HashNamedFileBox<T> {
-        HashNamedFileBox {
+impl<T: WithId> FileBox<T> {
+    pub fn new(id: u64, data: T) -> FileBox<T> {
+        FileBox {
             id,
             changed: Cell::new(false),
             inner: Some(Box::new(data)),
         }
     }
     
-    pub fn empty(id: T::ID) -> HashNamedFileBox<T> {
-        HashNamedFileBox {
+    pub fn empty(id: u64) -> FileBox<T> {
+        FileBox {
             id,
             changed: Cell::new(false),
             inner: None,
         }
     }
 
-    pub fn id(&self) -> &T::ID {
-        &self.id
+    pub fn id(&self) -> u64 {
+        self.id
     }
 
     pub fn write_force<P: AsRef<Path>>(s: &Self, p: P) -> Result<(), T::Error> {
@@ -95,7 +91,7 @@ impl<T: WithId> HashNamedFileBox<T> where T::ID: Hash {
     }
 
     pub fn path<P: AsRef<Path>>(&self, p: P) -> PathBuf {
-        p.as_ref().join(format!("{:x}", calc_hash(&self.id)))
+        p.as_ref().join(format!("{:08x}", self.id))
     }
 
     pub fn read<P: AsRef<Path>>(&mut self, p: P) -> Result<(), T::Error> {
@@ -110,8 +106,3 @@ impl<T: WithId> HashNamedFileBox<T> where T::ID: Hash {
     }
 }
 
-fn calc_hash<T: Hash>(a: &T) -> u64 {
-    let mut hasher = FnvHasher::default();
-    a.hash(&mut hasher);
-    hasher.finish()
-}

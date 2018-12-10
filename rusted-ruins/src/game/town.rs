@@ -3,6 +3,7 @@ use array2d::Vec2d;
 use common::obj::SiteGenObject;
 use common::gamedata::*;
 use common::gobj;
+use super::saveload::gen_box_id;
 
 /// Create town from SiteGenObect and add it to region map
 pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
@@ -21,7 +22,9 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
     for map_template_id in &sg.map_template_id {
         let map = super::map::from_template::from_template_id(map_template_id)
             .expect(&format!("Map template not found: {}", map_template_id));
-        gd.add_map(map, sid);
+
+        let map_random_id = gen_box_id(gd);
+        gd.add_map(map, sid, map_random_id);
     }
 
     super::site::gen::add_unique_citizens(gd, sid, sg);

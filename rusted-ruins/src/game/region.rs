@@ -4,6 +4,7 @@ use common::gamedata::*;
 use common::regiongen::*;
 use common::gobj;
 use super::map::choose_empty_tile;
+use super::saveload::gen_box_id;
 use rng::*;
 
 pub fn add_region(gd: &mut GameData, id: &str) {
@@ -16,7 +17,7 @@ pub fn add_region(gd: &mut GameData, id: &str) {
         panic!();
     };
     
-    let region = Region::new(id, map);
+    let region = Region::new(id, map, gen_box_id(gd));
     let rid = gd.region.add_region(region);
     add_sites_from_genobj(gd, rg, rid);
 }

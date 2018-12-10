@@ -53,6 +53,12 @@ pub fn save_file_list() -> Result<Vec<PathBuf>, ::std::io::Error> {
     Ok(list)
 }
 
+/// Generate random id for FileBox
+pub fn gen_box_id(_gd: &GameData) -> u64 {
+    use rng::*;
+    thread_rng().gen::<u64>()
+}
+
 fn get_save_dir() -> PathBuf {
     USER_DIR.clone().join(SAVE_DIR_NAME)
 }

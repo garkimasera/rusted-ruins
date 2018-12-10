@@ -1,7 +1,7 @@
 
 use std::collections::HashMap;
 use array2d::*;
-use filebox::HashNamedFileBox;
+use filebox::FileBox;
 use super::site::*;
 use super::map::*;
 use super::unknown_id_err;
@@ -160,13 +160,13 @@ impl RegionHolder {
 }
 
 impl Region {
-    pub fn new(name: &str, map: Map) -> Region {
+    pub fn new(name: &str, map: Map, map_random_id: u64) -> Region {
         
         Region {
             name: name.to_owned(),
             id: RegionId(0),
             sites: HashMap::new(),
-            map: HashNamedFileBox::new(MapId::RegionMap { rid: RegionId::default() }, map),
+            map: FileBox::new(map_random_id, map),
         }
     }
 

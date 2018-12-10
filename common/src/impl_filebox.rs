@@ -2,11 +2,10 @@
 use std::io::{Read, Write, Error as IoError};
 use std::fmt::Display;
 use serde_cbor::{from_reader, to_writer, error::Error as SerdeError};
-use gamedata::{Map, MapId};
+use gamedata::Map;
 use filebox::*;
 
 impl WithId for Map {
-    type ID = MapId;
     type Error = MapLoadError;
     
     fn write<W: Write>(mut w: W, a: &Self) -> Result<(), MapLoadError> {

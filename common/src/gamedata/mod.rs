@@ -133,9 +133,9 @@ impl GameData {
         region.add_site(site, kind, pos)
     }
 
-    pub fn add_map(&mut self, map: Map, sid: SiteId) -> MapId {
+    pub fn add_map(&mut self, map: Map, sid: SiteId, map_random_id: u64) -> MapId {
         let site = self.region.get_site_mut(sid);
-        let floor = site.add_map(map, sid);
+        let floor = site.add_map(map, map_random_id);
         MapId::SiteMap { sid, floor }
     }
 

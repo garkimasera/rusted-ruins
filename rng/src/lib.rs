@@ -6,9 +6,10 @@ extern crate rand_xorshift;
 use std::cell::RefCell;
 use rand::SeedableRng;
 use rand::distributions::uniform::{SampleUniform, SampleBorrow};
-use rand::{RngCore, thread_rng};
+use rand::RngCore;
 use rand_xorshift::XorShiftRng;
 pub use rand::Rng;
+pub use rand::thread_rng;
 pub use rand::seq::SliceRandom;
 
 #[derive(Debug, Clone, Copy)]

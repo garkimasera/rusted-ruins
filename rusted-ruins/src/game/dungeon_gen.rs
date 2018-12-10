@@ -6,6 +6,7 @@ use common::gamedata::*;
 use common::objholder::*;
 use common::gobj;
 use game::map::builder::MapBuilder;
+use game::saveload::gen_box_id;
 use rules::RULES;
 
 /// Add a new dungeon
@@ -39,8 +40,9 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
             MapBuilder::new(40, 40).floor(floor).build()
         }
     };
-    
-    let mid = gd.add_map(map, sid);
+
+    let map_random_id = gen_box_id(gd);
+    let mid = gd.add_map(map, sid, map_random_id);
     super::map::gen_npcs(gd, mid, 10, mid.floor());
     super::map::gen_items(gd, mid);
     
