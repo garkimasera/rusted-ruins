@@ -33,6 +33,15 @@ impl Display for MapLoadError {
     }
 }
 
+impl ::std::error::Error for MapLoadError {
+    fn description(&self) -> &str {
+        match self {
+            MapLoadError::Io(e) => e.description(),
+            MapLoadError::Serde(e) => e.description(),
+        }
+    }
+}
+
 impl From<IoError> for MapLoadError {
     fn from(a: IoError) -> MapLoadError {
         MapLoadError::Io(a)

@@ -6,6 +6,7 @@ use serde_cbor::ser::to_writer_packed;
 use serde_cbor::from_reader;
 use basic::SAVE_EXTENSION;
 use gamedata::*;
+use impl_filebox::MapLoadError;
 
 impl GameData {
     /// Save game data to the specified directory
@@ -28,10 +29,20 @@ impl GameData {
         to_writer_packed(&mut file, &self)?;
 
         // Write maps
-        // let map_dir = save_dir.join("maps");
-        // let mut errors = Vec::new();
-        // self.region.visit_all_maps(|mid, map| {
-        // });
+        let map_dir = save_dir.join("maps");
+        create_dir_all(&map_dir)?;
+        
+        let mut errors: Vec<MapLoadError> = Vec::new();
+        self.region.visit_all_maps(|_mid, map| {
+            match BoxedMap::write(map, &map_dir) {
+                Ok(_) => (),
+                Err(e) => errors.push(e),
+            }
+        });
+
+        if !errors.is_empty() {
+            return Err(errors.into_iter().next().unwrap().into());
+        }
 
         Ok(())
     }
