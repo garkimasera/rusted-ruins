@@ -23,8 +23,8 @@ use tar;
 
 #[derive(Debug)]
 pub enum PakLoadingError {
-    Io(::std::io::Error),
-    Cbor(::serde_cbor::error::Error),
+    Io(std::io::Error),
+    Cbor(serde_cbor::error::Error),
 }
 
 

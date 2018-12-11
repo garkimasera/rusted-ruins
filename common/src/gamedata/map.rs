@@ -2,14 +2,14 @@
 use std::ops::{Index, IndexMut};
 use arrayvec::ArrayVec;
 use array2d::*;
-use objholder::*;
-use basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
-use gamedata::item::{Item, ItemList};
-use gamedata::chara::CharaId;
-use gamedata::site::SiteId;
-use gamedata::region::RegionId;
+use crate::objholder::*;
+use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
+use crate::gamedata::item::{Item, ItemList};
+use crate::gamedata::chara::CharaId;
+use crate::gamedata::site::SiteId;
+use crate::gamedata::region::RegionId;
 
-pub use piece_pattern::*;
+pub use crate::piece_pattern::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map {
@@ -256,7 +256,7 @@ impl Map {
         self.tile[pos].chara.clone()
     }
 
-    pub fn iter_charaid(&self) -> ::std::slice::Iter<CharaId> {
+    pub fn iter_charaid(&self) -> std::slice::Iter<CharaId> {
         self.charaid.iter()
     }
 

@@ -1,7 +1,5 @@
 /// Helper crate to save maps for each file.
 
-extern crate serde;
-
 mod ser;
 
 use std::cell::Cell;

@@ -1,12 +1,8 @@
 
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate lazy_static;
-extern crate serde_json;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 
@@ -22,6 +18,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::fs;
 use serde::de::Deserialize;
+use lazy_static::lazy_static;
 
 /// Contain game rules
 pub struct Rules {
@@ -61,7 +58,7 @@ fn read_from_json<T: for<'de> Deserialize<'de>>(file_path: &Path) -> T {
 }
 
 fn exit_err() -> ! {
-    ::std::process::exit(1)
+    std::process::exit(1)
 }
 
 lazy_static! {

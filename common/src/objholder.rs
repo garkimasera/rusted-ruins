@@ -1,6 +1,6 @@
 
-use obj::*;
-use pakutil::load_objs_dir;
+use crate::obj::*;
+use crate::pakutil::load_objs_dir;
 use std::num::NonZeroU32;
 use std::path::Path;
 
@@ -167,7 +167,7 @@ pub trait Holder<I> {
     fn get(&self, idx: I) -> &Self::ReturnType;
 }
 
-fn cmp_chara_template(a: &CharaTemplateObject, b: &CharaTemplateObject) -> ::std::cmp::Ordering {
+fn cmp_chara_template(a: &CharaTemplateObject, b: &CharaTemplateObject) -> std::cmp::Ordering {
     use std::cmp::Ordering;
 
     if a.id == "!" && b.id == "!" { return Ordering::Equal; }

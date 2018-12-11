@@ -1,7 +1,7 @@
 
 use std::ops::Index;
 use std::fmt;
-use hashmap::HashMap;
+use crate::hashmap::HashMap;
 
 /// Instructions are executed in Game.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -131,7 +131,7 @@ pub struct ScriptParseError {
     description: String,
 }
 
-impl ::std::error::Error for ScriptParseError {}
+impl std::error::Error for ScriptParseError {}
 
 impl fmt::Display for ScriptParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

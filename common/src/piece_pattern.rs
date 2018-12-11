@@ -3,9 +3,9 @@
 
 use std::marker::PhantomData;
 use array2d::*;
-use basic::{PIECE_SIZE, PIECE_SIZE_I};
-use obj::ImgObject;
-use objholder::{TileIdx, WallIdx, ObjectIndex};
+use crate::basic::{PIECE_SIZE, PIECE_SIZE_I};
+use crate::obj::ImgObject;
+use crate::objholder::{TileIdx, WallIdx, ObjectIndex};
 
 const INDEX_BIT: u32         = 0b11111111_11111111_11110000_00000000;
 const PIECE_PATTERN_BIT: u32 = 0b00000000_00000000_00001111_11111111;
@@ -265,7 +265,7 @@ pub trait PieceImgObject: ImgObject {
     }
 }
 
-impl PieceImgObject for ::obj::TileObject { }
-impl PieceImgObject for ::obj::WallObject { }
-impl PieceImgObject for ::obj::EffectObject { }
+impl PieceImgObject for crate::obj::TileObject { }
+impl PieceImgObject for crate::obj::WallObject { }
+impl PieceImgObject for crate::obj::EffectObject { }
 

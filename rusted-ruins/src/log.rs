@@ -39,7 +39,7 @@ impl GameLog {
     fn update(&mut self) {
         if self.buf.is_empty() { return; }
 
-        let b = ::std::mem::replace(&mut self.buf, Vec::new());
+        let b = std::mem::replace(&mut self.buf, Vec::new());
         self.lines.push_back(b);
         if self.lines.len() > *LOG_MAX_LINE {
             let _ = self.lines.pop_front();

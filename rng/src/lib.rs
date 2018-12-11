@@ -1,8 +1,5 @@
 //! Helper crate for using thread local and fast random number generator
 
-extern crate rand;
-extern crate rand_xorshift;
-
 use std::cell::RefCell;
 use rand::SeedableRng;
 use rand::distributions::uniform::{SampleUniform, SampleBorrow};

@@ -1,6 +1,7 @@
 [package]
 name = "rusted-ruins-common"
 version = "0.2.0"
+edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [lib]
@@ -12,6 +13,7 @@ global_state_obj = []
 
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
+package = "rusted-ruins-array2d"
 
 [dependencies.filebox]
 path = "../filebox"

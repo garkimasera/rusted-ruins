@@ -3,7 +3,8 @@
 
 use std::path::PathBuf;
 use std::sync::Mutex;
-use objholder::*;
+use lazy_static::lazy_static;
+use crate::objholder::*;
 
 /// Initialize lazy static
 pub fn init(pak_dirs: Vec<PathBuf>) {

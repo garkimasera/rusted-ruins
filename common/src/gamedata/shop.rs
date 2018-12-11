@@ -1,5 +1,5 @@
 
-use gamedata::item::ItemList;
+use crate::gamedata::item::ItemList;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all="snake_case")]

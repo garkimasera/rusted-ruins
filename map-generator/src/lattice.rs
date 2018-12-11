@@ -235,8 +235,8 @@ fn random_walk(room: Vec2d,
     }
 }
 
-impl ::std::fmt::Display for Lattice {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl std::fmt::Display for Lattice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         for j in 0..self.ny {
             for i in 0..self.nx {
                 if self.start == Vec2d(i as i32, j as i32) {

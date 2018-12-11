@@ -1,7 +1,7 @@
 
 use array2d::Vec2d;
-use gamedata::site::SiteKind;
-use gamedata::shop::ShopKind;
+use crate::gamedata::site::SiteKind;
+use crate::gamedata::shop::ShopKind;
 
 /// Hold data for site generation
 #[derive(Clone, Serialize, Deserialize)]

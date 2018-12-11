@@ -1,6 +1,6 @@
 
 use std::fmt;
-use gamedata;
+use crate::gamedata;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {
@@ -101,7 +101,7 @@ pub struct WallObject {
     pub symbol_color: (u8, u8, u8),
 }
 
-pub use gamedata::item::ItemObject;
+pub use crate::gamedata::item::ItemObject;
 
 #[derive(Serialize, Deserialize)]
 pub struct Img {
@@ -124,10 +124,10 @@ pub struct Icon {
 
 // No image objects
 
-pub use maptemplate::MapTemplateObject;
-pub use regiongen::RegionGenObject;
-pub use script::ScriptObject;
-pub use sitegen::SiteGenObject;
+pub use crate::maptemplate::MapTemplateObject;
+pub use crate::regiongen::RegionGenObject;
+pub use crate::script::ScriptObject;
+pub use crate::sitegen::SiteGenObject;
 
 macro_rules! impl_object {
     ( $($i:ty),* ) => {

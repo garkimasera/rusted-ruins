@@ -1,6 +1,6 @@
 
-use script::Value;
-use hashmap::HashMap;
+use crate::script::Value;
+use crate::hashmap::HashMap;
 
 /// Holds variables which are referenced in scripts
 #[derive(Debug, Serialize, Deserialize)]

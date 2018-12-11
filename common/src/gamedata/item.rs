@@ -1,7 +1,8 @@
 
-use array2d::Vec2d;
-use objholder::ItemIdx;
 use std::cmp::{PartialOrd, Ord, Ordering};
+use bitflags::bitflags;
+use array2d::Vec2d;
+use crate::objholder::ItemIdx;
 use super::defs::ElementArray;
 
 /// Game item
@@ -18,7 +19,7 @@ pub struct Item {
 #[derive(Serialize, Deserialize)]
 pub struct ItemObject {
     pub id: String,
-    pub img: ::obj::Img,
+    pub img: crate::obj::Img,
     pub kind: ItemKind,
     /// Defalut item flags
     /// They are set at making object based on object setting files
@@ -257,7 +258,7 @@ impl ItemList {
     }
 
     /// Return item iterator
-    pub fn iter(&self) -> ::std::slice::Iter<(Item, u32)> {
+    pub fn iter(&self) -> std::slice::Iter<(Item, u32)> {
         self.items.iter()
     }
 }
@@ -344,7 +345,7 @@ impl SlotInfo {
     }
 }
 
-pub const MAX_SLOT_NUM_PER_KIND: usize = ::basic::MAX_EQUIP_SLOT as usize;
+pub const MAX_SLOT_NUM_PER_KIND: usize = crate::basic::MAX_EQUIP_SLOT as usize;
 
 impl EquipItemList {
     pub fn new(slots: &[(EquipSlotKind, u8)]) -> EquipItemList {
@@ -393,7 +394,7 @@ impl EquipItemList {
     pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Item) -> Option<Item> {
         assert!(self.slot_num(esk) > n);
         if let Some(i) = self.list_idx(esk, n) { // Replace existing item
-            return Some(::std::mem::replace(&mut self.item_list.items[i].0, item));
+            return Some(std::mem::replace(&mut self.item_list.items[i].0, item));
         }
         
         if self.item_list.items.is_empty() { // If any item is not equipped.

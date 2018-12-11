@@ -1,6 +1,6 @@
 
 use std::collections::HashMap;
-use objholder::CharaTemplateIdx;
+use crate::objholder::CharaTemplateIdx;
 use super::item::{ItemList, EquipItemList};
 use super::map::MapId;
 use super::site::SiteId;
@@ -144,7 +144,7 @@ impl Default for Chara {
             class: CharaClass::default(),
             item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),
-            wait_time: ::basic::WAIT_TIME_START,
+            wait_time: crate::basic::WAIT_TIME_START,
             ai: CharaAI::default(),
             hp: 100,
             sp: 0,
@@ -222,7 +222,7 @@ impl CharaHolder {
         self.0.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
-    pub fn iter_charaid(&self) -> ::std::collections::hash_map::Keys<CharaId, Chara> {
+    pub fn iter_charaid(&self) -> std::collections::hash_map::Keys<CharaId, Chara> {
         self.0.keys()
     }
 

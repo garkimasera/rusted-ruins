@@ -1,5 +1,5 @@
 
-use gamedata::shop::*;
+use crate::gamedata::shop::*;
 use fnv::FnvHashMap;
 use std::collections::hash_map::{Values, ValuesMut};
 

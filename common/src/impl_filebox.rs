@@ -2,7 +2,7 @@
 use std::io::{Read, Write, Error as IoError};
 use std::fmt::Display;
 use serde_cbor::{from_reader, to_writer, error::Error as SerdeError};
-use gamedata::Map;
+use crate::gamedata::Map;
 use filebox::*;
 
 impl WithId for Map {
@@ -25,7 +25,7 @@ pub enum MapLoadError {
 }
 
 impl Display for MapLoadError {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             MapLoadError::Io(a) => write!(f, "{}", a),
             MapLoadError::Serde(a) => write!(f, "{}", a),
@@ -33,7 +33,7 @@ impl Display for MapLoadError {
     }
 }
 
-impl ::std::error::Error for MapLoadError {
+impl std::error::Error for MapLoadError {
     fn description(&self) -> &str {
         match self {
             MapLoadError::Io(e) => e.description(),

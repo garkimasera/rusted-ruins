@@ -4,13 +4,13 @@ use std::fs::{File, create_dir_all};
 use std::io::{BufReader, BufWriter};
 use serde_cbor::ser::to_writer_packed;
 use serde_cbor::from_reader;
-use basic::SAVE_EXTENSION;
-use gamedata::*;
-use impl_filebox::MapLoadError;
+use crate::basic::SAVE_EXTENSION;
+use crate::gamedata::*;
+use crate::impl_filebox::MapLoadError;
 
 impl GameData {
     /// Save game data to the specified directory
-    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<::std::error::Error>> {
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
         if cfg!(debug_assertions) {
             print_save_data_size(self); // Debug code for save file size optimization
         }
@@ -48,7 +48,7 @@ impl GameData {
     }
 
     /// Load game data from specified directory
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<::std::error::Error>> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<std::error::Error>> {
         let save_dir = path.as_ref();
         
         // Read metadata file

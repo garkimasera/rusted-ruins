@@ -1,6 +1,7 @@
 [package]
 name = "rusted-ruins-map-generator"
 version = "0.1.0"
+edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [lib]

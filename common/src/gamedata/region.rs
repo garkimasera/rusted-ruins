@@ -171,8 +171,8 @@ impl RegionHolder {
         for i in 0.. {
             let rid = RegionId(i);
             if self.0.get(&rid).is_none() {
-                self.0.insert(rid, region);
                 region.id = rid;
+                self.0.insert(rid, region);
                 return rid;
             }
         }

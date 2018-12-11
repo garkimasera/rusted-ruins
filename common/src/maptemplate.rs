@@ -1,13 +1,13 @@
 
 use std::ops::{Index, IndexMut};
 use array2d::*;
-use basic::N_TILE_IMG_LAYER;
-use piece_pattern::*;
-use gamedata::ItemGen;
+use crate::basic::N_TILE_IMG_LAYER;
+use crate::piece_pattern::*;
+use crate::gamedata::ItemGen;
 #[cfg(feature="global_state_obj")]
-use gamedata::map::TileLayers;
+use crate::gamedata::map::TileLayers;
 #[cfg(feature="global_state_obj")]
-use objholder::ObjectIndex;
+use crate::objholder::ObjectIndex;
 
 /// Data for constructing one map
 #[derive(Serialize, Deserialize)]
@@ -72,7 +72,7 @@ pub trait ConvertableIndex {
 #[cfg(feature="global_state_obj")]
 impl<T> ConvertableIndex for T where T: ObjectIndex + Default {
     fn conv_into(self, table: &Vec<String>) -> u32 {
-        use gobj;
+        use crate::gobj;
         let id = gobj::idx_to_id(self);
         table
             .iter()
@@ -81,7 +81,7 @@ impl<T> ConvertableIndex for T where T: ObjectIndex + Default {
     }
 
     fn conv_from(value: u32, table: &Vec<String>) -> T {
-        use gobj;
+        use crate::gobj;
         let id = &table[value as usize];
         gobj::id_to_idx(id)
     }
