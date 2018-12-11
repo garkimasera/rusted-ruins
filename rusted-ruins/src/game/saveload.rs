@@ -1,6 +1,6 @@
 
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use common::basic::{SAVE_EXTENSION, SAVE_DIR_NAME};
 use common::gamedata::GameData;
 use config::USER_DIR;

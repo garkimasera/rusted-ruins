@@ -12,7 +12,6 @@ use text::ToText;
 use super::Game;
 use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
-use super::saveload::get_each_save_dir;
 use rules::RULES;
 
 pub trait MapEx {
@@ -193,7 +192,7 @@ pub fn update_observed_map(game: &mut Game) {
         observed_tile.items.clear();
 
         if let Some(ref item_list) = tile.item_list {
-            for (i, &(ref item, _)) in item_list.iter().take(MAX_ITEM_FOR_DRAW).enumerate() {
+            for &(ref item, _) in item_list.iter().take(MAX_ITEM_FOR_DRAW) {
                 observed_tile.items.push(item.idx);
             }
         }

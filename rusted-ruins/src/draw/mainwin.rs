@@ -4,7 +4,7 @@ use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use sdl2::render::Texture;
 use array2d::*;
-use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I, N_TILE_IMG_LAYER};
+use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::{Holder, UIImgIdx};
 use common::obj::*;
 use common::gobj;

@@ -1,6 +1,5 @@
 
 use array2d::*;
-use common::basic::MAX_ITEM_FOR_DRAW;
 use common::objholder::*;
 use common::gamedata::*;
 use common::gobj;
