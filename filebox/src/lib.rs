@@ -29,7 +29,7 @@ impl<T: WithId> Deref for FileBox<T> {
         if let Some(ref inner) = self.inner {
             inner
         } else {
-            panic!("deref for unloaded object: {:?}", self.id);
+            panic!("deref for unloaded object: {:08x}", self.id);
         }
     }
 }
@@ -40,7 +40,7 @@ impl<T: WithId> DerefMut for FileBox<T> {
             self.changed.set(true);
             inner
         } else {
-            panic!("deref for unloaded object: {:?}", self.id);
+            panic!("deref for unloaded object: {:08x}", self.id);
         }
     }
 }

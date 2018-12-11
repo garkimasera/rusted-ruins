@@ -12,6 +12,7 @@ use text::ToText;
 use super::Game;
 use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
+use super::saveload::get_each_save_dir;
 use rules::RULES;
 
 pub trait MapEx {
@@ -50,15 +51,17 @@ impl MapEx for Map {
 /// Switch current map to the specified map
 pub fn switch_map(game: &mut Game, mid: MapId) {
     {
+        let save_dir = game.save_dir.as_ref().unwrap();
         let gd = &mut game.gd;
         
         trace!("Switch map to {:?}", mid);
         // If next_mid floor doesn't exist, create new floor
-        if !mid.is_region_map() && gd.region.get_map_checked(mid).is_none() {
+        if !mid.is_region_map() && !gd.region.map_exist(mid) {
             info!("{:?} is not exist, so try to create new floor", mid);
             super::dungeon_gen::extend_site_floor(gd, mid.sid());
         }
         let prev_mid = gd.get_current_mapid();
+        gd.region.preload_map(mid, save_dir.join("maps"));
         gd.set_current_mapid(mid);
 
         let new_player_pos = if mid.is_region_map() && !prev_mid.is_region_map()

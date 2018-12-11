@@ -35,7 +35,7 @@ pub fn save_file_list() -> Result<Vec<PathBuf>, ::std::io::Error> {
     for entry in fs::read_dir(get_save_dir())? {
         let file = entry?;
 
-        if !file.file_type()?.is_file() {
+        if !file.file_type()?.is_dir() {
             continue;
         }
 
@@ -61,5 +61,10 @@ pub fn gen_box_id(_gd: &GameData) -> u64 {
 
 fn get_save_dir() -> PathBuf {
     USER_DIR.clone().join(SAVE_DIR_NAME)
+}
+
+/// Get each save directory path "save_dir/save_name"
+pub fn get_each_save_dir(gd: &GameData) -> PathBuf {
+    get_save_dir().join(format!("{}.{}", gd.meta.save_name(), SAVE_EXTENSION))
 }
 

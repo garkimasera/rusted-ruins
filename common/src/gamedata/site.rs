@@ -54,6 +54,10 @@ impl Site {
         &mut self.map[floor as usize]
     }
 
+    pub fn get_boxed_map_mut(&mut self, floor: u32) -> &mut BoxedMap {
+        &mut self.map[floor as usize]
+    }
+
     pub fn get_map_checked(&self, floor: u32) -> Option<&Map> {
         use std::ops::Deref;
         self.map.get(floor as usize).map(|a| a.deref())
@@ -86,6 +90,10 @@ impl Site {
 
     pub fn max_floor(&self) -> u32 {
         self.max_floor
+    }
+
+    pub fn map_exist(&self, floor: u32) -> bool {
+        self.floor_num() > floor
     }
 
     pub fn visit_maps<F: FnMut(u32, &BoxedMap)>(&self, mut f: F) {

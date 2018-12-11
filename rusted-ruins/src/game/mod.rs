@@ -25,6 +25,7 @@ mod dungeon_gen;
 pub mod saveload;
 
 use std::borrow::Cow;
+use std::path::PathBuf;
 use array2d::Vec2d;
 use common::gamedata::*;
 pub use self::command::Command;
@@ -54,12 +55,14 @@ pub struct Game {
     script: Option<ScriptEngine>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
+    save_dir: Option<PathBuf>,
     pub view_map: view::ViewMap,
     pub frequent_tex: self::frequent_tex::FrequentTextures,
 }
 
 impl Game {
     pub fn new(gd: GameData) -> Game {
+        let save_dir = self::saveload::get_each_save_dir(&gd);
         let game = Game {
             gd: gd,
             state: GameState::PlayerTurn,
@@ -69,6 +72,7 @@ impl Game {
             dying_charas: Vec::new(),
             script: None,
             target_chara: None,
+            save_dir: Some(save_dir),
             view_map: view::ViewMap::new(),
             frequent_tex: self::frequent_tex::FrequentTextures::new(),
         };
@@ -87,6 +91,7 @@ impl Game {
             dying_charas: Vec::new(),
             script: None,
             target_chara: None,
+            save_dir: None,
             view_map: view::ViewMap::new(),
             frequent_tex: self::frequent_tex::FrequentTextures::new(),
         }

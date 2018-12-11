@@ -1,7 +1,7 @@
 
 use std::path::{Path, PathBuf};
 use std::fs::{File, create_dir_all};
-use std::io::BufWriter;
+use std::io::{BufReader, BufWriter};
 use serde_cbor::ser::to_writer_packed;
 use serde_cbor::from_reader;
 use basic::SAVE_EXTENSION;
@@ -48,10 +48,25 @@ impl GameData {
     }
 
     /// Load game data from specified directory
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, String> {
-        let file = File::open(path).map_err(|e| e.to_string())?;
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<::std::error::Error>> {
+        let save_dir = path.as_ref();
+        
+        // Read metadata file
+        let mut file = BufReader::new(File::open(save_dir.join("metadata"))?);
+        let meta: MetaData = serde_json::from_reader(&mut file)?;
 
-        from_reader(&file).map_err(|e| e.to_string())
+        // Read GameData
+        let mut file = BufReader::new(File::open(save_dir.join("gamedata"))?);
+        let mut gamedata: GameData = from_reader(&mut file)?;
+
+        gamedata.meta = meta;
+
+        // Preload current map
+        let mid = gamedata.get_current_mapid();
+        let map_dir = save_dir.join("maps");
+        gamedata.region.preload_map(mid, map_dir);
+        
+        Ok(gamedata)
     }
 
     pub fn save_dir<P: AsRef<Path>>(&self, path: P) -> PathBuf {

@@ -1,5 +1,6 @@
 
 use std::collections::HashMap;
+use std::path::Path;
 use array2d::*;
 use filebox::FileBox;
 use super::site::*;
@@ -85,6 +86,13 @@ impl RegionHolder {
         }
     }
 
+    pub fn get_boxed_map_mut(&mut self, mid: MapId) -> &mut BoxedMap {
+        match mid {
+            MapId::SiteMap { sid, floor } => { self.get_site_mut(sid).get_boxed_map_mut(floor) }
+            MapId::RegionMap { rid } => { &mut self.get_mut(rid).map }
+        }
+    }
+
     pub fn get_site_checked(&self, sid: SiteId) -> Option<&Site> {
         let region = self.0.get(&sid.rid)?;
         Some(&region.sites.get(&sid)?.site)
@@ -93,6 +101,19 @@ impl RegionHolder {
     pub fn get_site_mut_checked(&mut self, sid: SiteId) -> Option<&mut Site> {
         let region = self.0.get_mut(&sid.rid)?;
         Some(&mut region.sites.get_mut(&sid)?.site)
+    }
+
+    pub fn map_exist(&self, mid: MapId) -> bool {
+        match mid {
+            MapId::SiteMap { sid, floor } => {
+                if let Some(site) = self.get_site_checked(sid) {
+                    site.map_exist(floor)
+                } else {
+                    false
+                }
+            }
+            MapId::RegionMap { rid } => self.0.contains_key(&rid)
+        }
     }
 
     pub fn get_map_checked(&self, mid: MapId) -> Option<&Map> {
@@ -115,6 +136,20 @@ impl RegionHolder {
             }
             MapId::RegionMap { rid } => {
                 Some(&self.get_checked(rid)?.map)
+            }
+        }
+    }
+
+    /// Preload map from file
+    pub fn preload_map<P: AsRef<Path>>(&mut self, mid: MapId, map_dir_path: P) {
+        info!("preload map {:?}", mid);
+        println!("{}", map_dir_path.as_ref().to_string_lossy());
+        let boxed_map = self.get_boxed_map_mut(mid);
+        match boxed_map.read(map_dir_path) {
+            Ok(_) => (),
+            Err(e) => {
+                error!("{}", e);
+                unimplemented!()
             }
         }
     }
