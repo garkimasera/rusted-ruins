@@ -6,12 +6,12 @@ use common::obj::Object;
 use common::pakutil::write_object;
 use toml::de::from_str;
 use tar;
-use error::*;
-use verbose::print_verbose;
-use dir;
+use crate::error::*;
+use crate::verbose::print_verbose;
+use crate::dir;
 
-use tomlinput::TomlInput;
-use buildobj::build_object;
+use crate::tomlinput::TomlInput;
+use crate::buildobj::build_object;
 
 pub fn compile(files: &[&str], output_file: &String) {
     let out = File::create(output_file).unwrap();

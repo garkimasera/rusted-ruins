@@ -4,14 +4,13 @@ use std::io::Read;
 use std::path::Path;
 use image::{self, GenericImageView};
 use common::obj::*;
-use dir;
-use error::*;
-use tomlinput::*;
+use crate::error::*;
+use crate::tomlinput::*;
 
 pub fn build_img(input: ImgInput) -> Result<(Img, ImgData), Error> {
     let path = Path::new(&input.path);
     let newpath = if path.is_relative() {
-        dir::path_from_src_dir(&path)
+        crate::dir::path_from_src_dir(&path)
     }else{
         path.to_owned()
     };

@@ -1,10 +1,9 @@
 
 use std::rc::Rc;
 use std::cell::Cell;
-use gtk;
 use gtk::prelude::*;
-use edit_map::EditingMap;
-use ui::{Ui, SelectedItem};
+use crate::edit_map::EditingMap;
+use crate::ui::{Ui, SelectedItem};
 use array2d::Vec2d;
 use common::maptemplate::MapTemplateBoundaryBehavior;
 

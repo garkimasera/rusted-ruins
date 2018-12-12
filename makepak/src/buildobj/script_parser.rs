@@ -4,7 +4,7 @@ use nom::types::CompleteStr;
 use common::hashmap::HashMap;
 
 use common::script::*;
-use error::PakCompileError;
+use crate::error::PakCompileError;
 use super::expr_parser::*;
 
 named!(end_line<CompleteStr, ()>,

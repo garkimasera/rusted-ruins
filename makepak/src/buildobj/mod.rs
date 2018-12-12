@@ -7,8 +7,8 @@ mod script_parser;
 use array2d::Vec2d;
 use common::obj::*;
 use common::gamedata;
-use tomlinput::TomlInput;
-use error::*;
+use crate::tomlinput::TomlInput;
+use crate::error::*;
 use self::img::*;
 use self::item::build_item_object;
 
@@ -162,7 +162,7 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject, Error> {
 
 fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Error> {
     let rg = get_optional_field!(tomlinput, region_gen);
-    use tomlinput::SiteGenIdAndPos;
+    use crate::tomlinput::SiteGenIdAndPos;
 
     let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
         v.into_iter().map(|a| (a.id, a.pos)).collect()

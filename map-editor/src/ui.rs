@@ -3,16 +3,14 @@ use std::rc::Rc;
 use std::cell::{Cell, RefCell};
 use std::path::PathBuf;
 use std::error::Error;
-use gdk;
-use gtk;
 use gtk::prelude::*;
 use array2d::Vec2d;
 use common::objholder::*;
 use common::basic::TILE_SIZE_I;
-use pixbuf_holder::PixbufHolder;
-use edit_map::EditingMap;
-use iconview::IconView;
-use property_controls::PropertyControls;
+use crate::pixbuf_holder::PixbufHolder;
+use crate::edit_map::EditingMap;
+use crate::iconview::IconView;
+use crate::property_controls::PropertyControls;
 
 const WRITE_BUTTON: u32 = 1;
 const CENTERING_BUTTON: u32 = 2;
@@ -128,7 +126,7 @@ pub fn build_ui(application: &gtk::Application) {
             let height = widget.get_allocated_height();
             let map = uic.map.borrow();
             let pos = uic.get_map_pos();
-            ::draw_map::draw_map(
+            crate::draw_map::draw_map(
                 context, &*map, &*uic.pbh, width, height, pos, *uic.layer_visible.borrow());
             Inhibit(false)
         });
@@ -183,7 +181,7 @@ pub fn build_ui(application: &gtk::Application) {
         let uic = ui.clone();
         menu_open.connect_activate(move |_| {
             if let Some(path) = file_open(&uic) {
-                match ::file::load_from_file(&path) {
+                match crate::file::load_from_file(&path) {
                     Ok(mapobj) => {
                         {
                             *uic.map.borrow_mut() = EditingMap::from(mapobj);
@@ -324,8 +322,8 @@ pub fn build_ui(application: &gtk::Application) {
         });
     }
 
-    ::property_controls::connect_for_property_controls(&ui);
-    ::iconview::set_iconview(&ui);
+    crate::property_controls::connect_for_property_controls(&ui);
+    crate::iconview::set_iconview(&ui);
     ui.window.show_all();
 }
 
@@ -403,7 +401,7 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
 
 fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<Error>> {
     let mapobj = ui.map.borrow().create_mapobj();
-    ::file::save_to_file(&path, mapobj)
+    crate::file::save_to_file(&path, mapobj)
 }
 
 fn create_file_filter() -> gtk::FileFilter {

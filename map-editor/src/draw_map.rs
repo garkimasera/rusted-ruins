@@ -8,8 +8,8 @@ use common::obj::ImgObject;
 use cairo::Context;
 use gdk::prelude::ContextExt;
 use gdk_pixbuf::{Pixbuf, PixbufExt};
-use pixbuf_holder::PixbufHolder;
-use edit_map::EditingMap;
+use crate::pixbuf_holder::PixbufHolder;
+use crate::edit_map::EditingMap;
 
 /// Draw tiles and objects on map
 pub fn draw_map(cr: &Context, map: &EditingMap, pbh: &PixbufHolder,

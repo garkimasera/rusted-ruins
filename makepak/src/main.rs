@@ -1,16 +1,10 @@
 
 #[macro_use]
 extern crate lazy_static;
-extern crate regex;
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate toml;
-extern crate tar;
 #[macro_use]
 extern crate failure;
-extern crate clap;
-extern crate image;
 #[macro_use]
 extern crate nom;
 extern crate rusted_ruins_array2d as array2d;

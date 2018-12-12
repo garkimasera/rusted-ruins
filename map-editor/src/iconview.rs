@@ -1,9 +1,8 @@
 
 use std::cell::Cell;
-use gtk;
 use gtk::prelude::*;
-use ui::Ui;
-use ui::SelectedItem;
+use crate::ui::Ui;
+use crate::ui::SelectedItem;
 use common::objholder::*;
 use common::gobj;
 

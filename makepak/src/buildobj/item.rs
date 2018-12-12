@@ -1,6 +1,6 @@
 
-use error::*;
-use tomlinput::*;
+use crate::error::*;
+use crate::tomlinput::*;
 use common::obj::*;
 use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
