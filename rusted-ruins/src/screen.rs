@@ -4,10 +4,10 @@ use std::thread::sleep;
 use sdl2;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
-use config::{CONFIG, SCREEN_CFG};
+use crate::config::{CONFIG, SCREEN_CFG};
 
-use eventhandler::EventHandler;
-use window::WindowManager;
+use crate::eventhandler::EventHandler;
+use crate::window::WindowManager;
 
 pub struct Screen {
     canvas: WindowCanvas,
@@ -38,7 +38,7 @@ impl Screen {
         }
     }
 
-    pub fn main_loop(&mut self, sdl_context: &::SdlContext) {
+    pub fn main_loop(&mut self, sdl_context: &crate::SdlContext) {
         let fps_duration = Duration::from_millis(1000 / 30);
         let mut event_pump = sdl_context.sdl_context.event_pump().unwrap();
         let mut prev_instant = Instant::now();

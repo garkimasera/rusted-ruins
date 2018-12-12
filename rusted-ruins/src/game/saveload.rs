@@ -3,8 +3,8 @@ use std::fs;
 use std::path::PathBuf;
 use common::basic::{SAVE_EXTENSION, SAVE_DIR_NAME};
 use common::gamedata::GameData;
-use config::USER_DIR;
-use game::{Game, InfoGetter};
+use crate::config::USER_DIR;
+use crate::game::{Game, InfoGetter};
 
 impl Game {
     pub fn save_file(&self) {

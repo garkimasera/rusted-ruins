@@ -1,19 +1,19 @@
 
 use std::any::Any;
-use window::{Window, DialogWindow, DialogResult};
+use crate::window::{Window, DialogWindow, DialogResult};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
-use sdlvalues::*;
-use game::{Game, Animation, Command, DoPlayerAction};
-use config::UI_CFG;
-use draw::border::draw_rect_border;
-use eventhandler::InputMode;
+use crate::sdlvalues::*;
+use crate::game::{Game, Animation, Command, DoPlayerAction};
+use crate::config::UI_CFG;
+use crate::draw::border::draw_rect_border;
+use crate::eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
 use common::gamedata::*;
-use sdlvalues::IconIdx;
-use game::item::filter::*;
-use text;
+use crate::sdlvalues::IconIdx;
+use crate::game::item::filter::*;
+use crate::text;
 
 pub struct EquipWindow {
     rect: Rect,
@@ -55,7 +55,7 @@ impl EquipWindow {
                 } else {
                     rows.push(ListRow::IconIconStr(
                         esk_icon,
-                        IconIdx::Item(::common::objholder::ItemIdx::default()),
+                        IconIdx::Item(common::objholder::ItemIdx::default()),
                         "-".to_owned()));
                 }
                 slots.push((esk, esk_i));

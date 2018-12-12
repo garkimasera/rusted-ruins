@@ -2,7 +2,7 @@
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
-use config::UI_CFG;
+use crate::config::UI_CFG;
 
 pub fn draw_rect_border(canvas: &mut WindowCanvas, rect: Rect) {
     let light_color = UI_CFG.color.border_light;

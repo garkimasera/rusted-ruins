@@ -1,7 +1,7 @@
 //! Functions to search objects in a map
 
 use common::gamedata::*;
-use game::view::calc_visual_distance;
+use crate::game::view::calc_visual_distance;
 
 /// Search the nearest chara's position that has given Relationship on the current map.
 pub fn search_nearest_target(gd: &GameData, center_cid: CharaId, rel: Relationship) -> Option<CharaId> {

@@ -1,5 +1,5 @@
 
-use game::Command;
+use crate::game::Command;
 use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]

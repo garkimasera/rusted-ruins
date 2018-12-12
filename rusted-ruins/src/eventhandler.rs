@@ -5,9 +5,9 @@ use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
 use std::time::Instant;
-use array2d::*;
-use game::Command;
-use config::{INPUT_CFG, UI_CFG};
+use crate::array2d::*;
+use crate::game::Command;
+use crate::config::{INPUT_CFG, UI_CFG};
 
 /// Convert from SDL Event to Command
 pub struct EventHandler {

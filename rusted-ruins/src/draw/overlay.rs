@@ -1,9 +1,9 @@
 
-use array2d::*;
+use crate::array2d::*;
 use common::piece_pattern::*;
 use common::objholder::EffectIdx;
-use game::{Game, InfoGetter};
-use game::frequent_tex::Overlay;
+use crate::game::{Game, InfoGetter};
+use crate::game::frequent_tex::Overlay;
 
 pub enum FogPattern {
     None,

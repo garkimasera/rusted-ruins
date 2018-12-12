@@ -2,7 +2,7 @@
 use common::maptemplate::*;
 use common::gamedata::*;
 use common::gobj;
-use game::item::gen::from_item_gen;
+use crate::game::item::gen::from_item_gen;
 
 pub fn from_template(t: &MapTemplateObject) -> Map {
     let mut map = create_terrain(t);

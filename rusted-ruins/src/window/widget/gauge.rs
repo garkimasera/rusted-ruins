@@ -3,8 +3,8 @@ use sdl2::rect::Rect;
 use sdl2::pixels::Color;
 use sdl2::render::WindowCanvas;
 use super::{WidgetTrait, LabelWidget};
-use sdlvalues::{SdlValues, FontKind};
-use config::UI_CFG;
+use crate::sdlvalues::{SdlValues, FontKind};
+use crate::config::UI_CFG;
 
 /// Bar gauge widget.
 pub struct GaugeWidget {

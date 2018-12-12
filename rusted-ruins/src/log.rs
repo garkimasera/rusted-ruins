@@ -100,7 +100,7 @@ macro_rules! game_log {
     };
     ($textid:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
-        use text::ToText;
+        use crate::text::ToText;
         
         let text_raw = $crate::text::log_txt($textid);
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
@@ -121,7 +121,7 @@ macro_rules! game_log_i {
     };
     ($textid:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
-        use text::ToText;
+        use crate::text::ToText;
         
         let text_raw = $crate::text::log_txt($textid);
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();

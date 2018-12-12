@@ -1,10 +1,10 @@
 
 use super::Game;
 use super::action;
-use text::ToText;
+use crate::text::ToText;
 use common::gamedata::*;
-use game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
-use array2d::*;
+use crate::game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
+use crate::array2d::*;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
@@ -105,7 +105,7 @@ impl<'a> DoPlayerAction<'a> {
                             let mid = MapId::site_first_floor(sid);
                             let site = gd.region.get_site(sid);
                             let msg = replace_str!(
-                                ::text::ui_txt("dialog.enter_site");
+                                crate::text::ui_txt("dialog.enter_site");
                                 site_name=site);
                             log_msg = LogMessage::EnterSite(site.to_text().to_string());
                             (mid, msg.into())
@@ -188,7 +188,7 @@ impl<'a> DoPlayerAction<'a> {
     /// Shot to target using long range weapon
     pub fn shot(&mut self) {
         if self.0.target_chara.is_none() {
-            self.0.target_chara = ::game::map::search::search_nearest_target(
+            self.0.target_chara = crate::game::map::search::search_nearest_target(
                 self.gd(), CharaId::Player, Relationship::HOSTILE);
         }
         
@@ -290,9 +290,9 @@ impl<'a> DoPlayerAction<'a> {
 
 pub fn msg_switch_map(next_mid: MapId) -> ::std::borrow::Cow<'static, str> {
     if next_mid.is_region_map() {
-        ::text::ui_txt("dialog.exit_to_regionmap").into()
+        crate::text::ui_txt("dialog.exit_to_regionmap").into()
     } else {
-        ::text::ui_txt("dialog.move_floor").into()
+        crate::text::ui_txt("dialog.move_floor").into()
     }
 }
 

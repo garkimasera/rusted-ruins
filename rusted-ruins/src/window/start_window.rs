@@ -2,12 +2,12 @@
 use std::ffi::OsStr;
 use std::path::PathBuf;
 use common::gamedata::GameData;
-use config::{SCREEN_CFG, UI_CFG};
+use crate::config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
 use super::SpecialDialogResult;
 use super::choose_window::PagedChooseWindow;
-use text;
+use crate::text;
 
 pub struct StartWindow {
     title_screen: ImageWidget,
@@ -91,7 +91,7 @@ pub struct ChooseSaveFileDialog {
 
 impl ChooseSaveFileDialog {
     pub fn new() -> ChooseSaveFileDialog {
-        let save_files = ::game::saveload::save_file_list().expect("Error at reading save file directory");
+        let save_files = crate::game::saveload::save_file_list().expect("Error at reading save file directory");
         
         let file_name_list: Vec<ListRow> = save_files
             .iter()

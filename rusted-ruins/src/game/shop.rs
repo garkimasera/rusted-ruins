@@ -1,8 +1,8 @@
 
 use common::gamedata::*;
 use rules::RULES;
-use game::extrait::*;
-use game::item::gen::gen_item_by_level;
+use crate::game::extrait::*;
+use crate::game::item::gen::gen_item_by_level;
 
 pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
     let price = gd.get_item(il).0.price();
@@ -24,7 +24,7 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
 pub fn update_items_on_shop(shop: &mut Shop) {
     shop.items.clear();
 
-    let n_gen_item = ::rng::gen_range(RULES.town.min_shop_items, RULES.town.max_shop_items);
+    let n_gen_item = rng::gen_range(RULES.town.min_shop_items, RULES.town.max_shop_items);
     
     for _ in 0..n_gen_item {
         shop.items.append(gen_shop_item(shop.level, &shop.kind), 1);

@@ -1,5 +1,4 @@
 
-extern crate sdl2;
 extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_audio as audio;
@@ -9,16 +8,10 @@ extern crate rusted_ruins_map_generator as map_generator;
 #[macro_use]
 extern crate lazy_static;
 extern crate failure;
-extern crate fnv;
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate log as applog;
-extern crate env_logger;
-extern crate toml;
-extern crate walkdir;
-extern crate dirs;
 
 #[macro_use]
 mod error;
@@ -74,21 +67,21 @@ fn init_lazy_statics() {
 }
 
 fn init_obj() {
-    let mut data_dirs = ::config::get_data_dirs();
+    let mut data_dirs = crate::config::get_data_dirs();
     for d in data_dirs.iter_mut() {
         info!("Loading objects from \"{}\"", d.to_string_lossy());
         d.push("paks");
     }
-    ::common::gobj::init(data_dirs);
+    common::gobj::init(data_dirs);
 }
 
 fn init_rules() {
-    rules::init(&*::config::APP_DIR);
+    rules::init(&*crate::config::APP_DIR);
 }
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.
 fn setup_logger() {
-    use applog::LevelFilter;
+    use crate::applog::LevelFilter;
     use std::env;
     use std::io::Write;
     let mut builder = env_logger::Builder::new();

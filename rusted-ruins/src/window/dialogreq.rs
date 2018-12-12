@@ -1,6 +1,6 @@
 
 use common::gamedata::CharaId;
-use game::{Game, DialogOpenRequest, DoPlayerAction, TalkText};
+use crate::game::{Game, DialogOpenRequest, DoPlayerAction, TalkText};
 use super::DialogWindow;
 use super::talk_window;
 use super::item_window::*;

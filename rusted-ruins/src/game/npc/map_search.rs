@@ -1,8 +1,8 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
-use array2d::*;
+use crate::array2d::*;
 use common::gamedata::*;
-use game::InfoGetter;
+use crate::game::InfoGetter;
 
 /// Search nearest other character from cid.
 /// If f() returns false, skip the character.

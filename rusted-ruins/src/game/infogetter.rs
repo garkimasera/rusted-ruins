@@ -1,9 +1,9 @@
 
-use array2d::*;
+use crate::array2d::*;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
-use game::extrait::*;
+use crate::game::extrait::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {
@@ -22,7 +22,7 @@ pub trait InfoGetter {
     /// Player's current tile is entrance/exit or not
     fn on_map_entrance(&self) -> bool;
     /// Return item list in the tile that player stands on
-    fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList>;
+    fn item_on_player_tile(&self) -> Option<&common::gamedata::item::ItemList>;
     /// Return any item exist or not on player tile
     fn is_item_on_player_tile(&self) -> bool;
     /// Judge given map is open-air or not
@@ -75,7 +75,7 @@ impl InfoGetter for GameData {
         }
     }
 
-    fn item_on_player_tile(&self) -> Option<&::common::gamedata::item::ItemList> {
+    fn item_on_player_tile(&self) -> Option<&common::gamedata::item::ItemList> {
         let player_pos = self.player_pos();
         self.get_current_map().tile[player_pos].item_list.as_ref()
     }

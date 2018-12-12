@@ -1,5 +1,5 @@
 
-use array2d::Vec2d;
+use crate::array2d::Vec2d;
 use common::obj::SiteGenObject;
 use common::gamedata::*;
 use common::gobj;
@@ -57,7 +57,7 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
 
 /// Update shop states
 pub fn update_shops(gd: &mut GameData, sid: SiteId) {
-    use game::shop::update_items_on_shop;
+    use crate::game::shop::update_items_on_shop;
     
     let site = gd.region.get_site_mut(sid);
     let town = match &mut site.content {

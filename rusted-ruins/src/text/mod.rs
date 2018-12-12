@@ -7,8 +7,8 @@ use std::path::{Path, PathBuf};
 use std::fs;
 use std::io::{BufRead, BufReader};
 use walkdir::WalkDir;
-use error::*;
-use config;
+use crate::error::*;
+use crate::config;
 use common::basic;
 
 /// Initialize lazy static
@@ -92,7 +92,7 @@ pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {
 macro_rules! replace_str {
     ($original_text:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
-        use text::ToText;
+        use crate::text::ToText;
         let text_raw: &str = $original_text.as_ref();
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(

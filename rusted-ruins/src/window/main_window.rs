@@ -1,11 +1,11 @@
 
 use sdl2::render::WindowCanvas;
-use array2d::*;
-use game::{Game, Animation, InfoGetter};
-use sdlvalues::SdlValues;
-use window::Window;
-use draw::mainwin::MainWinDrawer;
-use config::SCREEN_CFG;
+use crate::array2d::*;
+use crate::game::{Game, Animation, InfoGetter};
+use crate::sdlvalues::SdlValues;
+use crate::window::Window;
+use crate::draw::mainwin::MainWinDrawer;
+use crate::config::SCREEN_CFG;
 
 pub struct MainWindow {
     drawer: MainWinDrawer,

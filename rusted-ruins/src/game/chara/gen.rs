@@ -4,7 +4,7 @@ use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::*;
 use common::gobj;
-use game::extrait::*;
+use crate::game::extrait::*;
 use rules::RULES;
 use rng::gen_range;
 

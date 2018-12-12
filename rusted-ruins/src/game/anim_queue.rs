@@ -1,6 +1,6 @@
 
 use std::collections::VecDeque;
-use array2d::*;
+use crate::array2d::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
 use super::animation::*;

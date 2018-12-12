@@ -2,8 +2,8 @@
 use common::gamedata::*;
 use rules::RULES;
 use super::Game;
-use game::combat::DamageKind;
-use game::extrait::*;
+use crate::game::combat::DamageKind;
+use crate::game::extrait::*;
 
 /// This function will be called before the character's turn
 /// 

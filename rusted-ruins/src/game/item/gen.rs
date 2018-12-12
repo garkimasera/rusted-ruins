@@ -43,7 +43,7 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(floor_level: u32, mu
     assert!(sum > 0.0);
 
     // Choose one chara
-    let r = ::rng::gen_range(0.0, sum);
+    let r = rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, item) in items.iter().enumerate() {
         sum += weight_dist.calc(item.gen_level) * item.gen_weight as f64 * f(item);

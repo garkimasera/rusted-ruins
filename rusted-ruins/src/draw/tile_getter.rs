@@ -1,10 +1,10 @@
 
-use array2d::*;
+use crate::array2d::*;
 use common::objholder::*;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SpecialTileObject;
-use game::view::ViewMap;
+use crate::game::view::ViewMap;
 
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
@@ -23,7 +23,7 @@ impl<'a> BackgroundDrawInfo<'a> {
             
             tinfo.tile.as_ref()
         } else {
-            if let Some(ref outside_tile) = map.outside_tile {
+            if let Some(ref _outside_tile) = map.outside_tile {
                 unimplemented!()
                 //Some(outside_tile.tile.clone().into())
             } else {

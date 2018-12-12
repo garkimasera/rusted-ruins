@@ -23,26 +23,26 @@ mod minimap;
 
 use std::any::Any;
 use common::gamedata::*;
-use game::{GameState, DoPlayerAction, InfoGetter, Command};
-use eventhandler::EventHandler;
+use crate::game::{GameState, DoPlayerAction, InfoGetter, Command};
+use crate::eventhandler::EventHandler;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use sdl2::keyboard::TextInputUtil;
-use SdlContext;
+use crate::SdlContext;
 use self::main_window::MainWindow;
 use self::log_window::LogWindow;
 use self::widget::WidgetTrait;
-use array2d::*;
+use crate::array2d::*;
 
 mod commonuse {
-    pub use window::{Window, DialogWindow, DialogResult, WindowDrawMode};
+    pub use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
     pub use sdl2::render::WindowCanvas;
     pub use sdl2::rect::Rect;
-    pub use sdlvalues::SdlValues;
-    pub use game::{Game, Animation, Command, DoPlayerAction};
-    pub use config::{SCREEN_CFG, UI_CFG};
-    pub use draw::border::draw_rect_border;
-    pub use eventhandler::InputMode;
+    pub use crate::sdlvalues::SdlValues;
+    pub use crate::game::{Game, Animation, Command, DoPlayerAction};
+    pub use crate::config::{SCREEN_CFG, UI_CFG};
+    pub use crate::draw::border::draw_rect_border;
+    pub use crate::eventhandler::InputMode;
 }
 
 use self::commonuse::*;
@@ -240,7 +240,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             return true;
         }
         
-        use game::playeract::DoPlayerAction;
+        use crate::game::playeract::DoPlayerAction;
 
         if self.window_stack.len() > 0 {
             let mut tail = self.window_stack.len() - 1;
@@ -393,7 +393,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 match result {
                     SpecialDialogResult::ReturnToStartScreen => {
                         info!("Return to start screen");
-                        ::log::clear();
+                        crate::log::clear();
                         self.window_stack.clear();
                         self.window_stack.push(Box::new(start_window::StartDialog::new()));
                         self.mode = WindowManageMode::Start(start_window::StartWindow::new());
@@ -482,7 +482,7 @@ struct GameWindows {
 
 impl GameWindows {
     fn new() -> GameWindows {
-        use config::SCREEN_CFG;
+        use crate::config::SCREEN_CFG;
         use self::widget::{HBorder, VBorder};
         let mut hborders = Vec::new();
         for hborder in &SCREEN_CFG.hborders {

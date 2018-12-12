@@ -3,9 +3,9 @@ use std::path::PathBuf;
 use sdl2::surface::Surface;
 use sdl2::pixels::Color;
 use sdl2::ttf::*;
-use SdlContext;
-use config::{UI_CFG, FONT_CFG, abs_path};
-use config::visual::FontConfig;
+use crate::SdlContext;
+use crate::config::{UI_CFG, FONT_CFG, abs_path};
+use crate::config::visual::FontConfig;
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub enum FontKind {

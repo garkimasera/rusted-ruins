@@ -26,7 +26,7 @@ pub mod saveload;
 
 use std::borrow::Cow;
 use std::path::PathBuf;
-use array2d::Vec2d;
+use crate::array2d::Vec2d;
 use common::gamedata::*;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
@@ -102,7 +102,7 @@ impl Game {
     }
 
     pub fn advance_turn(&mut self) {
-        ::log::new_line(); // Insert break to log lines
+        crate::log::new_line(); // Insert break to log lines
         turnloop::turn_loop(self);
     }
 

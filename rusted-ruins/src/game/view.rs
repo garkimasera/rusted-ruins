@@ -1,9 +1,9 @@
 //! This module processes the view of characters
 
-use array2d::*;
+use crate::array2d::*;
 use common::gamedata::*;
-use game::Game;
-use game::InfoGetter;
+use crate::game::Game;
+use crate::game::InfoGetter;
 
 /// The cache for determining player's view
 pub struct ViewMap {

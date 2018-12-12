@@ -1,7 +1,7 @@
 //! Helper functions to calculate Window position
 #![allow(unused)]
 
-use config::SCREEN_CFG;
+use crate::config::SCREEN_CFG;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WindowHPos {

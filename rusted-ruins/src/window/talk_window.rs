@@ -5,13 +5,13 @@ use std::borrow::Cow;
 use std::any::Any;
 use common::objholder::CharaTemplateIdx;
 use common::basic::TILE_SIZE;
-use game::{TalkText, AdvanceScriptResult};
-use sdlvalues::FontKind;
-use config::UI_CFG;
+use crate::game::{TalkText, AdvanceScriptResult};
+use crate::sdlvalues::FontKind;
+use crate::config::UI_CFG;
 use super::misc_window::ImageWindow;
 use super::choose_window::ChooseWindow;
 use super::winpos::*;
-use text;
+use crate::text;
 
 pub struct TalkWindow {
     rect: Rect,

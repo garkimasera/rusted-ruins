@@ -2,13 +2,13 @@
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
-use array2d::*;
+use crate::array2d::*;
 use common::gobj;
-use game::Game;
-use sdlvalues::SdlValues;
-use game::{Animation, InfoGetter};
-use window::Window;
-use config::SCREEN_CFG;
+use crate::game::Game;
+use crate::sdlvalues::SdlValues;
+use crate::game::{Animation, InfoGetter};
+use crate::window::Window;
+use crate::config::SCREEN_CFG;
 
 pub struct MiniMapWindow {
     rect: Rect,

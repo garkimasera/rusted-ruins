@@ -4,8 +4,8 @@ use common::gobj;
 use common::gamedata::*;
 use common::script::*;
 
-use game::eval_expr::EvalExpr;
-use game::InfoGetter;
+use crate::game::eval_expr::EvalExpr;
+use crate::game::InfoGetter;
 
 pub struct ScriptEngine {
     script: &'static Script,

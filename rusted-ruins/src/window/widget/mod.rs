@@ -5,9 +5,9 @@ mod image;
 mod label;
 mod list;
 
-use game::Command;
+use crate::game::Command;
 use sdl2::render::WindowCanvas;
-use sdlvalues::SdlValues;
+use crate::sdlvalues::SdlValues;
 
 pub trait WidgetTrait {
     type Response;

@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use common::gamedata::*;
 use common::basic::WAIT_TIME_START;
 use rules::RULES;
-use text::ToText;
+use crate::text::ToText;
 use super::{Game, GameState};
 use super::chara::preturn::preturn;
 use super::npc::process_npc_turn;

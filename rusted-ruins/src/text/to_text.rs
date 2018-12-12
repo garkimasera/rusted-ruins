@@ -2,7 +2,7 @@
 use std::borrow::Cow;
 use common::gamedata::*;
 use common::gobj;
-use text::{self, ToText, ToTextId};
+use crate::text::{self, ToText, ToTextId};
 
 impl<T: ToTextId> ToText for T {
     fn to_text(&self) -> Cow<str> {
@@ -34,7 +34,7 @@ impl ToText for Site {
 
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
-        ::text::obj_txt(gobj::idx_to_id(self.idx)).into()
+        crate::text::obj_txt(gobj::idx_to_id(self.idx)).into()
     }
 }
 
@@ -43,7 +43,7 @@ impl ToText for Chara {
         if let Some(ref name) = self.name {
             name.into()
         } else {
-            ::text::obj_txt(gobj::idx_to_id(self.template)).into()
+            crate::text::obj_txt(gobj::idx_to_id(self.template)).into()
         }
     }
 }

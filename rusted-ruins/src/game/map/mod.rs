@@ -3,12 +3,12 @@ pub mod builder;
 pub mod from_template;
 pub mod search;
 
-use array2d::*;
+use crate::array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::TileKind;
-use text::ToText;
+use crate::text::ToText;
 use super::Game;
 use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
@@ -74,7 +74,7 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
     
         gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
     }
-    ::audio::play_sound("floor-change");
+    crate::audio::play_sound("floor-change");
     super::view::update_view_map(game);
 }
 

@@ -6,7 +6,7 @@ mod update;
 
 use common::gamedata::*;
 use rules::RULES;
-use text::ToText;
+use crate::text::ToText;
 use super::Game;
 use super::extrait::*;
 use super::combat::DamageKind;

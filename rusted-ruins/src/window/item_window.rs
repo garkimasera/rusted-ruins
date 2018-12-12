@@ -1,18 +1,18 @@
 
-use window::{Window, DialogWindow, DialogResult, WindowDrawMode};
+use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
-use sdlvalues::*;
-use text::ToText;
-use game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
-use game::extrait::*;
-use config::UI_CFG;
-use draw::border::draw_rect_border;
-use eventhandler::InputMode;
+use crate::sdlvalues::*;
+use crate::text::ToText;
+use crate::game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
+use crate::game::extrait::*;
+use crate::config::UI_CFG;
+use crate::draw::border::draw_rect_border;
+use crate::eventhandler::InputMode;
 use super::widget::*;
 use super::misc_window::PageWindow;
 use common::gamedata::*;
-use game::item::filter::*;
+use crate::game::item::filter::*;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {

@@ -3,11 +3,11 @@ use std::collections::VecDeque;
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
-use game::{Game, Animation};
-use sdlvalues::*;
-use window::Window;
-use config::{SCREEN_CFG, UI_CFG};
-use log;
+use crate::game::{Game, Animation};
+use crate::sdlvalues::*;
+use crate::window::Window;
+use crate::config::{SCREEN_CFG, UI_CFG};
+use crate::log;
 
 pub struct LogWindow {
     rect: Rect,

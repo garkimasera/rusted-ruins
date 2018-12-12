@@ -1,12 +1,12 @@
 //! This module provides functions for auto generated dungeons
 
-use array2d::*;
-use rng;
+use crate::array2d::*;
+use crate::rng;
 use common::gamedata::*;
 use common::objholder::*;
 use common::gobj;
-use game::map::builder::MapBuilder;
-use game::saveload::gen_box_id;
+use crate::game::map::builder::MapBuilder;
+use crate::game::saveload::gen_box_id;
 use rules::RULES;
 
 /// Add a new dungeon
@@ -55,7 +55,7 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
 pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
     let map = gd.region.get_map_mut(mid);
 
-    let p = if let Some(p) = ::game::map::choose_empty_tile(map) { p } else { return; };
+    let p = if let Some(p) = crate::game::map::choose_empty_tile(map) { p } else { return; };
 
     let idx: ItemIdx = gobj::id_to_idx("ancient-box");
     let item_obj: &ItemObject = gobj::get_obj(idx);

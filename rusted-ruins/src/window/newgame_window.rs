@@ -1,10 +1,10 @@
 
-use config::SCREEN_CFG;
+use crate::config::SCREEN_CFG;
 use super::commonuse::*;
 use super::widget::*;
-use text;
+use crate::text;
 use common::gamedata::*;
-use game::newgame::NewGameBuilder;
+use crate::game::newgame::NewGameBuilder;
 use super::text_window::{TextWindow, ScrollingTextWindow};
 use super::text_input_dialog::TextInputDialog;
 use super::choose_window::PagedChooseWindow;

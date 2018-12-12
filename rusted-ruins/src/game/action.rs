@@ -4,7 +4,7 @@
 use super::Game;
 use super::combat;
 use super::extrait::*;
-use array2d::*;
+use crate::array2d::*;
 use common::gamedata::*;
 use common::gobj;
 

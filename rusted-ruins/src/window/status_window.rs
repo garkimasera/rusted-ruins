@@ -3,11 +3,11 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gobj;
 use super::commonuse::*;
 use super::widget::*;
-use sdlvalues::FontKind;
-use config::UI_CFG;
+use crate::sdlvalues::FontKind;
+use crate::config::UI_CFG;
 use common::gamedata::*;
-use game::extrait::*;
-use text::ToText;
+use crate::game::extrait::*;
+use crate::text::ToText;
 use super::group_window::*;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
@@ -117,7 +117,7 @@ impl SkillWindow {
         let mut gauges: Vec<GaugeWidget> = Vec::new();
         let mut labels: Vec<LabelWidget> = Vec::new();
         
-        let chara = gd.chara.get(::common::gamedata::chara::CharaId::Player);
+        let chara = gd.chara.get(common::gamedata::chara::CharaId::Player);
         for (i, skill_kind) in chara.skills.skills.keys().enumerate() {
             let (skill_level, exp) = chara.skills.get_level_exp(*skill_kind);
             let i0 = i as i32 / UI_CFG.skill_window.n_row as i32;

@@ -1,5 +1,5 @@
 
-use rng;
+use crate::rng;
 use super::Game;
 use super::chara::CharaEx;
 use common::gobj;
@@ -66,7 +66,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
     // Sound effect
-    ::audio::play_sound("punch");
+    crate::audio::play_sound("punch");
 }
 
 /// Shot target by long range weapons.
@@ -120,7 +120,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);
     // Sound effect
-    ::audio::play_sound("arrow");
+    crate::audio::play_sound("arrow");
     true
 }
 

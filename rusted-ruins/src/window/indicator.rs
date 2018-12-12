@@ -1,13 +1,13 @@
 
-use config::{SCREEN_CFG, UI_CFG};
-use game::InfoGetter;
-use text::ToText;
+use crate::config::{SCREEN_CFG, UI_CFG};
+use crate::game::InfoGetter;
+use crate::text::ToText;
 use super::commonuse::*;
 use super::widget::*;
 use common::gobj;
 use common::obj::UIImgObject;
 use common::gamedata::*;
-use sdlvalues::FontKind;
+use crate::sdlvalues::FontKind;
 
 pub struct HPIndicator {
     rect: Rect,
@@ -176,7 +176,7 @@ impl StatusInfo {
             for (i, status) in self.status.iter().enumerate() {
                 let label = LabelWidget::bordered(
                     Rect::new(rect.x, rect.y - rect.h * i as i32, 1, 1),
-                    ::text::to_txt(status),
+                    crate::text::to_txt(status),
                     FontKind::S);
                 self.labels.push(label);
             }

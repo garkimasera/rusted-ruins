@@ -1,11 +1,11 @@
 
 use common::basic::*;
 use common::objholder::*;
-use config::SCREEN_CFG;
+use crate::config::SCREEN_CFG;
 use super::commonuse::*;
 use super::widget::WidgetTrait;
 use super::widget::LabelWidget;
-use sdlvalues::FontKind;
+use crate::sdlvalues::FontKind;
 
 #[derive(Clone, Copy)]
 pub struct MemberInfo {
@@ -132,7 +132,7 @@ impl TabsNavigator {
             .enumerate()
             .map(|(i, text_id)| LabelWidget::bordered(
                 Rect::new(i as i32 * TAB_ICON_W as i32, TAB_ICON_H as i32, TAB_ICON_W, TAB_TEXT_H),
-                ::text::ui_txt(text_id),
+                crate::text::ui_txt(text_id),
                 FontKind::S).centering())
             .collect();
         

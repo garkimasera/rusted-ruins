@@ -1,9 +1,9 @@
 
-use array2d::*;
+use crate::array2d::*;
 use common::objholder::*;
 use common::gamedata::map::*;
 use common::gobj;
-use map_generator::{MapGenerator, GeneratedMap, TileKind};
+use crate::map_generator::{MapGenerator, GeneratedMap, TileKind};
 
 #[derive(Default)]
 pub struct MapBuilder {

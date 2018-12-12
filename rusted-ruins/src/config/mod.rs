@@ -6,7 +6,7 @@ pub mod input;
 use std::path::PathBuf;
 use std::env;
 use toml;
-use util::read_file_as_string;
+use crate::util::read_file_as_string;
 use std::process::exit;
 use common::basic;
 

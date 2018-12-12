@@ -10,7 +10,7 @@ pub use self::textrenderer::{TextRenderer, FontKind};
 use self::textcachepool::TextCachePool;
 pub use self::textcachepool::TextCache;
 use common::gobj;
-use SdlContext;
+use crate::SdlContext;
 
 /// Includes data that isn't used by Game
 /// Used for rendering, or music/sound playing

@@ -1,8 +1,8 @@
 
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
-use sdlvalues::*;
-use config::UI_CFG;
+use crate::sdlvalues::*;
+use crate::config::UI_CFG;
 use super::WidgetTrait;
 
 /// Simple label widget.

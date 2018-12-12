@@ -1,7 +1,7 @@
 
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
-use config::{CfgRect, CfgPos, CfgColor, SCREEN_CFG};
+use crate::config::{CfgRect, CfgPos, CfgColor, SCREEN_CFG};
 
 /// Centering for main window
 pub const CENTERING_POS: i32 = -999;

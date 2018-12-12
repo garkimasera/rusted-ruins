@@ -1,6 +1,6 @@
 
-use config::UI_CFG;
-use game::DoPlayerAction;
+use crate::config::UI_CFG;
+use crate::game::DoPlayerAction;
 use super::commonuse::*;
 use super::text_window::TextWindow;
 use super::choose_window::ChooseWindow;
