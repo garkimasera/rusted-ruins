@@ -85,8 +85,6 @@ impl Window for TalkWindow {
 
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-
-        let mut new_talk_text = None; // TODO: Workaround for lack of NLL
         
         if let Some(ref mut choose_win) = self.choose_win {
             match choose_win.process_command(command, pa) {
@@ -95,9 +93,8 @@ impl DialogWindow for TalkWindow {
                     if let Ok(choosed_answer) = choosed_answer.downcast::<u32>() {
                         match pa.advance_talk(Some(*choosed_answer)) {
                             AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                                // TODO: Workaround for lack of NLL
-                                // self.update_page(Some(talk_text));
-                                new_talk_text = Some(talk_text);
+                                self.update_page(Some(talk_text));
+                                return DialogResult::Continue;
                             }
                             AdvanceScriptResult::Continue => {
                                 return DialogResult::Continue;
@@ -110,11 +107,6 @@ impl DialogWindow for TalkWindow {
                 }
                 _ => (),
             }
-        }
-
-        if let Some(talk_text) = new_talk_text { // TODO: Workaround for lack of NLL
-            self.update_page(Some(talk_text));
-            return DialogResult::Continue;
         }
         
         match *command {

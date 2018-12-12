@@ -41,9 +41,7 @@ pub fn save_file_list() -> Result<Vec<PathBuf>, ::std::io::Error> {
 
         let path = file.path();
 
-        // let extension = path.extension(); // TODO: May use this line with NLL
-        let path_clone = path.clone();
-        let extension = path_clone.extension();
+        let extension = path.extension();
         
         if extension.is_some() && extension.unwrap() == SAVE_EXTENSION {
             list.push(path);

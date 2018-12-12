@@ -222,10 +222,8 @@ impl GameData {
         };
         
         self.create_item_list_on_tile(dest);
-        { // TODO: Remove this with NLL
-            let dest_list = self.get_item_list_mut(dest);
-            dest_list.append(item, n);
-        }
+        let dest_list = self.get_item_list_mut(dest);
+        dest_list.append(item, n);
         
         self.check_item_list_on_tile(item_location.0);
     }
