@@ -1,7 +1,6 @@
 
 #[macro_use]
 extern crate serde_derive;
-#[cfg(feature="global_state_obj")]
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_array2d as array2d;
