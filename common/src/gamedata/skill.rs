@@ -12,7 +12,7 @@ pub enum SkillKind {
     Weapon(WeaponKind),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SkillList {
     pub skills: FnvHashMap<SkillKind, u32>,
     pub exp: Option<FnvHashMap<SkillKind, u16>>

@@ -1,11 +1,12 @@
 
 use std::ops::{Index, IndexMut};
+use std::collections::HashMap;
 use arrayvec::ArrayVec;
 use array2d::*;
 use crate::objholder::*;
 use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
 use crate::gamedata::item::{Item, ItemList};
-use crate::gamedata::chara::CharaId;
+use crate::gamedata::chara::{CharaId, Chara};
 use crate::gamedata::site::SiteId;
 use crate::gamedata::region::RegionId;
 
@@ -21,6 +22,9 @@ pub struct Map {
     pub entrance: Vec2d,
     /// Characters on this map
     charaid: Vec<CharaId>,
+    /// Character data on this map. The current map's charas are moved to CharaHolder temporary.
+    /// In order to reduce the size of main save file.
+    pub(crate) charas: Option<HashMap<CharaId, Chara>>,
     /// This is drawed outer this map
     /// If this is None, nearest tile's infomation will be used
     pub outside_tile: Option<OutsideTileInfo>,
@@ -233,6 +237,7 @@ impl Map {
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
             player_pos: Vec2d(0, 0), entrance: Vec2d(0, 0),
             charaid: Vec::new(),
+            charas: Some(HashMap::new()),
             outside_tile: None,
             boundary: MapBoundary::default(),
         }

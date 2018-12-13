@@ -36,7 +36,7 @@ impl NewGameBuilder {
             super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
             let mid = MapId::RegionMap { rid: RegionId::default() };
-            gd.set_current_mapid(mid);
+            gd.set_initial_mapid(mid);
             let start_pos = RULES.newgame.start_pos;
 
             super::region::gen_dungeon(&mut gd, mid.rid());

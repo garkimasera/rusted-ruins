@@ -322,7 +322,7 @@ impl ArmorKind {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EquipItemList {
     /// Slot infomation
     slots: Vec<SlotInfo>,

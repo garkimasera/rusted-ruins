@@ -61,7 +61,7 @@ impl Relationship {
 }
 
 /// All data for one character
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Chara {
     pub name: Option<String>,
     pub attr: CharaAttributes,
@@ -85,7 +85,7 @@ pub struct Chara {
 /// Character attributes
 /// These values are calculated from base params and other factors
 /// They are updated by some actions
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct CharaAttributes {
     /// Max HP
     pub max_hp: i32,
@@ -108,7 +108,7 @@ pub struct CharaAttributes {
 }
 
 /// Character base attributes
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct CharaBaseAttributes {
     /// Character level when generated
     pub level: u32,
@@ -207,23 +207,47 @@ impl Default for CharaAI {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct CharaHolder(pub(crate) HashMap<CharaId, Chara>);
+pub struct CharaHolder {
+    c: HashMap<CharaId, Chara>,
+    on_map: HashMap<CharaId, Chara>,
+}
 
 impl CharaHolder {
     pub(crate) fn new() -> CharaHolder {
-        CharaHolder(HashMap::new())
+        CharaHolder {
+            c: HashMap::new(),
+            on_map: HashMap::new(),
+        }
+    }
+
+    pub(crate) fn add(&mut self, cid: CharaId, chara: Chara) {
+        self.c.insert(cid, chara);
     }
     
     pub fn get(&self, cid: CharaId) -> &Chara {
-        self.0.get(&cid).unwrap_or_else(|| unknown_id_err(cid))
+        match cid {
+            CharaId::OnMap { .. } => &self.on_map,
+            _ => &self.c,
+        }.get(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub fn get_mut(&mut self, cid: CharaId) -> &mut Chara {
-        self.0.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
+        match cid {
+            CharaId::OnMap { .. } => &mut self.on_map,
+            _ => &mut self.c,
+        }.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {
-        self.0.remove(&cid);
+        match cid {
+            CharaId::OnMap { .. } => &mut self.on_map,
+            _ => &mut self.c,
+        }.remove(&cid);
+    }
+
+    pub(crate) fn replace_on_map_chara(&mut self, next: HashMap<CharaId, Chara>)
+                                       -> HashMap<CharaId, Chara> {
+        std::mem::replace(&mut self.on_map, next)
     }
 }
 

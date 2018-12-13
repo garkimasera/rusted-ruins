@@ -84,7 +84,7 @@ impl GameData {
     pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {
         match kind {
             CharaKind::Player => {
-                self.chara.0.insert(CharaId::Player, chara);
+                self.chara.add(CharaId::Player, chara);
                 CharaId::Player
             }
             CharaKind::OnSite => {
@@ -99,14 +99,14 @@ impl GameData {
     /// Add chara as OnMap
     pub fn add_chara_to_map(&mut self, chara: Chara, mid: MapId) -> CharaId {
         let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
-        self.chara.0.insert(cid, chara);
+        self.chara.add(cid, chara);
         cid
     }
 
     /// Add chara as OnSite
     pub fn add_chara_to_site(&mut self, chara: Chara, sid: SiteId, n: u32) -> CharaId {
         let cid = CharaId::OnSite { sid, n };
-        self.chara.0.insert(cid, chara);
+        self.chara.add(cid, chara);
         cid
     }
 
@@ -140,6 +140,20 @@ impl GameData {
     }
 
     pub fn set_current_mapid(&mut self, mid: MapId) {
+        // OnMap characters on the next map
+        let next_charas = self.region.get_map_mut(mid).charas.take().expect("Map.charas is empty");
+        let prev_charas = self.chara.replace_on_map_chara(next_charas);
+        let map = self.get_current_map_mut();
+        assert!(map.charas.is_none());
+        map.charas = Some(prev_charas);
+
+        // Update current_mapid
+        self.current_mapid = mid;
+    }
+
+    pub fn set_initial_mapid(&mut self, mid: MapId) {
+        let charas = self.region.get_map_mut(mid).charas.take().unwrap();
+        self.chara.replace_on_map_chara(charas);
         self.current_mapid = mid;
     }
 
