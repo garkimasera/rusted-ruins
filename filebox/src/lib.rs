@@ -8,6 +8,9 @@ use std::path::{PathBuf, Path};
 use std::io::{Write, Read, BufReader, BufWriter};
 use std::fs::File;
 use std::ops::{Deref, DerefMut};
+use flate2::bufread::GzDecoder;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 
 pub trait WithId: Sized {
     type Error: From<std::io::Error>;
@@ -72,7 +75,7 @@ impl<T: WithId> FileBox<T> {
 
     pub fn write_force<P: AsRef<Path>>(s: &Self, p: P) -> Result<(), T::Error> {
         if let Some(a) = &s.inner {
-            let mut file = BufWriter::new(File::create(s.path(p))?);
+            let mut file = GzEncoder::new(BufWriter::new(File::create(s.path(p))?), Compression::fast());
             T::write(&mut file, &a)?;
             s.changed.set(false);
         }
@@ -97,7 +100,7 @@ impl<T: WithId> FileBox<T> {
             return Ok(());
         }
         
-        let mut file = BufReader::new(File::open(self.path(p))?);
+        let mut file = GzDecoder::new(BufReader::new(File::open(self.path(p))?));
         self.inner = Some(Box::new(T::read(&mut file)?));
         
         Ok(())
