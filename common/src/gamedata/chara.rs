@@ -222,10 +222,6 @@ impl CharaHolder {
         self.0.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
     }
 
-    pub fn iter_charaid(&self) -> std::collections::hash_map::Keys<CharaId, Chara> {
-        self.0.keys()
-    }
-
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {
         self.0.remove(&cid);
     }
