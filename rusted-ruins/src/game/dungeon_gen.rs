@@ -15,7 +15,6 @@ pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d
     let mut site = Site::new(rng::gen_range(floor_range[0], floor_range[1]));
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
     let sid = gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap();
-    extend_site_floor(gd, sid);
     
     sid
 }

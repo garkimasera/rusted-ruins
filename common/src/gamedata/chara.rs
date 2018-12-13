@@ -221,7 +221,10 @@ impl CharaHolder {
     }
 
     pub(crate) fn add(&mut self, cid: CharaId, chara: Chara) {
-        self.c.insert(cid, chara);
+        match cid {
+            CharaId::OnMap { .. } => &mut self.on_map,
+            _ => &mut self.c,
+        }.insert(cid, chara);
     }
     
     pub fn get(&self, cid: CharaId) -> &Chara {

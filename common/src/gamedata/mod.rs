@@ -99,7 +99,13 @@ impl GameData {
     /// Add chara as OnMap
     pub fn add_chara_to_map(&mut self, chara: Chara, mid: MapId) -> CharaId {
         let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
-        self.chara.add(cid, chara);
+
+        if mid == self.current_mapid {
+            self.chara.add(cid, chara);
+        } else {
+            let map = self.region.get_map_mut(mid);
+            map.charas.as_mut().unwrap().insert(cid, chara);
+        }
         cid
     }
 
