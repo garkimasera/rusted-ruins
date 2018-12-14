@@ -2,7 +2,7 @@
 use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
-use crate::sdlvalues::*;
+use crate::context::*;
 use crate::text::ToText;
 use crate::game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
 use crate::game::extrait::*;

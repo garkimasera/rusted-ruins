@@ -7,7 +7,7 @@ use super::widget::*;
 use common::gobj;
 use common::obj::UIImgObject;
 use common::gamedata::*;
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 
 pub struct HPIndicator {
     rect: Rect,

@@ -1,7 +1,7 @@
 
 use super::commonuse::*;
 use super::widget::*;
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 
 pub struct TextWindow {
     rect: Rect,

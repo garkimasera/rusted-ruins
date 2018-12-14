@@ -1,6 +1,6 @@
 
 use crate::config::UI_CFG;
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 use super::commonuse::*;
 use super::text_input;
 use super::widget::*;

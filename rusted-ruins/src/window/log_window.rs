@@ -4,7 +4,7 @@ use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use crate::game::{Game, Animation};
-use crate::sdlvalues::*;
+use crate::context::*;
 use crate::window::Window;
 use crate::config::{SCREEN_CFG, UI_CFG};
 use crate::log;

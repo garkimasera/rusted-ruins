@@ -3,7 +3,7 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gobj;
 use super::commonuse::*;
 use super::widget::*;
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 use crate::config::UI_CFG;
 use common::gamedata::*;
 use crate::game::extrait::*;

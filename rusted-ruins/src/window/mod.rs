@@ -38,7 +38,7 @@ mod commonuse {
     pub use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
     pub use sdl2::render::WindowCanvas;
     pub use sdl2::rect::Rect;
-    pub use crate::sdlvalues::SdlValues;
+    pub use crate::context::*;
     pub use crate::game::{Game, Animation, Command, DoPlayerAction};
     pub use crate::config::{SCREEN_CFG, UI_CFG};
     pub use crate::draw::border::draw_rect_border;

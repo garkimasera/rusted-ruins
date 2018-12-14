@@ -1,14 +1,10 @@
 
-mod texture;
-mod textrenderer;
-mod textcachepool;
-
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
-pub use self::texture::{TextureHolder, IconIdx};
-pub use self::textrenderer::{TextRenderer, FontKind};
-use self::textcachepool::TextCachePool;
-pub use self::textcachepool::TextCache;
+use super::texture::TextureHolder;
+use super::textrenderer::TextRenderer;
+use super::textcachepool::TextCachePool;
+use super::textcachepool::TextCache;
 use common::gobj;
 use crate::SdlContext;
 

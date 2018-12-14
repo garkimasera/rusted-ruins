@@ -19,7 +19,7 @@ mod error;
 mod log;
 mod util;
 mod config;
-mod sdlvalues;
+mod context;
 #[macro_use]
 mod text;
 mod game;

@@ -5,7 +5,7 @@ use crate::config::SCREEN_CFG;
 use super::commonuse::*;
 use super::widget::WidgetTrait;
 use super::widget::LabelWidget;
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 
 #[derive(Clone, Copy)]
 pub struct MemberInfo {

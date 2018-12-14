@@ -6,7 +6,7 @@ use std::any::Any;
 use common::objholder::CharaTemplateIdx;
 use common::basic::TILE_SIZE;
 use crate::game::{TalkText, AdvanceScriptResult};
-use crate::sdlvalues::FontKind;
+use crate::context::textrenderer::FontKind;
 use crate::config::UI_CFG;
 use super::misc_window::ImageWindow;
 use super::choose_window::ChooseWindow;

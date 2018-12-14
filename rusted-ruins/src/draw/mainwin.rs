@@ -11,7 +11,7 @@ use common::gobj;
 use common::gamedata::*;
 use crate::game::{Game, Animation, InfoGetter};
 use crate::game::view::ViewMap;
-use crate::sdlvalues::SdlValues;
+use crate::context::*;
 use super::tile_getter::*;
 use super::frame::calc_frame;
 use super::overlay;

@@ -7,7 +7,7 @@ mod list;
 
 use crate::game::Command;
 use sdl2::render::WindowCanvas;
-use crate::sdlvalues::SdlValues;
+use crate::context::*;
 
 pub trait WidgetTrait {
     type Response;

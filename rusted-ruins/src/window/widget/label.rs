@@ -1,7 +1,7 @@
 
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
-use crate::sdlvalues::*;
+use crate::context::*;
 use crate::config::UI_CFG;
 use super::WidgetTrait;
 

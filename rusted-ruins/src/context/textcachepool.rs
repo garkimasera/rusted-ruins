@@ -3,7 +3,7 @@ use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 use sdl2::pixels::Color;
 
-use super::TextRenderer;
+use super::textrenderer::TextRenderer;
 use super::textrenderer::FontKind;
 use super::textrenderer::{ERR_MSG_FONT_REND, ERR_MSG_FONT_TEX};
 

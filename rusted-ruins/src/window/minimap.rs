@@ -5,7 +5,7 @@ use sdl2::pixels::Color;
 use crate::array2d::*;
 use common::gobj;
 use crate::game::Game;
-use crate::sdlvalues::SdlValues;
+use crate::context::*;
 use crate::game::{Animation, InfoGetter};
 use crate::window::Window;
 use crate::config::SCREEN_CFG;
