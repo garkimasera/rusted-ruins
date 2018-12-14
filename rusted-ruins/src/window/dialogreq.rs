@@ -6,7 +6,8 @@ use super::talk_window;
 use super::item_window::*;
 use super::msg_dialog;
 
-pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Option<Box<DialogWindow>> {
+pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game)
+                                  -> Option<Box<dyn DialogWindow>> {
     Some(match req {
         DialogOpenRequest::YesNo { mut callback, msg } => {
             let msgdialog = msg_dialog::MsgDialog::with_yesno(
@@ -35,7 +36,8 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game) -> Op
     })
 }
 
-pub fn create_talk_dialog(talk_text: TalkText, cid: CharaId, game: &mut Game) -> Option<Box<DialogWindow>> {
+pub fn create_talk_dialog(talk_text: TalkText, cid: CharaId, game: &mut Game)
+                          -> Option<Box<dyn DialogWindow>> {
     let chara_template_idx = game.gd.chara.get(cid).template;
     
     let talk_window = talk_window::TalkWindow::new(talk_text, chara_template_idx);

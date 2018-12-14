@@ -48,8 +48,8 @@ mod commonuse {
 use self::commonuse::*;
 
 pub enum DialogResult {
-    Continue, Close, CloseWithValue(Box<Any>), CloseAll, Quit,
-    OpenChildDialog(Box<DialogWindow>), Special(SpecialDialogResult),
+    Continue, Close, CloseWithValue(Box<dyn Any>), CloseAll, Quit,
+    OpenChildDialog(Box<dyn DialogWindow>), Special(SpecialDialogResult),
 }
 
 pub enum SpecialDialogResult {
@@ -68,7 +68,7 @@ pub trait DialogWindow: Window {
     /// Return InputMode for this window
     fn mode(&self) -> InputMode;
     fn callback_child_closed(
-        &mut self, _result: Option<Box<Any>>, _pa: &mut DoPlayerAction) -> DialogResult {
+        &mut self, _result: Option<Box<dyn Any>>, _pa: &mut DoPlayerAction) -> DialogResult {
         DialogResult::Continue
     }
     fn draw_mode(&self) -> WindowDrawMode {
@@ -108,7 +108,7 @@ pub struct WindowManager<'sdl, 't> {
     text_input_util: TextInputUtil,
     anim: Option<Animation>,
     passed_frame: u32,
-    window_stack: Vec<Box<DialogWindow>>,
+    window_stack: Vec<Box<dyn DialogWindow>>,
     targeting_mode: bool,
 }
 
@@ -119,7 +119,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
-        let mut window_stack: Vec<Box<DialogWindow>> = Vec::new();
+        let mut window_stack: Vec<Box<dyn DialogWindow>> = Vec::new();
         window_stack.push(Box::new(start_window::StartDialog::new()));
         
         WindowManager {

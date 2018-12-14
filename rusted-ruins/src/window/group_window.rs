@@ -9,7 +9,7 @@ use crate::context::textrenderer::FontKind;
 
 #[derive(Clone, Copy)]
 pub struct MemberInfo {
-    pub creator: fn(&Game) -> Box<DialogWindow>,
+    pub creator: fn(&Game) -> Box<dyn DialogWindow>,
     pub idx: UIImgIdx,
     pub text_id: &'static str,
 }
@@ -19,7 +19,7 @@ pub struct MemberInfo {
 pub struct GroupWindow {
     size: usize,
     current_window: usize,
-    members: Vec<Option<Box<DialogWindow>>>,
+    members: Vec<Option<Box<dyn DialogWindow>>>,
     mem_info: Vec<MemberInfo>,
     tab_navigator: TabsNavigator,
 }
@@ -27,7 +27,7 @@ pub struct GroupWindow {
 impl GroupWindow {
     pub fn new(size: usize, init_win: usize, game: &Game, mem_info: Vec<MemberInfo>) -> GroupWindow {
         assert!(init_win < size);
-        let members: Vec<Option<Box<DialogWindow>>> = (0..size).into_iter().map(|_| None).collect();
+        let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).into_iter().map(|_| None).collect();
         let tab_navigator = TabsNavigator::new(mem_info.clone(), init_win);
         
         let mut group_window = GroupWindow {

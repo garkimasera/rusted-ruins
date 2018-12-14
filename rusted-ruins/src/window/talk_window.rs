@@ -141,7 +141,7 @@ impl DialogWindow for TalkWindow {
 
     /// When child window is closed, call advance_script(), and update text.
     fn callback_child_closed(
-        &mut self, _result: Option<Box<Any>>, pa: &mut DoPlayerAction) -> DialogResult {
+        &mut self, _result: Option<Box<dyn Any>>, pa: &mut DoPlayerAction) -> DialogResult {
 
         match pa.advance_script() {
             AdvanceScriptResult::UpdateTalkText(talk_text) => {
