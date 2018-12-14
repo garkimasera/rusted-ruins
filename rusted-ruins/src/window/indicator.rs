@@ -36,16 +36,14 @@ impl HPIndicator {
 }
 
 impl Window for HPIndicator {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
 
         let (max_hp, hp) = game.gd.player_hp();
         self.guage.set_params(0.0, max_hp as f32, hp as f32);
 
-        canvas.set_viewport(self.rect);
-        self.guage.draw(canvas, sv);
-        self.label.draw(canvas, sv);        
+        context.canvas.set_viewport(self.rect);
+        self.guage.draw(context);
+        self.label.draw(context);
     }
 }
 
@@ -64,10 +62,7 @@ impl FloorInfo {
 }
 
 impl Window for FloorInfo {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
         let current_mid = game.gd.get_current_mapid();
 
         if self.mid != Some(current_mid) {
@@ -84,8 +79,8 @@ impl Window for FloorInfo {
             }
         }
         
-        canvas.set_viewport(self.rect);
-        self.label.draw(canvas, sv);
+        context.canvas.set_viewport(self.rect);
+        self.label.draw(context);
     }
 }
 
@@ -114,9 +109,7 @@ impl TimeInfo {
 }
 
 impl Window for TimeInfo {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
 
         let time = &game.gd.time;
         let mut date_changed = false;
@@ -147,8 +140,8 @@ impl Window for TimeInfo {
         if time_changed {
             self.time_label.set_text(&format!("{:02}:{:02}", self.hour, self.minute))
         }
-        self.date_label.draw(canvas, sv);
-        self.time_label.draw(canvas, sv);
+        self.date_label.draw(context);
+        self.time_label.draw(context);
     }
 }
 
@@ -185,15 +178,13 @@ impl StatusInfo {
 }
 
 impl Window for StatusInfo {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
         
         self.update(game);
         
-        canvas.set_viewport(None);
+        context.canvas.set_viewport(None);
         for label in self.labels.iter_mut() {
-            label.draw(canvas, sv);
+            label.draw(context);
         }
     }
 }

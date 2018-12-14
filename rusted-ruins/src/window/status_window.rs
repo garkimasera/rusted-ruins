@@ -73,19 +73,18 @@ impl StatusWindow {
 
 impl Window for StatusWindow {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        draw_rect_border(canvas, self.rect);
-        self.image.draw(canvas, sv);
-        self.name_label.draw(canvas, sv);
-        self.hp_label.draw(canvas, sv);
-        self.str_label.draw(canvas, sv);
-        self.vit_label.draw(canvas, sv);
-        self.dex_label.draw(canvas, sv);
-        self.int_label.draw(canvas, sv);
-        self.wil_label.draw(canvas, sv);
-        self.cha_label.draw(canvas, sv);
+        draw_rect_border(context.canvas, self.rect);
+        self.image.draw(context);
+        self.name_label.draw(context);
+        self.hp_label.draw(context);
+        self.str_label.draw(context);
+        self.vit_label.draw(context);
+        self.dex_label.draw(context);
+        self.int_label.draw(context);
+        self.wil_label.draw(context);
+        self.cha_label.draw(context);
     }
 }
 
@@ -154,15 +153,14 @@ impl SkillWindow {
 
 impl Window for SkillWindow {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        draw_rect_border(canvas, self.rect);
+        draw_rect_border(context.canvas, self.rect);
         for w in &mut self.gauges {
-            w.draw(canvas, sv);
+            w.draw(context);
         }
         for w in &mut self.labels {
-            w.draw(canvas, sv);
+            w.draw(context);
         }
     }
 }

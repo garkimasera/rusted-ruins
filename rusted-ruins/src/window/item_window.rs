@@ -201,12 +201,11 @@ impl ItemWindow {
 impl Window for ItemWindow {
     
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
-        draw_rect_border(canvas, self.rect);
-        self.list.draw(canvas, sv);
-        self.page_window.draw(canvas, game, sv, anim);
+        draw_rect_border(context.canvas, self.rect);
+        self.list.draw(context);
+        self.page_window.draw(context, game, anim);
     }
 }
 

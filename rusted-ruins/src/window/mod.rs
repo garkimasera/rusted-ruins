@@ -60,8 +60,7 @@ pub enum SpecialDialogResult {
 
 pub trait Window {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>);
+        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>);
 }
 
 pub trait DialogWindow: Window {
@@ -177,18 +176,19 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         let anim = self.anim.as_ref().map(|a| (a, self.passed_frame));
+        let mut context = Context::new(canvas, &mut self.sdl_values);
 
         // Draw windows
         match self.mode {
             WindowManageMode::OnGame(ref mut game_windows) => {
                 self.game.update_before_drawing();
-                game_windows.draw(canvas, &self.game, &mut self.sdl_values, anim);
+                game_windows.draw(&mut context, &self.game, anim);
             }
             WindowManageMode::Start(ref mut start_window) => {
-                start_window.draw(canvas, &self.game, &mut self.sdl_values, anim);
+                start_window.draw(&mut context, &self.game, anim);
             }
             WindowManageMode::NewGame(ref mut newgame_window) => {
-                newgame_window.draw(canvas, &self.game, &mut self.sdl_values, anim);
+                newgame_window.draw(&mut context, &self.game, anim);
             }
         }
 
@@ -205,7 +205,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
         
         for i in &windows_to_draw {
-            self.window_stack[*i].draw(canvas, &self.game, &mut self.sdl_values, anim);
+            self.window_stack[*i].draw(&mut context, &self.game, anim);
         }
 
         if anim.is_some() {
@@ -508,22 +508,21 @@ impl GameWindows {
         }
     }
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-              anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
-        self.main_window.draw(canvas, game, sv, anim);
-        self.log_window.draw(canvas, game, sv, anim);
-        self.minimap_window.draw(canvas, game, sv, anim);
-        self.indicator.draw(canvas, game, sv, anim);
-        self.floor_info.draw(canvas, game, sv, anim);
-        self.status_info.draw(canvas, game, sv, anim);
-        self.time_info.draw(canvas, game, sv, anim);
+        self.main_window.draw(context, game, anim);
+        self.log_window.draw(context, game, anim);
+        self.minimap_window.draw(context, game, anim);
+        self.indicator.draw(context, game, anim);
+        self.floor_info.draw(context, game, anim);
+        self.status_info.draw(context, game, anim);
+        self.time_info.draw(context, game, anim);
 
         for hborder in self.hborders.iter_mut() {
-            hborder.draw(canvas, sv);
+            hborder.draw(context);
         }
         for vborder in self.vborders.iter_mut() {
-            vborder.draw(canvas, sv);
+            vborder.draw(context);
         }
     }
 }

@@ -27,7 +27,8 @@ impl HBorder {
 impl WidgetTrait for HBorder {
     type Response = ();
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, _sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
         check_draw!(canvas.draw_line(
@@ -61,7 +62,8 @@ impl VBorder {
 impl WidgetTrait for VBorder {
     type Response = ();
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, _sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
         check_draw!(canvas.draw_line(

@@ -71,14 +71,13 @@ impl TalkWindow {
 
 impl Window for TalkWindow {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
 
-        self.image_window.draw(canvas, game, sv, anim);
-        draw_rect_border(canvas, self.rect);
-        self.label.draw(canvas, sv);
+        self.image_window.draw(context, game, anim);
+        draw_rect_border(context.canvas, self.rect);
+        self.label.draw(context);
         if let Some(ref mut choose_win) = self.choose_win {
-            choose_win.draw(canvas, game, sv, anim);
+            choose_win.draw(context, game, anim);
         }
     }
 }

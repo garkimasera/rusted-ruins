@@ -289,7 +289,9 @@ impl WidgetTrait for ListWidget {
         }
     }
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
         if self.n_row == 0 { return; }
         
         let h_row = self.h_row;

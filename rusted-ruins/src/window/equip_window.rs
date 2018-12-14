@@ -68,11 +68,10 @@ impl EquipWindow {
 impl Window for EquipWindow {
     
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         
-        draw_rect_border(canvas, self.rect);
-        self.list.draw(canvas, sv);
+        draw_rect_border(context.canvas, self.rect);
+        self.list.draw(context);
     }
 }
 

@@ -25,17 +25,14 @@ impl TextWindow {
 }
 
 impl Window for TextWindow {
-    
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        let window_size = self.label.adjust_widget_size(sv);
+        let window_size = self.label.adjust_widget_size(context.sv);
         self.rect.w = std::cmp::max(window_size.0 as i32, self.min_w);
         self.rect.h = window_size.1 as i32;
 
-        draw_rect_border(canvas, self.rect);
-        self.label.draw(canvas, sv);
+        draw_rect_border(context.canvas, self.rect);
+        self.label.draw(context);
     }
 }
 
@@ -72,15 +69,13 @@ impl ScrollingTextWindow {
 
 impl Window for ScrollingTextWindow {
     
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
         if self.is_finished { return; }
 
         if !self.is_adjusted {
             for label in self.labels.iter_mut() {
-                label.adjust_widget_size(sv);
+                label.adjust_widget_size(context.sv);
             }
             self.is_adjusted = true;
         }
@@ -102,10 +97,10 @@ impl Window for ScrollingTextWindow {
             endline_bottom = rect.bottom();
         }
 
-        canvas.set_viewport(self.rect);
+        context.canvas.set_viewport(self.rect);
             
         for label in self.labels.iter_mut() {
-            label.draw(canvas, sv);
+            label.draw(context);
         }
 
         if !self.is_finished {

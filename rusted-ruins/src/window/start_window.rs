@@ -22,10 +22,9 @@ impl StartWindow {
         }
     }
     
-    pub fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-                  _anim: Option<(&Animation, u32)>) {
+    pub fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        self.title_screen.draw(canvas, sv);
+        self.title_screen.draw(context);
     }
 }
 
@@ -49,12 +48,11 @@ impl StartDialog {
 }
 
 impl Window for StartDialog {
-    fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-              _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        draw_rect_border(canvas, self.rect);
+        draw_rect_border(context.canvas, self.rect);
         
-        self.answer_list.draw(canvas, sv);
+        self.answer_list.draw(context);
     }
 }
 
@@ -112,10 +110,8 @@ impl ChooseSaveFileDialog {
 }
 
 impl Window for ChooseSaveFileDialog {
-    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-            anim: Option<(&Animation, u32)>) {
-        
-        self.choose_window.draw(canvas, game, sv, anim);
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        self.choose_window.draw(context, game, anim);
     }
 }
 

@@ -87,7 +87,9 @@ impl LabelWidget {
 impl WidgetTrait for LabelWidget {
     type Response = ();
     
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
         let tex = sv.tt_one(&mut self.cache);
 
         let w = tex.query().width;
@@ -136,7 +138,9 @@ impl LineSpecifiedLabelWidget {
 impl WidgetTrait for LineSpecifiedLabelWidget {
     type Response = ();
     
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
         let tex_group = sv.tt_group(&mut self.cache);
 
         let mut y = 0;

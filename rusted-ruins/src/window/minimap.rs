@@ -23,12 +23,10 @@ impl MiniMapWindow {
 }
 
 impl Window for MiniMapWindow {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        canvas.set_viewport(self.rect);
-        draw_minimap(canvas, self.rect, game, sv);
+        context.canvas.set_viewport(self.rect);
+        draw_minimap(context.canvas, self.rect, game, context.sv);
     }
 }
 

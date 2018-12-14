@@ -46,17 +46,15 @@ impl MsgDialog {
 
 impl Window for MsgDialog {
     
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
 
-        self.text_win.draw(canvas, game, sv, anim);
+        self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         self.choose_win.set_winpos(winpos);
-        self.choose_win.draw(canvas, game, sv, anim);
+        self.choose_win.draw(context, game, anim);
     }
 }
 

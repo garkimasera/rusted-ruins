@@ -26,13 +26,12 @@ impl LogWindow {
 impl Window for LogWindow {
     
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         
-        canvas.set_viewport(None);
-        canvas.set_draw_color(UI_CFG.color.log_window_bg.into());
-        check_draw!(canvas.fill_rect(self.rect));
-        canvas.set_viewport(self.rect);
+        context.canvas.set_viewport(None);
+        context.canvas.set_draw_color(UI_CFG.color.log_window_bg.into());
+        check_draw!(context.canvas.fill_rect(self.rect));
+        context.canvas.set_viewport(self.rect);
 
         self.line_cache.update();
 
@@ -46,14 +45,14 @@ impl Window for LogWindow {
         let dy = UI_CFG.log_window.h;
 
         for (i, line) in (start..end).enumerate() {
-            let line_texs = sv.tt_group(&mut self.line_cache.lines[line]);
+            let line_texs = context.sv.tt_group(&mut self.line_cache.lines[line]);
             let mut x = 0;
             for t in line_texs {
                 let w = t.query().width;
                 let h = t.query().height;
                 let orig = Rect::new(0, 0, w, h);
                 let dest = Rect::new(x, dy * i as i32, w, h);
-                check_draw!(canvas.copy(t, orig, dest));
+                check_draw!(context.canvas.copy(t, orig, dest));
                 x += w as i32;
             }
         }

@@ -40,7 +40,9 @@ impl ImageWidget {
 impl WidgetTrait for ImageWidget {
     type Response =  ();
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
         match self.idx {
             Idx::UIImg(idx) => {
                 let t = sv.tex().get(idx);

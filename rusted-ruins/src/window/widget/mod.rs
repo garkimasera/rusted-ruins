@@ -6,13 +6,12 @@ mod label;
 mod list;
 
 use crate::game::Command;
-use sdl2::render::WindowCanvas;
 use crate::context::*;
 
 pub trait WidgetTrait {
     type Response;
     fn process_command(&mut self, _command: &Command) -> Option<Self::Response> { None }
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues);
+    fn draw(&mut self, context: &mut Context);
 }
 
 pub use self::border::*;

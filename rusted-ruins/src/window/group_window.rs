@@ -70,14 +70,12 @@ impl GroupWindow {
 }
 
 impl Window for GroupWindow {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
 
-        self.tab_navigator.draw(canvas, game, sv, anim);
+        self.tab_navigator.draw(context, game, anim);
 
         if let Some(ref mut member) = self.members[self.current_window] {
-            member.draw(canvas, game, sv, anim);
+            member.draw(context, game, anim);
         }
     }
 }
@@ -151,30 +149,29 @@ impl TabsNavigator {
 
 impl Window for TabsNavigator {
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        canvas.set_viewport(self.rect);
+        context.canvas.set_viewport(self.rect);
 
         for (i, member) in self.mem_info.iter().enumerate() {
             let dest_rect = Rect::new(TAB_ICON_W as i32 * i as i32, 0, TAB_ICON_W, TAB_ICON_H);
-            let tex= sv.tex().get(member.idx);
-            check_draw!(canvas.copy(&tex, None, dest_rect));
+            let tex= context.sv.tex().get(member.idx);
+            check_draw!(context.canvas.copy(&tex, None, dest_rect));
         }
 
         // Draw labels
         for label in &mut self.labels {
-            label.draw(canvas, sv);
+            label.draw(context);
         }
 
         // Draw border for selected tab
         let h = TAB_ICON_H + TAB_TEXT_H;
         let rect = Rect::new(TAB_ICON_W as i32 * self.i as i32, 0, TAB_ICON_W, h);
-        canvas.set_draw_color(UI_CFG.color.tab_select_border_light.into());
-        check_draw!(canvas.draw_rect(rect));
+        context.canvas.set_draw_color(UI_CFG.color.tab_select_border_light.into());
+        check_draw!(context.canvas.draw_rect(rect));
         let rect = Rect::new(TAB_ICON_W as i32 * self.i as i32 + 1, 1, TAB_ICON_W - 2, h - 2);
-        canvas.set_draw_color(UI_CFG.color.tab_select_border_dark.into());
-        check_draw!(canvas.draw_rect(rect));
+        context.canvas.set_draw_color(UI_CFG.color.tab_select_border_dark.into());
+        check_draw!(context.canvas.draw_rect(rect));
     }
 }
 

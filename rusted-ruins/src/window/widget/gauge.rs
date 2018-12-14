@@ -79,8 +79,8 @@ impl GaugeWidget {
 impl WidgetTrait for GaugeWidget {
     type Response =  ();
 
-    fn draw(&mut self, canvas: &mut WindowCanvas, sv: &mut SdlValues) {
-
+    fn draw(&mut self, context: &mut Context) {
+        let canvas = &mut context.canvas;
         canvas.set_draw_color(self.colors.bg);
         check_draw!(canvas.fill_rect(self.rect));
 
@@ -103,7 +103,7 @@ impl WidgetTrait for GaugeWidget {
         }
 
         if let Some(ref mut label) = self.label {
-            label.draw(canvas, sv);
+            label.draw(context);
         }
     }
 }

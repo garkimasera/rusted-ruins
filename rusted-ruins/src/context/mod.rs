@@ -18,7 +18,7 @@ pub struct Context<'a, 'b, 't, 'sdl> {
 }
 
 impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
-    fn new(canvas: &'a mut WindowCanvas, sv: &'b mut SdlValues<'t, 'sdl>) -> Context<'a, 'b, 't, 'sdl> {
+    pub fn new(canvas: &'a mut WindowCanvas, sv: &'b mut SdlValues<'t, 'sdl>) -> Context<'a, 'b, 't, 'sdl> {
         Context {
             canvas, sv
         }

@@ -37,12 +37,9 @@ impl TextInputDialog {
 }
 
 impl Window for TextInputDialog {
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
-        
-        draw_rect_border(canvas, self.rect);
-        self.label.draw(canvas, sv);
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+        draw_rect_border(context.canvas, self.rect);
+        self.label.draw(context);
     }
 }
 

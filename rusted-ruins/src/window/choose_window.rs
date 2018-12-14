@@ -36,20 +36,18 @@ impl ChooseWindow {
 }
 
 impl Window for ChooseWindow {
-    
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
         // Update window size
-        let list_widget_size = self.answer_list.adjust_widget_size(sv);
+        let list_widget_size = self.answer_list.adjust_widget_size(context.sv);
         let left_top_point = self.winpos.calc_left_top(list_widget_size.0, list_widget_size.1);
         let rect = Rect::new(left_top_point.0, left_top_point.1, list_widget_size.0, list_widget_size.1);
 
         // Drawing
-        draw_rect_border(canvas, rect);
+        draw_rect_border(context.canvas, rect);
         
-        self.answer_list.draw(canvas, sv);
+        self.answer_list.draw(context);
     }
 }
 
@@ -128,13 +126,12 @@ impl PagedChooseWindow {
 impl Window for PagedChooseWindow {
     
     fn draw(
-        &mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-        _anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
         // Drawing
-        draw_rect_border(canvas, self.rect);
+        draw_rect_border(context.canvas, self.rect);
         
-        self.answer_list.draw(canvas, sv);
+        self.answer_list.draw(context);
     }
 }
 

@@ -34,10 +34,8 @@ impl NewGameWindow {
         }
     }
     
-    pub fn draw(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &mut SdlValues,
-                  _anim: Option<(&Animation, u32)>) {
-
-        self.back_image.draw(canvas, sv);
+    pub fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+        self.back_image.draw(context);
     }
 }
 
@@ -64,20 +62,19 @@ impl DummyNewGameDialog {
 }
 
 impl Window for DummyNewGameDialog {
-    fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-              anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
-                self.explanation_text.draw(canvas, game, sv, anim);
-                self.name_input_dialog.as_mut().unwrap().draw(canvas, game, sv, anim);
+                self.explanation_text.draw(context, game, anim);
+                self.name_input_dialog.as_mut().unwrap().draw(context, game, anim);
             }
             NewGameBuildStage::ChooseClass => {
-                self.explanation_text.draw(canvas, game, sv, anim);
-                self.choose_class_dialog.draw(canvas, game, sv, anim);
+                self.explanation_text.draw(context, game, anim);
+                self.choose_class_dialog.draw(context, game, anim);
             }
             NewGameBuildStage::OpeningText => {
-                self.opening_text.draw(canvas, game, sv, anim);
+                self.opening_text.draw(context, game, anim);
             }
         }
     }
@@ -167,11 +164,8 @@ impl ChooseClassDialog {
 
 impl Window for ChooseClassDialog {
     
-    fn draw(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &mut SdlValues,
-        anim: Option<(&Animation, u32)>) {
-       
-        self.choose_window.draw(canvas, game, sv, anim);
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        self.choose_window.draw(context, game, anim);
     }
 }
 
