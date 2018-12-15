@@ -1,7 +1,6 @@
 
 use std::any::Any;
 use crate::window::{Window, DialogWindow, DialogResult};
-use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use crate::context::*;
 use crate::game::{Game, Animation, Command, DoPlayerAction};
@@ -11,7 +10,6 @@ use crate::eventhandler::InputMode;
 use super::widget::*;
 use common::gobj;
 use common::gamedata::*;
-use crate::context::*;
 use crate::game::item::filter::*;
 use crate::text;
 

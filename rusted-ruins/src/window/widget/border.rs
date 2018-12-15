@@ -1,6 +1,5 @@
 
 use sdl2::rect::Rect;
-use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use crate::context::*;
 use crate::config::UI_CFG;

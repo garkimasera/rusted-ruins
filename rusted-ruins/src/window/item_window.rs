@@ -1,6 +1,5 @@
 
 use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
-use sdl2::render::WindowCanvas;
 use sdl2::rect::Rect;
 use crate::context::*;
 use crate::text::ToText;

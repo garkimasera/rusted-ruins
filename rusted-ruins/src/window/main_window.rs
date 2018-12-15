@@ -1,5 +1,4 @@
 
-use sdl2::render::WindowCanvas;
 use crate::array2d::*;
 use crate::game::{Game, Animation, InfoGetter};
 use crate::context::*;

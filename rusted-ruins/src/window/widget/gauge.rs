@@ -1,7 +1,6 @@
 
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
-use sdl2::render::WindowCanvas;
 use super::{WidgetTrait, LabelWidget};
 use crate::context::*;
 use crate::config::UI_CFG;
