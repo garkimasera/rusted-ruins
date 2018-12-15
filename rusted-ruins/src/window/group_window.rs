@@ -151,12 +151,11 @@ impl Window for TabsNavigator {
     fn draw(
         &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        context.canvas.set_viewport(self.rect);
+        context.set_viewport(self.rect);
 
         for (i, member) in self.mem_info.iter().enumerate() {
             let dest_rect = Rect::new(TAB_ICON_W as i32 * i as i32, 0, TAB_ICON_W, TAB_ICON_H);
-            let tex= context.sv.tex().get(member.idx);
-            check_draw!(context.canvas.copy(&tex, None, dest_rect));
+            context.render_tex(member.idx, dest_rect);
         }
 
         // Draw labels

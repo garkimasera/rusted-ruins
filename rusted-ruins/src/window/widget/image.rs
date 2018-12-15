@@ -41,22 +41,12 @@ impl WidgetTrait for ImageWidget {
     type Response =  ();
 
     fn draw(&mut self, context: &mut Context) {
-        let canvas = &mut context.canvas;
-        let sv = &mut context.sv;
         match self.idx {
             Idx::UIImg(idx) => {
-                let t = sv.tex().get(idx);
-                check_draw!(canvas.copy(t, None, self.rect));
+                context.render_tex(idx, self.rect);
             }
             Idx::Chara(idx) => { // Centering to given rect
-                let t = sv.tex().get(idx);
-                let chara_obj = gobj::get_obj(idx);
-                let orig_rect: Rect = chara_obj.img_rect().into();
-                let dest_rect = Rect::new(
-                    self.rect.x + (self.rect.w - orig_rect.w) / 2,
-                    self.rect.y + (self.rect.h - orig_rect.h) / 2,
-                    orig_rect.w as u32, orig_rect.h as u32);
-                check_draw!(canvas.copy(t, orig_rect, dest_rect));
+                context.render_tex_n_center(idx, self.rect, 0);
             }
         }
     }

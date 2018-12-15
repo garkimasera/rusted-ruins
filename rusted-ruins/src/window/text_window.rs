@@ -97,7 +97,7 @@ impl Window for ScrollingTextWindow {
             endline_bottom = rect.bottom();
         }
 
-        context.canvas.set_viewport(self.rect);
+        context.set_viewport(self.rect);
             
         for label in self.labels.iter_mut() {
             label.draw(context);

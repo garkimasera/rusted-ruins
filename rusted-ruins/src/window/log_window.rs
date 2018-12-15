@@ -28,10 +28,10 @@ impl Window for LogWindow {
     fn draw(
         &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         
-        context.canvas.set_viewport(None);
+        context.set_viewport(None);
         context.canvas.set_draw_color(UI_CFG.color.log_window_bg.into());
         check_draw!(context.canvas.fill_rect(self.rect));
-        context.canvas.set_viewport(self.rect);
+        context.set_viewport(self.rect);
 
         self.line_cache.update();
 

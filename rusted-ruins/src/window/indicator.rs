@@ -41,7 +41,7 @@ impl Window for HPIndicator {
         let (max_hp, hp) = game.gd.player_hp();
         self.guage.set_params(0.0, max_hp as f32, hp as f32);
 
-        context.canvas.set_viewport(self.rect);
+        context.set_viewport(self.rect);
         self.guage.draw(context);
         self.label.draw(context);
     }
@@ -79,7 +79,7 @@ impl Window for FloorInfo {
             }
         }
         
-        context.canvas.set_viewport(self.rect);
+        context.set_viewport(self.rect);
         self.label.draw(context);
     }
 }
@@ -182,7 +182,7 @@ impl Window for StatusInfo {
         
         self.update(game);
         
-        context.canvas.set_viewport(None);
+        context.set_viewport(None);
         for label in self.labels.iter_mut() {
             label.draw(context);
         }
