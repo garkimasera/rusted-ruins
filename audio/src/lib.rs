@@ -4,7 +4,6 @@
 
 #[macro_use]
 extern crate log;
-extern crate sdl2;
 
 #[macro_use]
 mod tool;
@@ -13,8 +12,8 @@ mod musictable;
 
 use std::cell::RefCell;
 use std::path::Path;
-use wavtable::WavTable;
-use musictable::MusicTable;
+use crate::wavtable::WavTable;
+use crate::musictable::MusicTable;
 
 thread_local!(static AUDIO_PLAYER: RefCell<Option<AudioPlayer>> = RefCell::new(None));
 
