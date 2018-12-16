@@ -1,7 +1,7 @@
 //! This module provides functions for auto generated dungeons
 
-use crate::array2d::*;
-use crate::rng;
+use array2d::*;
+use rng;
 use common::gamedata::*;
 use common::objholder::*;
 use common::gobj;

@@ -1,10 +1,10 @@
 
+use array2d::*;
 use super::Game;
 use super::action;
 use crate::text::ToText;
 use common::gamedata::*;
 use crate::game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
-use crate::array2d::*;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
@@ -288,7 +288,7 @@ impl<'a> DoPlayerAction<'a> {
     }
 }
 
-pub fn msg_switch_map(next_mid: MapId) -> ::std::borrow::Cow<'static, str> {
+pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {
     if next_mid.is_region_map() {
         crate::text::ui_txt("dialog.exit_to_regionmap").into()
     } else {

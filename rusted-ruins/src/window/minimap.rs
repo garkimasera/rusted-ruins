@@ -2,7 +2,7 @@
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
-use crate::array2d::*;
+use array2d::*;
 use common::gobj;
 use crate::game::Game;
 use crate::context::*;

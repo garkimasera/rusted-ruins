@@ -1,5 +1,5 @@
 
-use crate::array2d::*;
+use array2d::*;
 use common::objholder::AnimImgIdx;
 use common::gobj;
 

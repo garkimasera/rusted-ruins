@@ -1,12 +1,12 @@
 
 //! Process characters action
 
+use array2d::*;
+use common::gamedata::*;
+use common::gobj;
 use super::Game;
 use super::combat;
 use super::extrait::*;
-use crate::array2d::*;
-use common::gamedata::*;
-use common::gobj;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) { return true; } // Move to current tile always success

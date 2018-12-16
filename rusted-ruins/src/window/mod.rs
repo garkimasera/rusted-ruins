@@ -32,7 +32,7 @@ use crate::SdlContext;
 use self::main_window::MainWindow;
 use self::log_window::LogWindow;
 use self::widget::WidgetTrait;
-use crate::array2d::*;
+use array2d::*;
 
 mod commonuse {
     pub use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};

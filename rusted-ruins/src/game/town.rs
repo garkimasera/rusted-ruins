@@ -1,5 +1,5 @@
 
-use crate::array2d::Vec2d;
+use array2d::Vec2d;
 use common::obj::SiteGenObject;
 use common::gamedata::*;
 use common::gobj;

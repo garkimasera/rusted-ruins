@@ -3,7 +3,7 @@ pub mod builder;
 pub mod from_template;
 pub mod search;
 
-use crate::array2d::*;
+use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use common::gobj;

@@ -186,7 +186,7 @@ impl MsgText {
     }
 
     fn page_lines(&self) -> &[Cow<'static, str>] {
-        let e = ::std::cmp::min(self.n_line(), self.current_line + self.n_default_line);
+        let e = std::cmp::min(self.n_line(), self.current_line + self.n_default_line);
         &self.lines[self.current_line..e]
     }
 

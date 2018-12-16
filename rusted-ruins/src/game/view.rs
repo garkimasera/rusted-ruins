@@ -1,6 +1,6 @@
 //! This module processes the view of characters
 
-use crate::array2d::*;
+use array2d::*;
 use common::gamedata::*;
 use crate::game::Game;
 use crate::game::InfoGetter;

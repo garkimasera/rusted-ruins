@@ -1,5 +1,5 @@
 
-use crate::array2d::*;
+use array2d::*;
 use common::objholder::*;
 use common::gamedata::*;
 use common::gobj;

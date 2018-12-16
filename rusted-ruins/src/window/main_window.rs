@@ -1,5 +1,5 @@
 
-use crate::array2d::*;
+use array2d::*;
 use crate::game::{Game, Animation, InfoGetter};
 use crate::context::*;
 use crate::window::Window;

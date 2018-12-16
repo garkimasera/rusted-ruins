@@ -339,14 +339,14 @@ impl MainWinDrawer {
         let left = if center_p.0 - win_w / 2 < min_left {
             min_left
         } else if center_p.0 + win_w / 2 > max_right {
-            ::std::cmp::max(max_right - win_w, 0)
+            std::cmp::max(max_right - win_w, 0)
         } else {
             center_p.0 - win_w / 2
         };
         let top = if center_p.1 - win_h / 2 < min_top {
             min_top
         } else if center_p.1 + win_h / 2 > max_bottom {
-            ::std::cmp::max(max_bottom - win_h, 0)
+            std::cmp::max(max_bottom - win_h, 0)
         } else {
             center_p.1 - win_h / 2
         };

@@ -1,5 +1,5 @@
 
-use crate::array2d::*;
+use array2d::*;
 use common::piece_pattern::*;
 use common::objholder::EffectIdx;
 use crate::game::{Game, InfoGetter};

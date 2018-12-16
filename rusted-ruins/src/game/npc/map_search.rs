@@ -1,6 +1,6 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
-use crate::array2d::*;
+use array2d::*;
 use common::gamedata::*;
 use crate::game::InfoGetter;
 

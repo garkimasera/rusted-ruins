@@ -76,7 +76,7 @@ pub fn misc_txt_checked(id: &str) -> Option<&'static str> {
 /// This is helper trait for some data objects that need to be printed in game.
 /// Logging macros use this.
 pub trait ToText {
-    fn to_text(&self) -> ::std::borrow::Cow<str>;
+    fn to_text(&self) -> std::borrow::Cow<str>;
 }
 
 /// Types that have text id.
@@ -172,7 +172,7 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
         if is_key {
             if key.is_some() {
                 remove_last_newline(&mut value);
-                map.insert(::std::mem::replace(&mut key, None).unwrap(), value.clone());
+                map.insert(std::mem::replace(&mut key, None).unwrap(), value.clone());
                 value.clear();
             } else {
                 // Unnecessary line before the first key line

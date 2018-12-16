@@ -1,7 +1,7 @@
 
 use sdl2::rect::Rect;
 use sdl2::render::{WindowCanvas, Texture};
-use crate::array2d::*;
+use array2d::*;
 use crate::context::*;
 use crate::config::UI_CFG;
 use crate::game::Command;

@@ -26,7 +26,7 @@ pub mod saveload;
 
 use std::borrow::Cow;
 use std::path::PathBuf;
-use crate::array2d::Vec2d;
+use array2d::Vec2d;
 use common::gamedata::*;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
@@ -131,7 +131,7 @@ impl Game {
 
     pub fn pop_dialog_open_request(&mut self) -> Option<DialogOpenRequest> {
         if self.dialog_open_request.is_some() {
-            ::std::mem::replace(&mut self.dialog_open_request, None)
+            std::mem::replace(&mut self.dialog_open_request, None)
         } else {
             None
         }

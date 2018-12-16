@@ -2,7 +2,7 @@
 
 pub mod map_search;
 
-use crate::array2d::*;
+use array2d::*;
 use common::gamedata::*;
 use super::{Game, InfoGetter};
 use super::action;

@@ -29,7 +29,7 @@ impl Game {
     }
 }
 
-pub fn save_file_list() -> Result<Vec<PathBuf>, ::std::io::Error> {
+pub fn save_file_list() -> Result<Vec<PathBuf>, std::io::Error> {
     let mut list = Vec::new();
     
     for entry in fs::read_dir(get_save_dir())? {
