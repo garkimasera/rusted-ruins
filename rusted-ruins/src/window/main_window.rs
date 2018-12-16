@@ -73,7 +73,7 @@ impl Window for MainWindow {
     fn draw(
         &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
-        self.drawer.draw(context.canvas, game, context.sv, anim, self.centering_tile);
+        self.drawer.draw(context, game, anim, self.centering_tile);
     }
 }
 

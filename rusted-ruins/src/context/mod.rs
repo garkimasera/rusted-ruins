@@ -67,5 +67,21 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
             src.w as u32, src.h as u32);
         check_draw!(self.canvas.copy(tex, src, dest));
     }
+
+    pub fn render_tex_n_bottom<I, O>(&mut self, idx: I, dest: Rect, n_image: u32)
+    where
+        for<'th> self::texture::TextureHolder<'th>: common::objholder::Holder<I, ReturnType=Texture<'th>>,
+        I: common::objholder::ObjectIndex<ObjectType = O> + Copy,
+        O: common::obj::ImgObject + 'static
+    {
+        let tex = self.sv.tex().get(idx);
+        let obj = common::gobj::get_obj(idx);
+        let src: Rect = obj.img_rect_nth(n_image).into();
+        let dest = Rect::new(
+            dest.x + (dest.w - src.w) / 2,
+            dest.y + dest.h - src.h,
+            src.w as u32, src.h as u32);
+        check_draw!(self.canvas.copy(tex, src, dest));
+    }
 }
 

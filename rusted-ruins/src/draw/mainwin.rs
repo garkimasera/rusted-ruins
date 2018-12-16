@@ -3,7 +3,7 @@ use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 use sdl2::pixels::Color;
 use sdl2::render::Texture;
-use crate::array2d::*;
+use array2d::*;
 use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I};
 use common::objholder::{Holder, UIImgIdx};
 use common::obj::*;
@@ -35,7 +35,7 @@ impl MainWinDrawer {
         }
     }
 
-    pub fn draw(&mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
+    pub fn draw(&mut self, context: &mut Context, game: &Game,
                 anim: Option<(&Animation, u32)>, centering_tile: Option<Vec2d>) {
         super::frame::next_frame();
         let mut player_move_dir = None;
@@ -62,7 +62,9 @@ impl MainWinDrawer {
         let map = game.gd.get_current_map();
         self.update_draw_params((map.w as i32, map.h as i32),
                                 ct, player_move_adjust);
-        self.draw_except_anim(canvas, game, sv, player_move_adjust, player_move_dir);
+        self.draw_except_anim(context, game, player_move_adjust, player_move_dir);
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
         self.draw_overlay_all(canvas, game, sv);
 
         if let Some(anim) = anim {
@@ -75,11 +77,11 @@ impl MainWinDrawer {
     }
 
     fn draw_except_anim(
-        &mut self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues,
+        &mut self, context: &mut Context, game: &Game,
         player_move_adjust: (i32, i32), player_move_dir: Option<Direction>) {
 
-        canvas.set_viewport(self.rect);
-        canvas.set_draw_color(Color::RGB(120, 120, 120));
+        context.set_viewport(self.rect);
+        context.canvas.set_draw_color(Color::RGB(120, 120, 120));
 
         let gd = &game.gd;
         let map = gd.get_current_map();
@@ -109,7 +111,7 @@ impl MainWinDrawer {
 
         // Draw background parts
         for p in tile_range.clone() {
-            self.draw_background_parts(canvas, map, sv, p);
+            self.draw_background_parts(context, map, p);
         }
 
         let player_pos_one_back_side = player_pos + (0, -1);
@@ -125,17 +127,17 @@ impl MainWinDrawer {
                 // It is needed to make the graphic order more natural
                 if !is_player_moving || (p != player_pos && Some(p) != prev_player_pos){
                     self.draw_foreground_parts(
-                        canvas, map, view_map, sv, p,
+                        context, map, view_map, p,
                         gd, is_player_moving, player_move_adjust);
                 }
                 if is_player_moving && p == player_pos_one_back_side {
                     self.draw_foreground_parts(
-                        canvas, map, view_map, sv, player_pos,
+                        context, map, view_map, player_pos,
                         gd, is_player_moving, player_move_adjust);
                 }
                 if prev_player_pos_one_back_side == Some(p) {
                     self.draw_foreground_parts(
-                        canvas, map, view_map, sv, p + (0, 1),
+                        context, map, view_map, p + (0, 1),
                         gd, is_player_moving, player_move_adjust);
                 }
             }
@@ -147,72 +149,54 @@ impl MainWinDrawer {
                 let mut dest = self.centering_at_tile(
                     src, player_pos,
                     -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET);
-                check_draw!(canvas.copy(sv.tex().get(chara.template), src, dest));
+                check_draw!(context.canvas.copy(context.sv.tex().get(chara.template), src, dest));
             }
         }
         // Draw background parts
         for p in tile_range {
-            self.draw_overlay(canvas, game, sv, p);
+            self.draw_overlay(context.canvas, game, context.sv, p);
         }
     }
 
     /// Draw tile background parts
-    fn draw_background_parts(&self, canvas: &mut WindowCanvas, map: &Map, sv: &SdlValues, p: Vec2d) {
+    fn draw_background_parts(&self, context: &mut Context, map: &Map, p: Vec2d) {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile { // Draw tile
             for tile_idxpp in t.iter() {
                 let idx = tile_idxpp.idx().unwrap();
                 let obj = gobj::get_obj(idx);
-                let tex = sv.tex().get(idx);
-                self.draw_pieces(canvas, tex, obj, p, tile_idxpp.piece_pattern());
+                let tex = context.sv.tex().get(idx);
+                self.draw_pieces(context.canvas, tex, obj, p, tile_idxpp.piece_pattern());
             }
         }
         if let Some(special_tile_idx) = di.special { // Draw tile special
-            let texture = sv.tex().get(special_tile_idx);
-            let query = texture.query();
-            let src = Rect::new(0, 0, query.width, query.height);
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            check_draw!(canvas.copy(&texture, src, dest));
+            context.render_tex_n_bottom(special_tile_idx, self.tile_rect(p, 0, 0), 0);
         }
     }
 
     /// Draw tile foreground parts
-    fn draw_foreground_parts(&self, canvas: &mut WindowCanvas, map: &Map, view_map: &ViewMap,
-                             sv: &SdlValues, p: Vec2d,
+    fn draw_foreground_parts(&self, context: &mut Context, map: &Map, view_map: &ViewMap, p: Vec2d,
                              gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
         let di = ForegroundDrawInfo::new(map, view_map, p);
+        let tile_rect = self.tile_rect(p, 0, 0);
 
         if let Some(special_tile_idx) = di.special { // Draw tile special
-            let tex = sv.tex().get(special_tile_idx);
-            let query = tex.query();
-            let src = Rect::new(0, 0, query.width, query.height);
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            check_draw!(canvas.copy(&tex, src, dest));
+            context.render_tex_n_bottom(special_tile_idx, tile_rect, 0);
         }
         if let Some(wall_idx) = di.wallpp.idx() { // Draw wall
             let obj = gobj::get_obj(wall_idx);
-            let tex = sv.tex().get(wall_idx);
-            self.draw_pieces(canvas, tex, obj, p, di.wallpp.piece_pattern());
+            let tex = context.sv.tex().get(wall_idx);
+            self.draw_pieces(context.canvas, tex, obj, p, di.wallpp.piece_pattern());
         }
 
         if let Some(deco_idx) = di.deco { // Draw decoration
-            let tex = sv.tex().get(deco_idx);
-            let query = tex.query();
-            let src = Rect::new(0, 0, query.width, query.height);
-            let dest = self.bottom_at_tile(src, p, 0, 0);
-            check_draw!(canvas.copy(&tex, src, dest));
+            context.render_tex_n_bottom(deco_idx, tile_rect, 0);
         }
 
         // Draw items
         for item_idx in di.items {
-            let texture = sv.tex().get(*item_idx);
-
-            let query = texture.query();
-            let src = Rect::new(0, 0, query.width, query.height);
-            let dest = self.centering_at_tile(src, p, 0, 0);
-        
-            check_draw!(canvas.copy(&texture, src, dest));
+            context.render_tex_n_center(*item_idx, tile_rect, 0);
         }
 
         // Draw character on the tile
@@ -228,7 +212,7 @@ impl MainWinDrawer {
                 }else{
                     self.centering_at_tile(src, p, 0, -CHARA_DRAW_OFFSET)
                 };
-                check_draw!(canvas.copy(sv.tex().get(chara.template), src, dest));
+                check_draw!(context.canvas.copy(context.sv.tex().get(chara.template), src, dest));
             }
         }
     }
@@ -386,7 +370,15 @@ impl MainWinDrawer {
             tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
             src.w as u32, src.h as u32
         )
-    }    
+    }
+
+    fn tile_rect(&self, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+        Rect::new(
+            TILE_SIZE_I * tile.0 + dx + self.dx,
+            TILE_SIZE_I * tile.1 + dy + self.dy,
+            TILE_SIZE, TILE_SIZE
+        )
+    }
 
     /// Calculate the number of needed tile to fill screen
     fn calc_tile_num(&self) -> (i32, i32) {
