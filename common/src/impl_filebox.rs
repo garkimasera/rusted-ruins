@@ -1,7 +1,7 @@
 
 use std::io::{Read, Write, Error as IoError};
 use std::fmt::Display;
-use serde_cbor::{from_reader, to_writer, error::Error as SerdeError};
+use serde_cbor::{from_reader, ser::to_writer_packed, error::Error as SerdeError};
 use crate::gamedata::Map;
 use filebox::*;
 
@@ -9,7 +9,7 @@ impl WithId for Map {
     type Error = MapLoadError;
     
     fn write<W: Write>(mut w: W, a: &Self) -> Result<(), MapLoadError> {
-        to_writer(&mut w, a)?;
+        to_writer_packed(&mut w, a)?;
         Ok(())
     }
     
