@@ -45,7 +45,7 @@ pub struct StatusWindow {
 impl StatusWindow {
     pub fn new(gd: &GameData) -> StatusWindow {
         let cfg = &UI_CFG.status_window;
-        let rect: Rect = cfg.rect.into();
+        let rect: Rect = UI_CFG.info_window.rect.into();
         let chara = gd.chara.get(CharaId::Player);
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
         let name_label = LabelWidget::new(cfg.name_label_rect, &chara.to_text(), FontKind::M);
@@ -112,7 +112,7 @@ pub struct SkillWindow {
 
 impl SkillWindow {
     pub fn new(gd: &GameData) -> SkillWindow {
-        let rect: Rect = UI_CFG.skill_window.rect.into();
+        let rect: Rect = UI_CFG.info_window.rect.into();
         let mut gauges: Vec<GaugeWidget> = Vec::new();
         let mut labels: Vec<LabelWidget> = Vec::new();
         

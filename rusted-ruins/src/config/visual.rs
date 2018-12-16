@@ -45,6 +45,7 @@ pub struct UIConfig {
     pub item_window: ItemWindowConfig,
     pub equip_window: EquipWindowConfig,
     pub scrolling_text_window: ScrollingTextWindowConfig,
+    pub info_window: InfoWindowConfig,
     pub status_window: StatusWindowConfig,
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
@@ -162,8 +163,12 @@ pub struct EquipWindowConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct StatusWindowConfig {
+pub struct InfoWindowConfig {
     pub rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct StatusWindowConfig {
     pub image_rect: CfgRect,
     pub name_label_rect: CfgRect,
     pub hp_label_rect: CfgRect,
@@ -177,13 +182,11 @@ pub struct StatusWindowConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct GameInfoWindowConfig {
-    pub rect: CfgRect,
     pub money_label_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct SkillWindowConfig {
-    pub rect: CfgRect,
     pub label_rect: CfgRect,
     pub gauge_rect: CfgRect,
     pub gauge_w: i32,

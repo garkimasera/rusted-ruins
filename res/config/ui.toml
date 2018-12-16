@@ -72,8 +72,10 @@ column_pos = [1, 28, 58]
 line_space = 30
 speed = 1.5
 
-[status_window]
+[info_window]
 rect = { x = -999, y = -999, w = 500, h = 300 }
+
+[status_window]
 image_rect = { x = 5, y = 5, w = 48, h = 96 }
 name_label_rect = { x = 50, y = 3 }
 hp_label_rect = { x = 57, y = 32 }
@@ -85,11 +87,9 @@ wil_label_rect = { x = 5, y = 180 }
 cha_label_rect = { x = 5, y = 200 }
 
 [game_info_window]
-rect = { x = -999, y = -999, w = 500, h = 300 }
 money_label_rect = { x = 5, y = 5 }
 
 [skill_window]
-rect = { x = -999, y = -999, w = 200, h = 200 }
 gauge_rect = { x = 80, y = 2, w = 50, h = 18 }
 label_rect = { x = 5, y = 2, w = 80, h = 18 }
 gauge_w = 140

@@ -13,7 +13,7 @@ pub struct GameInfoWindow {
 impl GameInfoWindow {
     pub fn new(game: &Game) -> GameInfoWindow {
         let cfg = &UI_CFG.game_info_window;
-        let rect: Rect = cfg.rect.into();
+        let rect: Rect = UI_CFG.info_window.rect.into();
         let money_label = LabelWidget::new(
             cfg.money_label_rect, &format!("{} Gold", game.gd.player.money()), FontKind::MonoM);
         
