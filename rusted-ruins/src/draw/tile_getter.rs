@@ -20,8 +20,11 @@ impl<'a> BackgroundDrawInfo<'a> {
         
         let tile = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
-            
-            tinfo.tile.as_ref()
+            if tinfo.tile {
+                Some(&map.tile[pos].tile)
+            } else {
+                None
+            }
         } else {
             if let Some(ref _outside_tile) = map.outside_tile {
                 unimplemented!()
@@ -29,7 +32,7 @@ impl<'a> BackgroundDrawInfo<'a> {
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
-                tinfo.tile.as_ref()
+                Some(&map.tile[pos].tile)
             }
         };
         

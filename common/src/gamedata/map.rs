@@ -172,7 +172,8 @@ pub struct TileInfo {
 /// These data will be updated every player turn based on player's view
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ObservedTileInfo {
-    pub tile: Option<TileArray>,
+    /// Tile is observed or not
+    pub tile: bool,
     pub wall: WallIdxPP,
     pub deco: Option<DecoIdx>,
     pub items: ArrayVec<[ItemIdx; MAX_ITEM_FOR_DRAW]>,

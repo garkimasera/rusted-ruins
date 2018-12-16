@@ -183,7 +183,7 @@ pub fn update_observed_map(game: &mut Game) {
         let tile = &map.tile[p];
         let observed_tile = &mut map.observed_tile[p];
 
-        observed_tile.tile = Some(tile.tile.clone());
+        observed_tile.tile = true;
         observed_tile.wall = tile.wall;
         observed_tile.deco = tile.deco;
         observed_tile.special = tile.special;
