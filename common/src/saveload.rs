@@ -8,6 +8,7 @@ use crate::basic::SAVE_EXTENSION;
 use crate::gamedata::*;
 use crate::impl_filebox::MapLoadError;
 
+#[cfg(feature="global_state_obj")]
 impl GameData {
     /// Save game data to the specified directory
     pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
@@ -19,6 +20,10 @@ impl GameData {
 
         // Create directory
         create_dir_all(&save_dir)?;
+
+        // Write id table file
+        let mut file = BufWriter::new(File::create(save_dir.join("idtable"))?);
+        crate::gobj::get_objholder().write_table(&mut file)?;
 
         // Write metadata file
         let mut file = BufWriter::new(File::create(save_dir.join("metadata"))?);

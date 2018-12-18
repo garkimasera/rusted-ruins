@@ -121,6 +121,17 @@ macro_rules! impl_objholder {
                 // because the order is used for choosing chara from race and gen_level
                 self.chara_template.sort_by(|a, b| cmp_chara_template(a, b));
             }
+
+            /// Write id table
+            pub fn write_table<W: std::io::Write>(&self, mut w: W) -> Result<(), std::io::Error> {
+                $({
+                    write!(w, "{}{}\n", crate::basic::ID_TABLE_SECTION_TAG, stringify!($obj))?;
+                    for o in &self.$mem {
+                        write!(w, "{}\n", &o.id)?;
+                    }
+                })*
+                Ok(())
+            }
         }
 
         // Index type is an integer type that represents object index in ObjectHolder

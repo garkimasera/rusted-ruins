@@ -42,6 +42,9 @@ pub const MISC_TXT_DIR: &'static str = "misc";
 pub const SAVE_DIR_NAME: &'static str = "save";
 pub const SAVE_EXTENSION: &'static str = "rrsve";
 
+/// Id table
+pub const ID_TABLE_SECTION_TAG: &'static str = "§";
+
 /// The number of auto generated dungeons per region
 pub const MAX_AUTO_GEN_DUNGEONS: u32 = 20;
 
