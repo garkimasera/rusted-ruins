@@ -30,7 +30,7 @@ impl<T: WithId> Deref for FileBox<T> {
         if let Some(ref inner) = self.inner {
             inner
         } else {
-            panic!("deref for unloaded object: {:08x}", self.id);
+            panic!("deref for unloaded object: {:016x}", self.id);
         }
     }
 }
@@ -41,7 +41,7 @@ impl<T: WithId> DerefMut for FileBox<T> {
             self.changed.set(true);
             inner
         } else {
-            panic!("deref for unloaded object: {:08x}", self.id);
+            panic!("deref for unloaded object: {:016x}", self.id);
         }
     }
 }
@@ -92,7 +92,7 @@ impl<T: WithId> FileBox<T> {
     }
 
     pub fn path<P: AsRef<Path>>(&self, p: P) -> PathBuf {
-        p.as_ref().join(format!("{:08x}", self.id))
+        p.as_ref().join(format!("{:016x}", self.id))
     }
 
     pub fn read<P: AsRef<Path>>(&mut self, p: P) -> Result<(), T::Error> {

@@ -52,9 +52,20 @@ pub fn save_file_list() -> Result<Vec<PathBuf>, std::io::Error> {
 }
 
 /// Generate random id for FileBox
-pub fn gen_box_id(_gd: &GameData) -> u64 {
+pub fn gen_box_id(gd: &GameData) -> u64 {
     use rng::*;
-    thread_rng().gen::<u64>()
+    
+    loop {
+        let s = thread_rng().gen::<u64>();
+        
+        // Check generated name is not used
+        let mut path = get_each_save_dir(gd);
+        path.push("maps");
+        path.push(format!("{:016x}", s));
+        if !path.exists() {
+            return s;
+        }
+    }
 }
 
 fn get_save_dir() -> PathBuf {

@@ -33,6 +33,8 @@ impl NewGameBuilder {
         {
             let mut gd = &mut self.gd;
 
+            gd.meta.set_save_name(self.player_name.as_ref().unwrap());
+
             super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
             let mid = MapId::RegionMap { rid: RegionId::default() };
@@ -59,8 +61,6 @@ impl NewGameBuilder {
             gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
 
             // Initial date setting
-            gd.meta.set_save_name(&self.player_name.unwrap());
-            
             gd.time = Time::new(
                 RULES.params.initial_date_year,
                 RULES.params.initial_date_month,
