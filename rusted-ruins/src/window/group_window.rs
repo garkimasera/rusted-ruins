@@ -25,10 +25,12 @@ pub struct GroupWindow {
 }
 
 impl GroupWindow {
-    pub fn new(size: usize, init_win: usize, game: &Game, mem_info: Vec<MemberInfo>) -> GroupWindow {
+    pub fn new(size: usize, init_win: usize, game: &Game,
+               mem_info: Vec<MemberInfo>, window_top_left: (i32, i32)) -> GroupWindow {
+        
         assert!(init_win < size);
         let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).into_iter().map(|_| None).collect();
-        let tab_navigator = TabsNavigator::new(mem_info.clone(), init_win);
+        let tab_navigator = TabsNavigator::new(window_top_left, mem_info.clone(), init_win);
         
         let mut group_window = GroupWindow {
             size,
@@ -71,12 +73,12 @@ impl GroupWindow {
 
 impl Window for GroupWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-
-        self.tab_navigator.draw(context, game, anim);
-
+        
         if let Some(ref mut member) = self.members[self.current_window] {
             member.draw(context, game, anim);
         }
+
+        self.tab_navigator.draw(context, game, anim);
     }
 }
 
@@ -117,11 +119,13 @@ struct TabsNavigator {
 }
 
 impl TabsNavigator {
-    fn new(mem_info: Vec<MemberInfo>, init: usize) -> TabsNavigator {
+    fn new(p: (i32, i32), mem_info: Vec<MemberInfo>, init: usize) -> TabsNavigator {
         assert!(mem_info.len() > 0);
 
         let size = mem_info.len();
         let w = TAB_ICON_W * size as u32;
+        let h = TAB_ICON_H + TAB_TEXT_H;
+        let rect = Rect::new(p.0, p.1 - h as i32 - WINDOW_BORDER_THICKNESS as i32, w, h);
         let screen_w = SCREEN_CFG.screen_w;
         let x = screen_w as i32 - w as i32;
         let labels: Vec<LabelWidget> = mem_info
@@ -135,7 +139,7 @@ impl TabsNavigator {
             .collect();
         
         TabsNavigator {
-            rect: Rect::new(x, 0, w, TAB_ICON_H + TAB_TEXT_H),
+            rect,
             i: init,
             mem_info,
             labels,
@@ -151,7 +155,15 @@ impl Window for TabsNavigator {
     fn draw(
         &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        context.set_viewport(self.rect);
+        lazy_static! {
+            static ref MAKE_DARK_IDX: UIImgIdx = common::gobj::id_to_idx("!make-dark");
+        };
+        crate::draw::border::draw_rect_border(context.canvas, self.rect);
+
+        use sdl2::pixels::Color;
+        let window_bg: Color = UI_CFG.color.window_bg.into();
+        let border_light: Color = UI_CFG.color.border_light.into();
+        let border_dark: Color = UI_CFG.color.border_dark.into();
 
         for (i, member) in self.mem_info.iter().enumerate() {
             let dest_rect = Rect::new(TAB_ICON_W as i32 * i as i32, 0, TAB_ICON_W, TAB_ICON_H);
@@ -163,14 +175,62 @@ impl Window for TabsNavigator {
             label.draw(context);
         }
 
-        // Draw border for selected tab
+        // Erase border between tabs and window
+        context.set_viewport({
+            let mut r = self.rect;
+            r.set_height(self.rect.height() + WINDOW_BORDER_THICKNESS);
+            r
+        });
+        let w = TAB_ICON_W;
         let h = TAB_ICON_H + TAB_TEXT_H;
-        let rect = Rect::new(TAB_ICON_W as i32 * self.i as i32, 0, TAB_ICON_W, h);
-        context.canvas.set_draw_color(UI_CFG.color.tab_select_border_light.into());
-        check_draw!(context.canvas.draw_rect(rect));
-        let rect = Rect::new(TAB_ICON_W as i32 * self.i as i32 + 1, 1, TAB_ICON_W - 2, h - 2);
-        context.canvas.set_draw_color(UI_CFG.color.tab_select_border_dark.into());
-        check_draw!(context.canvas.draw_rect(rect));
+        let r = Rect::new(
+            0, h as i32,
+            w * self.mem_info.len() as u32, WINDOW_BORDER_THICKNESS);
+        context.canvas.set_draw_color(window_bg);
+        check_draw!(context.canvas.fill_rect(r));
+
+        // Draw borders
+        context.canvas.set_draw_color(border_light);
+        for i in 0..self.mem_info.len() {
+
+            let (i, w, h) = (i as i32, w as i32, h as i32);
+
+            if self.i as i32 != i {
+                // Draw horizontal border
+                context.canvas.set_draw_color(border_dark);
+                check_draw!(context.canvas.draw_line(
+                    (i * w, h),
+                    ((i + 1) * w, h)));
+                context.canvas.set_draw_color(border_light);
+                check_draw!(context.canvas.draw_line(
+                    (i * w, h + 1),
+                    ((i + 1) * w, h + 1)));
+                context.canvas.set_draw_color(border_dark);
+                check_draw!(context.canvas.draw_line(
+                    (i * w + 1, h + 2),
+                    ((i + 1) * w + 1, h + 2)));
+
+                // Make rendered text and icon dark if not selected
+                context.render_tex(
+                    *MAKE_DARK_IDX,
+                    Rect::new(w * i + WINDOW_BORDER_THICKNESS as i32, 0,
+                              w as u32 - WINDOW_BORDER_THICKNESS, h as u32));
+            }
+
+            // Draw vertical border
+            context.canvas.set_draw_color(border_dark);
+            check_draw!(context.canvas.draw_line(
+                ((i + 1) * w - 1, 0),
+                ((i + 1) * w - 1, h + 1)));
+            context.canvas.set_draw_color(border_light);
+            check_draw!(context.canvas.draw_line(
+                ((i + 1) * w, 0),
+                ((i + 1) * w, h + 1)));
+            context.canvas.set_draw_color(border_dark);
+            check_draw!(context.canvas.draw_line(
+                ((i + 1) * w + 1, 0),
+                ((i + 1) * w + 1, h + 1)));
+        }
     }
 }
 

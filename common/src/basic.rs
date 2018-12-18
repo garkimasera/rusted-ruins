@@ -18,6 +18,8 @@ pub const TAB_ICON_W: u32 = 48;
 pub const TAB_ICON_H: u32 = 32;
 /// Tab text height
 pub const TAB_TEXT_H: u32 = 16;
+/// Window border thickness
+pub const WINDOW_BORDER_THICKNESS: u32 = 3;
 
 /// Maximum number of items on one tile
 pub const MAX_ITEM_TILE: usize = 256;

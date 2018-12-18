@@ -25,7 +25,8 @@ pub fn create_status_window_group(game: &Game) -> GroupWindow {
             creator: |game| Box::new(SkillWindow::new(&game.gd)),
         },
     ];
-    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, mem_info)
+    let rect: Rect = UI_CFG.info_window.rect.into();
+    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, mem_info, (rect.x, rect.y))
 }
 
 /// Character status viewer

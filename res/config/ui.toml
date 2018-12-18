@@ -17,8 +17,6 @@ gauge_border_dark = { r=153, g=116, b =20 }
 gauge_bg = { r=7, g=7, b =7 }
 gauge_hp = { r=237, g=47, b =37 }
 gauge_exp = { r=153, g=153, b=117 }
-tab_select_border_light = { r=244, g=0, b=0 }
-tab_select_border_dark = { r=200, g=0, b=0 }
 
 [font]
 s = { size=11 }
