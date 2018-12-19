@@ -45,7 +45,7 @@ impl Window for ChooseWindow {
         let rect = Rect::new(left_top_point.0, left_top_point.1, list_widget_size.0, list_widget_size.1);
 
         // Drawing
-        draw_rect_border(context.canvas, rect);
+        draw_rect_border(context, rect);
         
         self.answer_list.draw(context);
     }
@@ -129,7 +129,7 @@ impl Window for PagedChooseWindow {
         &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
         // Drawing
-        draw_rect_border(context.canvas, self.rect);
+        draw_rect_border(context, self.rect);
         
         self.answer_list.draw(context);
     }

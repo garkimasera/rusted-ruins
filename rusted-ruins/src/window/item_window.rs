@@ -202,7 +202,7 @@ impl Window for ItemWindow {
     fn draw(
         &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
-        draw_rect_border(context.canvas, self.rect);
+        draw_rect_border(context, self.rect);
         self.list.draw(context);
         self.page_window.draw(context, game, anim);
     }

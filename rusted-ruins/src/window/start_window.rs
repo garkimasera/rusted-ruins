@@ -50,7 +50,7 @@ impl StartDialog {
 impl Window for StartDialog {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        draw_rect_border(context.canvas, self.rect);
+        draw_rect_border(context, self.rect);
         
         self.answer_list.draw(context);
     }
