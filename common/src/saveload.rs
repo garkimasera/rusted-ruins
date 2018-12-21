@@ -1,7 +1,7 @@
 
 use std::path::{Path, PathBuf};
 use std::fs::{File, create_dir_all};
-use std::io::{BufReader, BufWriter};
+use std::io::{Write, BufReader, BufWriter};
 use serde_cbor::ser::to_writer_packed;
 use serde_cbor::from_reader;
 use crate::basic::SAVE_EXTENSION;
@@ -23,6 +23,7 @@ impl GameData {
 
         // Write id table file
         let mut file = BufWriter::new(File::create(save_dir.join("idtable"))?);
+        writeln!(file, "{:016x}", *crate::gobj::OBJ_HOLDER_HASH)?;
         crate::gobj::get_objholder().write_table(&mut file)?;
 
         // Write metadata file

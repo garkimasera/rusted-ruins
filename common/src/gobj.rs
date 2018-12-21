@@ -18,6 +18,12 @@ lazy_static! {
         let pak_dirs = PAK_DIRS.lock().unwrap();
         ObjectHolder::load(pak_dirs.as_ref().unwrap())
     };
+    pub static ref OBJ_HOLDER_HASH: u64 = {
+        use std::hash::{Hash, Hasher};
+        let mut hasher = fnv::FnvHasher::default();
+        get_objholder().hash(&mut hasher);
+        hasher.finish()
+    };
 }
 
 pub fn get_objholder() -> &'static ObjectHolder {

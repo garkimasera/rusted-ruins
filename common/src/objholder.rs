@@ -134,6 +134,18 @@ macro_rules! impl_objholder {
             }
         }
 
+        /// Hash is used to verify the identity of ObjectHolder and id table.
+        impl std::hash::Hash for ObjectHolder {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                $({
+                    for o in &self.$mem {
+                        o.id.hash(state);
+                    }
+                    crate::basic::ID_TABLE_SECTION_TAG.hash(state);
+                })*
+            }
+        }
+
         // Index type is an integer type that represents object index in ObjectHolder
         $(
             #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
