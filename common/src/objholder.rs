@@ -146,9 +146,13 @@ macro_rules! impl_objholder {
             }
         }
 
+        idx_conv!(
+            $({$a, $obj, $mem, $idx}),*
+        );
+
         // Index type is an integer type that represents object index in ObjectHolder
         $(
-            #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+            #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize)]
             pub struct $idx(NonZeroU32);
 
             impl_idx!($idx, $obj, $mem);

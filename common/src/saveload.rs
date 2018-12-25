@@ -61,17 +61,35 @@ impl GameData {
         let mut file = BufReader::new(File::open(save_dir.join("metadata"))?);
         let meta: MetaData = serde_json::from_reader(&mut file)?;
 
+        // Read index conversion table
+        let mut file = BufReader::new(File::open(save_dir.join("idtable"))?);
+        let idx_conv_table = crate::idx_conv::IdxConvTable::read
+            (&mut file, *crate::gobj::OBJ_HOLDER_HASH)?;
+        let is_table_changed = idx_conv_table.is_some();
+        if is_table_changed {
+            info!("Detected changes in the id table. Conversion table is created.");
+        }
+        crate::idx_conv::set_idx_conv_table(idx_conv_table);
+
         // Read GameData
         let mut file = BufReader::new(File::open(save_dir.join("gamedata"))?);
         let mut gamedata: GameData = from_reader(&mut file)?;
-
         gamedata.meta = meta;
 
-        // Preload current map
-        let mid = gamedata.get_current_mapid();
         let map_dir = save_dir.join("maps");
-        gamedata.region.preload_map(mid, map_dir);
-        
+        if is_table_changed { // Preload is needed if id table is changed
+            let mut mid_vec = Vec::new();
+            gamedata.region.visit_all_maps(|mid, _map| {
+                mid_vec.push(mid);
+            });
+            for mid in &mid_vec {
+                gamedata.region.preload_map(*mid, &map_dir);
+            }
+        } else { // Preload current map
+            let mid = gamedata.get_current_mapid();
+            gamedata.region.preload_map(mid, &map_dir);
+        }
+
         Ok(gamedata)
     }
 

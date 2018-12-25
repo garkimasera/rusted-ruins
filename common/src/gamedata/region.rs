@@ -143,7 +143,6 @@ impl RegionHolder {
     /// Preload map from file
     pub fn preload_map<P: AsRef<Path>>(&mut self, mid: MapId, map_dir_path: P) {
         info!("preload map {:?}", mid);
-        println!("{}", map_dir_path.as_ref().to_string_lossy());
         let boxed_map = self.get_boxed_map_mut(mid);
         match boxed_map.read(map_dir_path) {
             Ok(_) => (),

@@ -8,6 +8,8 @@ extern crate rusted_ruins_array2d as array2d;
 pub mod basic;
 pub mod hashmap;
 pub mod obj;
+#[macro_use]
+pub mod idx_conv;
 pub mod objholder;
 #[cfg(feature="global_state_obj")]
 pub mod gobj;
