@@ -12,6 +12,6 @@ crate-type = ["rlib"]
 log = "0.4"
 
 [dependencies.sdl2]
-version = "0.31"
+version = "0.32"
 default-features = false
 features = ["mixer"]

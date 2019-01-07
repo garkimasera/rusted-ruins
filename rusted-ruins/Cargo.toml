@@ -37,6 +37,6 @@ path = "../rules"
 path = "../map-generator"
 
 [dependencies.sdl2]
-version = "0.31"
+version = "0.32"
 default-features = false
 features = ["ttf", "image"]

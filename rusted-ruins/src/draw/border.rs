@@ -18,7 +18,7 @@ pub fn draw_rect_border(context: &mut Context, rect: Rect) {
         check_draw!(canvas.draw_rect(r));
     }
     
-    canvas.set_draw_color(UI_CFG.color.window_bg.into());
+    canvas.set_draw_color(UI_CFG.color.window_bg);
     check_draw!(canvas.fill_rect(rect));
     canvas.set_viewport(rect);
 }

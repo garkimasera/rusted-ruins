@@ -301,7 +301,7 @@ impl WidgetTrait for ListWidget {
         let highlight_rect = Rect::new(
             self.rect.x, self.rect.y + h_row * self.current_choice as i32,
             self.rect.w as u32, h_row as u32);
-        canvas.set_draw_color(UI_CFG.color.window_bg_highlight.into());
+        canvas.set_draw_color(UI_CFG.color.window_bg_highlight);
         check_draw!(canvas.fill_rect(highlight_rect));
 
         // Draw each rows
@@ -368,11 +368,11 @@ impl WidgetTrait for ListWidget {
         }
 
         // Draw highlight row borders
-        canvas.set_draw_color(UI_CFG.color.border_highlight_dark.into());
+        canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
         check_draw!(canvas.draw_rect(highlight_rect));
         let r = Rect::new(highlight_rect.x + 1, highlight_rect.y + 1,
                           highlight_rect.w as u32 - 2, highlight_rect.h as u32 - 2);
-        canvas.set_draw_color(UI_CFG.color.border_highlight_light.into());
+        canvas.set_draw_color(UI_CFG.color.border_highlight_light);
         check_draw!(canvas.draw_rect(r));
     }
 }

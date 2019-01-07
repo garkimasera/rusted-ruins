@@ -94,7 +94,7 @@ impl AudioPlayer {
 }
 
 fn init_device() -> sdl2::mixer::Sdl2MixerContext {
-    use sdl2::mixer::{INIT_OGG, DEFAULT_CHANNELS, AUDIO_S16LSB};    
+    use sdl2::mixer::{InitFlag, DEFAULT_CHANNELS, AUDIO_S16LSB};    
 
     // Initialization for sound
     let frequency = 44100;
@@ -102,7 +102,7 @@ fn init_device() -> sdl2::mixer::Sdl2MixerContext {
     let channels = DEFAULT_CHANNELS; // Stereo
     let chunk_size = 1024;
     sdl2::mixer::open_audio(frequency, format, channels, chunk_size).unwrap();
-    let mixer_context = sdl2::mixer::init(INIT_OGG).unwrap();
+    let mixer_context = sdl2::mixer::init(InitFlag::OGG).unwrap();
     
     sdl2::mixer::allocate_channels(1);
 
