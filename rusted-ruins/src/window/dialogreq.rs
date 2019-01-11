@@ -30,6 +30,9 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game)
             let mut pa = DoPlayerAction::new(game);
             Box::new(ItemWindow::new(ItemWindowMode::ShopSell, &mut pa))
         }
+        DialogOpenRequest::Quest => {
+            Box::new(super::quest_window::QuestWindow::new(game))
+        }
         DialogOpenRequest::GameOver => {
             Box::new(super::exit_window::GameOverWindow::new())
         }

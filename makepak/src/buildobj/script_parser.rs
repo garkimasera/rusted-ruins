@@ -101,7 +101,8 @@ macro_rules! define_parser_for_noarg_instructions {
 define_parser_for_noarg_instructions! {
     shop_buy_instruction, ShopBuy, "shop_buy",
     shop_sell_instruction, ShopSell, "shop_sell",
-    get_dungeon_location_instruction, GetDungeonLocation, "get_dungeon_location"
+    get_dungeon_location_instruction, GetDungeonLocation, "get_dungeon_location",
+    quest_window_instruction, QuestWindow, "quest_window"
 }
 
 #[test]
@@ -187,7 +188,8 @@ named!(instruction<CompleteStr, Instruction>,
         remove_item_instruction |
         shop_buy_instruction |
         shop_sell_instruction |
-        get_dungeon_location_instruction
+        get_dungeon_location_instruction |
+        quest_window_instruction
     )
 );
 

@@ -24,6 +24,8 @@ pub enum Instruction {
     ShopSell,
     /// Special instruction to get locations of dungeons
     GetDungeonLocation,
+    /// Special instruction to open quest window
+    QuestWindow,
 }
 
 /// Expression in script.

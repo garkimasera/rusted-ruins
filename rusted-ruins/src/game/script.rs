@@ -19,6 +19,7 @@ pub enum ExecResult {
     Talk(CharaId, TalkText, bool),
     ShopBuy(CharaId),
     ShopSell,
+    Quest,
     Quit,
 }
 
@@ -146,6 +147,10 @@ impl ScriptEngine {
                 Instruction::GetDungeonLocation => {
                     let mid = gd.get_current_mapid();
                     super::region::gen_dungeon_max(gd, mid.rid());
+                }
+                Instruction::QuestWindow => {
+                    super::quest::update_town_quest(gd);
+                    break ExecResult::Quest;
                 }
             }
             self.pos.advance();

@@ -15,6 +15,7 @@ mod animation;
 mod anim_queue;
 pub mod newgame;
 mod combat;
+pub mod quest;
 mod town;
 mod turnloop;
 pub mod view;
@@ -173,6 +174,10 @@ impl Game {
                 self.request_dialog_open(DialogOpenRequest::ShopSell);
                 AdvanceScriptResult::Continue
             }
+            ExecResult::Quest => {
+                self.request_dialog_open(DialogOpenRequest::Quest);
+                AdvanceScriptResult::Continue
+            }
         }
     }
 
@@ -198,6 +203,7 @@ pub enum DialogOpenRequest {
     Talk { cid: CharaId, talk_text: TalkText },
     ShopBuy { cid: CharaId },
     ShopSell,
+    Quest,
     GameOver,
 }
 

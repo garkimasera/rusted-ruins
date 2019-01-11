@@ -12,6 +12,7 @@ mod main_window;
 mod talk_window;
 mod text_window;
 mod misc_window;
+mod quest_window;
 mod msg_dialog;
 mod newgame_window;
 mod start_window;

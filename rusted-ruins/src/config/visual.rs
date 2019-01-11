@@ -49,6 +49,7 @@ pub struct UIConfig {
     pub status_window: StatusWindowConfig,
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
+    pub quest_window: QuestWindowConfig,
     pub page_window: PageWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
@@ -191,6 +192,12 @@ pub struct SkillWindowConfig {
     pub gauge_h: i32,
     pub n_row: u32,
     pub n_column: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct QuestWindowConfig {
+    pub rect: CfgRect,
+    pub n_row: u32,
 }
 
 #[derive(Debug, Deserialize)]

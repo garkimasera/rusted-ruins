@@ -48,6 +48,16 @@ impl ToText for Chara {
     }
 }
 
+impl ToText for Quest {
+    fn to_text(&self) -> Cow<str> {
+        match self {
+            Quest::SlayMonsters { .. } => {
+                text::misc_txt("!quest.slay-monsters").into()
+            }
+        }
+    }
+}
+
 /// Implement ToText for primitive types
 macro_rules! impl_to_text {
     ( $($t:ty),* ) => {
