@@ -7,8 +7,6 @@ use common::gamedata::*;
 use crate::game::newgame::NewGameBuilder;
 use super::text_window::{TextWindow, ScrollingTextWindow};
 use super::text_input_dialog::TextInputDialog;
-use super::choose_window::PagedChooseWindow;
-use super::widget::ListRow;
 use super::SpecialDialogResult;
 use rules::RULES;
 
@@ -141,43 +139,53 @@ impl DialogWindow for DummyNewGameDialog {
 }
 
 pub struct ChooseClassDialog {
-    choose_window: PagedChooseWindow,
+    rect: Rect,
+    list: TextListWidget,
 }
 
 impl ChooseClassDialog {
     pub fn new() -> ChooseClassDialog {
         let rect: Rect = UI_CFG.choose_class_dialog.rect.into();
-        let choices: Vec<ListRow> = RULES
+        let choices: Vec<String> = RULES
             .newgame
             .class_choices
             .iter()
-            .map(|c| ListRow::Str(format!("{:?}", c)))
+            .map(|c| format!("{:?}", c))
             .collect();
-        let choose_window = PagedChooseWindow::new(
-            rect, choices, 7, None);
-        
+
         ChooseClassDialog {
-            choose_window
+            rect,
+            list: TextListWidget::text_choices(
+                (0, 0, rect.width(), rect.height()), choices),
         }
     }
 }
 
 impl Window for ChooseClassDialog {
-    
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        self.choose_window.draw(context, game, anim);
+        draw_rect_border(context, self.rect);
+        self.list.draw(context);
     }
 }
 
 impl DialogWindow for ChooseClassDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match self.choose_window.process_command(&command, pa) {
-            DialogResult::CloseWithValue(_) => {
-                let chara_class =
-                    RULES.newgame.class_choices[self.choose_window.get_current_choice() as usize];
-                DialogResult::CloseWithValue(Box::new(chara_class))
+        if let Some(response) = self.list.process_command(&command) {
+            match response {
+                ListWidgetResponse::Select(i) => { // Any item is selected
+                    let chara_class =
+                        RULES.newgame.class_choices[i as usize];
+                    return DialogResult::CloseWithValue(Box::new(chara_class));
+                }
+                _ => (),
             }
-            _ => DialogResult::Continue
+            return DialogResult::Continue;
+        }
+        match *command {
+            Command::Cancel => {
+                DialogResult::Close
+            },
+            _ => DialogResult::Continue,
         }
     }
 

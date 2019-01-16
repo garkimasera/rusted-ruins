@@ -15,23 +15,24 @@ use crate::text;
 
 pub struct EquipWindow {
     rect: Rect,
-    list: ListWidget,
+    list: ListWidget<(IconIdx, IconIdx, TextCache)>,
     cid: CharaId,
-    slots: Vec<(EquipSlotKind, u8)>
 }
 
 impl EquipWindow {
     pub fn new(pa: &mut DoPlayerAction, cid: CharaId) -> EquipWindow {
         let rect = UI_CFG.equip_window.rect.into();
-        
+
         let mut equip_window = EquipWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconIconStr,
+                (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.equip_window.column_pos.clone(),
-                Some(UI_CFG.equip_window.n_row), 26),
+                UI_CFG.equip_window.n_row,
+                26,
+                true,
+                true),
             cid: cid,
-            slots: Vec::new(),
         };
         equip_window.update_list(pa);
         equip_window
@@ -40,34 +41,27 @@ impl EquipWindow {
     fn update_list(&mut self, pa: &mut DoPlayerAction) {
         let equips = pa.gd().get_equip_list(self.cid);
         self.list.set_n_item(equips.n_slots());
-        let slots = &mut self.slots;
 
-        self.list.update_rows_by_func(|start, page_size| {
-            let mut rows = Vec::new();
-            slots.clear();
-            for (esk, esk_i, item) in equips.slot_iter().skip(start as usize).take(page_size as usize) {
-                let esk_icon = slotkind_to_icon_idx(esk);
-                if let Some(item) = item {
-                    let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
-                    rows.push(ListRow::IconIconStr(esk_icon, IconIdx::Item(item.idx), item_text));
-                } else {
-                    rows.push(ListRow::IconIconStr(
-                        esk_icon,
-                        IconIdx::Item(common::objholder::ItemIdx::default()),
-                        "-".to_owned()));
-                }
-                slots.push((esk, esk_i));
+        self.list.update_rows_by_func(|i| {
+            let (esk, _, item) = equips.slot_iter().skip(i as usize).next().unwrap();
+            let esk_icon = slotkind_to_icon_idx(esk);
+            if let Some(item) = item {
+                let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
+                let tc = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
+                (esk_icon, IconIdx::Item(item.idx), tc)
+            } else {
+                let tc = TextCache::one("-", FontKind::M, UI_CFG.color.normal_font.into());
+                (esk_icon, IconIdx::Item(common::objholder::ItemIdx::default()), tc)
             }
-            rows
         });
     }
 }
 
 impl Window for EquipWindow {
-    
+
     fn draw(
         &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        
+
         draw_rect_border(context, self.rect);
         self.list.draw(context);
     }
@@ -82,8 +76,10 @@ impl DialogWindow for EquipWindow {
                     use super::item_window::ItemWindow;
 
                     // Callback function for selected item equipment
-                    let slot = self.slots[i as usize];
                     let cid = self.cid;
+                    let (esk, esk_i, _) =
+                        pa.gd().get_equip_list(cid).slot_iter().skip(i as usize).next().unwrap();
+                    let slot = (esk, esk_i);
                     let equip_selected_item = move |pa: &mut DoPlayerAction, il: ItemLocation| {
                         pa.change_equipment(cid, slot, il);
                         DialogResult::Close
@@ -91,7 +87,7 @@ impl DialogWindow for EquipWindow {
                     
                     let select_window = ItemWindow::new_select(
                         ItemListLocation::Chara { cid: CharaId::Player },
-                        ItemFilter::new().equip_slot_kind(self.slots[i as usize].0),
+                        ItemFilter::new().equip_slot_kind(slot.0),
                         Box::new(equip_selected_item),
                         pa
                     );

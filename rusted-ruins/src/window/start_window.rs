@@ -6,7 +6,6 @@ use crate::config::{SCREEN_CFG, UI_CFG};
 use super::commonuse::*;
 use super::widget::*;
 use super::SpecialDialogResult;
-use super::choose_window::PagedChooseWindow;
 use crate::text;
 
 pub struct StartWindow {
@@ -30,7 +29,7 @@ impl StartWindow {
 
 pub struct StartDialog {
     rect: Rect,
-    answer_list: ListWidget,
+    answer_list: TextListWidget,
 }
 
 impl StartDialog {
@@ -42,16 +41,14 @@ impl StartDialog {
         let rect = UI_CFG.start_dialog.rect.into();
         StartDialog {
             rect: rect,
-            answer_list: ListWidget::texts_choices((0, 0, rect.w as u32, 0), choices),
+            answer_list: ListWidget::text_choices((0, 0, rect.w as u32, 0), choices),
         }
     }
 }
 
 impl Window for StartDialog {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-
         draw_rect_border(context, self.rect);
-        
         self.answer_list.draw(context);
     }
 }
@@ -83,7 +80,8 @@ impl DialogWindow for StartDialog {
 }
 
 pub struct ChooseSaveFileDialog {
-    choose_window: PagedChooseWindow,
+    rect: Rect,
+    list: TextListWidget,
     save_files: Vec<PathBuf>,
 }
 
@@ -91,19 +89,16 @@ impl ChooseSaveFileDialog {
     pub fn new() -> ChooseSaveFileDialog {
         let save_files = crate::game::saveload::save_file_list().expect("Error at reading save file directory");
         
-        let file_name_list: Vec<ListRow> = save_files
+        let file_name_list: Vec<String> = save_files
             .iter()
             .map(|path| path.file_stem().unwrap_or(OsStr::new("")).to_string_lossy().into_owned())
-            .map(|filename| ListRow::Str(filename))
             .collect();
+        let rect = UI_CFG.choose_save_file_dialog.rect.into();
         
         ChooseSaveFileDialog {
-            choose_window: PagedChooseWindow::new(
-                UI_CFG.choose_save_file_dialog.rect.into(),
-                file_name_list,
-                UI_CFG.choose_save_file_dialog.list_size,
-                None
-            ),
+            rect,
+            list: TextListWidget::text_choices(
+                (0, 0, rect.width(), rect.height()), file_name_list),
             save_files,
         }
     }
@@ -111,31 +106,36 @@ impl ChooseSaveFileDialog {
 
 impl Window for ChooseSaveFileDialog {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        self.choose_window.draw(context, game, anim);
+        draw_rect_border(context, self.rect);
+        self.list.draw(context);
     }
 }
 
 impl DialogWindow for ChooseSaveFileDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match self.choose_window.process_command(&command, pa) {
-            DialogResult::Close => { return DialogResult::Close; }
-            DialogResult::CloseWithValue(v) => {
-                let i = *v.downcast::<u32>().unwrap() as usize;
-
-                match GameData::load(&self.save_files[i]) {
-                    Ok(o) => {
-                        return DialogResult::Special(SpecialDialogResult::NewGameStart(o));
-                    }
-                    Err(e) => {
-                        warn!("Failed to load a save file: {}", e);
-                        return DialogResult::Continue;
+        if let Some(response) = self.list.process_command(&command) {
+            match response {
+                ListWidgetResponse::Select(i) => { // Any item is selected
+                    match GameData::load(&self.save_files[i as usize]) {
+                        Ok(o) => {
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart(o));
+                        }
+                        Err(e) => {
+                            warn!("Failed to load a save file: {}", e);
+                            return DialogResult::Continue;
+                        }
                     }
                 }
+                _ => (),
             }
-            _ => (),
+            return DialogResult::Continue;
         }
-
-        DialogResult::Continue
+        match *command {
+            Command::Cancel => {
+                DialogResult::Close
+            },
+            _ => DialogResult::Continue,
+        }
     }
 
     fn mode(&self) -> InputMode {

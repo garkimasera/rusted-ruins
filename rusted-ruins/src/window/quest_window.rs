@@ -12,7 +12,7 @@ use super::widget::*;
 
 pub struct QuestWindow {
     rect: Rect,
-    list: ListWidget,
+    list: TextListWidget,
 }
 
 impl QuestWindow {
@@ -20,10 +20,13 @@ impl QuestWindow {
         let rect = UI_CFG.quest_window.rect.into();
         let mut w = QuestWindow {
             rect,
-            list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::Str,
-                vec![2],
-                Some(UI_CFG.quest_window.n_row), 26),
+            list: TextListWidget::new(
+                (0i32, 0i32, rect.w as u32, rect.h as u32),
+                vec![6],
+                UI_CFG.quest_window.n_row,
+                26,
+                true,
+                false),
         };
         w.update(game);
         w
@@ -31,11 +34,14 @@ impl QuestWindow {
 
     pub fn update(&mut self, game: &Game) {
 
-        let rows: Vec<ListRow> = available_quests(&game.gd).iter()
-            .map(|quest| ListRow::Str(quest.to_text().into()))
+        let rows: Vec<TextCache> = available_quests(&game.gd).iter()
+            .map(|quest| {
+                let text = quest.to_text();
+                TextCache::one(text, FontKind::M, UI_CFG.color.normal_font.into())
+            })
             .collect();
 
-        self.list.set_rows(rows);
+        self.list.set_items(rows);
     }
 }
 

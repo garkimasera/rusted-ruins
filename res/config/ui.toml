@@ -57,12 +57,12 @@ list_size = 5
 rect = { x = -999, y = -999, w = 200, h = 200 }
 
 [item_window]
-rect = { x = -999, y = -999, w = 450, h = 260 }
-n_row = 10
+rect = { x = -999, y = -999, w = 450, h = 286 }
+n_row = 2
 column_pos = [1, 27, 380]
 
 [equip_window]
-rect = { x = -999, y = -999, w = 450, h = 260 }
+rect = { x = -999, y = -999, w = 450, h = 286 }
 n_row = 10
 column_pos = [1, 28, 58]
 

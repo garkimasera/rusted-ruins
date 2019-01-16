@@ -28,10 +28,10 @@ pub enum ItemWindowMode {
 
 pub struct ItemWindow {
     rect: Rect,
-    list: ListWidget,
+    list: ListWidget<(IconIdx, TextCache, TextCache)>,
     mode: ItemWindowMode,
-    item_locations: Vec<ItemLocation>,
     page_window: PageWindow,
+    item_locations: Vec<ItemLocation>,
 }
 
 impl ItemWindow {
@@ -41,12 +41,15 @@ impl ItemWindow {
         let mut item_window = ItemWindow {
             rect: rect,
             list: ListWidget::new(
-                (0i32, 0i32, rect.w as u32, rect.h as u32), ListRowKind::IconStrStr,
+                (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.item_window.column_pos.clone(),
-                Some(UI_CFG.item_window.n_row), 26),
+                UI_CFG.item_window.n_row,
+                26,
+                true,
+                true),
             mode: mode,
-            item_locations: Vec::new(),
             page_window: PageWindow::new(None, Some(rect.bottom() + UI_CFG.page_window.margin_to_parent)),
+            item_locations: Vec::new(),
         };
         item_window.update_by_mode(pa);
         item_window
@@ -115,38 +118,39 @@ impl ItemWindow {
 
     fn update_list(&mut self, list: FilteredItemList) {
         self.list.set_n_item(list.clone().count() as u32);
-        let list = &list;
         
-        let item_locations = &mut self.item_locations;
         let mode = &self.mode;
-        
-        self.list.update_rows_by_func(|start, page_size| {
-            let mut rows = Vec::new();
-            item_locations.clear();
 
-            for (item_location, item, n_item) in list.clone().skip(start as usize).take(page_size as usize) {
-                let item_text = format!(
-                    "{} x {}",
-                    item.to_text(),
-                    n_item);
+        self.item_locations.clear();
+        for (il, _, _) in list.clone() {
+            self.item_locations.push(il);
+        }
 
-                // Infomation displayed in the right column
-                let additional_info = match mode {
-                    ItemWindowMode::ShopBuy { .. } => {
-                        format!("{}G", item.price())
-                    }
-                    ItemWindowMode::ShopSell => {
-                        format!("{}G", item.selling_price())
-                    }
-                    _ => {
-                        format!("{:.2}kg", item.w() as f32 / 1000.0)
-                    }
-                };
-                
-                rows.push(ListRow::IconStrStr(IconIdx::Item(item.idx), item_text, additional_info));
-                item_locations.push(item_location);
-            }
-            rows
+        self.list.update_rows_by_func(|i| {
+
+            let (_, ref item, n_item) = list.clone().nth(i as usize).unwrap();
+
+            let item_text = format!(
+                "{} x {}",
+                item.to_text(),
+                n_item);
+
+            // Infomation displayed in the right column
+            let additional_info = match mode {
+                ItemWindowMode::ShopBuy { .. } => {
+                    format!("{}G", item.price())
+                }
+                ItemWindowMode::ShopSell => {
+                    format!("{}G", item.selling_price())
+                }
+                _ => {
+                    format!("{:.2}kg", item.w() as f32 / 1000.0)
+                }
+            };
+
+            let t1 = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
+            let t2 = TextCache::one(additional_info, FontKind::M, UI_CFG.color.normal_font.into());
+            (IconIdx::Item(item.idx), t1, t2)
         });
     }
 
