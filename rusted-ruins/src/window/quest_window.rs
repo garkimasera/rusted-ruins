@@ -51,6 +51,7 @@ impl Window for QuestWindow {
         &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(context, self.rect);
+        self.list.draw(context);
     }
 }
 

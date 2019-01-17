@@ -9,6 +9,7 @@ border_highlight_light = { r=250, g=220, b=12 }
 border_highlight_dark = { r=210, g=160, b=12 }
 window_bg = { r=4, g=10, b=20 }
 window_bg_highlight = { r=34, g=40, b=60 }
+list_border = { r=59, g=69, b=103 }
 log_window_bg = { r=20, g=4, b=4 }
 log_font = { r=250, g=250, b=250 }
 normal_font = { r=250, g=250, b=250 }
@@ -58,7 +59,7 @@ rect = { x = -999, y = -999, w = 200, h = 200 }
 
 [item_window]
 rect = { x = -999, y = -999, w = 450, h = 286 }
-n_row = 2
+n_row = 10
 column_pos = [1, 27, 380]
 
 [equip_window]

@@ -63,6 +63,7 @@ pub struct UIColorConfig {
     pub border_highlight_dark: CfgColor,
     pub window_bg: CfgColor,
     pub window_bg_highlight: CfgColor,
+    pub list_border: CfgColor,
     pub log_window_bg: CfgColor,
     pub log_font: CfgColor,
     pub normal_font: CfgColor,

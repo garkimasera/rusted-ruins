@@ -25,6 +25,7 @@ pub struct ListWidget<T> {
     max_page: u32,
     update_by_user: bool,
     page_label: Option<TextCache>,
+    draw_border: bool,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -66,6 +67,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             max_page: 0,
             update_by_user,
             page_label: None,
+            draw_border: multiple_page,
         };
         if multiple_page {
             w.update_page_label();
@@ -294,6 +296,16 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             let y = (self.h_row  * self.page_size) as i32;
             let dest = Rect::new(x, y, w, h);
             check_draw!(context.canvas.copy(tex, None, dest));
+        }
+
+        // Draw borders between rows
+        if self.draw_border {
+            let a = if self.multiple_page { 1 } else { 0 };
+            for i in 1..(self.page_size + a) {
+                let y = (self.h_row * i) as i32;
+                context.canvas.set_draw_color(UI_CFG.color.list_border);
+                check_draw!(context.canvas.draw_line((0, y), (self.rect.right(), y)));
+            }
         }
 
         if self.n_row == 0 { return; }
