@@ -21,6 +21,10 @@ impl QuestHolder {
     pub fn iter_mut(&mut self) -> IterMut<Quest> {
         self.active_quests.iter_mut()
     }
+
+    pub fn start_new_quest(&mut self, quest: Quest) {
+        self.active_quests.push(quest);
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

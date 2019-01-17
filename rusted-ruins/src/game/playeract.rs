@@ -286,6 +286,11 @@ impl<'a> DoPlayerAction<'a> {
     pub fn advance_script(&mut self) -> AdvanceScriptResult {
         self.0.advance_script(None)
     }
+
+    /// Undertake quest
+    pub fn undertake_quest(&mut self, i: u32) {
+        crate::game::quest::undertake_quest(self.0, i);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {

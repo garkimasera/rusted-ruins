@@ -9,10 +9,12 @@ use crate::eventhandler::InputMode;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_rect_border;
 use super::widget::*;
+use super::msg_dialog::MsgDialog;
 
 pub struct QuestWindow {
     rect: Rect,
     list: TextListWidget,
+    dialog: Option<MsgDialog>,
 }
 
 impl QuestWindow {
@@ -27,6 +29,7 @@ impl QuestWindow {
                 26,
                 true,
                 false),
+            dialog: None,
         };
         w.update(game);
         w
@@ -52,14 +55,39 @@ impl Window for QuestWindow {
         
         draw_rect_border(context, self.rect);
         self.list.draw(context);
+        if let Some(dialog) = self.dialog.as_mut() {
+            dialog.draw(context, game, anim);
+        }
     }
 }
 
 impl DialogWindow for QuestWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        if let Some(dialog) = self.dialog.as_mut() {
+            match dialog.process_command(command, pa) {
+                DialogResult::Close => {
+                    self.dialog = None;
+                }
+                DialogResult::CloseWithValue(v) => {
+                    let n = *v.downcast::<u32>().unwrap();
+                    self.dialog = None;
+                    if n == 0 { // Undertake quest
+                        pa.undertake_quest(n);
+                        self.update(pa.game())
+                    }
+                }
+                _ => (),
+            }
+            return DialogResult::Continue;
+        }
+        
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected
+                    self.dialog = Some(MsgDialog::with_yesno(
+                        crate::text::ui_txt("dialog.undertake_quest"),
+                        |_, a| { DialogResult::CloseWithValue(Box::new(a)) }
+                    ));
                 }
                 ListWidgetResponse::PageChanged => {
                 }
