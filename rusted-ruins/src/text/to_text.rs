@@ -2,6 +2,7 @@
 use std::borrow::Cow;
 use common::gamedata::*;
 use common::gobj;
+use common::objholder::*;
 use crate::text::{self, ToText, ToTextId};
 
 impl<T: ToTextId> ToText for T {
@@ -38,6 +39,12 @@ impl ToText for Item {
     }
 }
 
+impl ToText for CharaTemplateIdx {
+    fn to_text(&self) -> Cow<str> {
+        crate::text::obj_txt(gobj::idx_to_id(*self)).into()
+    }
+}
+
 impl ToText for Chara {
     fn to_text(&self) -> Cow<str> {
         if let Some(ref name) = self.name {
@@ -51,8 +58,8 @@ impl ToText for Chara {
 impl ToText for Quest {
     fn to_text(&self) -> Cow<str> {
         match self {
-            Quest::SlayMonsters { .. } => {
-                text::misc_txt("!quest.slay-monsters").into()
+            Quest::SlayMonsters { idx, .. } => {
+                replace_str!(text::misc_txt("!quest.slay_monsters"); monster=idx).into()
             }
         }
     }

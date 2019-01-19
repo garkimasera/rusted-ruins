@@ -17,10 +17,10 @@ extern crate log as applog;
 mod error;
 #[macro_use]
 mod log;
+#[macro_use]
 mod util;
 mod config;
 mod context;
-#[macro_use]
 mod text;
 mod game;
 mod draw;

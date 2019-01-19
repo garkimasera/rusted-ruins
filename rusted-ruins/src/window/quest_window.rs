@@ -1,5 +1,6 @@
 
 use sdl2::rect::Rect;
+use common::gamedata::Quest;
 use crate::text::ToText;
 use crate::context::*;
 use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
@@ -14,6 +15,7 @@ use super::msg_dialog::MsgDialog;
 pub struct QuestWindow {
     rect: Rect,
     list: TextListWidget,
+    description: LabelWidget,
     dialog: Option<MsgDialog>,
 }
 
@@ -30,6 +32,10 @@ impl QuestWindow {
                 true,
                 false),
             dialog: None,
+            description: LabelWidget::wrapped(
+                (0i32, (UI_CFG.quest_window.n_row as i32 + 1) * 26, rect.width(), 0),
+                "",
+                FontKind::M, rect.width())
         };
         w.update(game);
         w
@@ -44,7 +50,15 @@ impl QuestWindow {
             })
             .collect();
 
+        let n_item = rows.len();
         self.list.set_items(rows);
+
+        if n_item == 0 {
+            self.description.set_text("");
+        } else {
+            let q = &available_quests(&game.gd)[self.list.get_current_choice() as usize];
+            self.description.set_text(&quest_decription_text(q));
+        }
     }
 }
 
@@ -55,6 +69,7 @@ impl Window for QuestWindow {
         
         draw_rect_border(context, self.rect);
         self.list.draw(context);
+        self.description.draw(context);
         if let Some(dialog) = self.dialog.as_mut() {
             dialog.draw(context, game, anim);
         }
@@ -110,6 +125,15 @@ impl DialogWindow for QuestWindow {
 
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::SkipUnderWindows
+    }
+}
+
+fn quest_decription_text(quest: &Quest) -> String {
+    match quest {
+        Quest::SlayMonsters { idx, goal, .. } => {
+            let t = crate::text::misc_txt("!desc.quest.slay_monsters");
+            replace_str!(t; monster=idx, n=goal)
+        }
     }
 }
 
