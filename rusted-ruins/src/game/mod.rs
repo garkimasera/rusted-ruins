@@ -64,8 +64,8 @@ pub struct Game {
 impl Game {
     pub fn new(gd: GameData) -> Game {
         let save_dir = self::saveload::get_each_save_dir(&gd);
-        let game = Game {
-            gd: gd,
+        Game {
+            gd,
             state: GameState::PlayerTurn,
             turn_loop_data: TurnLoopData::new(),
             anim_queue: anim_queue::AnimQueue::default(),
@@ -76,9 +76,7 @@ impl Game {
             save_dir: Some(save_dir),
             view_map: view::ViewMap::new(),
             frequent_tex: self::frequent_tex::FrequentTextures::new(),
-        };
-        
-        game
+        }
     }
 
     /// Create empty Game. This is used before starting actual gameplay.

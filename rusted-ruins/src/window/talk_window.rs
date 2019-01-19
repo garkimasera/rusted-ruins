@@ -116,13 +116,13 @@ impl DialogWindow for TalkWindow {
                     match pa.advance_talk(None) {
                         AdvanceScriptResult::UpdateTalkText(talk_text) => {
                             self.update_page(Some(talk_text));
-                            return DialogResult::Continue;
+                            DialogResult::Continue
                         }
                         AdvanceScriptResult::Continue => {
-                            return DialogResult::Continue;
+                            DialogResult::Continue
                         }
                         AdvanceScriptResult::Quit => {
-                            return DialogResult::Close;
+                            DialogResult::Close
                         }
                     }
                 } else {
@@ -179,7 +179,7 @@ impl MsgText {
         }
         
         MsgText {
-            lines: lines,
+            lines,
             current_line: 0,
             n_default_line: UI_CFG.talk_window.n_default_line,
         }

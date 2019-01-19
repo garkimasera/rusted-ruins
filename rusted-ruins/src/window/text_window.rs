@@ -54,9 +54,9 @@ impl ScrollingTextWindow {
         }
         
         ScrollingTextWindow {
-            rect: rect,
+            rect,
             elapsed_frame: 0,
-            labels: labels,
+            labels,
             is_adjusted: false,
             is_finished: false,
         }

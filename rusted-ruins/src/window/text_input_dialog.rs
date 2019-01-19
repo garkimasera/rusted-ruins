@@ -20,7 +20,7 @@ impl TextInputDialog {
         
         TextInputDialog {
             label: LabelWidget::new(label_rect, "", FontKind::M),
-            rect: rect,
+            rect,
             text: String::new(),
         }
     }

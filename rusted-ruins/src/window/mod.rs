@@ -124,13 +124,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         window_stack.push(Box::new(start_window::StartDialog::new()));
         
         WindowManager {
-            game: game,
+            game,
             mode: WindowManageMode::Start(start_window::StartWindow::new()),
-            sdl_values: sdl_values,
+            sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
             anim: None,
             passed_frame: 0,
-            window_stack: window_stack,
+            window_stack,
             targeting_mode: false,
         }
     }
@@ -222,7 +222,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     pub fn process_command(&mut self, event_handler: &mut EventHandler) -> bool {
         text_input::check_mode(&self.text_input_util);
         
-        let mode = if self.window_stack.len() > 0 {
+        let mode = if !self.window_stack.is_empty() {
             self.window_stack[self.window_stack.len() - 1].mode()
         } else {
             if self.targeting_mode {
@@ -243,7 +243,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         
         use crate::game::playeract::DoPlayerAction;
 
-        if self.window_stack.len() > 0 {
+        if !self.window_stack.is_empty() {
             let mut tail = self.window_stack.len() - 1;
             let mut dialog_result = {
                 let mut pa = DoPlayerAction::new(&mut self.game);
@@ -504,8 +504,8 @@ impl GameWindows {
             floor_info: indicator::FloorInfo::new(),
             status_info: indicator::StatusInfo::new(),
             time_info: indicator::TimeInfo::new(),
-            hborders: hborders,
-            vborders: vborders,
+            hborders,
+            vborders,
         }
     }
 

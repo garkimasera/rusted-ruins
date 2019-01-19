@@ -29,7 +29,7 @@ impl GroupWindow {
                mem_info: Vec<MemberInfo>, window_top_left: (i32, i32)) -> GroupWindow {
         
         assert!(init_win < size);
-        let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).into_iter().map(|_| None).collect();
+        let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).map(|_| None).collect();
         let tab_navigator = TabsNavigator::new(window_top_left, mem_info.clone(), init_win);
         
         let mut group_window = GroupWindow {
@@ -85,11 +85,11 @@ impl Window for GroupWindow {
 impl DialogWindow for GroupWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match command {
-            &Command::RotateWindowRight => {
+            Command::RotateWindowRight => {
                 self.rotate_right(pa.game());
                 return DialogResult::Continue;
             }
-            &Command::RotateWindowLeft => {
+            Command::RotateWindowLeft => {
                 self.rotate_left(pa.game());
                 return DialogResult::Continue;
             }
@@ -120,7 +120,7 @@ struct TabsNavigator {
 
 impl TabsNavigator {
     fn new(p: (i32, i32), mem_info: Vec<MemberInfo>, init: usize) -> TabsNavigator {
-        assert!(mem_info.len() > 0);
+        assert!(!mem_info.is_empty());
 
         let size = mem_info.len();
         let w = TAB_ICON_W * size as u32;

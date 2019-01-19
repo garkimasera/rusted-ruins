@@ -39,7 +39,7 @@ impl ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
         
         let mut item_window = ItemWindow {
-            rect: rect,
+            rect,
             list: ListWidget::new(
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.item_window.column_pos.clone(),
@@ -47,7 +47,7 @@ impl ItemWindow {
                 26,
                 true,
                 true),
-            mode: mode,
+            mode,
             page_window: PageWindow::new(None, Some(rect.bottom() + UI_CFG.page_window.margin_to_parent)),
             item_locations: Vec::new(),
         };
@@ -161,13 +161,12 @@ impl ItemWindow {
             }
             ItemWindowMode::PickUp => {
                 pa.pick_up_item(il, 1);
-                let result = if pa.gd().is_item_on_player_tile() {
+                if pa.gd().is_item_on_player_tile() {
                     self.update_by_mode(pa);
                     DialogResult::Continue
                 } else {
                     DialogResult::Close
-                };
-                result
+                }
             }
             ItemWindowMode::Drop => {
                 pa.drop_item(il, 1);

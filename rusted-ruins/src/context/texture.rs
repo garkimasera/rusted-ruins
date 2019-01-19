@@ -30,7 +30,7 @@ macro_rules! impl_texture_holder {
 
                 $(
                     for ref o in &objholder.$mem {
-                        let texture = match tc.from_data(&o.img.data) {
+                        let texture = match tc.create_texture_from_data(&o.img.data) {
                             Ok(o) => o,
                             Err(_) => { unimplemented!() },
                         };
@@ -73,7 +73,7 @@ impl<'a> TextureCreatorW<'a> {
         TextureCreatorW(texture_creator)
     }
     
-    fn from_data(&self, data: &[u8]) -> Result<Texture<'a>, String> {
+    fn create_texture_from_data(&self, data: &[u8]) -> Result<Texture<'a>, String> {
         let rwops = RWops::from_bytes(data)?;
         let surface = rwops.load_png()?;
 

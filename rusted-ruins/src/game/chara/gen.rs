@@ -56,7 +56,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
     let mut chara = create_chara(idx, ct.gen_level);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
-    return chara;
+    chara
 }
 
 /// Choose one chara_template by race, gen_level and gen_weight

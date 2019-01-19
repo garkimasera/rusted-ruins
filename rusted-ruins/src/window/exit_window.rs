@@ -73,7 +73,7 @@ impl DialogWindow for ExitWindow {
             }
             _ => (),
         }
-        return DialogResult::Continue;
+        DialogResult::Continue
     }
 
     fn mode(&self) -> InputMode {
@@ -96,7 +96,7 @@ impl GameOverWindow {
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         let choices = vec!["Return to start screen".to_owned(), "Quit".to_owned()];
         GameOverWindow {
-            text_win: text_win,
+            text_win,
             choose_win: ChooseWindow::new(winpos, choices, None),
         }
     }
@@ -138,7 +138,7 @@ impl DialogWindow for GameOverWindow {
             }
             _ => (),
         }
-        return DialogResult::Continue;
+        DialogResult::Continue
     }
 
     fn mode(&self) -> InputMode {

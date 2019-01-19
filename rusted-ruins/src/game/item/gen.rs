@@ -15,7 +15,7 @@ pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F) -> Item
 
     let item_obj = gobj::get_obj(idx);
     Item {
-        idx: idx,
+        idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         rank: ItemRank::default(),
@@ -82,7 +82,7 @@ pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
         let item_obj = gobj::get_obj(idx);
 
         Some(Item {
-            idx: idx,
+            idx,
             flags: item_obj.default_flags,
             kind: item_obj.kind,
             rank: ItemRank::default(),

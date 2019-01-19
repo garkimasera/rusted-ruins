@@ -36,14 +36,14 @@ impl Animation {
     pub fn player_move(dir: Direction) -> Animation {
         Animation::PlayerMove {
             n_frame: 6,
-            dir: dir
+            dir,
         }
     }
 
     pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
         Animation::Img {
             n_frame: gobj::get_obj(idx).img.n_frame,
-            idx: idx,
+            idx,
             range: RectIter::one(p),
         }
     }
@@ -62,14 +62,7 @@ impl Animation {
             _ => 1,
         };
         
-        Animation::Shot {
-            n_frame: n_frame,
-            n_image: n_image,
-            idx: idx,
-            dir: dir,
-            start: start,
-            target: target,
-        }
+        Animation::Shot { n_frame, n_image, idx, dir, start, target }
     }
 }
 

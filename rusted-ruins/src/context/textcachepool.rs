@@ -13,7 +13,7 @@ lazy_static! {
     static ref CACHE_DROP_STACK: Mutex<Vec<usize>> = Mutex::new(Vec::new());
 }
 
-const CACHE_DROP_STACK_LOCK_ERR_MSG: &'static str = "Cache drop stack lock error";
+const CACHE_DROP_STACK_LOCK_ERR_MSG: &str = "Cache drop stack lock error";
 fn push_drop_stack(i: usize) {
     let mut a = CACHE_DROP_STACK.lock().expect(CACHE_DROP_STACK_LOCK_ERR_MSG);
     a.push(i);
@@ -39,8 +39,11 @@ impl TextCache {
         
         TextCache {
             i: None,
-            s: s,
-            font: font, color: color, wrap_size: None, is_bordered: false,
+            s,
+            font,
+            color,
+            wrap_size: None,
+            is_bordered: false,
         }
     }
 
@@ -48,7 +51,10 @@ impl TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
-            font: font, color: color, wrap_size: None, is_bordered: false,
+            font,
+            color,
+            wrap_size: None,
+            is_bordered: false,
         }
     }
 
@@ -56,7 +62,10 @@ impl TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
-            font: font, color: color, wrap_size: Some(w), is_bordered: false,
+            font,
+            color,
+            wrap_size: Some(w),
+            is_bordered: false,
         }
     }
 
@@ -64,7 +73,10 @@ impl TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
-            font: font, color: color, wrap_size: None, is_bordered: true,
+            font,
+            color,
+            wrap_size: None,
+            is_bordered: true,
         }
     }
 
@@ -98,7 +110,7 @@ impl<'t> TextCachePool<'t> {
         }
         
         TextCachePool {
-            data: data
+            data
         }
     }
 

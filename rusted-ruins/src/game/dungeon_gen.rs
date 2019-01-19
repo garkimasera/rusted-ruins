@@ -14,9 +14,7 @@ pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d
     let floor_range = &RULES.dungeon_gen[&dungeon_kind].floor_range;
     let mut site = Site::new(rng::gen_range(floor_range[0], floor_range[1]));
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
-    let sid = gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap();
-    
-    sid
+    gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap()
 }
 
 /// Extend dungion site by one floor
@@ -59,7 +57,7 @@ pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
     let idx: ItemIdx = gobj::id_to_idx("ancient-box");
     let item_obj: &ItemObject = gobj::get_obj(idx);
     let item = Item {
-        idx: idx,
+        idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         rank: ItemRank::default(),

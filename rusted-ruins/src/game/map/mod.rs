@@ -134,8 +134,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
         let p = map.tile
             .iter_with_idx()
             .filter(|&(_, t)| is_tile_empty(t) )
-            .skip(r)
-            .next()
+            .nth(r)
             .unwrap()
             .0;
         Some(p)

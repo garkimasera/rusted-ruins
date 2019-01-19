@@ -137,7 +137,7 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg: msg,
+                callback: cb, msg,
             });
             
             return;
@@ -154,13 +154,11 @@ impl<'a> DoPlayerAction<'a> {
                 BoundaryBehavior::None => { return; },
                 BoundaryBehavior::RegionMap => {
                     log_msg = LogMessage::ExitToOutside;
-                    let mid = MapId::from(self.gd().get_current_mapid().rid());
-                    mid
+                    MapId::from(self.gd().get_current_mapid().rid())
                 }
                 BoundaryBehavior::Floor(floor) => {
                     log_msg = LogMessage::ChangeFloor;
-                    let mid = self.gd().get_current_mapid().set_floor(floor);
-                    mid
+                    self.gd().get_current_mapid().set_floor(floor)
                 }
                 BoundaryBehavior::MapId(_, _) => { unimplemented!() }
             };

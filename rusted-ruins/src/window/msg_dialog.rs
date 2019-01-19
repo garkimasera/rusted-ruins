@@ -22,7 +22,7 @@ impl MsgDialog {
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         MsgDialog {
-            text_win: text_win,
+            text_win,
             choose_win: ChooseWindow::new(winpos, choices, None),
             action_callback: Box::new(f),
         }
@@ -37,7 +37,7 @@ impl MsgDialog {
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
         MsgDialog {
-            text_win: text_win,
+            text_win,
             choose_win: ChooseWindow::with_yesno(winpos, None),
             action_callback: Box::new(f),
         }

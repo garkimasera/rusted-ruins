@@ -67,7 +67,7 @@ impl GameLog {
     }
 }
 
-const GAME_LOG_LOCK_ERR: &'static str = "Game log lock error";
+const GAME_LOG_LOCK_ERR: &str = "Game log lock error";
 
 pub fn push(s: String) {
     let mut gamelog = GAME_LOG.try_lock().expect(GAME_LOG_LOCK_ERR);

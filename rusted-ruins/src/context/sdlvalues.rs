@@ -23,7 +23,7 @@ impl<'sdl, 't> SdlValues<'sdl, 't> {
         tc: &'t TextureCreator<WindowContext>) -> SdlValues<'sdl, 't> {
 
         SdlValues {
-            tc: tc,
+            tc,
             texture_holder: TextureHolder::new(gobj::get_objholder(), tc),
             text_renderer: TextRenderer::new(sdl_context),
             tcp: TextCachePool::new(),

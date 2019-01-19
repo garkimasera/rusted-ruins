@@ -58,7 +58,7 @@ impl EventHandler {
         
         EventHandler {
             _joystick_subsystem: joystick_subsystem,
-            joystick: joystick,
+            joystick,
             command_queue: VecDeque::new(),
             conv_table: CommandConvTable::new(),
             hdir: HDirection::None, vdir: VDirection::None,
@@ -256,9 +256,9 @@ impl CommandConvTable {
         }
 
         CommandConvTable {
-            normal: normal,
-            dialog: dialog,
-            targeting: targeting,
+            normal,
+            dialog,
+            targeting,
         }
     }
 
@@ -272,7 +272,7 @@ impl CommandConvTable {
             },
         };
 
-        table.get(&raw).map(|c| c.clone())
+        table.get(&raw).cloned()
     }
 }
 

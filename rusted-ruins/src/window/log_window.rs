@@ -81,7 +81,7 @@ impl LineCache {
     }
 
     /// Append one line
-    fn append(&mut self, s: &Vec<String>) {
+    fn append(&mut self, s: &[String]) {
         let t = TextCache::new(s, FontKind::Log, Color::RGB(255, 255, 255));
         self.lines.push_back(t);
 

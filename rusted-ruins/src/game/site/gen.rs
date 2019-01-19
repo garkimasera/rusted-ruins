@@ -8,7 +8,7 @@ use common::sitegen::*;
 pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
     for uc in &sg.unique_citizens {
         let mut chara = game::chara::gen::create_chara(gobj::id_to_idx(&uc.chara_template_id), 1);
-        let mid = MapId::SiteMap { sid: sid, floor: uc.floor };
+        let mid = MapId::SiteMap { sid, floor: uc.floor };
         chara.rel = common::gamedata::chara::Relationship::FRIENDLY;
         
         if let Some(talk_script_id) = uc.talk_script_id.as_ref() { // Talk script setting

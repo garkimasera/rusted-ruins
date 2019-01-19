@@ -33,7 +33,7 @@ impl Screen {
         let canvas = canvas_builder.build().unwrap();
 
         Screen {
-            canvas: canvas,
+            canvas,
             event_handler: EventHandler::new(sdl_context),
         }
     }

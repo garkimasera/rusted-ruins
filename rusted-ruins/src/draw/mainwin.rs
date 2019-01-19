@@ -28,7 +28,7 @@ pub struct MainWinDrawer {
 impl MainWinDrawer {
     pub fn new(rect: Rect) -> MainWinDrawer {
         MainWinDrawer {
-            rect: rect,
+            rect,
             w: rect.width(), h: rect.height(),
             topleft: Vec2d(0, 0),
             dx: 0, dy: 0,
@@ -110,7 +110,7 @@ impl MainWinDrawer {
         let tile_range = self.tile_range();
 
         // Draw background parts
-        for p in tile_range.clone() {
+        for p in tile_range {
             self.draw_background_parts(context, map, p);
         }
 

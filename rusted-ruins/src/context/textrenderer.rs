@@ -26,13 +26,13 @@ pub struct TextRenderer<'sdl> {
     font_mono_m: Font<'sdl, 'static>,
 }
 
-pub const ERR_MSG_FONT_REND: &'static str = "Error occured during font rendering to surface";
-pub const ERR_MSG_FONT_TEX: &'static str = "Error occured during texture creation from font surface";
+pub const ERR_MSG_FONT_REND: &str = "Error occured during font rendering to surface";
+pub const ERR_MSG_FONT_TEX: & str = "Error occured during texture creation from font surface";
 
 impl<'sdl> TextRenderer<'sdl> {
     pub fn new(sdl_context: &'sdl SdlContext) -> TextRenderer<'sdl> {
         
-        const ERR_MSG: &'static str = "Font loading error";
+        const ERR_MSG: &str = "Font loading error";
         let font_name = FONT_CFG.font_name();
         let font = &UI_CFG.font;
         let f = |fc: &FontConfig| -> Font {

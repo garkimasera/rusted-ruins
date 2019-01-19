@@ -16,9 +16,9 @@ pub struct ChooseWindow {
 impl ChooseWindow {
     pub fn new(winpos: WindowPos, choices: Vec<String>, default_choose: Option<u32>) -> ChooseWindow {
         ChooseWindow {
-            winpos: winpos,
+            winpos,
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
-            default_choose: default_choose,
+            default_choose,
         }
     }
 

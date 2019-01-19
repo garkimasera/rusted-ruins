@@ -40,7 +40,7 @@ impl StartDialog {
             text::ui_txt("dialog.choice.exit").to_owned()];
         let rect = UI_CFG.start_dialog.rect.into();
         StartDialog {
-            rect: rect,
+            rect,
             answer_list: ListWidget::text_choices((0, 0, rect.w as u32, 0), choices),
         }
     }
@@ -91,7 +91,7 @@ impl ChooseSaveFileDialog {
         
         let file_name_list: Vec<String> = save_files
             .iter()
-            .map(|path| path.file_stem().unwrap_or(OsStr::new("")).to_string_lossy().into_owned())
+            .map(|path| path.file_stem().unwrap_or_else(|| OsStr::new("")).to_string_lossy().into_owned())
             .collect();
         let rect = UI_CFG.choose_save_file_dialog.rect.into();
         

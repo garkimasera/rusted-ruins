@@ -78,8 +78,7 @@ macro_rules! replace_str {
             table.push((stringify!($target), $value.to_text()));
         )*;
         
-        let t = $crate::util::replace_str(text_raw, table.as_slice());
-        t
+        $crate::util::replace_str(text_raw, table.as_slice())
     }}
 }
 
