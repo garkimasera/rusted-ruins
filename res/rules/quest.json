@@ -1,0 +1,8 @@
+
+{
+    "slay_race_probability": {
+        "animal": 1.0,
+        "bug": 0.5,
+        "slime": 0.3
+    }
+}

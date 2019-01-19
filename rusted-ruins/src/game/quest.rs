@@ -2,7 +2,9 @@
 
 use common::gamedata::*;
 use common::objholder::CharaTemplateIdx;
+use rules::RULES;
 use super::Game;
+use super::chara::gen::choose_npc_chara_template;
 
 /// Update quest list of current town
 pub fn update_town_quest(gd: &mut GameData) {
@@ -43,7 +45,9 @@ pub fn undertake_quest(game: &mut Game, i: u32) {
 /// Generate an quest
 fn gen_quest() -> Quest {
     Quest::SlayMonsters {
-        idx: CharaTemplateIdx::default(),
+        idx: choose_npc_chara_template(
+            &RULES.quest.slay_race_probability,
+            1),
         goal: 10,
         killed: 0,
     }

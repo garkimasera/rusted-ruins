@@ -1,4 +1,5 @@
 
+use std::collections::HashMap;
 use common::basic::WAIT_TIME_START;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
@@ -48,7 +49,9 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
 
 /// Create npc character from the race
 pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
-    let idx = choose_npc_chara_template(dungeon, floor_level);
+    let idx = choose_npc_chara_template(
+        &RULES.dungeon_gen.get(&dungeon).expect("No rule for npc generation").npc_race_probability,
+        floor_level);
     let ct = gobj::get_obj(idx);    
     let mut chara = create_chara(idx, ct.gen_level);
     set_skill(&mut chara);
@@ -57,9 +60,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
 }
 
 /// Choose one chara_template by race, gen_level and gen_weight
-fn choose_npc_chara_template(dungeon: DungeonKind, floor_level: u32) -> CharaTemplateIdx {
-    let dungeon_gen_params = RULES.dungeon_gen.get(&dungeon).expect("No rule for npc generation");
-    let nrp = &dungeon_gen_params.npc_race_probability;
+pub fn choose_npc_chara_template(nrp: &HashMap<Race, f32>, floor_level: u32) -> CharaTemplateIdx {
     let chara_templates = &gobj::get_objholder().chara_template;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
