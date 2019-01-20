@@ -77,3 +77,8 @@ pub fn get_each_save_dir(gd: &GameData) -> PathBuf {
     get_save_dir().join(format!("{}.{}", gd.meta.save_name(), SAVE_EXTENSION))
 }
 
+/// Get map save directory
+pub fn get_map_dir(gd: &GameData) -> PathBuf {
+    get_each_save_dir(gd).join("maps")
+}
+

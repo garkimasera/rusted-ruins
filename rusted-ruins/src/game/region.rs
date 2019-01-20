@@ -4,7 +4,7 @@ use common::gamedata::*;
 use common::regiongen::*;
 use common::gobj;
 use super::map::choose_empty_tile;
-use super::saveload::gen_box_id;
+use super::saveload::{gen_box_id, get_map_dir};
 use rng::*;
 
 pub fn add_region(gd: &mut GameData, id: &str) {
@@ -39,9 +39,12 @@ pub fn gen_dungeon_max(gd: &mut GameData, rid: RegionId) {
 /// Generate one dungeon and add it to the region
 pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
     if MAX_AUTO_GEN_DUNGEONS <= gd.region.get(rid).get_site_n(SiteKind::AutoGenDungeon) { return; }
-    
+
+    let mid = MapId::from(rid);
+    gd.region.preload_map(mid, get_map_dir(gd));
+
     let pos = {
-        let region_map = gd.region.get_map(MapId::from(rid));
+        let region_map = gd.region.get_map(mid);
         match choose_empty_tile(region_map) {
             Some(pos) => pos,
             None => {
@@ -51,9 +54,10 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
         }
     };
     let dungeon_kind = *[DungeonKind::Cave, DungeonKind::Ruin].choose(&mut get_rng()).unwrap();
-    
+
     super::dungeon_gen::add_dungeon_site(gd, dungeon_kind, pos);
-    let region_map = gd.region.get_map_mut(MapId::from(rid));
+
+    let region_map = gd.region.get_map_mut(mid);
     let site_symbol_kind = match dungeon_kind {
         DungeonKind::Cave => SiteSymbolKind::Cave,
         _ => SiteSymbolKind::Ruin,
