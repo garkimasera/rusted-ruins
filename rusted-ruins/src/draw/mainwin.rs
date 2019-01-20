@@ -146,7 +146,7 @@ impl MainWinDrawer {
                 let chara = gd.chara.get(CharaId::Player);
                 let ct = gobj::get_obj(chara.template);
                 let src = Rect::from(ct.img_rect());
-                let mut dest = self.centering_at_tile(
+                let dest = self.centering_at_tile(
                     src, player_pos,
                     -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET);
                 check_draw!(context.canvas.copy(context.sv.tex().get(chara.template), src, dest));

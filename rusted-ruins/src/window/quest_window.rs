@@ -98,7 +98,7 @@ impl DialogWindow for QuestWindow {
         
         if let Some(response) = self.list.process_command(&command) {
             match response {
-                ListWidgetResponse::Select(i) => { // Any item is selected
+                ListWidgetResponse::Select(_) => { // Any item is selected
                     self.dialog = Some(MsgDialog::with_yesno(
                         crate::text::ui_txt("dialog.undertake_quest"),
                         |_, a| { DialogResult::CloseWithValue(Box::new(a)) }

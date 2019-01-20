@@ -1,8 +1,6 @@
 
 use super::commonuse::*;
 use super::widget::*;
-use crate::context::textrenderer::FontKind;
-use crate::config::UI_CFG;
 use common::objholder::CharaTemplateIdx;
 
 /// Displays one image

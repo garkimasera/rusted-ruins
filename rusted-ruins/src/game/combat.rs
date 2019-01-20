@@ -22,14 +22,10 @@ pub struct AttackParams {
 /// Attack neighbor enemy by short range weapon or martial arts
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     let skill_kind;
-    
+
     // Damage calculation
-    let equip_def = calc_equip_defence(&game.gd, target);
-    
     let attack_power = {
-        let attacker_id = attacker;
         let attacker = game.gd.chara.get(attacker);
-        let target = game.gd.chara.get(target);
         
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
             let weapon_obj = gobj::get_obj(weapon.idx);
@@ -76,7 +72,6 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 /// If attacker actually do actions, returns true.
 pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool {
     // Damage calculation
-    let equip_def = calc_equip_defence(&game.gd, target);
     
     let (damage, weapon_kind, attacker_pos, target_pos) = {
         let attacker_pos = game.gd.get_current_map().chara_pos(attacker).unwrap();

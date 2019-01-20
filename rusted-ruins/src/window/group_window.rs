@@ -126,8 +126,6 @@ impl TabsNavigator {
         let w = TAB_ICON_W * size as u32;
         let h = TAB_ICON_H + TAB_TEXT_H;
         let rect = Rect::new(p.0, p.1 - h as i32 - WINDOW_BORDER_THICKNESS as i32, w, h);
-        let screen_w = SCREEN_CFG.screen_w;
-        let x = screen_w as i32 - w as i32;
         let labels: Vec<LabelWidget> = mem_info
             .iter()
             .map(|member| member.text_id)

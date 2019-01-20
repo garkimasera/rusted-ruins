@@ -162,14 +162,14 @@ impl ChooseClassDialog {
 }
 
 impl Window for ChooseClassDialog {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         self.list.draw(context);
     }
 }
 
 impl DialogWindow for ChooseClassDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => { // Any item is selected

@@ -32,8 +32,8 @@ impl SkillListEx for SkillList {
             if exp.get_mut(&kind).is_none() {
                 exp.insert(kind, 0);
             }
-            
-            let mut skill_exp = exp.get_mut(&kind).unwrap();
+
+            let skill_exp = exp.get_mut(&kind).unwrap();
             let is_level_up;
             let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
                 SKILL_EXP_LVUP as u32

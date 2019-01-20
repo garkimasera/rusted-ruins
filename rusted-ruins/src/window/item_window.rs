@@ -198,7 +198,7 @@ impl ItemWindow {
 impl Window for ItemWindow {
     
     fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         
         draw_rect_border(context, self.rect);
         self.list.draw(context);
