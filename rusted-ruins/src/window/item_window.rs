@@ -9,7 +9,6 @@ use crate::config::UI_CFG;
 use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
 use super::widget::*;
-use super::misc_window::PageWindow;
 use common::gamedata::*;
 use crate::game::item::filter::*;
 
@@ -30,7 +29,6 @@ pub struct ItemWindow {
     rect: Rect,
     list: ListWidget<(IconIdx, TextCache, TextCache)>,
     mode: ItemWindowMode,
-    page_window: PageWindow,
     item_locations: Vec<ItemLocation>,
 }
 
@@ -48,7 +46,6 @@ impl ItemWindow {
                 true,
                 true),
             mode,
-            page_window: PageWindow::new(None, Some(rect.bottom() + UI_CFG.page_window.margin_to_parent)),
             item_locations: Vec::new(),
         };
         item_window.update_by_mode(pa);
@@ -112,8 +109,6 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
         }
-
-        self.page_window.set_page(self.list.get_page(), self.list.get_max_page());
     }
 
     fn update_list(&mut self, list: FilteredItemList) {
@@ -207,7 +202,6 @@ impl Window for ItemWindow {
         
         draw_rect_border(context, self.rect);
         self.list.draw(context);
-        self.page_window.draw(context, game, anim);
     }
 }
 

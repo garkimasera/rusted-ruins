@@ -50,7 +50,6 @@ pub struct UIConfig {
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
     pub quest_window: QuestWindowConfig,
-    pub page_window: PageWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
 }
@@ -199,13 +198,6 @@ pub struct SkillWindowConfig {
 pub struct QuestWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct PageWindowConfig {
-    pub rect: CfgRect,
-    pub margin_to_parent: i32,
-    pub label_y: i32,
 }
 
 #[derive(Debug, Deserialize)]
