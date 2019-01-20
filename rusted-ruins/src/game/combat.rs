@@ -12,6 +12,13 @@ pub enum DamageKind {
     Poison,
 }
 
+pub struct AttackParams {
+    attacker: Option<CharaId>,
+    kind: DamageKind,
+    element: Element,
+    attack_power: f64,
+}
+
 /// Attack neighbor enemy by short range weapon or martial arts
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     let skill_kind;
@@ -19,7 +26,8 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Damage calculation
     let equip_def = calc_equip_defence(&game.gd, target);
     
-    let damage = {
+    let attack_power = {
+        let attacker_id = attacker;
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
         
@@ -30,38 +38,33 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
             
             let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
             let weapon_skill_level = attacker.skills.get(skill_kind);
-            let attack_power = calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level);
-            let defence_skill_level = target.skills.get(SkillKind::Defence);
-            let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
-            (attack_power / defence_power) as i32
+            calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level)
         } else { // Attack by martial arts
             skill_kind = SkillKind::MartialArts;
             let weapon_skill_level = attacker.skills.get(skill_kind);
             let dice_result = rng::dice(1, weapon_skill_level as i32 / 3 + 1);
-            let attack_power = calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level);
-            let defence_skill_level = target.skills.get(SkillKind::Defence);
-            let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
-            (attack_power / defence_power) as i32
+            calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level)
         }
     };
+    let attack_params = AttackParams {
+        attacker: Some(attacker),
+        kind: DamageKind::MeleeAttack,
+        element: Element::Physical,
+        attack_power,
+    };
+    let damage = attack_target(game, attack_params, target);
+
     // Logging
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
         game_log!("attack"; attacker=attacker, target=target, damage=damage);
     }
-    // Damage processing
-    super::chara::damage(game, target, damage, DamageKind::MeleeAttack);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.add_attack_exp(skill_kind, target_level);
-    }
-    {
-        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
-        let target = game.gd.chara.get_mut(target);
-        target.add_damage_exp(damage, attacker_level);
     }
     // Animation pushing
     game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
@@ -78,9 +81,8 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
     let (damage, weapon_kind, attacker_pos, target_pos) = {
         let attacker_pos = game.gd.get_current_map().chara_pos(attacker).unwrap();
         let target_pos = game.gd.get_current_map().chara_pos(target).unwrap();
-        let attacker = game.gd.chara.get(attacker);
-        let target = game.gd.chara.get(target);
-        let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
+        let cattacker = game.gd.chara.get(attacker);
+        let weapon = if let Some(weapon) = cattacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
             weapon
         } else { // If this chara doesn't equip long range weapon
             game_log_i!("no-ranged-weapon-equipped");
@@ -90,12 +92,17 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         let weapon_kind = get_weapon_kind(weapon_obj);
         let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
         
-        let weapon_skill_level = attacker.skills.get(SkillKind::Weapon(weapon_kind));
-        let attack_power = calc_attack_power(dice_result, attacker.attr.dex, weapon_skill_level);
-        let defence_skill_level = target.skills.get(SkillKind::Defence);
-        let defence_power = calc_defence_power(equip_def[Element::Physical], target.attr.vit, defence_skill_level);
-        let damage = (attack_power / defence_power) as i32;
-        
+        let weapon_skill_level = cattacker.skills.get(SkillKind::Weapon(weapon_kind));
+        let attack_power = calc_attack_power(dice_result, cattacker.attr.dex, weapon_skill_level);
+
+        let attack_params = AttackParams {
+            attacker: Some(attacker),
+            kind: DamageKind::RangedAttack,
+            element: Element::Physical,
+            attack_power,
+        };
+
+        let damage = attack_target(game, attack_params, target);
         (damage, weapon_kind, attacker_pos, target_pos)
     };
     // Logging
@@ -104,24 +111,39 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         let target = game.gd.chara.get(target);
         game_log!("shot-target"; attacker=attacker, target=target, damage=damage);
     }
-    // Damage processing
-    super::chara::damage(game, target, damage, DamageKind::RangedAttack);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.add_attack_exp(SkillKind::Weapon(weapon_kind), target_level);
     }
-    {
-        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
-        let target = game.gd.chara.get_mut(target);
-        target.add_damage_exp(damage, attacker_level);
-    }
     // Animation pushing
     game.anim_queue.push_shot(attacker_pos, target_pos);
     // Sound effect
     crate::audio::play_sound("arrow");
     true
+}
+
+/// Routines for targetted character
+fn attack_target(game: &mut Game, attack_params: AttackParams, target: CharaId) -> i32 {
+    let equip_def = calc_equip_defence(&game.gd, target);
+    let ctarget = game.gd.chara.get(target);
+    let defence_skill_level = ctarget.skills.get(SkillKind::Defence);
+    let defence_power = calc_defence_power(
+        equip_def[attack_params.element], ctarget.attr.vit, defence_skill_level);
+    let damage = (attack_params.attack_power / defence_power).floor() as i32;
+
+    // Give damage
+    super::chara::damage(game, target, damage, attack_params.kind);
+
+    // Exp for targetted character
+    if let Some(attacker) = attack_params.attacker {
+        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
+        let target = game.gd.chara.get_mut(target);
+        target.add_damage_exp(damage, attacker_level);
+    }
+
+    damage
 }
 
 fn get_weapon_kind(item: &ItemObject) -> WeaponKind {
