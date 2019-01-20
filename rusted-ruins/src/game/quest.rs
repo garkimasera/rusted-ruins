@@ -53,3 +53,21 @@ fn gen_quest() -> Quest {
     }
 }
 
+pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
+
+    for (state, quest) in &mut gd.quest.iter_mut() {
+        match quest {
+            Quest::SlayMonsters { idx, goal, killed } => {
+                if *state == QuestState::Active && *idx == t {
+                    *killed += 1;
+                    if *killed == *goal {
+                        *state = QuestState::Completed;
+                        // Log
+                        game_log_i!("quest-complete-slay_monsters"; monster=idx, n=goal);
+                    }
+                }
+            }
+        }
+    }
+}
+

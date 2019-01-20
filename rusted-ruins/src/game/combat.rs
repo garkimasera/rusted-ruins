@@ -128,19 +128,24 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
 fn attack_target(game: &mut Game, attack_params: AttackParams, target: CharaId) -> i32 {
     let equip_def = calc_equip_defence(&game.gd, target);
     let ctarget = game.gd.chara.get(target);
+    let idx = ctarget.template;
     let defence_skill_level = ctarget.skills.get(SkillKind::Defence);
     let defence_power = calc_defence_power(
         equip_def[attack_params.element], ctarget.attr.vit, defence_skill_level);
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
     // Give damage
-    super::chara::damage(game, target, damage, attack_params.kind);
+    let hp = super::chara::damage(game, target, damage, attack_params.kind);
 
-    // Exp for targetted character
-    if let Some(attacker) = attack_params.attacker {
-        let attacker_level = game.gd.chara.get(attacker).base_attr.level;
-        let target = game.gd.chara.get_mut(target);
-        target.add_damage_exp(damage, attacker_level);
+    if hp > 0 {
+        // Exp for targetted character
+        if let Some(attacker) = attack_params.attacker {
+            let attacker_level = game.gd.chara.get(attacker).base_attr.level;
+            let target = game.gd.chara.get_mut(target);
+            target.add_damage_exp(damage, attacker_level);
+        }
+    } else {
+        super::quest::count_slayed_monster(&mut game.gd, idx);
     }
 
     damage

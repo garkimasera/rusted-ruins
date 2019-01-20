@@ -2,28 +2,33 @@
 use std::slice::{Iter, IterMut};
 use crate::objholder::CharaTemplateIdx;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum QuestState {
+    Active, Completed
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct QuestHolder {
-    active_quests: Vec<Quest>,
+    quests: Vec<(QuestState, Quest)>,
 }
 
 impl QuestHolder {
     pub fn new() -> QuestHolder {
         QuestHolder {
-            active_quests: Vec::new(),
+            quests: Vec::new(),
         }
     }
 
-    pub fn iter(&self) -> Iter<Quest> {
-        self.active_quests.iter()
+    pub fn iter(&self) -> Iter<(QuestState, Quest)> {
+        self.quests.iter()
     }
 
-    pub fn iter_mut(&mut self) -> IterMut<Quest> {
-        self.active_quests.iter_mut()
+    pub fn iter_mut(&mut self) -> IterMut<(QuestState, Quest)> {
+        self.quests.iter_mut()
     }
 
     pub fn start_new_quest(&mut self, quest: Quest) {
-        self.active_quests.push(quest);
+        self.quests.push((QuestState::Active, quest));
     }
 }
 

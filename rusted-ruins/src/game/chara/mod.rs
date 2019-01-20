@@ -87,7 +87,7 @@ impl CharaEx for Chara {
     }
 }
 
-pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) {
+pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) -> i32 {
     let chara = game.gd.chara.get_mut(cid);
     
     chara.hp -= damage;
@@ -107,5 +107,6 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
             }
         }
     }
+    chara.hp
 }
 

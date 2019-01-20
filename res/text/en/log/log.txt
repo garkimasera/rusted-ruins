@@ -4,7 +4,7 @@
 % start
 Welcome to Rusted Ruins! (version : $(version))
 #
-# Message when moving on map
+# Messages when moving on map
 #
 % exit-to-outside
 $(player) exited to outside.
@@ -18,7 +18,7 @@ $(player) moved to the next floor.
 % skill-level-up
 $(chara)'s $(skill) level increase.
 #
-# Message about combat
+# Messages about combat
 #
 % attack
 $(attacker) attacks $(target) ($(damage)).
@@ -35,7 +35,7 @@ $(chara) is killed.
 % killed-by-poison-damage
 $(chara) is killed by poison
 #
-# Message about character action
+# Messages about character action
 #
 % item-equip
 $(chara) equips $(item).
@@ -48,7 +48,7 @@ $(chara) drinks a $(item).
 % eat-item
 $(chara) eats a $(item).
 #
-# Message when a character is affected
+# Messages when a character is affected
 #
 % heal-hp
 $(chara) is healed ($(value)).
@@ -62,3 +62,8 @@ $(chara) is asleep.
 $(chara) is damaged by poison ($(damage)).
 % shop-lack-of-money
 $(chara) do not have enough money to buy it.
+#
+# Messages about quest
+#
+% quest-complete-slay_monsters
+Quest completed! Slayed $(monster) x $(n).
