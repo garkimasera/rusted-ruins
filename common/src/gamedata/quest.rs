@@ -1,6 +1,7 @@
 
 use std::slice::{Iter, IterMut};
 use crate::objholder::CharaTemplateIdx;
+use super::defs::Reward;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum QuestState {
@@ -35,6 +36,7 @@ impl QuestHolder {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Quest {
     SlayMonsters {
+        reward: Reward,
         idx: CharaTemplateIdx,
         goal: u32,
         killed: u32,

@@ -44,7 +44,13 @@ pub fn undertake_quest(game: &mut Game, i: u32) {
 
 /// Generate an quest
 fn gen_quest() -> Quest {
+    let reward = Reward {
+        money: 1000,
+        item: Vec::new(),
+    };
+
     Quest::SlayMonsters {
+        reward, 
         idx: choose_npc_chara_template(
             &RULES.quest.slay_race_probability,
             1),
@@ -57,7 +63,7 @@ pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
 
     for (state, quest) in &mut gd.quest.iter_mut() {
         match quest {
-            Quest::SlayMonsters { idx, goal, killed } => {
+            Quest::SlayMonsters { idx, goal, killed, .. } => {
                 if *state == QuestState::Active && *idx == t {
                     *killed += 1;
                     if *killed == *goal {

@@ -1,6 +1,7 @@
 //! Miscellaneous type definitions
 
 use std::ops::{Index, IndexMut};
+use crate::objholder::ItemIdx;
 
 /// Elements of damage/attack
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -35,5 +36,12 @@ impl<T> IndexMut<Element> for ElementArray<T> {
         assert_ne!(e, Element::None);
         &mut self.0[e as usize]
     }
+}
+
+/// Reward for quests or events
+#[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
+pub struct Reward {
+    pub money: i64,
+    pub item: Vec<ItemIdx>,
 }
 
