@@ -11,6 +11,7 @@ use crate::tomlinput::TomlInput;
 use crate::error::*;
 use self::img::*;
 use self::item::build_item_object;
+pub use script_parser::parse as script_parse;
 
 pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
     let object_type = tomlinput.object_type.clone();
@@ -178,7 +179,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
 
 fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
     let s = get_optional_field!(tomlinput, script);
-    let script =  script_parser::parse(&s.script)?;
+    let script =  script_parse(&s.script)?;
 
     Ok(ScriptObject {
         id: tomlinput.id,

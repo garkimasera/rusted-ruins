@@ -15,6 +15,7 @@ mod verbose;
 mod tomlinput;
 mod buildobj;
 mod compile;
+mod rrscript;
 mod dir;
 mod error;
 

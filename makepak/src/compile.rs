@@ -9,6 +9,7 @@ use tar;
 use crate::error::*;
 use crate::verbose::print_verbose;
 use crate::dir;
+use crate::rrscript::read_rrscript;
 
 use crate::tomlinput::TomlInput;
 use crate::buildobj::build_object;
@@ -24,8 +25,14 @@ pub fn compile(files: &[&str], output_file: &String) {
         }else{
             dir::set_src_dir(None);
         }
-        
-        let obj = match read_toml(f) {
+
+        let read_result = if Some(true) == f.extension().map(|e| e == "rrscript") {
+            read_rrscript(f)
+        } else {
+            read_toml(f)
+        };
+
+        let obj = match read_result {
             Ok(o) => o,
             Err(echain) => {
                 eprintln!("Cannot process \"{}\"", f.to_string_lossy());
