@@ -13,7 +13,7 @@ failure = "0.1.1"
 toml = "0.4"
 tar = "0.4"
 clap = "2"
-image = "0.20"
+image = "0.21"
 nom = { version = "4.1", features = ["regexp_macros"] }
 
 [dependencies.rusted-ruins-array2d]
