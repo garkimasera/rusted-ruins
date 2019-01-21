@@ -5,7 +5,7 @@ use super::defs::Reward;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum QuestState {
-    Active, Completed
+    Active, Completed, RewardReceived
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -31,6 +31,10 @@ impl QuestHolder {
     pub fn start_new_quest(&mut self, quest: Quest) {
         self.quests.push((QuestState::Active, quest));
     }
+
+    pub fn remove_reward_received(&mut self) {
+        self.quests.retain(|&(state, _)| state != QuestState::RewardReceived);
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -41,5 +45,15 @@ pub enum Quest {
         goal: u32,
         killed: u32,
     },
+}
+
+impl Quest {
+    pub fn reward(&self) -> &Reward {
+        match self {
+            Quest::SlayMonsters { reward, .. } => {
+                reward
+            }
+        }
+    }
 }
 

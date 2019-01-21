@@ -152,6 +152,9 @@ impl ScriptEngine {
                     super::quest::update_town_quest(gd);
                     break ExecResult::Quest;
                 }
+                Instruction::Special(SpecialInstruction::ReceiveQuestRewards) => {
+                    super::quest::receive_rewards(gd);
+                }
             }
             self.pos.advance();
         };

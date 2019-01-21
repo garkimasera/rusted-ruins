@@ -33,17 +33,21 @@ pub enum SpecialInstruction {
     GetDungeonLocation,
     /// Special instruction to open quest window
     QuestWindow,
+    /// Special instruction to recieve quest rewards
+    ReceiveQuestRewards,
 }
 
 impl std::str::FromStr for SpecialInstruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SpecialInstruction::*;
         match s {
-            "shop_buy" => Ok(SpecialInstruction::ShopBuy),
-            "shop_sell" => Ok(SpecialInstruction::ShopSell),
-            "get_dungeon_location" => Ok(SpecialInstruction::GetDungeonLocation),
-            "quest_window" => Ok(SpecialInstruction::QuestWindow),
+            "shop_buy" => Ok(ShopBuy),
+            "shop_sell" => Ok(ShopSell),
+            "get_dungeon_location" => Ok(GetDungeonLocation),
+            "quest_window" => Ok(QuestWindow),
+            "receive_quest_rewards" => Ok(ReceiveQuestRewards),
             _ => Err(()),
         }
     }

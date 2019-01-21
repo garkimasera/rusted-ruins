@@ -61,7 +61,7 @@ fn gen_quest() -> Quest {
 
 pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
 
-    for (state, quest) in &mut gd.quest.iter_mut() {
+    for (state, quest) in gd.quest.iter_mut() {
         match quest {
             Quest::SlayMonsters { idx, goal, killed, .. } => {
                 if *state == QuestState::Active && *idx == t {
@@ -75,5 +75,26 @@ pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
             }
         }
     }
+}
+
+pub fn receive_rewards(gd: &mut GameData) -> bool {
+    let mut money = 0;
+    let mut exist_completed_quest = false;
+
+    for (state, quest) in gd.quest.iter_mut() {
+        if *state == QuestState::Completed {
+            exist_completed_quest = true;
+            let reward = quest.reward();
+            money += reward.money;
+            *state = QuestState::RewardReceived;
+        }
+    }
+
+    if exist_completed_quest {
+        gd.quest.remove_reward_received();
+        gd.player.add_money(money);
+        game_log_i!("quest-reward-receive-money"; money=money);
+    }
+    exist_completed_quest
 }
 

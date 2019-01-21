@@ -67,3 +67,5 @@ $(chara) do not have enough money to buy it.
 #
 % quest-complete-slay_monsters
 Quest completed! Slayed $(monster) x $(n).
+% quest-reward-receive-money
+Recieve $(money) gold as the quest reward.
