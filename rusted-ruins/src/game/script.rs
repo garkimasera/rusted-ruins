@@ -138,17 +138,17 @@ impl ScriptEngine {
                     let il = ur!(gd.player_item_location(item_id), "cannot find item");
                     gd.remove_item(il, 1);
                 }
-                Instruction::ShopBuy => {
+                Instruction::Special(SpecialInstruction::ShopBuy) => {
                     break ExecResult::ShopBuy(ur!(self.cid, "cid is needed"));
                 }
-                Instruction::ShopSell => {
+                Instruction::Special(SpecialInstruction::ShopSell) => {
                     break ExecResult::ShopSell;
                 }
-                Instruction::GetDungeonLocation => {
+                Instruction::Special(SpecialInstruction::GetDungeonLocation) => {
                     let mid = gd.get_current_mapid();
                     super::region::gen_dungeon_max(gd, mid.rid());
                 }
-                Instruction::QuestWindow => {
+                Instruction::Special(SpecialInstruction::QuestWindow) => {
                     super::quest::update_town_quest(gd);
                     break ExecResult::Quest;
                 }

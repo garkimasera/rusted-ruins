@@ -18,6 +18,13 @@ pub enum Instruction {
     RecieveMoney(Expr),
     /// Remove item form player's inventory
     RemoveItem(String),
+    /// Special Instruction
+    Special(SpecialInstruction),
+}
+
+/// Special Instructions
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum SpecialInstruction {
     /// Special instruction to start buying at a shop
     ShopBuy,
     /// Special instruction to start selling at a shop
@@ -26,6 +33,20 @@ pub enum Instruction {
     GetDungeonLocation,
     /// Special instruction to open quest window
     QuestWindow,
+}
+
+impl std::str::FromStr for SpecialInstruction {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "shop_buy" => Ok(SpecialInstruction::ShopBuy),
+            "shop_sell" => Ok(SpecialInstruction::ShopSell),
+            "get_dungeon_location" => Ok(SpecialInstruction::GetDungeonLocation),
+            "quest_window" => Ok(SpecialInstruction::QuestWindow),
+            _ => Err(()),
+        }
+    }
 }
 
 /// Expression in script.

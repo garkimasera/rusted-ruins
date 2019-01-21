@@ -1,4 +1,5 @@
 
+use std::str::FromStr;
 use nom::{space, line_ending};
 use nom::types::CompleteStr;
 use common::hashmap::HashMap;
@@ -83,27 +84,14 @@ fn jump_instruction_test() {
             "has-key".to_owned(), Expr::HasItem("key".to_owned())))));
 }
 
-macro_rules! define_parser_for_noarg_instructions {
-    ( $($parser_name:ident, $result:ident, $func_name:expr),* ) => {
-        $(
-            named!($parser_name<CompleteStr, Instruction>,
-                do_parse!(
-                    ws!(tag!($func_name)) >>
-                    tag!("()") >>
-                    end_line >>
-                    (Instruction::$result)
-                )
-            );
-        )*
-    }
-}
-
-define_parser_for_noarg_instructions! {
-    shop_buy_instruction, ShopBuy, "shop_buy",
-    shop_sell_instruction, ShopSell, "shop_sell",
-    get_dungeon_location_instruction, GetDungeonLocation, "get_dungeon_location",
-    quest_window_instruction, QuestWindow, "quest_window"
-}
+named!(special_instruction<CompleteStr, Instruction>,
+    do_parse!(
+        ws!(tag!("special")) >>
+        s: map_res!(delimited!(tag!("("), ws!(symbol), tag!(")")), FromStr::from_str) >>
+        end_line >>
+        (Instruction::Special(s))
+    )
+);
 
 #[test]
 fn shop_instruction_test() {
@@ -186,10 +174,7 @@ named!(instruction<CompleteStr, Instruction>,
         gset_instruction |
         recieve_money_instruction |
         remove_item_instruction |
-        shop_buy_instruction |
-        shop_sell_instruction |
-        get_dungeon_location_instruction |
-        quest_window_instruction
+        special_instruction
     )
 );
 

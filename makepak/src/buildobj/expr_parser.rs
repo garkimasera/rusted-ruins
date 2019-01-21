@@ -30,6 +30,13 @@ named!(pub id<CompleteStr, String>,
     )
 );
 
+named!(pub symbol<CompleteStr, &str>,
+    do_parse!(
+        s: re_find_static!("[a-zA-Z][a-zA-Z0-9_]*") >>
+        (*s)
+    )
+);
+
 #[test]
 fn id_test() {
     assert_eq!(id(CompleteStr("ab.c")), Ok((CompleteStr(""), "ab.c".to_string())));
