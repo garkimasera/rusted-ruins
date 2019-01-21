@@ -130,7 +130,7 @@ impl ScriptEngine {
                     let v = v.eval(gd);
                     gd.vars.set_global_var(name, v);
                 }
-                Instruction::RecieveMoney(v) => {
+                Instruction::ReceiveMoney(v) => {
                     let v = v.eval(gd);
                     gd.player.add_money(as_int!(v) as i64);
                 }

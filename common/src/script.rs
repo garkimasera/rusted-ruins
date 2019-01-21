@@ -14,8 +14,8 @@ pub enum Instruction {
     Talk(String, Vec<(String, String)>),
     /// Set global variable
     GSet(String, Expr),
-    /// Player recieve money
-    RecieveMoney(Expr),
+    /// Player receive money
+    ReceiveMoney(Expr),
     /// Remove item form player's inventory
     RemoveItem(String),
     /// Special Instruction
@@ -33,7 +33,7 @@ pub enum SpecialInstruction {
     GetDungeonLocation,
     /// Special instruction to open quest window
     QuestWindow,
-    /// Special instruction to recieve quest rewards
+    /// Special instruction to receive quest rewards
     ReceiveQuestRewards,
 }
 

@@ -137,12 +137,12 @@ named!(gset_instruction<CompleteStr, Instruction>,
     )
 );
 
-named!(recieve_money_instruction<CompleteStr, Instruction>,
+named!(receive_money_instruction<CompleteStr, Instruction>,
     do_parse!(
-        ws!(tag!("recieve_money")) >>
+        ws!(tag!("receive_money")) >>
         e: delimited!(char!('('), ws!(expr), char!(')')) >>
         end_line >>
-        (Instruction::RecieveMoney(e))
+        (Instruction::ReceiveMoney(e))
     )
 );
 
@@ -172,7 +172,7 @@ named!(instruction<CompleteStr, Instruction>,
         talk_instruction_with_choices |
         talk_instruction |
         gset_instruction |
-        recieve_money_instruction |
+        receive_money_instruction |
         remove_item_instruction |
         special_instruction
     )
