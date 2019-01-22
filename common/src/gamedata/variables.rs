@@ -29,5 +29,11 @@ impl Variables {
     pub fn set_global_var<S: ToString>(&mut self, name: S, v: Value) {
         self.global.insert(name.to_string(), v);
     }
+
+    /// Set special named variable "$?".
+    /// This special variable is used for the result of the last instruction.
+    pub fn set_last_result(&mut self, v: Value) {
+        self.global.insert("?".to_owned(), v);
+    }
 }
 

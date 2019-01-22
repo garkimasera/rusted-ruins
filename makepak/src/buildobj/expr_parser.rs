@@ -74,6 +74,13 @@ named!(gvar<CompleteStr, Expr>,
     )
 );
 
+named!(gvar_special<CompleteStr, Expr>,
+    do_parse!(
+        tag!("$?") >>
+        (Expr::GVar("?".to_owned()))
+    )
+);
+
 named!(has_item<CompleteStr, Expr>,
     do_parse!(
         tag!("has_item") >>
@@ -89,6 +96,7 @@ named!(factor<CompleteStr, Expr>,
         false_literal |
         integer |
         gvar |
+        gvar_special |
         has_item |
         parens
     ))

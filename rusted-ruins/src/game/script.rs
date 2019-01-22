@@ -153,7 +153,8 @@ impl ScriptEngine {
                     break ExecResult::Quest;
                 }
                 Instruction::Special(SpecialInstruction::ReceiveQuestRewards) => {
-                    super::quest::receive_rewards(gd);
+                    let result = super::quest::receive_rewards(gd);
+                    gd.vars.set_last_result(Value::Bool(result))
                 }
             }
             self.pos.advance();
