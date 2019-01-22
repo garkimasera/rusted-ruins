@@ -94,11 +94,13 @@ named!(special_instruction<CompleteStr, Instruction>,
 );
 
 #[test]
-fn shop_instruction_test() {
-    assert_eq!(shop_buy_instruction(
-        CompleteStr("shop_buy()\n")), Ok((CompleteStr(""), Instruction::ShopBuy)));
-    assert_eq!(shop_sell_instruction(
-        CompleteStr("shop_sell()\n")), Ok((CompleteStr(""), Instruction::ShopSell)));
+fn special_instruction_test() {
+    assert_eq!(special_instruction(
+        CompleteStr("special(shop_buy)\n")),
+        Ok((CompleteStr(""), Instruction::Special(SpecialInstruction::ShopBuy))));
+    assert_eq!(special_instruction(
+        CompleteStr("special(shop_sell)\n")),
+        Ok((CompleteStr(""), Instruction::Special(SpecialInstruction::ShopSell))));
 }
 
 named!(talk_instruction<CompleteStr, Instruction>,
@@ -213,7 +215,7 @@ pub fn parse(input: &str) -> Result<Script, PakCompileError> {
 fn parse_test() {
     let script = r#"--- test_section0
 talk(textid0)
-shop_buy()
+special(shop_buy)
 jump(test_section1)
 --- test_section1
 talk(textid1,
@@ -225,7 +227,7 @@ talk(textid1,
         "test_section0".to_owned(),
         vec![
             Instruction::Talk("textid0".to_owned(), vec![]),
-            Instruction::ShopBuy,
+            Instruction::Special(SpecialInstruction::ShopBuy),
             Instruction::Jump("test_section1".to_owned())
         ]);
     result.insert(
