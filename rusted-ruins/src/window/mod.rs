@@ -370,7 +370,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         let game = Game::new(gd);
                         self.game = game;
                         self.game.update_before_player_turn();
-                        game_log_i!("start"; version="0.0.1");
+                        game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
                     }
                     _ => unreachable!(),
                 }
@@ -385,7 +385,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         let game = Game::new(gd);
                         self.game = game;
                         self.game.update_before_player_turn();
-                        game_log_i!("start"; version="0.0.1");
+                        game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
                     }
                     _ => unreachable!(),
                 }
