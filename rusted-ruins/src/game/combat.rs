@@ -48,14 +48,15 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         element: Element::Physical,
         attack_power,
     };
-    let damage = attack_target(game, attack_params, target);
 
     // Logging
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        game_log!("attack"; attacker=attacker, target=target, damage=damage);
+        game_log!("attack"; attacker=attacker, target=target);
     }
+    // Damage target
+    let damage = attack_target(game, attack_params, target);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
@@ -73,7 +74,7 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
 pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool {
     // Damage calculation
     
-    let (damage, weapon_kind, attacker_pos, target_pos) = {
+    let (attack_params, weapon_kind, attacker_pos, target_pos) = {
         let attacker_pos = game.gd.get_current_map().chara_pos(attacker).unwrap();
         let target_pos = game.gd.get_current_map().chara_pos(target).unwrap();
         let cattacker = game.gd.chara.get(attacker);
@@ -97,15 +98,16 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
             attack_power,
         };
 
-        let damage = attack_target(game, attack_params, target);
-        (damage, weapon_kind, attacker_pos, target_pos)
+        (attack_params, weapon_kind, attacker_pos, target_pos)
     };
     // Logging
     {
         let attacker = game.gd.chara.get(attacker);
         let target = game.gd.chara.get(target);
-        game_log!("shot-target"; attacker=attacker, target=target, damage=damage);
+        game_log!("shot-target"; attacker=attacker, target=target);
     }
+    // Damage target
+    let damage = attack_target(game, attack_params, target);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
@@ -129,6 +131,9 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target: CharaId) 
         equip_def[attack_params.element], ctarget.attr.vit, defence_skill_level);
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
+    // Dagame log
+    game_log!("damaged-chara"; chara=ctarget, damage=damage);
+    
     // Give damage
     let hp = super::chara::damage(game, target, damage, attack_params.kind);
 

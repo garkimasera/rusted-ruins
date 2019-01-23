@@ -21,13 +21,15 @@ $(chara)'s $(skill) level increase.
 # Messages about combat
 #
 % attack
-$(attacker) attacks $(target) ($(damage)).
+$(attacker) attacks $(target).
 % shot-target
-$(attacker) shots $(target) ($(damage)).
+$(attacker) shots $(target).
 % no-ranged-weapon-equipped
 No ranged weapon equipped!
 % target-chara
 $(chara) targets $(target).
+% damaged-chara
+$(chara) is damaged ($(damage)).
 % killed-by-melee-attack
 $(chara) is killed.
 % killed-by-ranged-attack
