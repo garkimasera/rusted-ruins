@@ -32,6 +32,7 @@ impl ToTextId for SkillKind {
            SkillKind::Healing       => "!skill_kind.healing",
            SkillKind::MartialArts   => "!skill_kind.martial_arts",
            SkillKind::Defence       => "!skill_kind.defence",
+           SkillKind::Evasion       => "!skill_kind.evasion",
            SkillKind::Weapon(weapon_kind) => {
                weapon_kind.to_textid()
            }

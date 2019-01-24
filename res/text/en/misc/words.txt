@@ -28,6 +28,8 @@ Healing
 Martial Arts
 % !skill_kind.defence
 Defence
+% !skill_kind.evasion
+Evasion
 #
 # WeaponKind
 #

@@ -8,6 +8,7 @@ pub enum SkillKind {
     Endurance,
     Healing,
     Defence,
+    Evasion,
     MartialArts,
     Weapon(WeaponKind),
 }

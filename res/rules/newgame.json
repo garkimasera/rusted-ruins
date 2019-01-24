@@ -11,6 +11,6 @@
         "warrior": "warrior-m"
     },
     "common_initial_skills": [
-        "defence", "martial_arts", { "weapon": "sword" }
+        "defence", "evasion", "martial_arts", { "weapon": "sword" }
     ]
 }
