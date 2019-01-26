@@ -28,6 +28,8 @@ $(attacker) shots $(target).
 No ranged weapon equipped!
 % target-chara
 $(chara) targets $(target).
+% attack-evade
+$(chara) evades.
 % damaged-chara
 $(chara) is damaged ($(damage)).
 % killed-by-melee-attack

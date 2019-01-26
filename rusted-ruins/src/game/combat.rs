@@ -5,6 +5,7 @@ use super::chara::CharaEx;
 use common::gobj;
 use common::gamedata::*;
 use rules::RULES;
+use rng::Rng;
 
 pub enum DamageKind {
     MeleeAttack,
@@ -21,6 +22,26 @@ pub struct AttackParams {
 
 /// Attack neighbor enemy by short range weapon or martial arts
 pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
+    // Logging
+    {
+        let attacker = game.gd.chara.get(attacker);
+        let target = game.gd.chara.get(target);
+        game_log!("attack"; attacker=attacker, target=target);
+    }
+    // Animation pushing
+    game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
+    // Judges hit or miss
+    {
+        let attacker = game.gd.chara.get(attacker);
+        let accuracy_power = calc_accuracy_power(
+            1,
+            1,
+            attacker.attr.dex);
+        if !hit_judge(&game.gd, accuracy_power, target, DamageKind::MeleeAttack) {
+            return;
+        }
+    }
+
     let skill_kind;
 
     // Damage calculation
@@ -48,23 +69,14 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
         element: Element::Physical,
         attack_power,
     };
-
-    // Logging
-    {
-        let attacker = game.gd.chara.get(attacker);
-        let target = game.gd.chara.get(target);
-        game_log!("attack"; attacker=attacker, target=target);
-    }
     // Damage target
-    let damage = attack_target(game, attack_params, target);
+    let _damage = attack_target(game, attack_params, target);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
         let attacker = game.gd.chara.get_mut(attacker);
         attacker.add_attack_exp(skill_kind, target_level);
     }
-    // Animation pushing
-    game.anim_queue.push_attack(game.gd.get_current_map().chara_pos(target).unwrap());
     // Sound effect
     crate::audio::play_sound("punch");
 }
@@ -107,7 +119,7 @@ pub fn shot_target(game: &mut Game, attacker: CharaId, target: CharaId) -> bool 
         game_log!("shot-target"; attacker=attacker, target=target);
     }
     // Damage target
-    let damage = attack_target(game, attack_params, target);
+    let _damage = attack_target(game, attack_params, target);
     // Exp processing
     {
         let target_level = game.gd.chara.get(target).base_attr.level;
@@ -192,3 +204,48 @@ fn calc_defence_power(equip_def: u16, chara_param: u16, skill_level: u32) -> f64
 
     (equip_def + 16.0) * chara_param * (skill_level + 8.0)
 }
+
+/// Calculate accuracy power
+fn calc_accuracy_power(weapon: u32, skill_level: u32, chara_param: u16) -> f64 {
+    let weapon = weapon as f64;
+    let skill_level = skill_level as f64;
+    let chara_param = chara_param as f64 * 0.25;
+
+    weapon + skill_level + chara_param * 0.5
+}
+
+/// Calculate evasion power
+fn calc_evasion_power(equip: u32, skill_level: u32, chara_param: u16) -> f64 {
+    let equip = equip as f64;
+    let skill_level = skill_level as f64;
+    let chara_param = chara_param as f64 * 0.25;
+
+    equip + skill_level + chara_param * 0.5
+}
+
+fn hit_judge(gd: &GameData, accuracy_power: f64, target: CharaId, kind: DamageKind) -> bool {
+    let evasion_power = {
+        let equip = match kind {
+            DamageKind::MeleeAttack => 1, // TODO: Use equipment's parameter
+            DamageKind::RangedAttack => 1,
+            _ => { return true; } // Some kind damage always hits
+        };
+
+        let target = gd.chara.get(target);
+        calc_evasion_power(
+            equip,
+            target.skills.get(SkillKind::Evasion),
+            target.attr.dex)
+    };
+
+    let d = accuracy_power -  evasion_power;
+    let p = 1.0 / (1.0 + (-d * 0.125).exp());
+    let is_hit = rng::get_rng().gen_bool(p);
+
+    if !is_hit {
+        game_log!("attack-evade"; chara=gd.chara.get(target));
+    }
+
+    is_hit
+}
+
