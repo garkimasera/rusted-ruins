@@ -35,7 +35,7 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
         let attacker = game.gd.chara.get(attacker_id);
         let attacker_level = attacker.base_attr.level;
         let accuracy_power = calc_accuracy_power(
-            1,
+            1, // TODO: Use appropriate parameters
             1,
             attacker.attr.dex);
         if !hit_judge(&game.gd, accuracy_power, target_id, DamageKind::MeleeAttack) {
@@ -87,18 +87,35 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
 /// Shot target by long range weapons.
 /// If attacker actually do actions, returns true.
 pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) -> bool {
-    // Damage calculation
-    
-    let (attack_params, weapon_kind, attacker_pos, target_pos) = {
-        let attacker_pos = game.gd.get_current_map().chara_pos(attacker_id).unwrap();
-        let target_pos = game.gd.get_current_map().chara_pos(target_id).unwrap();
+
+    let attacker = game.gd.chara.get(attacker_id);
+    let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
+        weapon
+    } else { // If this chara doesn't equip long range weapon
+        game_log_i!("no-ranged-weapon-equipped");
+        return false;
+    };
+    let attacker_pos = game.gd.get_current_map().chara_pos(attacker_id).unwrap();
+    let target_pos = game.gd.get_current_map().chara_pos(target_id).unwrap();
+
+    // Judges hit or miss
+    {
         let attacker = game.gd.chara.get(attacker_id);
-        let weapon = if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
-            weapon
-        } else { // If this chara doesn't equip long range weapon
-            game_log_i!("no-ranged-weapon-equipped");
-            return false;
-        };
+        let attacker_level = attacker.base_attr.level;
+        let accuracy_power = calc_accuracy_power(
+            1, // TODO: Use appropriate parameters
+            1,
+            attacker.attr.dex);
+        if !hit_judge(&game.gd, accuracy_power, target_id, DamageKind::MeleeAttack) {
+            // Exp to target chara
+            game.gd.chara.get_mut(target_id).add_evasion_exp(attacker_level);
+            game.anim_queue.push_shot(attacker_pos, target_pos);
+            return true;
+        }
+    }
+
+    // Damage calculation
+    let (attack_params, weapon_kind, attacker_pos) = {
         let weapon_obj = gobj::get_obj(weapon.idx);
         let weapon_kind = get_weapon_kind(weapon_obj);
         let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
@@ -113,11 +130,10 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
             attack_power,
         };
 
-        (attack_params, weapon_kind, attacker_pos, target_pos)
+        (attack_params, weapon_kind, attacker_pos)
     };
     // Logging
     {
-        let attacker = game.gd.chara.get(attacker_id);
         let target = game.gd.chara.get(target_id);
         game_log!("shot-target"; attacker=attacker, target=target);
     }
