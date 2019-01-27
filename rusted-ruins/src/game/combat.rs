@@ -33,11 +33,14 @@ pub fn attack_neighbor(game: &mut Game, attacker: CharaId, target: CharaId) {
     // Judges hit or miss
     {
         let attacker = game.gd.chara.get(attacker);
+        let attacker_level = attacker.base_attr.level;
         let accuracy_power = calc_accuracy_power(
             1,
             1,
             attacker.attr.dex);
         if !hit_judge(&game.gd, accuracy_power, target, DamageKind::MeleeAttack) {
+            // Exp to target chara
+            game.gd.chara.get_mut(target).add_evasion_exp(attacker_level);
             return;
         }
     }
@@ -226,7 +229,7 @@ fn calc_evasion_power(equip: u32, skill_level: u32, chara_param: u16) -> f64 {
 fn hit_judge(gd: &GameData, accuracy_power: f64, target: CharaId, kind: DamageKind) -> bool {
     let evasion_power = {
         let equip = match kind {
-            DamageKind::MeleeAttack => 1, // TODO: Use equipment's parameter
+            DamageKind::MeleeAttack => 1,
             DamageKind::RangedAttack => 1,
             _ => { return true; } // Some kind damage always hits
         };

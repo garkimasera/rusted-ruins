@@ -19,6 +19,8 @@ pub trait CharaEx {
     fn add_attack_exp(&mut self, kind: SkillKind, target_level: u32);
     /// Add exp when damaged.
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u32);
+    /// Add exp when attacked.
+    fn add_evasion_exp(&mut self, attacker_level: u32);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: i32, cid: CharaId);
     /// Update character parameters by its status
@@ -44,6 +46,10 @@ impl CharaEx for Chara {
         let rel_damage = damage as f32 / self.attr.max_hp as f32;
         let exp = rel_damage * RULES.exp.endurance as f32;
         self.add_skill_exp(SkillKind::Endurance, exp as u32, attacker_level);
+    }
+
+    fn add_evasion_exp(&mut self, attacker_level: u32) {
+        self.add_skill_exp(SkillKind::Evasion, RULES.exp.evasion, attacker_level);
     }
 
     fn add_sp(&mut self, v: i32, cid: CharaId) {

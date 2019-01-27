@@ -12,5 +12,7 @@ pub struct Exp {
     pub attack: u32,
     /// Base exp to Endurance skill when attacked
     pub endurance: u32,
+    /// Base exp to Evasion skill when attacked
+    pub evasion: u32,
 }
 
