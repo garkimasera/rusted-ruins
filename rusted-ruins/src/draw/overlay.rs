@@ -36,9 +36,10 @@ pub fn all(game: &Game) -> Option<EffectIdx> {
     if !game.gd.is_open_air(game.gd.get_current_mapid()) {
         return None;
     }
-    
-    let hour = game.gd.time.hour();
-    let minute = game.gd.time.minute();
+
+    let date = game.gd.time.current_date();
+    let hour = date.hour;
+    let minute = date.minute;
     let dawn_hour = 5;
     let dusk_hour = 18;
     assert!(dawn_hour < dusk_hour);
@@ -54,7 +55,7 @@ pub fn all(game: &Game) -> Option<EffectIdx> {
     }
 }
 
-fn twilight(minute: u32) -> Overlay {
+fn twilight(minute: u16) -> Overlay {
     if minute < 20 {
         Overlay::Twilight0
     } else if minute < 40 {

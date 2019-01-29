@@ -61,7 +61,7 @@ impl NewGameBuilder {
             gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
 
             // Initial date setting
-            gd.time = Time::new(
+            gd.time = GameTime::new(
                 RULES.params.initial_date_year,
                 RULES.params.initial_date_month,
                 RULES.params.initial_date_day,

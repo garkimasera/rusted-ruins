@@ -1,111 +1,129 @@
 
-/// Time and date date of game
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
-pub struct Time {
-    turn: u64,
-    minute: f32,
-    hour: u32,
-    day: u32,
-    month: u32,
-    year: u32,
+pub const DAYS_PER_MONTH: u64 = 30;
+pub const SECS_PER_MIN: u64 = 60;
+pub const SECS_PER_HOUR: u64 = SECS_PER_MIN * 60;
+pub const SECS_PER_DAY: u64 = SECS_PER_HOUR * 24;
+pub const SECS_PER_MONTH: u64 = SECS_PER_DAY * DAYS_PER_MONTH;
+pub const SECS_PER_YEAR: u64 = SECS_PER_MONTH * 12;
+
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct GameTime {
+    start: Time,
+    current: Time,
 }
 
-/// Represents which time parameter changed
-#[derive(Clone, Copy, PartialEq, Eq, Default, Debug)]
-pub struct TimeChanged {
-    hour: bool,
-    day: bool,
-    month: bool,
-    year: bool,
-}
+impl GameTime {
+    pub fn new(years: u32, months: u32, days: u32, hours: u32) -> GameTime {
+        assert!(1 <= months && months <= 12);
+        assert!(1 <= days && days <= DAYS_PER_MONTH as u32);
 
-impl Default for Time {
-    fn default() -> Time {
-        Time {
-            turn: 0,
-            minute: 0.0,
-            hour: 0,
-            day: 1,
-            month: 1,
-            year: 1,
+        let start =
+            years as u64 * SECS_PER_YEAR + (months - 1) as u64 * SECS_PER_MONTH
+            + (days - 1) as u64 * SECS_PER_DAY + hours as u64 * SECS_PER_HOUR;
+        let start = Time::from_seconds(start);
+        GameTime {
+            start,
+            current: start,
         }
     }
+
+    pub fn current_time(&self) -> Time {
+        self.current
+    }
+
+    pub fn current_date(&self) -> Date {
+        self.current.into_date()
+    }
+
+    pub fn advance(&mut self, secs: u64) {
+        self.current.advance(secs);
+    }
+}
+
+#[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct Time {
+    secs: u64,
 }
 
 impl Time {
-    pub fn new(year: u32, month: u32, day: u32, hour: u32) -> Time {
-        Time {
-            turn: 0,
-            minute: 0.0,
-            hour,
-            day,
-            month,
-            year,
+    pub const fn from_seconds(secs: u64) -> Time {
+        Time { secs }
+    }
+
+    pub fn duration_from(&self, t: Time) -> Duration {
+        assert!(t.secs >= self.secs);
+        Duration::from_seconds(t.secs - self.secs)
+    }
+
+    pub fn into_date(self) -> Date {
+        let s = self.secs;
+        let year = s / SECS_PER_YEAR;
+        let s = s % SECS_PER_YEAR;
+        let month = s / SECS_PER_MONTH;
+        let s = s % SECS_PER_MONTH;
+        let day = s / SECS_PER_DAY;
+        let s = s % SECS_PER_DAY;
+        let hour = s / SECS_PER_HOUR;
+        let s = s % SECS_PER_HOUR;
+        let minute = s / SECS_PER_MIN;
+        let sec = s % SECS_PER_MIN;
+
+        Date {
+            sec: sec as u16,
+            minute: minute as u16,
+            hour: hour as u16,
+            day: day as u16 + 1,
+            month: month as u16 + 1,
+            year: year as u32,
         }
     }
-    
-    pub fn turn(&self) -> u64 {
-        self.turn
+
+    pub fn advance(&mut self, secs: u64) {
+        self.secs += secs;
     }
+}
 
-    pub fn minute(&self) -> u32 {
-        let m = self.minute as u32;
-        m - (m % 10)
-    }
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
+pub struct Duration {
+    secs: u64,
+}
 
-    pub fn hour(&self) -> u32 {
-        self.hour
-    }
+impl Duration {
+    pub const fn new(
+        years: u64, months: u64, days: u64, hours: u64,
+        mins: u64, secs: u64) -> Duration {
 
-    pub fn day(&self) -> u32 {
-        self.day
-    }
-
-    pub fn month(&self) -> u32 {
-        self.month
-    }
-
-    pub fn year(&self) -> u32 {
-        self.year
-    }
-
-    /// Advance time by given minutes
-    pub fn advance_by(&mut self, m: f32) -> TimeChanged {
-        let mut changed = TimeChanged::default();
-
-        self.turn += 1;
-
-        self.minute += m;
-        if self.minute < 60.0 {
-            return changed;
+        Duration {
+            secs: years * SECS_PER_YEAR + months * SECS_PER_MONTH
+                + days * SECS_PER_DAY + hours * SECS_PER_HOUR
+                + mins * SECS_PER_MIN + secs
         }
-        self.minute -= 60.0;
-        
-        changed.hour = true;
-        self.hour += 1;
-        if self.hour < 24 {
-            return changed;
-        }
-        self.hour = 0;
-
-        changed.day = true;
-        self.day += 1;
-        if self.day <= 30 {
-            return changed;
-        }
-        self.day = 1;
-
-        changed.month = true;
-        self.month += 1;
-        if self.month <= 12 {
-            return changed;
-        }
-        self.month = 1;
-
-        changed.year = true;
-        self.year += 1;
-        
-        changed
     }
+
+    pub const fn from_seconds(secs: u64) -> Duration {
+        Duration { secs }
+    }
+
+    pub const fn from_minutes(mins: u64) -> Duration {
+        Duration { secs: mins * SECS_PER_MIN }
+    }
+
+    pub const fn from_hours(hours: u64) -> Duration {
+        Duration { secs: hours * SECS_PER_HOUR }
+    }
+
+    pub const fn from_days(days: u64) -> Duration {
+        Duration { secs: days * SECS_PER_DAY }
+    }
+}
+
+#[derive(Debug)]
+pub struct Date {
+    pub sec: u16,
+    pub minute: u16,
+    pub hour: u16,
+    pub day: u16,
+    pub month: u16,
+    pub year: u32,
 }
 

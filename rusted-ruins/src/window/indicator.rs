@@ -88,10 +88,10 @@ pub struct TimeInfo {
     date_label: LabelWidget,
     time_label: LabelWidget,
     year: u32,
-    month: u32,
-    day: u32,
-    hour: u32,
-    minute: u32,
+    month: u16,
+    day: u16,
+    hour: u16,
+    minute: u16,
 }
 
 impl TimeInfo {
@@ -111,34 +111,35 @@ impl TimeInfo {
 impl Window for TimeInfo {
     fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
 
-        let time = &game.gd.time;
+        let date = game.gd.time.current_date();
         let mut date_changed = false;
-        if self.year != time.year() {
-            self.year = time.year();
+        if self.year != date.year {
+            self.year = date.year;
             date_changed = true;
         }
-        if self.month != time.month() {
-            self.month = time.month();
+        if self.month != date.month {
+            self.month = date.month;
             date_changed = true;
         }
-        if self.day != time.day() {
-            self.day = time.day();
+        if self.day != date.day {
+            self.day = date.day;
             date_changed = true;
         }
         let mut time_changed = false;
-        if self.hour != time.hour() {
-            self.hour = time.hour();
+        if self.hour != date.hour {
+            self.hour = date.hour;
             time_changed = true;
         }
-        if self.minute != time.minute() {
-            self.minute = time.minute();
+        let minute10 = date.minute - date.minute % 10;
+        if self.minute != minute10 {
+            self.minute = minute10;
             time_changed = true;
         }
         if date_changed {
             self.date_label.set_text(&format!("{}/{:02}/{:02}", self.year, self.month, self.day))
         }
         if time_changed {
-            self.time_label.set_text(&format!("{:02}:{:02}", self.hour, self.minute))
+            self.time_label.set_text(&format!("{:02}:{:02}", self.hour, minute10))
         }
         self.date_label.draw(context);
         self.time_label.draw(context);
