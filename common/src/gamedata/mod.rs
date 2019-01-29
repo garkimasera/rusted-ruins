@@ -85,6 +85,11 @@ impl GameData {
         self.region.get_mut(self.current_mapid.rid())
     }
 
+    pub fn get_charas_on_map(&self) -> Vec<CharaId> {
+        let map = self.get_current_map();
+        map.iter_charaid().map(|&cid| cid).collect()
+    }
+
     pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {
         match kind {
             CharaKind::Player => {
