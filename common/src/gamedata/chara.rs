@@ -149,7 +149,7 @@ impl Default for Chara {
             class: CharaClass::default(),
             item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),
-            wait_time: crate::basic::WAIT_TIME_START,
+            wait_time: crate::basic::WAIT_TIME_NUMERATOR,
             ai: CharaAI::default(),
             hp: 100,
             sp: 0,

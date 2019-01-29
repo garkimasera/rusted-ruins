@@ -1,6 +1,6 @@
 
 use std::collections::HashMap;
-use common::basic::WAIT_TIME_START;
+use common::basic::WAIT_TIME_NUMERATOR;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
 use common::gamedata::*;
@@ -32,7 +32,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         class: CharaClass::Civilian,
         item_list: ItemList::new(),
         equip: EquipItemList::new(&[]),
-        wait_time: WAIT_TIME_START,
+        wait_time: WAIT_TIME_NUMERATOR,
         ai: create_ai(ct.default_ai_kind),
         hp: 1,
         status: Vec::new(),
@@ -44,6 +44,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     
     chara.update();
     chara.hp = chara.attr.max_hp;
+    chara.reset_wait_time();
     chara
 }
 

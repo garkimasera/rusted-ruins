@@ -4,6 +4,7 @@ pub mod preturn;
 pub mod status;
 mod update;
 
+use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
 use rules::RULES;
 use crate::text::ToText;
@@ -25,6 +26,8 @@ pub trait CharaEx {
     fn add_sp(&mut self, v: i32, cid: CharaId);
     /// Update character parameters by its status
     fn update(&mut self);
+    /// Reset wait time
+    fn reset_wait_time(&mut self);
 }
 
 impl CharaEx for Chara {
@@ -90,6 +93,10 @@ impl CharaEx for Chara {
 
     fn update(&mut self) {
         update::update_attributes(self);
+    }
+
+    fn reset_wait_time(&mut self) {
+        self.wait_time = WAIT_TIME_NUMERATOR / self.attr.spd as u32;
     }
 }
 

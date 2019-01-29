@@ -34,7 +34,6 @@ pub use self::infogetter::InfoGetter;
 pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
 pub use self::script::TalkText;
-use self::turnloop::TurnLoopData;
 use self::script::*;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -49,7 +48,6 @@ pub enum GameState {
 pub struct Game {
     pub gd: GameData,
     state: GameState,
-    turn_loop_data: TurnLoopData,
     anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
     dying_charas: Vec<CharaId>,
@@ -67,7 +65,6 @@ impl Game {
         Game {
             gd,
             state: GameState::PlayerTurn,
-            turn_loop_data: TurnLoopData::new(),
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),
@@ -84,7 +81,6 @@ impl Game {
         Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
-            turn_loop_data: TurnLoopData::new(),
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
             dying_charas: Vec::new(),

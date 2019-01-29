@@ -26,7 +26,7 @@ pub const MAX_ITEM_TILE: usize = 256;
 /// Maximum number of equipment slots
 pub const MAX_EQUIP_SLOT: usize = 16;
 
-pub const WAIT_TIME_START: u32 = 10000;
+pub const WAIT_TIME_NUMERATOR: u32 = 100000;
 
 /// Needed exp value to level up
 pub const SKILL_EXP_LVUP: u16 = 10000;
