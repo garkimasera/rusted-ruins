@@ -33,7 +33,7 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
     // Judges hit or miss
     {
         let attacker = game.gd.chara.get(attacker_id);
-        let attacker_level = attacker.base_attr.level;
+        let attacker_level = attacker.level;
         let accuracy_power = calc_accuracy_power(
             1, // TODO: Use appropriate parameters
             1,
@@ -76,7 +76,7 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
     let _damage = attack_target(game, attack_params, target_id);
     // Exp processing
     {
-        let target_level = game.gd.chara.get(target_id).base_attr.level;
+        let target_level = game.gd.chara.get(target_id).level;
         let attacker = game.gd.chara.get_mut(attacker_id);
         attacker.add_attack_exp(skill_kind, target_level);
     }
@@ -101,7 +101,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
     // Judges hit or miss
     {
         let attacker = game.gd.chara.get(attacker_id);
-        let attacker_level = attacker.base_attr.level;
+        let attacker_level = attacker.level;
         let accuracy_power = calc_accuracy_power(
             1, // TODO: Use appropriate parameters
             1,
@@ -141,7 +141,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
     let _damage = attack_target(game, attack_params, target_id);
     // Exp processing
     {
-        let target_level = game.gd.chara.get(target_id).base_attr.level;
+        let target_level = game.gd.chara.get(target_id).level;
         let attacker = game.gd.chara.get_mut(attacker_id);
         attacker.add_attack_exp(SkillKind::Weapon(weapon_kind), target_level);
     }
@@ -171,7 +171,7 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     if hp > 0 {
         // Exp for targetted character
         if let Some(attacker_id) = attack_params.attacker_id {
-            let attacker_level = game.gd.chara.get(attacker_id).base_attr.level;
+            let attacker_level = game.gd.chara.get(attacker_id).level;
             let target = game.gd.chara.get_mut(target_id);
             target.add_damage_exp(damage, attacker_level);
         }

@@ -7,6 +7,7 @@ mod script_parser;
 use array2d::Vec2d;
 use common::obj::*;
 use common::gamedata;
+use common::gamedata::CharaBaseAttr;
 use crate::tomlinput::TomlInput;
 use crate::error::*;
 use self::img::*;
@@ -133,7 +134,18 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
 fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject, Error> {    
     let chara_dep_input = get_optional_field!(tomlinput, chara_template);
     let img = get_optional_field!(tomlinput, image);
-    
+
+    let base_attr = CharaBaseAttr {
+        base_hp: chara_dep_input.base_hp,
+        str: chara_dep_input.str as i16,
+        vit: chara_dep_input.vit as i16,
+        dex: chara_dep_input.dex as i16,
+        int: chara_dep_input.int as i16,
+        wil: chara_dep_input.wil as i16,
+        cha: chara_dep_input.cha as i16,
+        spd: chara_dep_input.spd as i16,
+    };
+
     Ok(CharaTemplateObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
@@ -141,14 +153,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
         default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or(gamedata::NpcAIKind::None),
-        base_hp: chara_dep_input.base_hp,
-        str: chara_dep_input.str,
-        vit: chara_dep_input.vit,
-        dex: chara_dep_input.dex,
-        int: chara_dep_input.int,
-        wil: chara_dep_input.wil,
-        cha: chara_dep_input.cha,
-        spd: chara_dep_input.spd,
+        base_attr,
     })
 }
 

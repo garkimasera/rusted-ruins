@@ -70,9 +70,9 @@ impl Relationship {
 pub struct Chara {
     pub name: Option<String>,
     pub attr: CharaAttributes,
-    pub base_attr: CharaBaseAttributes,
     pub template: CharaTemplateIdx,
     pub class: CharaClass,
+    pub level: u32,
     pub item_list: ItemList,
     pub equip: EquipItemList,
     pub wait_time: u32,
@@ -112,18 +112,43 @@ pub struct CharaAttributes {
     pub view_range: i32,
 }
 
-/// Character base attributes
-#[derive(Clone, Debug, Serialize, Deserialize, Default)]
-pub struct CharaBaseAttributes {
-    /// Character level when generated
-    pub level: u32,
-    pub str: u16,
-    pub vit: u16,
-    pub dex: u16,
-    pub int: u16,
-    pub wil: u16,
-    pub cha: u16,
-    pub spd: u16,
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub struct CharaBaseAttr {
+    pub base_hp: i32,
+    pub str: i16,
+    pub vit: i16,
+    pub dex: i16,
+    pub int: i16,
+    pub wil: i16,
+    pub cha: i16,
+    pub spd: i16,
+}
+
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub struct CharaAttrRevision {
+    pub hp: i32,
+    pub str: i16,
+    pub vit: i16,
+    pub dex: i16,
+    pub int: i16,
+    pub wil: i16,
+    pub cha: i16,
+    pub spd: i16,
+}
+
+impl CharaBaseAttr {
+    pub fn revise(self, r: CharaAttrRevision) -> CharaBaseAttr {
+        CharaBaseAttr {
+            base_hp: self.base_hp + r.hp,
+            str: self.str + r.str,
+            vit: self.vit + r.vit,
+            dex: self.dex + r.dex,
+            int: self.int + r.int,
+            wil: self.wil + r.wil,
+            cha: self.cha + r.cha,
+            spd: self.spd + r.spd,
+        }
+    }
 }
 
 /// Represents chara status
@@ -144,9 +169,9 @@ impl Default for Chara {
         Chara {
             name: None,
             attr: CharaAttributes::default(),
-            base_attr: CharaBaseAttributes::default(),
             template: CharaTemplateIdx::default(),
             class: CharaClass::default(),
+            level: 0,
             item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),
             wait_time: crate::basic::WAIT_TIME_NUMERATOR,

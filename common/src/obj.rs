@@ -1,6 +1,7 @@
 
 use std::fmt;
 use crate::gamedata;
+use crate::gamedata::CharaBaseAttr;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {
@@ -43,14 +44,7 @@ pub struct CharaTemplateObject {
     pub gen_level: u32,
     /// Default AI kind for this character
     pub default_ai_kind: gamedata::NpcAIKind,
-    pub base_hp: i32,
-    pub str: u16,
-    pub vit: u16,
-    pub dex: u16,
-    pub int: u16,
-    pub wil: u16,
-    pub cha: u16,
-    pub spd: u16,
+    pub base_attr: CharaBaseAttr,
 }
 
 #[derive(Serialize, Deserialize)]

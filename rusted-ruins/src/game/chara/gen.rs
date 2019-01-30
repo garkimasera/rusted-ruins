@@ -13,23 +13,12 @@ use rng::gen_range;
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
-    let base_attr = CharaBaseAttributes {
-        level: lv,
-        str: ct.str,
-        vit: ct.vit,
-        dex: ct.dex,
-        int: ct.int,
-        wil: ct.wil,
-        cha: ct.cha,
-        spd: ct.spd,
-    };
-    
     let mut chara = Chara {
         name: None,
         attr: CharaAttributes::default(),
-        base_attr,
         template: chara_template_idx,
         class: CharaClass::Civilian,
+        level: lv,
         item_list: ItemList::new(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_NUMERATOR,
