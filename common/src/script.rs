@@ -2,6 +2,7 @@
 use std::ops::Index;
 use std::fmt;
 use crate::hashmap::HashMap;
+use crate::gamedata::Time;
 
 /// Instructions are executed in Game.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -60,6 +61,7 @@ pub enum Expr {
     Term(Vec<(Operator, Expr)>),
     /// Reference to global variable
     GVar(String),
+    CurrentTime,
     HasItem(String),
 }
 
@@ -68,6 +70,7 @@ pub enum Expr {
 pub enum Value {
     Bool(bool),
     Int(i32),
+    Time(Time),
     /// Referenced for unknown variable. This can be changed to 0 or false.
     RefUnknownVar,
     Error(ExprErrorKind),

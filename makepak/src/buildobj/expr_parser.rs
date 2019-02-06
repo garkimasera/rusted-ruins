@@ -81,6 +81,17 @@ named!(gvar_special<CompleteStr, Expr>,
     )
 );
 
+named!(current_time<CompleteStr, Expr>,
+    do_parse!(
+        tag!("current_time") >>
+        multispace0 >>
+        char!('(') >>
+        multispace0 >>
+        char!(')') >>
+        (Expr::CurrentTime)
+    )
+);
+
 named!(has_item<CompleteStr, Expr>,
     do_parse!(
         tag!("has_item") >>
@@ -97,6 +108,7 @@ named!(factor<CompleteStr, Expr>,
         integer |
         gvar |
         gvar_special |
+        current_time |
         has_item |
         parens
     ))

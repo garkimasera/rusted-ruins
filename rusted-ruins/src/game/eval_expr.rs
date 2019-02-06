@@ -28,6 +28,9 @@ impl EvalExpr for Expr {
                     Value::RefUnknownVar
                 }
             }
+            Expr::CurrentTime => {
+                Value::Time(gd.time.current_time())
+            }
             Expr::HasItem(item_id) => {
                 if let Some(idx) = gobj::id_to_idx_checked(item_id) {
                     let item_list = gd.get_item_list(ItemListLocation::Chara { cid: CharaId::Player });
