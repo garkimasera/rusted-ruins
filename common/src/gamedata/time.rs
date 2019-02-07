@@ -51,8 +51,8 @@ impl Time {
     }
 
     pub fn duration_from(&self, t: Time) -> Duration {
-        assert!(t.secs >= self.secs);
-        Duration::from_seconds(t.secs - self.secs)
+        assert!(t.secs <= self.secs);
+        Duration::from_seconds(self.secs - t.secs)
     }
 
     pub fn into_date(self) -> Date {
@@ -114,6 +114,10 @@ impl Duration {
 
     pub const fn from_days(days: u64) -> Duration {
         Duration { secs: days * SECS_PER_DAY }
+    }
+
+    pub const fn as_hours(self) -> i32 {
+        (self.secs / SECS_PER_HOUR) as i32
     }
 }
 

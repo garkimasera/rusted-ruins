@@ -81,6 +81,17 @@ named!(gvar_special<CompleteStr, Expr>,
     )
 );
 
+named!(is_gvar_empty<CompleteStr, Expr>,
+    do_parse!(
+        tag!("is_gvar_empty") >>
+        multispace0 >>
+        char!('(') >>
+        var_name: id >>
+        char!(')') >>
+        (Expr::IsGVarEmpty(var_name))
+    )
+);
+
 named!(current_time<CompleteStr, Expr>,
     do_parse!(
         tag!("current_time") >>
@@ -89,6 +100,19 @@ named!(current_time<CompleteStr, Expr>,
         multispace0 >>
         char!(')') >>
         (Expr::CurrentTime)
+    )
+);
+
+named!(duration_hours<CompleteStr, Expr>,
+    do_parse!(
+        tag!("duration_hours") >>
+        multispace0 >>
+        char!('(') >>
+        a: expr >>
+        char!(',') >>
+        b: expr >>
+        char!(')') >>
+        (Expr::DurationHour(Box::new(a), Box::new(b)))
     )
 );
 
@@ -108,7 +132,9 @@ named!(factor<CompleteStr, Expr>,
         integer |
         gvar |
         gvar_special |
+        is_gvar_empty |
         current_time |
+        duration_hours |
         has_item |
         parens
     ))
@@ -237,6 +263,8 @@ fn expr_test() {
     assert_eq!(expr(CompleteStr("false")), Ok((CompleteStr(""), Expr::Value(Value::Bool(false)))));
     assert_eq!(expr(CompleteStr("1234")), Ok((CompleteStr(""), Expr::Value(Value::Int(1234)))));
     assert_eq!(expr(CompleteStr("$(aa)")), Ok((CompleteStr(""), Expr::GVar("aa".to_owned()))));
+    assert_eq!(expr(CompleteStr("is_gvar_empty(bb)")),
+               Ok((CompleteStr(""), Expr::IsGVarEmpty("bb".to_owned()))));
     let a = Expr::HasItem("box".to_owned());
     assert_eq!(expr(CompleteStr("has_item(box)")), Ok((CompleteStr(""), a)));
     assert_eq!(

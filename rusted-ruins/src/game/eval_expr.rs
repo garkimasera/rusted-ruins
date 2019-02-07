@@ -28,8 +28,17 @@ impl EvalExpr for Expr {
                     Value::RefUnknownVar
                 }
             }
+            Expr::IsGVarEmpty(var_name) => {
+                Value::Bool(gd.vars.global_var(var_name).is_some())
+            }
             Expr::CurrentTime => {
                 Value::Time(gd.time.current_time())
+            }
+            Expr::DurationHour(a, b) => {
+                match (a.eval(gd), b.eval(gd)) {
+                    (Value::Time(a), Value::Time(b)) => Value::Int(a.duration_from(b).as_hours()),
+                    _ => Value::Error(ExprErrorKind::InvalidType),
+                }
             }
             Expr::HasItem(item_id) => {
                 if let Some(idx) = gobj::id_to_idx_checked(item_id) {

@@ -61,7 +61,9 @@ pub enum Expr {
     Term(Vec<(Operator, Expr)>),
     /// Reference to global variable
     GVar(String),
+    IsGVarEmpty(String),
     CurrentTime,
+    DurationHour(Box<Expr>, Box<Expr>),
     HasItem(String),
 }
 
