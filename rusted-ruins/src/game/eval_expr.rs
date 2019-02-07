@@ -77,12 +77,14 @@ fn binary_operation(o: Operator, a: Value, b: Value) -> Value {
     match o {
         Operator::Or => {
             match (a, b) {
+                (Bool(true), _) => Bool(true),
                 (Bool(a), Bool(b)) => Bool(a || b),
                 _ => Error(ExprErrorKind::InvalidType),
             }
         }
         Operator::And => {
             match (a, b) {
+                (Bool(false), _) => Bool(false),
                 (Bool(a), Bool(b)) => Bool(a && b),
                 _ => Error(ExprErrorKind::InvalidType),
             }
