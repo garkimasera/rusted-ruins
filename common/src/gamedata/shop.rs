@@ -6,6 +6,8 @@ use crate::gamedata::item::ItemList;
 pub enum ShopKind {
     /// Sells weapons and armors
     Equipment,
+    /// Sells foods
+    Food,
     /// Sells potions
     Potion,
 }

@@ -47,6 +47,12 @@ fn gen_shop_item(floor_level: u32, shop_kind: &ShopKind) -> Item {
                     _ => 0.0,
                 }
             }
+            ShopKind::Food => {
+                match item_obj.kind {
+                    ItemKind::Food => 1.0,
+                    _ => 0.0,
+                }
+            }
         }
     };
     gen_item_by_level(floor_level, f)
