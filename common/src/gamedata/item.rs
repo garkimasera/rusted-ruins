@@ -67,13 +67,13 @@ impl PartialOrd for Item {
 /// This is mainly used for item list sorting
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object, Potion, Food, Weapon(WeaponKind), Armor(ArmorKind), Material, Special
+    Object, Potion, Herb, Food, Weapon(WeaponKind), Armor(ArmorKind), Material, Special
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all="snake_case")]
 pub enum ItemKindRough {
-    Object, Potion, Food, Weapon, Armor, Material, Special
+    Object, Potion, Herb, Food, Weapon, Armor, Material, Special
 }
 
 bitflags! {
