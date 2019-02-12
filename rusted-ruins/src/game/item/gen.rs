@@ -5,13 +5,13 @@ use common::objholder::ItemIdx;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32) -> Item {
-    gen_item_by_level(floor_level, |_| 1.0)
+    gen_item_by_level(floor_level, |_| 1.0, false)
 }
 
 /// Generate new item by level.
 /// f is weight adjustment function.
-pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F) -> Item {
-    let idx = choose_item_by_floor_level(level, f);
+pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F, is_shop: bool) -> Item {
+    let idx = choose_item_by_floor_level(level, f, is_shop);
 
     let item_obj = gobj::get_obj(idx);
     Item {
@@ -25,7 +25,9 @@ pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F) -> Item
 
 /// Choose item by floor level.
 /// f is weight adjustment function.
-fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(floor_level: u32, mut f: F) -> ItemIdx {
+fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
+    floor_level: u32, mut f: F, is_shop: bool) -> ItemIdx {
+    
     let items = &gobj::get_objholder().item;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
@@ -34,7 +36,8 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(floor_level: u32, mu
     let mut first_available_item_idx = None;
     
     for (i, item) in items.iter().enumerate() {
-        sum += weight_dist.calc(item.gen_level) * item.gen_weight as f64 * f(item);
+        let gen_weight = if is_shop { item.shop_weight } else { item.gen_weight };
+        sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
         if first_available_item_idx.is_none() {
             first_available_item_idx = Some(i);
         }
@@ -42,11 +45,12 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(floor_level: u32, mu
 
     assert!(sum > 0.0);
 
-    // Choose one chara
+    // Choose one item
     let r = rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, item) in items.iter().enumerate() {
-        sum += weight_dist.calc(item.gen_level) * item.gen_weight as f64 * f(item);
+        let gen_weight = if is_shop { item.shop_weight } else { item.gen_weight };
+        sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
         if r < sum {
             return ItemIdx::from_usize(i);
         }

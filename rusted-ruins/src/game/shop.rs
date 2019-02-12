@@ -55,6 +55,6 @@ fn gen_shop_item(floor_level: u32, shop_kind: &ShopKind) -> Item {
             }
         }
     };
-    gen_item_by_level(floor_level, f)
+    gen_item_by_level(floor_level, f, true)
 }
 
