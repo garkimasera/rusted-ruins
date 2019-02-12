@@ -30,7 +30,7 @@ pub struct ItemObject {
     /// The frequency of item generation in random map
     pub gen_weight: f32,
     /// The frequency of item generation in shops
-    pub store_weight: f32,
+    pub shop_weight: f32,
     /// Generation level
     /// If it is higher, and the item will be generated on deeper floors.
     /// This parameter will be used for shops also.
@@ -87,11 +87,11 @@ bitflags! {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct ItemRank {
     /// Base rank of the item
-    pub base: i8,
+    pub base: i32,
     /// This rank will be changed by some magical effects
-    pub enchant: i8,
+    pub enchant: u16,
     /// If the item is damaged, this value will decrease
-    pub damage: i8,
+    pub damage: u16,
 }
 
 impl Default for ItemRank {
@@ -107,12 +107,12 @@ impl Default for ItemRank {
 impl ItemRank {
     /// Return the summation of rank values
     pub fn as_int(&self) -> i32 {
-        self.base as i32 + self.enchant as i32 + self.damage as i32
+        self.base + self.enchant as i32 + self.damage as i32
     }
 }
 
 /// Items can have zero or more attributes.
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemAttribute {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.

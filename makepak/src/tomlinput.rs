@@ -88,7 +88,7 @@ pub struct ItemDepInput {
     pub basic_price: u32,
     pub w: u32,
     pub gen_weight: f32,
-    pub store_weight: Option<f32>,
+    pub shop_weight: Option<f32>,
     pub gen_level: u32,
     pub eff: Option<u16>,
     pub dice_n: Option<u16>,
