@@ -1,6 +1,8 @@
 
-use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use sdl2::rect::Rect;
+use common::gamedata::*;
+use common::gobj;
+use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
 use crate::context::*;
 use crate::text::ToText;
 use crate::game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
@@ -9,8 +11,8 @@ use crate::config::UI_CFG;
 use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
 use super::widget::*;
-use common::gamedata::*;
 use crate::game::item::filter::*;
+use super::group_window::*;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
@@ -32,8 +34,45 @@ pub struct ItemWindow {
     item_locations: Vec<ItemLocation>,
 }
 
+const STATUS_WINDOW_GROUP_SIZE: usize = 4;
+
+pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
+    let mem_info = vec![
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-list"),
+            text_id: "tab_text.item_list",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::List, game)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-drop"),
+            text_id: "tab_text.item_drop",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drop, game)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-drink"),
+            text_id: "tab_text.item_drink",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drink, game)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-eat"),
+            text_id: "tab_text.item_eat",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game)),
+        },
+    ];
+    let rect: Rect = UI_CFG.item_window.rect.into();
+    let i = match mode {
+        ItemWindowMode::List => 0,
+        ItemWindowMode::Drop => 1,
+        ItemWindowMode::Drink => 2,
+        ItemWindowMode::Eat => 3,
+        _ => unreachable!(),
+    };
+
+    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, i, game, mem_info, (rect.x, rect.y))
+}
+
 impl ItemWindow {
-    pub fn new(mode: ItemWindowMode, pa: &mut DoPlayerAction) -> ItemWindow {
+    pub fn new(mode: ItemWindowMode, game: &Game) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
         
         let mut item_window = ItemWindow {
@@ -48,7 +87,7 @@ impl ItemWindow {
             mode,
             item_locations: Vec::new(),
         };
-        item_window.update_by_mode(pa);
+        item_window.update_by_mode(&game.gd);
         item_window
     }
 
@@ -57,11 +96,10 @@ impl ItemWindow {
         let mode = ItemWindowMode::Select {
             ill, filter, action
         };
-        ItemWindow::new(mode, pa)
+        ItemWindow::new(mode, pa.game())
     }
 
-    fn update_by_mode(&mut self, pa: &mut DoPlayerAction) {
-        let gd = pa.gd();
+    fn update_by_mode(&mut self, gd: &GameData) {
         
         match self.mode {
             ItemWindowMode::List => {
@@ -157,7 +195,7 @@ impl ItemWindow {
             ItemWindowMode::PickUp => {
                 pa.pick_up_item(il, 1);
                 if pa.gd().is_item_on_player_tile() {
-                    self.update_by_mode(pa);
+                    self.update_by_mode(pa.gd());
                     DialogResult::Continue
                 } else {
                     DialogResult::Close
@@ -165,27 +203,27 @@ impl ItemWindow {
             }
             ItemWindowMode::Drop => {
                 pa.drop_item(il, 1);
-                self.update_by_mode(pa);
+                self.update_by_mode(pa.gd());
                 DialogResult::Continue
             }
             ItemWindowMode::Drink => {
                 pa.drink_item(il);
-                self.update_by_mode(pa);
+                self.update_by_mode(pa.gd());
                 DialogResult::CloseAll
             }
             ItemWindowMode::Eat => {
                 pa.eat_item(il);
-                self.update_by_mode(pa);
+                self.update_by_mode(pa.gd());
                 DialogResult::CloseAll
             }
             ItemWindowMode::ShopBuy { .. } => {
                 pa.buy_item(il);
-                self.update_by_mode(pa);
+                self.update_by_mode(pa.gd());
                 DialogResult::Continue
             }
             ItemWindowMode::ShopSell => {
                 pa.sell_item(il);
-                self.update_by_mode(pa);
+                self.update_by_mode(pa.gd());
                 DialogResult::Continue
             }
             ItemWindowMode::Select { ref mut action, .. } => {
@@ -214,7 +252,7 @@ impl DialogWindow for ItemWindow {
                     return self.do_action_for_item(pa, il);
                 }
                 ListWidgetResponse::PageChanged => {
-                    self.update_by_mode(pa);
+                    self.update_by_mode(pa.gd());
                 }
                 _ => (),
             }

@@ -305,7 +305,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.window_stack.push(Box::new(exit_window::ExitWindow::new()));
             }
             Command::OpenItemMenu => {
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::List, &mut pa)));
+                self.window_stack.push(Box::new(
+                    item_window::create_item_window_group(pa.game(), ItemWindowMode::List)));
             }
             Command::OpenEquipWin => {
                 self.window_stack.push(Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player)));
@@ -318,18 +319,21 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
-                    let item_window = ItemWindow::new(ItemWindowMode::PickUp, &mut pa);
+                    let item_window = ItemWindow::new(ItemWindowMode::PickUp, pa.game());
                     self.window_stack.push(Box::new(item_window));
                 }
             }
             Command::DropItem => {
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drop, &mut pa)));
+                self.window_stack.push(Box::new(
+                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Drop)));
             }
             Command::DrinkItem => {
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Drink, &mut pa)));
+                self.window_stack.push(Box::new(
+                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Drink)));
             }
             Command::EatItem => {
-                self.window_stack.push(Box::new(ItemWindow::new(ItemWindowMode::Eat, &mut pa)));
+                self.window_stack.push(Box::new(
+                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Eat)));
             }
             Command::TargetingMode => {
                 self.targeting_mode = true;

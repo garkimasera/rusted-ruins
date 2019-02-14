@@ -24,11 +24,11 @@ pub fn create_dialog_from_request(req: DialogOpenRequest, game: &mut Game)
         }
         DialogOpenRequest::ShopBuy { cid } => {
             let mut pa = DoPlayerAction::new(game);
-            Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, &mut pa))
+            Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, pa.game()))
         }
         DialogOpenRequest::ShopSell => {
             let mut pa = DoPlayerAction::new(game);
-            Box::new(ItemWindow::new(ItemWindowMode::ShopSell, &mut pa))
+            Box::new(ItemWindow::new(ItemWindowMode::ShopSell, pa.game()))
         }
         DialogOpenRequest::Quest => {
             Box::new(super::quest_window::QuestWindow::new(game))
