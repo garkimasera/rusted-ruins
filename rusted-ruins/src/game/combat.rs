@@ -38,9 +38,11 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
             1, // TODO: Use appropriate parameters
             1,
             attacker.attr.dex);
+        // When miss
         if !hit_judge(&game.gd, accuracy_power, target_id, DamageKind::MeleeAttack) {
             // Exp to target chara
             game.gd.chara.get_mut(target_id).add_evasion_exp(attacker_level);
+            crate::audio::play_sound("attack-miss");
             return;
         }
     }
@@ -106,10 +108,12 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
             1, // TODO: Use appropriate parameters
             1,
             attacker.attr.dex);
+        // When miss
         if !hit_judge(&game.gd, accuracy_power, target_id, DamageKind::MeleeAttack) {
             // Exp to target chara
             game.gd.chara.get_mut(target_id).add_evasion_exp(attacker_level);
             game.anim_queue.push_shot(attacker_pos, target_pos);
+            crate::audio::play_sound("attack-miss");
             return true;
         }
     }
