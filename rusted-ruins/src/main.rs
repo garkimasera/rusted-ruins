@@ -1,10 +1,9 @@
-
 extern crate rusted_ruins_array2d as array2d;
-extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_audio as audio;
+extern crate rusted_ruins_common as common;
+extern crate rusted_ruins_map_generator as map_generator;
 extern crate rusted_ruins_rng as rng;
 extern crate rusted_ruins_rules as rules;
-extern crate rusted_ruins_map_generator as map_generator;
 #[macro_use]
 extern crate lazy_static;
 extern crate failure;
@@ -21,20 +20,20 @@ mod log;
 mod util;
 mod config;
 mod context;
-mod text;
-mod game;
 mod draw;
-mod window;
-mod screen;
 mod eventhandler;
+mod game;
+mod screen;
 mod sdltypeconv;
+mod text;
+mod window;
 
 fn main() {
     setup_logger();
     init_lazy_statics();
     init_obj();
     init_rules();
-    
+
     let sdl_context = SdlContext::init();
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
 
@@ -86,7 +85,7 @@ fn setup_logger() {
     use std::io::Write;
     let mut builder = env_logger::Builder::new();
 
-    builder.format(|buf, record| { writeln!(buf, "{}: {}", record.level(), record.args()) });
+    builder.format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()));
     builder.filter(None, LevelFilter::Info);
     if let Ok(e) = env::var("RUST_LOG") {
         builder.parse(&e);

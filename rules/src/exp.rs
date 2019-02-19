@@ -1,4 +1,3 @@
-
 /// Rules for exp calculation
 #[derive(Serialize, Deserialize)]
 pub struct Exp {
@@ -15,4 +14,3 @@ pub struct Exp {
     /// Base exp to Evasion skill when attacked
     pub evasion: u32,
 }
-

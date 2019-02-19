@@ -1,15 +1,14 @@
-
-use common::gamedata::*;
-use rules::RULES;
 use super::Game;
 use crate::game::combat::DamageKind;
 use crate::game::extrait::*;
+use common::gamedata::*;
+use rules::RULES;
 
 /// This function will be called before the character's turn
-/// 
+///
 pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     let mut is_poisoned = false;
-    
+
     {
         let chara = game.gd.chara.get_mut(cid);
 
@@ -17,9 +16,9 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         for s in chara.status.iter_mut() {
             s.advance_turn(1);
         }
-        
+
         chara.status.retain(|s| !s.is_expired()); // Remove expired status
-        
+
         for s in chara.status.iter() {
             match *s {
                 CharaStatus::Poisoned => {

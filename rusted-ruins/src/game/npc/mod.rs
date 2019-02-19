@@ -2,14 +2,13 @@
 
 pub mod map_search;
 
+use super::action;
+use super::{Game, InfoGetter};
 use array2d::*;
 use common::gamedata::*;
-use super::{Game, InfoGetter};
-use super::action;
 use rng::*;
 
 pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
-
     {
         let chara = game.gd.chara.get(cid);
         let ai = &chara.ai;
@@ -35,8 +34,13 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
 /// Move npc at random
 fn random_walk(game: &mut Game, cid: CharaId) {
     let dir = Direction::new(
-        *[HDirection::Left, HDirection::None, HDirection::Right].choose(&mut get_rng()).unwrap(),
-        *[VDirection::Up, VDirection::None, VDirection::Down].choose(&mut get_rng()).unwrap());
+        *[HDirection::Left, HDirection::None, HDirection::Right]
+            .choose(&mut get_rng())
+            .unwrap(),
+        *[VDirection::Up, VDirection::None, VDirection::Down]
+            .choose(&mut get_rng())
+            .unwrap(),
+    );
     action::try_move(game, cid, dir);
 }
 
@@ -49,4 +53,3 @@ fn move_to_nearest_enemy(game: &mut Game, cid: CharaId) {
         }
     }
 }
-

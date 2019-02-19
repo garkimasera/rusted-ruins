@@ -1,9 +1,8 @@
-
+use crate::game::extrait::*;
 use array2d::*;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
-use crate::game::extrait::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {
@@ -31,21 +30,29 @@ pub trait InfoGetter {
 
 impl InfoGetter for GameData {
     fn player_name(&self) -> &str {
-        self.chara.get(CharaId::Player).name.as_ref().expect("player's name is None")
+        self.chara
+            .get(CharaId::Player)
+            .name
+            .as_ref()
+            .expect("player's name is None")
     }
-    
+
     fn player_pos(&self) -> Vec2d {
-        self.get_current_map().chara_pos(CharaId::Player).expect("Internal Error: Player position undefined")
+        self.get_current_map()
+            .chara_pos(CharaId::Player)
+            .expect("Internal Error: Player position undefined")
     }
-    
+
     fn player_hp(&self) -> (i32, i32) {
-        let player =self.chara.get(CharaId::Player);
+        let player = self.chara.get(CharaId::Player);
         (player.attr.max_hp, player.hp)
     }
 
     fn player_item_location(&self, id: &str) -> Option<ItemLocation> {
         let idx: ItemIdx = gobj::id_to_idx_checked(id)?;
-        let ill = ItemListLocation::Chara { cid: CharaId::Player };
+        let ill = ItemListLocation::Chara {
+            cid: CharaId::Player,
+        };
         let il = self.get_item_list(ill);
 
         let i = il.find(idx)?;
@@ -61,16 +68,14 @@ impl InfoGetter for GameData {
         let map = self.get_current_map();
         map.chara_pos(cid)
     }
-    
+
     fn on_map_entrance(&self) -> bool {
         use common::gamedata::map::SpecialTileKind;
-        
+
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
         match tile.special {
-            SpecialTileKind::Stairs { .. } | SpecialTileKind::SiteSymbol { .. } => {
-                true
-            }
+            SpecialTileKind::Stairs { .. } | SpecialTileKind::SiteSymbol { .. } => true,
             _ => false,
         }
     }
@@ -87,17 +92,12 @@ impl InfoGetter for GameData {
 
     fn is_open_air(&self, mid: MapId) -> bool {
         match mid {
-            MapId::SiteMap { sid, floor } => {
-                match sid.kind {
-                    SiteKind::AutoGenDungeon => false,
-                    SiteKind::Town => {
-                        floor == 0
-                    }
-                    SiteKind::Other => false,
-                }
-            }
-            MapId::RegionMap { .. } => true
+            MapId::SiteMap { sid, floor } => match sid.kind {
+                SiteKind::AutoGenDungeon => false,
+                SiteKind::Town => floor == 0,
+                SiteKind::Other => false,
+            },
+            MapId::RegionMap { .. } => true,
         }
     }
 }
-

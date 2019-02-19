@@ -1,18 +1,17 @@
-
-use std::io::{Read, Write, Error as IoError};
-use std::fmt::Display;
-use serde_cbor::{from_reader, ser::to_writer_packed, error::Error as SerdeError};
 use crate::gamedata::Map;
 use filebox::*;
+use serde_cbor::{error::Error as SerdeError, from_reader, ser::to_writer_packed};
+use std::fmt::Display;
+use std::io::{Error as IoError, Read, Write};
 
 impl WithId for Map {
     type Error = MapLoadError;
-    
+
     fn write<W: Write>(mut w: W, a: &Self) -> Result<(), MapLoadError> {
         to_writer_packed(&mut w, a)?;
         Ok(())
     }
-    
+
     fn read<R: Read>(r: R) -> Result<Self, MapLoadError> {
         Ok(from_reader(r)?)
     }
@@ -53,4 +52,3 @@ impl From<SerdeError> for MapLoadError {
         MapLoadError::Serde(a)
     }
 }
-

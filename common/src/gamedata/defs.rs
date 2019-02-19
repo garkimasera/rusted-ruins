@@ -1,11 +1,11 @@
 //! Miscellaneous type definitions
 
-use std::ops::{Index, IndexMut};
 use crate::objholder::ItemIdx;
+use std::ops::{Index, IndexMut};
 
 /// Elements of damage/attack
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum Element {
     None = -1,
     Physical = 0,
@@ -17,7 +17,13 @@ pub enum Element {
 }
 
 pub const ELEMENTS: [Element; Element::Spirit as usize + 1] = [
-    Element::Physical, Element::Fire, Element::Cold, Element::Shock, Element::Poison, Element::Spirit];
+    Element::Physical,
+    Element::Fire,
+    Element::Cold,
+    Element::Shock,
+    Element::Poison,
+    Element::Spirit,
+];
 
 /// This array has the same size as element types.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
@@ -44,4 +50,3 @@ pub struct Reward {
     pub money: i64,
     pub item: Vec<ItemIdx>,
 }
-

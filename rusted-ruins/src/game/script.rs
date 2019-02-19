@@ -1,7 +1,7 @@
 //! Script engine implementation
 
-use common::gobj;
 use common::gamedata::*;
+use common::gobj;
 use common::script::*;
 
 use crate::game::eval_expr::EvalExpr;
@@ -39,7 +39,7 @@ macro_rules! as_bool {
                 return ExecResult::Quit;
             }
         }
-    }}
+    }};
 }
 
 /// Unwrap Value as int
@@ -51,14 +51,14 @@ macro_rules! as_int {
                 return ExecResult::Quit;
             }
         }
-    }}
+    }};
 }
 
 /// Jump to the given section and continue loop.
 macro_rules! jump {
     ($s:expr, $section:expr) => {{
         match $section.as_ref() {
-            QUIT_SECTION => { return ExecResult::Quit }
+            QUIT_SECTION => return ExecResult::Quit,
             CONTINUE_SECTION => {
                 $s.pos.advance();
                 continue;
@@ -67,7 +67,7 @@ macro_rules! jump {
         }
         $s.pos.set_section($section);
         continue;
-    }}
+    }};
 }
 
 /// Unwrap or return with warning message.
@@ -79,7 +79,7 @@ macro_rules! ur {
             warn!(concat!("script error: ", $e));
             return ExecResult::Quit;
         }
-    }}
+    }};
 }
 
 impl ScriptEngine {
@@ -89,7 +89,7 @@ impl ScriptEngine {
             script: &script_obj.script,
             pos: ScriptPos {
                 section: "start".to_owned(),
-                i: 0
+                i: 0,
             },
             cid,
             talking: false,
@@ -121,10 +121,17 @@ impl ScriptEngine {
                         self.talking = true;
                         true
                     };
-                    
-                    let choices = if choices.is_empty() { None } else { Some(choices.as_ref()) };
+
+                    let choices = if choices.is_empty() {
+                        None
+                    } else {
+                        Some(choices.as_ref())
+                    };
                     return ExecResult::Talk(
-                        cid, TalkText { text_id, choices }, need_open_talk_dialog );
+                        cid,
+                        TalkText { text_id, choices },
+                        need_open_talk_dialog,
+                    );
                 }
                 Instruction::GSet(name, v) => {
                     let v = v.eval(gd);
@@ -159,7 +166,7 @@ impl ScriptEngine {
             }
             self.pos.advance();
         };
-        
+
         self.pos.advance();
         result
     }
@@ -187,4 +194,3 @@ impl ScriptEngine {
         }
     }
 }
-

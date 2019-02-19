@@ -1,9 +1,8 @@
-
-use sdl2::rect::Rect;
-use sdl2::pixels::Color;
-use crate::context::*;
-use crate::config::UI_CFG;
 use super::WidgetTrait;
+use crate::config::UI_CFG;
+use crate::context::*;
+use sdl2::pixels::Color;
+use sdl2::rect::Rect;
 
 pub struct HBorder {
     rect: Rect,
@@ -14,7 +13,7 @@ pub struct HBorder {
 impl HBorder {
     pub fn new(start: (i32, i32), len: u32) -> HBorder {
         let rect = Rect::new(start.0, start.1, len, 3);
-        
+
         HBorder {
             rect,
             light: UI_CFG.color.border_light.into(),
@@ -31,12 +30,18 @@ impl WidgetTrait for HBorder {
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
         check_draw!(canvas.draw_line(
-            (self.rect.x, self.rect.y + 1), (self.rect.x + self.rect.w, self.rect.y + 1)));
+            (self.rect.x, self.rect.y + 1),
+            (self.rect.x + self.rect.w, self.rect.y + 1)
+        ));
         canvas.set_draw_color(self.dark);
         check_draw!(canvas.draw_line(
-            (self.rect.x, self.rect.y), (self.rect.x + self.rect.w, self.rect.y)));
+            (self.rect.x, self.rect.y),
+            (self.rect.x + self.rect.w, self.rect.y)
+        ));
         check_draw!(canvas.draw_line(
-            (self.rect.x, self.rect.y + 2), (self.rect.x + self.rect.w, self.rect.y + 2)));
+            (self.rect.x, self.rect.y + 2),
+            (self.rect.x + self.rect.w, self.rect.y + 2)
+        ));
     }
 }
 
@@ -49,7 +54,7 @@ pub struct VBorder {
 impl VBorder {
     pub fn new(start: (i32, i32), len: u32) -> VBorder {
         let rect = Rect::new(start.0, start.1, 3, len);
-        
+
         VBorder {
             rect,
             light: UI_CFG.color.border_light.into(),
@@ -66,12 +71,17 @@ impl WidgetTrait for VBorder {
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
         check_draw!(canvas.draw_line(
-            (self.rect.x + 1, self.rect.y), (self.rect.x + 1, self.rect.y + self.rect.h)));
+            (self.rect.x + 1, self.rect.y),
+            (self.rect.x + 1, self.rect.y + self.rect.h)
+        ));
         canvas.set_draw_color(self.dark);
         check_draw!(canvas.draw_line(
-            (self.rect.x, self.rect.y), (self.rect.x, self.rect.y + self.rect.h)));
+            (self.rect.x, self.rect.y),
+            (self.rect.x, self.rect.y + self.rect.h)
+        ));
         check_draw!(canvas.draw_line(
-            (self.rect.x + 2, self.rect.y), (self.rect.x + 2, self.rect.y + self.rect.h)));
+            (self.rect.x + 2, self.rect.y),
+            (self.rect.x + 2, self.rect.y + self.rect.h)
+        ));
     }
 }
-

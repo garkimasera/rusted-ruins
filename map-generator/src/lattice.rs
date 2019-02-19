@@ -1,4 +1,3 @@
-
 use array2d::*;
 use rng::*;
 
@@ -28,14 +27,16 @@ impl Lattice {
     pub fn write_to_map(&self, gm: &mut GeneratedMap, door_weight: f64) {
         let ew_wall_len = (gm.size.0 - self.nx as i32 + 1) / self.nx as i32;
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
-        
+
         // Set entrance/exit
         gm.entrance = Vec2d(
             self.start.0 * (ew_wall_len + 1) + ew_wall_len / 2,
-            self.start.1 * (ns_wall_len + 1) + ns_wall_len / 2);
+            self.start.1 * (ns_wall_len + 1) + ns_wall_len / 2,
+        );
         gm.exit = Some(Vec2d(
             self.end.0 * (ew_wall_len + 1) + ew_wall_len / 2,
-            self.end.1 * (ns_wall_len + 1) + ns_wall_len / 2));
+            self.end.1 * (ns_wall_len + 1) + ns_wall_len / 2,
+        ));
 
         // Write horizontal walls
         for b in 0..(self.ny as i32 - 1) {
@@ -48,12 +49,12 @@ impl Lattice {
                         for c in 0..ew_wall_len {
                             if c == middle {
                                 gm.tile[((ew_wall_len + 1) * a + c, j)] = TileKind::Door;
-                            }else{
+                            } else {
                                 gm.tile[((ew_wall_len + 1) * a + c, j)] = TileKind::Wall;
                             }
                         }
                     }
-                }else{
+                } else {
                     for c in 0..ew_wall_len {
                         gm.tile[((ew_wall_len + 1) * a + c, j)] = TileKind::Wall;
                     }
@@ -73,12 +74,12 @@ impl Lattice {
                         for c in 0..ns_wall_len {
                             if c == middle {
                                 gm.tile[(i, (ns_wall_len + 1) * b + c)] = TileKind::Door;
-                            }else{
+                            } else {
                                 gm.tile[(i, (ns_wall_len + 1) * b + c)] = TileKind::Wall;
                             }
                         }
                     }
-                }else{
+                } else {
                     for c in 0..ns_wall_len {
                         gm.tile[(i, (ns_wall_len + 1) * b + c)] = TileKind::Wall;
                     }
@@ -113,13 +114,9 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
     lattice.start = start_room;
 
     let max_step = gen_range(min_step, max_step);
-    
+
     // Determine start and goal, and the route
-    random_walk(start_room,
-                &mut lattice,
-                &mut is_reach,
-                0,
-                max_step);
+    random_walk(start_room, &mut lattice, &mut is_reach, 0, max_step);
 
     // Make all room reachable
     'room_scan: loop {
@@ -175,16 +172,16 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
         break;
     }
 
-
     lattice
 }
 
-fn random_walk(room: Vec2d,
-               lattice: &mut Lattice,
-               is_reach: &mut Array2d<bool>,
-               count: u32,
-               n_step: u32) {
-
+fn random_walk(
+    room: Vec2d,
+    lattice: &mut Lattice,
+    is_reach: &mut Array2d<bool>,
+    count: u32,
+    n_step: u32,
+) {
     let mut next_rooms = Vec::new();
     is_reach[room] = true;
 
@@ -270,7 +267,6 @@ impl std::fmt::Display for Lattice {
                 write!(f, "\n")?;
             }
         }
-
 
         Ok(())
     }

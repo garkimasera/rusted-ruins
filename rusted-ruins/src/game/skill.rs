@@ -1,7 +1,6 @@
-
-use fnv::FnvHashMap;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
+use fnv::FnvHashMap;
 use rules::RULES;
 
 pub trait SkillListEx {
@@ -15,7 +14,9 @@ impl SkillListEx for SkillList {
     /// Add exp to specified skill
     /// Returns level up result and actual added exp value
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32) {
-        if self.exp.is_none() { return (false, 0); }
+        if self.exp.is_none() {
+            return (false, 0);
+        }
         // Adjusting by base_level
         let skill_level = if let Some(skill_level) = self.skills.get(&kind) {
             *skill_level
@@ -35,13 +36,15 @@ impl SkillListEx for SkillList {
 
             let skill_exp = exp.get_mut(&kind).unwrap();
             let is_level_up;
-            let add_exp = if add_exp > SKILL_EXP_LVUP as u32 { // Exp is limited per time
+            let add_exp = if add_exp > SKILL_EXP_LVUP as u32 {
+                // Exp is limited per time
                 SKILL_EXP_LVUP as u32
             } else {
                 add_exp
             };
             let sum = *skill_exp as u32 + add_exp;
-            *skill_exp = if sum >= SKILL_EXP_LVUP.into() { // Level up
+            *skill_exp = if sum >= SKILL_EXP_LVUP.into() {
+                // Level up
                 if let Some(skill_level) = self.skills.get_mut(&kind) {
                     *skill_level += 1;
                 }
@@ -72,7 +75,7 @@ impl SkillListEx for SkillList {
             unreachable!();
         }
     }
-    
+
     /// Set skill level directly. Do not add exp.
     fn set_skill_level(&mut self, kind: SkillKind, lv: u32) {
         self.skills.insert(kind, lv);
@@ -116,4 +119,3 @@ fn search_adjust_coeff(base_level: u32, skill_level: u32) -> f32 {
         adjust_coeff[i as usize]
     }
 }
-

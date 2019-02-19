@@ -1,14 +1,13 @@
-
-use array2d::*;
-use super::Game;
 use super::action;
+use super::Game;
+use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use crate::text::ToText;
+use array2d::*;
 use common::gamedata::*;
-use crate::game::{InfoGetter, DialogOpenRequest, AdvanceScriptResult};
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
-pub struct DoPlayerAction<'a>(pub(in super) &'a mut Game);
+pub struct DoPlayerAction<'a>(pub(super) &'a mut Game);
 
 impl<'a> DoPlayerAction<'a> {
     pub fn new(game: &'a mut Game) -> DoPlayerAction<'a> {
@@ -28,7 +27,12 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     pub fn try_move(&mut self, dir: Direction) {
-        let dest_tile = self.gd().get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+        let dest_tile = self
+            .gd()
+            .get_current_map()
+            .chara_pos(CharaId::Player)
+            .unwrap()
+            + dir.as_vec();
         // If there is friendy chara on target tile, and have a trigger to start talk
         let will_talk = {
             if dir.as_vec() != (0, 0) {
@@ -79,16 +83,16 @@ impl<'a> DoPlayerAction<'a> {
         }
 
         let log_msg: LogMessage;
-        
+
         // Use stairs
         if dir.is_none() {
             let (next_mid, msg) = {
                 let gd = self.gd_mut();
                 let mid = gd.get_current_mapid();
-                let special_tile_kind
-                    = &gd.get_current_map().tile[gd.player_pos()].special;
+                let special_tile_kind = &gd.get_current_map().tile[gd.player_pos()].special;
                 match *special_tile_kind {
-                    SpecialTileKind::Stairs { dest_floor, .. } => { // Use stairs on map
+                    SpecialTileKind::Stairs { dest_floor, .. } => {
+                        // Use stairs on map
                         let mid = if dest_floor == FLOOR_OUTSIDE {
                             log_msg = LogMessage::ExitToOutside;
                             MapId::from(mid.rid())
@@ -98,7 +102,8 @@ impl<'a> DoPlayerAction<'a> {
                         };
                         (mid, msg_switch_map(mid))
                     }
-                    SpecialTileKind::SiteSymbol { .. } => { // Enter other site from region map
+                    SpecialTileKind::SiteSymbol { .. } => {
+                        // Enter other site from region map
                         let pos = gd.player_pos();
                         let region = gd.region.get(mid.rid());
                         if let Some(sid) = region.get_id_by_pos(pos) {
@@ -122,7 +127,9 @@ impl<'a> DoPlayerAction<'a> {
             };
 
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
-                if !result { return; }
+                if !result {
+                    return;
+                }
                 match &log_msg {
                     LogMessage::ExitToOutside => {
                         game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
@@ -136,22 +143,28 @@ impl<'a> DoPlayerAction<'a> {
                 }
                 super::map::switch_map(pa.0, next_mid);
             });
-            self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg,
-            });
-            
+            self.0
+                .request_dialog_open(DialogOpenRequest::YesNo { callback: cb, msg });
+
             return;
-        } else { // Crossing boundary
+        } else {
+            // Crossing boundary
             let log_msg: LogMessage;
             use common::gamedata::map::BoundaryBehavior;
             let boundary = {
                 let player_pos = self.gd().player_pos();
                 let map = self.gd().get_current_map();
                 let b = map.get_boundary_by_tile_and_dir(player_pos, dir);
-                if let Some(b) = b { b } else { return; }
+                if let Some(b) = b {
+                    b
+                } else {
+                    return;
+                }
             };
             let next_mid = match boundary {
-                BoundaryBehavior::None => { return; },
+                BoundaryBehavior::None => {
+                    return;
+                }
                 BoundaryBehavior::RegionMap => {
                     log_msg = LogMessage::ExitToOutside;
                     MapId::from(self.gd().get_current_mapid().rid())
@@ -160,10 +173,12 @@ impl<'a> DoPlayerAction<'a> {
                     log_msg = LogMessage::ChangeFloor;
                     self.gd().get_current_mapid().set_floor(floor)
                 }
-                BoundaryBehavior::MapId(_, _) => { unimplemented!() }
+                BoundaryBehavior::MapId(_, _) => unimplemented!(),
             };
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
-                if !result { return; }
+                if !result {
+                    return;
+                }
                 match &log_msg {
                     LogMessage::ExitToOutside => {
                         game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
@@ -178,7 +193,8 @@ impl<'a> DoPlayerAction<'a> {
                 super::map::switch_map(pa.0, next_mid);
             });
             self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb, msg: msg_switch_map(next_mid),
+                callback: cb,
+                msg: msg_switch_map(next_mid),
             });
         }
     }
@@ -187,9 +203,12 @@ impl<'a> DoPlayerAction<'a> {
     pub fn shot(&mut self) {
         if self.0.target_chara.is_none() {
             self.0.target_chara = crate::game::map::search::search_nearest_target(
-                self.gd(), CharaId::Player, Relationship::HOSTILE);
+                self.gd(),
+                CharaId::Player,
+                Relationship::HOSTILE,
+            );
         }
-        
+
         if let Some(target) = self.0.target_chara {
             if super::action::shot_target(&mut self.0, CharaId::Player, target) {
                 self.0.finish_player_turn();
@@ -200,7 +219,9 @@ impl<'a> DoPlayerAction<'a> {
     /// Pick up an item on tile
     pub fn pick_up_item(&mut self, il: ItemLocation, n: u32) -> bool {
         let gd = self.gd_mut();
-        let player_item_list_location = ItemListLocation::Chara { cid: CharaId::Player };
+        let player_item_list_location = ItemListLocation::Chara {
+            cid: CharaId::Player,
+        };
         game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
         gd.move_item(il, player_item_list_location, n);
         true
@@ -248,7 +269,9 @@ impl<'a> DoPlayerAction<'a> {
     /// Try talk to next chara
     /// If success, returns id of the talk script
     pub fn try_talk(&mut self, dir: Direction) {
-        if dir.as_vec() == (0, 0) { return; }
+        if dir.as_vec() == (0, 0) {
+            return;
+        }
 
         let mut trigger_talk = None;
         let mut cid = None;
@@ -298,4 +321,3 @@ pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {
         crate::text::ui_txt("dialog.move_floor").into()
     }
 }
-

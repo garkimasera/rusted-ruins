@@ -1,21 +1,23 @@
-
-use sdl2::rect::Rect;
-use sdl2::pixels::Color;
-use super::{WidgetTrait, LabelWidget};
-use crate::context::*;
+use super::{LabelWidget, WidgetTrait};
 use crate::config::UI_CFG;
+use crate::context::*;
+use sdl2::pixels::Color;
+use sdl2::rect::Rect;
 
 /// Bar gauge widget.
 pub struct GaugeWidget {
     rect: Rect,
     colors: Colors,
-    value: f32, min: f32, max: f32,
+    value: f32,
+    min: f32,
+    max: f32,
     label: Option<LabelWidget>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum GaugeColorMode {
-    Hp, Exp,
+    Hp,
+    Exp,
 }
 
 impl GaugeColorMode {
@@ -32,7 +34,7 @@ impl GaugeColorMode {
                 bg: UI_CFG.color.gauge_bg.into(),
                 border_light: UI_CFG.color.border_light.into(),
                 border_dark: UI_CFG.color.border_dark.into(),
-            }
+            },
         }
     }
 }
@@ -51,16 +53,26 @@ impl GaugeWidget {
             rect,
             colors: mode.colors(),
             label: None,
-            value: min, min, max,
+            value: min,
+            min,
+            max,
         }
     }
 
-    pub fn with_label(rect: Rect, min: f32, max: f32, mode: GaugeColorMode, text: &str) -> GaugeWidget {
+    pub fn with_label(
+        rect: Rect,
+        min: f32,
+        max: f32,
+        mode: GaugeColorMode,
+        text: &str,
+    ) -> GaugeWidget {
         GaugeWidget {
             rect,
             colors: mode.colors(),
             label: Some(LabelWidget::bordered(rect, text, FontKind::MonoM).centering()),
-            value: min, min, max,
+            value: min,
+            min,
+            max,
         }
     }
 
@@ -76,26 +88,42 @@ impl GaugeWidget {
 }
 
 impl WidgetTrait for GaugeWidget {
-    type Response =  ();
+    type Response = ();
 
     fn draw(&mut self, context: &mut Context) {
         let canvas = &mut context.canvas;
         canvas.set_draw_color(self.colors.bg);
         check_draw!(canvas.fill_rect(self.rect));
 
-        let value = if self.value >= self.min { self.value } else { self.min };
+        let value = if self.value >= self.min {
+            self.value
+        } else {
+            self.min
+        };
         let bar_width =
             ((self.rect.w - 4) as f32 * ((value - self.min) / (self.max - self.min))) as u32;
-        let bar_rect = Rect::new(self.rect.x + 2, self.rect.y + 2, bar_width, self.rect.height() - 2);
+        let bar_rect = Rect::new(
+            self.rect.x + 2,
+            self.rect.y + 2,
+            bar_width,
+            self.rect.height() - 2,
+        );
 
         canvas.set_draw_color(self.colors.bar);
         check_draw!(canvas.fill_rect(bar_rect));
-        
+
         for n in 0..2 {
             let r = Rect::new(
-                self.rect.x + n, self.rect.y + n,
-                (self.rect.w - 2 * n) as u32, (self.rect.h - 2 * n) as u32);
-            let c: Color = if n == 0 { self.colors.border_dark } else { self.colors.border_light };
+                self.rect.x + n,
+                self.rect.y + n,
+                (self.rect.w - 2 * n) as u32,
+                (self.rect.h - 2 * n) as u32,
+            );
+            let c: Color = if n == 0 {
+                self.colors.border_dark
+            } else {
+                self.colors.border_light
+            };
 
             canvas.set_draw_color(c);
             check_draw!(canvas.draw_rect(r));
@@ -106,4 +134,3 @@ impl WidgetTrait for GaugeWidget {
         }
     }
 }
-

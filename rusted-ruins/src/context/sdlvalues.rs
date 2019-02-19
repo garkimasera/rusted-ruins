@@ -1,12 +1,11 @@
-
+use super::textcachepool::TextCache;
+use super::textcachepool::TextCachePool;
+use super::textrenderer::TextRenderer;
+use super::texture::TextureHolder;
+use crate::SdlContext;
+use common::gobj;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
-use super::texture::TextureHolder;
-use super::textrenderer::TextRenderer;
-use super::textcachepool::TextCachePool;
-use super::textcachepool::TextCache;
-use common::gobj;
-use crate::SdlContext;
 
 /// Includes data that isn't used by Game
 /// Used for rendering, or music/sound playing
@@ -20,8 +19,8 @@ pub struct SdlValues<'sdl, 't> {
 impl<'sdl, 't> SdlValues<'sdl, 't> {
     pub fn new(
         sdl_context: &'sdl SdlContext,
-        tc: &'t TextureCreator<WindowContext>) -> SdlValues<'sdl, 't> {
-
+        tc: &'t TextureCreator<WindowContext>,
+    ) -> SdlValues<'sdl, 't> {
         SdlValues {
             tc,
             texture_holder: TextureHolder::new(gobj::get_objholder(), tc),
@@ -42,6 +41,3 @@ impl<'sdl, 't> SdlValues<'sdl, 't> {
         &self.tcp.group(c, &self.text_renderer, self.tc)[0]
     }
 }
-
-
-

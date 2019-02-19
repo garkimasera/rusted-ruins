@@ -1,4 +1,3 @@
-
 use array2d::Vec2d;
 
 /// Hold data for region generation
@@ -9,4 +8,3 @@ pub struct RegionGenObject {
     /// Id and position of SiteGenObject for towns
     pub towns: Vec<(String, Vec2d)>,
 }
-

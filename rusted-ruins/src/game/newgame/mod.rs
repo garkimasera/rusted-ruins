@@ -1,10 +1,9 @@
-
+use super::extrait::*;
+use super::skill::SkillListEx;
 use common::gamedata;
 use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
-use super::extrait::*;
-use super::skill::SkillListEx;
 
 pub struct NewGameBuilder {
     gd: GameData,
@@ -37,7 +36,9 @@ impl NewGameBuilder {
 
             super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
-            let mid = MapId::RegionMap { rid: RegionId::default() };
+            let mid = MapId::RegionMap {
+                rid: RegionId::default(),
+            };
             gd.set_initial_mapid(mid);
             let start_pos = RULES.newgame.start_pos;
 
@@ -51,10 +52,14 @@ impl NewGameBuilder {
             chara.update();
 
             gd.player.set_money(RULES.newgame.start_money as i64);
-            
+
             /* Test code for equipment */
             use common::gamedata::chara::Race;
-            let slots = &RULES.chara_gen.default_equip_slots.get(&Race::Human).unwrap();
+            let slots = &RULES
+                .chara_gen
+                .default_equip_slots
+                .get(&Race::Human)
+                .unwrap();
             let equip = gamedata::item::EquipItemList::new(slots);
             chara.equip = equip;
             let cid = gd.add_chara(chara, CharaKind::Player);
@@ -65,7 +70,8 @@ impl NewGameBuilder {
                 RULES.params.initial_date_year,
                 RULES.params.initial_date_month,
                 RULES.params.initial_date_day,
-                RULES.params.initial_date_hour);
+                RULES.params.initial_date_hour,
+            );
         }
         self.gd
     }
@@ -77,4 +83,3 @@ fn set_initial_skills(chara: &mut Chara) {
         chara.skills.learn_new_skill(*skill);
     }
 }
-

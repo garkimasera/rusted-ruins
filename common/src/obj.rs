@@ -1,11 +1,13 @@
-
-use std::fmt;
 use crate::gamedata;
 use crate::gamedata::CharaBaseAttr;
+use std::fmt;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum ObjectType {
-    CharaTemplate, Tile, Wall, AnimImg,
+    CharaTemplate,
+    Tile,
+    Wall,
+    AnimImg,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -75,9 +77,10 @@ pub struct TileObject {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum TileKind {
-    Ground, Water,
+    Ground,
+    Water,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -136,10 +139,19 @@ macro_rules! impl_object {
 }
 
 impl_object!(
-    AnimImgObject, CharaTemplateObject, DecoObject, EffectObject,
-    ItemObject, SpecialTileObject, TileObject,
-    UIImgObject, WallObject,
-    MapTemplateObject, RegionGenObject, SiteGenObject, ScriptObject
+    AnimImgObject,
+    CharaTemplateObject,
+    DecoObject,
+    EffectObject,
+    ItemObject,
+    SpecialTileObject,
+    TileObject,
+    UIImgObject,
+    WallObject,
+    MapTemplateObject,
+    RegionGenObject,
+    SiteGenObject,
+    ScriptObject
 );
 
 impl Object {
@@ -174,14 +186,15 @@ pub trait ImgObject {
     /// Returns rect for nth image of grid
     fn img_rect_nth(&self, n: u32) -> (i32, i32, u32, u32) {
         let img = self.get_img();
-        let n = if n < img.grid_nx * img.grid_ny {
-            n
-        } else {
-            0
-        };
+        let n = if n < img.grid_nx * img.grid_ny { n } else { 0 };
         let grid_x = n % img.grid_nx;
         let grid_y = n / img.grid_nx;
-        ((img.w * grid_x) as i32, (img.h * grid_y) as i32, img.w, img.h)
+        (
+            (img.w * grid_x) as i32,
+            (img.h * grid_y) as i32,
+            img.w,
+            img.h,
+        )
     }
 }
 
@@ -198,7 +211,13 @@ macro_rules! impl_img_object {
 }
 
 impl_img_object!(
-    AnimImgObject, EffectObject, CharaTemplateObject, DecoObject, ItemObject,
-    SpecialTileObject, TileObject, UIImgObject, WallObject
+    AnimImgObject,
+    EffectObject,
+    CharaTemplateObject,
+    DecoObject,
+    ItemObject,
+    SpecialTileObject,
+    TileObject,
+    UIImgObject,
+    WallObject
 );
-

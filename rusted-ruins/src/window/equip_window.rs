@@ -1,17 +1,16 @@
-
-use std::any::Any;
-use crate::window::{Window, DialogWindow, DialogResult};
-use sdl2::rect::Rect;
-use crate::context::*;
-use crate::game::{Game, Animation, Command, DoPlayerAction};
+use super::widget::*;
 use crate::config::UI_CFG;
+use crate::context::*;
 use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
-use super::widget::*;
-use common::gobj;
-use common::gamedata::*;
 use crate::game::item::filter::*;
+use crate::game::{Animation, Command, DoPlayerAction, Game};
 use crate::text;
+use crate::window::{DialogResult, DialogWindow, Window};
+use common::gamedata::*;
+use common::gobj;
+use sdl2::rect::Rect;
+use std::any::Any;
 
 pub struct EquipWindow {
     rect: Rect,
@@ -31,7 +30,8 @@ impl EquipWindow {
                 UI_CFG.equip_window.n_row,
                 26,
                 true,
-                true),
+                true,
+            ),
             cid,
         };
         equip_window.update_list(pa);
@@ -51,17 +51,18 @@ impl EquipWindow {
                 (esk_icon, IconIdx::Item(item.idx), tc)
             } else {
                 let tc = TextCache::one("-", FontKind::M, UI_CFG.color.normal_font.into());
-                (esk_icon, IconIdx::Item(common::objholder::ItemIdx::default()), tc)
+                (
+                    esk_icon,
+                    IconIdx::Item(common::objholder::ItemIdx::default()),
+                    tc,
+                )
             }
         });
     }
 }
 
 impl Window for EquipWindow {
-
-    fn draw(
-        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         self.list.draw(context);
     }
@@ -69,27 +70,33 @@ impl Window for EquipWindow {
 
 impl DialogWindow for EquipWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        
         if let Some(response) = self.list.process_command(&command) {
             match response {
-                ListWidgetResponse::Select(i) => { // Any item is selected
+                ListWidgetResponse::Select(i) => {
+                    // Any item is selected
                     use super::item_window::ItemWindow;
 
                     // Callback function for selected item equipment
                     let cid = self.cid;
-                    let (esk, esk_i, _) =
-                        pa.gd().get_equip_list(cid).slot_iter().nth(i as usize).unwrap();
+                    let (esk, esk_i, _) = pa
+                        .gd()
+                        .get_equip_list(cid)
+                        .slot_iter()
+                        .nth(i as usize)
+                        .unwrap();
                     let slot = (esk, esk_i);
                     let equip_selected_item = move |pa: &mut DoPlayerAction, il: ItemLocation| {
                         pa.change_equipment(cid, slot, il);
                         DialogResult::Close
                     };
-                    
+
                     let select_window = ItemWindow::new_select(
-                        ItemListLocation::Chara { cid: CharaId::Player },
+                        ItemListLocation::Chara {
+                            cid: CharaId::Player,
+                        },
                         ItemFilter::new().equip_slot_kind(slot.0),
                         Box::new(equip_selected_item),
-                        pa
+                        pa,
                     );
                     return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
@@ -100,11 +107,9 @@ impl DialogWindow for EquipWindow {
             }
             return DialogResult::Continue;
         }
-        
+
         match *command {
-            Command::Cancel => {
-                DialogResult::Close
-            }
+            Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
     }
@@ -114,8 +119,10 @@ impl DialogWindow for EquipWindow {
     }
 
     fn callback_child_closed(
-        &mut self, _result: Option<Box<dyn Any>>, pa: &mut DoPlayerAction) -> DialogResult {
-        
+        &mut self,
+        _result: Option<Box<dyn Any>>,
+        pa: &mut DoPlayerAction,
+    ) -> DialogResult {
         self.update_list(pa);
         DialogResult::Continue
     }
@@ -123,11 +130,10 @@ impl DialogWindow for EquipWindow {
 
 fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
     let id = match esk {
-        EquipSlotKind::MeleeWeapon  => "!icon-melee-weapon",
+        EquipSlotKind::MeleeWeapon => "!icon-melee-weapon",
         EquipSlotKind::RangedWeapon => "!icon-ranged-weapon",
-        EquipSlotKind::BodyArmor    => "!icon-bodyarmor",
-        EquipSlotKind::Shield       => "!icon-shield",
+        EquipSlotKind::BodyArmor => "!icon-bodyarmor",
+        EquipSlotKind::Shield => "!icon-shield",
     };
     IconIdx::UIImg(gobj::id_to_idx(id))
 }
-

@@ -1,10 +1,9 @@
-
+use super::img::build_img;
 use crate::error::*;
 use crate::tomlinput::*;
-use common::obj::*;
 use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
-use super::img::build_img;
+use common::obj::*;
 
 pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);
@@ -25,23 +24,16 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
             flags |= ItemFlags::EATABLE;
             ItemKind::Food
         }
-        "weapon" => {
-            ItemKind::Weapon(get_optional_field!(item, weapon_kind))
-        }
-        "armor" => {
-            ItemKind::Armor(get_optional_field!(item, armor_kind))
-        }
-        "material" => {
-            ItemKind::Material
-        }
-        "special" => {
-            ItemKind::Special
-        }
+        "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
+        "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
+        "material" => ItemKind::Material,
+        "special" => ItemKind::Special,
         _ => {
             bail!(PakCompileError::UnexpectedValue {
                 field_name: "item_kind".to_owned(),
-                value: item.item_kind.clone()});
-        },
+                value: item.item_kind.clone()
+            });
+        }
     };
 
     Ok(ItemObject {
@@ -62,4 +54,3 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         nutrition: item.nutrition.unwrap_or(0),
     })
 }
-

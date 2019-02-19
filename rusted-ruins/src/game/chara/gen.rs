@@ -1,13 +1,12 @@
-
-use std::collections::HashMap;
+use crate::game::extrait::*;
 use common::basic::WAIT_TIME_NUMERATOR;
-use common::obj::CharaTemplateObject;
-use common::objholder::CharaTemplateIdx;
 use common::gamedata::*;
 use common::gobj;
-use crate::game::extrait::*;
-use rules::RULES;
+use common::obj::CharaTemplateObject;
+use common::objholder::CharaTemplateIdx;
 use rng::gen_range;
+use rules::RULES;
+use std::collections::HashMap;
 
 /// Create character from chara_template
 pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
@@ -30,7 +29,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         rel: Relationship::NEUTRAL,
         trigger_talk: None,
     };
-    
+
     chara.update();
     chara.hp = chara.attr.max_hp;
     chara.reset_wait_time();
@@ -40,9 +39,14 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
 /// Create npc character from the race
 pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
     let idx = choose_npc_chara_template(
-        &RULES.dungeon_gen.get(&dungeon).expect("No rule for npc generation").npc_race_probability,
-        floor_level);
-    let ct = gobj::get_obj(idx);    
+        &RULES
+            .dungeon_gen
+            .get(&dungeon)
+            .expect("No rule for npc generation")
+            .npc_race_probability,
+        floor_level,
+    );
+    let ct = gobj::get_obj(idx);
     let mut chara = create_chara(idx, ct.gen_level);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
@@ -57,7 +61,7 @@ pub fn choose_npc_chara_template(nrp: &HashMap<Race, f32>, floor_level: u32) -> 
     let weight_dist = CalcLevelWeightDist::new(floor_level);
     let mut sum = 0.0;
     let mut first_available_ct_idx = None;
-    
+
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {
             sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
@@ -69,8 +73,9 @@ pub fn choose_npc_chara_template(nrp: &HashMap<Race, f32>, floor_level: u32) -> 
 
     // Choose one chara
     if !(sum > 0.0) {
-        return CharaTemplateIdx::from_usize(first_available_ct_idx
-                                            .expect("Any appropriate chara_template not found"));
+        return CharaTemplateIdx::from_usize(
+            first_available_ct_idx.expect("Any appropriate chara_template not found"),
+        );
     }
     let r = gen_range(0.0, sum);
     let mut sum = 0.0;
@@ -98,33 +103,35 @@ impl CalcLevelWeightDist {
             upper_margin: 5.0,
         }
     }
-    
+
     fn calc(&self, l: u32) -> f64 {
         let l = l as f64;
         if l <= self.floor_level {
             l / self.floor_level
         } else {
             let a = -(l / self.upper_margin) + 1.0 + (self.floor_level / self.upper_margin);
-            if a < 0.0 { 0.0 } else { a }
+            if a < 0.0 {
+                0.0
+            } else {
+                a
+            }
         }
     }
 }
 
 /// Create AI parameters
 pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
-    CharaAI {
-        kind: ai_kind,
-    }
+    CharaAI { kind: ai_kind }
 }
 
 /// Set skills to npc
 fn set_skill(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.template);
-    
+
     match ct.race {
-        Race::Animal | Race::Bug | Race::Slime => {
-            chara.skills.set_skill_level(SkillKind::MartialArts, ct.gen_level / 2 + 5)
-        }
+        Race::Animal | Race::Bug | Race::Slime => chara
+            .skills
+            .set_skill_level(SkillKind::MartialArts, ct.gen_level / 2 + 5),
         _ => (),
     }
 }
@@ -137,6 +144,6 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32) -> SkillList {
     for skill_kind in common_skills {
         skill_list.set_skill_level(*skill_kind, lv)
     }
-    
+
     skill_list
 }

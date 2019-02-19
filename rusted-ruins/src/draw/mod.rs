@@ -1,7 +1,5 @@
-
-pub mod mainwin;
 pub mod border;
 pub mod frame;
-mod tile_getter;
+pub mod mainwin;
 mod overlay;
-
+mod tile_getter;

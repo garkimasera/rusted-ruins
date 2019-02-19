@@ -1,8 +1,7 @@
-
 use super::commonuse::*;
 use super::widget::*;
-use crate::context::textrenderer::FontKind;
 use crate::config::UI_CFG;
+use crate::context::textrenderer::FontKind;
 
 /// Game play information viewer
 pub struct GameInfoWindow {
@@ -15,12 +14,12 @@ impl GameInfoWindow {
         let cfg = &UI_CFG.game_info_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
         let money_label = LabelWidget::new(
-            cfg.money_label_rect, &format!("{} Gold", game.gd.player.money()), FontKind::MonoM);
-        
-        GameInfoWindow {
-            rect,
-            money_label,
-        }
+            cfg.money_label_rect,
+            &format!("{} Gold", game.gd.player.money()),
+            FontKind::MonoM,
+        );
+
+        GameInfoWindow { rect, money_label }
     }
 }
 
@@ -43,4 +42,3 @@ impl DialogWindow for GameInfoWindow {
         InputMode::Dialog
     }
 }
-

@@ -1,11 +1,10 @@
-
-use sdl2::rect::Rect;
-use crate::config::UI_CFG;
+use super::choose_window::ChooseWindow;
 use super::commonuse::*;
 use super::text_window::TextWindow;
-use super::choose_window::ChooseWindow;
-use super::winpos::{WindowPos, WindowHPos, WindowVPos};
+use super::winpos::{WindowHPos, WindowPos, WindowVPos};
+use crate::config::UI_CFG;
 use crate::text;
+use sdl2::rect::Rect;
 
 pub struct ExitWindow {
     text_win: TextWindow,
@@ -18,7 +17,8 @@ impl ExitWindow {
         let text_win = TextWindow::new(rect, text::ui_txt("dialog.exit"));
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
+        );
         let choose_win = ChooseWindow::new(
             winpos,
             vec![
@@ -26,7 +26,8 @@ impl ExitWindow {
                 text::ui_txt("dialog.choice.exit_game").to_owned(),
                 text::ui_txt("dialog.choice.close").to_owned(),
             ],
-            Some(0));
+            Some(0),
+        );
         ExitWindow {
             text_win,
             choose_win,
@@ -35,15 +36,13 @@ impl ExitWindow {
 }
 
 impl Window for ExitWindow {
-    
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
+        );
         self.choose_win.set_winpos(winpos);
         self.choose_win.draw(context, game, anim);
     }
@@ -57,17 +56,18 @@ impl DialogWindow for ExitWindow {
             }
             _ => (),
         }
-        
+
         match self.choose_win.process_command(command, pa) {
-            DialogResult::CloseWithValue(v) => { // An choice is choosed
+            DialogResult::CloseWithValue(v) => {
+                // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 match n {
                     0 => {
                         pa.game().save_file();
                         return DialogResult::Close;
                     }
-                    1 => { return DialogResult::Quit }
-                    2 => { return DialogResult::Close }
+                    1 => return DialogResult::Quit,
+                    2 => return DialogResult::Close,
                     _ => panic!(),
                 }
             }
@@ -93,7 +93,8 @@ impl GameOverWindow {
         let text_win = TextWindow::new(rect, text::ui_txt("dialog.gameover"));
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
+        );
         let choices = vec!["Return to start screen".to_owned(), "Quit".to_owned()];
         GameOverWindow {
             text_win,
@@ -103,15 +104,13 @@ impl GameOverWindow {
 }
 
 impl Window for GameOverWindow {
-    
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs));
+            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
+        );
         self.choose_win.set_winpos(winpos);
         self.choose_win.draw(context, game, anim);
     }
@@ -128,11 +127,12 @@ impl DialogWindow for GameOverWindow {
 
         use super::SpecialDialogResult::ReturnToStartScreen;
         match self.choose_win.process_command(command, pa) {
-            DialogResult::CloseWithValue(v) => { // An choice is choosed
+            DialogResult::CloseWithValue(v) => {
+                // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 match n {
-                    0 => { return DialogResult::Special(ReturnToStartScreen) }
-                    1 => { return DialogResult::Quit }
+                    0 => return DialogResult::Special(ReturnToStartScreen),
+                    1 => return DialogResult::Quit,
                     _ => panic!(),
                 }
             }
@@ -145,4 +145,3 @@ impl DialogWindow for GameOverWindow {
         InputMode::Dialog
     }
 }
-

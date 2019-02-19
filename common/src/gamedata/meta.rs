@@ -1,5 +1,3 @@
-
-
 /// Meta data
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct MetaData {
@@ -11,7 +9,7 @@ impl MetaData {
     pub fn save_name(&self) -> &str {
         &self.save_name
     }
-    
+
     pub fn set_save_name(&mut self, s: &str) {
         self.save_name = s.to_owned();
     }
@@ -24,4 +22,3 @@ impl Default for MetaData {
         }
     }
 }
-

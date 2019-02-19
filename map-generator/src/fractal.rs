@@ -1,28 +1,27 @@
-
+use super::{GeneratedMap, TileKind};
 use array2d::*;
 use rng::gen_range;
-use super::{GeneratedMap, TileKind};
 
 pub fn write_to_map(gm: &mut GeneratedMap) {
     let (start, reach_map) = loop {
         let fractal = create_fractal(gm.size);
 
         let threshold = calc_threshold(&fractal, 0.6);
-        
+
         for p in gm.tile.iter_idx() {
             if fractal[p] > threshold {
                 gm.tile[p] = TileKind::Wall;
-            }else{
+            } else {
                 gm.tile[p] = TileKind::Floor;
             }
         }
-        
+
         // Determine start and end
         let start = pick_passable_tile(&gm);
         let (reach_map, n_reachable_tile) = create_reach_map(&gm, start);
         // If reachable tiles are too few, create map again
         if n_reachable_tile < (gm.size.0 * gm.size.1) as u32 / 4 {
-            continue
+            continue;
         } else {
             break (start, reach_map);
         }
@@ -52,7 +51,12 @@ pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
     let edge_bias = [3.0, 1.5, 1.0, 0.5];
     for (i, b) in edge_bias.iter().enumerate() {
         let i = i as i32;
-        write_rect(&mut map, *b, Vec2d(i, i), Vec2d(size.0 - i - 1, size.1 - i - 1));
+        write_rect(
+            &mut map,
+            *b,
+            Vec2d(i, i),
+            Vec2d(size.0 - i - 1, size.1 - i - 1),
+        );
     }
 
     write_block(&mut map, 8, 1.0);
@@ -79,7 +83,7 @@ pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
     for p in map.iter_idx() {
         map[p] = (map[p] - min) / (max - min);
     }
-    
+
     map
 }
 
@@ -132,7 +136,7 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
 
     if map.tile[start].is_passable() {
         reachable[start] = true;
-    }else{
+    } else {
         return (reachable, 0);
     }
 
@@ -142,32 +146,38 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
         for p in map.tile.iter_idx() {
             if reachable[p] {
                 let mut try_next_tile = |next_tile: Vec2d| {
-                    if map.tile.in_range(next_tile) && map.tile[next_tile].is_passable()
-                        && !reachable[next_tile] {
+                    if map.tile.in_range(next_tile)
+                        && map.tile[next_tile].is_passable()
+                        && !reachable[next_tile]
+                    {
                         reachable_tile_count += 1;
-                        reachable[next_tile] = true; new_reachable_tile = true;
+                        reachable[next_tile] = true;
+                        new_reachable_tile = true;
                     }
                 };
-                
-                try_next_tile(p + (-1,  0));
-                try_next_tile(p + ( 1,  0));
-                try_next_tile(p + ( 0, -1));
-                try_next_tile(p + ( 0,  1));
+
+                try_next_tile(p + (-1, 0));
+                try_next_tile(p + (1, 0));
+                try_next_tile(p + (0, -1));
+                try_next_tile(p + (0, 1));
             }
         }
 
-        if !new_reachable_tile { break; }
+        if !new_reachable_tile {
+            break;
+        }
     }
 
     (reachable, reachable_tile_count)
 }
 
 /// Pick one passable tile at random
-fn pick_passable_tile(map: &GeneratedMap) -> Vec2d {    
+fn pick_passable_tile(map: &GeneratedMap) -> Vec2d {
     loop {
         let p = Vec2d(gen_range(0, map.size.0), gen_range(0, map.size.1));
 
-        if map.tile[p].is_passable() { return p; }
+        if map.tile[p].is_passable() {
+            return p;
+        }
     }
 }
-

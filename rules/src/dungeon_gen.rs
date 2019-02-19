@@ -1,7 +1,6 @@
-
-use std::collections::HashMap;
 use array2d::Vec2d;
 use common::gamedata::*;
+use std::collections::HashMap;
 
 /// Rules for map generation
 pub type DungeonGen = HashMap<DungeonKind, DungeonGenParams>;
@@ -19,4 +18,3 @@ pub struct DungeonGenParams {
     /// The range of number of floor of auto generated dungeons
     pub floor_range: [u32; 2],
 }
-

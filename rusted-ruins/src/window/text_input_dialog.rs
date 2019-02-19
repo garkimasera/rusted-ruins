@@ -1,9 +1,8 @@
-
-use crate::config::UI_CFG;
-use crate::context::textrenderer::FontKind;
 use super::commonuse::*;
 use super::text_input;
 use super::widget::*;
+use crate::config::UI_CFG;
+use crate::context::textrenderer::FontKind;
 
 pub struct TextInputDialog {
     label: LabelWidget,
@@ -17,7 +16,7 @@ impl TextInputDialog {
 
         let rect: Rect = UI_CFG.text_input_dialog.rect.into();
         let label_rect = Rect::new(0, 0, rect.width(), rect.height());
-        
+
         TextInputDialog {
             label: LabelWidget::new(label_rect, "", FontKind::M),
             rect,
@@ -50,20 +49,20 @@ impl DialogWindow for TextInputDialog {
                 self.text.push_str(&text);
                 self.label.set_text(&self.text);
                 DialogResult::Continue
-            },
+            }
             &Command::TextDelete => {
                 self.text.pop();
                 self.label.set_text(&self.text);
                 DialogResult::Continue
-            },
+            }
             &Command::Enter => {
                 text_input::end();
                 DialogResult::Close
-            },
+            }
             &Command::Cancel => {
                 text_input::end();
                 DialogResult::Close
-            },
+            }
             _ => DialogResult::Continue,
         }
     }
@@ -72,4 +71,3 @@ impl DialogWindow for TextInputDialog {
         InputMode::TextInput
     }
 }
-

@@ -1,6 +1,5 @@
-
-use std::collections::HashMap;
 use common::gamedata::*;
+use std::collections::HashMap;
 
 /// Rules for character generation
 #[derive(Serialize, Deserialize)]
@@ -10,4 +9,3 @@ pub struct CharaGen {
     /// Default equipment slots by race
     pub default_equip_slots: HashMap<Race, Vec<(EquipSlotKind, u8)>>,
 }
-

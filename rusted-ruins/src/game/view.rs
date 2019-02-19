@@ -1,9 +1,9 @@
 //! This module processes the view of characters
 
-use array2d::*;
-use common::gamedata::*;
 use crate::game::Game;
 use crate::game::InfoGetter;
+use array2d::*;
+use common::gamedata::*;
 
 /// The cache for determining player's view
 pub struct ViewMap {
@@ -62,7 +62,9 @@ pub fn update_view_map(game: &mut Game) {
     view_map.visible[player_pos] = true;
 
     for (_, pos) in MDistRangeIter::new(player_pos, player_view_range) {
-        if !map.is_inside(pos) { continue; }
+        if !map.is_inside(pos) {
+            continue;
+        }
 
         for p in LineIter::new(player_pos, pos).skip(1) {
             view_map.visible[p] = true;
@@ -79,7 +81,6 @@ pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> 
             return None;
         }
     }
-    
+
     Some(dist.mdistance(orig))
 }
-

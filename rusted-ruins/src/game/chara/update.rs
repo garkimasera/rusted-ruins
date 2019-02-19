@@ -1,7 +1,6 @@
-
 use common::gamedata::*;
-use common::obj::CharaTemplateObject;
 use common::gobj;
+use common::obj::CharaTemplateObject;
 use rules::RULES;
 
 /// Update character attributes by its status
@@ -28,4 +27,3 @@ pub fn update_attributes(chara: &mut Chara) {
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
     (chara.skills.get(SkillKind::Endurance) as i32 + 8) * ct.base_attr.base_hp / 8
 }
-

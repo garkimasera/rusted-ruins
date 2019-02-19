@@ -1,9 +1,8 @@
-
-use std::collections::VecDeque;
+use super::animation::*;
 use array2d::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
-use super::animation::*;
+use std::collections::VecDeque;
 
 /// Wraps Animation queue, and provides helper functions to push Animations
 #[derive(Default)]
@@ -13,7 +12,7 @@ impl AnimQueue {
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
-    
+
     pub fn pop(&mut self) -> Option<Animation> {
         self.0.pop_front()
     }
@@ -21,7 +20,7 @@ impl AnimQueue {
     fn push(&mut self, animation: Animation) {
         self.0.push_back(animation);
     }
-    
+
     pub fn push_player_move(&mut self, dir: Direction) {
         self.push(Animation::player_move(dir));
     }
@@ -36,4 +35,3 @@ impl AnimQueue {
         self.push(Animation::shot(idx, start, target));
     }
 }
-

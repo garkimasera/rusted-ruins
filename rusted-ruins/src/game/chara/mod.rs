@@ -1,16 +1,15 @@
-
 pub mod gen;
 pub mod preturn;
 pub mod status;
 mod update;
 
+use super::combat::DamageKind;
+use super::extrait::*;
+use super::Game;
+use crate::text::ToText;
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
 use rules::RULES;
-use crate::text::ToText;
-use super::Game;
-use super::extrait::*;
-use super::combat::DamageKind;
 
 /// Additional Chara method
 pub trait CharaEx {
@@ -34,7 +33,8 @@ impl CharaEx for Chara {
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) {
         let result = self.skills.add_exp(kind, add_exp, base_level);
         trace!("{} gains {} exp for {:?}", self.to_text(), result.1, kind);
-        if result.0 { // If level up
+        if result.0 {
+            // If level up
             trace!("{} level up ({:?})", self.to_text(), kind);
             game_log!("skill-level-up"; chara=self, skill=kind);
             self.update();
@@ -102,7 +102,7 @@ impl CharaEx for Chara {
 
 pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) -> i32 {
     let chara = game.gd.chara.get_mut(cid);
-    
+
     chara.hp -= damage;
 
     if chara.hp < 0 {
@@ -122,4 +122,3 @@ pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKin
     }
     chara.hp
 }
-

@@ -1,6 +1,5 @@
-
-use std::collections::HashMap;
 use common::gamedata::*;
+use std::collections::HashMap;
 
 /// Rules for character parameter calculation
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,4 +20,3 @@ pub struct Chara {
     /// sp border of starving
     pub sp_starving: i32,
 }
-

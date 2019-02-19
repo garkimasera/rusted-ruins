@@ -1,8 +1,7 @@
-
-use std::ops::Index;
-use std::fmt;
-use crate::hashmap::HashMap;
 use crate::gamedata::Time;
+use crate::hashmap::HashMap;
+use std::fmt;
+use std::ops::Index;
 
 /// Instructions are executed in Game.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -83,15 +82,23 @@ pub enum Operator {
     None,
     Or,
     And,
-    Eq, NotEq,
-    Less, LessEq, Greater, GreaterEq,
-    Add, Sub,
-    Mul, Div,
+    Eq,
+    NotEq,
+    Less,
+    LessEq,
+    Greater,
+    GreaterEq,
+    Add,
+    Sub,
+    Mul,
+    Div,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ExprErrorKind {
-    InvalidType, UnknownIdRef, Other,
+    InvalidType,
+    UnknownIdRef,
+    Other,
 }
 
 /// Script consists of one or more sections.
@@ -103,7 +110,7 @@ impl Script {
     pub fn from_map(map: HashMap<String, Vec<Instruction>>) -> Script {
         Script(map)
     }
-    
+
     pub fn get(&self, pos: &ScriptPos) -> Option<&Instruction> {
         if let Some(v) = self.0.get(&pos.section) {
             v.get(pos.i)
@@ -112,7 +119,7 @@ impl Script {
             None
         }
     }
-    
+
     pub fn section(&self, s: &str) -> &[Instruction] {
         self.0[s].as_ref()
     }
@@ -137,7 +144,7 @@ impl ScriptPos {
 
         assert_ne!(section, QUIT_SECTION);
         assert_ne!(section, CONTINUE_SECTION);
-        
+
         self.i = 0;
         self.section = section;
     }
@@ -170,4 +177,3 @@ impl fmt::Display for ScriptParseError {
         write!(f, "script parse error : {}", self.description)
     }
 }
-

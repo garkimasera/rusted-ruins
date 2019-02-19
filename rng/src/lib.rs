@@ -1,13 +1,13 @@
 //! Helper crate for using thread local and fast random number generator
 
-use std::cell::RefCell;
-use rand::SeedableRng;
-use rand::distributions::uniform::{SampleUniform, SampleBorrow};
-use rand::RngCore;
-use rand_xorshift::XorShiftRng;
-pub use rand::Rng;
-pub use rand::thread_rng;
+use rand::distributions::uniform::{SampleBorrow, SampleUniform};
 pub use rand::seq::SliceRandom;
+pub use rand::thread_rng;
+pub use rand::Rng;
+use rand::RngCore;
+use rand::SeedableRng;
+use rand_xorshift::XorShiftRng;
+use std::cell::RefCell;
 
 #[derive(Debug, Clone, Copy)]
 pub struct GameRng;
@@ -20,28 +20,20 @@ thread_local!(static XORSHIFT_RNG: RefCell<XorShiftRng> = {
 impl RngCore for GameRng {
     #[inline]
     fn next_u32(&mut self) -> u32 {
-        XORSHIFT_RNG.with(|xorshift_rng| {
-            xorshift_rng.borrow_mut().next_u32()
-        })
+        XORSHIFT_RNG.with(|xorshift_rng| xorshift_rng.borrow_mut().next_u32())
     }
 
     #[inline]
     fn next_u64(&mut self) -> u64 {
-        XORSHIFT_RNG.with(|xorshift_rng| {
-            xorshift_rng.borrow_mut().next_u64()
-        })
+        XORSHIFT_RNG.with(|xorshift_rng| xorshift_rng.borrow_mut().next_u64())
     }
 
     fn fill_bytes(&mut self, dest: &mut [u8]) {
-        XORSHIFT_RNG.with(|xorshift_rng| {
-            xorshift_rng.borrow_mut().fill_bytes(dest)
-        })
+        XORSHIFT_RNG.with(|xorshift_rng| xorshift_rng.borrow_mut().fill_bytes(dest))
     }
 
     fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), ::rand::Error> {
-        XORSHIFT_RNG.with(|xorshift_rng| {
-            xorshift_rng.borrow_mut().try_fill_bytes(dest)
-        })
+        XORSHIFT_RNG.with(|xorshift_rng| xorshift_rng.borrow_mut().try_fill_bytes(dest))
     }
 }
 
@@ -52,7 +44,8 @@ pub fn get_rng() -> GameRng {
 /// Reseed
 pub fn reseed() {
     XORSHIFT_RNG.with(|xorshift_rng| {
-        xorshift_rng.replace(XorShiftRng::from_rng(thread_rng()).expect("reseed from thread rng failed"));
+        xorshift_rng
+            .replace(XorShiftRng::from_rng(thread_rng()).expect("reseed from thread rng failed"));
     })
 }
 
@@ -84,13 +77,12 @@ mod tests {
     fn average() {
         let mut sum = 0.0;
         const N: usize = 100000;
-    
+
         for _ in 0..N {
             sum += gen_range(0.0, 1.0);
         }
 
         let average = sum / N as f64;
         println!("average is {}", average);
-    }    
+    }
 }
-

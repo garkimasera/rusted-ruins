@@ -1,17 +1,16 @@
-
+mod expr_parser;
 mod img;
 mod item;
-mod expr_parser;
 mod script_parser;
 
-use array2d::Vec2d;
-use common::obj::*;
-use common::gamedata;
-use common::gamedata::CharaBaseAttr;
-use crate::tomlinput::TomlInput;
-use crate::error::*;
 use self::img::*;
 use self::item::build_item_object;
+use crate::error::*;
+use crate::tomlinput::TomlInput;
+use array2d::Vec2d;
+use common::gamedata;
+use common::gamedata::CharaBaseAttr;
+use common::obj::*;
 pub use script_parser::parse as script_parse;
 
 pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
@@ -61,7 +60,7 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
 
 fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject, Error> {
     let img = get_optional_field!(tomlinput, image);
-    
+
     Ok(DecoObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
@@ -70,7 +69,7 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject, Error> {
 
 fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject, Error> {
     let img = get_optional_field!(tomlinput, image);
-    
+
     Ok(EffectObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
@@ -84,7 +83,7 @@ fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject, 
     } else {
         false
     };
-    
+
     Ok(SpecialTileObject {
         id: tomlinput.id,
         always_background: always_background,
@@ -96,7 +95,7 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject, Error> {
     let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
-    
+
     Ok(TileObject {
         id: tomlinput.id,
         img: img,
@@ -107,7 +106,7 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject, Error> {
 
 fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
-    
+
     Ok(UIImgObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
@@ -122,7 +121,7 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
     } else {
         true
     };
-    
+
     Ok(WallObject {
         id: tomlinput.id,
         base_draw: base_draw,
@@ -131,7 +130,7 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
     })
 }
 
-fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject, Error> {    
+fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject, Error> {
     let chara_dep_input = get_optional_field!(tomlinput, chara_template);
     let img = get_optional_field!(tomlinput, image);
 
@@ -152,7 +151,9 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
-        default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or(gamedata::NpcAIKind::None),
+        default_ai_kind: chara_dep_input
+            .default_ai_kind
+            .unwrap_or(gamedata::NpcAIKind::None),
         base_attr,
     })
 }
@@ -173,7 +174,6 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
     let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
         v.into_iter().map(|a| (a.id, a.pos)).collect()
     };
-    
 
     Ok(RegionGenObject {
         id: tomlinput.id,
@@ -184,7 +184,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
 
 fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
     let s = get_optional_field!(tomlinput, script);
-    let script =  script_parse(&s.script)?;
+    let script = script_parse(&s.script)?;
 
     Ok(ScriptObject {
         id: tomlinput.id,
@@ -203,4 +203,3 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject, Error> {
         shops: sg.shops.unwrap_or(vec![]),
     })
 }
-

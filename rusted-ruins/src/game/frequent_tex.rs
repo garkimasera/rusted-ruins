@@ -1,6 +1,5 @@
-
-use common::objholder::*;
 use common::gobj;
+use common::objholder::*;
 
 /// Holds frequent used texture's ids
 pub struct FrequentTextures {
@@ -18,9 +17,7 @@ impl FrequentTextures {
         effect_idx.push(gobj::id_to_idx("overlay-twilight1"));
         effect_idx.push(gobj::id_to_idx("overlay-twilight2"));
 
-        FrequentTextures {
-            effect_idx
-        }
+        FrequentTextures { effect_idx }
     }
 
     pub fn overlay_idx(&self, o: Overlay) -> EffectIdx {
@@ -37,4 +34,3 @@ pub enum Overlay {
     Twilight1,
     Twilight2,
 }
-

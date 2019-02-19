@@ -1,67 +1,71 @@
-
-mod widget;
-mod dialogreq;
-mod winpos;
 mod choose_window;
+mod dialogreq;
 mod equip_window;
 mod exit_window;
+mod game_info_window;
 mod group_window;
+mod indicator;
 mod item_window;
 mod log_window;
 mod main_window;
-mod talk_window;
-mod text_window;
+mod minimap;
 mod misc_window;
-mod quest_window;
 mod msg_dialog;
 mod newgame_window;
+mod quest_window;
 mod start_window;
 mod status_window;
-mod game_info_window;
+mod talk_window;
 mod text_input_dialog;
-mod indicator;
-mod minimap;
+mod text_window;
+mod widget;
+mod winpos;
 
-use std::any::Any;
-use common::gamedata::*;
-use crate::game::{GameState, DoPlayerAction, InfoGetter, Command};
+use self::log_window::LogWindow;
+use self::main_window::MainWindow;
+use self::widget::WidgetTrait;
 use crate::eventhandler::EventHandler;
+use crate::game::{Command, DoPlayerAction, GameState, InfoGetter};
+use crate::SdlContext;
+use array2d::*;
+use common::gamedata::*;
+use sdl2::keyboard::TextInputUtil;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
-use sdl2::keyboard::TextInputUtil;
-use crate::SdlContext;
-use self::main_window::MainWindow;
-use self::log_window::LogWindow;
-use self::widget::WidgetTrait;
-use array2d::*;
+use std::any::Any;
 
 mod commonuse {
-    pub use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
-    pub use sdl2::render::WindowCanvas;
-    pub use sdl2::rect::Rect;
-    pub use crate::context::*;
-    pub use crate::game::{Game, Animation, Command, DoPlayerAction};
     pub use crate::config::{SCREEN_CFG, UI_CFG};
+    pub use crate::context::*;
     pub use crate::draw::border::draw_rect_border;
     pub use crate::eventhandler::InputMode;
+    pub use crate::game::{Animation, Command, DoPlayerAction, Game};
+    pub use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
+    pub use sdl2::rect::Rect;
+    pub use sdl2::render::WindowCanvas;
 }
 
 use self::commonuse::*;
 
 pub enum DialogResult {
-    Continue, Close, CloseWithValue(Box<dyn Any>), CloseAll, Quit,
-    OpenChildDialog(Box<dyn DialogWindow>), Special(SpecialDialogResult),
+    Continue,
+    Close,
+    CloseWithValue(Box<dyn Any>),
+    CloseAll,
+    Quit,
+    OpenChildDialog(Box<dyn DialogWindow>),
+    Special(SpecialDialogResult),
 }
 
 pub enum SpecialDialogResult {
-    StartDialogNewGame, StartDialogLoadGame,
+    StartDialogNewGame,
+    StartDialogLoadGame,
     NewGameStart(GameData),
     ReturnToStartScreen,
 }
 
 pub trait Window {
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>);
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>);
 }
 
 pub trait DialogWindow: Window {
@@ -69,7 +73,10 @@ pub trait DialogWindow: Window {
     /// Return InputMode for this window
     fn mode(&self) -> InputMode;
     fn callback_child_closed(
-        &mut self, _result: Option<Box<dyn Any>>, _pa: &mut DoPlayerAction) -> DialogResult {
+        &mut self,
+        _result: Option<Box<dyn Any>>,
+        _pa: &mut DoPlayerAction,
+    ) -> DialogResult {
         DialogResult::Continue
     }
     fn draw_mode(&self) -> WindowDrawMode {
@@ -89,7 +96,8 @@ enum WindowManageMode {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WindowDrawMode {
-    Normal, SkipUnderWindows
+    Normal,
+    SkipUnderWindows,
 }
 
 impl WindowManageMode {
@@ -116,13 +124,13 @@ pub struct WindowManager<'sdl, 't> {
 impl<'sdl, 't> WindowManager<'sdl, 't> {
     pub fn new(
         sdl_context: &'sdl SdlContext,
-        texture_creator: &'t TextureCreator<WindowContext>) -> WindowManager<'sdl, 't> {
-        
+        texture_creator: &'t TextureCreator<WindowContext>,
+    ) -> WindowManager<'sdl, 't> {
         let game = Game::empty();
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let mut window_stack: Vec<Box<dyn DialogWindow>> = Vec::new();
         window_stack.push(Box::new(start_window::StartDialog::new()));
-        
+
         WindowManager {
             game,
             mode: WindowManageMode::Start(start_window::StartWindow::new()),
@@ -137,9 +145,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
     // If return value is false, quit.
     pub fn advance_turn(&mut self, event_handler: &mut EventHandler) -> bool {
-        // Animation must be finished before 
+        // Animation must be finished before
         assert!(self.anim.is_none());
-        
+
         if self.game.get_state() == GameState::WaitingForNextTurn && self.mode.is_on_game() {
             self.game.advance_turn();
         }
@@ -153,9 +161,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         if self.game.get_state() == GameState::PlayerTurn {
-            if !self.process_command(event_handler) { return false; }
+            if !self.process_command(event_handler) {
+                return false;
+            }
         }
-        
+
         // After advancing turn and processing command, game may start animation.
         self.anim = self.game.pop_animation();
 
@@ -204,7 +214,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 }
             }
         }
-        
+
         for i in &windows_to_draw {
             self.window_stack[*i].draw(&mut context, &self.game, anim);
         }
@@ -221,7 +231,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     // If return value is false, quit.
     pub fn process_command(&mut self, event_handler: &mut EventHandler) -> bool {
         text_input::check_mode(&self.text_input_util);
-        
+
         let mode = if !self.window_stack.is_empty() {
             self.window_stack[self.window_stack.len() - 1].mode()
         } else {
@@ -231,16 +241,18 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 InputMode::Normal
             }
         };
-        
+
         let command = event_handler.get_command(mode);
-        if command.is_none() { return true; }
+        if command.is_none() {
+            return true;
+        }
         let command = command.unwrap();
 
         if self.targeting_mode {
             self.process_command_targeting_mode(command);
             return true;
         }
-        
+
         use crate::game::playeract::DoPlayerAction;
 
         if !self.window_stack.is_empty() {
@@ -257,8 +269,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         if tail > 0 {
                             tail -= 1;
                             let mut pa = DoPlayerAction::new(&mut self.game);
-                            dialog_result = self.window_stack[tail].callback_child_closed(
-                                None, &mut pa);
+                            dialog_result =
+                                self.window_stack[tail].callback_child_closed(None, &mut pa);
                             continue;
                         }
                     }
@@ -267,29 +279,33 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         if tail > 0 {
                             tail -= 1;
                             let mut pa = DoPlayerAction::new(&mut self.game);
-                            dialog_result = self.window_stack[tail].callback_child_closed(
-                                Some(v), &mut pa);
+                            dialog_result =
+                                self.window_stack[tail].callback_child_closed(Some(v), &mut pa);
                             continue;
                         }
                     }
                     DialogResult::CloseAll => {
                         self.window_stack.clear();
                     }
-                    DialogResult::Quit => { return false; }
+                    DialogResult::Quit => {
+                        return false;
+                    }
                     DialogResult::OpenChildDialog(child) => {
                         self.window_stack.push(child);
                     }
-                    DialogResult::Special(result) => { self.process_special_result(result); }
+                    DialogResult::Special(result) => {
+                        self.process_special_result(result);
+                    }
                 }
                 return true;
             }
         }
-        
+
         // If self.mode is OnGame
         let mut pa = DoPlayerAction::new(&mut self.game);
         use self::item_window::*;
         match command {
-            Command::Move{ dir } => {
+            Command::Move { dir } => {
                 pa.try_move(dir);
             }
             Command::Enter => {
@@ -302,20 +318,32 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 pa.shot();
             }
             Command::OpenExitWin => {
-                self.window_stack.push(Box::new(exit_window::ExitWindow::new()));
+                self.window_stack
+                    .push(Box::new(exit_window::ExitWindow::new()));
             }
             Command::OpenItemMenu => {
-                self.window_stack.push(Box::new(
-                    item_window::create_item_window_group(pa.game(), ItemWindowMode::List)));
+                self.window_stack
+                    .push(Box::new(item_window::create_item_window_group(
+                        pa.game(),
+                        ItemWindowMode::List,
+                    )));
             }
             Command::OpenEquipWin => {
-                self.window_stack.push(Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player)));
+                self.window_stack
+                    .push(Box::new(equip_window::EquipWindow::new(
+                        &mut pa,
+                        CharaId::Player,
+                    )));
             }
             Command::OpenStatusWin => {
-                self.window_stack.push(Box::new(status_window::create_status_window_group(pa.game())));
+                self.window_stack
+                    .push(Box::new(status_window::create_status_window_group(
+                        pa.game(),
+                    )));
             }
             Command::OpenGameInfoWin => {
-                self.window_stack.push(Box::new(game_info_window::GameInfoWindow::new(pa.game())));
+                self.window_stack
+                    .push(Box::new(game_info_window::GameInfoWindow::new(pa.game())));
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
@@ -324,16 +352,25 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 }
             }
             Command::DropItem => {
-                self.window_stack.push(Box::new(
-                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Drop)));
+                self.window_stack
+                    .push(Box::new(item_window::create_item_window_group(
+                        pa.game(),
+                        ItemWindowMode::Drop,
+                    )));
             }
             Command::DrinkItem => {
-                self.window_stack.push(Box::new(
-                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Drink)));
+                self.window_stack
+                    .push(Box::new(item_window::create_item_window_group(
+                        pa.game(),
+                        ItemWindowMode::Drink,
+                    )));
             }
             Command::EatItem => {
-                self.window_stack.push(Box::new(
-                    item_window::create_item_window_group(pa.game(), ItemWindowMode::Eat)));
+                self.window_stack
+                    .push(Box::new(item_window::create_item_window_group(
+                        pa.game(),
+                        ItemWindowMode::Eat,
+                    )));
             }
             Command::TargetingMode => {
                 self.targeting_mode = true;
@@ -350,7 +387,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     }
 
     pub fn process_special_result(&mut self, result: SpecialDialogResult) {
-
         match self.mode {
             WindowManageMode::Start(_) => {
                 match result {
@@ -359,11 +395,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         info!("Start newgame dialog");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::NewGame(newgame_window::NewGameWindow::new());
-                        self.window_stack.push(Box::new(newgame_window::DummyNewGameDialog::new()));
+                        self.window_stack
+                            .push(Box::new(newgame_window::DummyNewGameDialog::new()));
                     }
                     // Load game from saved data
                     SpecialDialogResult::StartDialogLoadGame => {
-                        self.window_stack.push(Box::new(start_window::ChooseSaveFileDialog::new()));
+                        self.window_stack
+                            .push(Box::new(start_window::ChooseSaveFileDialog::new()));
                     }
                     // Load from file
                     SpecialDialogResult::NewGameStart(gd) => {
@@ -379,53 +417,49 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     _ => unreachable!(),
                 }
             }
-            WindowManageMode::NewGame(_) => {
-                match result {
-                    SpecialDialogResult::NewGameStart(gd) => {
-                        info!("Create newgame from dialog result");
-                        self.window_stack.clear();
-                        self.mode = WindowManageMode::OnGame(GameWindows::new());
+            WindowManageMode::NewGame(_) => match result {
+                SpecialDialogResult::NewGameStart(gd) => {
+                    info!("Create newgame from dialog result");
+                    self.window_stack.clear();
+                    self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                        let game = Game::new(gd);
-                        self.game = game;
-                        self.game.update_before_player_turn();
-                        game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
-                    }
-                    _ => unreachable!(),
+                    let game = Game::new(gd);
+                    self.game = game;
+                    self.game.update_before_player_turn();
+                    game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
                 }
-            }
-            WindowManageMode::OnGame(_) => {
-                match result {
-                    SpecialDialogResult::ReturnToStartScreen => {
-                        info!("Return to start screen");
-                        crate::log::clear();
-                        self.window_stack.clear();
-                        self.window_stack.push(Box::new(start_window::StartDialog::new()));
-                        self.mode = WindowManageMode::Start(start_window::StartWindow::new());
-                    }
-                    _ => unreachable!(),
+                _ => unreachable!(),
+            },
+            WindowManageMode::OnGame(_) => match result {
+                SpecialDialogResult::ReturnToStartScreen => {
+                    info!("Return to start screen");
+                    crate::log::clear();
+                    self.window_stack.clear();
+                    self.window_stack
+                        .push(Box::new(start_window::StartDialog::new()));
+                    self.mode = WindowManageMode::Start(start_window::StartWindow::new());
                 }
-            }
+                _ => unreachable!(),
+            },
         }
     }
 
     fn process_command_targeting_mode(&mut self, command: Command) {
         let main_window = match self.mode {
-            WindowManageMode::OnGame(ref mut game_windows) => {
-                &mut game_windows.main_window
-            }
+            WindowManageMode::OnGame(ref mut game_windows) => &mut game_windows.main_window,
             _ => unreachable!(),
         };
-        
+
         match command {
-            Command::Move{ dir } => {
+            Command::Move { dir } => {
                 main_window.move_centering_tile(dir, &self.game);
             }
             Command::Cancel => {
                 self.targeting_mode = false;
                 main_window.stop_targeting_mode();
             }
-            Command::Enter => { // Set target
+            Command::Enter => {
+                // Set target
                 let ct = main_window.get_current_centering_tile();
                 if self.game.set_target(ct) {
                     self.targeting_mode = false;
@@ -444,9 +478,7 @@ pub mod text_input {
     thread_local!(static TEXT_INPUT: Cell<bool> = Cell::new(false));
 
     pub fn get() -> bool {
-        TEXT_INPUT.with(|text_input| {
-            text_input.get()
-        })
+        TEXT_INPUT.with(|text_input| text_input.get())
     }
 
     pub fn check_mode(text_input_util: &TextInputUtil) {
@@ -487,22 +519,20 @@ struct GameWindows {
 
 impl GameWindows {
     fn new() -> GameWindows {
-        use crate::config::SCREEN_CFG;
         use self::widget::{HBorder, VBorder};
+        use crate::config::SCREEN_CFG;
         let mut hborders = Vec::new();
         for hborder in &SCREEN_CFG.hborders {
-            hborders.push(HBorder::new(
-                (hborder.x, hborder.y), hborder.len));
+            hborders.push(HBorder::new((hborder.x, hborder.y), hborder.len));
         }
         let mut vborders = Vec::new();
         for vborder in &SCREEN_CFG.vborders {
-            vborders.push(VBorder::new(
-                (vborder.x, vborder.y), vborder.len));
+            vborders.push(VBorder::new((vborder.x, vborder.y), vborder.len));
         }
-        
+
         GameWindows {
             main_window: MainWindow::new(),
-            log_window:  LogWindow ::new(),
+            log_window: LogWindow::new(),
             minimap_window: minimap::MiniMapWindow::new(),
             indicator: indicator::HPIndicator::new(),
             floor_info: indicator::FloorInfo::new(),
@@ -514,7 +544,6 @@ impl GameWindows {
     }
 
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        
         self.main_window.draw(context, game, anim);
         self.log_window.draw(context, game, anim);
         self.minimap_window.draw(context, game, anim);
@@ -531,4 +560,3 @@ impl GameWindows {
         }
     }
 }
-

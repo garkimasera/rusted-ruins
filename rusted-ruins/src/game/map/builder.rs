@@ -1,13 +1,13 @@
-
+use crate::map_generator::{GeneratedMap, MapGenerator, TileKind};
 use array2d::*;
-use common::objholder::*;
 use common::gamedata::map::*;
 use common::gobj;
-use crate::map_generator::{MapGenerator, GeneratedMap, TileKind};
+use common::objholder::*;
 
 #[derive(Default)]
 pub struct MapBuilder {
-    w: u32, h: u32,
+    w: u32,
+    h: u32,
     floor: u32,
     is_deepest_floor: bool,
     tile: TileIdx,
@@ -21,10 +21,16 @@ impl MapBuilder {
         map_builder.h = h;
         map_builder
     }
-    
+
     pub fn build(self) -> Map {
         let generated_map = MapGenerator::new((self.w, self.h)).fractal().generate();
-        generated_map_to_map(generated_map, self.tile, self.wall, self.floor, self.is_deepest_floor)
+        generated_map_to_map(
+            generated_map,
+            self.tile,
+            self.wall,
+            self.floor,
+            self.is_deepest_floor,
+        )
     }
 
     pub fn floor(mut self, floor: u32) -> MapBuilder {
@@ -48,9 +54,13 @@ impl MapBuilder {
     }
 }
 
-pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
-                            floor: u32, is_deepest_floor: bool) -> Map {
-    
+pub fn generated_map_to_map(
+    gm: GeneratedMap,
+    tile: TileIdx,
+    wall: WallIdx,
+    floor: u32,
+    is_deepest_floor: bool,
+) -> Map {
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
 
@@ -76,7 +86,7 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
                     piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
                 map.tile[p].wall = WallIdxPP::with_piece_pattern(wall, piece_pattern);
-            },
+            }
             _ => (),
         }
     }
@@ -87,13 +97,18 @@ pub fn generated_map_to_map(gm: GeneratedMap, tile: TileIdx, wall: WallIdx,
 
     let dest_floor = if floor == 0 { FLOOR_OUTSIDE } else { floor - 1 };
     map.entrance = gm.entrance;
-    map.tile[gm.entrance].special = SpecialTileKind::Stairs { dest_floor, kind: entrance_stairs };
+    map.tile[gm.entrance].special = SpecialTileKind::Stairs {
+        dest_floor,
+        kind: entrance_stairs,
+    };
 
     if !is_deepest_floor && gm.exit.is_some() {
         let dest_floor = floor + 1;
-        map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs { dest_floor, kind: exit_stairs };;
+        map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs {
+            dest_floor,
+            kind: exit_stairs,
+        };;
     }
-    
+
     map
 }
-

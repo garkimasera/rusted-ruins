@@ -1,4 +1,3 @@
-
 /// Used for town simulation
 #[derive(Serialize, Deserialize)]
 pub struct Town {

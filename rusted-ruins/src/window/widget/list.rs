@@ -1,10 +1,9 @@
-
-use sdl2::rect::Rect;
-use array2d::*;
-use crate::context::*;
-use crate::config::UI_CFG;
-use crate::game::Command;
 use super::WidgetTrait;
+use crate::config::UI_CFG;
+use crate::context::*;
+use crate::game::Command;
+use array2d::*;
+use sdl2::rect::Rect;
 
 /// Simple list widget.
 pub struct ListWidget<T> {
@@ -30,7 +29,9 @@ pub struct ListWidget<T> {
 
 #[derive(Clone, Copy, Debug)]
 pub enum ListWidgetResponse {
-    Select(u32), SelectionChanged, PageChanged,
+    Select(u32),
+    SelectionChanged,
+    PageChanged,
 }
 
 pub trait ListWidgetRow {
@@ -49,8 +50,8 @@ impl<T: ListWidgetRow> ListWidget<T> {
         page_size: u32,
         h_row: u32,
         multiple_page: bool,
-        update_by_user: bool) -> ListWidget<T> {
-
+        update_by_user: bool,
+    ) -> ListWidget<T> {
         let rect = rect.into();
 
         let mut w = ListWidget {
@@ -157,9 +158,18 @@ impl<T: ListWidgetRow> ListWidget<T> {
     }
 
     fn update_page_label(&mut self) {
-        let text = format!("{} {}/{}", "page:", self.current_page + 1, self.max_page + 1);
+        let text = format!(
+            "{} {}/{}",
+            "page:",
+            self.current_page + 1,
+            self.max_page + 1
+        );
         if self.multiple_page {
-            self.page_label = Some(TextCache::one(text, FontKind::M, UI_CFG.color.normal_font.into()));
+            self.page_label = Some(TextCache::one(
+                text,
+                FontKind::M,
+                UI_CFG.color.normal_font.into(),
+            ));
         }
     }
 }
@@ -174,11 +184,13 @@ impl ListWidget<TextCache> {
             .collect();
 
         let mut list = ListWidget::new(
-            rect, vec![UI_CFG.list_widget.left_margin],
+            rect,
+            vec![UI_CFG.list_widget.left_margin],
             n_item,
             UI_CFG.list_widget.h_row_with_text as u32,
             false,
-            false);
+            false,
+        );
         list.set_rows(choices);
         list.set_n_item(n_item);
         list
@@ -202,17 +214,22 @@ impl ListWidget<TextCache> {
             for i in 0..self.n_row {
                 let tex = sv.tt_one(&mut self.rows[i as usize]);
                 let w = tex.query().width;
-                if max_w < w { max_w = w }
+                if max_w < w {
+                    max_w = w
+                }
             }
             max_w
         };
         const MARGIN_FOR_BORDER: u32 = 6;
-        (max_w + UI_CFG.list_widget.left_margin as u32 + MARGIN_FOR_BORDER, h)
+        (
+            max_w + UI_CFG.list_widget.left_margin as u32 + MARGIN_FOR_BORDER,
+            h,
+        )
     }
 }
 
 impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
-    type Response =  ListWidgetResponse;
+    type Response = ListWidgetResponse;
     fn process_command(&mut self, command: &Command) -> Option<ListWidgetResponse> {
         match *command {
             Command::Enter => {
@@ -224,7 +241,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 }
             }
             Command::Move { dir } => {
-                if self.n_row == 0 { return None; }
+                if self.n_row == 0 {
+                    return None;
+                }
                 match dir.vdir {
                     VDirection::Up => {
                         if self.current_choice == 0 {
@@ -259,7 +278,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                                     self.current_page + 1
                                 }
                             }
-                            _ => { return None; },
+                            _ => {
+                                return None;
+                            }
                         };
                         self.set_page(new_page);
 
@@ -285,7 +306,6 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     }
 
     fn draw(&mut self, context: &mut Context) {
-
         // Draw page label
         if self.multiple_page {
             let tc = self.page_label.as_mut().unwrap();
@@ -293,7 +313,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             let w = tex.query().width;
             let h = tex.query().height;
             let x = self.rect.right() - w as i32;
-            let y = (self.h_row  * self.page_size) as i32;
+            let y = (self.h_row * self.page_size) as i32;
             let dest = Rect::new(x, y, w, h);
             check_draw!(context.canvas.copy(tex, None, dest));
         }
@@ -308,15 +328,22 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             }
         }
 
-        if self.n_row == 0 { return; }
+        if self.n_row == 0 {
+            return;
+        }
 
         let h_row = self.h_row;
 
         // Draw highlighted row background
         let highlight_rect = Rect::new(
-            self.rect.x, self.rect.y + h_row as i32 * self.current_choice as i32,
-            self.rect.w as u32, h_row as u32);
-        context.canvas.set_draw_color(UI_CFG.color.window_bg_highlight);
+            self.rect.x,
+            self.rect.y + h_row as i32 * self.current_choice as i32,
+            self.rect.w as u32,
+            h_row as u32,
+        );
+        context
+            .canvas
+            .set_draw_color(UI_CFG.color.window_bg_highlight);
         check_draw!(context.canvas.fill_rect(highlight_rect));
 
         // Draw each rows
@@ -327,7 +354,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 let rect = Rect::new(
                     self.rect.x,
                     self.rect.y + j as i32 * self.h_row as i32,
-                    self.rect.width(), self.h_row);
+                    self.rect.width(),
+                    self.h_row,
+                );
                 row.draw(context, rect, &self.column_pos);
             }
         }
@@ -337,8 +366,12 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         // Draw highlight row borders
         canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
         check_draw!(canvas.draw_rect(highlight_rect));
-        let r = Rect::new(highlight_rect.x + 1, highlight_rect.y + 1,
-                          highlight_rect.w as u32 - 2, highlight_rect.h as u32 - 2);
+        let r = Rect::new(
+            highlight_rect.x + 1,
+            highlight_rect.y + 1,
+            highlight_rect.w as u32 - 2,
+            highlight_rect.h as u32 - 2,
+        );
         canvas.set_draw_color(UI_CFG.color.border_highlight_light);
         check_draw!(canvas.draw_rect(r));
     }
@@ -346,7 +379,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
 
 impl ListWidgetRow for TextCache {
     const N_COLUMN: usize = 1;
-    
+
     fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let tex = context.sv.tt_one(self);
         let w = tex.query().width;
@@ -359,7 +392,7 @@ impl ListWidgetRow for TextCache {
 
 impl ListWidgetRow for IconIdx {
     const N_COLUMN: usize = 1;
-    
+
     fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let (t, orig) = context.sv.tex().get_icon(*self);
         let dest = Rect::new(rect.x + column_pos[0], rect.y, orig.width(), orig.height());
@@ -397,4 +430,3 @@ impl<T1: ListWidgetRow, T2: ListWidgetRow, T3: ListWidgetRow> ListWidgetRow for 
         self.2.draw(context, rect2, &[0]);
     }
 }
-

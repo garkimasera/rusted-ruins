@@ -1,7 +1,6 @@
-
-use array2d::Vec2d;
-use crate::gamedata::site::SiteKind;
 use crate::gamedata::shop::ShopKind;
+use crate::gamedata::site::SiteKind;
+use array2d::Vec2d;
 
 /// Hold data for site generation
 #[derive(Clone, Serialize, Deserialize)]
@@ -32,4 +31,3 @@ pub struct ShopGenData {
     pub chara_n: u32,
     pub kind: ShopKind,
 }
-

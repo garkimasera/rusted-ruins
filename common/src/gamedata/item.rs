@@ -1,9 +1,8 @@
-
-use std::cmp::{PartialOrd, Ord, Ordering};
-use bitflags::bitflags;
-use array2d::Vec2d;
-use crate::objholder::ItemIdx;
 use super::defs::ElementArray;
+use crate::objholder::ItemIdx;
+use array2d::Vec2d;
+use bitflags::bitflags;
+use std::cmp::{Ord, Ordering, PartialOrd};
 
 /// Game item
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -49,11 +48,17 @@ pub struct ItemObject {
 impl Ord for Item {
     fn cmp(&self, other: &Item) -> Ordering {
         let order = self.kind.cmp(&other.kind);
-        if order != Ordering::Equal { return order; }
+        if order != Ordering::Equal {
+            return order;
+        }
         let order = self.idx.cmp(&other.idx);
-        if order != Ordering::Equal { return order; }
+        if order != Ordering::Equal {
+            return order;
+        }
         let order = self.rank.cmp(&other.rank);
-        if order != Ordering::Equal { return order; }
+        if order != Ordering::Equal {
+            return order;
+        }
         self.attributes.cmp(&other.attributes)
     }
 }
@@ -67,13 +72,27 @@ impl PartialOrd for Item {
 /// This is mainly used for item list sorting
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object, Potion, Herb, Food, Weapon(WeaponKind), Armor(ArmorKind), Material, Special
+    Object,
+    Potion,
+    Herb,
+    Food,
+    Weapon(WeaponKind),
+    Armor(ArmorKind),
+    Material,
+    Special,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum ItemKindRough {
-    Object, Potion, Herb, Food, Weapon, Armor, Material, Special
+    Object,
+    Potion,
+    Herb,
+    Food,
+    Weapon,
+    Armor,
+    Material,
+    Special,
 }
 
 bitflags! {
@@ -120,9 +139,12 @@ pub enum ItemAttribute {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum MedicalEffect {
-    None, Heal, Sleep, Poison,
+    None,
+    Heal,
+    Sleep,
+    Poison,
 }
 
 impl Default for MedicalEffect {
@@ -132,16 +154,22 @@ impl Default for MedicalEffect {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum WeaponKind {
-    Sword, Spear, Axe, Whip,
-    Bow, Crossbow, Gun,
+    Sword,
+    Spear,
+    Axe,
+    Whip,
+    Bow,
+    Crossbow,
+    Gun,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum ArmorKind {
-    Body, Shield,
+    Body,
+    Shield,
 }
 
 /// Data to generate an item.
@@ -168,9 +196,7 @@ pub struct ItemList {
 
 impl ItemList {
     pub fn new() -> ItemList {
-        ItemList {
-            items: Vec::new(),
-        }
+        ItemList { items: Vec::new() }
     }
 
     /// Get the number of item
@@ -185,15 +211,15 @@ impl ItemList {
 
     /// Append item
     pub fn append(&mut self, item: Item, n: u32) {
-        
         if self.items.is_empty() {
             self.items.push((item, n));
             return;
         }
 
         for i in 0..self.items.len() {
-            match item.cmp(&self.items[i].0) { 
-                Ordering::Equal => { // If this list has the same item, increases the number
+            match item.cmp(&self.items[i].0) {
+                Ordering::Equal => {
+                    // If this list has the same item, increases the number
                     self.items[i].1 += n;
                     return;
                 }
@@ -214,7 +240,9 @@ impl ItemList {
         let i = i as usize;
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 >= n && n != 0);
-        if n == 0 { return; }
+        if n == 0 {
+            return;
+        }
 
         self.items[i].1 -= n;
         if self.items[i].1 == 0 {
@@ -240,7 +268,7 @@ impl ItemList {
     pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) {
         let n = n.into().to_u32(self.items[i].1);
         assert!(self.items[i].1 >= n && n != 0);
-        
+
         self.items[i].1 -= n;
 
         let item = if self.items[i].1 == 0 {
@@ -265,7 +293,8 @@ impl ItemList {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ItemMoveNum {
-    All, Partial(u32),
+    All,
+    Partial(u32),
 }
 
 impl ItemMoveNum {
@@ -288,9 +317,12 @@ impl From<u32> for ItemMoveNum {
 //
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum EquipSlotKind {
-    MeleeWeapon, RangedWeapon, BodyArmor, Shield,
+    MeleeWeapon,
+    RangedWeapon,
+    BodyArmor,
+    Shield,
 }
 
 impl ItemKind {
@@ -298,7 +330,7 @@ impl ItemKind {
         match self {
             ItemKind::Weapon(weapon_kind) => Some(weapon_kind.equip_slot_kind()),
             ItemKind::Armor(armor_kind) => Some(armor_kind.equip_slot_kind()),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -341,7 +373,11 @@ pub struct SlotInfo {
 
 impl SlotInfo {
     fn new(esk: EquipSlotKind, n: u8) -> SlotInfo {
-        SlotInfo { esk, n, list_idx: None }
+        SlotInfo {
+            esk,
+            n,
+            list_idx: None,
+        }
     }
 }
 
@@ -357,7 +393,7 @@ impl EquipItemList {
                 new_slots.push(SlotInfo::new(esk, i));
             }
         }
-        
+
         EquipItemList {
             slots: new_slots,
             item_list: ItemList::new(),
@@ -368,7 +404,7 @@ impl EquipItemList {
     pub fn slot_num(&self, esk: EquipSlotKind) -> usize {
         self.slots.iter().filter(|slot| slot.esk == esk).count()
     }
-    
+
     /// Specified slot is empty or not
     /// If specified slot doesn't exist, return false.
     pub fn is_slot_empty(&self, esk: EquipSlotKind, n: usize) -> bool {
@@ -389,20 +425,22 @@ impl EquipItemList {
             None
         }
     }
-    
+
     /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
     pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Item) -> Option<Item> {
         assert!(self.slot_num(esk) > n);
-        if let Some(i) = self.list_idx(esk, n) { // Replace existing item
+        if let Some(i) = self.list_idx(esk, n) {
+            // Replace existing item
             return Some(std::mem::replace(&mut self.item_list.items[i].0, item));
         }
-        
-        if self.item_list.items.is_empty() { // If any item is not equipped.
+
+        if self.item_list.items.is_empty() {
+            // If any item is not equipped.
             self.item_list.items.push((item, 1));
             self.set_list_idx(esk, n, 0);
             return None;
         }
-        
+
         // Calculate new index for insert
         let mut new_idx = 0;
         let mut processed_slot = 0;
@@ -422,12 +460,16 @@ impl EquipItemList {
                 self.slots[i_slot].list_idx = Some(list_idx + 1);
             }
         }
-        
+
         None
     }
 
     fn list_idx(&self, esk: EquipSlotKind, n: usize) -> Option<usize> {
-        if let Some(slot) = self.slots.iter().find(|slot| slot.esk == esk && slot.n as usize == n) {
+        if let Some(slot) = self
+            .slots
+            .iter()
+            .find(|slot| slot.esk == esk && slot.n as usize == n)
+        {
             if let Some(list_idx) = slot.list_idx {
                 Some(list_idx as usize)
             } else {
@@ -439,7 +481,11 @@ impl EquipItemList {
     }
 
     fn set_list_idx(&mut self, esk: EquipSlotKind, n: usize, idx: usize) {
-        if let Some(slot) = self.slots.iter_mut().find(|slot| slot.esk == esk && slot.n as usize == n) {
+        if let Some(slot) = self
+            .slots
+            .iter_mut()
+            .find(|slot| slot.esk == esk && slot.n as usize == n)
+        {
             slot.list_idx = Some(idx as u8);
         } else {
             panic!("set_list_idx for invalid slot");
@@ -482,7 +528,11 @@ impl<'a> Iterator for EquipSlotIter<'a> {
         }
         let slot = &self.equip_item_list.slots[self.n];
         let result = if let Some(i) = slot.list_idx {
-            (slot.esk, slot.n, Some(&self.equip_item_list.item_list.items[i as usize].0))
+            (
+                slot.esk,
+                slot.n,
+                Some(&self.equip_item_list.item_list.items[i as usize].0),
+            )
         } else {
             (slot.esk, slot.n, None)
         };
@@ -490,7 +540,7 @@ impl<'a> Iterator for EquipSlotIter<'a> {
         return Some(result);
     }
 }
-    
+
 pub struct EquipItemIter<'a> {
     equip_item_list: &'a EquipItemList,
     n: usize,
@@ -505,7 +555,11 @@ impl<'a> Iterator for EquipItemIter<'a> {
             }
             let slot = &self.equip_item_list.slots[self.n];
             if let Some(i) = slot.list_idx {
-                let result = (slot.esk, slot.n, &self.equip_item_list.item_list.items[i as usize].0);
+                let result = (
+                    slot.esk,
+                    slot.n,
+                    &self.equip_item_list.item_list.items[i as usize].0,
+                );
                 self.n += 1;
                 return Some(result);
             }
@@ -516,13 +570,16 @@ impl<'a> Iterator for EquipItemIter<'a> {
 
 // Implement serialize & deserialize for ItemFlags
 mod impl_serde {
-    use serde::ser::{Serialize, Serializer};
-    use serde::de::{Deserialize, Deserializer, Visitor};
-    use std::fmt;
     use super::ItemFlags;
-    
+    use serde::de::{Deserialize, Deserializer, Visitor};
+    use serde::ser::{Serialize, Serializer};
+    use std::fmt;
+
     impl Serialize for ItemFlags {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
             let bits = self.bits();
             serializer.serialize_u64(bits)
         }
@@ -537,17 +594,20 @@ mod impl_serde {
             formatter.write_str("an integer")
         }
 
-        fn visit_u64<E>(self, v: u64) -> Result<ItemFlags, E> where E: ::serde::de::Error {
+        fn visit_u64<E>(self, v: u64) -> Result<ItemFlags, E>
+        where
+            E: ::serde::de::Error,
+        {
             Ok(ItemFlags::from_bits_truncate(v))
         }
     }
 
     impl<'de> Deserialize<'de> for ItemFlags {
         fn deserialize<D>(deserializer: D) -> Result<ItemFlags, D::Error>
-        where D: Deserializer<'de>
+        where
+            D: Deserializer<'de>,
         {
             deserializer.deserialize_u64(ItemFlagsVisitor)
         }
     }
 }
-

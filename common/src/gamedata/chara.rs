@@ -1,25 +1,28 @@
-
-use std::collections::HashMap;
-use crate::objholder::CharaTemplateIdx;
-use super::item::{ItemList, EquipItemList};
+use super::item::{EquipItemList, ItemList};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::SkillList;
 use super::unknown_id_err;
+use crate::objholder::CharaTemplateIdx;
+use std::collections::HashMap;
 
 /// Character's races
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum Race {
-    Animal, Human, Bug, Slime,
-    Devil, Phantom,
+    Animal,
+    Human,
+    Bug,
+    Slime,
+    Devil,
+    Phantom,
     Ghost,
 }
 
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u16)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum CharaClass {
     None = 0,
     // Playable classes
@@ -56,11 +59,15 @@ impl Relationship {
         use self::Relationship::*;
         match (*self, other) {
             (ALLY, o) => o,
-            (FRIENDLY, ALLY) => FRIENDLY, (FRIENDLY, FRIENDLY) => FRIENDLY,
-            (FRIENDLY, NEUTRAL) => NEUTRAL, (FRIENDLY, HOSTILE) => HOSTILE,
+            (FRIENDLY, ALLY) => FRIENDLY,
+            (FRIENDLY, FRIENDLY) => FRIENDLY,
+            (FRIENDLY, NEUTRAL) => NEUTRAL,
+            (FRIENDLY, HOSTILE) => HOSTILE,
             (NEUTRAL, _) => NEUTRAL,
-            (HOSTILE, ALLY) => HOSTILE, (HOSTILE, FRIENDLY) => HOSTILE,
-            (HOSTILE, NEUTRAL) => NEUTRAL, (HOSTILE, HOSTILE) => FRIENDLY,
+            (HOSTILE, ALLY) => HOSTILE,
+            (HOSTILE, FRIENDLY) => HOSTILE,
+            (HOSTILE, NEUTRAL) => NEUTRAL,
+            (HOSTILE, HOSTILE) => FRIENDLY,
         }
     }
 }
@@ -160,7 +167,9 @@ pub enum CharaStatus {
     Weak,
     /// Sp status
     Starving,
-    Asleep { turn_left: u16 },
+    Asleep {
+        turn_left: u16,
+    },
     Poisoned,
 }
 
@@ -218,7 +227,7 @@ pub struct CharaAI {
 
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum NpcAIKind {
     /// This npc does not do anything.
     None,
@@ -254,32 +263,40 @@ impl CharaHolder {
         match cid {
             CharaId::OnMap { .. } => &mut self.on_map,
             _ => &mut self.c,
-        }.insert(cid, chara);
+        }
+        .insert(cid, chara);
     }
-    
+
     pub fn get(&self, cid: CharaId) -> &Chara {
         match cid {
             CharaId::OnMap { .. } => &self.on_map,
             _ => &self.c,
-        }.get(&cid).unwrap_or_else(|| unknown_id_err(cid))
+        }
+        .get(&cid)
+        .unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub fn get_mut(&mut self, cid: CharaId) -> &mut Chara {
         match cid {
             CharaId::OnMap { .. } => &mut self.on_map,
             _ => &mut self.c,
-        }.get_mut(&cid).unwrap_or_else(|| unknown_id_err(cid))
+        }
+        .get_mut(&cid)
+        .unwrap_or_else(|| unknown_id_err(cid))
     }
 
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {
         match cid {
             CharaId::OnMap { .. } => &mut self.on_map,
             _ => &mut self.c,
-        }.remove(&cid);
+        }
+        .remove(&cid);
     }
 
-    pub(crate) fn replace_on_map_chara(&mut self, next: HashMap<CharaId, Chara>)
-                                       -> HashMap<CharaId, Chara> {
+    pub(crate) fn replace_on_map_chara(
+        &mut self,
+        next: HashMap<CharaId, Chara>,
+    ) -> HashMap<CharaId, Chara> {
         std::mem::replace(&mut self.on_map, next)
     }
 }
@@ -292,4 +309,3 @@ pub struct CharaTalk {
     /// Section of the TalkScript
     pub section: String,
 }
-

@@ -1,14 +1,13 @@
-
 pub mod font;
-pub mod visual;
 pub mod input;
+pub mod visual;
 
-use std::path::PathBuf;
-use std::env;
-use toml;
 use crate::util::read_file_as_string;
-use std::process::exit;
 use common::basic;
+use std::env;
+use std::path::PathBuf;
+use std::process::exit;
+use toml;
 
 macro_rules! load_config_file {
     ($path:expr) => {{
@@ -17,19 +16,27 @@ macro_rules! load_config_file {
         let s = match read_file_as_string(&path) {
             Ok(s) => s,
             Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.to_string_lossy(), e);
+                error!(
+                    "Cannot load config file \"{}\"\n{}",
+                    path.to_string_lossy(),
+                    e
+                );
                 exit(1);
-            },
+            }
         };
-        
+
         match toml::de::from_str(&s) {
             Ok(config) => config,
             Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.to_string_lossy(), e);
+                error!(
+                    "Cannot load config file \"{}\"\n{}",
+                    path.to_string_lossy(),
+                    e
+                );
                 exit(1);
-            },
-        }}
-    }
+            }
+        }
+    }};
 }
 
 /// Initialize lazy static
@@ -53,7 +60,6 @@ lazy_static! {
     pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
     pub static ref INPUT_CFG: input::InputConfig = load_config_file!("input.toml");
     pub static ref FONT_CFG: font::FontConfig = load_config_file!("font.toml");
-    
     pub static ref PAK_DIRS: Vec<PathBuf> = {
         let mut v = Vec::new();
         v.push(abs_path("paks"));
@@ -99,7 +105,7 @@ fn get_addon_dir() -> Option<PathBuf> {
 pub fn get_data_dirs() -> Vec<PathBuf> {
     let mut v = Vec::new();
     v.push(APP_DIR.clone());
-    
+
     if ADDON_DIR.is_some() {
         v.push(ADDON_DIR.clone().unwrap());
     }
@@ -134,12 +140,15 @@ pub struct CfgRect {
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct CfgPos {
-    pub x: i32, pub y: i32,
+    pub x: i32,
+    pub y: i32,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct CfgColor {
-    pub r: u8, pub g: u8, pub b: u8,
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
     pub a: Option<u8>,
 }
 
@@ -150,4 +159,3 @@ pub struct Config {
     pub screen_config: String,
     pub hardware_acceleration: bool,
 }
-

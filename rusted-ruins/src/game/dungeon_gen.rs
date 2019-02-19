@@ -1,12 +1,12 @@
 //! This module provides functions for auto generated dungeons
 
-use array2d::*;
-use rng;
-use common::gamedata::*;
-use common::objholder::*;
-use common::gobj;
 use crate::game::map::builder::MapBuilder;
 use crate::game::saveload::gen_box_id;
+use array2d::*;
+use common::gamedata::*;
+use common::gobj;
+use common::objholder::*;
+use rng;
 use rules::RULES;
 
 /// Add a new dungeon
@@ -14,7 +14,8 @@ pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d
     let floor_range = &RULES.dungeon_gen[&dungeon_kind].floor_range;
     let mut site = Site::new(rng::gen_range(floor_range[0], floor_range[1]));
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
-    gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos).unwrap()
+    gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos)
+        .unwrap()
 }
 
 /// Extend dungion site by one floor
@@ -33,16 +34,14 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
                 .deepest_floor(is_deepest_floor)
                 .build()
         }
-        _ => {
-            MapBuilder::new(40, 40).floor(floor).build()
-        }
+        _ => MapBuilder::new(40, 40).floor(floor).build(),
     };
 
     let map_random_id = gen_box_id(gd);
     let mid = gd.add_map(map, sid, map_random_id);
     super::map::gen_npcs(gd, mid, 10, mid.floor());
     super::map::gen_items(gd, mid);
-    
+
     if is_deepest_floor {
         add_for_deepest_floor(gd, mid);
     }
@@ -52,7 +51,11 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
 pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
     let map = gd.region.get_map_mut(mid);
 
-    let p = if let Some(p) = crate::game::map::choose_empty_tile(map) { p } else { return; };
+    let p = if let Some(p) = crate::game::map::choose_empty_tile(map) {
+        p
+    } else {
+        return;
+    };
 
     let idx: ItemIdx = gobj::id_to_idx("ancient-box");
     let item_obj: &ItemObject = gobj::get_obj(idx);
@@ -68,4 +71,3 @@ pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
     item_list.append(item, 1);
     map.tile[p].item_list = Some(item_list);
 }
-

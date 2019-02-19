@@ -1,6 +1,5 @@
-
-use std::collections::HashMap;
 use super::CONFIG;
+use std::collections::HashMap;
 
 /// Font name for each language
 #[derive(Debug, Deserialize)]
@@ -14,7 +13,7 @@ impl FontConfig {
     pub fn font_name(&self) -> &str {
         self.font_name_by_lang(&CONFIG.lang)
     }
-        
+
     fn font_name_by_lang(&self, lang: &str) -> &str {
         if let Some(f) = self.font_names.get(lang) {
             f
@@ -30,5 +29,3 @@ impl FontConfig {
         }
     }
 }
-
-

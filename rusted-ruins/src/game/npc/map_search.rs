@@ -1,15 +1,16 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
+use crate::game::InfoGetter;
 use array2d::*;
 use common::gamedata::*;
-use crate::game::InfoGetter;
 
 /// Search nearest other character from cid.
 /// If f() returns false, skip the character.
 /// If no character found, returns None.
 pub fn search_nearest_chara<F>(gd: &GameData, cid: CharaId, mut f: F) -> Option<CharaId>
-where F: FnMut(&GameData, CharaId, CharaId) -> bool {
-    
+where
+    F: FnMut(&GameData, CharaId, CharaId) -> bool,
+{
     let map = gd.get_current_map();
     let center = map.chara_pos(cid)?;
 
@@ -27,20 +28,17 @@ where F: FnMut(&GameData, CharaId, CharaId) -> bool {
             }
         }
     }
-    
+
     result_cid
 }
 
-/// Search the nearest hostile character 
+/// Search the nearest hostile character
 pub fn search_nearest_enemy(gd: &GameData, cid: CharaId) -> Option<CharaId> {
-    search_nearest_chara(
-        gd, cid,
-        |gd, c0, c1| {
-            let c0 = gd.chara.get(c0);
-            let c1 = gd.chara.get(c1);
-            c0.rel.relative(c1.rel) == Relationship::HOSTILE
-        }
-    )
+    search_nearest_chara(gd, cid, |gd, c0, c1| {
+        let c0 = gd.chara.get(c0);
+        let c1 = gd.chara.get(c1);
+        c0.rel.relative(c1.rel) == Relationship::HOSTILE
+    })
 }
 
 /// Returns direction to target chara
@@ -56,7 +54,7 @@ pub fn dir_to_chara(gd: &GameData, cid: CharaId, pos: Vec2d) -> Direction {
 pub fn dir_2pos(p1: Vec2d, p2: Vec2d) -> Direction {
     let dx = p2.0 - p1.0;
     let dy = p2.1 - p1.1;
-    
+
     Direction::new(
         if dx < 0 {
             HDirection::Left
@@ -71,7 +69,7 @@ pub fn dir_2pos(p1: Vec2d, p2: Vec2d) -> Direction {
             VDirection::Down
         } else {
             VDirection::None
-        }
+        },
     )
 }
 
@@ -79,4 +77,3 @@ pub fn dir_2pos(p1: Vec2d, p2: Vec2d) -> Direction {
 fn dir_2pos_test() {
     assert_eq!(dir_2pos(Vec2d(1, 1), Vec2d(2, 2)), Direction::SE);
 }
-

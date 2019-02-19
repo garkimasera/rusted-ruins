@@ -1,16 +1,15 @@
-
-use sdl2::rect::Rect;
-use common::gamedata::Quest;
-use crate::text::ToText;
-use crate::context::*;
-use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
-use crate::game::{Game, Animation, Command, DoPlayerAction};
-use crate::game::quest::available_quests;
-use crate::eventhandler::InputMode;
-use crate::config::UI_CFG;
-use crate::draw::border::draw_rect_border;
-use super::widget::*;
 use super::msg_dialog::MsgDialog;
+use super::widget::*;
+use crate::config::UI_CFG;
+use crate::context::*;
+use crate::draw::border::draw_rect_border;
+use crate::eventhandler::InputMode;
+use crate::game::quest::available_quests;
+use crate::game::{Animation, Command, DoPlayerAction, Game};
+use crate::text::ToText;
+use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
+use common::gamedata::Quest;
+use sdl2::rect::Rect;
 
 pub struct QuestWindow {
     rect: Rect,
@@ -30,20 +29,28 @@ impl QuestWindow {
                 UI_CFG.quest_window.n_row,
                 26,
                 true,
-                false),
+                false,
+            ),
             dialog: None,
             description: LabelWidget::wrapped(
-                (0i32, (UI_CFG.quest_window.n_row as i32 + 1) * 26, rect.width(), 0),
+                (
+                    0i32,
+                    (UI_CFG.quest_window.n_row as i32 + 1) * 26,
+                    rect.width(),
+                    0,
+                ),
                 "",
-                FontKind::M, rect.width())
+                FontKind::M,
+                rect.width(),
+            ),
         };
         w.update(game);
         w
     }
 
     pub fn update(&mut self, game: &Game) {
-
-        let rows: Vec<TextCache> = available_quests(&game.gd).iter()
+        let rows: Vec<TextCache> = available_quests(&game.gd)
+            .iter()
             .map(|quest| {
                 let text = quest.to_text();
                 TextCache::one(text, FontKind::M, UI_CFG.color.normal_font.into())
@@ -63,10 +70,7 @@ impl QuestWindow {
 }
 
 impl Window for QuestWindow {
-    
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         self.list.draw(context);
         self.description.draw(context);
@@ -86,7 +90,8 @@ impl DialogWindow for QuestWindow {
                 DialogResult::CloseWithValue(v) => {
                     let n = *v.downcast::<u32>().unwrap();
                     self.dialog = None;
-                    if n == 0 { // Undertake quest
+                    if n == 0 {
+                        // Undertake quest
                         pa.undertake_quest(n);
                         self.update(pa.game())
                     }
@@ -95,26 +100,24 @@ impl DialogWindow for QuestWindow {
             }
             return DialogResult::Continue;
         }
-        
+
         if let Some(response) = self.list.process_command(&command) {
             match response {
-                ListWidgetResponse::Select(_) => { // Any item is selected
+                ListWidgetResponse::Select(_) => {
+                    // Any item is selected
                     self.dialog = Some(MsgDialog::with_yesno(
                         crate::text::ui_txt("dialog.undertake_quest"),
-                        |_, a| { DialogResult::CloseWithValue(Box::new(a)) }
+                        |_, a| DialogResult::CloseWithValue(Box::new(a)),
                     ));
                 }
-                ListWidgetResponse::PageChanged => {
-                }
+                ListWidgetResponse::PageChanged => {}
                 _ => (),
             }
             return DialogResult::Continue;
         }
 
         match *command {
-            Command::Cancel => {
-                DialogResult::Close
-            },
+            Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
     }
@@ -136,4 +139,3 @@ fn quest_decription_text(quest: &Quest) -> String {
         }
     }
 }
-

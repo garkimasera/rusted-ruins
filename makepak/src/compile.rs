@@ -1,28 +1,27 @@
-
-use std::path::Path;
-use std::fs::File;
-use std::io::{Read, Write};
+use crate::dir;
+use crate::error::*;
+use crate::rrscript::read_rrscript;
+use crate::verbose::print_verbose;
 use common::obj::Object;
 use common::pakutil::write_object;
-use toml::de::from_str;
+use std::fs::File;
+use std::io::{Read, Write};
+use std::path::Path;
 use tar;
-use crate::error::*;
-use crate::verbose::print_verbose;
-use crate::dir;
-use crate::rrscript::read_rrscript;
+use toml::de::from_str;
 
-use crate::tomlinput::TomlInput;
 use crate::buildobj::build_object;
+use crate::tomlinput::TomlInput;
 
 pub fn compile(files: &[&str], output_file: &String) {
     let out = File::create(output_file).unwrap();
     let mut builder = tar::Builder::new(out);
-    
+
     for f in files {
         let f = Path::new(f);
         if f.is_relative() {
             dir::set_src_dir(f.parent());
-        }else{
+        } else {
             dir::set_src_dir(None);
         }
 
@@ -82,4 +81,3 @@ fn write_data_to_tar<W: Write>(builder: &mut tar::Builder<W>, data: &[u8], path:
 
     builder.append(&header, data).unwrap();
 }
-

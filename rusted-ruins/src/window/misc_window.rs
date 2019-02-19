@@ -1,4 +1,3 @@
-
 use super::commonuse::*;
 use super::widget::*;
 use common::objholder::CharaTemplateIdx;
@@ -25,4 +24,3 @@ impl Window for ImageWindow {
         self.image.draw(context);
     }
 }
-

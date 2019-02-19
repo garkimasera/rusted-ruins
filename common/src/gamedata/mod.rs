@@ -1,9 +1,8 @@
-
-pub mod meta;
 pub mod chara;
 pub mod defs;
 pub mod item;
 pub mod map;
+pub mod meta;
 pub mod player;
 pub mod quest;
 pub mod region;
@@ -16,11 +15,11 @@ pub mod variables;
 
 use array2d::Vec2d;
 
-pub use self::meta::*;
 pub use self::chara::*;
 pub use self::defs::*;
 pub use self::item::*;
 pub use self::map::*;
+pub use self::meta::*;
 pub use self::player::*;
 pub use self::quest::*;
 pub use self::region::*;
@@ -96,18 +95,17 @@ impl GameData {
                 self.chara.add(CharaId::Player, chara);
                 CharaId::Player
             }
-            CharaKind::OnSite => {
-                panic!("Adding OnSite chara without id is unavailable")
-            }
-            CharaKind::OnMap => {
-                panic!("Adding OnMap chara without mapid is unavailable")
-            }
+            CharaKind::OnSite => panic!("Adding OnSite chara without id is unavailable"),
+            CharaKind::OnMap => panic!("Adding OnMap chara without mapid is unavailable"),
         }
     }
 
     /// Add chara as OnMap
     pub fn add_chara_to_map(&mut self, chara: Chara, mid: MapId) -> CharaId {
-        let cid = CharaId::OnMap { mid, n: self.region.get_map(mid).search_empty_onmap_charaid_n() };
+        let cid = CharaId::OnMap {
+            mid,
+            n: self.region.get_map(mid).search_empty_onmap_charaid_n(),
+        };
 
         if mid == self.current_mapid {
             self.chara.add(cid, chara);
@@ -138,12 +136,18 @@ impl GameData {
             }
             _ => {
                 self.get_current_map_mut().remove_chara(cid);
-            },
+            }
         }
         self.chara.remove_chara(cid);
     }
 
-    pub fn add_site(&mut self, site: Site, kind: SiteKind, rid: RegionId, pos: Vec2d) -> Option<SiteId> {
+    pub fn add_site(
+        &mut self,
+        site: Site,
+        kind: SiteKind,
+        rid: RegionId,
+        pos: Vec2d,
+    ) -> Option<SiteId> {
         let region = self.region.get_mut(rid);
         region.add_site(site, kind, pos)
     }
@@ -156,7 +160,12 @@ impl GameData {
 
     pub fn set_current_mapid(&mut self, mid: MapId) {
         // OnMap characters on the next map
-        let next_charas = self.region.get_map_mut(mid).charas.take().expect("Map.charas is empty");
+        let next_charas = self
+            .region
+            .get_map_mut(mid)
+            .charas
+            .take()
+            .expect("Map.charas is empty");
         let prev_charas = self.chara.replace_on_map_chara(next_charas);
         let map = self.get_current_map_mut();
         assert!(map.charas.is_none());
@@ -177,37 +186,28 @@ impl GameData {
     /// Get item list by ItemListLocation
     pub fn get_item_list(&self, list_location: ItemListLocation) -> &ItemList {
         match list_location {
-            ItemListLocation::Chara { cid } => {
-                &self.chara.get(cid).item_list
-            }
-            ItemListLocation::Equip { cid } => {
-                self.chara.get(cid).equip.list()
-            }
-            ItemListLocation::OnMap { mid, pos } => {
-                &self.region.get_map(mid).tile[pos].item_list.as_ref().expect("Get item list to empty tile")
-            }
-            ItemListLocation::Shop { cid } => {
-                &self.get_shop(cid).items
-            }
+            ItemListLocation::Chara { cid } => &self.chara.get(cid).item_list,
+            ItemListLocation::Equip { cid } => self.chara.get(cid).equip.list(),
+            ItemListLocation::OnMap { mid, pos } => &self.region.get_map(mid).tile[pos]
+                .item_list
+                .as_ref()
+                .expect("Get item list to empty tile"),
+            ItemListLocation::Shop { cid } => &self.get_shop(cid).items,
         }
     }
 
     /// Mutable version for get_item_list
     pub fn get_item_list_mut(&mut self, list_location: ItemListLocation) -> &mut ItemList {
         match list_location {
-            ItemListLocation::Chara { cid } => {
-                &mut self.chara.get_mut(cid).item_list
-            }
+            ItemListLocation::Chara { cid } => &mut self.chara.get_mut(cid).item_list,
             ItemListLocation::Equip { .. } => {
                 panic!("Mutable borrow is prohibited for equipment list");
             }
-            ItemListLocation::OnMap { mid, pos } => {
-                self.region.get_map_mut(mid).tile[pos].item_list.as_mut()
-                    .expect("Get item list to empty tile")
-            }
-            ItemListLocation::Shop { cid } => {
-                &mut self.get_shop_mut(cid).items
-            }
+            ItemListLocation::OnMap { mid, pos } => self.region.get_map_mut(mid).tile[pos]
+                .item_list
+                .as_mut()
+                .expect("Get item list to empty tile"),
+            ItemListLocation::Shop { cid } => &mut self.get_shop_mut(cid).items,
         }
     }
 
@@ -226,8 +226,11 @@ impl GameData {
     }
 
     /// Remove item from list and get its clone or moved value
-    pub fn remove_item_and_get<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T)
-                                             -> Item {
+    pub fn remove_item_and_get<T: Into<ItemMoveNum>>(
+        &mut self,
+        item_location: ItemLocation,
+        n: T,
+    ) -> Item {
         let result = {
             let item_list = self.get_item_list_mut(item_location.0);
             item_list.remove_and_get(item_location.1, n)
@@ -237,23 +240,25 @@ impl GameData {
     }
 
     /// Move item to dest
-    pub fn move_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation,
-                                           dest: ItemListLocation, n: T) {
+    pub fn move_item<T: Into<ItemMoveNum>>(
+        &mut self,
+        item_location: ItemLocation,
+        dest: ItemListLocation,
+        n: T,
+    ) {
         let (item, n) = {
             let src_list = self.get_item_list_mut(item_location.0);
             let n = match n.into() {
                 ItemMoveNum::Partial(n) => n,
-                ItemMoveNum::All => {
-                    src_list.get_number(item_location.1)
-                }
+                ItemMoveNum::All => src_list.get_number(item_location.1),
             };
             (src_list.remove_and_get(item_location.1, n), n)
         };
-        
+
         self.create_item_list_on_tile(dest);
         let dest_list = self.get_item_list_mut(dest);
         dest_list.append(item, n);
-        
+
         self.check_item_list_on_tile(item_location.0);
     }
 
@@ -274,8 +279,7 @@ impl GameData {
         match item_list_location {
             ItemListLocation::OnMap { mid, pos } => {
                 if self.region.get_map_mut(mid).tile[pos].item_list.is_none() {
-                    self.region.get_map_mut(mid).tile[pos].item_list
-                        = Some(ItemList::new());
+                    self.region.get_map_mut(mid).tile[pos].item_list = Some(ItemList::new());
                 }
             }
             _ => (),
@@ -299,10 +303,9 @@ impl GameData {
         };
         let site = self.region.get_site(sid);
         match &site.content {
-            SiteContent::Town { ref town } => {
-                town.get_shop(n)
-                    .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
-            }
+            SiteContent::Town { ref town } => town
+                .get_shop(n)
+                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid)),
             _ => unreachable!("Tried to get shop in a site that is not town"),
         }
     }
@@ -314,10 +317,9 @@ impl GameData {
         };
         let site = self.region.get_site_mut(sid);
         match &mut site.content {
-            SiteContent::Town { ref mut town } => {
-                town.get_shop_mut(n)
-                    .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid))
-            }
+            SiteContent::Town { ref mut town } => town
+                .get_shop_mut(n)
+                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid)),
             _ => unreachable!("Tried to get shop in a site that is not town"),
         }
     }
@@ -326,4 +328,3 @@ impl GameData {
 fn unknown_id_err<T: std::fmt::Debug>(id: T) -> ! {
     panic!("Internal error: Unknown id - {:?}", id)
 }
-

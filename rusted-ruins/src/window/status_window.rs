@@ -1,14 +1,13 @@
-
-use common::basic::SKILL_EXP_LVUP;
-use common::gobj;
 use super::commonuse::*;
+use super::group_window::*;
 use super::widget::*;
-use crate::context::textrenderer::FontKind;
 use crate::config::UI_CFG;
-use common::gamedata::*;
+use crate::context::textrenderer::FontKind;
 use crate::game::extrait::*;
 use crate::text::ToText;
-use super::group_window::*;
+use common::basic::SKILL_EXP_LVUP;
+use common::gamedata::*;
+use common::gobj;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
 
@@ -26,7 +25,13 @@ pub fn create_status_window_group(game: &Game) -> GroupWindow {
         },
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();
-    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, 0, game, mem_info, (rect.x, rect.y))
+    GroupWindow::new(
+        STATUS_WINDOW_GROUP_SIZE,
+        0,
+        game,
+        mem_info,
+        (rect.x, rect.y),
+    )
 }
 
 /// Character status viewer
@@ -51,31 +56,57 @@ impl StatusWindow {
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
         let name_label = LabelWidget::new(cfg.name_label_rect, &chara.to_text(), FontKind::M);
         let hp_label = LabelWidget::new(
-            cfg.hp_label_rect, &format!("HP  {} / {}", chara.hp, chara.attr.max_hp), FontKind::MonoM);
+            cfg.hp_label_rect,
+            &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
+            FontKind::MonoM,
+        );
         let str_label = LabelWidget::new(
-            cfg.str_label_rect, &format!("STR  {}", chara.attr.str), FontKind::MonoM);
+            cfg.str_label_rect,
+            &format!("STR  {}", chara.attr.str),
+            FontKind::MonoM,
+        );
         let vit_label = LabelWidget::new(
-            cfg.vit_label_rect, &format!("VIT  {}", chara.attr.vit), FontKind::MonoM);
+            cfg.vit_label_rect,
+            &format!("VIT  {}", chara.attr.vit),
+            FontKind::MonoM,
+        );
         let dex_label = LabelWidget::new(
-            cfg.dex_label_rect, &format!("DEX  {}", chara.attr.dex), FontKind::MonoM);
+            cfg.dex_label_rect,
+            &format!("DEX  {}", chara.attr.dex),
+            FontKind::MonoM,
+        );
         let int_label = LabelWidget::new(
-            cfg.int_label_rect, &format!("INT  {}", chara.attr.int), FontKind::MonoM);
+            cfg.int_label_rect,
+            &format!("INT  {}", chara.attr.int),
+            FontKind::MonoM,
+        );
         let wil_label = LabelWidget::new(
-            cfg.wil_label_rect, &format!("WIL  {}", chara.attr.wil), FontKind::MonoM);
+            cfg.wil_label_rect,
+            &format!("WIL  {}", chara.attr.wil),
+            FontKind::MonoM,
+        );
         let cha_label = LabelWidget::new(
-            cfg.cha_label_rect, &format!("CHA  {}", chara.attr.cha), FontKind::MonoM);
+            cfg.cha_label_rect,
+            &format!("CHA  {}", chara.attr.cha),
+            FontKind::MonoM,
+        );
         StatusWindow {
             rect,
-            image, name_label, hp_label,
-            str_label, vit_label, dex_label, int_label, wil_label, cha_label,
+            image,
+            name_label,
+            hp_label,
+            str_label,
+            vit_label,
+            dex_label,
+            int_label,
+            wil_label,
+            cha_label,
         }
     }
 }
 
 impl Window for StatusWindow {
-    fn draw(
-        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         self.image.draw(context);
         self.name_label.draw(context);
@@ -116,7 +147,7 @@ impl SkillWindow {
         let rect: Rect = UI_CFG.info_window.rect.into();
         let mut gauges: Vec<GaugeWidget> = Vec::new();
         let mut labels: Vec<LabelWidget> = Vec::new();
-        
+
         let chara = gd.chara.get(common::gamedata::chara::CharaId::Player);
         for (i, skill_kind) in chara.skills.skills.keys().enumerate() {
             let (skill_level, exp) = chara.skills.get_level_exp(*skill_kind);
@@ -138,12 +169,12 @@ impl SkillWindow {
 
             let level_text = format!("{}", skill_level);
 
-            let mut gauge = GaugeWidget::with_label(
-                gauge_rect, 0.0, 1.0, GaugeColorMode::Exp, &level_text);
+            let mut gauge =
+                GaugeWidget::with_label(gauge_rect, 0.0, 1.0, GaugeColorMode::Exp, &level_text);
             gauge.set_value(exp as f32 / SKILL_EXP_LVUP as f32);
             gauges.push(gauge);
         }
-        
+
         SkillWindow {
             rect,
             gauges,
@@ -153,9 +184,7 @@ impl SkillWindow {
 }
 
 impl Window for SkillWindow {
-    fn draw(
-        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         for w in &mut self.gauges {
             w.draw(context);

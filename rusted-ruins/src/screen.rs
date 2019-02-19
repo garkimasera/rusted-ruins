@@ -1,10 +1,9 @@
-
-use std::time::{Duration, Instant};
-use std::thread::sleep;
-use sdl2;
-use sdl2::render::WindowCanvas;
-use sdl2::pixels::Color;
 use crate::config::{CONFIG, SCREEN_CFG};
+use sdl2;
+use sdl2::pixels::Color;
+use sdl2::render::WindowCanvas;
+use std::thread::sleep;
+use std::time::{Duration, Instant};
 
 use crate::eventhandler::EventHandler;
 use crate::window::WindowManager;
@@ -16,10 +15,12 @@ pub struct Screen {
 
 impl Screen {
     pub fn new(sdl_context: &sdl2::Sdl) -> Screen {
-        let video_subsystem = sdl_context.video().expect("Init Failed : SDL Video Subsystem");
+        let video_subsystem = sdl_context
+            .video()
+            .expect("Init Failed : SDL Video Subsystem");
 
-        let window = video_subsystem.window(
-            "Rusted Ruins", SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
+        let window = video_subsystem
+            .window("Rusted Ruins", SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
             .position_centered()
             .build()
             .unwrap();
@@ -27,7 +28,7 @@ impl Screen {
         let canvas_builder = window.into_canvas();
         let canvas_builder = if CONFIG.hardware_acceleration {
             canvas_builder.accelerated()
-        }else{
+        } else {
             canvas_builder.software()
         };
         let canvas = canvas_builder.build().unwrap();
@@ -46,7 +47,7 @@ impl Screen {
         let mut is_skip_next_frame = false;
         let texture_creator = self.canvas.texture_creator();
         let mut window_manager = WindowManager::new(sdl_context, &texture_creator);
-        
+
         'mainloop: loop {
             self.event_handler.update_dir(&event_pump);
             for event in event_pump.poll_iter() {
@@ -54,9 +55,11 @@ impl Screen {
                     break 'mainloop;
                 }
             }
-            
+
             if !window_manager.animation_now() {
-                if !window_manager.advance_turn(&mut self.event_handler) { break 'mainloop }
+                if !window_manager.advance_turn(&mut self.event_handler) {
+                    break 'mainloop;
+                }
             }
 
             if !is_skip_next_frame {
@@ -67,7 +70,7 @@ impl Screen {
             if after_redraw_instant > prev_instant + fps_duration {
                 // Skip next drawing
                 is_skip_next_frame = true;
-            }else{
+            } else {
                 let used_time = after_redraw_instant.duration_since(prev_instant);
                 sleep(fps_duration - used_time);
                 is_skip_next_frame = false;
@@ -84,4 +87,3 @@ impl Screen {
         self.canvas.present();
     }
 }
-

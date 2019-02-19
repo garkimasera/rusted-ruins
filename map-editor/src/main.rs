@@ -1,24 +1,25 @@
-
-extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_array2d as array2d;
+extern crate rusted_ruins_common as common;
 
 mod edit_map;
 #[macro_use]
 mod ui;
-mod property_controls;
-mod iconview;
-mod pixbuf_holder;
 mod draw_map;
 mod file;
+mod iconview;
+mod pixbuf_holder;
+mod property_controls;
 
 use gio::prelude::*;
 use std::env;
 use std::path::PathBuf;
 
 pub fn main() {
-    let application = gtk::Application::new("com.github.rusted-ruins-map-editor",
-                                            gio::ApplicationFlags::empty())
-        .expect("Initialization failed.");
+    let application = gtk::Application::new(
+        "com.github.rusted-ruins-map-editor",
+        gio::ApplicationFlags::empty(),
+    )
+    .expect("Initialization failed.");
 
     let mut app_dir = get_app_dir().expect("Could not found application directory");
     app_dir.push("paks");
@@ -27,7 +28,7 @@ pub fn main() {
         addon_dir.push("paks");
         pak_dirs.push(addon_dir);
     }
-    
+
     common::gobj::init(pak_dirs);
     application.connect_startup(move |app| {
         ui::build_ui(app);

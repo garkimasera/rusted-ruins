@@ -1,12 +1,11 @@
-
-use common::objholder::*;
 use common::gobj;
 use common::obj::ImgObject;
-use sdl2::render::{Texture, TextureCreator};
-use sdl2::video::WindowContext;
-use sdl2::rwops::RWops;
+use common::objholder::*;
 use sdl2::image::ImageRWops;
 use sdl2::rect::Rect;
+use sdl2::render::{Texture, TextureCreator};
+use sdl2::rwops::RWops;
+use sdl2::video::WindowContext;
 
 macro_rules! impl_texture_holder {
     ($({$mem:ident, $idx:ty}),*) => {
@@ -21,7 +20,7 @@ macro_rules! impl_texture_holder {
                 texture_creator: &'a TextureCreator<WindowContext>) -> TextureHolder<'a> {
 
                 info!("Start loading textures");
-                
+
                 let tc = TextureCreatorW::new(texture_creator);
 
                 let mut th = TextureHolder {
@@ -37,7 +36,7 @@ macro_rules! impl_texture_holder {
                         th.$mem.push(texture);
                     }
                 )*
-                
+
                 th
             }
         }
@@ -72,12 +71,15 @@ impl<'a> TextureCreatorW<'a> {
     pub fn new(texture_creator: &'a TextureCreator<WindowContext>) -> TextureCreatorW<'a> {
         TextureCreatorW(texture_creator)
     }
-    
+
     fn create_texture_from_data(&self, data: &[u8]) -> Result<Texture<'a>, String> {
         let rwops = RWops::from_bytes(data)?;
         let surface = rwops.load_png()?;
 
-        Ok(self.0.create_texture_from_surface(surface).map_err(|e| e.to_string())?)
+        Ok(self
+            .0
+            .create_texture_from_surface(surface)
+            .map_err(|e| e.to_string())?)
     }
 }
 
@@ -117,4 +119,3 @@ impl_iconidx! {
     {Item, ItemIdx},
     {UIImg, UIImgIdx}
 }
-

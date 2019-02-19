@@ -1,13 +1,12 @@
-
-use std::collections::{VecDeque, HashMap};
+use crate::config::{INPUT_CFG, UI_CFG};
+use crate::game::Command;
+use array2d::*;
 use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
+use std::collections::{HashMap, VecDeque};
 use std::time::Instant;
-use array2d::*;
-use crate::game::Command;
-use crate::config::{INPUT_CFG, UI_CFG};
 
 /// Convert from SDL Event to Command
 pub struct EventHandler {
@@ -25,13 +24,18 @@ pub struct EventHandler {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum InputMode {
-    Normal, Dialog, Targeting, TextInput,
+    Normal,
+    Dialog,
+    Targeting,
+    TextInput,
 }
 
 /// Used to prevent unintentional cursor moving after dialog opening
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum WaitingDirRelease {
-    No, Waiting, Skip,
+    No,
+    Waiting,
+    Skip,
 }
 
 #[derive(PartialEq, Eq, Hash, Debug)]
@@ -42,79 +46,109 @@ pub enum RawCommand {
 
 impl EventHandler {
     pub fn new(sdl_context: &sdl2::Sdl) -> EventHandler {
-        let joystick_subsystem = sdl_context.joystick().expect("Joysticksubsystem Initialization Failed.");
+        let joystick_subsystem = sdl_context
+            .joystick()
+            .expect("Joysticksubsystem Initialization Failed.");
         let num_joysticks = joystick_subsystem.num_joysticks().unwrap_or(0);
         let joystick = if num_joysticks > 0 {
             match joystick_subsystem.open(0) {
                 Ok(joystick) => {
                     info!("Opened Joystick \"{}\"", joystick.name());
                     Some(joystick)
-                },
+                }
                 Err(_) => None,
             }
-        }else{
+        } else {
             None
         };
-        
+
         EventHandler {
             _joystick_subsystem: joystick_subsystem,
             joystick,
             command_queue: VecDeque::new(),
             conv_table: CommandConvTable::new(),
-            hdir: HDirection::None, vdir: VDirection::None,
+            hdir: HDirection::None,
+            vdir: VDirection::None,
             last_dir_changed: None,
             is_instant: false,
             prev_input_mode: InputMode::Dialog,
             waiting_dir_release: WaitingDirRelease::No,
         }
     }
-    
+
     pub fn process_event(&mut self, event: Event) -> bool {
         match event {
-            Event::Quit{..}  => {
+            Event::Quit { .. } => {
                 return false;
-            },
+            }
             // Direction
-            Event::KeyDown {keycode: Option::Some(Keycode::Up), ..} => {
+            Event::KeyDown {
+                keycode: Option::Some(Keycode::Up),
+                ..
+            } => {
                 //self.update_dir(None, Some(VDirection::Up));
-            },
-            Event::KeyDown {keycode: Option::Some(Keycode::Down), ..} => {
+            }
+            Event::KeyDown {
+                keycode: Option::Some(Keycode::Down),
+                ..
+            } => {
                 //self.update_dir(None, Some(VDirection::Down));
-            },
-            Event::KeyDown {keycode: Option::Some(Keycode::Left), ..} => {
+            }
+            Event::KeyDown {
+                keycode: Option::Some(Keycode::Left),
+                ..
+            } => {
                 //self.update_dir(Some(HDirection::Left), None);
-            },
-            Event::KeyDown {keycode: Option::Some(Keycode::Right), ..} => {
+            }
+            Event::KeyDown {
+                keycode: Option::Some(Keycode::Right),
+                ..
+            } => {
                 //self.update_dir(Some(HDirection::Right), None);
-            },
-            Event::KeyUp {keycode: Option::Some(Keycode::Up), ..} => {
+            }
+            Event::KeyUp {
+                keycode: Option::Some(Keycode::Up),
+                ..
+            } => {
                 self.set_waiting_dir_release();
-            },
-            Event::KeyUp {keycode: Option::Some(Keycode::Down), ..} => {
+            }
+            Event::KeyUp {
+                keycode: Option::Some(Keycode::Down),
+                ..
+            } => {
                 self.set_waiting_dir_release();
-            },
-            Event::KeyUp {keycode: Option::Some(Keycode::Left), ..} => {
+            }
+            Event::KeyUp {
+                keycode: Option::Some(Keycode::Left),
+                ..
+            } => {
                 self.set_waiting_dir_release();
-            },
-            Event::KeyUp {keycode: Option::Some(Keycode::Right), ..} => {
+            }
+            Event::KeyUp {
+                keycode: Option::Some(Keycode::Right),
+                ..
+            } => {
                 self.set_waiting_dir_release();
-            },
+            }
             // Shortcut keys
-            Event::KeyUp {keycode: Option::Some(keycode), ..} => {
+            Event::KeyUp {
+                keycode: Option::Some(keycode),
+                ..
+            } => {
                 self.command_queue.push_back(RawCommand::KeyPress(keycode));
-            },
+            }
             // Joystick events
             Event::JoyButtonDown { button_idx, .. } => {
                 println!("ButtonDown: {}", button_idx);
-            },
+            }
             Event::JoyAxisMotion { .. } => {
                 self.set_waiting_dir_release();
             }
             // Text input events
             Event::TextInput { text, .. } => {
                 self.command_queue.push_back(RawCommand::TextInput(text));
-            },
-            
+            }
+
             _ => {}
         }
         true
@@ -126,7 +160,7 @@ impl EventHandler {
             self.waiting_dir_release = WaitingDirRelease::Waiting;
         }
         self.prev_input_mode = mode;
-        
+
         if self.command_queue.is_empty() {
             if mode == InputMode::Dialog {
                 match self.waiting_dir_release {
@@ -144,26 +178,26 @@ impl EventHandler {
                 }
             }
             if self.hdir != HDirection::None || self.vdir != VDirection::None {
-                
-                let c = Command::Move{ dir: Direction::new(self.hdir, self.vdir) };
+                let c = Command::Move {
+                    dir: Direction::new(self.hdir, self.vdir),
+                };
 
                 // Slow down cursor moving speed in dialog mode
                 if mode != InputMode::Normal {
                     let now = Instant::now();
                     let d = now.duration_since(self.last_dir_changed.unwrap());
-                    let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1000000; // to milli secs 
-                    
-                    
+                    let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1000000; // to milli secs
+
                     if !self.is_instant && d < UI_CFG.cursor_move_duration {
                         return None;
                     }
-                    
+
                     if !self.is_instant {
                         self.last_dir_changed = Some(now);
                     }
                     self.is_instant = false;
                 }
-                
+
                 return Some(c);
             }
             return None;
@@ -183,32 +217,50 @@ impl EventHandler {
         for scancode in keyboard.pressed_scancodes() {
             use sdl2::keyboard::Scancode::*;
             match scancode {
-                Up    => { vdir = VDirection::Up; },
-                Down  => { vdir = VDirection::Down; },
-                Left  => { hdir = HDirection::Left; },
-                Right => { hdir = HDirection::Right; },
+                Up => {
+                    vdir = VDirection::Up;
+                }
+                Down => {
+                    vdir = VDirection::Down;
+                }
+                Left => {
+                    hdir = HDirection::Left;
+                }
+                Right => {
+                    hdir = HDirection::Right;
+                }
                 _ => (),
             }
         }
 
         if let Some(ref joystick) = self.joystick {
             if let Ok(pos) = joystick.axis(0) {
-                if pos < 0 { hdir = HDirection::Left; }
-                else if pos > 0 { hdir = HDirection::Right; }
+                if pos < 0 {
+                    hdir = HDirection::Left;
+                } else if pos > 0 {
+                    hdir = HDirection::Right;
+                }
             }
             if let Ok(pos) = joystick.axis(1) {
-                if pos < 0 { vdir = VDirection::Up; }
-                else if pos > 0 { vdir = VDirection::Down; }
+                if pos < 0 {
+                    vdir = VDirection::Up;
+                } else if pos > 0 {
+                    vdir = VDirection::Down;
+                }
             }
         }
 
         let mut need_time_update = false;
         if hdir != self.hdir {
-            if hdir != HDirection::None { need_time_update = true; }
+            if hdir != HDirection::None {
+                need_time_update = true;
+            }
             self.hdir = hdir;
         }
         if vdir != self.vdir {
-            if vdir != VDirection::None { need_time_update = true; }
+            if vdir != VDirection::None {
+                need_time_update = true;
+            }
             self.vdir = vdir;
         }
         if need_time_update {
@@ -223,7 +275,6 @@ impl EventHandler {
         }
     }
 }
-
 
 pub struct CommandConvTable {
     normal: HashMap<RawCommand, Command>,
@@ -269,7 +320,7 @@ impl CommandConvTable {
             InputMode::Targeting => &self.targeting,
             InputMode::TextInput => {
                 return text_input_conv(raw);
-            },
+            }
         };
 
         table.get(&raw).cloned()
@@ -279,20 +330,14 @@ impl CommandConvTable {
 /// In text input mode, all event is ignored except for text input or finish key press
 fn text_input_conv(raw: RawCommand) -> Option<Command> {
     match raw {
-        RawCommand::TextInput(text) => {
-            Some(Command::TextInput { text })
-        },
-        RawCommand::KeyPress(keycode) if keycode == Keycode::Return => {
-            Some(Command::Enter)
-        },
-        RawCommand::KeyPress(keycode) if keycode == Keycode::Escape => {
-            Some(Command::Cancel)
-        },
+        RawCommand::TextInput(text) => Some(Command::TextInput { text }),
+        RawCommand::KeyPress(keycode) if keycode == Keycode::Return => Some(Command::Enter),
+        RawCommand::KeyPress(keycode) if keycode == Keycode::Escape => Some(Command::Cancel),
         RawCommand::KeyPress(keycode)
-            if keycode == Keycode::Backspace || keycode == Keycode::Delete => {
-                
+            if keycode == Keycode::Backspace || keycode == Keycode::Delete =>
+        {
             Some(Command::TextDelete)
-        },
+        }
         _ => None,
     }
 }
@@ -312,7 +357,6 @@ macro_rules! impl_conv_str_to_keycode {
 }
 
 impl_conv_str_to_keycode!(
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-    Space, Return, Tab, Escape
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, Space, Return,
+    Tab, Escape
 );
-

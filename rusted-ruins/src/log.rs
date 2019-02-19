@@ -1,6 +1,5 @@
-
-use std::sync::Mutex;
 use std::collections::VecDeque;
+use std::sync::Mutex;
 
 pub fn init() {
     ::lazy_static::initialize(&GAME_LOG);
@@ -37,7 +36,9 @@ impl GameLog {
     }
 
     fn update(&mut self) {
-        if self.buf.is_empty() { return; }
+        if self.buf.is_empty() {
+            return;
+        }
 
         let b = std::mem::replace(&mut self.buf, Vec::new());
         self.lines.push_back(b);
@@ -53,11 +54,11 @@ impl GameLog {
         let start = if self.lines.len() > diff {
             someline_lost = false;
             self.lines.len() - diff
-        }else{
+        } else {
             someline_lost = true;
             0
         };
-        
+
         let len = self.lines.len();
         for i in start..len {
             f(&self.lines[i]);
@@ -101,13 +102,13 @@ macro_rules! game_log {
     ($textid:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
         use crate::text::ToText;
-        
+
         let text_raw = $crate::text::log_txt($textid);
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
             table.push((stringify!($target), $value.to_text()));
         )*;
-        
+
         let t = $crate::util::replace_str(text_raw, table.as_slice());
         $crate::log::push(t);
     }}
@@ -122,16 +123,15 @@ macro_rules! game_log_i {
     ($textid:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
         use crate::text::ToText;
-        
+
         let text_raw = $crate::text::log_txt($textid);
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
             table.push((stringify!($target), $value.to_text()));
         )*;
-        
+
         let t = $crate::util::replace_str(text_raw, table.as_slice());
         $crate::log::push(t);
         $crate::log::new_line();
     }}
 }
-

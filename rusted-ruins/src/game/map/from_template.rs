@@ -1,8 +1,7 @@
-
-use common::maptemplate::*;
+use crate::game::item::gen::from_item_gen;
 use common::gamedata::*;
 use common::gobj;
-use crate::game::item::gen::from_item_gen;
+use common::maptemplate::*;
 
 pub fn from_template(t: &MapTemplateObject) -> Map {
     let mut map = create_terrain(t);
@@ -19,15 +18,18 @@ pub fn from_template_id(id: &str) -> Option<Map> {
 fn create_terrain(t: &MapTemplateObject) -> Map {
     let mut map = Map::new(t.w, t.h);
 
-    for (pos, c) in t.tile.iter_with_idx() { // Setting tiles
+    for (pos, c) in t.tile.iter_with_idx() {
+        // Setting tiles
         map.tile[pos].tile = TileLayers::conv_from(*c, &t.tile_table).into();
     }
 
-    for (pos, c) in t.wall.iter_with_idx() { // Setting walls
+    for (pos, c) in t.wall.iter_with_idx() {
+        // Setting walls
         map.tile[pos].wall = WallIdxPP::conv_from(*c, &t.wall_table);
     }
 
-    for (pos, i) in t.deco.iter_with_idx() { // Setting decos
+    for (pos, i) in t.deco.iter_with_idx() {
+        // Setting decos
         if let Some(i) = *i {
             let deco_id = &t.deco_table[i as usize];
             map.tile[pos].deco = Some(gobj::id_to_idx(deco_id));
@@ -74,4 +76,3 @@ fn gen_items(map: &mut Map, t: &MapTemplateObject) {
         map.locate_item(item, *pos, 1);
     }
 }
-

@@ -1,14 +1,13 @@
-
-use std::ops::{Index, IndexMut};
-use std::collections::HashMap;
-use arrayvec::ArrayVec;
-use array2d::*;
-use crate::objholder::*;
 use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
+use crate::gamedata::chara::{Chara, CharaId};
 use crate::gamedata::item::{Item, ItemList};
-use crate::gamedata::chara::{CharaId, Chara};
-use crate::gamedata::site::SiteId;
 use crate::gamedata::region::RegionId;
+use crate::gamedata::site::SiteId;
+use crate::objholder::*;
+use array2d::*;
+use arrayvec::ArrayVec;
+use std::collections::HashMap;
+use std::ops::{Index, IndexMut};
 
 pub use crate::piece_pattern::*;
 
@@ -98,7 +97,7 @@ pub enum SpecialTileKind {
     /// Site symbol on region map
     SiteSymbol {
         kind: SiteSymbolKind,
-    }
+    },
 }
 
 impl SpecialTileKind {
@@ -113,40 +112,42 @@ impl SpecialTileKind {
 impl Default for SpecialTileKind {
     fn default() -> SpecialTileKind {
         SpecialTileKind::None
-            
     }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum StairsKind {
-    UpStairs, DownStairs,
+    UpStairs,
+    DownStairs,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum SiteSymbolKind {
-    Cave, Ruin, Tower, Town, Village,
+    Cave,
+    Ruin,
+    Tower,
+    Town,
+    Village,
 }
 
 impl SpecialTileKind {
     /// Convert to id of SpecialTileObject
     pub fn obj_id(&self) -> Option<&'static str> {
         Some(match *self {
-            SpecialTileKind::None => { return None; },
-            SpecialTileKind::Stairs { kind, .. } => {
-                match kind {
-                    StairsKind::DownStairs => "!downstairs",
-                    StairsKind::UpStairs => "!upstairs",
-                }
+            SpecialTileKind::None => {
+                return None;
             }
-            SpecialTileKind::SiteSymbol { kind } => {
-                match kind {
-                    SiteSymbolKind::Cave =>    "!rm-cave",
-                    SiteSymbolKind::Ruin =>    "!rm-ruin",
-                    SiteSymbolKind::Tower =>   "!rm-tower",
-                    SiteSymbolKind::Town =>    "!rm-town",
-                    SiteSymbolKind::Village => "!rm-village",
-                }
-            }
+            SpecialTileKind::Stairs { kind, .. } => match kind {
+                StairsKind::DownStairs => "!downstairs",
+                StairsKind::UpStairs => "!upstairs",
+            },
+            SpecialTileKind::SiteSymbol { kind } => match kind {
+                SiteSymbolKind::Cave => "!rm-cave",
+                SiteSymbolKind::Ruin => "!rm-ruin",
+                SiteSymbolKind::Tower => "!rm-tower",
+                SiteSymbolKind::Town => "!rm-town",
+                SiteSymbolKind::Village => "!rm-village",
+            },
         })
     }
 }
@@ -159,7 +160,7 @@ pub struct TileInfo {
     /// Base tile
     pub tile: TileArray,
     /// If wall is presented, the tile is no walkable
-    pub wall: WallIdxPP, 
+    pub wall: WallIdxPP,
     /// Decoration for this tile
     pub deco: Option<DecoIdx>,
     /// Items on this tile
@@ -197,7 +198,10 @@ pub struct MapBoundary {
 /// Reperesents the floor that boundary connect to
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum BoundaryBehavior {
-    None, Floor(u32), RegionMap, MapId(MapId, u32),
+    None,
+    Floor(u32),
+    RegionMap,
+    MapId(MapId, u32),
 }
 
 impl Default for BoundaryBehavior {
@@ -205,7 +209,7 @@ impl Default for BoundaryBehavior {
         BoundaryBehavior::None
     }
 }
-         
+
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
@@ -233,10 +237,12 @@ impl TileInfo {
 impl Map {
     pub fn new(w: u32, h: u32) -> Map {
         Map {
-            w: w, h: h,
+            w: w,
+            h: h,
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
-            player_pos: Vec2d(0, 0), entrance: Vec2d(0, 0),
+            player_pos: Vec2d(0, 0),
+            entrance: Vec2d(0, 0),
             charaid: Vec::new(),
             charas: Some(HashMap::new()),
             outside_tile: None,
@@ -258,7 +264,9 @@ impl Map {
 
     pub fn get_chara<T: Into<Vec2d>>(&self, pos: T) -> Option<CharaId> {
         let pos = pos.into();
-        if !self.is_inside(pos) { return None; }
+        if !self.is_inside(pos) {
+            return None;
+        }
         self.tile[pos].chara.clone()
     }
 
@@ -271,7 +279,7 @@ impl Map {
     pub fn is_inside(&self, pos: Vec2d) -> bool {
         if pos.0 >= 0 && pos.1 >= 0 && (pos.0 as u32) < self.w && (pos.1 as u32) < self.h {
             true
-        }else{
+        } else {
             false
         }
     }
@@ -289,7 +297,7 @@ impl Map {
     /// Swaps characters on given tiles
     pub fn swap_chara(&mut self, a: Vec2d, b: Vec2d) -> bool {
         if !(self.is_inside(a) && self.is_inside(b)) {
-            return false
+            return false;
         }
         use std::mem::replace;
         let temp0 = replace(&mut self.tile[a].chara, None);
@@ -305,9 +313,11 @@ impl Map {
         if !self.charaid.iter().any(|a| *a == cid) {
             self.charaid.push(cid);
         }
-        
-        if self.tile[pos].chara.is_some() { return false; }
-            
+
+        if self.tile[pos].chara.is_some() {
+            return false;
+        }
+
         if let Some(old_pos) = self.chara_pos(cid) {
             self.tile[old_pos].chara = None;
         }
@@ -328,11 +338,12 @@ impl Map {
     }
 
     pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {
-        'i_loop:
-        for i in 0.. {
+        'i_loop: for i in 0.. {
             for cid in self.charaid.iter() {
                 if let CharaId::OnMap { n, .. } = *cid {
-                    if i == n { continue 'i_loop; }
+                    if i == n {
+                        continue 'i_loop;
+                    }
                 }
             }
             return i;
@@ -345,7 +356,13 @@ impl Map {
         self.tile[pos].chara = None;
 
         if let CharaId::OnMap { .. } = cid {
-            let i = self.charaid.iter().enumerate().find(|&(_, cid_o)| *cid_o == cid).unwrap().0;
+            let i = self
+                .charaid
+                .iter()
+                .enumerate()
+                .find(|&(_, cid_o)| *cid_o == cid)
+                .unwrap()
+                .0;
             let removed_cid = self.charaid.swap_remove(i);
             assert!(removed_cid == cid);
         }
@@ -386,8 +403,20 @@ impl Map {
             return pos;
         }
         let (w, h) = (self.w as i32, self.h as i32);
-        let x = if pos.0 < 0 { 0 } else if pos.0 >= w { w - 1 } else { pos.0 };
-        let y = if pos.1 < 0 { 0 } else if pos.1 >= h { h - 1 } else { pos.1 };
+        let x = if pos.0 < 0 {
+            0
+        } else if pos.0 >= w {
+            w - 1
+        } else {
+            pos.0
+        };
+        let y = if pos.1 < 0 {
+            0
+        } else if pos.1 >= h {
+            h - 1
+        } else {
+            pos.1
+        };
         Vec2d(x, y)
     }
 
@@ -405,7 +434,11 @@ impl Map {
 
     /// Returns boundart when player move from 'pos' to 'dir' direction
     /// If its destination tile is inside map, return None
-    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<BoundaryBehavior> {
+    pub fn get_boundary_by_tile_and_dir(
+        &self,
+        pos: Vec2d,
+        dir: Direction,
+    ) -> Option<BoundaryBehavior> {
         let dest_pos = pos + dir.as_vec();
         if dest_pos.0 < 0 {
             Some(self.boundary.n)
@@ -434,10 +467,8 @@ impl MapId {
 
     pub fn set_floor(self, floor: u32) -> MapId {
         match self {
-            MapId::SiteMap { sid, .. } => {
-                MapId::SiteMap { sid, floor }
-            }
-            _ => panic!("Invalid operation on MapId::RegionId")
+            MapId::SiteMap { sid, .. } => MapId::SiteMap { sid, floor },
+            _ => panic!("Invalid operation on MapId::RegionId"),
         }
     }
 
@@ -453,7 +484,7 @@ impl MapId {
     pub fn sid(self) -> SiteId {
         match self {
             MapId::SiteMap { sid, .. } => sid,
-            _ => panic!("Invalid operation on MapId::RegionId")
+            _ => panic!("Invalid operation on MapId::RegionId"),
         }
     }
 
@@ -477,7 +508,10 @@ impl MapId {
 
 impl Default for MapId {
     fn default() -> MapId {
-        MapId::SiteMap { sid: SiteId::default(), floor: 0 }
+        MapId::SiteMap {
+            sid: SiteId::default(),
+            floor: 0,
+        }
     }
 }
 
@@ -486,4 +520,3 @@ impl From<RegionId> for MapId {
         MapId::RegionMap { rid }
     }
 }
-

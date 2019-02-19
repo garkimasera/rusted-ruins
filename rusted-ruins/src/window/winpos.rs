@@ -5,18 +5,23 @@ use crate::config::SCREEN_CFG;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WindowHPos {
-    Center, LeftMargin(i32), RightMargin(i32), RightX(i32),
+    Center,
+    LeftMargin(i32),
+    RightMargin(i32),
+    RightX(i32),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WindowVPos {
-    Center, TopMargin(i32), BottomMargin(i32),
+    Center,
+    TopMargin(i32),
+    BottomMargin(i32),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct WindowPos {
     pub h: WindowHPos,
-    pub v: WindowVPos
+    pub v: WindowVPos,
 }
 
 impl WindowPos {
@@ -29,33 +34,18 @@ impl WindowPos {
         let parent_h = SCREEN_CFG.screen_h as i32;
         let w = w as i32;
         let h = h as i32;
-        
+
         let x = match self.h {
-            WindowHPos::Center => {
-                (parent_w - w) as i32 / 2
-            }
-            WindowHPos::LeftMargin(m) => {
-                m
-            }
-            WindowHPos::RightMargin(m) => {
-                parent_w - w - m
-            }
-            WindowHPos::RightX(x) => {
-                x - w
-            }
+            WindowHPos::Center => (parent_w - w) as i32 / 2,
+            WindowHPos::LeftMargin(m) => m,
+            WindowHPos::RightMargin(m) => parent_w - w - m,
+            WindowHPos::RightX(x) => x - w,
         };
         let y = match self.v {
-            WindowVPos::Center => {
-                (parent_h - h) as i32 / 2
-            }
-            WindowVPos::TopMargin(m) => {
-                m
-            }
-            WindowVPos::BottomMargin(m) => {
-                parent_h - h - m
-            }
+            WindowVPos::Center => (parent_h - h) as i32 / 2,
+            WindowVPos::TopMargin(m) => m,
+            WindowVPos::BottomMargin(m) => parent_h - h - m,
         };
         (x, y)
     }
 }
-

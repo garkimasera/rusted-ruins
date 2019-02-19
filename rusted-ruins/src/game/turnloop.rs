@@ -1,13 +1,12 @@
-
+use super::chara::preturn::preturn;
+use super::chara::CharaEx;
+use super::npc::process_npc_turn;
+use super::DialogOpenRequest;
+use super::{Game, GameState};
+use crate::text::ToText;
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
 use rules::RULES;
-use crate::text::ToText;
-use super::{Game, GameState};
-use super::chara::CharaEx;
-use super::chara::preturn::preturn;
-use super::npc::process_npc_turn;
-use super::DialogOpenRequest;
 
 pub fn turn_loop(game: &mut Game) {
     loop {
@@ -36,7 +35,11 @@ pub fn turn_loop(game: &mut Game) {
 
 fn decrease_wait_time(game: &mut Game) -> (CharaId, u32) {
     let cids_on_map = game.gd.get_charas_on_map();
-    let min_wt = cids_on_map.iter().map(|&cid| game.gd.chara.get(cid).wait_time).min().unwrap();
+    let min_wt = cids_on_map
+        .iter()
+        .map(|&cid| game.gd.chara.get(cid).wait_time)
+        .min()
+        .unwrap();
 
     if min_wt > 0 {
         for &cid in &cids_on_map {
@@ -81,7 +84,7 @@ fn advance_game_time(game: &mut Game, advanced_clock: u32) {
         RULES.params.minutes_per_turn_normal
     };
     const AVERAGE_CLOCK_PER_TURN: u32 = WAIT_TIME_NUMERATOR / 100;
-    let advanced_secs = minutes_per_turn * 60.0 * advanced_clock as f32 / AVERAGE_CLOCK_PER_TURN as f32;
+    let advanced_secs =
+        minutes_per_turn * 60.0 * advanced_clock as f32 / AVERAGE_CLOCK_PER_TURN as f32;
     game.gd.time.advance(advanced_secs as u64)
 }
-

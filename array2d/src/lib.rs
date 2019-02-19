@@ -1,12 +1,11 @@
-
 //! This crate provide functions for 2d array and vector
 
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use std::ops::{Index, IndexMut, Add, Sub, Mul, Range};
 use std::fmt;
+use std::ops::{Add, Index, IndexMut, Mul, Range, Sub};
 
 const OUT_OF_BOUNDS_ERR_MSG: &'static str = "Array2d: index out of bounds";
 
@@ -107,7 +106,10 @@ pub struct Array2d<T> {
 }
 
 impl<T> Array2d<T> {
-    pub fn from_fn<F>(w: u32, h: u32, f: F) -> Array2d<T> where F: FnMut((u32, u32)) -> T {
+    pub fn from_fn<F>(w: u32, h: u32, f: F) -> Array2d<T>
+    where
+        F: FnMut((u32, u32)) -> T,
+    {
         let len = (w * h) as usize;
         let mut v = Vec::with_capacity(len);
         let mut f = f;
@@ -119,10 +121,8 @@ impl<T> Array2d<T> {
         }
 
         assert!(v.len() == len);
-        
-        Array2d {
-            w: w, h: h, v: v,
-        }
+
+        Array2d { w: w, h: h, v: v }
     }
 
     pub fn size(&self) -> (u32, u32) {
@@ -163,14 +163,15 @@ impl<T> Array2d<T> {
     }
 }
 
-impl<T> Array2d<T> where T: Clone {
+impl<T> Array2d<T>
+where
+    T: Clone,
+{
     pub fn new(w: u32, h: u32, v: T) -> Array2d<T> {
         let len = (w * h) as usize;
         let v = vec![v; len];
 
-        Array2d {
-            w: w, h: h, v: v,
-        }
+        Array2d { w: w, h: h, v: v }
     }
 
     pub fn swap<P: Into<Vec2d>>(&mut self, a: P, b: P) {
@@ -181,12 +182,20 @@ impl<T> Array2d<T> where T: Clone {
         debug_assert!(0 <= b.0 && b.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
         debug_assert!(0 <= b.1 && b.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
 
-        self.v.swap((a.1 * self.w as i32 + a.0) as usize, (b.1 * self.w as i32 + b.0) as usize);
+        self.v.swap(
+            (a.1 * self.w as i32 + a.0) as usize,
+            (b.1 * self.w as i32 + b.0) as usize,
+        );
     }
 
     /// Clip and create new Array2d
     /// Outside of original array is filled by given default value
-    pub fn clip_with_default<P: Into<Vec2d>>(&self, topleft: P, bottomright: P, default: T) -> Array2d<T> {
+    pub fn clip_with_default<P: Into<Vec2d>>(
+        &self,
+        topleft: P,
+        bottomright: P,
+        default: T,
+    ) -> Array2d<T> {
         let topleft = topleft.into();
         let bottomright = bottomright.into();
 
@@ -213,7 +222,7 @@ impl<T> Index<(u32, u32)> for Array2d<T> {
     fn index(&self, index: (u32, u32)) -> &T {
         debug_assert!(index.0 < self.w, OUT_OF_BOUNDS_ERR_MSG);
         debug_assert!(index.1 < self.h, OUT_OF_BOUNDS_ERR_MSG);
-        
+
         &self.v[(index.1 * self.w + index.0) as usize]
     }
 }
@@ -223,7 +232,7 @@ impl<T> IndexMut<(u32, u32)> for Array2d<T> {
     fn index_mut(&mut self, index: (u32, u32)) -> &mut T {
         debug_assert!(index.0 < self.w, OUT_OF_BOUNDS_ERR_MSG);
         debug_assert!(index.1 < self.h, OUT_OF_BOUNDS_ERR_MSG);
-        
+
         &mut self.v[(index.1 * self.w + index.0) as usize]
     }
 }
@@ -232,9 +241,15 @@ impl<T> Index<(i32, i32)> for Array2d<T> {
     type Output = T;
     #[inline]
     fn index(&self, index: (i32, i32)) -> &T {
-        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= index.1 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
-        
+        debug_assert!(
+            0 <= index.0 && index.0 < self.w as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+        debug_assert!(
+            0 <= index.1 && index.1 < self.h as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+
         &self.v[(index.1 as u32 * self.w + index.0 as u32) as usize]
     }
 }
@@ -242,9 +257,15 @@ impl<T> Index<(i32, i32)> for Array2d<T> {
 impl<T> IndexMut<(i32, i32)> for Array2d<T> {
     #[inline]
     fn index_mut(&mut self, index: (i32, i32)) -> &mut T {
-        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= index.1 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
-        
+        debug_assert!(
+            0 <= index.0 && index.0 < self.w as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+        debug_assert!(
+            0 <= index.1 && index.1 < self.h as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+
         &mut self.v[(index.1 as u32 * self.w + index.0 as u32) as usize]
     }
 }
@@ -253,9 +274,15 @@ impl<T> Index<Vec2d> for Array2d<T> {
     type Output = T;
     #[inline]
     fn index(&self, index: Vec2d) -> &T {
-        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= index.0 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
-        
+        debug_assert!(
+            0 <= index.0 && index.0 < self.w as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+        debug_assert!(
+            0 <= index.0 && index.1 < self.h as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+
         &self.v[(index.1 as usize) * self.w as usize + index.0 as usize]
     }
 }
@@ -263,14 +290,23 @@ impl<T> Index<Vec2d> for Array2d<T> {
 impl<T> IndexMut<Vec2d> for Array2d<T> {
     #[inline]
     fn index_mut(&mut self, index: Vec2d) -> &mut T {
-        debug_assert!(0 <= index.0 && index.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= index.1 && index.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
-        
+        debug_assert!(
+            0 <= index.0 && index.0 < self.w as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+        debug_assert!(
+            0 <= index.1 && index.1 < self.h as i32,
+            OUT_OF_BOUNDS_ERR_MSG
+        );
+
         &mut self.v[(index.1 as usize) * self.w as usize + index.0 as usize]
     }
 }
 
-impl<T> fmt::Debug for Array2d<T> where T: fmt::Debug {
+impl<T> fmt::Debug for Array2d<T>
+where
+    T: fmt::Debug,
+{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[")?;
         for y in 0..self.h {
@@ -278,13 +314,13 @@ impl<T> fmt::Debug for Array2d<T> where T: fmt::Debug {
             for x in 0..self.w {
                 if x == self.w - 1 {
                     write!(f, "{:?}", self[(x, y)])?;
-                }else{
+                } else {
                     write!(f, "{:?}, ", self[(x, y)])?;
                 }
             }
             if y == self.h - 1 {
                 write!(f, "]")?;
-            }else{
+            } else {
                 write!(f, "], ")?;
             }
         }
@@ -294,7 +330,10 @@ impl<T> fmt::Debug for Array2d<T> where T: fmt::Debug {
 }
 
 #[derive(Clone)]
-pub struct Array2dIter<'a, T> where T: 'a {
+pub struct Array2dIter<'a, T>
+where
+    T: 'a,
+{
     array: &'a Array2d<T>,
     rectiter: RectIter,
 }
@@ -304,14 +343,17 @@ impl<'a, T> Iterator for Array2dIter<'a, T> {
     fn next(&mut self) -> Option<&'a T> {
         if let Some(a) = self.rectiter.next() {
             Some(&self.array[a])
-        }else{
+        } else {
             None
         }
     }
 }
 
 #[derive(Clone)]
-pub struct Array2dIterWithIdx<'a, T> where T: 'a {
+pub struct Array2dIterWithIdx<'a, T>
+where
+    T: 'a,
+{
     array: &'a Array2d<T>,
     rectiter: RectIter,
 }
@@ -321,7 +363,7 @@ impl<'a, T> Iterator for Array2dIterWithIdx<'a, T> {
     fn next(&mut self) -> Option<(Vec2d, &'a T)> {
         if let Some(a) = self.rectiter.next() {
             Some((a, &self.array[a]))
-        }else{
+        } else {
             None
         }
     }
@@ -329,9 +371,9 @@ impl<'a, T> Iterator for Array2dIterWithIdx<'a, T> {
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct RectIter {
-    top_left:     Vec2d,
+    top_left: Vec2d,
     right_bottom: Vec2d,
-    value:        Vec2d,
+    value: Vec2d,
 }
 
 impl RectIter {
@@ -341,9 +383,9 @@ impl RectIter {
         let right_bottom = right_bottom.into();
 
         RectIter {
-            top_left:     top_left,
+            top_left: top_left,
             right_bottom: right_bottom,
-            value:        Vec2d(top_left.0 - 1, top_left.1),
+            value: Vec2d(top_left.0 - 1, top_left.1),
         }
     }
 
@@ -351,9 +393,9 @@ impl RectIter {
     pub fn one<T: Into<Vec2d>>(t: T) -> RectIter {
         let t = t.into();
         RectIter {
-            top_left:     t,
+            top_left: t,
             right_bottom: t,
-            value:        Vec2d(t.0 - 1, t.1),
+            value: Vec2d(t.0 - 1, t.1),
         }
     }
 
@@ -377,7 +419,7 @@ impl Iterator for RectIter {
             }
             self.value.0 = self.top_left.0;
             self.value.1 += 1;
-        }else{
+        } else {
             self.value.0 += 1;
         }
         Some(self.value)
@@ -386,9 +428,12 @@ impl Iterator for RectIter {
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct LineIter {
-    start: Vec2d, end: Vec2d,
-    slope_mode: bool, dir: i32,
-    a: f64, b: f64,
+    start: Vec2d,
+    end: Vec2d,
+    slope_mode: bool,
+    dir: i32,
+    a: f64,
+    b: f64,
     p: i32,
 }
 
@@ -396,27 +441,36 @@ impl LineIter {
     pub fn new<V: Into<Vec2d>>(start: V, end: V) -> LineIter {
         let start = start.into();
         let end = end.into();
-        
+
         let dx = end.0 - start.0;
         let dy = end.1 - start.1;
         let slope_mode = dx.abs() >= dy.abs();
         let (a, b, dir, p);
         if dx == 0 && dy == 0 {
-            a = 0.0; b = 0.0; dir = 1; p = start.0;
-        }else if slope_mode {
+            a = 0.0;
+            b = 0.0;
+            dir = 1;
+            p = start.0;
+        } else if slope_mode {
             a = dy as f64 / dx as f64;
             b = start.1 as f64 - a * start.0 as f64;
-            dir = if start.0 < end.0 { 1 }else{ -1 };
+            dir = if start.0 < end.0 { 1 } else { -1 };
             p = start.0;
-        }else{
+        } else {
             a = dx as f64 / dy as f64;
             b = start.0 as f64 - a * start.1 as f64;
-            dir = if start.1 < end.1 { 1 }else{ -1 };
+            dir = if start.1 < end.1 { 1 } else { -1 };
             p = start.1;
         }
-        
+
         LineIter {
-            start, end, slope_mode, dir, a, b, p,
+            start,
+            end,
+            slope_mode,
+            dir,
+            a,
+            b,
+            p,
         }
     }
 }
@@ -425,14 +479,15 @@ impl Iterator for LineIter {
     type Item = Vec2d;
     fn next(&mut self) -> Option<Vec2d> {
         if (self.slope_mode && (self.end.0 - self.p) * self.dir < 0)
-            || (!self.slope_mode && (self.end.1 - self.p) * self.dir < 0) {
+            || (!self.slope_mode && (self.end.1 - self.p) * self.dir < 0)
+        {
             return None;
         }
-        
+
         let returnval = if self.slope_mode {
             let y = self.a * self.p as f64 + self.b as f64;
             Vec2d(self.p, y.round() as i32)
-        }else{
+        } else {
             let x = self.a * self.p as f64 + self.b as f64;
             Vec2d(x.round() as i32, self.p)
         };
@@ -458,7 +513,8 @@ impl MDistRangeIter {
         let right_bottom = Vec2d(center.0 + r, center.1 + r);
 
         MDistRangeIter {
-            center, r,
+            center,
+            r,
             rectiter: RectIter::new(top_left, right_bottom),
         }
     }
@@ -478,16 +534,20 @@ impl Iterator for MDistRangeIter {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum HDirection {
-    None, Left, Right,
+    None,
+    Left,
+    Right,
 }
 
 impl HDirection {
     #[inline]
     pub fn as_int(&self) -> i32 {
         match *self {
-            HDirection::None => 0, HDirection::Left => -1, HDirection::Right => 1,
+            HDirection::None => 0,
+            HDirection::Left => -1,
+            HDirection::Right => 1,
         }
     }
 
@@ -509,16 +569,20 @@ impl Default for VDirection {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum VDirection {
-    None, Up, Down,
+    None,
+    Up,
+    Down,
 }
 
 impl VDirection {
     #[inline]
     pub fn as_int(&self) -> i32 {
         match *self {
-            VDirection::None => 0, VDirection::Up => -1, VDirection::Down => 1,
+            VDirection::None => 0,
+            VDirection::Up => -1,
+            VDirection::Down => 1,
         }
     }
 
@@ -548,13 +612,15 @@ pub struct Direction {
 impl Direction {
     pub fn new(hdir: HDirection, vdir: VDirection) -> Direction {
         Direction {
-            hdir: hdir, vdir: vdir,
+            hdir: hdir,
+            vdir: vdir,
         }
     }
 
     pub fn none() -> Direction {
         Direction {
-            hdir: HDirection::None, vdir: VDirection::None,
+            hdir: HDirection::None,
+            vdir: VDirection::None,
         }
     }
     #[inline]
@@ -566,17 +632,51 @@ impl Direction {
         self.hdir.is_none() && self.vdir.is_none()
     }
 
-    pub const N:  Direction = Direction { hdir: HDirection::None,  vdir: VDirection::Up   };
-    pub const S:  Direction = Direction { hdir: HDirection::None,  vdir: VDirection::Down };
-    pub const E:  Direction = Direction { hdir: HDirection::Right, vdir: VDirection::None };
-    pub const W:  Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::None };
-    pub const NE: Direction = Direction { hdir: HDirection::Right, vdir: VDirection::Up   };
-    pub const NW: Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::Up   };
-    pub const SE: Direction = Direction { hdir: HDirection::Right, vdir: VDirection::Down };
-    pub const SW: Direction = Direction { hdir: HDirection::Left,  vdir: VDirection::Down };
-    pub const NONE: Direction = Direction { hdir: HDirection::None,  vdir: VDirection::None };
+    pub const N: Direction = Direction {
+        hdir: HDirection::None,
+        vdir: VDirection::Up,
+    };
+    pub const S: Direction = Direction {
+        hdir: HDirection::None,
+        vdir: VDirection::Down,
+    };
+    pub const E: Direction = Direction {
+        hdir: HDirection::Right,
+        vdir: VDirection::None,
+    };
+    pub const W: Direction = Direction {
+        hdir: HDirection::Left,
+        vdir: VDirection::None,
+    };
+    pub const NE: Direction = Direction {
+        hdir: HDirection::Right,
+        vdir: VDirection::Up,
+    };
+    pub const NW: Direction = Direction {
+        hdir: HDirection::Left,
+        vdir: VDirection::Up,
+    };
+    pub const SE: Direction = Direction {
+        hdir: HDirection::Right,
+        vdir: VDirection::Down,
+    };
+    pub const SW: Direction = Direction {
+        hdir: HDirection::Left,
+        vdir: VDirection::Down,
+    };
+    pub const NONE: Direction = Direction {
+        hdir: HDirection::None,
+        vdir: VDirection::None,
+    };
 
     pub const EIGHT_DIRS: [Direction; 8] = [
-        Self::E, Self::SE, Self::S, Self::SW, Self::W, Self::NW, Self::N, Self::NE
+        Self::E,
+        Self::SE,
+        Self::S,
+        Self::SW,
+        Self::W,
+        Self::NW,
+        Self::N,
+        Self::NE,
     ];
 }

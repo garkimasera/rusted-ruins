@@ -1,7 +1,6 @@
-
 use array2d::*;
-use common::objholder::AnimImgIdx;
 use common::gobj;
+use common::objholder::AnimImgIdx;
 
 #[derive(Clone, Copy)]
 pub enum Animation {
@@ -32,12 +31,9 @@ impl Animation {
             &Animation::Shot { n_frame, .. } => n_frame,
         }
     }
-    
+
     pub fn player_move(dir: Direction) -> Animation {
-        Animation::PlayerMove {
-            n_frame: 6,
-            dir,
-        }
+        Animation::PlayerMove { n_frame: 6, dir }
     }
 
     pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
@@ -61,8 +57,15 @@ impl Animation {
             8 => calc_arrow_dir(dir),
             _ => 1,
         };
-        
-        Animation::Shot { n_frame, n_image, idx, dir, start, target }
+
+        Animation::Shot {
+            n_frame,
+            n_image,
+            idx,
+            dir,
+            start,
+            target,
+        }
     }
 }
 
@@ -98,4 +101,3 @@ fn calc_arrow_dir(dir: (f32, f32)) -> u32 {
         }
     }
 }
-

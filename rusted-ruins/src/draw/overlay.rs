@@ -1,9 +1,8 @@
-
-use array2d::*;
-use common::piece_pattern::*;
-use common::objholder::EffectIdx;
-use crate::game::{Game, InfoGetter};
 use crate::game::frequent_tex::Overlay;
+use crate::game::{Game, InfoGetter};
+use array2d::*;
+use common::objholder::EffectIdx;
+use common::piece_pattern::*;
 
 pub enum FogPattern {
     None,
@@ -44,13 +43,15 @@ pub fn all(game: &Game) -> Option<EffectIdx> {
     let dusk_hour = 18;
     assert!(dawn_hour < dusk_hour);
 
-    if dawn_hour < hour && hour < dusk_hour { // Daytime
+    if dawn_hour < hour && hour < dusk_hour {
+        // Daytime
         None
     } else if hour == dawn_hour {
         Some(game.frequent_tex.overlay_idx(twilight(minute)))
     } else if hour == dusk_hour {
         Some(game.frequent_tex.overlay_idx(twilight(60 - minute)))
-    } else { // Night
+    } else {
+        // Night
         Some(game.frequent_tex.overlay_idx(Overlay::Night))
     }
 }
@@ -64,4 +65,3 @@ fn twilight(minute: u16) -> Overlay {
         Overlay::Twilight2
     }
 }
-

@@ -1,4 +1,3 @@
-
 // Basic parameters for this game
 
 /// Size of one tile
@@ -54,4 +53,3 @@ pub const MAX_ITEM_FOR_DRAW: usize = 5;
 
 /// The number of tile image layers
 pub const N_TILE_IMG_LAYER: usize = 4;
-

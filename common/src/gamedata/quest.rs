@@ -1,11 +1,12 @@
-
-use std::slice::{Iter, IterMut};
-use crate::objholder::CharaTemplateIdx;
 use super::defs::Reward;
+use crate::objholder::CharaTemplateIdx;
+use std::slice::{Iter, IterMut};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum QuestState {
-    Active, Completed, RewardReceived
+    Active,
+    Completed,
+    RewardReceived,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -15,9 +16,7 @@ pub struct QuestHolder {
 
 impl QuestHolder {
     pub fn new() -> QuestHolder {
-        QuestHolder {
-            quests: Vec::new(),
-        }
+        QuestHolder { quests: Vec::new() }
     }
 
     pub fn iter(&self) -> Iter<(QuestState, Quest)> {
@@ -33,7 +32,8 @@ impl QuestHolder {
     }
 
     pub fn remove_reward_received(&mut self) {
-        self.quests.retain(|&(state, _)| state != QuestState::RewardReceived);
+        self.quests
+            .retain(|&(state, _)| state != QuestState::RewardReceived);
     }
 }
 
@@ -50,10 +50,7 @@ pub enum Quest {
 impl Quest {
     pub fn reward(&self) -> &Reward {
         match self {
-            Quest::SlayMonsters { reward, .. } => {
-                reward
-            }
+            Quest::SlayMonsters { reward, .. } => reward,
         }
     }
 }
-

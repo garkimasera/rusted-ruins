@@ -1,9 +1,8 @@
-
-use fnv::FnvHashMap;
 use super::item::WeaponKind;
+use fnv::FnvHashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum SkillKind {
     Endurance,
     Healing,
@@ -16,7 +15,7 @@ pub enum SkillKind {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SkillList {
     pub skills: FnvHashMap<SkillKind, u32>,
-    pub exp: Option<FnvHashMap<SkillKind, u16>>
+    pub exp: Option<FnvHashMap<SkillKind, u16>>,
 }
 
 impl Default for SkillList {
@@ -37,4 +36,3 @@ impl SkillList {
         }
     }
 }
-

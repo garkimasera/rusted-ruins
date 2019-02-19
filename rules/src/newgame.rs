@@ -1,7 +1,6 @@
-
-use std::collections::HashMap;
 use array2d::Vec2d;
 use common::gamedata::*;
+use std::collections::HashMap;
 
 /// Rules for starting new game
 #[derive(Serialize, Deserialize)]
@@ -14,4 +13,3 @@ pub struct NewGame {
     pub chara_template_table: HashMap<CharaClass, String>,
     pub common_initial_skills: Vec<SkillKind>,
 }
-

@@ -1,13 +1,12 @@
-
-use std::ops::{Index, IndexMut};
-use array2d::*;
 use crate::basic::N_TILE_IMG_LAYER;
-use crate::piece_pattern::*;
-use crate::gamedata::ItemGen;
-#[cfg(feature="global_state_obj")]
+#[cfg(feature = "global_state_obj")]
 use crate::gamedata::map::TileLayers;
-#[cfg(feature="global_state_obj")]
+use crate::gamedata::ItemGen;
+#[cfg(feature = "global_state_obj")]
 use crate::objholder::ObjectIndex;
+use crate::piece_pattern::*;
+use array2d::*;
+use std::ops::{Index, IndexMut};
 
 /// Data for constructing one map
 #[derive(Serialize, Deserialize)]
@@ -46,7 +45,10 @@ impl IndexMut<usize> for TileLayersConverted {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum MapTemplateBoundaryBehavior {
-    None, NextFloor, PrevFloor, RegionMap
+    None,
+    NextFloor,
+    PrevFloor,
+    RegionMap,
 }
 
 impl Default for MapTemplateBoundaryBehavior {
@@ -67,10 +69,13 @@ pub struct MapTemplateBoundary {
 pub trait ConvertableIndex {
     fn conv_into(self, table: &Vec<String>) -> u32;
     fn conv_from(value: u32, table: &Vec<String>) -> Self;
-}    
+}
 
-#[cfg(feature="global_state_obj")]
-impl<T> ConvertableIndex for T where T: ObjectIndex + Default {
+#[cfg(feature = "global_state_obj")]
+impl<T> ConvertableIndex for T
+where
+    T: ObjectIndex + Default,
+{
     fn conv_into(self, table: &Vec<String>) -> u32 {
         use crate::gobj;
         let id = gobj::idx_to_id(self);
@@ -87,8 +92,11 @@ impl<T> ConvertableIndex for T where T: ObjectIndex + Default {
     }
 }
 
-#[cfg(feature="global_state_obj")]
-impl<T> IdxWithPiecePattern<T> where T: ObjectIndex + Default {
+#[cfg(feature = "global_state_obj")]
+impl<T> IdxWithPiecePattern<T>
+where
+    T: ObjectIndex + Default,
+{
     pub fn conv_into(self, table: &Vec<String>) -> ConvertedIdxPP {
         if let Some((idx, pp)) = self.get() {
             let cidx = idx.conv_into(table);
@@ -110,7 +118,7 @@ impl<T> IdxWithPiecePattern<T> where T: ObjectIndex + Default {
     }
 }
 
-#[cfg(feature="global_state_obj")]
+#[cfg(feature = "global_state_obj")]
 impl TileLayers {
     pub fn conv_into(self, table: &Vec<String>) -> TileLayersConverted {
         let mut c = [ConvertedIdxPP::default(); N_TILE_IMG_LAYER];
@@ -128,4 +136,3 @@ impl TileLayers {
         TileLayers(o)
     }
 }
-

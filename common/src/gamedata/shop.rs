@@ -1,8 +1,7 @@
-
 use crate::gamedata::item::ItemList;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum ShopKind {
     /// Sells weapons and armors
     Equipment,
@@ -19,4 +18,3 @@ pub struct Shop {
     /// Shop level is used to choose shop items
     pub level: u32,
 }
-

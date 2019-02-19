@@ -9,12 +9,13 @@ pub trait CharaStatusOperation {
 
 impl CharaStatusOperation for Chara {
     fn add_status(&mut self, new_status: CharaStatus) {
-
         match new_status {
             CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => {
                 self.remove_sp_status();
             }
-            CharaStatus::Asleep { turn_left: turn_left_new }=> {
+            CharaStatus::Asleep {
+                turn_left: turn_left_new,
+            } => {
                 for s in self.status.iter_mut() {
                     match *s {
                         // Update left sleeping turn
@@ -84,4 +85,3 @@ impl CharaStatusEx for CharaStatus {
         }
     }
 }
-

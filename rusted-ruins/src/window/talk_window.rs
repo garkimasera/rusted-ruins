@@ -1,17 +1,16 @@
-
-use super::commonuse::*;
-use super::widget::*;
-use std::borrow::Cow;
-use std::any::Any;
-use common::objholder::CharaTemplateIdx;
-use common::basic::TILE_SIZE;
-use crate::game::{TalkText, AdvanceScriptResult};
-use crate::context::textrenderer::FontKind;
-use crate::config::UI_CFG;
-use super::misc_window::ImageWindow;
 use super::choose_window::ChooseWindow;
+use super::commonuse::*;
+use super::misc_window::ImageWindow;
+use super::widget::*;
 use super::winpos::*;
+use crate::config::UI_CFG;
+use crate::context::textrenderer::FontKind;
+use crate::game::{AdvanceScriptResult, TalkText};
 use crate::text;
+use common::basic::TILE_SIZE;
+use common::objholder::CharaTemplateIdx;
+use std::any::Any;
+use std::borrow::Cow;
 
 pub struct TalkWindow {
     rect: Rect,
@@ -24,16 +23,19 @@ pub struct TalkWindow {
 
 impl TalkWindow {
     pub fn new(talk_text: TalkText, chara_template_idx: CharaTemplateIdx) -> TalkWindow {
-        
         let rect: Rect = UI_CFG.talk_window.rect.into();
         let label = LineSpecifiedLabelWidget::new(
             Rect::new(0, 0, rect.width(), rect.height()),
-            &[""], FontKind::M, UI_CFG.talk_window.n_default_line);
+            &[""],
+            FontKind::M,
+            UI_CFG.talk_window.n_default_line,
+        );
         let rect_image_window = Rect::new(
             rect.x + UI_CFG.talk_window.image_window_pos_x,
             rect.y + UI_CFG.talk_window.image_window_pos_y,
             TILE_SIZE,
-            TILE_SIZE * 2);
+            TILE_SIZE * 2,
+        );
         let mut talk_window = TalkWindow {
             rect,
             talk_text,
@@ -52,27 +54,28 @@ impl TalkWindow {
             self.msg_text = MsgText::new(&*talk_text.text_id);
             self.choose_win = None;
         }
-        
+
         // Create answers
         if self.msg_text.is_final_page() {
             if let Some(choices) = self.talk_text.choices {
                 let winpos = WindowPos::new(
                     WindowHPos::RightX(self.rect.right()),
-                    WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs));
-                let choices: Vec<String> =
-                    choices.iter().map(|a| text::talk_txt(&*a.0).to_owned()).collect();
+                    WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs),
+                );
+                let choices: Vec<String> = choices
+                    .iter()
+                    .map(|a| text::talk_txt(&*a.0).to_owned())
+                    .collect();
                 self.choose_win = Some(ChooseWindow::new(winpos, choices, None));
             }
         }
-        
+
         self.label.set_text(self.msg_text.page_lines());
     }
 }
 
 impl Window for TalkWindow {
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         self.image_window.draw(context, game, anim);
         draw_rect_border(context, self.rect);
         self.label.draw(context);
@@ -84,7 +87,6 @@ impl Window for TalkWindow {
 
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        
         if let Some(ref mut choose_win) = self.choose_win {
             match choose_win.process_command(command, pa) {
                 // When one answer is choosed
@@ -107,7 +109,7 @@ impl DialogWindow for TalkWindow {
                 _ => (),
             }
         }
-        
+
         match *command {
             Command::Enter => {
                 // If all text of the section has been displayed,
@@ -118,19 +120,15 @@ impl DialogWindow for TalkWindow {
                             self.update_page(Some(talk_text));
                             DialogResult::Continue
                         }
-                        AdvanceScriptResult::Continue => {
-                            DialogResult::Continue
-                        }
-                        AdvanceScriptResult::Quit => {
-                            DialogResult::Close
-                        }
+                        AdvanceScriptResult::Continue => DialogResult::Continue,
+                        AdvanceScriptResult::Quit => DialogResult::Close,
                     }
                 } else {
                     self.msg_text.next_page();
                     self.update_page(None);
                     DialogResult::Continue
                 }
-            },
+            }
             _ => DialogResult::Continue,
         }
     }
@@ -141,19 +139,17 @@ impl DialogWindow for TalkWindow {
 
     /// When child window is closed, call advance_script(), and update text.
     fn callback_child_closed(
-        &mut self, _result: Option<Box<dyn Any>>, pa: &mut DoPlayerAction) -> DialogResult {
-
+        &mut self,
+        _result: Option<Box<dyn Any>>,
+        pa: &mut DoPlayerAction,
+    ) -> DialogResult {
         match pa.advance_script() {
             AdvanceScriptResult::UpdateTalkText(talk_text) => {
                 self.update_page(Some(talk_text));
                 DialogResult::Continue
             }
-            AdvanceScriptResult::Continue => {
-                DialogResult::Continue
-            }
-            AdvanceScriptResult::Quit => {
-                DialogResult::Close
-            }
+            AdvanceScriptResult::Continue => DialogResult::Continue,
+            AdvanceScriptResult::Quit => DialogResult::Close,
         }
     }
 }
@@ -177,7 +173,7 @@ impl MsgText {
         } else {
             lines.push(text_id.to_owned().into());
         }
-        
+
         MsgText {
             lines,
             current_line: 0,
@@ -202,4 +198,3 @@ impl MsgText {
         self.current_line + self.n_default_line >= self.n_line()
     }
 }
-

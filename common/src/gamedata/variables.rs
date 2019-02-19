@@ -1,6 +1,5 @@
-
-use crate::script::Value;
 use crate::hashmap::HashMap;
+use crate::script::Value;
 
 /// Holds variables which are referenced in scripts
 #[derive(Debug, Serialize, Deserialize)]
@@ -36,4 +35,3 @@ impl Variables {
         self.global.insert("?".to_owned(), v);
     }
 }
-

@@ -1,9 +1,8 @@
-
-use std::borrow::Cow;
+use crate::text::{self, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
-use crate::text::{self, ToText, ToTextId};
+use std::borrow::Cow;
 
 impl<T: ToTextId> ToText for T {
     fn to_text(&self) -> Cow<str> {
@@ -17,14 +16,10 @@ impl ToText for Site {
             let name: &str = &*name;
             return name.into();
         }
-        
+
         match self.content {
-            SiteContent::AutoGenDungeon { dungeon_kind } => {
-                text::to_txt(&dungeon_kind).into()
-            }
-            SiteContent::Town { ref town } => {
-                text::obj_txt(town.id()).into()
-            }
+            SiteContent::AutoGenDungeon { dungeon_kind } => text::to_txt(&dungeon_kind).into(),
+            SiteContent::Town { ref town } => text::obj_txt(town.id()).into(),
             SiteContent::Other => {
                 warn!("Unnamed other kind site");
                 "".into()
@@ -91,4 +86,3 @@ impl<'a> ToText for Cow<'a, str> {
         self.to_string().into()
     }
 }
-

@@ -1,11 +1,11 @@
-
-use super::{CfgRect, CfgColor};
+use super::{CfgColor, CfgRect};
 
 /// Size of screen and rects of windows
 /// These parameters will change if screen size is different
 #[derive(Debug, Deserialize)]
 pub struct ScreenConfig {
-    pub screen_w: u32, pub screen_h: u32,
+    pub screen_w: u32,
+    pub screen_h: u32,
     pub main_window: CfgRect,
     pub log_window: CfgRect,
     pub minimap_window: CfgRect,
@@ -30,7 +30,7 @@ pub struct BorderConfig {
 pub struct UIConfig {
     pub cursor_move_duration: u64,
     pub gap_len_between_dialogs: i32,
-    
+
     pub color: UIColorConfig,
     pub font: Font,
     pub log_window: LogWindowConfig,
@@ -211,4 +211,3 @@ pub struct ListWidgetConfig {
     pub h_row_with_text: i32,
     pub left_margin: i32,
 }
-

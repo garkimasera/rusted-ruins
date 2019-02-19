@@ -1,11 +1,10 @@
-
-use std::collections::HashMap;
-use std::path::Path;
+use super::map::*;
+use super::site::*;
+use super::unknown_id_err;
 use array2d::*;
 use filebox::FileBox;
-use super::site::*;
-use super::map::*;
-use super::unknown_id_err;
+use std::collections::HashMap;
+use std::path::Path;
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct RegionId(pub(crate) u32);
@@ -56,40 +55,61 @@ impl RegionHolder {
     pub fn get_mut_checked(&mut self, rid: RegionId) -> Option<&mut Region> {
         self.0.get_mut(&rid)
     }
-    
+
     pub fn get_site(&self, sid: SiteId) -> &Site {
-        let region = self.0.get(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
-        &region.sites.get(&sid).unwrap_or_else(|| unknown_id_err(sid)).site
+        let region = self
+            .0
+            .get(&sid.rid)
+            .unwrap_or_else(|| unknown_id_err(sid.rid));
+        &region
+            .sites
+            .get(&sid)
+            .unwrap_or_else(|| unknown_id_err(sid))
+            .site
     }
 
     pub fn get_site_mut(&mut self, sid: SiteId) -> &mut Site {
-        let region = self.0.get_mut(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
-        &mut region.sites.get_mut(&sid).unwrap_or_else(|| unknown_id_err(sid)).site
+        let region = self
+            .0
+            .get_mut(&sid.rid)
+            .unwrap_or_else(|| unknown_id_err(sid.rid));
+        &mut region
+            .sites
+            .get_mut(&sid)
+            .unwrap_or_else(|| unknown_id_err(sid))
+            .site
     }
 
     pub fn get_site_pos(&self, sid: SiteId) -> Vec2d {
-        let region = self.0.get(&sid.rid).unwrap_or_else(|| unknown_id_err(sid.rid));
-        region.sites.get(&sid).unwrap_or_else(|| unknown_id_err(sid)).pos
+        let region = self
+            .0
+            .get(&sid.rid)
+            .unwrap_or_else(|| unknown_id_err(sid.rid));
+        region
+            .sites
+            .get(&sid)
+            .unwrap_or_else(|| unknown_id_err(sid))
+            .pos
     }
 
     pub fn get_map(&self, mid: MapId) -> &Map {
         match mid {
-            MapId::SiteMap { sid, floor } => { self.get_site(sid).get_map(floor) }
-            MapId::RegionMap { rid } => { &self.get(rid).map }
+            MapId::SiteMap { sid, floor } => self.get_site(sid).get_map(floor),
+            MapId::RegionMap { rid } => &self.get(rid).map,
         }
     }
 
     pub fn get_map_mut(&mut self, mid: MapId) -> &mut Map {
         match mid {
-            MapId::SiteMap { sid, floor } => { self.get_site_mut(sid).get_map_mut(floor) }
-            MapId::RegionMap { rid } => { &mut self.get_mut(rid).map }
+            MapId::SiteMap { sid, floor } => self.get_site_mut(sid).get_map_mut(floor),
+            MapId::RegionMap { rid } => &mut self.get_mut(rid).map,
         }
     }
 
     pub fn get_boxed_map_mut(&mut self, mid: MapId) -> &mut BoxedMap {
         match mid {
-            MapId::SiteMap { sid, floor } => { self.get_site_mut(sid).get_boxed_map_mut(floor) }
-            MapId::RegionMap { rid } => { &mut self.get_mut(rid).map }
+            MapId::SiteMap { sid, floor } => self.get_site_mut(sid).get_boxed_map_mut(floor),
+            MapId::RegionMap { rid } => &mut self.get_mut(rid).map,
         }
     }
 
@@ -112,7 +132,7 @@ impl RegionHolder {
                     false
                 }
             }
-            MapId::RegionMap { rid } => self.0.contains_key(&rid)
+            MapId::RegionMap { rid } => self.0.contains_key(&rid),
         }
     }
 
@@ -122,9 +142,7 @@ impl RegionHolder {
                 let site = self.get_site_checked(sid)?;
                 site.get_map_checked(floor)
             }
-            MapId::RegionMap { rid } => {
-                Some(&self.get_checked(rid)?.map)
-            }
+            MapId::RegionMap { rid } => Some(&self.get_checked(rid)?.map),
         }
     }
 
@@ -134,9 +152,7 @@ impl RegionHolder {
                 let site = self.get_site_checked(sid)?;
                 site.get_map_checked(floor)
             }
-            MapId::RegionMap { rid } => {
-                Some(&self.get_checked(rid)?.map)
-            }
+            MapId::RegionMap { rid } => Some(&self.get_checked(rid)?.map),
         }
     }
 
@@ -159,9 +175,7 @@ impl RegionHolder {
                 let site = self.get_site_mut_checked(sid)?;
                 site.get_map_mut_checked(floor)
             }
-            MapId::RegionMap { rid } => {
-                Some(&mut self.get_mut_checked(rid)?.map)
-            }
+            MapId::RegionMap { rid } => Some(&mut self.get_mut_checked(rid)?.map),
         }
     }
 
@@ -195,7 +209,6 @@ impl RegionHolder {
 
 impl Region {
     pub fn new(name: &str, map: Map, map_random_id: u64) -> Region {
-        
         Region {
             name: name.to_owned(),
             id: RegionId(0),
@@ -212,7 +225,7 @@ impl Region {
         let sid = SiteId {
             rid: self.id,
             kind: kind,
-            n: n
+            n: n,
         };
         let site_info = SiteInfo { site, pos: pos };
         self.sites.insert(sid, site_info);
@@ -244,7 +257,11 @@ impl Region {
 
     fn search_empty_n(&self, kind: SiteKind) -> u32 {
         for n in 0.. {
-            let sid = SiteId { rid: self.id, kind, n };
+            let sid = SiteId {
+                rid: self.id,
+                kind,
+                n,
+            };
             if self.sites.get(&sid).is_none() {
                 return n;
             }
@@ -252,4 +269,3 @@ impl Region {
         unreachable!()
     }
 }
-

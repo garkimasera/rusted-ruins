@@ -1,4 +1,3 @@
-
 /// Various parameters for game playing
 #[derive(Serialize, Deserialize)]
 pub struct Params {
@@ -15,4 +14,3 @@ pub struct Params {
     /// Initial game date (hour)
     pub initial_date_hour: u32,
 }
-

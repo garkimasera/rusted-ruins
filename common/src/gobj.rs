@@ -1,10 +1,9 @@
-
 //! This module provides global state objholder
 
+use crate::objholder::*;
+use lazy_static::lazy_static;
 use std::path::PathBuf;
 use std::sync::Mutex;
-use lazy_static::lazy_static;
-use crate::objholder::*;
 
 /// Initialize lazy static
 pub fn init(pak_dirs: Vec<PathBuf>) {
@@ -58,4 +57,3 @@ pub fn get_by_id<T: FromId>(id: &str) -> &'static T {
 pub fn get_by_id_checked<T: FromId>(id: &str) -> Option<&'static T> {
     T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER)
 }
-

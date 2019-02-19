@@ -1,4 +1,3 @@
-
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
@@ -15,11 +14,11 @@ pub mod params;
 pub mod quest;
 pub mod town;
 
+use lazy_static::lazy_static;
+use serde::de::Deserialize;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
-use std::fs;
-use serde::de::Deserialize;
-use lazy_static::lazy_static;
 
 /// Contain game rules
 pub struct Rules {
@@ -36,14 +35,14 @@ pub struct Rules {
 impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
         Rules {
-            chara:       read_from_json(&rules_dir.join("chara.json")),
-            chara_gen:   read_from_json(&rules_dir.join("charagen.json")),
+            chara: read_from_json(&rules_dir.join("chara.json")),
+            chara_gen: read_from_json(&rules_dir.join("charagen.json")),
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
-            exp:         read_from_json(&rules_dir.join("exp.json")),
-            newgame:     read_from_json(&rules_dir.join("newgame.json")),
-            params:      read_from_json(&rules_dir.join("params.json")),
-            quest:       read_from_json(&rules_dir.join("quest.json")),
-            town:        read_from_json(&rules_dir.join("town.json")),
+            exp: read_from_json(&rules_dir.join("exp.json")),
+            newgame: read_from_json(&rules_dir.join("newgame.json")),
+            params: read_from_json(&rules_dir.join("params.json")),
+            quest: read_from_json(&rules_dir.join("quest.json")),
+            town: read_from_json(&rules_dir.join("town.json")),
         }
     }
 }
@@ -52,11 +51,17 @@ fn read_from_json<T: for<'de> Deserialize<'de>>(file_path: &Path) -> T {
     info!("Rule file loading: \"{}\"", file_path.to_string_lossy());
     let file = match fs::File::open(file_path) {
         Ok(o) => o,
-        Err(e) => { error!("{}", e); exit_err() },
+        Err(e) => {
+            error!("{}", e);
+            exit_err()
+        }
     };
     match serde_json::from_reader(file) {
         Ok(o) => o,
-        Err(e) => { error!("{}", e); exit_err() },
+        Err(e) => {
+            error!("{}", e);
+            exit_err()
+        }
     }
 }
 

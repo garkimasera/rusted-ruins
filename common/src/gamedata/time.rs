@@ -1,4 +1,3 @@
-
 pub const DAYS_PER_MONTH: u64 = 30;
 pub const SECS_PER_MIN: u64 = 60;
 pub const SECS_PER_HOUR: u64 = SECS_PER_MIN * 60;
@@ -17,9 +16,10 @@ impl GameTime {
         assert!(1 <= months && months <= 12);
         assert!(1 <= days && days <= DAYS_PER_MONTH as u32);
 
-        let start =
-            years as u64 * SECS_PER_YEAR + (months - 1) as u64 * SECS_PER_MONTH
-            + (days - 1) as u64 * SECS_PER_DAY + hours as u64 * SECS_PER_HOUR;
+        let start = years as u64 * SECS_PER_YEAR
+            + (months - 1) as u64 * SECS_PER_MONTH
+            + (days - 1) as u64 * SECS_PER_DAY
+            + hours as u64 * SECS_PER_HOUR;
         let start = Time::from_seconds(start);
         GameTime {
             start,
@@ -90,13 +90,20 @@ pub struct Duration {
 
 impl Duration {
     pub const fn new(
-        years: u64, months: u64, days: u64, hours: u64,
-        mins: u64, secs: u64) -> Duration {
-
+        years: u64,
+        months: u64,
+        days: u64,
+        hours: u64,
+        mins: u64,
+        secs: u64,
+    ) -> Duration {
         Duration {
-            secs: years * SECS_PER_YEAR + months * SECS_PER_MONTH
-                + days * SECS_PER_DAY + hours * SECS_PER_HOUR
-                + mins * SECS_PER_MIN + secs
+            secs: years * SECS_PER_YEAR
+                + months * SECS_PER_MONTH
+                + days * SECS_PER_DAY
+                + hours * SECS_PER_HOUR
+                + mins * SECS_PER_MIN
+                + secs,
         }
     }
 
@@ -105,15 +112,21 @@ impl Duration {
     }
 
     pub const fn from_minutes(mins: u64) -> Duration {
-        Duration { secs: mins * SECS_PER_MIN }
+        Duration {
+            secs: mins * SECS_PER_MIN,
+        }
     }
 
     pub const fn from_hours(hours: u64) -> Duration {
-        Duration { secs: hours * SECS_PER_HOUR }
+        Duration {
+            secs: hours * SECS_PER_HOUR,
+        }
     }
 
     pub const fn from_days(days: u64) -> Duration {
-        Duration { secs: days * SECS_PER_DAY }
+        Duration {
+            secs: days * SECS_PER_DAY,
+        }
     }
 
     pub const fn as_hours(self) -> i32 {
@@ -130,4 +143,3 @@ pub struct Date {
     pub month: u16,
     pub year: u32,
 }
-

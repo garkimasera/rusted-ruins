@@ -1,10 +1,10 @@
 //! Quest handlings
 
+use super::chara::gen::choose_npc_chara_template;
+use super::Game;
 use common::gamedata::*;
 use common::objholder::CharaTemplateIdx;
 use rules::RULES;
-use super::Game;
-use super::chara::gen::choose_npc_chara_template;
 
 /// Update quest list of current town
 pub fn update_town_quest(gd: &mut GameData) {
@@ -50,20 +50,19 @@ fn gen_quest() -> Quest {
     };
 
     Quest::SlayMonsters {
-        reward, 
-        idx: choose_npc_chara_template(
-            &RULES.quest.slay_race_probability,
-            1),
+        reward,
+        idx: choose_npc_chara_template(&RULES.quest.slay_race_probability, 1),
         goal: 10,
         killed: 0,
     }
 }
 
 pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
-
     for (state, quest) in gd.quest.iter_mut() {
         match quest {
-            Quest::SlayMonsters { idx, goal, killed, .. } => {
+            Quest::SlayMonsters {
+                idx, goal, killed, ..
+            } => {
                 if *state == QuestState::Active && *idx == t {
                     *killed += 1;
                     if *killed == *goal {
@@ -97,4 +96,3 @@ pub fn receive_rewards(gd: &mut GameData) -> bool {
     }
     exist_completed_quest
 }
-

@@ -1,16 +1,15 @@
 /// Helper crate to save maps for each file.
-
 mod ser;
 
-use std::cell::Cell;
-use std::fmt::Debug;
-use std::path::{PathBuf, Path};
-use std::io::{Write, Read, BufReader, BufWriter};
-use std::fs::File;
-use std::ops::{Deref, DerefMut};
 use flate2::bufread::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use std::cell::Cell;
+use std::fmt::Debug;
+use std::fs::File;
+use std::io::{BufReader, BufWriter, Read, Write};
+use std::ops::{Deref, DerefMut};
+use std::path::{Path, PathBuf};
 
 pub trait WithId: Sized {
     type Error: From<std::io::Error>;
@@ -60,7 +59,7 @@ impl<T: WithId> FileBox<T> {
             inner: Some(Box::new(data)),
         }
     }
-    
+
     pub fn empty(id: u64) -> FileBox<T> {
         FileBox {
             id,
@@ -75,7 +74,10 @@ impl<T: WithId> FileBox<T> {
 
     pub fn write_force<P: AsRef<Path>>(s: &Self, p: P) -> Result<(), T::Error> {
         if let Some(a) = &s.inner {
-            let mut file = GzEncoder::new(BufWriter::new(File::create(s.path(p))?), Compression::fast());
+            let mut file = GzEncoder::new(
+                BufWriter::new(File::create(s.path(p))?),
+                Compression::fast(),
+            );
             T::write(&mut file, &a)?;
             s.changed.set(false);
         }
@@ -99,11 +101,10 @@ impl<T: WithId> FileBox<T> {
         if self.inner.is_some() {
             return Ok(());
         }
-        
+
         let mut file = GzDecoder::new(BufReader::new(File::open(self.path(p))?));
         self.inner = Some(Box::new(T::read(&mut file)?));
-        
+
         Ok(())
     }
 }
-

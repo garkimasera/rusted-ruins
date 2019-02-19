@@ -1,13 +1,12 @@
-
-use crate::config::SCREEN_CFG;
 use super::commonuse::*;
+use super::text_input_dialog::TextInputDialog;
+use super::text_window::{ScrollingTextWindow, TextWindow};
 use super::widget::*;
+use super::SpecialDialogResult;
+use crate::config::SCREEN_CFG;
+use crate::game::newgame::NewGameBuilder;
 use crate::text;
 use common::gamedata::*;
-use crate::game::newgame::NewGameBuilder;
-use super::text_window::{TextWindow, ScrollingTextWindow};
-use super::text_input_dialog::TextInputDialog;
-use super::SpecialDialogResult;
 use rules::RULES;
 
 /// Newgame processes with next order
@@ -26,12 +25,12 @@ pub struct NewGameWindow {
 impl NewGameWindow {
     pub fn new() -> NewGameWindow {
         let rect = Rect::new(0, 0, SCREEN_CFG.screen_w, SCREEN_CFG.screen_h);
-        
+
         NewGameWindow {
             back_image: ImageWidget::ui_img(rect, "!title-screen"),
         }
     }
-    
+
     pub fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         self.back_image.draw(context);
     }
@@ -61,11 +60,13 @@ impl DummyNewGameDialog {
 
 impl Window for DummyNewGameDialog {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
                 self.explanation_text.draw(context, game, anim);
-                self.name_input_dialog.as_mut().unwrap().draw(context, game, anim);
+                self.name_input_dialog
+                    .as_mut()
+                    .unwrap()
+                    .draw(context, game, anim);
             }
             NewGameBuildStage::ChooseClass => {
                 self.explanation_text.draw(context, game, anim);
@@ -86,7 +87,8 @@ impl DialogWindow for DummyNewGameDialog {
                 match name_input_dialog.process_command(command, pa) {
                     DialogResult::Close => {
                         let player_name = name_input_dialog.get_text();
-                        if player_name != "" { // If input text is invalid for character name
+                        if player_name != "" {
+                            // If input text is invalid for character name
                             self.builder.as_mut().unwrap().set_player_name(player_name);
                             self.explanation_text = explanation_text_window("newgame.chooseclass");
                             self.stage = NewGameBuildStage::ChooseClass;
@@ -103,7 +105,8 @@ impl DialogWindow for DummyNewGameDialog {
                         let chara_class = chara_class.downcast::<CharaClass>().unwrap();
                         self.builder.as_mut().unwrap().set_chara_class(*chara_class);
                         self.stage = NewGameBuildStage::OpeningText;
-                        { // Skip OP text
+                        {
+                            // Skip OP text
                             let builder = self.builder.take().unwrap();
                             let gd = builder.build();
                             return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
@@ -121,7 +124,9 @@ impl DialogWindow for DummyNewGameDialog {
                         }
                     }
                     Command::Cancel => (),
-                    _ => { return DialogResult::Continue; }
+                    _ => {
+                        return DialogResult::Continue;
+                    }
                 }
                 let builder = self.builder.take().unwrap();
                 let gd = builder.build();
@@ -155,8 +160,7 @@ impl ChooseClassDialog {
 
         ChooseClassDialog {
             rect,
-            list: TextListWidget::text_choices(
-                (0, 0, rect.width(), rect.height()), choices),
+            list: TextListWidget::text_choices((0, 0, rect.width(), rect.height()), choices),
         }
     }
 }
@@ -172,9 +176,9 @@ impl DialogWindow for ChooseClassDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(response) = self.list.process_command(&command) {
             match response {
-                ListWidgetResponse::Select(i) => { // Any item is selected
-                    let chara_class =
-                        RULES.newgame.class_choices[i as usize];
+                ListWidgetResponse::Select(i) => {
+                    // Any item is selected
+                    let chara_class = RULES.newgame.class_choices[i as usize];
                     return DialogResult::CloseWithValue(Box::new(chara_class));
                 }
                 _ => (),
@@ -182,9 +186,7 @@ impl DialogWindow for ChooseClassDialog {
             return DialogResult::Continue;
         }
         match *command {
-            Command::Cancel => {
-                DialogResult::Close
-            },
+            Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
     }
@@ -197,13 +199,11 @@ impl DialogWindow for ChooseClassDialog {
 fn explanation_text_window(s: &str) -> TextWindow {
     TextWindow::new(
         UI_CFG.newgame_dialog.explanation_text_rect.into(),
-        text::ui_txt(s))
+        text::ui_txt(s),
+    )
 }
 
 /// Create scrolling text window that displays opening text
 fn opening_text_window() -> ScrollingTextWindow {
-    ScrollingTextWindow::new(
-        SCREEN_CFG.main_window.into(),
-        text::misc_txt("!op-scroll")
-    )
+    ScrollingTextWindow::new(SCREEN_CFG.main_window.into(), text::misc_txt("!op-scroll"))
 }

@@ -1,8 +1,7 @@
-
-use sdl2::rect::Rect;
-use crate::context::*;
-use crate::config::UI_CFG;
 use super::WidgetTrait;
+use crate::config::UI_CFG;
+use crate::context::*;
+use sdl2::rect::Rect;
 
 /// Simple label widget.
 pub struct LabelWidget {
@@ -19,8 +18,11 @@ impl LabelWidget {
         let rect = rect.into();
         let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
         LabelWidget {
-            rect, cache, font,
-            wrap_w: None, is_bordered: false,
+            rect,
+            cache,
+            font,
+            wrap_w: None,
+            is_bordered: false,
             centering: false,
         }
     }
@@ -29,8 +31,11 @@ impl LabelWidget {
         let rect = rect.into();
         let cache = TextCache::one_bordered(s, font, UI_CFG.color.normal_font.into());
         LabelWidget {
-            rect, cache, font,
-            wrap_w: None, is_bordered: true,
+            rect,
+            cache,
+            font,
+            wrap_w: None,
+            is_bordered: true,
             centering: false,
         }
     }
@@ -39,8 +44,11 @@ impl LabelWidget {
         let rect = rect.into();
         let cache = TextCache::one_wrapped(s, font, UI_CFG.color.normal_font.into(), w);
         LabelWidget {
-            rect, cache, font,
-            wrap_w: Some(w), is_bordered: false,
+            rect,
+            cache,
+            font,
+            wrap_w: Some(w),
+            is_bordered: false,
             centering: false,
         }
     }
@@ -48,7 +56,7 @@ impl LabelWidget {
     pub fn set_text(&mut self, text: &str) {
         let cache = if let Some(w) = self.wrap_w {
             TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
-        }else{
+        } else {
             if self.is_bordered {
                 TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
             } else {
@@ -85,7 +93,7 @@ impl LabelWidget {
 
 impl WidgetTrait for LabelWidget {
     type Response = ();
-    
+
     fn draw(&mut self, context: &mut Context) {
         let canvas = &mut context.canvas;
         let sv = &mut context.sv;
@@ -97,13 +105,19 @@ impl WidgetTrait for LabelWidget {
             Rect::new(
                 self.rect.x + (self.rect.w - w as i32) / 2,
                 self.rect.y + (self.rect.h - h as i32) / 2,
-                w, h)
+                w,
+                h,
+            )
         } else {
-            Rect::new(self.rect.x + UI_CFG.label_widget.left_margin, self.rect.y, w, h)
+            Rect::new(
+                self.rect.x + UI_CFG.label_widget.left_margin,
+                self.rect.y,
+                w,
+                h,
+            )
         };
-        
+
         check_draw!(canvas.copy(tex, None, dest));
-        
     }
 }
 
@@ -117,13 +131,19 @@ pub struct LineSpecifiedLabelWidget {
 
 impl LineSpecifiedLabelWidget {
     pub fn new<R: Into<Rect>, S: AsRef<str>>(
-        rect: R, s: &[S], font: FontKind, max_line: usize) -> LineSpecifiedLabelWidget {
-        
+        rect: R,
+        s: &[S],
+        font: FontKind,
+        max_line: usize,
+    ) -> LineSpecifiedLabelWidget {
         let rect = rect.into();
         let slice_len = std::cmp::min(s.len(), max_line);
         let cache = TextCache::new(&s[0..slice_len], font, UI_CFG.color.normal_font.into());
         LineSpecifiedLabelWidget {
-            rect, cache, font, max_line,
+            rect,
+            cache,
+            font,
+            max_line,
         }
     }
 
@@ -136,7 +156,7 @@ impl LineSpecifiedLabelWidget {
 
 impl WidgetTrait for LineSpecifiedLabelWidget {
     type Response = ();
-    
+
     fn draw(&mut self, context: &mut Context) {
         let canvas = &mut context.canvas;
         let sv = &mut context.sv;
@@ -147,7 +167,12 @@ impl WidgetTrait for LineSpecifiedLabelWidget {
         for tex in tex_group {
             let w = tex.query().width;
             let h = tex.query().height;
-            let dest = Rect::new(self.rect.x + UI_CFG.label_widget.left_margin, self.rect.y + y, w, h);
+            let dest = Rect::new(
+                self.rect.x + UI_CFG.label_widget.left_margin,
+                self.rect.y + y,
+                w,
+                h,
+            );
             y += h as i32;
             check_draw!(canvas.copy(tex, None, dest));
         }

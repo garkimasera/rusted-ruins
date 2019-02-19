@@ -1,4 +1,3 @@
-
 use crate::obj::*;
 use crate::pakutil::load_objs_dir;
 use std::num::NonZeroU32;
@@ -38,8 +37,9 @@ macro_rules! impl_idx {
 
         impl FromId for $obj {
             fn get_obj_from_objholder_by_id<'a>(
-                id: &str, objholder: &'a ObjectHolder) -> Option<&'a $obj> {
-
+                id: &str,
+                objholder: &'a ObjectHolder,
+            ) -> Option<&'a $obj> {
                 for ref o in (&objholder.$mem).into_iter() {
                     if o.id == id {
                         return Some(o);
@@ -48,7 +48,7 @@ macro_rules! impl_idx {
                 None
             }
         }
-        
+
         impl Holder<$idx> for ObjectHolder {
             type ReturnType = $obj;
             fn get<'a>(&'a self, idx: $idx) -> &'a $obj {
@@ -81,7 +81,7 @@ macro_rules! impl_idx {
                 self.0 == NON_ZERO_U32_1
             }
         }
-    }
+    };
 }
 
 macro_rules! impl_objholder {
@@ -116,7 +116,7 @@ macro_rules! impl_objholder {
                 {
                     $(self.$mem.sort_by(|a, b| a.id.cmp(&b.id)));*
                 }
-                
+
                 // chara_template is sorted by the special function
                 // because the order is used for choosing chara from race and gen_level
                 self.chara_template.sort_by(|a, b| cmp_chara_template(a, b));
@@ -188,7 +188,7 @@ pub trait ObjectIndex: Sized {
 pub trait FromId {
     fn get_obj_from_objholder_by_id<'a>(id: &str, objholder: &'a ObjectHolder) -> Option<&'a Self>;
 }
-    
+
 pub trait Holder<I> {
     type ReturnType;
     fn get(&self, idx: I) -> &Self::ReturnType;
@@ -197,13 +197,22 @@ pub trait Holder<I> {
 fn cmp_chara_template(a: &CharaTemplateObject, b: &CharaTemplateObject) -> std::cmp::Ordering {
     use std::cmp::Ordering;
 
-    if a.id == "!" && b.id == "!" { return Ordering::Equal; }
-    if a.id == "!" { return Ordering::Less; }
-    if b.id == "!" { return Ordering::Greater; }
+    if a.id == "!" && b.id == "!" {
+        return Ordering::Equal;
+    }
+    if a.id == "!" {
+        return Ordering::Less;
+    }
+    if b.id == "!" {
+        return Ordering::Greater;
+    }
     let ord = a.race.cmp(&b.race);
-    if ord != Ordering::Equal { return ord; }
+    if ord != Ordering::Equal {
+        return ord;
+    }
     let ord = a.gen_level.cmp(&b.gen_level);
-    if ord != Ordering::Equal { return ord; }
+    if ord != Ordering::Equal {
+        return ord;
+    }
     a.id.cmp(&b.id)
 }
-

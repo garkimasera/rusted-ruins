@@ -1,4 +1,3 @@
-
 use array2d::Vec2d;
 use common::gamedata::{self, ElementArray};
 use common::sitegen;
@@ -27,7 +26,7 @@ macro_rules! get_optional_field {
                 field_name: stringify!($field).into()
             }),
         }
-    }
+    };
 }
 
 #[derive(Debug, Deserialize)]
@@ -60,7 +59,7 @@ pub struct CharaTemplateDepInput {
     pub int: u16,
     pub wil: u16,
     pub cha: u16,
-    pub spd: u16, 
+    pub spd: u16,
 }
 
 #[derive(Debug, Deserialize)]
@@ -129,4 +128,3 @@ pub struct SiteGenDepInput {
 pub struct ScriptDepInput {
     pub script: String,
 }
-

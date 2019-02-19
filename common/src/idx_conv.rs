@@ -1,7 +1,6 @@
-
-use std::sync::RwLock;
-use lazy_static::lazy_static;
 pub use crate::objholder::IdxConvTable;
+use lazy_static::lazy_static;
+use std::sync::RwLock;
 
 lazy_static! {
     pub(crate) static ref IDX_CONV_TABLE: RwLock<Option<IdxConvTable>> = RwLock::new(None);

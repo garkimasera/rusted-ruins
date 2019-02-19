@@ -1,40 +1,39 @@
-
-pub mod playeract;
-pub mod item;
-pub mod frequent_tex;
-mod npc;
 mod action;
-mod command;
-mod region;
-pub mod site;
-mod map;
-pub mod chara;
-mod skill;
-mod infogetter;
-mod animation;
 mod anim_queue;
-pub mod newgame;
+mod animation;
+pub mod chara;
 mod combat;
+mod command;
+mod dungeon_gen;
+mod eval_expr;
+pub mod frequent_tex;
+mod infogetter;
+pub mod item;
+mod map;
+pub mod newgame;
+mod npc;
+pub mod playeract;
 pub mod quest;
+mod region;
+pub mod saveload;
+mod script;
+pub mod shop;
+pub mod site;
+mod skill;
 mod town;
 mod turnloop;
 pub mod view;
-mod script;
-mod eval_expr;
-pub mod shop;
-mod dungeon_gen;
-pub mod saveload;
 
-use std::borrow::Cow;
-use std::path::PathBuf;
-use array2d::Vec2d;
-use common::gamedata::*;
+pub use self::animation::Animation;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
-pub use self::animation::Animation;
 pub use self::playeract::DoPlayerAction;
 pub use self::script::TalkText;
 use self::script::*;
+use array2d::Vec2d;
+use common::gamedata::*;
+use std::borrow::Cow;
+use std::path::PathBuf;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum GameState {
@@ -77,7 +76,7 @@ impl Game {
     }
 
     /// Create empty Game. This is used before starting actual gameplay.
-    pub fn empty() -> Game {        
+    pub fn empty() -> Game {
         Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
@@ -140,13 +139,16 @@ impl Game {
     /// Advance current script.
     /// When called by advance_talk, give player's choice.
     pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> AdvanceScriptResult {
-        let script = self.script.as_mut().expect("advance_script() when script is None");
+        let script = self
+            .script
+            .as_mut()
+            .expect("advance_script() when script is None");
         let result = if let Some(choice) = choice {
             script.continue_talk(&mut self.gd, choice)
         } else {
             script.exec(&mut self.gd)
         };
-        
+
         match result {
             ExecResult::Quit => {
                 self.script = None;
@@ -154,9 +156,7 @@ impl Game {
             }
             ExecResult::Talk(cid, talk_text, need_open_talk_dialog) => {
                 if need_open_talk_dialog {
-                    self.request_dialog_open(
-                        DialogOpenRequest::Talk { cid, talk_text }
-                    );
+                    self.request_dialog_open(DialogOpenRequest::Talk { cid, talk_text });
                 }
                 AdvanceScriptResult::UpdateTalkText(talk_text)
             }
@@ -178,7 +178,6 @@ impl Game {
     /// Set target chara by position.
     /// If given tile position is empty, returns false.
     pub fn set_target(&mut self, pos: Vec2d) -> bool {
-        
         let map = self.gd.get_current_map();
         if let Some(cid) = map.get_chara(pos) {
             let player = self.gd.chara.get(CharaId::Player);
@@ -193,9 +192,17 @@ impl Game {
 }
 
 pub enum DialogOpenRequest {
-    YesNo { callback: Box<FnMut(&mut DoPlayerAction, bool)>, msg: Cow<'static, str> },
-    Talk { cid: CharaId, talk_text: TalkText },
-    ShopBuy { cid: CharaId },
+    YesNo {
+        callback: Box<FnMut(&mut DoPlayerAction, bool)>,
+        msg: Cow<'static, str>,
+    },
+    Talk {
+        cid: CharaId,
+        talk_text: TalkText,
+    },
+    ShopBuy {
+        cid: CharaId,
+    },
     ShopSell,
     Quest,
     GameOver,
@@ -208,11 +215,11 @@ pub enum AdvanceScriptResult {
 }
 
 pub mod extrait {
+    pub use super::chara::status::{CharaStatusEx, CharaStatusOperation};
     pub use super::chara::CharaEx;
     pub use super::item::ItemEx;
     pub use super::item::ItemListEx;
     pub use super::map::MapEx;
     pub use super::site::SiteEx;
-    pub use super::chara::status::{CharaStatusOperation, CharaStatusEx};
     pub use super::skill::SkillListEx;
 }

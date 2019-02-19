@@ -1,42 +1,50 @@
-
-use sdl2::rect::Rect;
-use sdl2::render::WindowCanvas;
-use sdl2::pixels::Color;
-use sdl2::render::Texture;
-use array2d::*;
-use common::basic::{TILE_SIZE, TILE_SIZE_I, PIECE_SIZE_I};
-use common::objholder::{Holder, UIImgIdx};
-use common::obj::*;
-use common::gobj;
-use common::gamedata::*;
-use crate::game::{Game, Animation, InfoGetter};
-use crate::game::view::ViewMap;
-use crate::context::*;
-use super::tile_getter::*;
 use super::frame::calc_frame;
 use super::overlay;
+use super::tile_getter::*;
+use crate::context::*;
+use crate::game::view::ViewMap;
+use crate::game::{Animation, Game, InfoGetter};
+use array2d::*;
+use common::basic::{PIECE_SIZE_I, TILE_SIZE, TILE_SIZE_I};
+use common::gamedata::*;
+use common::gobj;
+use common::obj::*;
+use common::objholder::{Holder, UIImgIdx};
+use sdl2::pixels::Color;
+use sdl2::rect::Rect;
+use sdl2::render::Texture;
+use sdl2::render::WindowCanvas;
 
 const CHARA_DRAW_OFFSET: i32 = 16;
 
 pub struct MainWinDrawer {
     rect: Rect,
-    w: u32, h: u32,
+    w: u32,
+    h: u32,
     topleft: Vec2d,
-    dx: i32, dy: i32,
+    dx: i32,
+    dy: i32,
 }
 
 impl MainWinDrawer {
     pub fn new(rect: Rect) -> MainWinDrawer {
         MainWinDrawer {
             rect,
-            w: rect.width(), h: rect.height(),
+            w: rect.width(),
+            h: rect.height(),
             topleft: Vec2d(0, 0),
-            dx: 0, dy: 0,
+            dx: 0,
+            dy: 0,
         }
     }
 
-    pub fn draw(&mut self, context: &mut Context, game: &Game,
-                anim: Option<(&Animation, u32)>, centering_tile: Option<Vec2d>) {
+    pub fn draw(
+        &mut self,
+        context: &mut Context,
+        game: &Game,
+        anim: Option<(&Animation, u32)>,
+        centering_tile: Option<Vec2d>,
+    ) {
         super::frame::next_frame();
         let mut player_move_dir = None;
 
@@ -48,20 +56,20 @@ impl MainWinDrawer {
 
         let player_move_adjust = if let Some(anim) = anim {
             match anim.0 {
-                &Animation::PlayerMove{ n_frame, dir } => {
-                    let v = dir.as_vec() * (TILE_SIZE_I * (n_frame - anim.1) as i32 / n_frame as i32);
+                &Animation::PlayerMove { n_frame, dir } => {
+                    let v =
+                        dir.as_vec() * (TILE_SIZE_I * (n_frame - anim.1) as i32 / n_frame as i32);
                     player_move_dir = Some(dir);
                     (v.0, v.1)
-                },
-                _ => (0, 0)
+                }
+                _ => (0, 0),
             }
-        }else{
+        } else {
             (0, 0)
         };
 
         let map = game.gd.get_current_map();
-        self.update_draw_params((map.w as i32, map.h as i32),
-                                ct, player_move_adjust);
+        self.update_draw_params((map.w as i32, map.h as i32), ct, player_move_adjust);
         self.draw_except_anim(context, game, player_move_adjust, player_move_dir);
         let canvas = &mut context.canvas;
         let sv = &mut context.sv;
@@ -77,9 +85,12 @@ impl MainWinDrawer {
     }
 
     fn draw_except_anim(
-        &mut self, context: &mut Context, game: &Game,
-        player_move_adjust: (i32, i32), player_move_dir: Option<Direction>) {
-
+        &mut self,
+        context: &mut Context,
+        game: &Game,
+        player_move_adjust: (i32, i32),
+        player_move_dir: Option<Direction>,
+    ) {
         context.set_viewport(self.rect);
         context.canvas.set_draw_color(Color::RGB(120, 120, 120));
 
@@ -97,16 +108,19 @@ impl MainWinDrawer {
         } else {
             None
         };
-        
+
         let is_player_moving = player_move_adjust != (0, 0);
 
-        let player_drawing_row = player_pos.1 + if let Some(dir) = player_move_dir {
-            match dir.vdir {
-                VDirection::Up | VDirection::None => 0,
-                VDirection::Down => -1,
-            }
-        }else{ 0 };
-        
+        let player_drawing_row = player_pos.1
+            + if let Some(dir) = player_move_dir {
+                match dir.vdir {
+                    VDirection::Up | VDirection::None => 0,
+                    VDirection::Down => -1,
+                }
+            } else {
+                0
+            };
+
         let tile_range = self.tile_range();
 
         // Draw background parts
@@ -125,20 +139,38 @@ impl MainWinDrawer {
                 // because foreground parts on player's original or destination tiles
                 // are drawed before player character drawing.
                 // It is needed to make the graphic order more natural
-                if !is_player_moving || (p != player_pos && Some(p) != prev_player_pos){
+                if !is_player_moving || (p != player_pos && Some(p) != prev_player_pos) {
                     self.draw_foreground_parts(
-                        context, map, view_map, p,
-                        gd, is_player_moving, player_move_adjust);
+                        context,
+                        map,
+                        view_map,
+                        p,
+                        gd,
+                        is_player_moving,
+                        player_move_adjust,
+                    );
                 }
                 if is_player_moving && p == player_pos_one_back_side {
                     self.draw_foreground_parts(
-                        context, map, view_map, player_pos,
-                        gd, is_player_moving, player_move_adjust);
+                        context,
+                        map,
+                        view_map,
+                        player_pos,
+                        gd,
+                        is_player_moving,
+                        player_move_adjust,
+                    );
                 }
                 if prev_player_pos_one_back_side == Some(p) {
                     self.draw_foreground_parts(
-                        context, map, view_map, p + (0, 1),
-                        gd, is_player_moving, player_move_adjust);
+                        context,
+                        map,
+                        view_map,
+                        p + (0, 1),
+                        gd,
+                        is_player_moving,
+                        player_move_adjust,
+                    );
                 }
             }
             // Draw player during moving animation
@@ -147,9 +179,14 @@ impl MainWinDrawer {
                 let ct = gobj::get_obj(chara.template);
                 let src = Rect::from(ct.img_rect());
                 let dest = self.centering_at_tile(
-                    src, player_pos,
-                    -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET);
-                check_draw!(context.canvas.copy(context.sv.tex().get(chara.template), src, dest));
+                    src,
+                    player_pos,
+                    -player_move_adjust.0,
+                    -player_move_adjust.1 - CHARA_DRAW_OFFSET,
+                );
+                check_draw!(context
+                    .canvas
+                    .copy(context.sv.tex().get(chara.template), src, dest));
             }
         }
         // Draw background parts
@@ -162,7 +199,8 @@ impl MainWinDrawer {
     fn draw_background_parts(&self, context: &mut Context, map: &Map, p: Vec2d) {
         let di = BackgroundDrawInfo::new(map, p);
 
-        if let Some(t) = di.tile { // Draw tile
+        if let Some(t) = di.tile {
+            // Draw tile
             for tile_idxpp in t.iter() {
                 let idx = tile_idxpp.idx().unwrap();
                 let obj = gobj::get_obj(idx);
@@ -170,27 +208,39 @@ impl MainWinDrawer {
                 self.draw_pieces(context.canvas, tex, obj, p, tile_idxpp.piece_pattern());
             }
         }
-        if let Some(special_tile_idx) = di.special { // Draw tile special
+        if let Some(special_tile_idx) = di.special {
+            // Draw tile special
             context.render_tex_n_bottom(special_tile_idx, self.tile_rect(p, 0, 0), 0);
         }
     }
 
     /// Draw tile foreground parts
-    fn draw_foreground_parts(&self, context: &mut Context, map: &Map, view_map: &ViewMap, p: Vec2d,
-                             gd: &GameData, is_player_moving: bool, player_move_adjust: (i32, i32)) {
+    fn draw_foreground_parts(
+        &self,
+        context: &mut Context,
+        map: &Map,
+        view_map: &ViewMap,
+        p: Vec2d,
+        gd: &GameData,
+        is_player_moving: bool,
+        player_move_adjust: (i32, i32),
+    ) {
         let di = ForegroundDrawInfo::new(map, view_map, p);
         let tile_rect = self.tile_rect(p, 0, 0);
 
-        if let Some(special_tile_idx) = di.special { // Draw tile special
+        if let Some(special_tile_idx) = di.special {
+            // Draw tile special
             context.render_tex_n_bottom(special_tile_idx, tile_rect, 0);
         }
-        if let Some(wall_idx) = di.wallpp.idx() { // Draw wall
+        if let Some(wall_idx) = di.wallpp.idx() {
+            // Draw wall
             let obj = gobj::get_obj(wall_idx);
             let tex = context.sv.tex().get(wall_idx);
             self.draw_pieces(context.canvas, tex, obj, p, di.wallpp.piece_pattern());
         }
 
-        if let Some(deco_idx) = di.deco { // Draw decoration
+        if let Some(deco_idx) = di.deco {
+            // Draw decoration
             context.render_tex_n_bottom(deco_idx, tile_rect, 0);
         }
 
@@ -204,22 +254,27 @@ impl MainWinDrawer {
             let chara = gd.chara.get(chara_id);
             let ct = gobj::get_obj(chara.template);
             let src = Rect::from(ct.img_rect());
-            
+
             if !(chara_id == CharaId::Player && is_player_moving) {
                 let dest = if chara_id == CharaId::Player {
                     self.centering_at_tile(
-                        src, p, -player_move_adjust.0, -player_move_adjust.1 - CHARA_DRAW_OFFSET)
-                }else{
+                        src,
+                        p,
+                        -player_move_adjust.0,
+                        -player_move_adjust.1 - CHARA_DRAW_OFFSET,
+                    )
+                } else {
                     self.centering_at_tile(src, p, 0, -CHARA_DRAW_OFFSET)
                 };
-                check_draw!(context.canvas.copy(context.sv.tex().get(chara.template), src, dest));
+                check_draw!(context
+                    .canvas
+                    .copy(context.sv.tex().get(chara.template), src, dest));
             }
         }
     }
 
     /// Draw overlay for a tile
     fn draw_overlay(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues, p: Vec2d) {
-
         match overlay::view_fog(game, p) {
             overlay::FogPattern::None => (),
             overlay::FogPattern::PiecePattern(idx, pp) => {
@@ -231,8 +286,11 @@ impl MainWinDrawer {
                 // src rect is fixed at right-bottom corner of image
                 let src = Rect::new(TILE_SIZE_I, TILE_SIZE_I * 2, TILE_SIZE, TILE_SIZE);
                 let dest = Rect::new(
-                    p.0 * TILE_SIZE_I + self.dx, p.1 * TILE_SIZE_I + self.dy,
-                    TILE_SIZE, TILE_SIZE);
+                    p.0 * TILE_SIZE_I + self.dx,
+                    p.1 * TILE_SIZE_I + self.dy,
+                    TILE_SIZE,
+                    TILE_SIZE,
+                );
                 let tex = sv.tex().get(idx);
                 check_draw!(canvas.copy(&tex, src, dest));
             }
@@ -241,23 +299,31 @@ impl MainWinDrawer {
 
     /// Draw overlay for all tiles
     fn draw_overlay_all(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues) {
-        let idx = if let Some(idx) = overlay::all(game) { idx } else { return; };
+        let idx = if let Some(idx) = overlay::all(game) {
+            idx
+        } else {
+            return;
+        };
         let texture = sv.tex().get(idx);
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let (nx, ny) = self.calc_tile_num();
 
         for iy in 0..ny {
             for ix in 0..nx {
-                let dest = Rect::new(
-                    ix * TILE_SIZE_I, iy * TILE_SIZE_I,
-                    TILE_SIZE, TILE_SIZE);
+                let dest = Rect::new(ix * TILE_SIZE_I, iy * TILE_SIZE_I, TILE_SIZE, TILE_SIZE);
                 check_draw!(canvas.copy(&texture, src, dest));
             }
         }
     }
 
-    fn draw_anim(&mut self, canvas: &mut WindowCanvas, _game: &Game, sv: &SdlValues,
-                 anim: &Animation, i_frame: u32) {
+    fn draw_anim(
+        &mut self,
+        canvas: &mut WindowCanvas,
+        _game: &Game,
+        sv: &SdlValues,
+        anim: &Animation,
+        i_frame: u32,
+    ) {
         match anim {
             &Animation::Img { idx, range, .. } => {
                 for p in range {
@@ -266,7 +332,14 @@ impl MainWinDrawer {
                     check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
                 }
             }
-            &Animation::Shot { n_frame, n_image, idx, start, target, dir } => {
+            &Animation::Shot {
+                n_frame,
+                n_image,
+                idx,
+                start,
+                target,
+                dir,
+            } => {
                 let src = Rect::from(gobj::get_obj(idx).img_rect_nth(n_image));
                 let dest = if n_frame - 1 != i_frame {
                     let mut dest = self.centering_at_tile(src, start, 0, 0);
@@ -283,16 +356,20 @@ impl MainWinDrawer {
     }
 
     fn draw_pieces<T: PieceImgObject>(
-        &self, canvas: &mut WindowCanvas, tex: &Texture, obj: &T,
-        p: Vec2d, piece_pattern: PiecePattern) {
-        
+        &self,
+        canvas: &mut WindowCanvas,
+        tex: &Texture,
+        obj: &T,
+        p: Vec2d,
+        piece_pattern: PiecePattern,
+    ) {
         let img = obj.get_img();
         let i_anim_frame = calc_frame(img);
         let dy = TILE_SIZE_I - img.h as i32;
         // Top left corner (x ,y)
         let tlcx = TILE_SIZE_I * p.0 + self.dx;
         let tlcy = TILE_SIZE_I * p.1 + self.dy + dy;
-        
+
         // Top left piece
         if let Some(src) = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame) {
             let dest = Rect::new(tlcx, tlcy, src.2, src.3);
@@ -322,17 +399,23 @@ impl MainWinDrawer {
     fn draw_tile_cursor(&self, canvas: &mut WindowCanvas, sv: &SdlValues, ct: Vec2d) {
         let idx: UIImgIdx = gobj::id_to_idx_checked("!tile-cursor")
             .expect("UIImg object \"!tile-cursor\" not found");
-        
+
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let dest = self.centering_at_tile(src, ct, 0, 0);
         check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
     }
 
-    fn update_draw_params(&mut self,
-                          map_size: (i32, i32), centering_tile: Vec2d, player_move_adjust: (i32, i32)) {
+    fn update_draw_params(
+        &mut self,
+        map_size: (i32, i32),
+        centering_tile: Vec2d,
+        player_move_adjust: (i32, i32),
+    ) {
         // Center point by pixel
-        let center_p = (centering_tile.0 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.0,
-                        centering_tile.1 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.1); 
+        let center_p = (
+            centering_tile.0 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.0,
+            centering_tile.1 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.1,
+        );
         let (win_w, win_h) = (self.w as i32, self.h as i32);
         let (min_left, min_top) = (0, 0);
         let (max_right, max_bottom) = (map_size.0 * TILE_SIZE_I - 1, map_size.1 * TILE_SIZE_I - 1);
@@ -355,20 +438,22 @@ impl MainWinDrawer {
         self.dy = -top;
         self.topleft = top_left_tile;
     }
-    
+
     fn centering_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
         Rect::new(
             (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
             (TILE_SIZE_I * tile.1 + (TILE_SIZE_I - src.h) / 2) + dy + self.dy,
-            src.w as u32, src.h as u32
+            src.w as u32,
+            src.h as u32,
         )
     }
-    
+
     fn bottom_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
         Rect::new(
             (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
             tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
-            src.w as u32, src.h as u32
+            src.w as u32,
+            src.h as u32,
         )
     }
 
@@ -376,15 +461,24 @@ impl MainWinDrawer {
         Rect::new(
             TILE_SIZE_I * tile.0 + dx + self.dx,
             TILE_SIZE_I * tile.1 + dy + self.dy,
-            TILE_SIZE, TILE_SIZE
+            TILE_SIZE,
+            TILE_SIZE,
         )
     }
 
     /// Calculate the number of needed tile to fill screen
     fn calc_tile_num(&self) -> (i32, i32) {
         (
-            if self.w % TILE_SIZE == 0 { self.w / TILE_SIZE } else { self.w / TILE_SIZE + 1 } as i32,
-            if self.h % TILE_SIZE == 0 { self.h / TILE_SIZE } else { self.h / TILE_SIZE + 1 } as i32,
+            if self.w % TILE_SIZE == 0 {
+                self.w / TILE_SIZE
+            } else {
+                self.w / TILE_SIZE + 1
+            } as i32,
+            if self.h % TILE_SIZE == 0 {
+                self.h / TILE_SIZE
+            } else {
+                self.h / TILE_SIZE + 1
+            } as i32,
         )
     }
 
@@ -396,4 +490,3 @@ impl MainWinDrawer {
         RectIter::new(top_left, bottom_right)
     }
 }
-

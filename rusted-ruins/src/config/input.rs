@@ -1,4 +1,3 @@
-
 use crate::game::Command;
 use std::collections::HashMap;
 
@@ -8,4 +7,3 @@ pub struct InputConfig {
     pub dialog: HashMap<String, Command>,
     pub targeting: HashMap<String, Command>,
 }
-

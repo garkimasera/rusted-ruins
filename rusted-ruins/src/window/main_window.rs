@@ -1,10 +1,9 @@
-
-use array2d::*;
-use crate::game::{Game, Animation, InfoGetter};
-use crate::context::*;
-use crate::window::Window;
-use crate::draw::mainwin::MainWinDrawer;
 use crate::config::SCREEN_CFG;
+use crate::context::*;
+use crate::draw::mainwin::MainWinDrawer;
+use crate::game::{Animation, Game, InfoGetter};
+use crate::window::Window;
+use array2d::*;
 
 pub struct MainWindow {
     drawer: MainWinDrawer,
@@ -28,15 +27,20 @@ impl MainWindow {
         info!("Stop targeting mode");
         self.centering_tile = None;
     }
-    
+
     pub fn get_current_centering_tile(&mut self) -> Vec2d {
-        self.centering_tile.expect("get_current_centering tile must called when targeting mode")
+        self.centering_tile
+            .expect("get_current_centering tile must called when targeting mode")
     }
 
     pub fn move_centering_tile(&mut self, dir: Direction, game: &Game) {
-        let mut c = if let Some(c) = self.centering_tile { c } else { return; };
+        let mut c = if let Some(c) = self.centering_tile {
+            c
+        } else {
+            return;
+        };
         let limit = game.gd.map_size();
-        
+
         match dir.hdir {
             HDirection::Left => {
                 if c.0 > 0 {
@@ -70,10 +74,7 @@ impl MainWindow {
 }
 
 impl Window for MainWindow {
-    fn draw(
-        &mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         self.drawer.draw(context, game, anim, self.centering_tile);
     }
 }
-

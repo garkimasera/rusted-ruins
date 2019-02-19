@@ -1,4 +1,3 @@
-
 //! This crate provides functions for sound and music playing.
 //! All function must be called from main thread only.
 
@@ -7,13 +6,13 @@ extern crate log;
 
 #[macro_use]
 mod tool;
-mod wavtable;
 mod musictable;
+mod wavtable;
 
+use crate::musictable::MusicTable;
+use crate::wavtable::WavTable;
 use std::cell::RefCell;
 use std::path::Path;
-use crate::wavtable::WavTable;
-use crate::musictable::MusicTable;
 
 thread_local!(static AUDIO_PLAYER: RefCell<Option<AudioPlayer>> = RefCell::new(None));
 
@@ -24,12 +23,14 @@ pub struct AudioContext {
 /// Initialize AudioPlayer
 pub fn init<P: AsRef<Path>>(data_dirs: &[P]) -> AudioContext {
     let mixer_context = init_device();
-    
+
     AUDIO_PLAYER.with(|a| {
         assert!(a.borrow().is_none());
         *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
     });
-    AudioContext { _mixer_context: mixer_context }
+    AudioContext {
+        _mixer_context: mixer_context,
+    }
 }
 
 pub fn with_audio_player<F: FnOnce(&AudioPlayer)>(f: F) {
@@ -76,7 +77,8 @@ impl AudioPlayer {
         let wavtable = WavTable::new(data_dirs);
         let musictable = MusicTable::new(data_dirs);
         AudioPlayer {
-            wavtable, musictable,
+            wavtable,
+            musictable,
         }
     }
 
@@ -94,7 +96,7 @@ impl AudioPlayer {
 }
 
 fn init_device() -> sdl2::mixer::Sdl2MixerContext {
-    use sdl2::mixer::{InitFlag, DEFAULT_CHANNELS, AUDIO_S16LSB};    
+    use sdl2::mixer::{InitFlag, AUDIO_S16LSB, DEFAULT_CHANNELS};
 
     // Initialization for sound
     let frequency = 44100;
@@ -103,7 +105,7 @@ fn init_device() -> sdl2::mixer::Sdl2MixerContext {
     let chunk_size = 1024;
     sdl2::mixer::open_audio(frequency, format, channels, chunk_size).unwrap();
     let mixer_context = sdl2::mixer::init(InitFlag::OGG).unwrap();
-    
+
     sdl2::mixer::allocate_channels(1);
 
     mixer_context
@@ -115,10 +117,10 @@ mod tests {
     use std::env::var;
 
     #[test]
-    fn play_from_sound_dir() {        
+    fn play_from_sound_dir() {
         let sdl = sdl2::init().unwrap();
         let _audio = sdl.audio().unwrap();
-        
+
         let app_dir = match var("RUSTED_RUINS_APP_DIR") {
             Ok(o) => o,
             Err(e) => {

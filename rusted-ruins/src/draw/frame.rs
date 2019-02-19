@@ -1,6 +1,5 @@
-
-use std::cell::Cell;
 use common::obj::Img;
+use std::cell::Cell;
 
 thread_local!(static FRAME_COUNT: Cell<u32> = Cell::new(0));
 
@@ -14,8 +13,10 @@ pub fn next_frame() {
 
 /// Calculate which animation frame of image will be used
 pub fn calc_frame(img: &Img) -> u32 {
-    if img.n_anim_frame == 1 { return 0; }
-    
+    if img.n_anim_frame == 1 {
+        return 0;
+    }
+
     let frame_count = FRAME_COUNT.with(|frame_count| frame_count.get());
     let a = frame_count % (img.duration * img.n_anim_frame);
     let n = a / img.duration;

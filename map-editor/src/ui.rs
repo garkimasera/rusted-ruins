@@ -1,23 +1,26 @@
-
-use std::rc::Rc;
-use std::cell::{Cell, RefCell};
-use std::path::PathBuf;
-use std::error::Error;
-use gtk::prelude::*;
-use array2d::Vec2d;
-use common::objholder::*;
-use common::basic::TILE_SIZE_I;
-use crate::pixbuf_holder::PixbufHolder;
 use crate::edit_map::EditingMap;
 use crate::iconview::IconView;
+use crate::pixbuf_holder::PixbufHolder;
 use crate::property_controls::PropertyControls;
+use array2d::Vec2d;
+use common::basic::TILE_SIZE_I;
+use common::objholder::*;
+use gtk::prelude::*;
+use std::cell::{Cell, RefCell};
+use std::error::Error;
+use std::path::PathBuf;
+use std::rc::Rc;
 
 const WRITE_BUTTON: u32 = 1;
 const CENTERING_BUTTON: u32 = 2;
 const ERASE_BUTTON: u32 = 3;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum DragMode { None, Write, Erase }
+pub enum DragMode {
+    None,
+    Write,
+    Erase,
+}
 
 #[derive(Clone)]
 pub struct Ui {
@@ -25,12 +28,12 @@ pub struct Ui {
     pub map_drawing_area: gtk::DrawingArea,
     pub new_map_dialog: gtk::Dialog,
     pub resize_dialog: gtk::Dialog,
-    pub new_map_id:     gtk::Entry,
+    pub new_map_id: gtk::Entry,
     pub adjustment_map_width: gtk::Adjustment,
     pub adjustment_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
-    pub label_cursor_pos:    gtk::Label,
+    pub label_cursor_pos: gtk::Label,
     pub label_selected_item: gtk::Label,
     pub radiobutton_layer0: gtk::RadioButton,
     pub radiobutton_layer1: gtk::RadioButton,
@@ -63,7 +66,7 @@ macro_rules! get_object {
         } else {
             panic!("Builder Error: \"{}\" is not found", $id)
         }
-    }
+    };
 }
 
 pub fn build_ui(application: &gtk::Application) {
@@ -71,16 +74,16 @@ pub fn build_ui(application: &gtk::Application) {
     let builder = gtk::Builder::new_from_string(include_str!("ui.glade"));
 
     let ui = Ui {
-        window:           get_object!(builder, "window1"),
+        window: get_object!(builder, "window1"),
         map_drawing_area: get_object!(builder, "map-drawing-area"),
-        new_map_dialog:   get_object!(builder, "new-map-dialog"),
-        resize_dialog:    get_object!(builder, "resize-dialog"),
-        new_map_id:       get_object!(builder, "new-map-id"),
-        adjustment_map_width:  get_object!(builder, "adjustment-map-width"),
+        new_map_dialog: get_object!(builder, "new-map-dialog"),
+        resize_dialog: get_object!(builder, "resize-dialog"),
+        new_map_id: get_object!(builder, "new-map-id"),
+        adjustment_map_width: get_object!(builder, "adjustment-map-width"),
         adjustment_map_height: get_object!(builder, "adjustment-map-height"),
-        adjustment_map_pos_x:      get_object!(builder, "adjustment-map-pos-x"),
-        adjustment_map_pos_y:      get_object!(builder, "adjustment-map-pos-y"),
-        label_cursor_pos:    get_object!(builder, "label-cursor-pos"),
+        adjustment_map_pos_x: get_object!(builder, "adjustment-map-pos-x"),
+        adjustment_map_pos_y: get_object!(builder, "adjustment-map-pos-y"),
+        label_cursor_pos: get_object!(builder, "label-cursor-pos"),
         label_selected_item: get_object!(builder, "label-selected-item"),
         radiobutton_layer0: get_object!(builder, "radiobutton-layer0"),
         radiobutton_layer1: get_object!(builder, "radiobutton-layer1"),
@@ -103,12 +106,12 @@ pub fn build_ui(application: &gtk::Application) {
         layer_visible: Rc::new(RefCell::new([true; 4])),
     };
 
-    let menu_new:     gtk::MenuItem = get_object!(builder, "menu-new");
-    let menu_open:    gtk::MenuItem = get_object!(builder, "menu-open");
-    let menu_save:    gtk::MenuItem = get_object!(builder, "menu-save");
+    let menu_new: gtk::MenuItem = get_object!(builder, "menu-new");
+    let menu_open: gtk::MenuItem = get_object!(builder, "menu-open");
+    let menu_save: gtk::MenuItem = get_object!(builder, "menu-save");
     let menu_save_as: gtk::MenuItem = get_object!(builder, "menu-save-as");
-    let menu_quit:    gtk::MenuItem = get_object!(builder, "menu-quit");
-    let menu_resize:  gtk::MenuItem = get_object!(builder, "menu-resize");
+    let menu_quit: gtk::MenuItem = get_object!(builder, "menu-quit");
+    let menu_resize: gtk::MenuItem = get_object!(builder, "menu-resize");
 
     ui.window.set_application(application);
     // Connect signals
@@ -119,7 +122,8 @@ pub fn build_ui(application: &gtk::Application) {
             Inhibit(false)
         });
     }
-    { // Map drawing area (draw)
+    {
+        // Map drawing area (draw)
         let uic = ui.clone();
         ui.map_drawing_area.connect_draw(move |widget, context| {
             let width = widget.get_allocated_width();
@@ -127,43 +131,63 @@ pub fn build_ui(application: &gtk::Application) {
             let map = uic.map.borrow();
             let pos = uic.get_map_pos();
             crate::draw_map::draw_map(
-                context, &*map, &*uic.pbh, width, height, pos, *uic.layer_visible.borrow());
+                context,
+                &*map,
+                &*uic.pbh,
+                width,
+                height,
+                pos,
+                *uic.layer_visible.borrow(),
+            );
             Inhibit(false)
         });
     }
-    { // Map drawing area (button pressed)
+    {
+        // Map drawing area (button pressed)
         let uic = ui.clone();
         use gdk::EventMask;
-        let mask = EventMask::BUTTON_PRESS_MASK | EventMask::BUTTON_RELEASE_MASK
+        let mask = EventMask::BUTTON_PRESS_MASK
+            | EventMask::BUTTON_RELEASE_MASK
             | EventMask::POINTER_MOTION_MASK;
         ui.map_drawing_area.add_events(mask.bits() as i32);
-        ui.map_drawing_area.connect_button_press_event(move |_, eb| {
-            on_map_clicked(&uic, eb);
-            Inhibit(false)
-        });
+        ui.map_drawing_area
+            .connect_button_press_event(move |_, eb| {
+                on_map_clicked(&uic, eb);
+                Inhibit(false)
+            });
     }
-    { // Map drawing area (button pressed)
+    {
+        // Map drawing area (button pressed)
         let uic = ui.clone();
-        ui.map_drawing_area.connect_button_release_event(move |_, _| {
-            uic.drag_mode.set(DragMode::None);
-            Inhibit(false)
-        });
+        ui.map_drawing_area
+            .connect_button_release_event(move |_, _| {
+                uic.drag_mode.set(DragMode::None);
+                Inhibit(false)
+            });
     }
-    { // Map drawing area (motion)
+    {
+        // Map drawing area (motion)
         let uic = ui.clone();
-        ui.map_drawing_area.connect_motion_notify_event(move |drawing_area, em| {
-            on_motion(&uic, em, drawing_area.get_allocated_width(), drawing_area.get_allocated_height());
-            Inhibit(false)
-        });
+        ui.map_drawing_area
+            .connect_motion_notify_event(move |drawing_area, em| {
+                on_motion(
+                    &uic,
+                    em,
+                    drawing_area.get_allocated_width(),
+                    drawing_area.get_allocated_height(),
+                );
+                Inhibit(false)
+            });
     }
-    { // Menu (new)
+    {
+        // Menu (new)
         let uic = ui.clone();
         menu_new.connect_activate(move |_| {
             uic.new_map_dialog.show();
             let responce_id = uic.new_map_dialog.run();
             uic.new_map_dialog.hide();
             if responce_id == 1 {
-                let width  = uic.adjustment_map_width.get_value() as u32;
+                let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.reset_map_size(width, height);
                 let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
@@ -177,7 +201,8 @@ pub fn build_ui(application: &gtk::Application) {
             }
         });
     }
-    { // Menu (open)
+    {
+        // Menu (open)
         let uic = ui.clone();
         menu_open.connect_activate(move |_| {
             if let Some(path) = file_open(&uic) {
@@ -192,12 +217,15 @@ pub fn build_ui(application: &gtk::Application) {
                         uic.reset_map_size(uic.map.borrow().width, uic.map.borrow().height);
                         *uic.filepath.borrow_mut() = Some(path);
                     }
-                    Err(e) => { show_err_dialog(&uic, &e.to_string()); },
+                    Err(e) => {
+                        show_err_dialog(&uic, &e.to_string());
+                    }
                 }
             }
         });
     }
-    { // Menu (save)
+    {
+        // Menu (save)
         let uic = ui.clone();
         menu_save.connect_activate(move |_| {
             let path = if let Some(path) = (*uic.filepath).clone().into_inner() {
@@ -210,36 +238,47 @@ pub fn build_ui(application: &gtk::Application) {
                 }
             };
             match save_to(&uic, path.clone()) {
-                Ok(_) => { *uic.filepath.borrow_mut() = Some(path); }
-                Err(e) => { show_err_dialog(&uic, &e.to_string()); }
-            }
-        });
-    }
-    { // Menu (save as)
-        let uic = ui.clone();
-        menu_save_as.connect_activate(move |_| {
-            if let Some(path) = file_save_as(&uic) {
-                match save_to(&uic, path.clone()) {
-                    Ok(_) => { *uic.filepath.borrow_mut() = Some(path); }
-                    Err(e) => { show_err_dialog(&uic, &e.to_string()); }
+                Ok(_) => {
+                    *uic.filepath.borrow_mut() = Some(path);
+                }
+                Err(e) => {
+                    show_err_dialog(&uic, &e.to_string());
                 }
             }
         });
     }
-    { // Menu (quit)
+    {
+        // Menu (save as)
+        let uic = ui.clone();
+        menu_save_as.connect_activate(move |_| {
+            if let Some(path) = file_save_as(&uic) {
+                match save_to(&uic, path.clone()) {
+                    Ok(_) => {
+                        *uic.filepath.borrow_mut() = Some(path);
+                    }
+                    Err(e) => {
+                        show_err_dialog(&uic, &e.to_string());
+                    }
+                }
+            }
+        });
+    }
+    {
+        // Menu (quit)
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
             uic.window.destroy();
         });
     }
-    { // Menu (resize)
+    {
+        // Menu (resize)
         let uic = ui.clone();
         menu_resize.connect_activate(move |_| {
             uic.resize_dialog.show();
             let responce_id = uic.resize_dialog.run();
             uic.resize_dialog.hide();
             if responce_id == 1 {
-                let width  = uic.adjustment_map_width.get_value() as u32;
+                let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.adjustment_map_pos_x.set_value(0.0);
                 uic.adjustment_map_pos_y.set_value(0.0);
@@ -250,19 +289,22 @@ pub fn build_ui(application: &gtk::Application) {
             }
         });
     }
-    { // Scroll (x)
+    {
+        // Scroll (x)
         let uic = ui.clone();
         ui.adjustment_map_pos_x.connect_value_changed(move |_| {
             uic.map_redraw();
         });
     }
-    { // Scroll (y)
+    {
+        // Scroll (y)
         let uic = ui.clone();
         ui.adjustment_map_pos_y.connect_value_changed(move |_| {
             uic.map_redraw();
         });
     }
-    { // Key press
+    {
+        // Key press
         use gdk::enums::key::{Shift_L, Shift_R};
         let uic = ui.clone();
         ui.window.connect_key_press_event(move |_, event_key| {
@@ -281,42 +323,52 @@ pub fn build_ui(application: &gtk::Application) {
             Inhibit(false)
         });
     }
-    { // Layer bottons
+    {
+        // Layer bottons
         let uic = ui.clone();
-        ui.radiobutton_layer0.connect_toggled(move |_| { // Layer 0
+        ui.radiobutton_layer0.connect_toggled(move |_| {
+            // Layer 0
             uic.current_layer.set(0);
         });
         let uic = ui.clone();
-        ui.radiobutton_layer1.connect_toggled(move |_| { // Layer 1
+        ui.radiobutton_layer1.connect_toggled(move |_| {
+            // Layer 1
             uic.current_layer.set(1);
         });
         let uic = ui.clone();
-        ui.radiobutton_layer2.connect_toggled(move |_| { // Layer 2
+        ui.radiobutton_layer2.connect_toggled(move |_| {
+            // Layer 2
             uic.current_layer.set(2);
         });
         let uic = ui.clone();
-        ui.radiobutton_layer3.connect_toggled(move |_| { // Layer 3
+        ui.radiobutton_layer3.connect_toggled(move |_| {
+            // Layer 3
             uic.current_layer.set(3);
         });
     }
-    { // Layer check bottons
+    {
+        // Layer check bottons
         let uic = ui.clone();
-        ui.checkbutton_layer0.connect_toggled(move |b| { // Layer 0
+        ui.checkbutton_layer0.connect_toggled(move |b| {
+            // Layer 0
             uic.layer_visible.borrow_mut()[0] = b.get_active();
             uic.map_redraw();
         });
         let uic = ui.clone();
-        ui.checkbutton_layer1.connect_toggled(move |b| { // Layer 1
+        ui.checkbutton_layer1.connect_toggled(move |b| {
+            // Layer 1
             uic.layer_visible.borrow_mut()[1] = b.get_active();
             uic.map_redraw();
         });
         let uic = ui.clone();
-        ui.checkbutton_layer2.connect_toggled(move |b| { // Layer 2
+        ui.checkbutton_layer2.connect_toggled(move |b| {
+            // Layer 2
             uic.layer_visible.borrow_mut()[2] = b.get_active();
             uic.map_redraw();
         });
         let uic = ui.clone();
-        ui.checkbutton_layer3.connect_toggled(move |b| { // Layer 3
+        ui.checkbutton_layer3.connect_toggled(move |b| {
+            // Layer 3
             uic.layer_visible.borrow_mut()[3] = b.get_active();
             uic.map_redraw();
         });
@@ -326,8 +378,6 @@ pub fn build_ui(application: &gtk::Application) {
     crate::iconview::set_iconview(&ui);
     ui.window.show_all();
 }
-
-
 
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
     let button = eb.get_button();
@@ -346,7 +396,8 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
     let w = w as f64;
     let h = h as f64;
     let pos = em.get_position();
-    if pos.0 < 0.0 || pos.1 < 0.0 || pos.0 > w || pos.1 > h { // Out of drawing widget
+    if pos.0 < 0.0 || pos.1 < 0.0 || pos.0 > w || pos.1 > h {
+        // Out of drawing widget
         return;
     }
     match ui.drag_mode.get() {
@@ -366,7 +417,10 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
 
 fn file_open(ui: &Ui) -> Option<PathBuf> {
     let file_chooser = gtk::FileChooserDialog::new(
-        Some("Open map object file"), Some(&ui.window), gtk::FileChooserAction::Open);
+        Some("Open map object file"),
+        Some(&ui.window),
+        gtk::FileChooserAction::Open,
+    );
     file_chooser.add_buttons(&[
         ("Open", gtk::ResponseType::Ok.into()),
         ("Cancel", gtk::ResponseType::Cancel.into()),
@@ -384,7 +438,10 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
 
 fn file_save_as(ui: &Ui) -> Option<PathBuf> {
     let file_chooser = gtk::FileChooserDialog::new(
-        Some("Save map object"), Some(&ui.window), gtk::FileChooserAction::Save);
+        Some("Save map object"),
+        Some(&ui.window),
+        gtk::FileChooserAction::Save,
+    );
     file_chooser.add_buttons(&[
         ("Save", gtk::ResponseType::Ok.into()),
         ("Cancel", gtk::ResponseType::Cancel.into()),
@@ -417,9 +474,13 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
                 if ui.shift.get() {
-                    ui.map.borrow_mut().tile_layer_draw(Vec2d(ix, iy), idx, ui.current_layer.get());
+                    ui.map
+                        .borrow_mut()
+                        .tile_layer_draw(Vec2d(ix, iy), idx, ui.current_layer.get());
                 } else {
-                    ui.map.borrow_mut().set_tile(Vec2d(ix, iy), idx, ui.current_layer.get());
+                    ui.map
+                        .borrow_mut()
+                        .set_tile(Vec2d(ix, iy), idx, ui.current_layer.get());
                 }
             }
             SelectedItem::Wall(idx) => {
@@ -430,8 +491,9 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
             }
             SelectedItem::SelectTile => {
                 ui.property_controls.selected_tile.set(Vec2d(ix, iy));
-                ui.property_controls.label_selected_tile.set_text(&format!(
-                    "Selected Tile ({}, {})", ix, iy));
+                ui.property_controls
+                    .label_selected_tile
+                    .set_text(&format!("Selected Tile ({}, {})", ix, iy));
                 ui.set_signal_mode(false);
                 ui.property_controls.update(&*ui.map.borrow());
                 ui.set_signal_mode(true);
@@ -448,7 +510,9 @@ fn try_erase(ui: &Ui, pos: (f64, f64)) {
     }
     match ui.selected_item.get() {
         SelectedItem::Tile(_) => {
-            ui.map.borrow_mut().erase_layer(Vec2d(ix, iy), ui.current_layer.get());
+            ui.map
+                .borrow_mut()
+                .erase_layer(Vec2d(ix, iy), ui.current_layer.get());
         }
         _ => {
             ui.map.borrow_mut().erase(Vec2d(ix, iy));
@@ -473,7 +537,8 @@ fn show_err_dialog(ui: &Ui, msg: &str) {
         gtk::DialogFlags::empty(),
         gtk::MessageType::Error,
         gtk::ButtonsType::Ok,
-        msg);
+        msg,
+    );
     dialog.show();
     dialog.run();
     dialog.destroy();
@@ -515,6 +580,8 @@ impl Ui {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum SelectedItem {
-    Tile(TileIdx), Wall(WallIdx), Deco(DecoIdx), SelectTile,
+    Tile(TileIdx),
+    Wall(WallIdx),
+    Deco(DecoIdx),
+    SelectTile,
 }
-

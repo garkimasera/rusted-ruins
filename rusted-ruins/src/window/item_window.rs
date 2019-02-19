@@ -1,22 +1,26 @@
-
-use sdl2::rect::Rect;
-use common::gamedata::*;
-use common::gobj;
-use crate::window::{Window, DialogWindow, DialogResult, WindowDrawMode};
-use crate::context::*;
-use crate::text::ToText;
-use crate::game::{Game, Animation, Command, DoPlayerAction, InfoGetter};
-use crate::game::extrait::*;
+use super::group_window::*;
+use super::widget::*;
 use crate::config::UI_CFG;
+use crate::context::*;
 use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
-use super::widget::*;
+use crate::game::extrait::*;
 use crate::game::item::filter::*;
-use super::group_window::*;
+use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
+use crate::text::ToText;
+use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
+use common::gamedata::*;
+use common::gobj;
+use sdl2::rect::Rect;
 
 pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
-    List, PickUp, Drop, Drink, Eat, ShopSell,
+    List,
+    PickUp,
+    Drop,
+    Drink,
+    Eat,
+    ShopSell,
     ShopBuy {
         cid: CharaId,
     },
@@ -24,7 +28,7 @@ pub enum ItemWindowMode {
         ill: ItemListLocation,
         filter: ItemFilter,
         action: Box<ActionCallback>,
-    }
+    },
 }
 
 pub struct ItemWindow {
@@ -68,13 +72,19 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
         _ => unreachable!(),
     };
 
-    GroupWindow::new(STATUS_WINDOW_GROUP_SIZE, i, game, mem_info, (rect.x, rect.y))
+    GroupWindow::new(
+        STATUS_WINDOW_GROUP_SIZE,
+        i,
+        game,
+        mem_info,
+        (rect.x, rect.y),
+    )
 }
 
 impl ItemWindow {
     pub fn new(mode: ItemWindowMode, game: &Game) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
-        
+
         let mut item_window = ItemWindow {
             rect,
             list: ListWidget::new(
@@ -83,7 +93,8 @@ impl ItemWindow {
                 UI_CFG.item_window.n_row,
                 26,
                 true,
-                true),
+                true,
+            ),
             mode,
             item_locations: Vec::new(),
         };
@@ -91,19 +102,26 @@ impl ItemWindow {
         item_window
     }
 
-    pub fn new_select(ill: ItemListLocation, filter: ItemFilter,
-                  action: Box<ActionCallback>, pa: &mut DoPlayerAction) -> ItemWindow {
+    pub fn new_select(
+        ill: ItemListLocation,
+        filter: ItemFilter,
+        action: Box<ActionCallback>,
+        pa: &mut DoPlayerAction,
+    ) -> ItemWindow {
         let mode = ItemWindowMode::Select {
-            ill, filter, action
+            ill,
+            filter,
+            action,
         };
         ItemWindow::new(mode, pa.game())
     }
 
     fn update_by_mode(&mut self, gd: &GameData) {
-        
         match self.mode {
             ItemWindowMode::List => {
-                let ill = ItemListLocation::Chara { cid: CharaId::Player };
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
                 self.update_list(filtered_list);
             }
@@ -116,20 +134,26 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Drop => {
-                let ill = ItemListLocation::Chara { cid: CharaId::Player };
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Drink => {
-                let ill = ItemListLocation::Chara { cid: CharaId::Player };
-                let filtered_list = gd
-                    .get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::DRINKABLE));
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
+                let filtered_list =
+                    gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::DRINKABLE));
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Eat => {
-                let ill = ItemListLocation::Chara { cid: CharaId::Player };
-                let filtered_list = gd
-                    .get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
+                let filtered_list =
+                    gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
                 self.update_list(filtered_list);
             }
             ItemWindowMode::ShopBuy { cid } => {
@@ -138,11 +162,13 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::ShopSell => {
-                let ill = ItemListLocation::Chara { cid: CharaId::Player };
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new());
                 self.update_list(filtered_list);
             }
-            ItemWindowMode::Select { ill, filter, ..} => {
+            ItemWindowMode::Select { ill, filter, .. } => {
                 let filtered_list = gd.get_filtered_item_list(ill, filter);
                 self.update_list(filtered_list);
             }
@@ -151,7 +177,7 @@ impl ItemWindow {
 
     fn update_list(&mut self, list: FilteredItemList) {
         self.list.set_n_item(list.clone().count() as u32);
-        
+
         let mode = &self.mode;
 
         self.item_locations.clear();
@@ -160,38 +186,30 @@ impl ItemWindow {
         }
 
         self.list.update_rows_by_func(|i| {
-
             let (_, ref item, n_item) = list.clone().nth(i as usize).unwrap();
 
-            let item_text = format!(
-                "{} x {}",
-                item.to_text(),
-                n_item);
+            let item_text = format!("{} x {}", item.to_text(), n_item);
 
             // Infomation displayed in the right column
             let additional_info = match mode {
-                ItemWindowMode::ShopBuy { .. } => {
-                    format!("{}G", item.price())
-                }
-                ItemWindowMode::ShopSell => {
-                    format!("{}G", item.selling_price())
-                }
-                _ => {
-                    format!("{:.2}kg", item.w() as f32 / 1000.0)
-                }
+                ItemWindowMode::ShopBuy { .. } => format!("{}G", item.price()),
+                ItemWindowMode::ShopSell => format!("{}G", item.selling_price()),
+                _ => format!("{:.2}kg", item.w() as f32 / 1000.0),
             };
 
             let t1 = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
-            let t2 = TextCache::one(additional_info, FontKind::M, UI_CFG.color.normal_font.into());
+            let t2 = TextCache::one(
+                additional_info,
+                FontKind::M,
+                UI_CFG.color.normal_font.into(),
+            );
             (IconIdx::Item(item.idx), t1, t2)
         });
     }
 
     fn do_action_for_item(&mut self, pa: &mut DoPlayerAction, il: ItemLocation) -> DialogResult {
         match self.mode {
-            ItemWindowMode::List => {
-                DialogResult::Continue
-            }
+            ItemWindowMode::List => DialogResult::Continue,
             ItemWindowMode::PickUp => {
                 pa.pick_up_item(il, 1);
                 if pa.gd().is_item_on_player_tile() {
@@ -226,18 +244,13 @@ impl ItemWindow {
                 self.update_by_mode(pa.gd());
                 DialogResult::Continue
             }
-            ItemWindowMode::Select { ref mut action, .. } => {
-                action(pa, il)
-            }
+            ItemWindowMode::Select { ref mut action, .. } => action(pa, il),
         }
     }
 }
 
 impl Window for ItemWindow {
-    
-    fn draw(
-        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_rect_border(context, self.rect);
         self.list.draw(context);
     }
@@ -247,7 +260,8 @@ impl DialogWindow for ItemWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(response) = self.list.process_command(&command) {
             match response {
-                ListWidgetResponse::Select(i) => { // Any item is selected
+                ListWidgetResponse::Select(i) => {
+                    // Any item is selected
                     let il = self.item_locations[i as usize];
                     return self.do_action_for_item(pa, il);
                 }
@@ -258,11 +272,9 @@ impl DialogWindow for ItemWindow {
             }
             return DialogResult::Continue;
         }
-        
+
         match *command {
-            Command::Cancel => {
-                DialogResult::Close
-            },
+            Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
     }
@@ -275,4 +287,3 @@ impl DialogWindow for ItemWindow {
         WindowDrawMode::SkipUnderWindows
     }
 }
-

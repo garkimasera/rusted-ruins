@@ -1,4 +1,3 @@
-
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -15,9 +14,9 @@ mod verbose;
 mod tomlinput;
 mod buildobj;
 mod compile;
-mod rrscript;
 mod dir;
 mod error;
+mod rrscript;
 
 fn main() {
     let matches = create_matches();
@@ -56,28 +55,35 @@ fn print_info(files: &[&str]) {
 
 fn create_matches() -> clap::ArgMatches<'static> {
     use clap::{App, Arg};
-    
+
     App::new("rusted-ruins-makepak")
         .about("Pak file maker for Rusted Ruins")
-        .arg(Arg::with_name("verbose")
-             .short("v")
-             .long("verbose")
-             .help("Verbose mode"))
-        .arg(Arg::with_name("info")
-             .short("i")
-             .long("info")
-             .help("Print given pak file information"))
-        .arg(Arg::with_name("output")
-             .short("o")
-             .long("output")
-             .value_name("FILE")
-             .help("Set output pakage file name")
-             .takes_value(true))
-        .arg(Arg::with_name("INPUT")
-             .help("Input toml files")
-             .index(1)
-             .multiple(true)
-             .required(true))
+        .arg(
+            Arg::with_name("verbose")
+                .short("v")
+                .long("verbose")
+                .help("Verbose mode"),
+        )
+        .arg(
+            Arg::with_name("info")
+                .short("i")
+                .long("info")
+                .help("Print given pak file information"),
+        )
+        .arg(
+            Arg::with_name("output")
+                .short("o")
+                .long("output")
+                .value_name("FILE")
+                .help("Set output pakage file name")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("INPUT")
+                .help("Input toml files")
+                .index(1)
+                .multiple(true)
+                .required(true),
+        )
         .get_matches()
 }
-

@@ -1,14 +1,13 @@
-
-use std::path::{Path, PathBuf};
-use std::fs::{File, create_dir_all};
-use std::io::{Write, BufReader, BufWriter};
-use serde_cbor::ser::to_writer_packed;
-use serde_cbor::from_reader;
 use crate::basic::SAVE_EXTENSION;
 use crate::gamedata::*;
 use crate::impl_filebox::MapLoadError;
+use serde_cbor::from_reader;
+use serde_cbor::ser::to_writer_packed;
+use std::fs::{create_dir_all, File};
+use std::io::{BufReader, BufWriter, Write};
+use std::path::{Path, PathBuf};
 
-#[cfg(feature="global_state_obj")]
+#[cfg(feature = "global_state_obj")]
 impl GameData {
     /// Save game data to the specified directory
     pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
@@ -37,14 +36,13 @@ impl GameData {
         // Write maps
         let map_dir = save_dir.join("maps");
         create_dir_all(&map_dir)?;
-        
+
         let mut errors: Vec<MapLoadError> = Vec::new();
-        self.region.visit_all_maps(|_mid, map| {
-            match BoxedMap::write(map, &map_dir) {
+        self.region
+            .visit_all_maps(|_mid, map| match BoxedMap::write(map, &map_dir) {
                 Ok(_) => (),
                 Err(e) => errors.push(e),
-            }
-        });
+            });
 
         if !errors.is_empty() {
             return Err(errors.into_iter().next().unwrap().into());
@@ -56,15 +54,15 @@ impl GameData {
     /// Load game data from specified directory
     pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<std::error::Error>> {
         let save_dir = path.as_ref();
-        
+
         // Read metadata file
         let mut file = BufReader::new(File::open(save_dir.join("metadata"))?);
         let meta: MetaData = serde_json::from_reader(&mut file)?;
 
         // Read index conversion table
         let mut file = BufReader::new(File::open(save_dir.join("idtable"))?);
-        let idx_conv_table = crate::idx_conv::IdxConvTable::read
-            (&mut file, *crate::gobj::OBJ_HOLDER_HASH)?;
+        let idx_conv_table =
+            crate::idx_conv::IdxConvTable::read(&mut file, *crate::gobj::OBJ_HOLDER_HASH)?;
         let is_table_changed = idx_conv_table.is_some();
         if is_table_changed {
             info!("Detected changes in the id table. Conversion table is created.");
@@ -77,7 +75,8 @@ impl GameData {
         gamedata.meta = meta;
 
         let map_dir = save_dir.join("maps");
-        if is_table_changed { // Preload is needed if id table is changed
+        if is_table_changed {
+            // Preload is needed if id table is changed
             let mut mid_vec = Vec::new();
             gamedata.region.visit_all_maps(|mid, _map| {
                 mid_vec.push(mid);
@@ -85,7 +84,8 @@ impl GameData {
             for mid in &mid_vec {
                 gamedata.region.preload_map(*mid, &map_dir);
             }
-        } else { // Preload current map
+        } else {
+            // Preload current map
             let mid = gamedata.get_current_mapid();
             gamedata.region.preload_map(mid, &map_dir);
         }
@@ -94,7 +94,8 @@ impl GameData {
     }
 
     pub fn save_dir<P: AsRef<Path>>(&self, path: P) -> PathBuf {
-        path.as_ref().join(format!("{}.{}", self.meta.save_name(), SAVE_EXTENSION))
+        path.as_ref()
+            .join(format!("{}.{}", self.meta.save_name(), SAVE_EXTENSION))
     }
 }
 

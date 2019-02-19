@@ -1,12 +1,11 @@
-
-use std::str::FromStr;
-use nom::{space, line_ending};
-use nom::types::CompleteStr;
 use common::hashmap::HashMap;
+use nom::types::CompleteStr;
+use nom::{line_ending, space};
+use std::str::FromStr;
 
-use common::script::*;
-use crate::error::PakCompileError;
 use super::expr_parser::*;
+use crate::error::PakCompileError;
+use common::script::*;
 
 named!(end_line<CompleteStr, ()>,
     do_parse!(
@@ -18,7 +17,10 @@ named!(end_line<CompleteStr, ()>,
 
 #[test]
 fn end_line_test() {
-    assert_eq!(end_line(CompleteStr("   \naabb")), Ok((CompleteStr("aabb"), ())));
+    assert_eq!(
+        end_line(CompleteStr("   \naabb")),
+        Ok((CompleteStr("aabb"), ()))
+    );
 }
 
 macro_rules! array(
@@ -47,8 +49,10 @@ named!(section_start<CompleteStr, String>,
 
 #[test]
 fn section_start_test() {
-    assert_eq!(section_start(
-        CompleteStr("---  section_name \n")), Ok((CompleteStr(""), "section_name".to_string())));
+    assert_eq!(
+        section_start(CompleteStr("---  section_name \n")),
+        Ok((CompleteStr(""), "section_name".to_string()))
+    );
 }
 
 named!(jump_instruction<CompleteStr, Instruction>,
@@ -77,11 +81,18 @@ named!(jump_if_instruction<CompleteStr, Instruction>,
 fn jump_instruction_test() {
     assert_eq!(
         jump_instruction(CompleteStr(" jump ( other_section ) \n")),
-        Ok((CompleteStr(""), Instruction::Jump("other_section".to_owned()))));
+        Ok((
+            CompleteStr(""),
+            Instruction::Jump("other_section".to_owned())
+        ))
+    );
     assert_eq!(
         jump_if_instruction(CompleteStr("jump_if(has-key, has_item(key))\n")),
-        Ok((CompleteStr(""), Instruction::JumpIf(
-            "has-key".to_owned(), Expr::HasItem("key".to_owned())))));
+        Ok((
+            CompleteStr(""),
+            Instruction::JumpIf("has-key".to_owned(), Expr::HasItem("key".to_owned()))
+        ))
+    );
 }
 
 named!(special_instruction<CompleteStr, Instruction>,
@@ -95,12 +106,20 @@ named!(special_instruction<CompleteStr, Instruction>,
 
 #[test]
 fn special_instruction_test() {
-    assert_eq!(special_instruction(
-        CompleteStr("special(shop_buy)\n")),
-        Ok((CompleteStr(""), Instruction::Special(SpecialInstruction::ShopBuy))));
-    assert_eq!(special_instruction(
-        CompleteStr("special(shop_sell)\n")),
-        Ok((CompleteStr(""), Instruction::Special(SpecialInstruction::ShopSell))));
+    assert_eq!(
+        special_instruction(CompleteStr("special(shop_buy)\n")),
+        Ok((
+            CompleteStr(""),
+            Instruction::Special(SpecialInstruction::ShopBuy)
+        ))
+    );
+    assert_eq!(
+        special_instruction(CompleteStr("special(shop_sell)\n")),
+        Ok((
+            CompleteStr(""),
+            Instruction::Special(SpecialInstruction::ShopSell)
+        ))
+    );
 }
 
 named!(talk_instruction<CompleteStr, Instruction>,
@@ -161,10 +180,15 @@ named!(remove_item_instruction<CompleteStr, Instruction>,
 fn talk_instruction_test() {
     let result = Instruction::Talk(
         "text-id".to_owned(),
-        vec![("a".to_owned(), "b".to_owned()), ("c".to_owned(), "d".to_owned())]);
+        vec![
+            ("a".to_owned(), "b".to_owned()),
+            ("c".to_owned(), "d".to_owned()),
+        ],
+    );
     assert_eq!(
         talk_instruction_with_choices(CompleteStr("talk(text-id, [(a, b), (c, d)])\n")),
-        Ok((CompleteStr(""), result)));
+        Ok((CompleteStr(""), result))
+    );
 }
 
 named!(instruction<CompleteStr, Instruction>,
@@ -200,14 +224,10 @@ named!(sections<CompleteStr, HashMap<String, Vec<Instruction>>>,
 
 pub fn parse(input: &str) -> Result<Script, PakCompileError> {
     match sections(CompleteStr(input)) {
-        Ok(o) => {
-            Ok(Script::from_map(o.1))
-        }
-        Err(e) => {
-            Err(PakCompileError::ScriptParseError {
-                description: e.to_string()
-            })
-        }
+        Ok(o) => Ok(Script::from_map(o.1)),
+        Err(e) => Err(PakCompileError::ScriptParseError {
+            description: e.to_string(),
+        }),
     }
 }
 
@@ -228,16 +248,19 @@ talk(textid1,
         vec![
             Instruction::Talk("textid0".to_owned(), vec![]),
             Instruction::Special(SpecialInstruction::ShopBuy),
-            Instruction::Jump("test_section1".to_owned())
-        ]);
+            Instruction::Jump("test_section1".to_owned()),
+        ],
+    );
     result.insert(
         "test_section1".to_owned(),
-        vec![
-            Instruction::Talk(
-                "textid1".to_owned(),
-                vec![("aaa".to_owned(), "bbb".to_owned()), ("ccc".to_owned(), "ddd".to_owned())]),
-        ]);
+        vec![Instruction::Talk(
+            "textid1".to_owned(),
+            vec![
+                ("aaa".to_owned(), "bbb".to_owned()),
+                ("ccc".to_owned(), "ddd".to_owned()),
+            ],
+        )],
+    );
 
     assert_eq!(sections(CompleteStr(script)), Ok((CompleteStr(""), result)))
 }
-

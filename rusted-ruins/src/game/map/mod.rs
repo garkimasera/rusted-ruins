@@ -1,17 +1,16 @@
-
 pub mod builder;
 pub mod from_template;
 pub mod search;
 
+use super::chara::gen::create_npc_chara;
+use super::item::gen::gen_dungeon_item;
+use super::Game;
+use crate::text::ToText;
 use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::TileKind;
-use crate::text::ToText;
-use super::Game;
-use super::chara::gen::create_npc_chara;
-use super::item::gen::gen_dungeon_item;
 use rules::RULES;
 
 pub trait MapEx {
@@ -25,7 +24,7 @@ impl MapEx for Map {
         if !self.is_inside(pos) {
             return false;
         }
-        
+
         if self.tile[pos].wall.is_empty() {
             let tile = gobj::get_obj(self.tile[pos].main_tile());
             match tile.kind {
@@ -36,7 +35,7 @@ impl MapEx for Map {
             false
         }
     }
-    
+
     fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
         if let Some(p) = self.chara_pos(cid) {
             let new_p = p + dir.as_vec();
@@ -52,7 +51,7 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
     {
         let save_dir = game.save_dir.as_ref().unwrap();
         let gd = &mut game.gd;
-        
+
         trace!("Switch map to {:?}", mid);
         // If next_mid floor doesn't exist, create new floor
         if !mid.is_region_map() && !gd.region.map_exist(mid) {
@@ -63,16 +62,22 @@ pub fn switch_map(game: &mut Game, mid: MapId) {
         gd.region.preload_map(mid, save_dir.join("maps"));
         gd.set_current_mapid(mid);
 
-        let new_player_pos = if mid.is_region_map() && !prev_mid.is_region_map()
-            && mid.rid() == prev_mid.rid() { // Exit from a site to region map
+        let new_player_pos =
+            if mid.is_region_map() && !prev_mid.is_region_map() && mid.rid() == prev_mid.rid() {
+                // Exit from a site to region map
                 gd.region.get_site_pos(prev_mid.sid())
-            } else { // Move to another floor of the same site
+            } else {
+                // Move to another floor of the same site
                 let current_map = gd.get_current_map();
-                if let Some(p) =
-                    current_map.search_stairs(prev_mid.floor()) { p } else { current_map.entrance }
+                if let Some(p) = current_map.search_stairs(prev_mid.floor()) {
+                    p
+                } else {
+                    current_map.entrance
+                }
             };
-    
-        gd.get_current_map_mut().locate_chara(CharaId::Player, new_player_pos);
+
+        gd.get_current_map_mut()
+            .locate_chara(CharaId::Player, new_player_pos);
     }
     crate::audio::play_sound("floor-change");
     super::view::update_view_map(game);
@@ -113,7 +118,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
             false
         }
     };
-    
+
     for _ in 0..MAX_TRY {
         let p = Vec2d(gen_range(0, map.w) as i32, gen_range(0, map.h) as i32);
         let tile = &map.tile[p];
@@ -129,11 +134,11 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     if n_empty_tile == 0 {
         None
     } else {
-        
         let r = gen_range(0, n_empty_tile);
-        let p = map.tile
+        let p = map
+            .tile
             .iter_with_idx()
-            .filter(|&(_, t)| is_tile_empty(t) )
+            .filter(|&(_, t)| is_tile_empty(t))
             .nth(r)
             .unwrap()
             .0;
@@ -150,26 +155,32 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
             SiteContent::AutoGenDungeon { dungeon_kind } => {
                 RULES.dungeon_gen[&dungeon_kind].item_gen_probability
             }
-            _ => { return; } // No item generation
+            _ => {
+                return;
+            } // No item generation
         }
     };
     let item_gen_probability = if 0.0 <= item_gen_probability && item_gen_probability <= 1.0 {
         item_gen_probability
     } else {
-        warn!("invalid value {} for item_gen_probablility", item_gen_probability);
+        warn!(
+            "invalid value {} for item_gen_probablility",
+            item_gen_probability
+        );
         return;
     };
     let map = gd.region.get_map_mut(mid);
 
     for p in map.tile.iter_idx() {
         let tile = &mut map.tile[p];
-        if !tile.wall.is_empty() { continue; }
+        if !tile.wall.is_empty() {
+            continue;
+        }
 
         if get_rng().gen_bool(item_gen_probability) {
             map.locate_item(gen_dungeon_item(mid.floor()), p, 1);
         }
     }
-    
 }
 
 pub fn update_observed_map(game: &mut Game) {
@@ -177,7 +188,9 @@ pub fn update_observed_map(game: &mut Game) {
     let map = game.gd.get_current_map_mut();
 
     for p in map.tile.iter_idx() {
-        if !view_map.get_tile_visible(p) { continue; }
+        if !view_map.get_tile_visible(p) {
+            continue;
+        }
 
         let tile = &map.tile[p];
         let observed_tile = &mut map.observed_tile[p];
@@ -195,4 +208,3 @@ pub fn update_observed_map(game: &mut Game) {
         }
     }
 }
-

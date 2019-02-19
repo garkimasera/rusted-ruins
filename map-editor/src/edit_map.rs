@@ -1,10 +1,9 @@
-
 use array2d::*;
 use common::basic::N_TILE_IMG_LAYER;
+use common::gamedata::{ItemGen, TileLayers};
+use common::gobj;
 use common::maptemplate::*;
 use common::objholder::*;
-use common::gamedata::{TileLayers, ItemGen};
-use common::gobj;
 use common::piece_pattern::*;
 
 pub struct EditingMap {
@@ -24,7 +23,15 @@ impl EditingMap {
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
         let items = Array2d::new(width, height, vec![]);
-        EditingMap { property, width, height, tile, wall, deco, items }
+        EditingMap {
+            property,
+            width,
+            height,
+            tile,
+            wall,
+            deco,
+            items,
+        }
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
@@ -48,7 +55,7 @@ impl EditingMap {
                 let wall_obj = gobj::get_obj(idx);
                 piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
             };
-            
+
             self.wall[pos] = WallIdxPP::with_piece_pattern(idx, piece_pattern);
         } else {
             self.wall[pos] = WallIdxPP::default();
@@ -103,9 +110,13 @@ impl EditingMap {
     pub fn resize(&mut self, new_w: u32, new_h: u32) {
         self.width = new_w;
         self.height = new_h;
-        let tile = self.tile.clip_with_default((0, 0), (new_w, new_h), TileLayers::default());
+        let tile = self
+            .tile
+            .clip_with_default((0, 0), (new_w, new_h), TileLayers::default());
         self.tile = tile;
-        let wall = self.wall.clip_with_default((0, 0), (new_w, new_h), WallIdxPP::default());
+        let wall = self
+            .wall
+            .clip_with_default((0, 0), (new_w, new_h), WallIdxPP::default());
         self.wall = wall;
         let deco = self.deco.clip_with_default((0, 0), (new_w, new_h), None);
         self.deco = deco;
@@ -117,7 +128,11 @@ impl EditingMap {
         // Create table for TileIdx
         for &tile in self.tile.iter() {
             for i in 0..N_TILE_IMG_LAYER {
-                let tile_idx = if let Some(idx) = tile[i].idx() { idx } else { continue; };
+                let tile_idx = if let Some(idx) = tile[i].idx() {
+                    idx
+                } else {
+                    continue;
+                };
                 let tile_id = gobj::idx_to_id(tile_idx);
                 if tile_table.iter().all(|a| *a != tile_id) {
                     tile_table.push(tile_id.to_owned());
@@ -160,8 +175,12 @@ impl EditingMap {
         for (pos, deco_idx) in self.deco.iter_with_idx() {
             if let Some(deco_idx) = *deco_idx {
                 let deco_id = gobj::idx_to_id(deco_idx);
-                let converted_idx =
-                    deco_table.iter().enumerate().find(|&(_, a)| a == deco_id).unwrap().0 as u32;
+                let converted_idx = deco_table
+                    .iter()
+                    .enumerate()
+                    .find(|&(_, a)| a == deco_id)
+                    .unwrap()
+                    .0 as u32;
                 deco_map[pos] = Some(converted_idx);
             }
         }
@@ -232,8 +251,7 @@ impl From<MapTemplateObject> for EditingMap {
         }
 
         map.property.boundary = obj.boundary;
-        
+
         map
     }
 }
-

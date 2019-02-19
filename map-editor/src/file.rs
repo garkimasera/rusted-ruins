@@ -1,28 +1,26 @@
-
 use common::obj::MapTemplateObject;
-use common::pakutil;
 use common::obj::Object;
-use std::fs::File;
-use std::path::Path;
+use common::pakutil;
 use std::error::Error;
+use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 use tar;
 
 pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<Error>> {
     let mut mapobj: Option<MapTemplateObject> = None;
     let mut errors = Vec::new();
-    
+
     pakutil::read_tar(
         path,
-        &mut |object| {
-            match object {
-                Object::MapTemplate(o) => {
-                    mapobj = Some(o);
-                }
-                _ => (),
+        &mut |object| match object {
+            Object::MapTemplate(o) => {
+                mapobj = Some(o);
             }
+            _ => (),
         },
-        &mut errors);
+        &mut errors,
+    );
 
     Ok(mapobj.ok_or("Object is not found")?)
 }
@@ -53,8 +51,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 fn get_unix_time() -> u64 {
     let duration = match SystemTime::now().duration_since(UNIX_EPOCH) {
         Ok(d) => d,
-        Err(_) => { return 0; }
+        Err(_) => {
+            return 0;
+        }
     };
     duration.as_secs()
 }
-

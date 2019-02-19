@@ -1,24 +1,23 @@
-
-use std::cell::Cell;
-use gtk::prelude::*;
-use crate::ui::Ui;
 use crate::ui::SelectedItem;
-use common::objholder::*;
+use crate::ui::Ui;
 use common::gobj;
+use common::objholder::*;
+use gtk::prelude::*;
+use std::cell::Cell;
 
 thread_local!(static IS_REGION_MAP: Cell<bool> = Cell::new(false));
 
 #[derive(Clone)]
 pub struct IconView {
-    pub iconview_tile:  gtk::IconView,
-    pub iconview_wall:  gtk::IconView,
-    pub iconview_deco:  gtk::IconView,
+    pub iconview_tile: gtk::IconView,
+    pub iconview_wall: gtk::IconView,
+    pub iconview_deco: gtk::IconView,
     pub liststore_tile: gtk::ListStore,
     pub liststore_wall: gtk::ListStore,
     pub liststore_deco: gtk::ListStore,
-    pub filter_tile:    gtk::TreeModelFilter,
-    pub filter_wall:    gtk::TreeModelFilter,
-    pub filter_deco:    gtk::TreeModelFilter,
+    pub filter_tile: gtk::TreeModelFilter,
+    pub filter_wall: gtk::TreeModelFilter,
+    pub filter_deco: gtk::TreeModelFilter,
 }
 
 impl IconView {
@@ -29,10 +28,10 @@ impl IconView {
         let filter_tile: gtk::TreeModelFilter = get_object!(builder, "filter-tile");
         let filter_wall: gtk::TreeModelFilter = get_object!(builder, "filter-wall");
         let filter_deco: gtk::TreeModelFilter = get_object!(builder, "filter-deco");
-        filter_tile.set_visible_func(|m, i| item_filter(m, i) );
-        filter_wall.set_visible_func(|m, i| item_filter(m, i) );
-        filter_deco.set_visible_func(|m, i| item_filter(m, i) );
-        
+        filter_tile.set_visible_func(|m, i| item_filter(m, i));
+        filter_wall.set_visible_func(|m, i| item_filter(m, i));
+        filter_deco.set_visible_func(|m, i| item_filter(m, i));
+
         IconView {
             iconview_tile: get_object!(builder, "iconview-tile"),
             iconview_wall: get_object!(builder, "iconview-wall"),
@@ -56,7 +55,8 @@ impl IconView {
 
 pub fn set_iconview(ui: &Ui) {
     let iconview = &ui.iconview;
-    { // Set tile icons
+    {
+        // Set tile icons
         iconview.iconview_tile.set_pixbuf_column(0);
         iconview.iconview_tile.set_text_column(1);
         let uic = ui.clone();
@@ -68,7 +68,8 @@ pub fn set_iconview(ui: &Ui) {
             }
         });
     }
-    { // Set wall icons
+    {
+        // Set wall icons
         iconview.iconview_wall.set_pixbuf_column(0);
         iconview.iconview_wall.set_text_column(1);
         let uic = ui.clone();
@@ -80,7 +81,8 @@ pub fn set_iconview(ui: &Ui) {
             }
         });
     }
-    { // Set deco icons
+    {
+        // Set deco icons
         iconview.iconview_deco.set_pixbuf_column(0);
         iconview.iconview_deco.set_text_column(1);
         let uic = ui.clone();
@@ -99,27 +101,30 @@ pub fn set_iconview(ui: &Ui) {
 fn update_liststore(ui: &Ui) {
     let objholder = ::common::gobj::get_objholder();
     let pbh = &*ui.pbh;
-    
+
     let liststore_tile = &ui.iconview.liststore_tile;
     for (i, tile) in objholder.tile.iter().enumerate() {
         liststore_tile.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(TileIdx::from_usize(i)).icon, &tile.id]);
+            &[&pbh.get(TileIdx::from_usize(i)).icon, &tile.id],
+        );
     }
     let liststore_wall = &ui.iconview.liststore_wall;
     for (i, wall) in objholder.wall.iter().enumerate() {
         liststore_wall.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(WallIdx::from_usize(i)).icon, &wall.id]);
+            &[&pbh.get(WallIdx::from_usize(i)).icon, &wall.id],
+        );
     }
     let liststore_deco = &ui.iconview.liststore_deco;
     for (i, deco) in objholder.deco.iter().enumerate() {
         liststore_deco.insert_with_values(
             None,
             &[0, 1],
-            &[&pbh.get(DecoIdx::from_usize(i)).icon, &deco.id]);
+            &[&pbh.get(DecoIdx::from_usize(i)).icon, &deco.id],
+        );
     }
 }
 
@@ -128,16 +133,12 @@ impl Ui {
         self.selected_item.set(item);
 
         let new_text = match item {
-            SelectedItem::Tile(idx) => {
-                format!("{} (tile)", gobj::idx_to_id(idx))
+            SelectedItem::Tile(idx) => format!("{} (tile)", gobj::idx_to_id(idx)),
+            SelectedItem::Wall(idx) => format!("{} (wall)", gobj::idx_to_id(idx)),
+            SelectedItem::Deco(idx) => format!("{} (deco)", gobj::idx_to_id(idx)),
+            _ => {
+                return;
             }
-            SelectedItem::Wall(idx) => {
-                format!("{} (wall)", gobj::idx_to_id(idx))
-            }
-            SelectedItem::Deco(idx) => {
-                format!("{} (deco)", gobj::idx_to_id(idx))
-            }
-            _ => { return; },
         };
         self.label_selected_item.set_text(&new_text);
     }
@@ -145,7 +146,9 @@ impl Ui {
 
 fn item_filter(m: &gtk::TreeModel, i: &gtk::TreeIter) -> bool {
     let id: String = m.get_value(&i, 1).get().unwrap();
-    if id == "!" { return true }
+    if id == "!" {
+        return true;
+    }
     if IS_REGION_MAP.with(|a| a.get()) {
         judge_rm_item(&id)
     } else {
@@ -160,4 +163,3 @@ fn judge_rm_item(id: &str) -> bool {
         false
     }
 }
-

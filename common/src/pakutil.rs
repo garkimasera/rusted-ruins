@@ -1,6 +1,5 @@
-
-use std::io::{Read, Write};
 use serde_cbor::{from_reader, ser::to_writer_packed};
+use std::io::{Read, Write};
 
 use super::obj::Object;
 
@@ -17,8 +16,8 @@ pub fn write_object<W: Write>(w: &mut W, obj: &Object) -> Result<(), String> {
 /*
   Implement load_objs_dir
 */
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 use tar;
 
 #[derive(Debug)]
@@ -26,7 +25,6 @@ pub enum PakLoadingError {
     Io(std::io::Error),
     Cbor(serde_cbor::error::Error),
 }
-
 
 /// Load objects from pak files recursively
 pub fn load_objs_dir<F: FnMut(Object)>(dir: &Path, cb: F) -> Vec<PakLoadingError> {
@@ -43,7 +41,7 @@ fn walk_dir(dir: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingEr
         Err(e) => {
             err_stack.push(PakLoadingError::Io(e));
             return;
-        },
+        }
     };
 
     for entry in entry_iter {
@@ -52,7 +50,7 @@ fn walk_dir(dir: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingEr
             Err(e) => {
                 err_stack.push(PakLoadingError::Io(e));
                 continue;
-            },
+            }
         };
         let path = entry.path();
         if path.is_dir() {
@@ -91,7 +89,7 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
                 continue;
             }
         };
-        
+
         let object = match read_object(file) {
             Ok(o) => o,
             Err(e) => {
@@ -103,5 +101,3 @@ pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoad
         cb(object);
     }
 }
-
-

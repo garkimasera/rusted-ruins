@@ -1,10 +1,9 @@
-
+use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
-use sdl2::pixels::Color;
 
-use super::textrenderer::TextRenderer;
 use super::textrenderer::FontKind;
+use super::textrenderer::TextRenderer;
 use super::textrenderer::{ERR_MSG_FONT_REND, ERR_MSG_FONT_TEX};
 
 use std::sync::Mutex;
@@ -15,12 +14,16 @@ lazy_static! {
 
 const CACHE_DROP_STACK_LOCK_ERR_MSG: &str = "Cache drop stack lock error";
 fn push_drop_stack(i: usize) {
-    let mut a = CACHE_DROP_STACK.lock().expect(CACHE_DROP_STACK_LOCK_ERR_MSG);
+    let mut a = CACHE_DROP_STACK
+        .lock()
+        .expect(CACHE_DROP_STACK_LOCK_ERR_MSG);
     a.push(i);
 }
 
 fn pop_drop_stack() -> Option<usize> {
-    let mut a = CACHE_DROP_STACK.lock().expect(CACHE_DROP_STACK_LOCK_ERR_MSG);
+    let mut a = CACHE_DROP_STACK
+        .lock()
+        .expect(CACHE_DROP_STACK_LOCK_ERR_MSG);
     a.pop()
 }
 
@@ -36,7 +39,7 @@ pub struct TextCache {
 impl TextCache {
     pub fn new<S: AsRef<str>>(s: &[S], font: FontKind, color: Color) -> TextCache {
         let s: Vec<String> = s.iter().map(|a| a.as_ref().to_string()).collect();
-        
+
         TextCache {
             i: None,
             s,
@@ -108,15 +111,13 @@ impl<'t> TextCachePool<'t> {
         for _ in 0..DEFAULT_CACHE_SIZE {
             data.push(None);
         }
-        
-        TextCachePool {
-            data
-        }
+
+        TextCachePool { data }
     }
 
     fn append(&mut self, t: Vec<Texture<'t>>) -> usize {
         self.gc();
-        
+
         for (i, d) in self.data.iter_mut().enumerate() {
             if d.is_none() {
                 *d = Some(t);
@@ -128,22 +129,30 @@ impl<'t> TextCachePool<'t> {
         i
     }
 
-    pub fn group(&mut self, c: &mut TextCache, tr: &TextRenderer, tc: &'t TextureCreator<WindowContext>)
-                 -> &[Texture] {
-        
-        if c.i.is_none() { // Render and add cache
+    pub fn group(
+        &mut self,
+        c: &mut TextCache,
+        tr: &TextRenderer,
+        tc: &'t TextureCreator<WindowContext>,
+    ) -> &[Texture] {
+        if c.i.is_none() {
+            // Render and add cache
             let mut v = Vec::new();
             for ref s in c.s.iter() {
                 let surface = tr
                     .surface(c.font, s, c.color, c.wrap_size, c.is_bordered)
                     .expect(ERR_MSG_FONT_REND);
-                let t = tc.create_texture_from_surface(surface).expect(ERR_MSG_FONT_TEX);
+                let t = tc
+                    .create_texture_from_surface(surface)
+                    .expect(ERR_MSG_FONT_TEX);
                 v.push(t);
             }
             c.i = Some(self.append(v));
         }
-        
-        self.data[c.i.unwrap()].as_ref().expect("Requested cache doesn't exist")
+
+        self.data[c.i.unwrap()]
+            .as_ref()
+            .expect("Requested cache doesn't exist")
     }
 
     pub fn gc(&mut self) {
@@ -152,4 +161,3 @@ impl<'t> TextCachePool<'t> {
         }
     }
 }
-

@@ -1,15 +1,14 @@
-
 mod text_id_impl;
 mod to_text;
 
+use crate::config;
+use crate::error::*;
+use common::basic;
 use std::collections::HashMap;
-use std::path::{Path, PathBuf};
 use std::fs;
 use std::io::{BufRead, BufReader};
+use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
-use crate::error::*;
-use crate::config;
-use common::basic;
 
 /// Initialize lazy static
 pub fn init() {
@@ -21,15 +20,19 @@ pub fn init() {
 }
 
 lazy_static! {
-    static ref OBJ_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
-    static ref LOG_TXT_MAP:  HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
-    static ref UI_TXT_MAP:   HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
+    static ref OBJ_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
+    static ref LOG_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
+    static ref UI_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
     static ref TALK_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::TALK_TXT_DIR);
     static ref MISC_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::MISC_TXT_DIR);
 }
 
 pub fn obj_txt<'a>(id: &'a str) -> &'a str {
-    if let Some(txt) = OBJ_TXT_MAP.get(id) { txt }else{ id }
+    if let Some(txt) = OBJ_TXT_MAP.get(id) {
+        txt
+    } else {
+        id
+    }
 }
 
 #[allow(unused)]
@@ -38,7 +41,11 @@ pub fn obj_txt_checked(id: &str) -> Option<&'static str> {
 }
 
 pub fn log_txt<'a>(id: &'a str) -> &'a str {
-    if let Some(txt) = LOG_TXT_MAP.get(id) { txt }else{ id }
+    if let Some(txt) = LOG_TXT_MAP.get(id) {
+        txt
+    } else {
+        id
+    }
 }
 
 #[allow(unused)]
@@ -47,7 +54,11 @@ pub fn log_txt_checked(id: &str) -> Option<&'static str> {
 }
 
 pub fn ui_txt<'a>(id: &'a str) -> &'a str {
-    if let Some(txt) = UI_TXT_MAP.get(id) { txt }else{ id }
+    if let Some(txt) = UI_TXT_MAP.get(id) {
+        txt
+    } else {
+        id
+    }
 }
 
 #[allow(unused)]
@@ -56,7 +67,11 @@ pub fn ui_txt_checked(id: &str) -> Option<&'static str> {
 }
 
 pub fn talk_txt<'a>(id: &'a str) -> &'a str {
-    if let Some(txt) = TALK_TXT_MAP.get(id) { txt }else{ id }
+    if let Some(txt) = TALK_TXT_MAP.get(id) {
+        txt
+    } else {
+        id
+    }
 }
 
 #[allow(unused)]
@@ -65,7 +80,11 @@ pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
 }
 
 pub fn misc_txt<'a>(id: &'a str) -> &'a str {
-    if let Some(txt) = MISC_TXT_MAP.get(id) { txt }else{ id }
+    if let Some(txt) = MISC_TXT_MAP.get(id) {
+        txt
+    } else {
+        id
+    }
 }
 
 #[allow(unused)]
@@ -115,23 +134,27 @@ fn load_trans_txt(kind: &str) -> HashMap<String, String> {
     for mut dir in textdirs {
         info!("Text file loading from directory : {:?}", dir);
         dir.push(kind);
-        
+
         for f in WalkDir::new(dir).into_iter() {
             let f = match f {
                 Ok(f) => f,
-                Err(e) => { warn!("{}", e); continue; },
-            };
-
-            if !f.file_type().is_file() ||
-                f.path().extension().is_none() ||
-                f.path().extension().unwrap() != "txt" {
+                Err(e) => {
+                    warn!("{}", e);
                     continue;
                 }
-            
+            };
+
+            if !f.file_type().is_file()
+                || f.path().extension().is_none()
+                || f.path().extension().unwrap() != "txt"
+            {
+                continue;
+            }
+
             let _ = add_file(f.path(), &mut map);
         }
     }
-    
+
     map
 }
 
@@ -139,17 +162,21 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
     let p = p.as_ref();
     let file = fs::File::open(p)?;
     let file = BufReader::new(file);
-    
+
     let mut key: Option<String> = None;
     let mut value = String::new();
-    
+
     for line in file.lines() {
         let line = line?;
         let mut is_key = false;
 
         if let Some(first_char) = line.chars().next() {
-            if first_char == '#' { continue; } // Skip comment line
-            if first_char == '%' { is_key = true; }
+            if first_char == '#' {
+                continue;
+            } // Skip comment line
+            if first_char == '%' {
+                is_key = true;
+            }
         } else {
             continue; // Skip empty line
         }
@@ -168,7 +195,7 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
             value.push('\n');
         }
     }
-    
+
     if key.is_some() {
         remove_last_newline(&mut value);
         map.insert(key.unwrap(), value);
@@ -186,4 +213,3 @@ fn remove_last_newline(s: &mut String) {
         }
     }
 }
-

@@ -1,8 +1,7 @@
-
-use gdk_pixbuf::{Pixbuf, PixbufLoader, PixbufExt, PixbufLoaderExt};
+use common::gobj;
 use common::obj::Img;
 use common::objholder::*;
-use common::gobj;
+use gdk_pixbuf::{Pixbuf, PixbufExt, PixbufLoader, PixbufLoaderExt};
 
 pub struct PixbufSet {
     /// Whole image
@@ -21,7 +20,7 @@ macro_rules! impl_pixbuf_holder {
         impl PixbufHolder {
             pub fn new() -> PixbufHolder {
                 let objholder = gobj::get_objholder();
-                
+
                 let mut pbh = PixbufHolder {
                     $($mem: Vec::new()),*
                 };
@@ -32,7 +31,7 @@ macro_rules! impl_pixbuf_holder {
                         pbh.$mem.push(pixbuf);
                     }
                 )*
-                
+
                 pbh
             }
         }
@@ -62,11 +61,13 @@ fn load_png(img: &Img) -> PixbufSet {
     loader.write(&img.data).expect(ERR_MSG);
     loader.close().expect(ERR_MSG);
     let pixbuf = loader.get_pixbuf().expect(ERR_MSG);
-    
+
     let pixbuf_icon = if img.grid_nx == 1 && img.grid_ny == 1 {
         pixbuf.clone()
     } else {
-        pixbuf.new_subpixbuf(0, 0, img.w as i32, img.h as i32).expect(ERR_MSG)
+        pixbuf
+            .new_subpixbuf(0, 0, img.w as i32, img.h as i32)
+            .expect(ERR_MSG)
     };
 
     PixbufSet {

@@ -1,4 +1,3 @@
-
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
@@ -26,17 +25,23 @@ pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F, is_shop
 /// Choose item by floor level.
 /// f is weight adjustment function.
 fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
-    floor_level: u32, mut f: F, is_shop: bool) -> ItemIdx {
-    
+    floor_level: u32,
+    mut f: F,
+    is_shop: bool,
+) -> ItemIdx {
     let items = &gobj::get_objholder().item;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
     let weight_dist = CalcLevelWeightDist::new(floor_level);
     let mut sum = 0.0;
     let mut first_available_item_idx = None;
-    
+
     for (i, item) in items.iter().enumerate() {
-        let gen_weight = if is_shop { item.shop_weight } else { item.gen_weight };
+        let gen_weight = if is_shop {
+            item.shop_weight
+        } else {
+            item.gen_weight
+        };
         sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
         if first_available_item_idx.is_none() {
             first_available_item_idx = Some(i);
@@ -49,7 +54,11 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
     let r = rng::gen_range(0.0, sum);
     let mut sum = 0.0;
     for (i, item) in items.iter().enumerate() {
-        let gen_weight = if is_shop { item.shop_weight } else { item.gen_weight };
+        let gen_weight = if is_shop {
+            item.shop_weight
+        } else {
+            item.gen_weight
+        };
         sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
         if r < sum {
             return ItemIdx::from_usize(i);
@@ -69,7 +78,7 @@ impl CalcLevelWeightDist {
             floor_level: floor_level as f64,
         }
     }
-    
+
     fn calc(&self, l: u32) -> f64 {
         let l = l as f64;
         if l > self.floor_level {
@@ -96,4 +105,3 @@ pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
         None
     }
 }
-

@@ -1,12 +1,11 @@
-
-use std::collections::VecDeque;
-use sdl2::rect::Rect;
-use sdl2::pixels::Color;
-use crate::game::{Game, Animation};
-use crate::context::*;
-use crate::window::Window;
 use crate::config::{SCREEN_CFG, UI_CFG};
+use crate::context::*;
+use crate::game::{Animation, Game};
 use crate::log;
+use crate::window::Window;
+use sdl2::pixels::Color;
+use sdl2::rect::Rect;
+use std::collections::VecDeque;
 
 pub struct LogWindow {
     rect: Rect,
@@ -23,10 +22,7 @@ impl LogWindow {
 }
 
 impl Window for LogWindow {
-    
-    fn draw(
-        &mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        
+    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         context.set_viewport(None);
         context.canvas.set_draw_color(UI_CFG.color.log_window_bg);
         check_draw!(context.canvas.fill_rect(self.rect));
@@ -38,7 +34,7 @@ impl Window for LogWindow {
         let n_display_line = UI_CFG.log_window.n_display_line as usize;
         let start = if end > n_display_line {
             end - n_display_line
-        }else{
+        } else {
             0
         };
         let dy = UI_CFG.log_window.h;
@@ -90,4 +86,3 @@ impl LineCache {
         }
     }
 }
-

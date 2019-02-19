@@ -1,8 +1,7 @@
-
-use filebox::FileBox;
 use super::map::Map;
 use super::region::RegionId;
 use super::town::Town;
+use filebox::FileBox;
 
 pub type BoxedMap = FileBox<Map>;
 
@@ -45,7 +44,7 @@ impl Site {
             content: SiteContent::Other,
         }
     }
-    
+
     pub fn get_map(&self, floor: u32) -> &Map {
         &self.map[floor as usize]
     }
@@ -74,12 +73,10 @@ impl Site {
         self.map.push(FileBox::new(map_random_id, map));
         floor
     }
-    
+
     pub fn is_underground(&self) -> bool {
         match self.content {
-            SiteContent::AutoGenDungeon { dungeon_kind, .. } => {
-                dungeon_kind.is_underground()
-            }
+            SiteContent::AutoGenDungeon { dungeon_kind, .. } => dungeon_kind.is_underground(),
             _ => false,
         }
     }
@@ -106,17 +103,19 @@ impl Site {
 impl SiteContent {
     pub fn kind(&self) -> SiteKind {
         match self {
-            &SiteContent::AutoGenDungeon { .. } => { SiteKind::AutoGenDungeon },
-            &SiteContent::Town { .. } => { SiteKind::Town },
-            &SiteContent::Other { .. } => { SiteKind::Other },
+            &SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
+            &SiteContent::Town { .. } => SiteKind::Town,
+            &SiteContent::Other { .. } => SiteKind::Other,
         }
     }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all="snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum SiteKind {
-    AutoGenDungeon, Town, Other
+    AutoGenDungeon,
+    Town,
+    Other,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
@@ -131,14 +130,16 @@ impl Default for SiteId {
         SiteId {
             rid: RegionId::default(),
             kind: SiteKind::Other,
-            n: 0
+            n: 0,
         }
     }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum DungeonKind {
-    None, Cave, Ruin,
+    None,
+    Cave,
+    Ruin,
 }
 
 impl DungeonKind {
@@ -152,4 +153,3 @@ impl DungeonKind {
         }
     }
 }
-

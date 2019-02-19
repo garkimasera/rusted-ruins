@@ -1,10 +1,9 @@
-
+use crate::game::view::ViewMap;
 use array2d::*;
-use common::objholder::*;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SpecialTileObject;
-use crate::game::view::ViewMap;
+use common::objholder::*;
 
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
@@ -17,7 +16,7 @@ pub struct BackgroundDrawInfo<'a> {
 impl<'a> BackgroundDrawInfo<'a> {
     pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo {
         let mut di = BackgroundDrawInfo::default();
-        
+
         let tile = if map.is_inside(pos) {
             let tinfo = &map.observed_tile[pos];
             if tinfo.tile {
@@ -28,14 +27,14 @@ impl<'a> BackgroundDrawInfo<'a> {
         } else {
             if let Some(ref _outside_tile) = map.outside_tile {
                 unimplemented!()
-                //Some(outside_tile.tile.clone().into())
+            //Some(outside_tile.tile.clone().into())
             } else {
                 let pos = map.nearest_existent_tile(pos);
                 let tinfo = &map.observed_tile[pos];
                 Some(&map.tile[pos].tile)
             }
         };
-        
+
         di.tile = tile;
 
         if map.is_inside(pos) {
@@ -47,7 +46,7 @@ impl<'a> BackgroundDrawInfo<'a> {
                 }
             }
         }
-        
+
         di
     }
 }
@@ -106,14 +105,12 @@ impl<'a> ForegroundDrawInfo<'a> {
         if map.is_inside(pos) {
             di.items = &map.observed_tile[pos].items.as_slice();
         }
-        
+
         di
     }
-
 }
 
 /// Adjust piece pattern when getting piece pattern from the nearest tile.
 fn adjust_pattern_from_nearest(pp: &mut PiecePattern, _pos: Vec2d, _nearest_pos: Vec2d) {
     *pp = PiecePattern::SURROUNDED;
 }
-
