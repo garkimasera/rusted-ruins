@@ -1,7 +1,7 @@
 use common::gobj;
 use common::obj::Img;
 use common::objholder::*;
-use gdk_pixbuf::{Pixbuf, PixbufExt, PixbufLoader, PixbufLoaderExt};
+use gdk_pixbuf::{Pixbuf, PixbufLoader, PixbufLoaderExt};
 
 pub struct PixbufSet {
     /// Whole image

@@ -8,7 +8,7 @@ use common::obj::ImgObject;
 use common::objholder::*;
 use common::piece_pattern::*;
 use gdk::prelude::ContextExt;
-use gdk_pixbuf::{Pixbuf, PixbufExt};
+use gdk_pixbuf::Pixbuf;
 
 /// Draw tiles and objects on map
 pub fn draw_map(

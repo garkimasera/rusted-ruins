@@ -149,7 +149,7 @@ pub fn build_ui(application: &gtk::Application) {
         let mask = EventMask::BUTTON_PRESS_MASK
             | EventMask::BUTTON_RELEASE_MASK
             | EventMask::POINTER_MOTION_MASK;
-        ui.map_drawing_area.add_events(mask.bits() as i32);
+        ui.map_drawing_area.add_events(mask);
         ui.map_drawing_area
             .connect_button_press_event(move |_, eb| {
                 on_map_clicked(&uic, eb);
@@ -464,7 +464,7 @@ fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<Error>> {
 fn create_file_filter() -> gtk::FileFilter {
     let f = gtk::FileFilter::new();
     f.add_pattern("*.pak");
-    gtk::FileFilterExt::set_name(&f, "Rusted Ruins pak file");
+    f.set_name("Rusted Ruins pak file");
     f
 }
 

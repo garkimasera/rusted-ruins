@@ -132,8 +132,8 @@ pub fn connect_for_property_controls(ui: &Ui) {
     let uic = ui.clone();
     ui.property_controls.map_id.connect_changed(move |widget| {
         if uic.get_signal_mode() {
-            let text = widget.get_text().unwrap_or("".to_owned());
-            uic.map.borrow_mut().property.id = text;
+            let text = widget.get_text().unwrap_or("".into());
+            uic.map.borrow_mut().property.id = text.into();
         }
     });
 
