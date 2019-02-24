@@ -17,6 +17,7 @@ escape = "open_exit_win"
 return = "enter"
 escape = "cancel"
 tab = "rotate_window_right"
+a = "item_infomation"
 
 [targeting]
 return = "enter"

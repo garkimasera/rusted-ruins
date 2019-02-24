@@ -1,3 +1,4 @@
+use super::item_info_window;
 use super::item_window::*;
 use super::msg_dialog;
 use super::talk_window;
@@ -18,6 +19,7 @@ pub fn create_dialog_from_request(
             Box::new(msgdialog)
         }
         DialogOpenRequest::Talk { cid, talk_text } => create_talk_dialog(talk_text, cid, game)?,
+        DialogOpenRequest::ItemInfo { il } => Box::new(item_info_window::ItemInfoWindow::new(il)),
         DialogOpenRequest::ShopBuy { cid } => {
             let mut pa = DoPlayerAction::new(game);
             Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, pa.game()))

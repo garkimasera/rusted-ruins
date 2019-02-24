@@ -10,6 +10,7 @@ pub enum Command {
     Cancel,
     RotateWindowRight,
     RotateWindowLeft,
+    ItemInfomation,
     Shot,
     OpenExitWin,
     OpenItemMenu,

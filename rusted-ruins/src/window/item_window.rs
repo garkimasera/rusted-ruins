@@ -6,7 +6,7 @@ use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
 use crate::game::extrait::*;
 use crate::game::item::filter::*;
-use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
+use crate::game::{Animation, Command, DialogOpenRequest, DoPlayerAction, Game, InfoGetter};
 use crate::text::ToText;
 use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
 use common::gamedata::*;
@@ -258,6 +258,14 @@ impl Window for ItemWindow {
 
 impl DialogWindow for ItemWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        match command {
+            Command::ItemInfomation => {
+                let il = self.item_locations[self.list.get_current_choice() as usize];
+                pa.request_dialog_open(DialogOpenRequest::ItemInfo { il })
+            }
+            _ => (),
+        }
+
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {

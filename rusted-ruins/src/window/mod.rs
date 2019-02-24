@@ -5,6 +5,7 @@ mod exit_window;
 mod game_info_window;
 mod group_window;
 mod indicator;
+mod item_info_window;
 mod item_window;
 mod log_window;
 mod main_window;

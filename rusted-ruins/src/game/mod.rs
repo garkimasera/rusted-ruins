@@ -200,6 +200,9 @@ pub enum DialogOpenRequest {
         cid: CharaId,
         talk_text: TalkText,
     },
+    ItemInfo {
+        il: ItemLocation,
+    },
     ShopBuy {
         cid: CharaId,
     },

@@ -43,6 +43,7 @@ pub struct UIConfig {
     pub choose_save_file_dialog: ChooseSaveFileDialogConfig,
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub item_window: ItemWindowConfig,
+    pub item_info_window: ItemInfoWindowConfig,
     pub equip_window: EquipWindowConfig,
     pub scrolling_text_window: ScrollingTextWindowConfig,
     pub info_window: InfoWindowConfig,
@@ -152,6 +153,11 @@ pub struct ItemWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
     pub column_pos: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ItemInfoWindowConfig {
+    pub rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

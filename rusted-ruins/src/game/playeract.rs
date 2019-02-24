@@ -312,6 +312,10 @@ impl<'a> DoPlayerAction<'a> {
     pub fn undertake_quest(&mut self, i: u32) {
         crate::game::quest::undertake_quest(self.0, i);
     }
+
+    pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {
+        self.0.request_dialog_open(req);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {

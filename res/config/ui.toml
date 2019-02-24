@@ -62,6 +62,9 @@ rect = { x = -999, y = -999, w = 450, h = 286 }
 n_row = 10
 column_pos = [1, 27, 380]
 
+[item_info_window]
+rect = { x = -999, y = -999, w = 450, h = 300 }
+
 [equip_window]
 rect = { x = -999, y = -999, w = 450, h = 286 }
 n_row = 10
