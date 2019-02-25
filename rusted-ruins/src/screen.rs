@@ -19,8 +19,14 @@ impl Screen {
             .video()
             .expect("Init Failed : SDL Video Subsystem");
 
+        let (screen_w, screen_h) = if CONFIG.double_scale_mode {
+            (SCREEN_CFG.screen_w * 2, SCREEN_CFG.screen_h * 2)
+        } else {
+            (SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
+        };
+
         let window = video_subsystem
-            .window("Rusted Ruins", SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
+            .window("Rusted Ruins", screen_w, screen_h)
             .position_centered()
             .build()
             .unwrap();
@@ -31,7 +37,10 @@ impl Screen {
         } else {
             canvas_builder.software()
         };
-        let canvas = canvas_builder.build().unwrap();
+        let mut canvas = canvas_builder.build().unwrap();
+        if CONFIG.double_scale_mode {
+            canvas.set_scale(2.0, 2.0);
+        }
 
         Screen {
             canvas,

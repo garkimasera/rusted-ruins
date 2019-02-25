@@ -158,4 +158,6 @@ pub struct Config {
     pub second_lang: String,
     pub screen_config: String,
     pub hardware_acceleration: bool,
+    #[serde(default)]
+    pub double_scale_mode: bool,
 }
