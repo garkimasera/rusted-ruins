@@ -11,6 +11,8 @@ pub struct Chara {
     pub default_view_range: i32,
     /// Default sp when a new character is created.
     pub sp_default: f32,
+    /// Maximum sp
+    pub sp_max: f32,
     /// Character's sp is decreased by this value per turn.
     pub sp_consumption: f32,
     /// sp border of hungry

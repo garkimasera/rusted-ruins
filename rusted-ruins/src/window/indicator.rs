@@ -7,40 +7,81 @@ use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::UIImgObject;
+use rules::RULES;
 
-pub struct HPIndicator {
-    rect: Rect,
-    guage: GaugeWidget,
-    label: ImageWidget,
+#[derive(Clone, Copy, Debug)]
+pub enum BarIndicatorKind {
+    Hp,
+    Sp,
 }
 
-impl HPIndicator {
-    pub fn new() -> HPIndicator {
-        let rect: Rect = SCREEN_CFG.hp_indicator.into();
+impl BarIndicatorKind {
+    fn label_id(self) -> &'static str {
+        match self {
+            BarIndicatorKind::Hp => "!label-hp",
+            BarIndicatorKind::Sp => "!label-sp",
+        }
+    }
 
-        // Label is drawed over the guage
-        let label_id = "!label-hp";
-        let label_img: &'static UIImgObject = gobj::get_by_id(label_id);
-        let (label_w, label_h) = (label_img.img.w, label_img.img.h);
-        let label_rect = Rect::from_center((rect.w / 2, rect.h / 2), label_w, label_h); // Centering of the guage
+    fn color_mode(self) -> GaugeColorMode {
+        match self {
+            BarIndicatorKind::Hp => GaugeColorMode::Hp,
+            BarIndicatorKind::Sp => GaugeColorMode::Sp,
+        }
+    }
 
-        HPIndicator {
-            rect,
-            guage: GaugeWidget::new(
-                Rect::new(0, 0, rect.width(), rect.height()),
-                0.0,
-                1.0,
-                GaugeColorMode::Hp,
-            ),
-            label: ImageWidget::ui_img(label_rect, label_id),
+    fn rect(self) -> Rect {
+        match self {
+            BarIndicatorKind::Hp => SCREEN_CFG.hp_indicator.into(),
+            BarIndicatorKind::Sp => SCREEN_CFG.sp_indicator.into(),
         }
     }
 }
 
-impl Window for HPIndicator {
+pub struct BarIndicator {
+    rect: Rect,
+    kind: BarIndicatorKind,
+    guage: GaugeWidget,
+    label: ImageWidget,
+}
+
+impl BarIndicator {
+    pub fn new(kind: BarIndicatorKind) -> BarIndicator {
+        let rect: Rect = kind.rect();
+
+        // Label is drawed over the guage
+        let label_img: &'static UIImgObject = gobj::get_by_id(kind.label_id());
+        let (label_w, label_h) = (label_img.img.w, label_img.img.h);
+        // Centering of the guage
+        let label_rect = Rect::from_center((rect.w / 2, rect.h / 2), label_w, label_h);
+
+        BarIndicator {
+            rect,
+            kind,
+            guage: GaugeWidget::new(
+                Rect::new(0, 0, rect.width(), rect.height()),
+                0.0,
+                1.0,
+                kind.color_mode(),
+            ),
+            label: ImageWidget::ui_img(label_rect, kind.label_id()),
+        }
+    }
+}
+
+impl Window for BarIndicator {
     fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
-        let (max_hp, hp) = game.gd.player_hp();
-        self.guage.set_params(0.0, max_hp as f32, hp as f32);
+        match self.kind {
+            BarIndicatorKind::Hp => {
+                let (max_hp, hp) = game.gd.player_hp();
+                self.guage.set_params(0.0, max_hp as f32, hp as f32);
+            }
+            BarIndicatorKind::Sp => {
+                let sp = game.gd.chara.get(CharaId::Player).sp;
+                let r = &RULES.chara;
+                self.guage.set_params(r.sp_starving, r.sp_max, sp);
+            }
+        }
 
         context.set_viewport(self.rect);
         self.guage.draw(context);

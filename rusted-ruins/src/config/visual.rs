@@ -10,6 +10,7 @@ pub struct ScreenConfig {
     pub log_window: CfgRect,
     pub minimap_window: CfgRect,
     pub hp_indicator: CfgRect,
+    pub sp_indicator: CfgRect,
     pub floor_info: CfgRect,
     pub date_info: CfgRect,
     pub time_info: CfgRect,
@@ -71,6 +72,7 @@ pub struct UIColorConfig {
     pub gauge_border_dark: CfgColor,
     pub gauge_bg: CfgColor,
     pub gauge_hp: CfgColor,
+    pub gauge_sp: CfgColor,
     pub gauge_exp: CfgColor,
 }
 

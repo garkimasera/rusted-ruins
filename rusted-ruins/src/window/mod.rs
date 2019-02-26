@@ -510,7 +510,8 @@ struct GameWindows {
     main_window: MainWindow,
     log_window: LogWindow,
     minimap_window: minimap::MiniMapWindow,
-    indicator: indicator::HPIndicator,
+    indicator_hp: indicator::BarIndicator,
+    indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
     status_info: indicator::StatusInfo,
     time_info: indicator::TimeInfo,
@@ -522,6 +523,7 @@ impl GameWindows {
     fn new() -> GameWindows {
         use self::widget::{HBorder, VBorder};
         use crate::config::SCREEN_CFG;
+        use indicator::*;
         let mut hborders = Vec::new();
         for hborder in &SCREEN_CFG.hborders {
             hborders.push(HBorder::new((hborder.x, hborder.y), hborder.len));
@@ -535,10 +537,11 @@ impl GameWindows {
             main_window: MainWindow::new(),
             log_window: LogWindow::new(),
             minimap_window: minimap::MiniMapWindow::new(),
-            indicator: indicator::HPIndicator::new(),
-            floor_info: indicator::FloorInfo::new(),
-            status_info: indicator::StatusInfo::new(),
-            time_info: indicator::TimeInfo::new(),
+            indicator_hp: BarIndicator::new(BarIndicatorKind::Hp),
+            indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
+            floor_info: FloorInfo::new(),
+            status_info: StatusInfo::new(),
+            time_info: TimeInfo::new(),
             hborders,
             vborders,
         }
@@ -548,7 +551,8 @@ impl GameWindows {
         self.main_window.draw(context, game, anim);
         self.log_window.draw(context, game, anim);
         self.minimap_window.draw(context, game, anim);
-        self.indicator.draw(context, game, anim);
+        self.indicator_hp.draw(context, game, anim);
+        self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);
         self.time_info.draw(context, game, anim);

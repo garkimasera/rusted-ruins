@@ -17,6 +17,7 @@ pub struct GaugeWidget {
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum GaugeColorMode {
     Hp,
+    Sp,
     Exp,
 }
 
@@ -25,6 +26,12 @@ impl GaugeColorMode {
         match self {
             GaugeColorMode::Hp => Colors {
                 bar: UI_CFG.color.gauge_hp.into(),
+                bg: UI_CFG.color.gauge_bg.into(),
+                border_light: UI_CFG.color.border_light.into(),
+                border_dark: UI_CFG.color.border_dark.into(),
+            },
+            GaugeColorMode::Sp => Colors {
+                bar: UI_CFG.color.gauge_sp.into(),
                 bg: UI_CFG.color.gauge_bg.into(),
                 border_light: UI_CFG.color.border_light.into(),
                 border_dark: UI_CFG.color.border_dark.into(),
