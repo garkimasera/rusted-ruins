@@ -37,12 +37,16 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     }
 
     let chara = game.gd.chara.get_mut(cid);
-    chara.add_sp(-RULES.chara.sp_consumption, cid);
+    chara.sub_sp(RULES.chara.sp_consumption, cid);
     can_act(chara)
 }
 
 /// Judges this character can act or not
 fn can_act(chara: &Chara) -> bool {
+    if chara.hp < 0 {
+        return false;
+    }
+
     for s in chara.status.iter() {
         match *s {
             CharaStatus::Asleep { .. } => {

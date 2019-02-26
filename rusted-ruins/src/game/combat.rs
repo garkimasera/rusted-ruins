@@ -10,6 +10,7 @@ pub enum DamageKind {
     MeleeAttack,
     RangedAttack,
     Poison,
+    Starve,
 }
 
 pub struct AttackParams {

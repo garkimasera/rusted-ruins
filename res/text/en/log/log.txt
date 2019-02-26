@@ -38,6 +38,8 @@ $(chara) is killed.
 $(chara) is killed.
 % killed-by-poison-damage
 $(chara) is killed by poison
+% killed-by-starve-damage
+$(chara) starved to death.
 #
 # Messages about character action
 #

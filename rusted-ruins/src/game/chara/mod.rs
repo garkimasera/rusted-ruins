@@ -23,6 +23,7 @@ pub trait CharaEx {
     fn add_evasion_exp(&mut self, attacker_level: u32);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: f32, cid: CharaId);
+    fn sub_sp(&mut self, v: f32, cid: CharaId);
     /// Give damage to this character
     fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32;
     /// Update character parameters by its status
@@ -61,6 +62,9 @@ impl CharaEx for Chara {
         let r = &RULES.chara;
         let old_sp = self.sp;
         let new_sp = if self.sp + v < r.sp_starving {
+            let d = r.sp_starving - (self.sp + v);
+            let damage = 4 * (self.attr.max_hp as f32 * d / r.sp_max) as i32;
+            self.damage(damage, DamageKind::Starve);
             r.sp_starving
         } else {
             self.sp + v
@@ -98,6 +102,10 @@ impl CharaEx for Chara {
         }
     }
 
+    fn sub_sp(&mut self, v: f32, cid: CharaId) {
+        self.add_sp(-v, cid);
+    }
+
     fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32 {
         self.hp -= damage;
 
@@ -112,6 +120,9 @@ impl CharaEx for Chara {
                 }
                 DamageKind::Poison => {
                     game_log!("killed-by-poison-damage"; chara=self);
+                }
+                DamageKind::Starve => {
+                    game_log!("killed-by-starve-damage"; chara=self);
                 }
             }
         }

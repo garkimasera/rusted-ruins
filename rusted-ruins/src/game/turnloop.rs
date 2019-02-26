@@ -10,7 +10,11 @@ use rules::RULES;
 
 pub fn turn_loop(game: &mut Game) {
     loop {
-        remove_dying_charas(game);
+        if remove_dying_charas(game) {
+            game.state = GameState::PlayerTurn;
+            return;
+        }
+
         let (cid, advanced_clock) = decrease_wait_time(game);
 
         advance_game_time(game, advanced_clock);
@@ -57,14 +61,15 @@ fn decrease_wait_time(game: &mut Game) -> (CharaId, u32) {
     unreachable!()
 }
 
-/// Dying chara is removed before new turn processing
-fn remove_dying_charas(game: &mut Game) {
+/// Dying chara is removed before new turn processing.
+/// If returns true, player died.
+fn remove_dying_charas(game: &mut Game) -> bool {
     for &cid in &game.gd.get_charas_on_map() {
         let chara = game.gd.chara.get(cid);
         if chara.hp <= 0 {
             if cid == CharaId::Player {
                 game.request_dialog_open(DialogOpenRequest::GameOver);
-                return;
+                return true;
             }
             // Remove dying chara
             game.gd.remove_chara(cid);
@@ -74,6 +79,7 @@ fn remove_dying_charas(game: &mut Game) {
             }
         }
     }
+    false
 }
 
 fn advance_game_time(game: &mut Game, advanced_clock: u32) {
