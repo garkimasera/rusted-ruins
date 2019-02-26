@@ -61,6 +61,9 @@ pub struct Game {
 impl Game {
     pub fn new(gd: GameData) -> Game {
         let save_dir = self::saveload::get_each_save_dir(&gd);
+
+        rng::reseed(crate::config::CONFIG.fix_rand);
+
         Game {
             gd,
             state: GameState::PlayerTurn,

@@ -42,10 +42,14 @@ pub fn get_rng() -> GameRng {
 }
 
 /// Reseed
-pub fn reseed() {
+pub fn reseed(fixed: bool) {
+    let new_rng = if fixed {
+        XorShiftRng::seed_from_u64(0x7275696e730a)
+    } else {
+        XorShiftRng::from_rng(thread_rng()).expect("reseed from thread rng failed")
+    };
     XORSHIFT_RNG.with(|xorshift_rng| {
-        xorshift_rng
-            .replace(XorShiftRng::from_rng(thread_rng()).expect("reseed from thread rng failed"));
+        xorshift_rng.replace(new_rng);
     })
 }
 

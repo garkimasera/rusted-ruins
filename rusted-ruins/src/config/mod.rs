@@ -1,3 +1,4 @@
+mod args;
 pub mod font;
 pub mod input;
 pub mod visual;
@@ -55,7 +56,10 @@ lazy_static! {
     pub static ref APP_DIR: PathBuf = get_app_dir().expect("Cannot get data directory path");
     pub static ref USER_DIR: PathBuf = get_user_dir();
     pub static ref ADDON_DIR: Option<PathBuf> = get_addon_dir();
-    pub static ref CONFIG: Config = load_config_file!("config.toml");
+    pub static ref CONFIG: Config = {
+        let config: Config = load_config_file!("config.toml");
+        args::modify_config_by_args(config)
+    };
     pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!("screen/800x600.toml");
     pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
     pub static ref INPUT_CFG: input::InputConfig = load_config_file!("input.toml");
@@ -160,4 +164,6 @@ pub struct Config {
     pub hardware_acceleration: bool,
     #[serde(default)]
     pub double_scale_mode: bool,
+    #[serde(default)]
+    pub fix_rand: bool,
 }

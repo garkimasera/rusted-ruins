@@ -5,17 +5,18 @@ edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
-lazy_static = "1"
+clap = "2"
+dirs = "1"
+env_logger = "0.6"
 failure = "0.1.1"
 fnv = "1"
-tar = "0.4"
+lazy_static = "1"
+log = "0.4"
 serde = "1"
 serde_derive = "1"
+tar = "0.4"
 toml = "0.4"
-log = "0.4"
-env_logger = "0.6"
 walkdir = "2"
-dirs = "1"
 
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"

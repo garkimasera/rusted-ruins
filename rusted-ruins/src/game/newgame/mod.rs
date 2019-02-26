@@ -29,6 +29,7 @@ impl NewGameBuilder {
     }
 
     pub fn build(mut self) -> GameData {
+        rng::reseed(crate::config::CONFIG.fix_rand);
         {
             let mut gd = &mut self.gd;
 
