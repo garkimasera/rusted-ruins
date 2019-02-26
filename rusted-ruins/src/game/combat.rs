@@ -168,7 +168,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
 /// Routines for targetted character
 fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
     let equip_def = calc_equip_defence(&game.gd, target_id);
-    let target = game.gd.chara.get(target_id);
+    let target = game.gd.chara.get_mut(target_id);
     let idx = target.template;
     let defence_skill_level = target.skills.get(SkillKind::Defence);
     let defence_power = calc_defence_power(
@@ -182,7 +182,7 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     game_log!("damaged-chara"; chara=target, damage=damage);
 
     // Give damage
-    let hp = super::chara::damage(game, target_id, damage, attack_params.kind);
+    let hp = target.damage(damage, attack_params.kind);
 
     if hp > 0 {
         // Exp for targetted character

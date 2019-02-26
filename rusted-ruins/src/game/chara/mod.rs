@@ -23,6 +23,8 @@ pub trait CharaEx {
     fn add_evasion_exp(&mut self, attacker_level: u32);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: f32, cid: CharaId);
+    /// Give damage to this character
+    fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32;
     /// Update character parameters by its status
     fn update(&mut self);
     /// Reset wait time
@@ -96,6 +98,26 @@ impl CharaEx for Chara {
         }
     }
 
+    fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32 {
+        self.hp -= damage;
+
+        if self.hp < 0 {
+            // Logging
+            match damage_kind {
+                DamageKind::MeleeAttack => {
+                    game_log!("killed-by-melee-attack"; chara=self);
+                }
+                DamageKind::RangedAttack => {
+                    game_log!("killed-by-ranged-attack"; chara=self);
+                }
+                DamageKind::Poison => {
+                    game_log!("killed-by-poison-damage"; chara=self);
+                }
+            }
+        }
+        self.hp
+    }
+
     fn update(&mut self) {
         update::update_attributes(self);
     }
@@ -103,27 +125,4 @@ impl CharaEx for Chara {
     fn reset_wait_time(&mut self) {
         self.wait_time = WAIT_TIME_NUMERATOR / self.attr.spd as u32;
     }
-}
-
-pub fn damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: DamageKind) -> i32 {
-    let chara = game.gd.chara.get_mut(cid);
-
-    chara.hp -= damage;
-
-    if chara.hp < 0 {
-        game.dying_charas.push(cid);
-        // Logging
-        match damage_kind {
-            DamageKind::MeleeAttack => {
-                game_log!("killed-by-melee-attack"; chara=chara);
-            }
-            DamageKind::RangedAttack => {
-                game_log!("killed-by-ranged-attack"; chara=chara);
-            }
-            DamageKind::Poison => {
-                game_log!("killed-by-poison-damage"; chara=chara);
-            }
-        }
-    }
-    chara.hp
 }

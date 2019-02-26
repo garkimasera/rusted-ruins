@@ -49,7 +49,6 @@ pub struct Game {
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
-    dying_charas: Vec<CharaId>,
     script: Option<ScriptEngine>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
@@ -69,7 +68,6 @@ impl Game {
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
-            dying_charas: Vec::new(),
             script: None,
             target_chara: None,
             save_dir: Some(save_dir),
@@ -85,7 +83,6 @@ impl Game {
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
-            dying_charas: Vec::new(),
             script: None,
             target_chara: None,
             save_dir: None,

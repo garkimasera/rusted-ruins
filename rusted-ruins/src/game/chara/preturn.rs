@@ -33,7 +33,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let chara = game.gd.chara.get_mut(cid);
         let damage = chara.attr.max_hp / 20;
         game_log!("poison-damage"; chara=chara, damage=damage);
-        super::damage(game, cid, damage, DamageKind::Poison);
+        chara.damage(damage, DamageKind::Poison);
     }
 
     let chara = game.gd.chara.get_mut(cid);
