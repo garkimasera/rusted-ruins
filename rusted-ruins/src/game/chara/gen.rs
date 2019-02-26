@@ -24,7 +24,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         ai: create_ai(ct.default_ai_kind),
         hp: 1,
         status: Vec::new(),
-        sp: RULES.chara.default_sp,
+        sp: RULES.chara.sp_default,
         skills: gen_skill_list(ct, lv),
         rel: Relationship::NEUTRAL,
         trigger_talk: None,

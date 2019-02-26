@@ -85,7 +85,7 @@ pub struct Chara {
     pub wait_time: u32,
     pub ai: CharaAI,
     pub hp: i32,
-    pub sp: i32,
+    pub sp: f32,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
     /// Relationship to player character
@@ -186,7 +186,7 @@ impl Default for Chara {
             wait_time: crate::basic::WAIT_TIME_NUMERATOR,
             ai: CharaAI::default(),
             hp: 100,
-            sp: 0,
+            sp: 0.0,
             status: Vec::new(),
             skills: SkillList::default(),
             rel: Relationship::NEUTRAL,

@@ -1,12 +1,13 @@
 
 {
     "default_view_range": 5,
-    "default_sp": 3000,
+    
     "class_revision": {
          "adventurer": { "hp": 10, "str": -2, "vit": 2, "dex": 0, "int": 2, "wil": 2, "cha": 2, "spd": 0 }
     },
-    "sp_consumption": 1,
-    "sp_hungry": 1000,
-    "sp_weak": 0,
-    "sp_starving": -1000
+    "sp_default": 100.0,
+    "sp_consumption": 0.01,
+    "sp_hungry": 20.0,
+    "sp_weak": 10.0,
+    "sp_starving": 0.0
 }

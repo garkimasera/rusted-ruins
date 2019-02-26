@@ -22,7 +22,7 @@ pub trait CharaEx {
     /// Add exp when attacked.
     fn add_evasion_exp(&mut self, attacker_level: u32);
     /// sp increase/decrease.
-    fn add_sp(&mut self, v: i32, cid: CharaId);
+    fn add_sp(&mut self, v: f32, cid: CharaId);
     /// Update character parameters by its status
     fn update(&mut self);
     /// Reset wait time
@@ -55,16 +55,20 @@ impl CharaEx for Chara {
         self.add_skill_exp(SkillKind::Evasion, RULES.exp.evasion, attacker_level);
     }
 
-    fn add_sp(&mut self, v: i32, cid: CharaId) {
-        let old_sp = self.sp;
-        let new_sp = self.sp + v;
-        self.sp = new_sp;
+    fn add_sp(&mut self, v: f32, cid: CharaId) {
         let r = &RULES.chara;
+        let old_sp = self.sp;
+        let new_sp = if self.sp + v < r.sp_starving {
+            r.sp_starving
+        } else {
+            self.sp + v
+        };
+        self.sp = new_sp;
 
         // Update status about sp
         match cid {
             CharaId::Player => {
-                if v < 0 {
+                if v < 0.0 {
                     if new_sp <= r.sp_hungry && old_sp > r.sp_hungry {
                         self.add_status(CharaStatus::Hungry);
                     }
@@ -74,7 +78,7 @@ impl CharaEx for Chara {
                     if new_sp <= r.sp_starving && old_sp > r.sp_starving {
                         self.add_status(CharaStatus::Starving);
                     }
-                } else if v > 0 {
+                } else if v > 0.0 {
                     if new_sp > r.sp_hungry && old_sp <= r.sp_hungry {
                         self.remove_sp_status();
                     }
@@ -84,8 +88,9 @@ impl CharaEx for Chara {
                 }
             }
             _ => {
-                if new_sp < 0 {
-                    self.sp = 0;
+                // NPC's sp is not under sp_hungry
+                if new_sp < r.sp_hungry {
+                    self.sp = r.sp_hungry;
                 }
             }
         }
