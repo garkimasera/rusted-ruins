@@ -184,7 +184,7 @@ impl MainWinDrawer {
                     -player_move_adjust.0,
                     -player_move_adjust.1 - CHARA_DRAW_OFFSET,
                 );
-                check_draw!(context
+                try_sdl!(context
                     .canvas
                     .copy(context.sv.tex().get(chara.template), src, dest));
             }
@@ -266,7 +266,7 @@ impl MainWinDrawer {
                 } else {
                     self.centering_at_tile(src, p, 0, -CHARA_DRAW_OFFSET)
                 };
-                check_draw!(context
+                try_sdl!(context
                     .canvas
                     .copy(context.sv.tex().get(chara.template), src, dest));
             }
@@ -292,7 +292,7 @@ impl MainWinDrawer {
                     TILE_SIZE,
                 );
                 let tex = sv.tex().get(idx);
-                check_draw!(canvas.copy(&tex, src, dest));
+                try_sdl!(canvas.copy(&tex, src, dest));
             }
         }
     }
@@ -311,7 +311,7 @@ impl MainWinDrawer {
         for iy in 0..ny {
             for ix in 0..nx {
                 let dest = Rect::new(ix * TILE_SIZE_I, iy * TILE_SIZE_I, TILE_SIZE, TILE_SIZE);
-                check_draw!(canvas.copy(&texture, src, dest));
+                try_sdl!(canvas.copy(&texture, src, dest));
             }
         }
     }
@@ -329,7 +329,7 @@ impl MainWinDrawer {
                 for p in range {
                     let src = Rect::from(gobj::get_obj(idx).img_rect_nth(i_frame));
                     let dest = self.centering_at_tile(src, p, 0, 0);
-                    check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
+                    try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
                 }
             }
             &Animation::Shot {
@@ -349,7 +349,7 @@ impl MainWinDrawer {
                 } else {
                     self.centering_at_tile(src, target, 0, 0)
                 };
-                check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
+                try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
             }
             _ => (),
         }
@@ -374,25 +374,25 @@ impl MainWinDrawer {
         if let Some(src) = obj.piece_rect(piece_pattern.top_left, 0, i_anim_frame) {
             let dest = Rect::new(tlcx, tlcy, src.2, src.3);
             let src = Rect::from(src);
-            check_draw!(canvas.copy(tex, src, dest));
+            try_sdl!(canvas.copy(tex, src, dest));
         }
         // Top right piece
         if let Some(src) = obj.piece_rect(piece_pattern.top_right, 1, i_anim_frame) {
             let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy, src.2, src.3);
             let src = Rect::from(src);
-            check_draw!(canvas.copy(tex, src, dest));
+            try_sdl!(canvas.copy(tex, src, dest));
         }
         // Bottom left piece
         if let Some(src) = obj.piece_rect(piece_pattern.bottom_left, 2, i_anim_frame) {
             let dest = Rect::new(tlcx, tlcy + PIECE_SIZE_I, src.2, src.3);
             let src = Rect::from(src);
-            check_draw!(canvas.copy(tex, src, dest));
+            try_sdl!(canvas.copy(tex, src, dest));
         }
         // Bottom right piece
         if let Some(src) = obj.piece_rect(piece_pattern.bottom_right, 3, i_anim_frame) {
             let dest = Rect::new(tlcx + PIECE_SIZE_I, tlcy + PIECE_SIZE_I, src.2, src.3);
             let src = Rect::from(src);
-            check_draw!(canvas.copy(tex, src, dest));
+            try_sdl!(canvas.copy(tex, src, dest));
         }
     }
 
@@ -402,7 +402,7 @@ impl MainWinDrawer {
 
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let dest = self.centering_at_tile(src, ct, 0, 0);
-        check_draw!(canvas.copy(sv.tex().get(idx), src, dest));
+        try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
     }
 
     fn update_draw_params(

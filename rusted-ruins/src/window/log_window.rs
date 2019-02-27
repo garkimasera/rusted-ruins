@@ -25,7 +25,7 @@ impl Window for LogWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         context.set_viewport(None);
         context.canvas.set_draw_color(UI_CFG.color.log_window_bg);
-        check_draw!(context.canvas.fill_rect(self.rect));
+        try_sdl!(context.canvas.fill_rect(self.rect));
         context.set_viewport(self.rect);
 
         self.line_cache.update();
@@ -47,7 +47,7 @@ impl Window for LogWindow {
                 let h = t.query().height;
                 let orig = Rect::new(0, 0, w, h);
                 let dest = Rect::new(x, dy * i as i32, w, h);
-                check_draw!(context.canvas.copy(t, orig, dest));
+                try_sdl!(context.canvas.copy(t, orig, dest));
                 x += w as i32;
             }
         }

@@ -197,7 +197,7 @@ impl Window for TabsNavigator {
             WINDOW_BORDER_THICKNESS,
         );
         context.canvas.set_draw_color(window_bg);
-        check_draw!(context.canvas.fill_rect(r));
+        try_sdl!(context.canvas.fill_rect(r));
 
         // Draw borders
         context.canvas.set_draw_color(border_light);
@@ -207,13 +207,13 @@ impl Window for TabsNavigator {
             if self.i as i32 != i {
                 // Draw horizontal border
                 context.canvas.set_draw_color(border_dark);
-                check_draw!(context.canvas.draw_line((i * w, h), ((i + 1) * w, h)));
+                try_sdl!(context.canvas.draw_line((i * w, h), ((i + 1) * w, h)));
                 context.canvas.set_draw_color(border_light);
-                check_draw!(context
+                try_sdl!(context
                     .canvas
                     .draw_line((i * w, h + 1), ((i + 1) * w, h + 1)));
                 context.canvas.set_draw_color(border_dark);
-                check_draw!(context
+                try_sdl!(context
                     .canvas
                     .draw_line((i * w + 1, h + 2), ((i + 1) * w + 1, h + 2)));
 
@@ -231,15 +231,15 @@ impl Window for TabsNavigator {
 
             // Draw vertical border
             context.canvas.set_draw_color(border_dark);
-            check_draw!(context
+            try_sdl!(context
                 .canvas
                 .draw_line(((i + 1) * w - 1, 0), ((i + 1) * w - 1, h + 1)));
             context.canvas.set_draw_color(border_light);
-            check_draw!(context
+            try_sdl!(context
                 .canvas
                 .draw_line(((i + 1) * w, 0), ((i + 1) * w, h + 1)));
             context.canvas.set_draw_color(border_dark);
-            check_draw!(context
+            try_sdl!(context
                 .canvas
                 .draw_line(((i + 1) * w + 1, 0), ((i + 1) * w + 1, h + 1)));
         }

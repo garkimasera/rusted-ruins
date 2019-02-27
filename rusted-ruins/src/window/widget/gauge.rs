@@ -100,7 +100,7 @@ impl WidgetTrait for GaugeWidget {
     fn draw(&mut self, context: &mut Context) {
         let canvas = &mut context.canvas;
         canvas.set_draw_color(self.colors.bg);
-        check_draw!(canvas.fill_rect(self.rect));
+        try_sdl!(canvas.fill_rect(self.rect));
 
         let value = if self.value >= self.min {
             self.value
@@ -117,7 +117,7 @@ impl WidgetTrait for GaugeWidget {
         );
 
         canvas.set_draw_color(self.colors.bar);
-        check_draw!(canvas.fill_rect(bar_rect));
+        try_sdl!(canvas.fill_rect(bar_rect));
 
         for n in 0..2 {
             let r = Rect::new(
@@ -133,7 +133,7 @@ impl WidgetTrait for GaugeWidget {
             };
 
             canvas.set_draw_color(c);
-            check_draw!(canvas.draw_rect(r));
+            try_sdl!(canvas.draw_rect(r));
         }
 
         if let Some(ref mut label) = self.label {

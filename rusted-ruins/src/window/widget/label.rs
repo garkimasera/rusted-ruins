@@ -117,7 +117,7 @@ impl WidgetTrait for LabelWidget {
             )
         };
 
-        check_draw!(canvas.copy(tex, None, dest));
+        try_sdl!(canvas.copy(tex, None, dest));
     }
 }
 
@@ -174,7 +174,7 @@ impl WidgetTrait for LineSpecifiedLabelWidget {
                 h,
             );
             y += h as i32;
-            check_draw!(canvas.copy(tex, None, dest));
+            try_sdl!(canvas.copy(tex, None, dest));
         }
     }
 }

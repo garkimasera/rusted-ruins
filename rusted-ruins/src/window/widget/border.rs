@@ -29,16 +29,16 @@ impl WidgetTrait for HBorder {
         let canvas = &mut context.canvas;
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x, self.rect.y + 1),
             (self.rect.x + self.rect.w, self.rect.y + 1)
         ));
         canvas.set_draw_color(self.dark);
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x, self.rect.y),
             (self.rect.x + self.rect.w, self.rect.y)
         ));
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x, self.rect.y + 2),
             (self.rect.x + self.rect.w, self.rect.y + 2)
         ));
@@ -70,16 +70,16 @@ impl WidgetTrait for VBorder {
         let canvas = &mut context.canvas;
         canvas.set_viewport(None);
         canvas.set_draw_color(self.light);
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x + 1, self.rect.y),
             (self.rect.x + 1, self.rect.y + self.rect.h)
         ));
         canvas.set_draw_color(self.dark);
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x, self.rect.y),
             (self.rect.x, self.rect.y + self.rect.h)
         ));
-        check_draw!(canvas.draw_line(
+        try_sdl!(canvas.draw_line(
             (self.rect.x + 2, self.rect.y),
             (self.rect.x + 2, self.rect.y + self.rect.h)
         ));

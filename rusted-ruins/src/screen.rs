@@ -39,7 +39,7 @@ impl Screen {
         };
         let mut canvas = canvas_builder.build().unwrap();
         if CONFIG.double_scale_mode {
-            canvas.set_scale(2.0, 2.0);
+            try_sdl!(canvas.set_scale(2.0, 2.0));
         }
 
         Screen {

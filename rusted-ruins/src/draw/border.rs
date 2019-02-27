@@ -23,10 +23,10 @@ pub fn draw_rect_border(context: &mut Context, rect: Rect) {
         };
 
         canvas.set_draw_color(c);
-        check_draw!(canvas.draw_rect(r));
+        try_sdl!(canvas.draw_rect(r));
     }
 
     canvas.set_draw_color(UI_CFG.color.window_bg);
-    check_draw!(canvas.fill_rect(rect));
+    try_sdl!(canvas.fill_rect(rect));
     canvas.set_viewport(rect);
 }

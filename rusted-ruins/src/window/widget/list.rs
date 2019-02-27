@@ -315,7 +315,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             let x = self.rect.right() - w as i32;
             let y = (self.h_row * self.page_size) as i32;
             let dest = Rect::new(x, y, w, h);
-            check_draw!(context.canvas.copy(tex, None, dest));
+            try_sdl!(context.canvas.copy(tex, None, dest));
         }
 
         // Draw borders between rows
@@ -324,7 +324,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             for i in 1..(self.page_size + a) {
                 let y = (self.h_row * i) as i32;
                 context.canvas.set_draw_color(UI_CFG.color.list_border);
-                check_draw!(context.canvas.draw_line((0, y), (self.rect.right(), y)));
+                try_sdl!(context.canvas.draw_line((0, y), (self.rect.right(), y)));
             }
         }
 
@@ -344,7 +344,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         context
             .canvas
             .set_draw_color(UI_CFG.color.window_bg_highlight);
-        check_draw!(context.canvas.fill_rect(highlight_rect));
+        try_sdl!(context.canvas.fill_rect(highlight_rect));
 
         // Draw each rows
         let (start, end) = self.page_item_idx();
@@ -365,7 +365,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
 
         // Draw highlight row borders
         canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
-        check_draw!(canvas.draw_rect(highlight_rect));
+        try_sdl!(canvas.draw_rect(highlight_rect));
         let r = Rect::new(
             highlight_rect.x + 1,
             highlight_rect.y + 1,
@@ -373,7 +373,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             highlight_rect.h as u32 - 2,
         );
         canvas.set_draw_color(UI_CFG.color.border_highlight_light);
-        check_draw!(canvas.draw_rect(r));
+        try_sdl!(canvas.draw_rect(r));
     }
 }
 
@@ -386,7 +386,7 @@ impl ListWidgetRow for TextCache {
         let h = tex.query().height;
         let w = std::cmp::min(w, (rect.w - column_pos[0]) as u32);
         let dest = Rect::new(rect.x + column_pos[0], rect.y, w, h);
-        check_draw!(context.canvas.copy(tex, None, dest));
+        try_sdl!(context.canvas.copy(tex, None, dest));
     }
 }
 
@@ -396,7 +396,7 @@ impl ListWidgetRow for IconIdx {
     fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let (t, orig) = context.sv.tex().get_icon(*self);
         let dest = Rect::new(rect.x + column_pos[0], rect.y, orig.width(), orig.height());
-        check_draw!(context.canvas.copy(t, orig, dest));
+        try_sdl!(context.canvas.copy(t, orig, dest));
     }
 }
 

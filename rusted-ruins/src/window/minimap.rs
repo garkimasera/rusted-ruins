@@ -65,6 +65,6 @@ fn draw_minimap(canvas: &mut WindowCanvas, rect: Rect, game: &Game, _sv: &mut Sd
             RECT_SIZE,
         );
         canvas.set_draw_color(color);
-        check_draw!(canvas.fill_rect(draw_rect));
+        try_sdl!(canvas.fill_rect(draw_rect));
     }
 }
