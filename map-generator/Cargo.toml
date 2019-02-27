@@ -8,6 +8,9 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 name = "rusted_ruins_map_generator"
 crate-type = ["rlib"]
 
+[dependencies]
+rand = "0.6"
+
 [dependencies.rusted-ruins-array2d]
 path = "../array2d"
 

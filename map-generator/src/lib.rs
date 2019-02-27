@@ -7,6 +7,7 @@ use array2d::*;
 
 mod fractal;
 mod lattice;
+mod rooms;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TileKind {
@@ -42,6 +43,11 @@ enum MapGenParam {
         door_weight: f64,
     },
     Fractal,
+    Rooms {
+        max_room_size: u32,
+        min_room_size: u32,
+        n_room: u32,
+    }
 }
 
 pub struct MapGenerator {
@@ -98,6 +104,16 @@ impl MapGenerator {
         mg
     }
 
+    pub fn rooms(
+        mut self, min_room_size: u32, max_room_size: u32, n_room: u32) -> MapGenerator {
+        self.genparam = Some(MapGenParam::Rooms {
+            max_room_size,
+            min_room_size,
+            n_room,
+        });
+        self
+    }
+
     /// Generate one map
     pub fn generate(mut self) -> GeneratedMap {
         match self
@@ -120,6 +136,11 @@ impl MapGenerator {
             }
             MapGenParam::Fractal => {
                 fractal::write_to_map(&mut self.map);
+                return self.map;
+            }
+            MapGenParam::Rooms { max_room_size, min_room_size, n_room } => {
+                let rooms = rooms::Rooms::new(max_room_size, min_room_size, n_room);
+                rooms.write_to_map(&mut self.map);
                 return self.map;
             }
         }
@@ -158,8 +179,7 @@ mod tests {
     fn flat_map() {
         let map = MapGenerator::new((10, 10)).flat().generate();
 
-        println!("Flat map:");
-        println!("{}", map);
+        println!("Flat map:\n{}", map);
     }
 
     #[test]
@@ -168,14 +188,18 @@ mod tests {
             .lattice(5, 4, 3, 7, 0.5)
             .generate();
 
-        println!("Lattice map:");
-        println!("{}", map);
+        println!("Lattice map:\n{}", map);
     }
 
     #[test]
     fn fractal_map() {
-        println!("Fractal map:");
         let map = MapGenerator::new((30, 30)).fractal().generate();
-        println!("{}", map);
+        println!("Fractal map:\n{}", map);
+    }
+
+    #[test]
+    fn rooms_map() {
+        let map = MapGenerator::new((35, 35)).rooms(5, 8, 7).generate();
+        println!("Rooms map:\n{}", map);
     }
 }
