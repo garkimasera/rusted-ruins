@@ -47,7 +47,7 @@ enum MapGenParam {
         max_room_size: u32,
         min_room_size: u32,
         n_room: u32,
-    }
+    },
 }
 
 pub struct MapGenerator {
@@ -104,8 +104,7 @@ impl MapGenerator {
         mg
     }
 
-    pub fn rooms(
-        mut self, min_room_size: u32, max_room_size: u32, n_room: u32) -> MapGenerator {
+    pub fn rooms(mut self, min_room_size: u32, max_room_size: u32, n_room: u32) -> MapGenerator {
         self.genparam = Some(MapGenParam::Rooms {
             max_room_size,
             min_room_size,
@@ -138,7 +137,11 @@ impl MapGenerator {
                 fractal::write_to_map(&mut self.map);
                 return self.map;
             }
-            MapGenParam::Rooms { max_room_size, min_room_size, n_room } => {
+            MapGenParam::Rooms {
+                max_room_size,
+                min_room_size,
+                n_room,
+            } => {
                 let rooms = rooms::Rooms::new(max_room_size, min_room_size, n_room);
                 rooms.write_to_map(&mut self.map);
                 return self.map;

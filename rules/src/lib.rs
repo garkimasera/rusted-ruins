@@ -9,6 +9,7 @@ pub mod chara;
 pub mod charagen;
 pub mod dungeon_gen;
 pub mod exp;
+pub mod floor_gen;
 pub mod newgame;
 pub mod params;
 pub mod quest;
@@ -26,6 +27,7 @@ pub struct Rules {
     pub chara_gen: charagen::CharaGen,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
+    pub floor_gen: floor_gen::FloorGen,
     pub newgame: newgame::NewGame,
     pub params: params::Params,
     pub quest: quest::Quest,
@@ -39,6 +41,7 @@ impl Rules {
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),
+            floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
             newgame: read_from_json(&rules_dir.join("newgame.json")),
             params: read_from_json(&rules_dir.join("params.json")),
             quest: read_from_json(&rules_dir.join("quest.json")),

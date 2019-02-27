@@ -1,4 +1,3 @@
-use array2d::Vec2d;
 use common::gamedata::*;
 use std::collections::HashMap;
 
@@ -7,8 +6,8 @@ pub type DungeonGen = HashMap<DungeonKind, DungeonGenParams>;
 
 #[derive(Serialize, Deserialize)]
 pub struct DungeonGenParams {
-    /// Default map size
-    pub map_size: Vec2d,
+    /// Specify floor generation type that is described in floor_gen and its weight.
+    pub floor_gen: Vec<(String, f32)>,
     /// The probability of npc generation for each race
     pub npc_race_probability: HashMap<Race, f32>,
     /// Tile and wall ids

@@ -3,6 +3,8 @@ use array2d::*;
 use common::gamedata::map::*;
 use common::gobj;
 use common::objholder::*;
+use rules::floor_gen::*;
+use rules::RULES;
 
 #[derive(Default)]
 pub struct MapBuilder {
@@ -10,6 +12,7 @@ pub struct MapBuilder {
     h: u32,
     floor: u32,
     is_deepest_floor: bool,
+    floor_gen_params: Option<&'static FloorGenParams>,
     tile: TileIdx,
     wall: WallIdx,
 }
@@ -22,8 +25,26 @@ impl MapBuilder {
         map_builder
     }
 
+    pub fn floor_gen_id(mut self, id: &str) -> Self {
+        self.floor_gen_params = Some(&RULES.floor_gen.floor_gen_params[id]);
+        self.w = self.floor_gen_params.unwrap().map_size.0 as u32;
+        self.h = self.floor_gen_params.unwrap().map_size.1 as u32;
+        self
+    }
+
     pub fn build(self) -> Map {
-        let generated_map = MapGenerator::new((self.w, self.h)).fractal().generate();
+        let generated_map = if let Some(floor_gen_params) = self.floor_gen_params {
+            let map_generator = MapGenerator::new((self.w, self.h));
+            match floor_gen_params.map_gen_kind {
+                MapGenKind::Flat => map_generator.flat(),
+                MapGenKind::Fractal => map_generator.fractal(),
+                MapGenKind::Lattice => map_generator.lattice(5, 4, 3, 7, 0.5),
+                MapGenKind::Rooms => map_generator.rooms(5, 8, 7),
+            }
+            .generate()
+        } else {
+            MapGenerator::new((self.w, self.h)).flat().generate()
+        };
         generated_map_to_map(
             generated_map,
             self.tile,

@@ -1,7 +1,7 @@
 
 {
     "Cave": {
-        "map_size": [32, 32],
+        "floor_gen": [["fractal", 1.0]],
         "npc_race_probability": {
             "bug": 0.4,
             "slime": 0.4,
@@ -15,7 +15,7 @@
         "floor_range": [2, 3]
     },
     "Ruin": {
-        "map_size": [32, 32],
+        "floor_gen": [["rooms", 1.0]],
         "npc_race_probability": {
             "bug": 0.5,
             "slime": 0.5,

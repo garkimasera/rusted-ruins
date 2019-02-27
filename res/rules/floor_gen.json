@@ -1,0 +1,13 @@
+
+{
+    "floor_gen_params": {
+        "fractal": {
+            "map_size": [32, 32],
+            "map_gen_kind": "fractal"
+        },
+        "rooms": {
+            "map_size": [35, 35],
+            "map_gen_kind": "rooms"
+        }
+    }
+}

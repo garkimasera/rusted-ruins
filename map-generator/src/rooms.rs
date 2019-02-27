@@ -1,8 +1,7 @@
-
 use super::{GeneratedMap, TileKind};
 use array2d::*;
-use rng::{gen_range, GameRng};
 use rand::seq::IteratorRandom;
+use rng::{gen_range, GameRng};
 
 const MAX_TRY: usize = 256;
 
@@ -68,7 +67,9 @@ impl Rooms {
 
         for (i, room) in rooms.iter().enumerate() {
             let rectiter = RectIter::new(
-                (room.x, room.y), (room.x + room.w as i32, room.y + room.h as i32));
+                (room.x, room.y),
+                (room.x + room.w as i32, room.y + room.h as i32),
+            );
             for p in rectiter {
                 gm.tile[p] = TileKind::Floor;
             }
@@ -90,7 +91,11 @@ impl Rooms {
     }
 
     fn locate_new_room(
-        &self, rooms: &mut Vec<Room>, doors: &mut Vec<Vec2d>, size: Vec2d) -> Result<(), ()> {
+        &self,
+        rooms: &mut Vec<Room>,
+        doors: &mut Vec<Vec2d>,
+        size: Vec2d,
+    ) -> Result<(), ()> {
         // Search empty wall that does not have a door
         let n_empty_wall = rooms
             .iter()
@@ -100,7 +105,7 @@ impl Rooms {
 
         'try_loop: for _ in 0..MAX_TRY {
             // Choose wall to dig
-            
+
             let i_roomwall = gen_range(0, n_empty_wall);
             let mut a = i_roomwall;
             let (i_room, i_wall) = 'room_loop: loop {
@@ -113,7 +118,7 @@ impl Rooms {
                             a -= 1;
                         }
                     }
-                };
+                }
                 unreachable!();
             };
 
@@ -126,21 +131,19 @@ impl Rooms {
             };
 
             let parent = &rooms[i_room];
-            
+
             // Make new door
             let new_door_pos = Vec2d::from(match dir {
-                Direction::N => {
-                    (parent.x + gen_range(0, parent.w as i32), parent.y - 1)
-                }
-                Direction::E => {
-                    (parent.x + parent.w as i32, parent.y + gen_range(0, parent.h as i32))
-                }
-                Direction::S => {
-                    (parent.x + gen_range(0, parent.w as i32), parent.y + parent.h as i32)
-                }
-                Direction::W => {
-                    (parent.x - 1, parent.y + gen_range(0, parent.h as i32))
-                }
+                Direction::N => (parent.x + gen_range(0, parent.w as i32), parent.y - 1),
+                Direction::E => (
+                    parent.x + parent.w as i32,
+                    parent.y + gen_range(0, parent.h as i32),
+                ),
+                Direction::S => (
+                    parent.x + gen_range(0, parent.w as i32),
+                    parent.y + parent.h as i32,
+                ),
+                Direction::W => (parent.x - 1, parent.y + gen_range(0, parent.h as i32)),
                 _ => unreachable!(),
             });
 
@@ -185,9 +188,10 @@ impl Rooms {
                 }
             }
             if new_room.x <= 1
-               || new_room.y <= 1
-                                || new_room.x + new_room.w as i32 >= size.0 - 1
-                             || new_room.y + new_room.h as i32 >= size.1 - 1 {
+                || new_room.y <= 1
+                || new_room.x + new_room.w as i32 >= size.0 - 1
+                || new_room.y + new_room.h as i32 >= size.1 - 1
+            {
                 continue 'try_loop;
             }
 
@@ -196,9 +200,9 @@ impl Rooms {
             rooms.push(new_room);
             doors.push(new_door_pos);
 
-            return Ok(())
+            return Ok(());
         }
-        
+
         Err(())
     }
 
@@ -219,7 +223,7 @@ impl Rooms {
     fn gen_room_size(&self) -> Vec2d {
         Vec2d(
             gen_range(self.min_room_size, self.max_room_size + 1) as i32,
-            gen_range(self.min_room_size, self.max_room_size + 1) as i32
+            gen_range(self.min_room_size, self.max_room_size + 1) as i32,
         )
     }
 }
