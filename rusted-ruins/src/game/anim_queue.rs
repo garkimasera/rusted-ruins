@@ -34,4 +34,8 @@ impl AnimQueue {
         let idx: AnimImgIdx = gobj::id_to_idx("!arrow");
         self.push(Animation::shot(idx, start, target));
     }
+
+    pub fn push_destroy(&mut self, tile: Vec2d) {
+        self.push(Animation::destroy(vec![tile]));
+    }
 }

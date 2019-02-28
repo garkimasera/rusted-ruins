@@ -2,7 +2,7 @@ use array2d::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum Animation {
     PlayerMove {
         n_frame: u32,
@@ -21,6 +21,11 @@ pub enum Animation {
         start: Vec2d,
         target: Vec2d,
     },
+    Destroy {
+        n_frame: u32,
+        idx: AnimImgIdx,
+        tiles: Vec<Vec2d>,
+    },
 }
 
 impl Animation {
@@ -29,6 +34,7 @@ impl Animation {
             &Animation::PlayerMove { n_frame, .. } => n_frame,
             &Animation::Img { n_frame, .. } => n_frame,
             &Animation::Shot { n_frame, .. } => n_frame,
+            &Animation::Destroy { n_frame, .. } => n_frame,
         }
     }
 
@@ -65,6 +71,17 @@ impl Animation {
             dir,
             start,
             target,
+        }
+    }
+
+    pub fn destroy(tiles: Vec<Vec2d>) -> Animation {
+        let idx: AnimImgIdx = gobj::id_to_idx("!destroy-blood");
+        let animobj = gobj::get_obj(idx);
+
+        Animation::Destroy {
+            n_frame: animobj.img.n_anim_frame,
+            idx,
+            tiles,
         }
     }
 }

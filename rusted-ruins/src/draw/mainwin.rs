@@ -351,6 +351,13 @@ impl MainWinDrawer {
                 };
                 try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
             }
+            Animation::Destroy { idx, tiles, .. } => {
+                for p in tiles {
+                    let src = Rect::from(gobj::get_obj(*idx).img_rect_nth(i_frame));
+                    let dest = self.centering_at_tile(src, *p, 0, 0);
+                    try_sdl!(canvas.copy(sv.tex().get(*idx), src, dest));
+                }
+            }
             _ => (),
         }
     }

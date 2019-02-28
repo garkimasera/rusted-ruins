@@ -1,5 +1,5 @@
 use super::chara::CharaEx;
-use super::Game;
+use super::{Game, InfoGetter};
 use crate::rng;
 use common::gamedata::*;
 use common::gobj;
@@ -128,6 +128,9 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
         }
     }
 
+    // Animation pushing
+    game.anim_queue.push_shot(attacker_pos, target_pos);
+
     // Damage calculation
     let (attack_params, weapon_kind, attacker_pos) = {
         let weapon_obj = gobj::get_obj(weapon.idx);
@@ -159,8 +162,6 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
         let attacker = game.gd.chara.get_mut(attacker_id);
         attacker.add_attack_exp(SkillKind::Weapon(weapon_kind), target_level);
     }
-    // Animation pushing
-    game.anim_queue.push_shot(attacker_pos, target_pos);
     // Sound effect
     crate::audio::play_sound("arrow");
     true
@@ -194,6 +195,8 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
         }
     } else {
         super::quest::count_slayed_monster(&mut game.gd, idx);
+        game.anim_queue
+            .push_destroy(game.gd.chara_pos(target_id).unwrap());
     }
 
     damage
