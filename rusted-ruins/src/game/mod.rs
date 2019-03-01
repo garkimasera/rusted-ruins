@@ -189,6 +189,10 @@ impl Game {
             false
         }
     }
+
+    pub fn end_game(&mut self) {
+        self.clean_save_data()
+    }
 }
 
 pub enum DialogOpenRequest {

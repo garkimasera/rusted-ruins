@@ -26,6 +26,18 @@ impl Game {
             Err(e) => warn!("Faild to saving to {:?}: {}", path.to_string_lossy(), e),
         }
     }
+
+    pub fn clean_save_data(&self) {
+        let save_dir = get_save_dir();
+        let path = self.gd.save_dir(save_dir);
+        if !path.exists() {
+            return;
+        }
+        match self.gd.clean_map_dir(&path) {
+            Ok(_) => info!("Clean map dir {:?}", path.to_string_lossy()),
+            Err(e) => warn!("Faild to clean map dir {:?}: {}", path.to_string_lossy(), e),
+        }
+    }
 }
 
 pub fn save_file_list() -> Result<Vec<PathBuf>, std::io::Error> {

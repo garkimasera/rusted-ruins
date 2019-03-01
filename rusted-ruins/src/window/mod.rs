@@ -163,6 +163,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
         if self.game.get_state() == GameState::PlayerTurn {
             if !self.process_command(event_handler) {
+                self.game.end_game();
                 return false;
             }
         }

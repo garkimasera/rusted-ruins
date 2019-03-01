@@ -3,7 +3,7 @@ use crate::gamedata::*;
 use crate::impl_filebox::MapLoadError;
 use serde_cbor::from_reader;
 use serde_cbor::ser::to_writer_packed;
-use std::fs::{create_dir_all, File};
+use std::fs::{self, create_dir_all, File};
 use std::io::{BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 
@@ -91,6 +91,38 @@ impl GameData {
         }
 
         Ok(gamedata)
+    }
+
+    pub fn clean_map_dir<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
+        let map_dir = path.as_ref().join("maps");
+
+        let mut map_files: Vec<PathBuf> = Vec::new();
+        for entry in fs::read_dir(&map_dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file() {
+                map_files.push(path);
+            }
+        }
+
+        let mut map_file_path: Vec<PathBuf> = Vec::new();
+        self.region.visit_all_maps(|_mid, map| {
+            map_file_path.push(map.path(map_dir.clone()));
+        });
+
+        let n_exist_file = map_files.len();
+        map_files.retain(|p| map_file_path.iter().find(|a| *a == p).is_none());
+
+        if n_exist_file == map_files.len() {
+            return Ok(());
+        }
+
+        for p in &map_files {
+            trace!("Remove unused map file {}", p.to_string_lossy());
+            fs::remove_file(p)?;
+        }
+
+        Ok(())
     }
 
     pub fn save_dir<P: AsRef<Path>>(&self, path: P) -> PathBuf {
