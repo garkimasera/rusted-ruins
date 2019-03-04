@@ -1,0 +1,2 @@
+% !item_info_text.item_kind
+Kind of this item: $(item_kind)

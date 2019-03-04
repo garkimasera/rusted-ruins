@@ -1,5 +1,6 @@
 pub mod filter;
 pub mod gen;
+pub mod info;
 
 use common::gamedata::*;
 use common::gobj;

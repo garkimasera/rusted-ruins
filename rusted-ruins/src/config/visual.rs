@@ -160,6 +160,7 @@ pub struct ItemWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct ItemInfoWindowConfig {
     pub rect: CfgRect,
+    pub item_kind: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
