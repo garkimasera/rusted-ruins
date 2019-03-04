@@ -3,7 +3,7 @@ use super::item_window::*;
 use super::msg_dialog;
 use super::talk_window;
 use super::DialogWindow;
-use crate::game::{DialogOpenRequest, DoPlayerAction, Game, TalkText};
+use crate::game::{DialogOpenRequest, Game, TalkText};
 use common::gamedata::CharaId;
 
 pub fn create_dialog_from_request(
@@ -21,13 +21,9 @@ pub fn create_dialog_from_request(
         DialogOpenRequest::Talk { cid, talk_text } => create_talk_dialog(talk_text, cid, game)?,
         DialogOpenRequest::ItemInfo { il } => Box::new(item_info_window::ItemInfoWindow::new(il)),
         DialogOpenRequest::ShopBuy { cid } => {
-            let mut pa = DoPlayerAction::new(game);
-            Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, pa.game()))
+            Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, game))
         }
-        DialogOpenRequest::ShopSell => {
-            let mut pa = DoPlayerAction::new(game);
-            Box::new(ItemWindow::new(ItemWindowMode::ShopSell, pa.game()))
-        }
+        DialogOpenRequest::ShopSell => Box::new(ItemWindow::new(ItemWindowMode::ShopSell, game)),
         DialogOpenRequest::Quest => Box::new(super::quest_window::QuestWindow::new(game)),
         DialogOpenRequest::GameOver => Box::new(super::exit_window::GameOverWindow::new()),
     })
