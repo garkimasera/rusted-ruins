@@ -18,6 +18,21 @@ Asleep
 % !chara_status.poisoned
 Poisoned
 #
+# ItemKind
+#
+% !item_kind.potion
+Potion
+% !item_kind.herb
+Herb
+% !item_kind.food
+Food
+% !item_kind.material
+Material
+% !item_kind.special
+Special
+% !item_kind.object
+Object
+#
 # SkillKind
 #
 % !skill_kind.endurance
@@ -47,3 +62,10 @@ Spear
 Sword
 % !weapon_kind.whip
 Whip
+#
+# ArmorKind
+#
+% !armor_kind.body
+Body
+% !armor_kind.shield
+Shield

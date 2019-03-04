@@ -24,29 +24,58 @@ impl ToTextId for CharaStatus {
     }
 }
 
+impl ToTextId for ItemKind {
+    fn to_textid(&self) -> &'static str {
+        use ItemKind::*;
+        match self {
+            Potion => "!item_kind.potion",
+            Herb => "!item_kind.herb",
+            Food => "!item_kind.food",
+            Weapon(weapon_kind) => weapon_kind.to_textid(),
+            Armor(armor_kind) => armor_kind.to_textid(),
+            Material => "!item_kind.material",
+            Special => "!item_kind.special",
+            Object => "!item_kind.object",
+        }
+    }
+}
+
 impl ToTextId for SkillKind {
     fn to_textid(&self) -> &'static str {
+        use SkillKind::*;
         match self {
-            SkillKind::Endurance => "!skill_kind.endurance",
-            SkillKind::Healing => "!skill_kind.healing",
-            SkillKind::MartialArts => "!skill_kind.martial_arts",
-            SkillKind::Defence => "!skill_kind.defence",
-            SkillKind::Evasion => "!skill_kind.evasion",
-            SkillKind::Weapon(weapon_kind) => weapon_kind.to_textid(),
+            Endurance => "!skill_kind.endurance",
+            Healing => "!skill_kind.healing",
+            MartialArts => "!skill_kind.martial_arts",
+            Defence => "!skill_kind.defence",
+            Evasion => "!skill_kind.evasion",
+            Weapon(weapon_kind) => weapon_kind.to_textid(),
         }
     }
 }
 
 impl ToTextId for WeaponKind {
     fn to_textid(&self) -> &'static str {
+        use WeaponKind::*;
         match self {
-            WeaponKind::Axe => "!weapon_kind.axe",
-            WeaponKind::Bow => "!weapon_kind.bow",
-            WeaponKind::Crossbow => "!weapon_kind.cross_bow",
-            WeaponKind::Gun => "!weapon_kind.gun",
-            WeaponKind::Spear => "!weapon_kind.spear",
-            WeaponKind::Sword => "!weapon_kind.sword",
-            WeaponKind::Whip => "!weapon_kind.whip",
+            Axe => "!weapon_kind.axe",
+            Bow => "!weapon_kind.bow",
+            Crossbow => "!weapon_kind.cross_bow",
+            Gun => "!weapon_kind.gun",
+            Spear => "!weapon_kind.spear",
+            Sword => "!weapon_kind.sword",
+            Whip => "!weapon_kind.whip",
         }
     }
 }
+
+impl ToTextId for ArmorKind {
+    fn to_textid(&self) -> &'static str {
+        use ArmorKind::*;
+        match self {
+            Body => "!armor_kind.body",
+            Shield => "!armor_kind.shield",
+        }
+    }
+}
+
