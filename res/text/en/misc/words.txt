@@ -69,3 +69,14 @@ Whip
 Body
 % !armor_kind.shield
 Shield
+#
+# MedicalEffect
+#
+% !medical_effect.none
+No effect
+% !medical_effect.heal
+Heals HP
+% !medical_effect.sleep
+Sleep
+% !medical_effect.poison
+Poison

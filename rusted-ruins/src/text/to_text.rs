@@ -1,4 +1,4 @@
-use crate::text::{self, ToText, ToTextId};
+use crate::text::{self, misc_txt, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -47,6 +47,19 @@ impl ToText for Chara {
         } else {
             crate::text::obj_txt(gobj::idx_to_id(self.template)).into()
         }
+    }
+}
+
+impl ToText for MedicalEffect {
+    fn to_text(&self) -> Cow<str> {
+        use MedicalEffect::*;
+        match self {
+            None => misc_txt("!medical_effect.none"),
+            Heal => misc_txt("!medical_effect.heal"),
+            Sleep => misc_txt("!medical_effect.sleep"),
+            Poison => misc_txt("!medical_effect.poison"),
+        }
+        .into()
     }
 }
 
