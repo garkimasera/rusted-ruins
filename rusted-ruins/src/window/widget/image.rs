@@ -13,6 +13,7 @@ pub struct ImageWidget {
 enum Idx {
     UIImg(UIImgIdx),
     Chara(CharaTemplateIdx),
+    Item(ItemIdx),
 }
 
 impl ImageWidget {
@@ -34,6 +35,14 @@ impl ImageWidget {
             idx: Idx::Chara(chara_idx),
         }
     }
+
+    pub fn item<R: Into<Rect>>(rect: R, item_idx: ItemIdx) -> ImageWidget {
+        let rect = rect.into();
+        ImageWidget {
+            rect,
+            idx: Idx::Item(item_idx),
+        }
+    }
 }
 
 impl WidgetTrait for ImageWidget {
@@ -45,6 +54,10 @@ impl WidgetTrait for ImageWidget {
                 context.render_tex(idx, self.rect);
             }
             Idx::Chara(idx) => {
+                // Centering to given rect
+                context.render_tex_n_center(idx, self.rect, 0);
+            }
+            Idx::Item(idx) => {
                 // Centering to given rect
                 context.render_tex_n_center(idx, self.rect, 0);
             }
