@@ -1,4 +1,4 @@
-use crate::text::{self, misc_txt, ToText, ToTextId};
+use crate::text::{self, misc_txt, obj_txt, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -30,13 +30,13 @@ impl ToText for Site {
 
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
-        crate::text::obj_txt(gobj::idx_to_id(self.idx)).into()
+        obj_txt(gobj::idx_to_id(self.idx)).into()
     }
 }
 
 impl ToText for CharaTemplateIdx {
     fn to_text(&self) -> Cow<str> {
-        crate::text::obj_txt(gobj::idx_to_id(*self)).into()
+        obj_txt(gobj::idx_to_id(*self)).into()
     }
 }
 
@@ -45,7 +45,7 @@ impl ToText for Chara {
         if let Some(ref name) = self.name {
             name.into()
         } else {
-            crate::text::obj_txt(gobj::idx_to_id(self.template)).into()
+            obj_txt(gobj::idx_to_id(self.template)).into()
         }
     }
 }
