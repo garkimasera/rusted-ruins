@@ -74,7 +74,7 @@ macro_rules! replace_str {
         let text_raw: &str = $original_text.as_ref();
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(
-            table.push((stringify!($target), ToText::to_text($value)));
+            table.push((stringify!($target), $value.to_text()));
         )*;
 
         $crate::util::replace_str(text_raw, table.as_slice())
