@@ -65,7 +65,9 @@ column_pos = [1, 27, 380]
 
 [item_info_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
-item_kind = { x = 5, y = 25 }
+item_image = { x = 2, y = 0, w = 48, h = 48 }
+item_name = { x = 50, y = 2 }
+item_kind = { x = 50, y = 25 }
 
 [equip_window]
 rect = { x = -999, y = -999, w = 450, h = 286 }

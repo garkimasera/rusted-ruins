@@ -5,6 +5,7 @@ use crate::text::{ToText, misc_txt};
 
 #[derive(Default, Debug)]
 pub struct ItemInfoText {
+    pub item_name: String,
     pub item_kind: String,
 }
 
@@ -14,6 +15,7 @@ impl ItemInfoText {
         let obj = gobj::get_obj(idx);
         let mut info = ItemInfoText::default();
 
+        info.item_name = item.to_text().into_owned();
         let t = obj.kind.to_text();
         info.item_kind = replace_str!(misc_txt("!item_info_text.item_kind"); item_kind=&t);
 
