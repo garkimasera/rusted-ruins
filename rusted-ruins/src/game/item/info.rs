@@ -1,12 +1,12 @@
-
+use crate::text::{misc_txt, ToText};
 use common::gamedata::*;
 use common::gobj;
-use crate::text::{ToText, misc_txt};
 
 #[derive(Default, Debug)]
 pub struct ItemInfoText {
     pub item_name: String,
     pub item_kind: String,
+    pub basic_desc: String,
 }
 
 impl ItemInfoText {
@@ -16,15 +16,13 @@ impl ItemInfoText {
         let mut info = ItemInfoText::default();
 
         info.item_name = item.to_text().into_owned();
-        let t = obj.kind.to_text();
-        info.item_kind = replace_str!(misc_txt("!item_info_text.item_kind"); item_kind=&t);
+        info.item_kind = replace_str!(misc_txt("!item_info_text.item_kind"); item_kind=obj.kind);
 
         match obj.kind {
-            ItemKind::Potion => {
-            }
-            ItemKind::Herb => {
-            }
-            ItemKind::Food => {
+            ItemKind::Potion | ItemKind::Herb | ItemKind::Food => {
+                info.basic_desc = replace_str!(
+                    misc_txt("!item_info_text.basic_desc.food_and_drink");
+                    medical_effect=obj.medical_effect);
             }
             ItemKind::Weapon(_) => {
             }
@@ -41,4 +39,3 @@ impl ItemInfoText {
         info
     }
 }
-

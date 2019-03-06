@@ -15,6 +15,7 @@ pub struct ItemInfoWindow {
     item_image: ImageWidget,
     item_name: LabelWidget,
     item_kind: LabelWidget,
+    basic_desc: LabelWidget,
 }
 
 impl ItemInfoWindow {
@@ -26,6 +27,7 @@ impl ItemInfoWindow {
         let item_image = ImageWidget::item(c.item_image, game.gd.get_item(il).0.idx);
         let item_name = LabelWidget::new(c.item_name, &info.item_name, FontKind::M);
         let item_kind = LabelWidget::new(c.item_kind, &info.item_kind, FontKind::M);
+        let basic_desc = LabelWidget::new(c.basic_desc, &info.basic_desc, FontKind::M);
 
         ItemInfoWindow {
             rect: UI_CFG.item_info_window.rect.into(),
@@ -33,6 +35,7 @@ impl ItemInfoWindow {
             item_image,
             item_name,
             item_kind,
+            basic_desc,
         }
     }
 }
@@ -44,6 +47,7 @@ impl Window for ItemInfoWindow {
         self.item_image.draw(context);
         self.item_name.draw(context);
         self.item_kind.draw(context);
+        self.basic_desc.draw(context);
     }
 }
 

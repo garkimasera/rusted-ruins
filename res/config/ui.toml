@@ -68,6 +68,7 @@ rect = { x = -999, y = -999, w = 450, h = 300 }
 item_image = { x = 2, y = 0, w = 48, h = 48 }
 item_name = { x = 50, y = 2 }
 item_kind = { x = 50, y = 25 }
+basic_desc = { x = 3, y = 48 }
 
 [equip_window]
 rect = { x = -999, y = -999, w = 450, h = 286 }
