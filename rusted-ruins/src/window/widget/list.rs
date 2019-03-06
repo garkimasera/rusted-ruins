@@ -233,7 +233,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     fn process_command(&mut self, command: &Command) -> Option<ListWidgetResponse> {
         match *command {
             Command::Enter => {
-                if self.rows.len() > 0 {
+                if !self.rows.is_empty() {
                     let i = self.current_choice + self.current_page * self.page_size;
                     Some(ListWidgetResponse::Select(i))
                 } else {

@@ -45,21 +45,21 @@ impl Window for TextInputDialog {
 impl DialogWindow for TextInputDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         match command {
-            &Command::TextInput { ref text } => {
+            Command::TextInput { ref text } => {
                 self.text.push_str(&text);
                 self.label.set_text(&self.text);
                 DialogResult::Continue
             }
-            &Command::TextDelete => {
+            Command::TextDelete => {
                 self.text.pop();
                 self.label.set_text(&self.text);
                 DialogResult::Continue
             }
-            &Command::Enter => {
+            Command::Enter => {
                 text_input::end();
                 DialogResult::Close
             }
-            &Command::Cancel => {
+            Command::Cancel => {
                 text_input::end();
                 DialogResult::Close
             }

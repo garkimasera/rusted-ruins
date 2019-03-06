@@ -27,7 +27,7 @@ lazy_static! {
     static ref MISC_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::MISC_TXT_DIR);
 }
 
-pub fn obj_txt<'a>(id: &'a str) -> &'a str {
+pub fn obj_txt(id: &str) -> &str {
     if let Some(txt) = OBJ_TXT_MAP.get(id) {
         txt
     } else {
@@ -40,7 +40,7 @@ pub fn obj_txt_checked(id: &str) -> Option<&'static str> {
     OBJ_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
-pub fn log_txt<'a>(id: &'a str) -> &'a str {
+pub fn log_txt(id: &str) -> &str {
     if let Some(txt) = LOG_TXT_MAP.get(id) {
         txt
     } else {
@@ -53,7 +53,7 @@ pub fn log_txt_checked(id: &str) -> Option<&'static str> {
     LOG_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
-pub fn ui_txt<'a>(id: &'a str) -> &'a str {
+pub fn ui_txt(id: &str) -> &str {
     if let Some(txt) = UI_TXT_MAP.get(id) {
         txt
     } else {
@@ -66,7 +66,7 @@ pub fn ui_txt_checked(id: &str) -> Option<&'static str> {
     UI_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
-pub fn talk_txt<'a>(id: &'a str) -> &'a str {
+pub fn talk_txt(id: &str) -> &str {
     if let Some(txt) = TALK_TXT_MAP.get(id) {
         txt
     } else {
@@ -79,7 +79,7 @@ pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
     TALK_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
-pub fn misc_txt<'a>(id: &'a str) -> &'a str {
+pub fn misc_txt(id: &str) -> &str {
     if let Some(txt) = MISC_TXT_MAP.get(id) {
         txt
     } else {

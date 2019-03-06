@@ -186,7 +186,7 @@ impl EventHandler {
                 if mode != InputMode::Normal {
                     let now = Instant::now();
                     let d = now.duration_since(self.last_dir_changed.unwrap());
-                    let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1000000; // to milli secs
+                    let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1_000_000; // to milli secs
 
                     if !self.is_instant && d < UI_CFG.cursor_move_duration {
                         return None;

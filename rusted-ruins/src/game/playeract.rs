@@ -42,11 +42,7 @@ impl<'a> DoPlayerAction<'a> {
                     let other_chara = gd.chara.get(other_chara);
                     match player_chara.rel.relative(other_chara.rel) {
                         Relationship::ALLY | Relationship::FRIENDLY => {
-                            if !other_chara.trigger_talk.is_none() {
-                                true
-                            } else {
-                                false
-                            }
+                            other_chara.trigger_talk.is_some()
                         }
                         _ => false,
                     }

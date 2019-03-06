@@ -3,7 +3,6 @@ use super::chara::CharaEx;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 use super::{Game, GameState};
-use crate::text::ToText;
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
 use rules::RULES;

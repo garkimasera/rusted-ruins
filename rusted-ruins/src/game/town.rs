@@ -25,7 +25,7 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
 
     for map_template_id in &sg.map_template_id {
         let map = super::map::from_template::from_template_id(map_template_id)
-            .expect(&format!("Map template not found: {}", map_template_id));
+            .unwrap_or_else(|| panic!("Map template not found: {}", map_template_id));
 
         let map_random_id = gen_box_id(gd);
         gd.add_map(map, sid, map_random_id);

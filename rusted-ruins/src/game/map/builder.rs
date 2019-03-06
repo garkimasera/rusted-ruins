@@ -128,7 +128,7 @@ pub fn generated_map_to_map(
         map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs {
             dest_floor,
             kind: exit_stairs,
-        };;
+        };
     }
 
     map

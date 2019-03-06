@@ -5,7 +5,7 @@ use crate::draw::border::draw_rect_border;
 use crate::eventhandler::InputMode;
 use crate::game::item::info::ItemInfoText;
 use crate::game::{Animation, Command, DoPlayerAction, Game};
-use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
+use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::ItemLocation;
 use sdl2::rect::Rect;
 
@@ -52,7 +52,7 @@ impl Window for ItemInfoWindow {
 }
 
 impl DialogWindow for ItemInfoWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,

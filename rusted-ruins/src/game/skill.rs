@@ -61,9 +61,8 @@ impl SkillListEx for SkillList {
 
     /// Insert new skill slot
     fn learn_new_skill(&mut self, kind: SkillKind) {
-        if !self.skills.contains_key(&kind) {
-            self.skills.insert(kind, 1);
-        }
+        self.skills.entry(kind).or_insert(1);
+
         if self.exp.is_none() {
             self.exp = Some(FnvHashMap::default());
         }

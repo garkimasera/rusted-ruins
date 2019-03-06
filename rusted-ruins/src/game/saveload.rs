@@ -1,5 +1,5 @@
 use crate::config::USER_DIR;
-use crate::game::{Game, InfoGetter};
+use crate::game::Game;
 use common::basic::{SAVE_DIR_NAME, SAVE_EXTENSION};
 use common::gamedata::GameData;
 use std::fs;

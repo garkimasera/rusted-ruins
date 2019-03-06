@@ -70,7 +70,6 @@ pub fn replace_str<S0: AsRef<str>, S1: AsRef<str>>(s: &str, table: &[(S0, S1)]) 
 macro_rules! replace_str {
     ($original_text:expr; $($target:ident = $value:expr),*) => {{
         use std::borrow::Cow;
-        use crate::text::ToText;
         let text_raw: &str = $original_text.as_ref();
         let mut table: Vec<(&str, Cow<str>)> = Vec::new();
         $(

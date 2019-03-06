@@ -24,15 +24,13 @@ impl<'a> BackgroundDrawInfo<'a> {
             } else {
                 None
             }
+        } else if let Some(ref _outside_tile) = map.outside_tile {
+            unimplemented!()
+        //Some(outside_tile.tile.clone().into())
         } else {
-            if let Some(ref _outside_tile) = map.outside_tile {
-                unimplemented!()
-            //Some(outside_tile.tile.clone().into())
-            } else {
-                let pos = map.nearest_existent_tile(pos);
-                let tinfo = &map.observed_tile[pos];
-                Some(&map.tile[pos].tile)
-            }
+            let pos = map.nearest_existent_tile(pos);
+            let tinfo = &map.observed_tile[pos];
+            Some(&map.tile[pos].tile)
         };
 
         di.tile = tile;
@@ -80,21 +78,19 @@ impl<'a> ForegroundDrawInfo<'a> {
         di.wallpp = if map.is_inside(pos) {
             di.deco = map.observed_tile[pos].deco;
             map.observed_tile[pos].wall
-        } else {
-            if let Some(ref outside_tile) = map.outside_tile {
-                if let Some(wall_idx) = outside_tile.wall {
-                    WallIdxPP::new(wall_idx)
-                } else {
-                    WallIdxPP::default()
-                }
+        } else if let Some(ref outside_tile) = map.outside_tile {
+            if let Some(wall_idx) = outside_tile.wall {
+                WallIdxPP::new(wall_idx)
             } else {
-                let nearest_pos = map.nearest_existent_tile(pos);
-                let mut wallpp = map.observed_tile[nearest_pos].wall;
-                if !wallpp.is_empty() {
-                    adjust_pattern_from_nearest(&mut wallpp.piece_pattern(), pos, nearest_pos);
-                }
-                wallpp
+                WallIdxPP::default()
             }
+        } else {
+            let nearest_pos = map.nearest_existent_tile(pos);
+            let mut wallpp = map.observed_tile[nearest_pos].wall;
+            if !wallpp.is_empty() {
+                adjust_pattern_from_nearest(&mut wallpp.piece_pattern(), pos, nearest_pos);
+            }
+            wallpp
         };
 
         if view_map.get_tile_visible(pos) {

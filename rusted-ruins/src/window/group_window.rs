@@ -1,7 +1,6 @@
 use super::commonuse::*;
 use super::widget::LabelWidget;
 use super::widget::WidgetTrait;
-use crate::config::SCREEN_CFG;
 use crate::context::textrenderer::FontKind;
 use common::basic::*;
 use common::objholder::*;

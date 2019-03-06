@@ -104,7 +104,7 @@ pub enum WindowDrawMode {
 impl WindowManageMode {
     pub fn is_on_game(&self) -> bool {
         match self {
-            &WindowManageMode::OnGame(_) => true,
+            WindowManageMode::OnGame(_) => true,
             _ => false,
         }
     }

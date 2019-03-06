@@ -78,4 +78,3 @@ impl ToTextId for ArmorKind {
         }
     }
 }
-

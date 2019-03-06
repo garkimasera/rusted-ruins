@@ -19,7 +19,9 @@ pub fn create_dialog_from_request(
             Box::new(msgdialog)
         }
         DialogOpenRequest::Talk { cid, talk_text } => create_talk_dialog(talk_text, cid, game)?,
-        DialogOpenRequest::ItemInfo { il } => Box::new(item_info_window::ItemInfoWindow::new(il, game)),
+        DialogOpenRequest::ItemInfo { il } => {
+            Box::new(item_info_window::ItemInfoWindow::new(il, game))
+        }
         DialogOpenRequest::ShopBuy { cid } => {
             Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, game))
         }
