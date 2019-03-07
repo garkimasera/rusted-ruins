@@ -43,6 +43,10 @@ impl ImageWidget {
             idx: Idx::Item(item_idx),
         }
     }
+
+    pub fn set_rect<R: Into<Rect>>(&mut self, rect: R) {
+        self.rect = rect.into();
+    }
 }
 
 impl WidgetTrait for ImageWidget {
