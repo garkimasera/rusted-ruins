@@ -156,13 +156,23 @@ impl Default for MedicalEffect {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum WeaponKind {
-    Sword,
+    Sword = 0,
     Spear,
     Axe,
     Whip,
-    Bow,
+    Bow = 100,
     Crossbow,
     Gun,
+}
+
+impl WeaponKind {
+    pub fn is_melee(self) -> bool {
+        self < WeaponKind::Bow
+    }
+
+    pub fn is_ranged(self) -> bool {
+        self.is_melee()
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
