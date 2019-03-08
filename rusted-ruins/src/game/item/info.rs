@@ -24,22 +24,45 @@ impl ItemInfoText {
 
         match obj.kind {
             ItemKind::Potion | ItemKind::Herb | ItemKind::Food => {
-                desc_text.push((UI_IMG_ID_ITEM_INFO, "Very".to_owned()));
                 let t = replace_str!(
-                    misc_txt("!item_info_text.basic_desc.food_and_drink");
-                    medical_effect=obj.medical_effect);
+                    misc_txt("!item_info_text.nutrition");
+                    nutrition=obj.nutrition);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                if obj.medical_effect != MedicalEffect::None {
+                    let t = replace_str!(
+                        misc_txt("!item_info_text.medical_effect");
+                        medical_effect=obj.medical_effect);
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                }
             }
-            ItemKind::Weapon(_) => {
+            ItemKind::Weapon(weapon_kind) => {
+                if weapon_kind.is_melee() {
+                    let t = replace_str!(
+                        misc_txt("!item_info_text.melee-weapon");
+                        dice_x=obj.dice_x, dice_n=obj.dice_n);
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                } else {
+                    let t = replace_str!(
+                        misc_txt("!item_info_text.ranged-weapon");
+                        dice_x=obj.dice_x, dice_n=obj.dice_n);
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                }
             }
             ItemKind::Armor(_) => {
+                let d0 = format!("{:+}", obj.def[Element::Physical]);
+                let d1 = format!("{:+}", obj.def[Element::Fire]);
+                let d2 = format!("{:+}", obj.def[Element::Cold]);
+                let d3 = format!("{:+}", obj.def[Element::Shock]);
+                let d4 = format!("{:+}", obj.def[Element::Poison]);
+                let d5 = format!("{:+}", obj.def[Element::Spirit]);
+                let t = replace_str!(
+                    misc_txt("!item_info_text.defence");
+                    physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);
+                desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }
-            ItemKind::Material => {
-            }
-            ItemKind::Special => {
-            }
-            ItemKind::Object => {
-            }
+            ItemKind::Material => {}
+            ItemKind::Special => {}
+            ItemKind::Object => {}
         }
 
         ItemInfoText {
@@ -49,4 +72,3 @@ impl ItemInfoText {
         }
     }
 }
-
