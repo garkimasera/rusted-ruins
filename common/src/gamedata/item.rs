@@ -72,27 +72,44 @@ impl PartialOrd for Item {
 /// This is mainly used for item list sorting
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
-    Object,
+    /// Drinkable and have some medical effects.
     Potion,
+    /// Eatable and have some medical effects.
     Herb,
+    /// Eatable and have nutrition.
     Food,
+    /// Can release the own magical power.
+    MagicDevice,
+    /// Equipment to attack enemy.
     Weapon(WeaponKind),
+    /// Equipment to protect character from attacks.
     Armor(ArmorKind),
-    Material,
+    /// Can apply.
+    Tool,
+    /// Contains some items.
+    Container,
+    /// Other items that have some effects.
     Special,
+    /// Usable to create other items.
+    Material,
+    /// Other items that might not have effects, but have some price.
+    Object,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ItemKindRough {
-    Object,
     Potion,
     Herb,
     Food,
+    MagicDevice,
     Weapon,
     Armor,
-    Material,
+    Tool,
+    Container,
     Special,
+    Material,
+    Object,
 }
 
 bitflags! {

@@ -31,10 +31,13 @@ impl ToTextId for ItemKind {
             Potion => "!item_kind.potion",
             Herb => "!item_kind.herb",
             Food => "!item_kind.food",
+            MagicDevice => "!item_kind.magic_device",
             Weapon(weapon_kind) => weapon_kind.to_textid(),
             Armor(armor_kind) => armor_kind.to_textid(),
-            Material => "!item_kind.material",
+            Tool => "!item_kind.tool",
+            Container => "!item_kind.container",
             Special => "!item_kind.special",
+            Material => "!item_kind.material",
             Object => "!item_kind.object",
         }
     }

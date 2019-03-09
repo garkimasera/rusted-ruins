@@ -1,7 +1,6 @@
 use crate::text::{misc_txt, ToText};
 use common::gamedata::*;
 use common::gobj;
-use common::objholder::UIImgIdx;
 
 const UI_IMG_ID_ITEM_INFO: &str = "!icon-item-info";
 
@@ -35,6 +34,7 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }
+            ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
                 if weapon_kind.is_melee() {
                     let t = replace_str!(
@@ -60,8 +60,10 @@ impl ItemInfoText {
                     physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }
-            ItemKind::Material => {}
+            ItemKind::Tool => {}
+            ItemKind::Container => {}
             ItemKind::Special => {}
+            ItemKind::Material => {}
             ItemKind::Object => {}
         }
 
