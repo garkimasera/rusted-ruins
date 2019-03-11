@@ -22,7 +22,7 @@ impl ItemInfoText {
         let mut desc_text = Vec::new();
 
         match obj.kind {
-            ItemKind::Potion | ItemKind::Herb | ItemKind::Food => {
+            ItemKind::Potion | ItemKind::Food => {
                 let t = replace_str!(
                     misc_txt("!item_info_text.nutrition");
                     nutrition=obj.nutrition);

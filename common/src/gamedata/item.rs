@@ -74,8 +74,6 @@ impl PartialOrd for Item {
 pub enum ItemKind {
     /// Drinkable and have some medical effects.
     Potion,
-    /// Eatable and have some medical effects.
-    Herb,
     /// Eatable and have nutrition.
     Food,
     /// Can release the own magical power.
@@ -100,7 +98,6 @@ pub enum ItemKind {
 #[serde(rename_all = "snake_case")]
 pub enum ItemKindRough {
     Potion,
-    Herb,
     Food,
     MagicDevice,
     Weapon,

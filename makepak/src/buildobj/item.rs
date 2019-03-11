@@ -16,10 +16,6 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
             flags |= ItemFlags::DRINKABLE;
             ItemKind::Potion
         }
-        "herb" => {
-            flags |= ItemFlags::EATABLE;
-            ItemKind::Herb
-        }
         "food" => {
             flags |= ItemFlags::EATABLE;
             ItemKind::Food

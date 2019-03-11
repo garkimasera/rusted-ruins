@@ -29,7 +29,6 @@ impl ToTextId for ItemKind {
         use ItemKind::*;
         match self {
             Potion => "!item_kind.potion",
-            Herb => "!item_kind.herb",
             Food => "!item_kind.food",
             MagicDevice => "!item_kind.magic_device",
             Weapon(weapon_kind) => weapon_kind.to_textid(),

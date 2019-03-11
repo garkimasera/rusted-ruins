@@ -44,6 +44,11 @@ impl<T> IndexMut<Element> for ElementArray<T> {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum CreationKind {
+    Cooking,
+}
+
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {
