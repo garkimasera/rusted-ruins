@@ -7,6 +7,7 @@ extern crate rusted_ruins_common as common;
 
 pub mod chara;
 pub mod charagen;
+pub mod creation;
 pub mod dungeon_gen;
 pub mod exp;
 pub mod floor_gen;
@@ -25,6 +26,7 @@ use std::sync::Mutex;
 pub struct Rules {
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
+    pub creation: creation::Creation,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
     pub floor_gen: floor_gen::FloorGen,
@@ -36,9 +38,13 @@ pub struct Rules {
 
 impl Rules {
     fn load_from_dir(rules_dir: &Path) -> Rules {
+        let mut creation: creation::Creation = read_from_json(&rules_dir.join("creation.json"));
+        creation.sort();
+
         Rules {
             chara: read_from_json(&rules_dir.join("chara.json")),
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
+            creation,
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),
             floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),

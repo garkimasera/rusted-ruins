@@ -1,0 +1,10 @@
+
+{
+    "cooking_recipes": [
+        {
+            "product": "bread",
+            "ingredients": ["wheat-flour"],
+            "difficulty": 10
+        }
+    ]
+}
