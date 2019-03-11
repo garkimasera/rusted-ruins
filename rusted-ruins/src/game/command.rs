@@ -17,6 +17,7 @@ pub enum Command {
     OpenEquipWin,
     OpenStatusWin,
     OpenGameInfoWin,
+    OpenCreationWin,
     PickUpItem,
     DropItem,
     DrinkItem,

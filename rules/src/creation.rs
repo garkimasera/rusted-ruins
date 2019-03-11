@@ -1,4 +1,3 @@
-
 use common::gamedata::CreationKind;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -24,4 +23,3 @@ impl Creation {
         }
     }
 }
-

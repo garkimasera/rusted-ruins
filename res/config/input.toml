@@ -1,6 +1,7 @@
 
 [normal]
 return = "enter"
+c = "open_creation_win"
 d = "drop_item"
 e = "eat_item"
 f = "shot"

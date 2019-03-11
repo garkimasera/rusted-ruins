@@ -1,4 +1,5 @@
 mod choose_window;
+mod creation_window;
 mod dialogreq;
 mod equip_window;
 mod exit_window;
@@ -318,6 +319,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::Shot => {
                 pa.shot();
+            }
+            Command::OpenCreationWin => {
+                self.window_stack
+                    .push(Box::new(creation_window::CreationWindow::new()));
             }
             Command::OpenExitWin => {
                 self.window_stack

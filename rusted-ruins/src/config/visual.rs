@@ -43,6 +43,7 @@ pub struct UIConfig {
     pub newgame_dialog: NewGameDialogConfig,
     pub choose_save_file_dialog: ChooseSaveFileDialogConfig,
     pub choose_class_dialog: ChooseClassDialogConfig,
+    pub creation_window: CreationWindowConfig,
     pub item_window: ItemWindowConfig,
     pub item_info_window: ItemInfoWindowConfig,
     pub equip_window: EquipWindowConfig,
@@ -147,6 +148,11 @@ pub struct ChooseSaveFileDialogConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct ChooseClassDialogConfig {
+    pub rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CreationWindowConfig {
     pub rect: CfgRect,
 }
 
