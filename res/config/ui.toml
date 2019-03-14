@@ -60,6 +60,8 @@ rect = { x = -999, y = -999, w = 200, h = 200 }
 
 [creation_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
+n_row = 6
+column_pos = [1, 50]
 
 [item_window]
 rect = { x = -999, y = -999, w = 450, h = 286 }

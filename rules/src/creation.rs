@@ -2,9 +2,9 @@ use common::gamedata::CreationKind;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Recipe {
-    product: String,
-    ingredients: Vec<String>,
-    difficulty: u32,
+    pub product: String,
+    pub ingredients: Vec<String>,
+    pub difficulty: u32,
 }
 
 #[derive(Serialize, Deserialize)]

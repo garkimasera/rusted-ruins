@@ -322,7 +322,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenCreationWin => {
                 self.window_stack
-                    .push(Box::new(creation_window::CreationWindow::new()));
+                    .push(Box::new(creation_window::CreationWindow::new(CreationKind::Cooking)));
             }
             Command::OpenExitWin => {
                 self.window_stack
