@@ -44,6 +44,7 @@ pub struct UIConfig {
     pub choose_save_file_dialog: ChooseSaveFileDialogConfig,
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub creation_window: CreationWindowConfig,
+    pub creation_detail_dialog: CreationDetailDialogConfig,
     pub item_window: ItemWindowConfig,
     pub item_info_window: ItemInfoWindowConfig,
     pub equip_window: EquipWindowConfig,
@@ -156,6 +157,15 @@ pub struct CreationWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
     pub column_pos: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CreationDetailDialogConfig {
+    pub rect: CfgRect,
+    pub n_row: u32,
+    pub column_pos: Vec<i32>,
+    pub list_margin: i32,
+    pub product_name: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

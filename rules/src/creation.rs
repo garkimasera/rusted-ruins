@@ -1,6 +1,6 @@
 use common::gamedata::CreationKind;
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Recipe {
     pub product: String,
     pub ingredients: Vec<String>,

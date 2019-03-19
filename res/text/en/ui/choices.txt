@@ -10,3 +10,5 @@ Close
 Exit Game
 % dialog.choice.save_game
 Save Game
+% creation.start
+Start
