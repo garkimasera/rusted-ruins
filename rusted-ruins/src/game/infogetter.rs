@@ -26,6 +26,8 @@ pub trait InfoGetter {
     fn is_item_on_player_tile(&self) -> bool;
     /// Judge given map is open-air or not
     fn is_open_air(&self, mid: MapId) -> bool;
+    /// Get the number of specified item player has
+    fn has_item(&self, idx: ItemIdx) -> u32;
 }
 
 impl InfoGetter for GameData {
@@ -99,5 +101,14 @@ impl InfoGetter for GameData {
             },
             MapId::RegionMap { .. } => true,
         }
+    }
+
+    fn has_item(&self, idx: ItemIdx) -> u32 {
+        let il = self.get_item_list(ItemListLocation::Chara {
+            cid: CharaId::Player,
+        });
+        il.iter()
+            .filter_map(|(item, n)| if item.idx == idx { Some(n) } else { None })
+            .sum()
     }
 }
