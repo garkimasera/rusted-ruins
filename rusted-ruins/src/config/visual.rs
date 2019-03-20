@@ -239,6 +239,7 @@ pub struct LabelWidgetConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct ListWidgetConfig {
-    pub h_row_with_text: i32,
+    pub h_row_default: u32,
+    pub h_row_with_text: u32,
     pub left_margin: i32,
 }

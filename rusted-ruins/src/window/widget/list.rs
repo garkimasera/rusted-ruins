@@ -48,7 +48,6 @@ impl<T: ListWidgetRow> ListWidget<T> {
         rect: R,
         column_pos: Vec<i32>,
         page_size: u32,
-        h_row: u32,
         multiple_page: bool,
         update_by_user: bool,
     ) -> ListWidget<T> {
@@ -57,7 +56,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
         let mut w = ListWidget {
             rect,
             rows: Vec::new(),
-            h_row,
+            h_row: UI_CFG.list_widget.h_row_default,
             n_row: 0,
             n_item: 0,
             page_size,
@@ -187,10 +186,10 @@ impl ListWidget<TextCache> {
             rect,
             vec![UI_CFG.list_widget.left_margin],
             n_item,
-            UI_CFG.list_widget.h_row_with_text as u32,
             false,
             false,
         );
+        list.h_row = UI_CFG.list_widget.h_row_with_text;
         list.set_rows(choices);
         list.set_n_item(n_item);
         list

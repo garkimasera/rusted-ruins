@@ -91,7 +91,6 @@ impl ItemWindow {
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.item_window.column_pos.clone(),
                 UI_CFG.item_window.n_row,
-                26,
                 true,
                 true,
             ),

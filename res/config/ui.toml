@@ -126,5 +126,6 @@ h = 24
 left_margin = 3
 
 [list_widget]
+h_row_default = 26
 h_row_with_text = 24
 left_margin = 5

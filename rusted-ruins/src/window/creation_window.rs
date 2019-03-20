@@ -27,7 +27,6 @@ impl CreationWindow {
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 c.column_pos.clone(),
                 c.n_row,
-                26,
                 true,
                 false,
             ),
@@ -121,7 +120,6 @@ impl CreationDetailDialog {
             (0i32, c.list_margin, rect.w as u32, rect.h as u32),
             c.column_pos.clone(),
             c.n_row,
-            26,
             false,
             false,
         );

@@ -27,7 +27,6 @@ impl QuestWindow {
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 vec![6],
                 UI_CFG.quest_window.n_row,
-                26,
                 true,
                 false,
             ),
@@ -35,7 +34,8 @@ impl QuestWindow {
             description: LabelWidget::wrapped(
                 (
                     0i32,
-                    (UI_CFG.quest_window.n_row as i32 + 1) * 26,
+                    (UI_CFG.quest_window.n_row as i32 + 1)
+                        * UI_CFG.list_widget.h_row_default as i32,
                     rect.width(),
                     0,
                 ),
