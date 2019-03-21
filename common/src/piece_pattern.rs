@@ -56,7 +56,8 @@ pub const EMPTY_PIECE: u8 = 0b111;
 
 /// TileIdx or WallIdx with piece pattern
 /// This is 32bit integer. Upper 20bit is for index. Lower 12 bit is for piece pattern.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize)]
+#[serde(transparent)]
 pub struct IdxWithPiecePattern<T> {
     i: u32,
     #[serde(skip)]
@@ -95,6 +96,13 @@ where
     pub fn new(idx: T) -> Self {
         IdxWithPiecePattern {
             i: idx.as_raw_int() << 12,
+            _p: PhantomData,
+        }
+    }
+
+    pub fn empty() -> Self {
+        IdxWithPiecePattern {
+            i: 0,
             _p: PhantomData,
         }
     }
@@ -139,6 +147,50 @@ where
 pub type TileIdxPP = IdxWithPiecePattern<TileIdx>;
 pub type WallIdxPP = IdxWithPiecePattern<WallIdx>;
 pub type ConvertedIdxPP = IdxWithPiecePattern<u32>;
+
+macro_rules! impl_deserialize_for_idxpp {
+    ($idxpp:ident, $idx:ident, $mem:ident) => {
+        impl<'de> serde::Deserialize<'de> for $idxpp {
+            fn deserialize<D>(deserializer: D) -> Result<$idxpp, D::Error>
+            where D: serde::Deserializer<'de> {
+
+                let lock = crate::idx_conv::IDX_CONV_TABLE.read().expect("IDX_CONV_TABLE lock error");
+                let i = u32::deserialize(deserializer)?;
+                if i == 0 {
+                    return Ok($idxpp::empty());
+                }
+
+                let pp = i & PIECE_PATTERN_BIT;
+                let i = if let Some(idx_conv_table) = lock.as_ref() {
+                    // TODO: Should generate error if None
+                    let idx = $idx::from_raw_int((i & INDEX_BIT) >> 12).unwrap();
+                    let new_idx = idx_conv_table.$mem(idx);
+                    (new_idx.as_raw_int() << 12) | pp
+                } else {
+                    i
+                };
+                Ok(IdxWithPiecePattern {
+                    i,
+                    _p: PhantomData,
+                })
+            }
+        }
+    }
+}
+
+impl_deserialize_for_idxpp!(TileIdxPP, TileIdx, tile);
+impl_deserialize_for_idxpp!(WallIdxPP, WallIdx, wall);
+
+impl<'de> serde::Deserialize<'de> for ConvertedIdxPP {
+    fn deserialize<D>(deserializer: D) -> Result<ConvertedIdxPP, D::Error>
+    where D: serde::Deserializer<'de> {
+        let i = u32::deserialize(deserializer)?;
+        Ok(IdxWithPiecePattern {
+            i,
+            _p: PhantomData,
+        })
+    }
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct PiecePatternFlags(pub u8);
