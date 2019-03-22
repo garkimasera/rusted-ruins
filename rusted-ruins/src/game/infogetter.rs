@@ -28,6 +28,8 @@ pub trait InfoGetter {
     fn is_open_air(&self, mid: MapId) -> bool;
     /// Get the number of specified item player has
     fn has_item(&self, idx: ItemIdx) -> u32;
+    /// Get the item location of specified item
+    fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation>;
 }
 
 impl InfoGetter for GameData {
@@ -110,5 +112,19 @@ impl InfoGetter for GameData {
         il.iter()
             .filter_map(|(item, n)| if item.idx == idx { Some(n) } else { None })
             .sum()
+    }
+
+    fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation> {
+        let ill = ItemListLocation::Chara {
+            cid: CharaId::Player,
+        };
+        let list = self.get_item_list(ill);
+        let mut il = Vec::new();
+        for (i, (item, _)) in list.iter().enumerate() {
+            if item.idx == idx {
+                il.push((ill, i as u32))
+            }
+        }
+        il
     }
 }
