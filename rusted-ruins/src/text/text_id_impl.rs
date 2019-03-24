@@ -20,6 +20,7 @@ impl ToTextId for CharaStatus {
             CharaStatus::Starving => "!chara_status.starving",
             CharaStatus::Asleep { .. } => "!chara_status.asleep",
             CharaStatus::Poisoned => "!chara_status.poisoned",
+            CharaStatus::Creation { .. } => "!chara_status.creation",
         }
     }
 }

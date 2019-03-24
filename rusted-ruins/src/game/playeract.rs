@@ -312,6 +312,10 @@ impl<'a> DoPlayerAction<'a> {
     pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {
         self.0.request_dialog_open(req);
     }
+
+    pub fn start_creation(&mut self, recipe: &Recipe, il: Vec<ItemLocation>) {
+        super::creation::start_creation(self.gd_mut(), recipe, il);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {

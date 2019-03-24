@@ -53,6 +53,9 @@ fn can_act(chara: &Chara) -> bool {
                 game_log_i!("asleep"; chara=chara);
                 return false;
             }
+            CharaStatus::Creation { .. } => {
+                return false;
+            }
             _ => (),
         }
     }

@@ -49,6 +49,14 @@ pub enum CreationKind {
     Cooking,
 }
 
+/// A recipe for creation
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct Recipe {
+    pub product: String,
+    pub ingredients: Vec<String>,
+    pub difficulty: u32,
+}
+
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {

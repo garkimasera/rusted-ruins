@@ -1,11 +1,4 @@
-use common::gamedata::CreationKind;
-
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub struct Recipe {
-    pub product: String,
-    pub ingredients: Vec<String>,
-    pub difficulty: u32,
-}
+use common::gamedata::{CreationKind, Recipe};
 
 #[derive(Serialize, Deserialize)]
 pub struct Creation {

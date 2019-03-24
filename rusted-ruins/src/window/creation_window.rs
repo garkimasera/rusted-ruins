@@ -3,10 +3,10 @@ use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_rect_border;
 use crate::text::{obj_txt, ToText};
-use common::gamedata::{CreationKind, GameData, ItemLocation};
+use common::gamedata::{CreationKind, GameData, ItemLocation, Recipe};
 use common::gobj;
 use common::objholder::*;
-use rules::{creation::Recipe, RULES};
+use rules::RULES;
 
 pub struct CreationWindow {
     rect: Rect,
@@ -190,9 +190,14 @@ impl Window for CreationDetailDialog {
 }
 
 impl DialogWindow for CreationDetailDialog {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
+            if self.possible && self.recipe.ingredients.len() as u32 == i {
+                let il: Vec<ItemLocation> = self.il.iter().map(|a| a.unwrap()).collect();
+                pa.start_creation(self.recipe, il);
+                return DialogResult::CloseAll;
+            }
             return DialogResult::Continue;
         }
 

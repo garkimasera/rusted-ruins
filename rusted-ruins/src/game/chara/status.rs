@@ -39,6 +39,7 @@ impl CharaStatusOperation for Chara {
                     }
                 }
             }
+            _ => (),
         }
         self.status.push(new_status);
     }
@@ -52,7 +53,33 @@ impl CharaStatusOperation for Chara {
 pub trait CharaStatusEx {
     fn about_sp(&self) -> bool;
     fn advance_turn(&mut self, n: u16);
+    /// If this status is expired, returns true.
+    /// Expired status will be removed from character.
     fn is_expired(&self) -> bool;
+}
+
+macro_rules! impl_chara_status_ex {
+    ($($e:ident),*) => {
+        fn advance_turn(&mut self, n: u16) {
+            match self {
+                $(CharaStatus::$e { ref mut turn_left, .. } => {
+                    if *turn_left > n {
+                        *turn_left -= n;
+                    } else {
+                        *turn_left = 0;
+                    }
+                })*
+                _ => (),
+            }
+        }
+
+        fn is_expired(&self) -> bool {
+            match *self {
+                $(CharaStatus::$e { turn_left, .. } if turn_left == 0 => true,)*
+                _ => false,
+            }
+        }
+    }
 }
 
 impl CharaStatusEx for CharaStatus {
@@ -63,25 +90,5 @@ impl CharaStatusEx for CharaStatus {
         }
     }
 
-    fn advance_turn(&mut self, n: u16) {
-        match *self {
-            CharaStatus::Asleep { ref mut turn_left } => {
-                if *turn_left > n {
-                    *turn_left -= n;
-                } else {
-                    *turn_left = 0;
-                }
-            }
-            _ => (),
-        }
-    }
-
-    /// If this status is expired, returns true.
-    /// Expired status will be removed from character.
-    fn is_expired(&self) -> bool {
-        match *self {
-            CharaStatus::Asleep { turn_left } if turn_left == 0 => true,
-            _ => false,
-        }
-    }
+    impl_chara_status_ex!(Asleep, Creation);
 }

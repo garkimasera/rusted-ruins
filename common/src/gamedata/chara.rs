@@ -1,4 +1,5 @@
-use super::item::{EquipItemList, ItemList};
+use super::defs::Recipe;
+use super::item::{EquipItemList, Item, ItemList};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::SkillList;
@@ -159,7 +160,7 @@ impl CharaBaseAttr {
 }
 
 /// Represents chara status
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Hash, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 pub enum CharaStatus {
     /// Sp status
     Hungry,
@@ -171,6 +172,11 @@ pub enum CharaStatus {
         turn_left: u16,
     },
     Poisoned,
+    Creation {
+        turn_left: u16,
+        recipe: Recipe,
+        ingredients: Vec<Item>,
+    },
 }
 
 impl Default for Chara {
