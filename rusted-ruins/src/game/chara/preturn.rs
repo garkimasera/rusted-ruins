@@ -9,23 +9,35 @@ use rules::RULES;
 pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     let mut is_poisoned = false;
 
-    {
-        let chara = game.gd.chara.get_mut(cid);
+    let chara = game.gd.chara.get_mut(cid);
 
-        // Process character status
-        for s in chara.status.iter_mut() {
-            s.advance_turn(1);
-        }
+    // Process character status
+    for s in chara.status.iter_mut() {
+        s.advance_turn(1);
+    }
 
-        chara.status.retain(|s| !s.is_expired()); // Remove expired status
-
-        for s in chara.status.iter() {
-            match *s {
-                CharaStatus::Poisoned => {
-                    is_poisoned = true;
-                }
-                _ => (),
+    // If there is expired status, process expire routines.
+    let mut expired_status = Vec::new();
+    if chara.status.iter().any(|s| s.is_expired()) {
+        for s in std::mem::replace(&mut chara.status, Vec::new()).into_iter() {
+            if s.is_expired() {
+                expired_status.push(s);
+            } else {
+                chara.status.push(s);
             }
+        }
+    }
+    for s in expired_status.into_iter() {
+        s.expire(&mut game.gd, cid);
+    }
+
+    let chara = game.gd.chara.get_mut(cid);
+    for s in chara.status.iter() {
+        match *s {
+            CharaStatus::Poisoned => {
+                is_poisoned = true;
+            }
+            _ => (),
         }
     }
 

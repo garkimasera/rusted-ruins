@@ -33,3 +33,7 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
         ingredients,
     });
 }
+
+pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, ingredients: Vec<Item>) {
+
+}

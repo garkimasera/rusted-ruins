@@ -1,6 +1,6 @@
 //! Functions for character status operation
 
-use common::gamedata::chara::*;
+use common::gamedata::*;
 
 pub trait CharaStatusOperation {
     fn add_status(&mut self, new_status: CharaStatus);
@@ -56,6 +56,7 @@ pub trait CharaStatusEx {
     /// If this status is expired, returns true.
     /// Expired status will be removed from character.
     fn is_expired(&self) -> bool;
+    fn expire(self, gd: &mut GameData, cid: CharaId);
 }
 
 macro_rules! impl_chara_status_ex {
@@ -87,6 +88,20 @@ impl CharaStatusEx for CharaStatus {
         match *self {
             CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => true,
             _ => false,
+        }
+    }
+
+    fn expire(self, gd: &mut GameData, cid: CharaId) {
+        match self {
+            CharaStatus::Creation {
+                recipe,
+                ingredients,
+                ..
+            } => {
+                assert!(cid == CharaId::Player);
+                crate::game::creation::finish_creation(gd, &recipe, ingredients);
+            }
+            _ => (),
         }
     }
 
