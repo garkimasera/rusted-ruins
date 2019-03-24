@@ -152,9 +152,12 @@ macro_rules! impl_deserialize_for_idxpp {
     ($idxpp:ident, $idx:ident, $mem:ident) => {
         impl<'de> serde::Deserialize<'de> for $idxpp {
             fn deserialize<D>(deserializer: D) -> Result<$idxpp, D::Error>
-            where D: serde::Deserializer<'de> {
-
-                let lock = crate::idx_conv::IDX_CONV_TABLE.read().expect("IDX_CONV_TABLE lock error");
+            where
+                D: serde::Deserializer<'de>,
+            {
+                let lock = crate::idx_conv::IDX_CONV_TABLE
+                    .read()
+                    .expect("IDX_CONV_TABLE lock error");
                 let i = u32::deserialize(deserializer)?;
                 if i == 0 {
                     return Ok($idxpp::empty());
@@ -169,13 +172,10 @@ macro_rules! impl_deserialize_for_idxpp {
                 } else {
                     i
                 };
-                Ok(IdxWithPiecePattern {
-                    i,
-                    _p: PhantomData,
-                })
+                Ok(IdxWithPiecePattern { i, _p: PhantomData })
             }
         }
-    }
+    };
 }
 
 impl_deserialize_for_idxpp!(TileIdxPP, TileIdx, tile);
@@ -183,12 +183,11 @@ impl_deserialize_for_idxpp!(WallIdxPP, WallIdx, wall);
 
 impl<'de> serde::Deserialize<'de> for ConvertedIdxPP {
     fn deserialize<D>(deserializer: D) -> Result<ConvertedIdxPP, D::Error>
-    where D: serde::Deserializer<'de> {
+    where
+        D: serde::Deserializer<'de>,
+    {
         let i = u32::deserialize(deserializer)?;
-        Ok(IdxWithPiecePattern {
-            i,
-            _p: PhantomData,
-        })
+        Ok(IdxWithPiecePattern { i, _p: PhantomData })
     }
 }
 
