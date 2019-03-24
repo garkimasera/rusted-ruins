@@ -34,6 +34,19 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
     });
 }
 
-pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, ingredients: Vec<Item>) {
+pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<Item>) {
+    let idx: ItemIdx = gobj::id_to_idx(&recipe.product);
+    let item_obj = gobj::get_obj(idx);
+    let item = Item {
+        idx,
+        flags: item_obj.default_flags,
+        kind: item_obj.kind,
+        rank: ItemRank::default(),
+        attributes: vec![],
+    };
 
+    let il = gd.get_item_list_mut(ItemListLocation::Chara {
+        cid: CharaId::Player,
+    });
+    il.append(item, 1);
 }
