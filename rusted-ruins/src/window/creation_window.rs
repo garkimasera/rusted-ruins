@@ -2,10 +2,10 @@ use super::commonuse::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_rect_border;
-use crate::text::obj_txt;
-use common::gamedata::CreationKind;
+use crate::text::{obj_txt, ToText};
+use common::gamedata::{CreationKind, GameData, ItemLocation};
 use common::gobj;
-use common::objholder::ItemIdx;
+use common::objholder::*;
 use rules::{creation::Recipe, RULES};
 
 pub struct CreationWindow {
@@ -81,6 +81,7 @@ impl DialogWindow for CreationWindow {
             match result {
                 DialogResult::Close => {
                     self.detail_dialog = None;
+                    return DialogResult::Continue;
                 }
                 _ => (),
             }
@@ -89,7 +90,7 @@ impl DialogWindow for CreationWindow {
 
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
-            self.detail_dialog = Some(CreationDetailDialog::new(self.recipes[i as usize]));
+            self.detail_dialog = Some(CreationDetailDialog::new(pa.gd(), self.recipes[i as usize]));
             return DialogResult::Continue;
         }
 
@@ -108,11 +109,13 @@ pub struct CreationDetailDialog {
     rect: Rect,
     recipe: &'static Recipe,
     product_name: LabelWidget,
-    list: ListWidget<(IconIdx, TextCache)>,
+    list: ListWidget<(IconIdx, TextCache, IconIdx)>,
+    il: Vec<Option<ItemLocation>>,
+    possible: bool,
 }
 
 impl CreationDetailDialog {
-    fn new(recipe: &'static Recipe) -> CreationDetailDialog {
+    fn new(gd: &GameData, recipe: &'static Recipe) -> CreationDetailDialog {
         let c = &UI_CFG.creation_detail_dialog;
         let rect: Rect = c.rect.into();
 
@@ -124,25 +127,46 @@ impl CreationDetailDialog {
             false,
         );
 
-        let mut list_items = Vec::new();
-        for ingredient in &recipe.ingredients {
-            let idx: ItemIdx = gobj::id_to_idx(ingredient);
-            list_items.push((
-                IconIdx::Item(idx),
-                TextCache::one(
-                    obj_txt(ingredient),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                ),
-            ));
-        }
+        let icon_idx_ok: UIImgIdx = gobj::id_to_idx("!icon-ok");
+        let icon_idx_ng: UIImgIdx = gobj::id_to_idx("!icon-ng");
+
+        let autopicked_items = crate::game::creation::item_auto_pick(gd, recipe);
+        let mut list_items: Vec<(IconIdx, TextCache, IconIdx)> = autopicked_items
+            .iter()
+            .enumerate()
+            .map(|(i, il)| {
+                if let Some(il) = il {
+                    let item = gd.get_item(*il);
+                    let text = TextCache::one(
+                        format!("{} x {}", item.0.to_text(), item.1),
+                        FontKind::M,
+                        UI_CFG.color.normal_font.into(),
+                    );
+                    (IconIdx::Item(item.0.idx), text, IconIdx::UIImg(icon_idx_ok))
+                } else {
+                    let ingredient_idx: ItemIdx = gobj::id_to_idx(&recipe.ingredients[i]);
+                    let text = TextCache::one(
+                        format!("{} x {}", obj_txt(&recipe.ingredients[i]), 0),
+                        FontKind::M,
+                        UI_CFG.color.normal_font.into(),
+                    );
+                    (
+                        IconIdx::Item(ingredient_idx),
+                        text,
+                        IconIdx::UIImg(icon_idx_ng),
+                    )
+                }
+            })
+            .collect();
+        let possible = autopicked_items.iter().all(|a| a.is_some());
         list_items.push((
-            IconIdx::UIImg(gobj::id_to_idx("!")),
+            IconIdx::UIImg(if possible { icon_idx_ok } else { icon_idx_ng }),
             TextCache::one(
                 crate::text::ui_txt("creation.start"),
                 FontKind::M,
                 UI_CFG.color.normal_font.into(),
             ),
+            IconIdx::UIImg(gobj::id_to_idx("!")),
         ));
         list.set_items(list_items);
 
@@ -151,6 +175,8 @@ impl CreationDetailDialog {
             recipe,
             product_name: LabelWidget::new(c.product_name, obj_txt(&recipe.product), FontKind::M),
             list,
+            il: autopicked_items,
+            possible,
         }
     }
 }
