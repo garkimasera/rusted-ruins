@@ -1,5 +1,6 @@
 use super::extrait::*;
 use super::InfoGetter;
+use crate::text::obj_txt;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
@@ -32,6 +33,10 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
         recipe: recipe.clone(),
         ingredients,
     });
+
+    let player = gd.chara.get(CharaId::Player);
+    let product = obj_txt(&recipe.product);
+    game_log_i!("creation-start"; chara=player, product=product);
 }
 
 pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<Item>) {
@@ -49,4 +54,8 @@ pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<Ite
         cid: CharaId::Player,
     });
     il.append(item, 1);
+
+    let player = gd.chara.get(CharaId::Player);
+    let product = obj_txt(&recipe.product);
+    game_log_i!("creation-finish"; chara=player, product=product);
 }

@@ -13,7 +13,7 @@ $(player) entered $(site).
 % change-floor
 $(player) moved to the next floor.
 #
-# Message about character status
+# Messages about character status
 #
 % skill-level-up
 $(chara)'s $(skill) level increase.
@@ -75,3 +75,10 @@ $(chara) do not have enough money to buy it.
 Quest completed! Slayed $(monster) x $(n).
 % quest-reward-receive-money
 Recieve $(money) gold as the quest reward.
+#
+# Messages about creation
+#
+% creation-start
+$(chara) start making one $(product).
+% creation-finish
+$(chara) finish making one $(product).

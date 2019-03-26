@@ -315,6 +315,7 @@ impl<'a> DoPlayerAction<'a> {
 
     pub fn start_creation(&mut self, recipe: &Recipe, il: Vec<ItemLocation>) {
         super::creation::start_creation(self.gd_mut(), recipe, il);
+        self.0.finish_player_turn();
     }
 }
 
