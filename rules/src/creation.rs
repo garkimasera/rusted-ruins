@@ -1,7 +1,9 @@
-use common::gamedata::{CreationKind, Recipe};
+use std::collections::HashMap;
+use common::gamedata::{CreationKind, CreationRequiredTime, Recipe};
 
 #[derive(Serialize, Deserialize)]
 pub struct Creation {
+    pub required_time: HashMap<CreationRequiredTime, u16>,
     cooking_recipes: Vec<Recipe>,
 }
 

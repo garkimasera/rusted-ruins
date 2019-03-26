@@ -4,6 +4,7 @@ use crate::text::obj_txt;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
+use rules::RULES;
 
 pub fn item_auto_pick(gd: &GameData, recipe: &Recipe) -> Vec<Option<ItemLocation>> {
     let mut result = Vec::new();
@@ -29,7 +30,7 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
 
     let player = gd.chara.get_mut(CharaId::Player);
     player.add_status(CharaStatus::Creation {
-        turn_left: 16,
+        turn_left: RULES.creation.required_time[&recipe.required_time],
         recipe: recipe.clone(),
         ingredients,
     });

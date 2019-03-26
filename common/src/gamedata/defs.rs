@@ -55,6 +55,17 @@ pub struct Recipe {
     pub product: String,
     pub ingredients: Vec<String>,
     pub difficulty: u32,
+    pub required_time: CreationRequiredTime,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CreationRequiredTime {
+    VeryShort,
+    Short,
+    Medium,
+    Long,
+    VeryLong,
 }
 
 /// Reward for quests or events
