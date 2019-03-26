@@ -62,7 +62,7 @@ pub enum DialogResult {
 pub enum SpecialDialogResult {
     StartDialogNewGame,
     StartDialogLoadGame,
-    NewGameStart(GameData),
+    NewGameStart(Box<GameData>),
     ReturnToStartScreen,
 }
 
@@ -418,7 +418,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                        let game = Game::new(gd);
+                        let game = Game::new(*gd);
                         self.game = game;
                         self.game.update_before_player_turn();
                         game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
@@ -432,7 +432,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     self.window_stack.clear();
                     self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                    let game = Game::new(gd);
+                    let game = Game::new(*gd);
                     self.game = game;
                     self.game.update_before_player_turn();
                     game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));

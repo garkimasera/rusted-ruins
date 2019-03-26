@@ -126,7 +126,9 @@ impl DialogWindow for ChooseSaveFileDialog {
                     // Any item is selected
                     match GameData::load(&self.save_files[i as usize]) {
                         Ok(o) => {
-                            return DialogResult::Special(SpecialDialogResult::NewGameStart(o));
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart(
+                                Box::new(o),
+                            ));
                         }
                         Err(e) => {
                             warn!("Failed to load a save file: {}", e);

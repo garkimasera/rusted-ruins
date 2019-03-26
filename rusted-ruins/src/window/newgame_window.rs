@@ -109,7 +109,9 @@ impl DialogWindow for DummyNewGameDialog {
                             // Skip OP text
                             let builder = self.builder.take().unwrap();
                             let gd = builder.build();
-                            return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
+                            return DialogResult::Special(SpecialDialogResult::NewGameStart(
+                                Box::new(gd),
+                            ));
                         }
                     }
                     _ => (),
@@ -130,7 +132,7 @@ impl DialogWindow for DummyNewGameDialog {
                 }
                 let builder = self.builder.take().unwrap();
                 let gd = builder.build();
-                return DialogResult::Special(SpecialDialogResult::NewGameStart(gd));
+                return DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(gd)));
             }
         }
     }
