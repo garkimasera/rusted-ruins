@@ -33,6 +33,8 @@ pub use self::script::TalkText;
 use self::script::*;
 use array2d::Vec2d;
 use common::gamedata::*;
+use common::gobj;
+use common::objholder::ScriptIdx;
 use std::borrow::Cow;
 use std::path::PathBuf;
 
@@ -191,6 +193,14 @@ impl Game {
         }
     }
 
+    /// Start new generated game
+    pub fn start_new_game(&mut self) {
+        const START_SCRIPT_ID: &str = "!start";
+        if gobj::id_to_idx_checked::<ScriptIdx>(START_SCRIPT_ID).is_some() {
+            self.start_script(START_SCRIPT_ID, None);
+        }
+    }
+
     pub fn end_game(&mut self) {
         self.clean_save_data()
     }
@@ -202,7 +212,7 @@ pub enum DialogOpenRequest {
         msg: Cow<'static, str>,
     },
     Talk {
-        cid: CharaId,
+        cid: Option<CharaId>,
         talk_text: TalkText,
     },
     ItemInfo {

@@ -16,7 +16,7 @@ pub struct ScriptEngine {
 
 #[derive(PartialEq, Eq, Debug)]
 pub enum ExecResult {
-    Talk(CharaId, TalkText, bool),
+    Talk(Option<CharaId>, TalkText, bool),
     ShopBuy(CharaId),
     ShopSell,
     Quest,
@@ -114,7 +114,6 @@ impl ScriptEngine {
                     }
                 }
                 Instruction::Talk(text_id, choices) => {
-                    let cid = ur!(self.cid, "cid is needed");
                     let need_open_talk_dialog = if self.talking {
                         false
                     } else {
@@ -128,7 +127,7 @@ impl ScriptEngine {
                         Some(choices.as_ref())
                     };
                     return ExecResult::Talk(
-                        cid,
+                        self.cid,
                         TalkText { text_id, choices },
                         need_open_talk_dialog,
                     );

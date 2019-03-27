@@ -16,13 +16,13 @@ pub struct TalkWindow {
     rect: Rect,
     talk_text: TalkText,
     label: LineSpecifiedLabelWidget,
-    image_window: ImageWindow,
+    image_window: Option<ImageWindow>,
     msg_text: MsgText,
     choose_win: Option<ChooseWindow>,
 }
 
 impl TalkWindow {
-    pub fn new(talk_text: TalkText, chara_template_idx: CharaTemplateIdx) -> TalkWindow {
+    pub fn new(talk_text: TalkText, chara_template_idx: Option<CharaTemplateIdx>) -> TalkWindow {
         let rect: Rect = UI_CFG.talk_window.rect.into();
         let label = LineSpecifiedLabelWidget::new(
             Rect::new(0, 0, rect.width(), rect.height()),
@@ -36,11 +36,16 @@ impl TalkWindow {
             TILE_SIZE,
             TILE_SIZE * 2,
         );
+        let image_window = if let Some(chara_template_idx) = chara_template_idx {
+            Some(ImageWindow::chara(rect_image_window, chara_template_idx))
+        } else {
+            None
+        };
         let mut talk_window = TalkWindow {
             rect,
             talk_text,
             label,
-            image_window: ImageWindow::chara(rect_image_window, chara_template_idx),
+            image_window,
             msg_text: MsgText::default(),
             choose_win: None,
         };
@@ -76,7 +81,9 @@ impl TalkWindow {
 
 impl Window for TalkWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        self.image_window.draw(context, game, anim);
+        if let Some(image_window) = self.image_window.as_mut() {
+            image_window.draw(context, game, anim);
+        }
         draw_rect_border(context, self.rect);
         self.label.draw(context);
         if let Some(ref mut choose_win) = self.choose_win {

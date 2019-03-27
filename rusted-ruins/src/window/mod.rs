@@ -435,6 +435,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     let game = Game::new(*gd);
                     self.game = game;
                     self.game.update_before_player_turn();
+                    self.game.start_new_game();
                     game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
                 }
                 _ => unreachable!(),

@@ -33,10 +33,10 @@ pub fn create_dialog_from_request(
 
 pub fn create_talk_dialog(
     talk_text: TalkText,
-    cid: CharaId,
+    cid: Option<CharaId>,
     game: &mut Game,
 ) -> Option<Box<dyn DialogWindow>> {
-    let chara_template_idx = game.gd.chara.get(cid).template;
+    let chara_template_idx = cid.map(|cid| game.gd.chara.get(cid).template);
 
     let talk_window = talk_window::TalkWindow::new(talk_text, chara_template_idx);
     Some(Box::new(talk_window))
