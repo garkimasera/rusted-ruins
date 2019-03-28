@@ -177,8 +177,6 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
             if first_char == '%' {
                 is_key = true;
             }
-        } else {
-            continue; // Skip empty line
         }
 
         if is_key {

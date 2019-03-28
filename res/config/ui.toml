@@ -35,7 +35,7 @@ list_y = 52
 
 [talk_window]
 rect = { x = -999, y = 50, w = 450, h = 200 }
-n_default_line = 5
+text_wrap_width = 435
 image_window_pos_x = -55
 image_window_pos_y = 0
 

@@ -15,7 +15,7 @@ use std::borrow::Cow;
 pub struct TalkWindow {
     rect: Rect,
     talk_text: TalkText,
-    label: LineSpecifiedLabelWidget,
+    label: LabelWidget,
     image_window: Option<ImageWindow>,
     msg_text: MsgText,
     choose_win: Option<ChooseWindow>,
@@ -23,16 +23,17 @@ pub struct TalkWindow {
 
 impl TalkWindow {
     pub fn new(talk_text: TalkText, chara_template_idx: Option<CharaTemplateIdx>) -> TalkWindow {
-        let rect: Rect = UI_CFG.talk_window.rect.into();
-        let label = LineSpecifiedLabelWidget::new(
+        let c = &UI_CFG.talk_window;
+        let rect: Rect = c.rect.into();
+        let label = LabelWidget::wrapped(
             Rect::new(0, 0, rect.width(), rect.height()),
-            &[""],
+            "",
             FontKind::M,
-            UI_CFG.talk_window.n_default_line,
+            c.text_wrap_width,
         );
         let rect_image_window = Rect::new(
-            rect.x + UI_CFG.talk_window.image_window_pos_x,
-            rect.y + UI_CFG.talk_window.image_window_pos_y,
+            rect.x + c.image_window_pos_x,
+            rect.y + c.image_window_pos_y,
             TILE_SIZE,
             TILE_SIZE * 2,
         );
@@ -75,7 +76,7 @@ impl TalkWindow {
             }
         }
 
-        self.label.set_text(self.msg_text.page_lines());
+        self.label.set_text(self.msg_text.text());
     }
 }
 
@@ -164,44 +165,33 @@ impl DialogWindow for TalkWindow {
 /// Manage lines of text message
 #[derive(Default)]
 struct MsgText {
-    lines: Vec<Cow<'static, str>>,
-    current_line: usize,
-    n_default_line: usize,
+    text: Vec<String>,
+    current_page: usize,
 }
 
 impl MsgText {
     fn new(text_id: &str) -> MsgText {
-        let mut lines: Vec<Cow<'static, str>> = Vec::new();
-
-        if let Some(s) = text::talk_txt_checked(text_id) {
-            for line in s.lines() {
-                lines.push(line.into());
-            }
+        let text: Vec<String> = if let Some(s) = text::talk_txt_checked(text_id) {
+            s.split("\n\n").map(|s| s.to_owned()).collect()
         } else {
-            lines.push(text_id.to_owned().into());
-        }
+            vec![text_id.to_owned()]
+        };
 
         MsgText {
-            lines,
-            current_line: 0,
-            n_default_line: UI_CFG.talk_window.n_default_line,
+            text,
+            current_page: 0,
         }
     }
 
-    fn page_lines(&self) -> &[Cow<'static, str>] {
-        let e = std::cmp::min(self.n_line(), self.current_line + self.n_default_line);
-        &self.lines[self.current_line..e]
-    }
-
-    fn n_line(&self) -> usize {
-        self.lines.len()
+    fn text(&self) -> &str {
+        &self.text[self.current_page]
     }
 
     fn next_page(&mut self) {
-        self.current_line += self.n_default_line;
+        self.current_page += 1;
     }
 
     fn is_final_page(&self) -> bool {
-        self.current_line + self.n_default_line >= self.n_line()
+        self.current_page >= self.text.len() - 1
     }
 }
