@@ -1,6 +1,6 @@
 [package]
 name = "rusted-ruins-makepak"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
@@ -10,7 +10,7 @@ regex = "1"
 serde = "1"
 serde_derive = "1"
 failure = "0.1.1"
-toml = "0.4"
+toml = "0.5"
 tar = "0.4"
 clap = "2"
 image = "0.21"

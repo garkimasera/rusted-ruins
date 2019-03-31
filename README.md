@@ -57,6 +57,8 @@ Arrow keys - Move
 
 Enter key - Enter towns or dungeons, walk up/down stairs, and select an answer when talking.
 
+c - Open creation window
+
 d - Drop items
 
 e - Eat an item
