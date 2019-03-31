@@ -51,6 +51,8 @@ cd rusted-ruins
 RUSTED_RUINS_APP_DIR=./res cargo run --release -p rusted-ruins
 ```
 
+If you are a Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
+
 ## Keys
 
 Arrow keys - Move
