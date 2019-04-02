@@ -1,4 +1,4 @@
-use super::defs::{ElementArray, MedicalEffect};
+use super::defs::{ElementArray, MagicalEffect, MedicalEffect};
 use crate::objholder::ItemIdx;
 use array2d::Vec2d;
 use bitflags::bitflags;
@@ -40,6 +40,7 @@ pub struct ItemObject {
     pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
+    pub magical_effect: MagicalEffect,
     pub medical_effect: MedicalEffect,
     /// Character's nutrition will be increased by this value after eating this item
     pub nutrition: u16,

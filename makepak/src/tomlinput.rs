@@ -92,9 +92,12 @@ pub struct ItemDepInput {
     pub eff: Option<u16>,
     pub dice_n: Option<u16>,
     pub dice_x: Option<u16>,
-    pub weapon_kind: Option<gamedata::item::WeaponKind>,
-    pub armor_kind: Option<gamedata::item::ArmorKind>,
-    pub medical_effect: Option<gamedata::item::MedicalEffect>,
+    pub weapon_kind: Option<gamedata::WeaponKind>,
+    pub armor_kind: Option<gamedata::ArmorKind>,
+    #[serde(default)]
+    pub medical_effect: gamedata::MedicalEffect,
+    #[serde(default)]
+    pub magical_effect: gamedata::MagicalEffect,
     /// For armor items
     pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,

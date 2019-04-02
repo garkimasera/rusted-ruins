@@ -83,6 +83,19 @@ impl Default for MedicalEffect {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MagicalEffect {
+    None,
+    Arrow,
+}
+
+impl Default for MagicalEffect {
+    fn default() -> MagicalEffect {
+        MagicalEffect::None
+    }
+}
+
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {
