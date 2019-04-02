@@ -101,6 +101,8 @@ pub struct ItemDepInput {
     /// For armor items
     pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,
+    #[serde(default)]
+    pub charge: [u8; 2],
 }
 
 #[derive(Debug, Deserialize)]

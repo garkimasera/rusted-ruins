@@ -13,6 +13,7 @@ pub trait ItemEx {
     /// Calculate item selling price
     fn selling_price(&self) -> i64;
     fn w(&self) -> u32;
+    fn charge(&self) -> Option<u32>;
 }
 
 impl ItemEx for Item {
@@ -30,6 +31,18 @@ impl ItemEx for Item {
         let item_obj = gobj::get_obj(self.idx);
 
         item_obj.w
+    }
+
+    fn charge(&self) -> Option<u32> {
+        for attr in &self.attributes {
+            match attr {
+                ItemAttribute::Charge { n } => {
+                    return Some(*n);
+                }
+                _ => (),
+            }
+        }
+        None
     }
 }
 

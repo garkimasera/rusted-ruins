@@ -1,6 +1,7 @@
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
+use rng::gen_range;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32) -> Item {
@@ -12,14 +13,7 @@ pub fn gen_dungeon_item(floor_level: u32) -> Item {
 pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F, is_shop: bool) -> Item {
     let idx = choose_item_by_floor_level(level, f, is_shop);
 
-    let item_obj = gobj::get_obj(idx);
-    Item {
-        idx,
-        flags: item_obj.default_flags,
-        kind: item_obj.kind,
-        rank: ItemRank::default(),
-        attributes: vec![],
-    }
+    gen_item_from_idx(idx)
 }
 
 /// Choose item by floor level.
@@ -89,19 +83,35 @@ impl CalcLevelWeightDist {
     }
 }
 
-/// Generate item from ItemGen.
+/// Generate an item from ItemGen.
 pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
     if let Some(idx) = gobj::id_to_idx_checked::<ItemIdx>(&item_gen.id) {
-        let item_obj = gobj::get_obj(idx);
-
-        Some(Item {
-            idx,
-            flags: item_obj.default_flags,
-            kind: item_obj.kind,
-            rank: ItemRank::default(),
-            attributes: vec![],
-        })
+        Some(gen_item_from_idx(idx))
     } else {
         None
     }
+}
+
+fn gen_item_from_idx(idx: ItemIdx) -> Item {
+    let item_obj = gobj::get_obj(idx);
+
+    let item = Item {
+        idx,
+        flags: item_obj.default_flags,
+        kind: item_obj.kind,
+        rank: ItemRank::default(),
+        attributes: vec![],
+    };
+
+    match item_obj.kind {
+        ItemKind::MagicDevice => gen_magic_device(item, item_obj),
+        _ => item,
+    }
+}
+
+/// Generate a magic device item
+fn gen_magic_device(mut item: Item, item_obj: &ItemObject) -> Item {
+    let charge_n: u32 = gen_range(item_obj.charge[0], item_obj.charge[1]).into();
+    item.attributes.push(ItemAttribute::Charge { n: charge_n });
+    item
 }

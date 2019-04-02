@@ -44,6 +44,8 @@ pub struct ItemObject {
     pub medical_effect: MedicalEffect,
     /// Character's nutrition will be increased by this value after eating this item
     pub nutrition: u16,
+    /// Range of charges
+    pub charge: [u8; 2],
 }
 
 impl Ord for Item {
@@ -148,6 +150,8 @@ impl ItemRank {
 /// Items can have zero or more attributes.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemAttribute {
+    /// Number of charges
+    Charge { n: u32 },
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },

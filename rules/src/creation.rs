@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use common::gamedata::{CreationKind, CreationRequiredTime, Recipe};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
 pub struct Creation {

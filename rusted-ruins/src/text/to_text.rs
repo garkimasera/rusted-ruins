@@ -1,4 +1,4 @@
-use crate::text::{self, misc_txt, obj_txt, ToText, ToTextId};
+use crate::text::{self, misc_txt, obj_txt, ui_txt, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -30,7 +30,13 @@ impl ToText for Site {
 
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
-        obj_txt(gobj::idx_to_id(self.idx)).into()
+        use crate::game::item::ItemEx;
+        let mut text: Cow<str> = obj_txt(gobj::idx_to_id(self.idx)).into();
+
+        if let Some(n) = self.charge() {
+            text = format!("{} ({} : {})", text, ui_txt("item.charges"), n).into();
+        }
+        text
     }
 }
 

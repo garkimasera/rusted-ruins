@@ -20,9 +20,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
             flags |= ItemFlags::EATABLE;
             ItemKind::Food
         }
-        "magic_device" => {
-            ItemKind::MagicDevice
-        }
+        "magic_device" => ItemKind::MagicDevice,
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
         "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
         "material" => ItemKind::Material,
@@ -52,5 +50,6 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         magical_effect: item.magical_effect,
         medical_effect: item.medical_effect,
         nutrition: item.nutrition.unwrap_or(0),
+        charge: item.charge,
     })
 }
