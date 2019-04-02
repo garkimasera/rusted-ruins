@@ -68,6 +68,21 @@ pub enum CreationRequiredTime {
     VeryLong,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MedicalEffect {
+    None,
+    Heal,
+    Sleep,
+    Poison,
+}
+
+impl Default for MedicalEffect {
+    fn default() -> MedicalEffect {
+        MedicalEffect::None
+    }
+}
+
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {

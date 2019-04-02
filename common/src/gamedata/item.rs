@@ -1,4 +1,4 @@
-use super::defs::ElementArray;
+use super::defs::{ElementArray, MedicalEffect};
 use crate::objholder::ItemIdx;
 use array2d::Vec2d;
 use bitflags::bitflags;
@@ -150,21 +150,6 @@ pub enum ItemAttribute {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum MedicalEffect {
-    None,
-    Heal,
-    Sleep,
-    Poison,
-}
-
-impl Default for MedicalEffect {
-    fn default() -> MedicalEffect {
-        MedicalEffect::None
-    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
