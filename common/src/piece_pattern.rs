@@ -4,7 +4,7 @@
 use crate::basic::{PIECE_SIZE, PIECE_SIZE_I};
 use crate::obj::ImgObject;
 use crate::objholder::{ObjectIndex, TileIdx, WallIdx};
-use array2d::*;
+use geom::*;
 use std::marker::PhantomData;
 
 const INDEX_BIT: u32 = 0b11111111_11111111_11110000_00000000;

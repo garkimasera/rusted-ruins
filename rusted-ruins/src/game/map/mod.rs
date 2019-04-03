@@ -6,11 +6,11 @@ use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
 use super::Game;
 use crate::text::ToText;
-use array2d::*;
 use common::basic::MAX_ITEM_FOR_DRAW;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::TileKind;
+use geom::*;
 use rules::RULES;
 
 pub trait MapEx {

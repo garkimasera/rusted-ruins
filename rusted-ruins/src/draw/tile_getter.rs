@@ -1,9 +1,9 @@
 use crate::game::view::ViewMap;
-use array2d::*;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SpecialTileObject;
 use common::objholder::*;
+use geom::*;
 
 /// Needed infomation to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters

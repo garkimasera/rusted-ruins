@@ -4,8 +4,8 @@ pub mod map_search;
 
 use super::action;
 use super::{Game, InfoGetter};
-use array2d::*;
 use common::gamedata::*;
+use geom::*;
 use rng::*;
 
 pub fn process_npc_turn(game: &mut Game, cid: CharaId) {

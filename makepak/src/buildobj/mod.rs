@@ -7,10 +7,10 @@ use self::img::*;
 use self::item::build_item_object;
 use crate::error::*;
 use crate::tomlinput::TomlInput;
-use array2d::Vec2d;
 use common::gamedata;
 use common::gamedata::CharaBaseAttr;
 use common::obj::*;
+use geom::Vec2d;
 pub use script_parser::parse as script_parse;
 
 pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {

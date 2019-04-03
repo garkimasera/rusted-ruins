@@ -3,9 +3,9 @@
 use super::combat;
 use super::extrait::*;
 use super::Game;
-use array2d::*;
 use common::gamedata::*;
 use common::gobj;
+use geom::*;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) {

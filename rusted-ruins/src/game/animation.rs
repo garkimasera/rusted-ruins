@@ -1,6 +1,6 @@
-use array2d::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
+use geom::*;
 
 #[derive(Clone)]
 pub enum Animation {

@@ -2,10 +2,10 @@
 
 use crate::game::map::builder::MapBuilder;
 use crate::game::saveload::gen_box_id;
-use array2d::*;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
+use geom::*;
 use rng::{self, GameRng, SliceRandom};
 use rules::RULES;
 

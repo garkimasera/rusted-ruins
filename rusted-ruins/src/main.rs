@@ -1,6 +1,6 @@
-extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_audio as audio;
 extern crate rusted_ruins_common as common;
+extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_map_generator as map_generator;
 extern crate rusted_ruins_rng as rng;
 extern crate rusted_ruins_rules as rules;

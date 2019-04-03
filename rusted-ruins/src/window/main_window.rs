@@ -3,7 +3,7 @@ use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
 use crate::game::{Animation, Game, InfoGetter};
 use crate::window::Window;
-use array2d::*;
+use geom::*;
 
 pub struct MainWindow {
     drawer: MainWinDrawer,

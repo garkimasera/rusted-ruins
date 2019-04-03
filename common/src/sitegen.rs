@@ -1,6 +1,6 @@
 use crate::gamedata::shop::ShopKind;
 use crate::gamedata::site::SiteKind;
-use array2d::Vec2d;
+use geom::Vec2d;
 
 /// Hold data for site generation
 #[derive(Clone, Serialize, Deserialize)]

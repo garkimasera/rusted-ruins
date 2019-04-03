@@ -1,7 +1,7 @@
 use crate::edit_map::EditingMap;
 use crate::ui::{SelectedItem, Ui};
-use array2d::Vec2d;
 use common::maptemplate::MapTemplateBoundaryBehavior;
+use geom::Vec2d;
 use gtk::prelude::*;
 use std::cell::Cell;
 use std::rc::Rc;

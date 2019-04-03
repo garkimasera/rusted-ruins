@@ -1,4 +1,4 @@
-use array2d::Vec2d;
+use geom::Vec2d;
 
 /// Hold data for region generation
 #[derive(Clone, Serialize, Deserialize)]

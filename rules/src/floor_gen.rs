@@ -1,5 +1,5 @@
-use array2d::Vec2d;
 use common::hashmap::HashMap;
+use geom::Vec2d;
 
 #[derive(Serialize, Deserialize)]
 pub struct FloorGen {

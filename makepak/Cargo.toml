@@ -16,8 +16,8 @@ clap = "2"
 image = "0.21"
 nom = { version = "4.1", features = ["regexp_macros"] }
 
-[dependencies.rusted-ruins-array2d]
-path = "../array2d"
+[dependencies.rusted-ruins-geom]
+path = "../geom"
 
 [dependencies.rusted-ruins-common]
 path = "../common"

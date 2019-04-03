@@ -1,10 +1,10 @@
-use array2d::*;
 use common::basic::N_TILE_IMG_LAYER;
 use common::gamedata::{ItemGen, TileLayers};
 use common::gobj;
 use common::maptemplate::*;
 use common::objholder::*;
 use common::piece_pattern::*;
+use geom::*;
 
 pub struct EditingMap {
     pub property: MapProperty,

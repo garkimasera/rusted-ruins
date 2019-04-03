@@ -2,7 +2,7 @@ use super::WidgetTrait;
 use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::Command;
-use array2d::*;
+use geom::*;
 use sdl2::rect::Rect;
 
 /// Simple list widget.

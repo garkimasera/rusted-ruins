@@ -1,5 +1,5 @@
 use super::{GeneratedMap, TileKind};
-use array2d::*;
+use geom::*;
 use rand::seq::IteratorRandom;
 use rng::{gen_range, GameRng};
 

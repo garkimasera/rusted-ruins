@@ -1,7 +1,7 @@
 
 [workspace]
 members = [
-    "array2d",
+    "geom",
     "common",
     "filebox",
     "makepak",

@@ -4,8 +4,8 @@ use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
 use crate::gamedata::site::SiteId;
 use crate::objholder::*;
-use array2d::*;
 use arrayvec::ArrayVec;
+use geom::*;
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
 

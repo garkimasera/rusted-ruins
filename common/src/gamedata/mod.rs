@@ -13,7 +13,7 @@ pub mod time;
 pub mod town;
 pub mod variables;
 
-use array2d::Vec2d;
+use geom::Vec2d;
 
 pub use self::chara::*;
 pub use self::defs::*;

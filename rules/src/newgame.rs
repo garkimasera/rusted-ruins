@@ -1,5 +1,5 @@
-use array2d::Vec2d;
 use common::gamedata::*;
+use geom::Vec2d;
 use std::collections::HashMap;
 
 /// Rules for starting new game

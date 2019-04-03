@@ -1,6 +1,6 @@
-use array2d::Vec2d;
 use common::gamedata::{self, ElementArray};
 use common::sitegen;
+use geom::Vec2d;
 
 #[derive(Debug, Deserialize)]
 pub struct TomlInput {

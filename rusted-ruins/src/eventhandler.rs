@@ -1,6 +1,6 @@
 use crate::config::{INPUT_CFG, UI_CFG};
 use crate::game::Command;
-use array2d::*;
+use geom::*;
 use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;

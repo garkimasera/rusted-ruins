@@ -1,9 +1,9 @@
 //! Random Map Generator for Rusted Ruins
 
-extern crate rusted_ruins_array2d as array2d;
+extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_rng as rng;
 
-use array2d::*;
+use geom::*;
 
 mod fractal;
 mod lattice;

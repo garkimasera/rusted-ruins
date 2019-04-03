@@ -5,7 +5,7 @@ use crate::gamedata::ItemGen;
 #[cfg(feature = "global_state_obj")]
 use crate::objholder::ObjectIndex;
 use crate::piece_pattern::*;
-use array2d::*;
+use geom::*;
 use std::ops::{Index, IndexMut};
 
 /// Data for constructing one map

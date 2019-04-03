@@ -15,8 +15,8 @@ serde_json = "1"
 log = "0.4"
 lazy_static = "1"
 
-[dependencies.rusted-ruins-array2d]
-path = "../array2d"
+[dependencies.rusted-ruins-geom]
+path = "../geom"
 
 [dependencies.rusted-ruins-common]
 path = "../common"

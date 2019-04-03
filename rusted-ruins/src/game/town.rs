@@ -1,8 +1,8 @@
 use super::saveload::gen_box_id;
-use array2d::Vec2d;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
+use geom::Vec2d;
 
 /// Create town from SiteGenObect and add it to region map
 pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {

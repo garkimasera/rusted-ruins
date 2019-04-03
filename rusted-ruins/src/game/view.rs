@@ -2,8 +2,8 @@
 
 use crate::game::Game;
 use crate::game::InfoGetter;
-use array2d::*;
 use common::gamedata::*;
+use geom::*;
 
 /// The cache for determining player's view
 pub struct ViewMap {

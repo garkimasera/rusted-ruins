@@ -1,5 +1,5 @@
 use super::{GeneratedMap, TileKind};
-use array2d::*;
+use geom::*;
 use rng::gen_range;
 
 pub fn write_to_map(gm: &mut GeneratedMap) {

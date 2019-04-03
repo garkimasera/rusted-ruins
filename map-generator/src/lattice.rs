@@ -1,4 +1,4 @@
-use array2d::*;
+use geom::*;
 use rng::*;
 
 use super::{GeneratedMap, TileKind};

@@ -11,9 +11,9 @@ crate-type = ["rlib"]
 [features]
 global_state_obj = []
 
-[dependencies.rusted-ruins-array2d]
-path = "../array2d"
-package = "rusted-ruins-array2d"
+[dependencies.rusted-ruins-geom]
+path = "../geom"
+package = "rusted-ruins-geom"
 
 [dependencies.filebox]
 path = "../filebox"

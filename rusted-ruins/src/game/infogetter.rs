@@ -1,8 +1,8 @@
 use crate::game::extrait::*;
-use array2d::*;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
+use geom::*;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {

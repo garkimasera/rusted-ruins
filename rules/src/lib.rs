@@ -2,8 +2,8 @@
 extern crate serde_derive;
 #[macro_use]
 extern crate log;
-extern crate rusted_ruins_array2d as array2d;
 extern crate rusted_ruins_common as common;
+extern crate rusted_ruins_geom as geom;
 
 pub mod chara;
 pub mod charagen;

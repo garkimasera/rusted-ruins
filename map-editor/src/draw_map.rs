@@ -1,6 +1,5 @@
 use crate::edit_map::EditingMap;
 use crate::pixbuf_holder::PixbufHolder;
-use array2d::*;
 use cairo::Context;
 use common::basic::{N_TILE_IMG_LAYER, PIECE_SIZE_I, TILE_SIZE_I};
 use common::gobj;
@@ -9,6 +8,7 @@ use common::objholder::*;
 use common::piece_pattern::*;
 use gdk::prelude::ContextExt;
 use gdk_pixbuf::Pixbuf;
+use geom::*;
 
 /// Draw tiles and objects on map
 pub fn draw_map(

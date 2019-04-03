@@ -1,7 +1,7 @@
 use super::animation::*;
-use array2d::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
+use geom::*;
 use std::collections::VecDeque;
 
 /// Wraps Animation queue, and provides helper functions to push Animations

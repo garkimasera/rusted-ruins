@@ -1,8 +1,8 @@
 use crate::map_generator::{GeneratedMap, MapGenerator, TileKind};
-use array2d::*;
 use common::gamedata::map::*;
 use common::gobj;
 use common::objholder::*;
+use geom::*;
 use rules::floor_gen::*;
 use rules::RULES;
 

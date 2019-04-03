@@ -18,8 +18,8 @@ tar = "0.4"
 toml = "0.5"
 walkdir = "2"
 
-[dependencies.rusted-ruins-array2d]
-path = "../array2d"
+[dependencies.rusted-ruins-geom]
+path = "../geom"
 
 [dependencies.rusted-ruins-common]
 path = "../common"

@@ -2,8 +2,8 @@ use super::action;
 use super::Game;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use crate::text::ToText;
-use array2d::*;
 use common::gamedata::*;
+use geom::*;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.

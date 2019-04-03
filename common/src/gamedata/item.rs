@@ -1,7 +1,7 @@
 use super::defs::{ElementArray, MagicalEffect, MedicalEffect};
 use crate::objholder::ItemIdx;
-use array2d::Vec2d;
 use bitflags::bitflags;
+use geom::Vec2d;
 use std::cmp::{Ord, Ordering, PartialOrd};
 
 /// Game item
