@@ -112,6 +112,23 @@ pub enum ItemKindRough {
     Object,
 }
 
+impl ItemKind {
+    pub fn rough(&self) -> ItemKindRough {
+        match self {
+            ItemKind::Potion => ItemKindRough::Potion,
+            ItemKind::Food => ItemKindRough::Food,
+            ItemKind::MagicDevice => ItemKindRough::MagicDevice,
+            ItemKind::Weapon(_) => ItemKindRough::Weapon,
+            ItemKind::Armor(_) => ItemKindRough::Armor,
+            ItemKind::Tool => ItemKindRough::Tool,
+            ItemKind::Container => ItemKindRough::Container,
+            ItemKind::Special => ItemKindRough::Special,
+            ItemKind::Material => ItemKindRough::Material,
+            ItemKind::Object => ItemKindRough::Object,
+        }
+    }
+}
+
 bitflags! {
     pub struct ItemFlags: u64 {
         const EATABLE   = 1 << 0;

@@ -8,6 +8,7 @@ pub struct ItemFilter {
     pub all: bool,
     pub equip_slot_kind: Option<EquipSlotKind>,
     pub flags: ItemFlags,
+    pub kind_rough: Option<ItemKindRough>,
 }
 
 impl ItemFilter {
@@ -38,6 +39,12 @@ impl ItemFilter {
             return false;
         }
 
+        if let Some(kind_rough) = self.kind_rough {
+            if o.kind.rough() != kind_rough {
+                return false;
+            }
+        }
+
         true
     }
 
@@ -50,6 +57,11 @@ impl ItemFilter {
         self.flags = flags;
         self
     }
+
+    pub fn kind_rough(mut self, kind_rough: ItemKindRough) -> ItemFilter {
+        self.kind_rough = Some(kind_rough);
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -58,6 +70,7 @@ impl Default for ItemFilter {
             all: false,
             equip_slot_kind: None,
             flags: ItemFlags::empty(),
+            kind_rough: None,
         }
     }
 }
