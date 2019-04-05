@@ -242,12 +242,10 @@ impl ItemWindow {
             }
             ItemWindowMode::Drink => {
                 pa.drink_item(il);
-                self.update_by_mode(pa.gd());
                 DialogResult::CloseAll
             }
             ItemWindowMode::Eat => {
                 pa.eat_item(il);
-                self.update_by_mode(pa.gd());
                 DialogResult::CloseAll
             }
             ItemWindowMode::Release => {

@@ -98,7 +98,7 @@ impl DialogWindow for GroupWindow {
         }
         if let Some(ref mut member) = self.members[self.current_window] {
             match member.process_command(command, pa) {
-                DialogResult::Close => DialogResult::Close,
+                DialogResult::Close | DialogResult::CloseAll => DialogResult::Close,
                 _ => DialogResult::Continue,
             }
         } else {
