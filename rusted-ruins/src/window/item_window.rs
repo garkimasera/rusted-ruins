@@ -20,6 +20,7 @@ pub enum ItemWindowMode {
     Drop,
     Drink,
     Eat,
+    Release,
     ShopSell,
     ShopBuy {
         cid: CharaId,
@@ -38,7 +39,7 @@ pub struct ItemWindow {
     item_locations: Vec<ItemLocation>,
 }
 
-const STATUS_WINDOW_GROUP_SIZE: usize = 4;
+const STATUS_WINDOW_GROUP_SIZE: usize = 5;
 
 pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
     let mem_info = vec![
@@ -62,6 +63,11 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
             text_id: "tab_text.item_eat",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game)),
         },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-release"),
+            text_id: "tab_text.item_release",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Release, game)),
+        },
     ];
     let rect: Rect = UI_CFG.item_window.rect.into();
     let i = match mode {
@@ -69,6 +75,7 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
         ItemWindowMode::Drop => 1,
         ItemWindowMode::Drink => 2,
         ItemWindowMode::Eat => 3,
+        ItemWindowMode::Release => 4,
         _ => unreachable!(),
     };
 
@@ -155,6 +162,16 @@ impl ItemWindow {
                     gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
                 self.update_list(filtered_list);
             }
+            ItemWindowMode::Release => {
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
+                let filtered_list = gd.get_filtered_item_list(
+                    ill,
+                    ItemFilter::new().kind_rough(ItemKindRough::MagicDevice),
+                );
+                self.update_list(filtered_list);
+            }
             ItemWindowMode::ShopBuy { cid } => {
                 let ill = ItemListLocation::Shop { cid };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new());
@@ -231,6 +248,9 @@ impl ItemWindow {
             ItemWindowMode::Eat => {
                 pa.eat_item(il);
                 self.update_by_mode(pa.gd());
+                DialogResult::CloseAll
+            }
+            ItemWindowMode::Release => {
                 DialogResult::CloseAll
             }
             ItemWindowMode::ShopBuy { .. } => {

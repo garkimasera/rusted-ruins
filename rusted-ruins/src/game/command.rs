@@ -22,6 +22,7 @@ pub enum Command {
     DropItem,
     DrinkItem,
     EatItem,
+    ReleaseItem,
     TargetingMode,
     TextInput { text: String },
     TextDelete,

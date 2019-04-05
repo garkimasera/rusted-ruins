@@ -10,4 +10,6 @@ Drop
 Drink
 % tab_text.item_eat
 Eat
+% tab_text.item_release
+Release
 

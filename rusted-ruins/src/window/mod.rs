@@ -381,6 +381,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         ItemWindowMode::Eat,
                     )));
             }
+            Command::ReleaseItem => {
+                self.window_stack
+                    .push(Box::new(item_window::create_item_window_group(
+                        pa.game(),
+                        ItemWindowMode::Release,
+                    )));
+            }
             Command::TargetingMode => {
                 self.targeting_mode = true;
                 match self.mode {
