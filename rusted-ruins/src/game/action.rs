@@ -81,6 +81,11 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     apply_medical_effect(chara, item_obj.medical_effect, eff);
 }
 
+pub fn release_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
+    let item = &gd.get_item(il).0;
+    let item_obj = gobj::get_obj(item.idx);
+}
+
 fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
     match me {
         MedicalEffect::None => (),

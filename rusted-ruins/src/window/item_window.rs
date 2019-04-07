@@ -249,6 +249,7 @@ impl ItemWindow {
                 DialogResult::CloseAll
             }
             ItemWindowMode::Release => {
+                pa.release_item(il);
                 DialogResult::CloseAll
             }
             ItemWindowMode::ShopBuy { .. } => {

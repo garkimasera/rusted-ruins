@@ -247,6 +247,12 @@ impl<'a> DoPlayerAction<'a> {
         self.0.finish_player_turn();
     }
 
+    /// Release one magic device item
+    pub fn release_item(&mut self, il: ItemLocation) {
+        super::action::release_item(self.gd_mut(), il, CharaId::Player);
+        self.0.finish_player_turn();
+    }
+
     /// Buy item
     pub fn buy_item(&mut self, il: ItemLocation) {
         super::shop::buy_item(self.gd_mut(), il);
