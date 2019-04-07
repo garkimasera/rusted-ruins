@@ -11,6 +11,10 @@ Town (Example of created map by map-editor)
 
 ![town](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/town.png)
 
+## Video
+
+https://www.youtube.com/watch?v=Dtdy2Twbc_Y
+
 ## Game Objective
 
 The player arrives at a recently discovered continent where a lot of ruins remain. The player will explore ruins and fight against monsters. By collecting relics in ruins, the player can earn money and fame, and solve the mystery of the ruined nation.
