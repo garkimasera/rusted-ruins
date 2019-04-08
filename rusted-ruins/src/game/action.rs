@@ -81,9 +81,21 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     apply_medical_effect(chara, item_obj.medical_effect, eff);
 }
 
-pub fn release_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
-    let item = &gd.get_item(il).0;
+pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+    let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = gobj::get_obj(item.idx);
+
+    match item.charge() {
+        Some(n) if n >= 1 => {
+            let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice);
+            let power = skill_level as f32;
+            super::magic::do_magic(game, item_obj.magical_effect, power);
+            *item.charge_mut().unwrap() = n - 1;
+        }
+        _ => (),
+    }
+
+    game.gd.get_item_list_mut(il.0).append(item, 1);
 }
 
 fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {

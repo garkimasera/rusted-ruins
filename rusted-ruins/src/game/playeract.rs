@@ -249,7 +249,7 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Release one magic device item
     pub fn release_item(&mut self, il: ItemLocation) {
-        super::action::release_item(self.gd_mut(), il, CharaId::Player);
+        super::action::release_item(self.0, il, CharaId::Player);
         self.0.finish_player_turn();
     }
 
