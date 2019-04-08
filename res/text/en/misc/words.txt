@@ -51,6 +51,8 @@ Martial Arts
 Defence
 % !skill_kind.evasion
 Evasion
+% !skill_kind.magic_device
+Magic Device
 #
 # WeaponKind
 #
