@@ -430,11 +430,13 @@ impl Iterator for RectIter {
 pub struct LineIter {
     start: Vec2d,
     end: Vec2d,
-    slope_mode: bool,
-    dir: i32,
-    a: f64,
-    b: f64,
-    p: i32,
+    p: Vec2d,
+    dx: i32,
+    dy: i32,
+    dir_x: i32,
+    dir_y: i32,
+    err: i32,
+    finished: bool,
 }
 
 impl LineIter {
@@ -442,35 +444,23 @@ impl LineIter {
         let start = start.into();
         let end = end.into();
 
-        let dx = end.0 - start.0;
-        let dy = end.1 - start.1;
-        let slope_mode = dx.abs() >= dy.abs();
-        let (a, b, dir, p);
-        if dx == 0 && dy == 0 {
-            a = 0.0;
-            b = 0.0;
-            dir = 1;
-            p = start.0;
-        } else if slope_mode {
-            a = dy as f64 / dx as f64;
-            b = start.1 as f64 - a * start.0 as f64;
-            dir = if start.0 < end.0 { 1 } else { -1 };
-            p = start.0;
-        } else {
-            a = dx as f64 / dy as f64;
-            b = start.0 as f64 - a * start.1 as f64;
-            dir = if start.1 < end.1 { 1 } else { -1 };
-            p = start.1;
-        }
+        let dx = (end.0 - start.0).abs();
+        let dy = (end.1 - start.1).abs();
+        let dir_x = if start.0 < end.0 { 1 } else { -1 };
+        let dir_y = if start.1 < end.1 { 1 } else { -1 };
+        let err = if dx > dy { dx } else { -dy } / 2;
+        let p = start;
 
         LineIter {
             start,
             end,
-            slope_mode,
-            dir,
-            a,
-            b,
             p,
+            dx,
+            dy,
+            dir_x,
+            dir_y,
+            err,
+            finished: false,
         }
     }
 }
@@ -478,20 +468,26 @@ impl LineIter {
 impl Iterator for LineIter {
     type Item = Vec2d;
     fn next(&mut self) -> Option<Vec2d> {
-        if (self.slope_mode && (self.end.0 - self.p) * self.dir < 0)
-            || (!self.slope_mode && (self.end.1 - self.p) * self.dir < 0)
-        {
+        if self.finished {
             return None;
         }
 
-        let returnval = if self.slope_mode {
-            let y = self.a * self.p as f64 + self.b as f64;
-            Vec2d(self.p, y.round() as i32)
-        } else {
-            let x = self.a * self.p as f64 + self.b as f64;
-            Vec2d(x.round() as i32, self.p)
-        };
-        self.p += self.dir;
+        let returnval = self.p;
+
+        if self.p == self.end {
+            self.finished = true;
+            return Some(self.p);
+        }
+
+        let e = self.err;
+        if e > -self.dx {
+            self.err -= self.dy;
+            self.p.0 += self.dir_x;
+        }
+        if e < self.dy {
+            self.err += self.dx;
+            self.p.1 += self.dir_y;
+        }
         Some(returnval)
     }
 }
