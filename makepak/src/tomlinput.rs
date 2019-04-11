@@ -33,6 +33,8 @@ macro_rules! get_optional_field {
 #[serde(deny_unknown_fields)]
 pub struct ImgInput {
     pub path: String,
+    /// Name of the creator and other copyright information.
+    pub copyright: Option<String>,
     pub w: Option<u32>,
     pub h: Option<u32>,
     pub grid_nx: Option<u32>,
