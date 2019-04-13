@@ -26,6 +26,8 @@ $(attacker) attacks $(target).
 $(attacker) shots $(target).
 % no-ranged-weapon-equipped
 No ranged weapon equipped!
+% no-target
+$(chara) finds no target.
 % target-chara
 $(chara) targets $(target).
 % attack-evade

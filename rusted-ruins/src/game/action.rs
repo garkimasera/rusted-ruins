@@ -89,7 +89,7 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
         Some(n) if n >= 1 => {
             let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice);
             let power = skill_level as f32;
-            super::magic::do_magic(game, item_obj.magical_effect, power);
+            super::magic::do_magic(game, cid, item_obj.magical_effect, power);
             *item.charge_mut().unwrap() = n - 1;
         }
         _ => (),

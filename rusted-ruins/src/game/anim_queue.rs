@@ -35,6 +35,11 @@ impl AnimQueue {
         self.push(Animation::shot(idx, start, target));
     }
 
+    pub fn push_magic_arrow(&mut self, start: Vec2d, target: Vec2d) {
+        let idx: AnimImgIdx = gobj::id_to_idx("!magic-arrow-physical");
+        self.push(Animation::shot(idx, start, target));
+    }
+
     pub fn push_destroy(&mut self, tile: Vec2d) {
         self.push(Animation::destroy(vec![tile]));
     }
