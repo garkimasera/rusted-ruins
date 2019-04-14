@@ -65,7 +65,9 @@ pub fn gen_range<T: SampleUniform, B: SampleBorrow<T> + Sized>(low: B, high: B) 
 
 /// Calculate the sum of dices
 /// n is the number of dice rolled, and x is the number of die faces
-pub fn dice(n: i32, x: i32) -> i32 {
+pub fn dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
+    let n = n.into();
+    let x = x.into();
     let mut sum = 0;
     for _ in 0..n {
         sum += gen_range(1, x + 1);
