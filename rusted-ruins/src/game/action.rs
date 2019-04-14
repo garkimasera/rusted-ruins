@@ -6,6 +6,8 @@ use super::Game;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
+use rng::dice;
+use rules::RULES;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
     if dir.as_vec() == (0, 0) {
@@ -84,11 +86,19 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = gobj::get_obj(item.idx);
+    let item_dice: f64 = dice(item_obj.dice_n, item_obj.dice_x).into();
 
     match item.charge() {
         Some(n) if n >= 1 => {
-            let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice);
-            let power = skill_level as f32;
+            let skill_level: f64 = game
+                .gd
+                .chara
+                .get(cid)
+                .skills
+                .get(SkillKind::MagicDevice)
+                .into();
+            let power =
+                (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
             super::magic::do_magic(game, cid, item_obj.magical_effect, power);
             *item.charge_mut().unwrap() = n - 1;
         }

@@ -14,10 +14,10 @@ pub enum DamageKind {
 }
 
 pub struct AttackParams {
-    attacker_id: Option<CharaId>,
-    kind: DamageKind,
-    element: Element,
-    attack_power: f64,
+    pub attacker_id: Option<CharaId>,
+    pub kind: DamageKind,
+    pub element: Element,
+    pub attack_power: f64,
 }
 
 /// Attack neighbor enemy by short range weapon or martial arts
@@ -168,7 +168,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
 }
 
 /// Routines for targetted character
-fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
+pub fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
     let equip_def = calc_equip_defence(&game.gd, target_id);
     let target = game.gd.chara.get_mut(target_id);
     let idx = target.template;
