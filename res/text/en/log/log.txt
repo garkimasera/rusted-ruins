@@ -34,6 +34,8 @@ $(chara) targets $(target).
 $(chara) evades.
 % damaged-chara
 $(chara) is damaged ($(damage)).
+% arrow-hit
+The arrow hits $(chara).
 % killed-by-melee-attack
 $(chara) is killed.
 % killed-by-ranged-attack

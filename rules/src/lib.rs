@@ -11,6 +11,7 @@ pub mod creation;
 pub mod dungeon_gen;
 pub mod exp;
 pub mod floor_gen;
+pub mod magic;
 pub mod newgame;
 pub mod params;
 pub mod quest;
@@ -30,6 +31,7 @@ pub struct Rules {
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
     pub floor_gen: floor_gen::FloorGen,
+    pub magic: magic::Magic,
     pub newgame: newgame::NewGame,
     pub params: params::Params,
     pub quest: quest::Quest,
@@ -48,6 +50,7 @@ impl Rules {
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),
             floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
+            magic: read_from_json(&rules_dir.join("magic.json")),
             newgame: read_from_json(&rules_dir.join("newgame.json")),
             params: read_from_json(&rules_dir.join("params.json")),
             quest: read_from_json(&rules_dir.join("quest.json")),
