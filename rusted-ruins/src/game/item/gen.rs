@@ -1,7 +1,7 @@
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
-use rng::gen_range;
+use rng;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32) -> Item {
@@ -111,7 +111,7 @@ fn gen_item_from_idx(idx: ItemIdx) -> Item {
 
 /// Generate a magic device item
 fn gen_magic_device(mut item: Item, item_obj: &ItemObject) -> Item {
-    let charge_n: u32 = gen_range(item_obj.charge[0], item_obj.charge[1]).into();
+    let charge_n: u32 = rng::gen_range_inclusive(item_obj.charge[0], item_obj.charge[1]).into();
     item.attributes.push(ItemAttribute::Charge { n: charge_n });
     item
 }
