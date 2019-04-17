@@ -240,6 +240,8 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 }
             }
             Command::Move { dir } => {
+                audio::play_sound("select-item");
+
                 if self.n_row == 0 {
                     return None;
                 }
