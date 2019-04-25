@@ -43,6 +43,7 @@ pub struct Ui {
     pub checkbutton_layer1: gtk::CheckButton,
     pub checkbutton_layer2: gtk::CheckButton,
     pub checkbutton_layer3: gtk::CheckButton,
+    pub radiobutton_rect: gtk::RadioButton,
     pub iconview: IconView,
     pub property_controls: PropertyControls,
     pub pbh: Rc<PixbufHolder>,
@@ -57,6 +58,7 @@ pub struct Ui {
     /// Current layer to draw
     pub current_layer: Rc<Cell<usize>>,
     pub layer_visible: Rc<RefCell<[bool; 4]>>,
+    pub drag_start: Rc<Cell<Option<Vec2d>>>,
 }
 
 macro_rules! get_object {
@@ -93,6 +95,7 @@ pub fn build_ui(application: &gtk::Application) {
         checkbutton_layer1: get_object!(builder, "checkbutton-layer1"),
         checkbutton_layer2: get_object!(builder, "checkbutton-layer2"),
         checkbutton_layer3: get_object!(builder, "checkbutton-layer3"),
+        radiobutton_rect: get_object!(builder, "radiobutton-rect"),
         iconview: IconView::build(&builder),
         property_controls: PropertyControls::build(&builder),
         pbh: Rc::new(PixbufHolder::new()),
@@ -104,6 +107,7 @@ pub fn build_ui(application: &gtk::Application) {
         shift: Rc::new(Cell::new(false)),
         current_layer: Rc::new(Cell::new(0)),
         layer_visible: Rc::new(RefCell::new([true; 4])),
+        drag_start: Rc::new(Cell::new(None)),
     };
 
     let menu_new: gtk::MenuItem = get_object!(builder, "menu-new");
@@ -153,6 +157,12 @@ pub fn build_ui(application: &gtk::Application) {
         ui.map_drawing_area
             .connect_button_press_event(move |_, eb| {
                 on_map_clicked(&uic, eb);
+                Inhibit(false)
+            });
+        let uic = ui.clone();
+        ui.map_drawing_area
+            .connect_button_release_event(move |_, eb| {
+                on_button_released(&uic, eb);
                 Inhibit(false)
             });
     }
@@ -382,13 +392,32 @@ pub fn build_ui(application: &gtk::Application) {
 fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
     let button = eb.get_button();
     if button == WRITE_BUTTON {
-        ui.drag_mode.set(DragMode::Write);
-        try_write(ui, eb.get_position());
+        ui.drag_start
+            .set(Some(Vec2d::from(ui.cursor_to_tile_pos(eb.get_position()))));
+        if !ui.radiobutton_rect.get_active() {
+            ui.drag_mode.set(DragMode::Write);
+            try_write(ui, eb.get_position());
+        }
     } else if button == CENTERING_BUTTON {
         centering_to(ui, ui.cursor_to_tile_pos(eb.get_position()));
     } else if button == ERASE_BUTTON {
         ui.drag_mode.set(DragMode::Erase);
         try_erase(ui, eb.get_position());
+    }
+}
+
+fn on_button_released(ui: &Ui, eb: &gdk::EventButton) {
+    let button = eb.get_button();
+    if button == WRITE_BUTTON {
+        let start = if let Some(start) = ui.drag_start.replace(None) {
+            start
+        } else {
+            return;
+        };
+        let end = Vec2d::from(ui.cursor_to_tile_pos(eb.get_position()));
+        if ui.radiobutton_rect.get_active() {
+            try_write_rect(ui, start, end);
+        }
     }
 }
 
@@ -501,6 +530,39 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
         }
         ui.map_redraw();
     }
+}
+
+fn try_write_rect(ui: &Ui, start: Vec2d, end: Vec2d) {
+    use std::cmp::{max, min};
+    let width = ui.map.borrow().width as i32;
+    let height = ui.map.borrow().height as i32;
+    let start = Vec2d::new(
+        min(max(start.0, 0), width - 1),
+        min(max(start.1, 0), height - 1),
+    );
+    let end = Vec2d::new(
+        min(max(end.0, 0), width - 1),
+        min(max(end.1, 0), height - 1),
+    );
+    let (start, end) = (
+        Vec2d::new(min(start.0, end.0), min(start.1, end.1)),
+        Vec2d::new(max(start.0, end.0), max(start.1, end.1)),
+    );
+    for p in geom::RectIter::new(start, end) {
+        match ui.selected_item.get() {
+            SelectedItem::Tile(idx) => {
+                ui.map.borrow_mut().set_tile(p, idx, ui.current_layer.get());
+            }
+            SelectedItem::Wall(idx) => {
+                ui.map.borrow_mut().set_wall(p, Some(idx));
+            }
+            SelectedItem::Deco(idx) => {
+                ui.map.borrow_mut().set_deco(p, Some(idx));
+            }
+            _ => (),
+        }
+    }
+    ui.map_redraw();
 }
 
 fn try_erase(ui: &Ui, pos: (f64, f64)) {
