@@ -2,7 +2,7 @@
 {
     "class_choices": ["adventurer", "rogue", "sorcerer", "warrior"],
     "start_region": "south-coast",
-    "start_pos": [5, 10],
+    "start_pos": [43, 48],
     "start_money": 1000,
     "chara_template_table": {
         "adventurer": "adventurer-m",
