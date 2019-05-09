@@ -3,6 +3,7 @@ use crate::game::combat::DamageKind;
 use crate::game::extrait::*;
 use common::gamedata::*;
 use rules::RULES;
+use rng::{Rng, get_rng, dice};
 
 /// This function will be called before the character's turn
 ///
@@ -49,7 +50,20 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     }
 
     let chara = game.gd.chara.get_mut(cid);
-    chara.sub_sp(RULES.chara.sp_consumption, cid);
+
+    if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
+        // HP regeneration
+        let lv = chara.skills.get(SkillKind::Healing) as f32;
+        if get_rng().gen_bool(RULES.chara.hp_regeneration_probability.into()) {
+            let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
+            let v = dice(1, a);
+            chara.heal(v);
+        }
+        chara.sub_sp(RULES.chara.sp_consumption_regen, cid);
+    } else {
+        chara.sub_sp(RULES.chara.sp_consumption, cid);
+    }
+
     can_act(chara)
 }
 

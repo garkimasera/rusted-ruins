@@ -26,6 +26,8 @@ pub trait CharaEx {
     fn sub_sp(&mut self, v: f32, cid: CharaId);
     /// Give damage to this character
     fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32;
+    /// Heal HP of this character
+    fn heal(&mut self, value: i32);
     /// Update character parameters by its status
     fn update(&mut self);
     /// Reset wait time
@@ -127,6 +129,10 @@ impl CharaEx for Chara {
             }
         }
         self.hp
+    }
+
+    fn heal(&mut self, value: i32) {
+        self.hp = std::cmp::min(self.hp + value, self.attr.max_hp);
     }
 
     fn update(&mut self) {

@@ -5,9 +5,12 @@
     "class_revision": {
          "adventurer": { "hp": 10, "str": -2, "vit": 2, "dex": 0, "int": 2, "wil": 2, "cha": 2, "spd": 0 }
     },
+    "hp_regeneration_probability": 0.3,
+    "hp_regeneration_factor": 1.5,
     "sp_default": 100.0,
     "sp_max": 100.0,
-    "sp_consumption": 0.01,
+    "sp_consumption": 0.05,
+    "sp_consumption_regen": 0.2,
     "sp_hungry": 20.0,
     "sp_weak": 10.0,
     "sp_starving": 0.0
