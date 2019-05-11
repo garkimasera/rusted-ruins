@@ -9,6 +9,7 @@ use super::Game;
 use crate::text::ToText;
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
+use rng::{get_rng, Rng};
 use rules::RULES;
 
 /// Additional Chara method
@@ -21,6 +22,8 @@ pub trait CharaEx {
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u32);
     /// Add exp when attacked.
     fn add_evasion_exp(&mut self, attacker_level: u32);
+    /// Add exp when regeneration
+    fn add_healing_exp(&mut self);
     /// sp increase/decrease.
     fn add_sp(&mut self, v: f32, cid: CharaId);
     fn sub_sp(&mut self, v: f32, cid: CharaId);
@@ -58,6 +61,13 @@ impl CharaEx for Chara {
 
     fn add_evasion_exp(&mut self, attacker_level: u32) {
         self.add_skill_exp(SkillKind::Evasion, RULES.exp.evasion, attacker_level);
+    }
+
+    fn add_healing_exp(&mut self) {
+        let lv = self.skills.get(SkillKind::Healing);
+        if get_rng().gen_bool(RULES.exp.healing_probability.into()) {
+            self.add_skill_exp(SkillKind::Healing, RULES.exp.healing, lv);
+        }
     }
 
     fn add_sp(&mut self, v: f32, cid: CharaId) {

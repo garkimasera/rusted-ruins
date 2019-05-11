@@ -13,4 +13,8 @@ pub struct Exp {
     pub endurance: u32,
     /// Base exp to Evasion skill when attacked
     pub evasion: u32,
+    /// Base exp to Healing skill
+    pub healing: u32,
+    /// Probability to gain Healing skill exp
+    pub healing_probability: f32,
 }

@@ -2,8 +2,8 @@ use super::Game;
 use crate::game::combat::DamageKind;
 use crate::game::extrait::*;
 use common::gamedata::*;
+use rng::{dice, get_rng, Rng};
 use rules::RULES;
-use rng::{Rng, get_rng, dice};
 
 /// This function will be called before the character's turn
 ///
@@ -60,6 +60,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
             chara.heal(v);
         }
         chara.sub_sp(RULES.chara.sp_consumption_regen, cid);
+        chara.add_healing_exp();
     } else {
         chara.sub_sp(RULES.chara.sp_consumption, cid);
     }

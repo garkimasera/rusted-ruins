@@ -5,5 +5,7 @@
     "base_factor": 1.0,
     "attack": 30,
     "endurance": 1000,
-    "evasion": 200
+    "evasion": 200,
+    "healing": 50,
+    "healing_probability": 0.2
 }
