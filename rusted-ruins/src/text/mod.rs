@@ -187,7 +187,7 @@ fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(
             } else {
                 // Unnecessary line before the first key line
             }
-            key = Some(line[1..].trim_left().to_string());
+            key = Some(line[1..].trim_start().to_string());
         } else {
             value.push_str(&line);
             value.push('\n');

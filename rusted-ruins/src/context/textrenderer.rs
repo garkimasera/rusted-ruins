@@ -66,7 +66,7 @@ impl<'sdl> TextRenderer<'sdl> {
         let mut surface = if let Some(w) = wrap {
             font.render(text).blended_wrapped(c, w)?
         } else {
-            font.render(text.trim_right_matches('\n')).blended(c)?
+            font.render(text.trim_end_matches('\n')).blended(c)?
         };
 
         if is_bordered {

@@ -88,7 +88,7 @@ fn setup_logger() {
     builder.format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()));
     builder.filter(None, LevelFilter::Info);
     if let Ok(e) = env::var("RUST_LOG") {
-        builder.parse(&e);
+        builder.parse_filters(&e);
     }
     builder.init();
 }
