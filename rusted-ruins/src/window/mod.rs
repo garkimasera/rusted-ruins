@@ -5,6 +5,7 @@ mod equip_window;
 mod exit_window;
 mod game_info_window;
 mod group_window;
+mod help_window;
 mod indicator;
 mod item_info_window;
 mod item_window;
@@ -329,6 +330,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::OpenExitWin => {
                 self.window_stack
                     .push(Box::new(exit_window::ExitWindow::new()));
+            }
+            Command::OpenHelpWin => {
+                self.window_stack
+                    .push(Box::new(help_window::HelpWindow::new()));
             }
             Command::OpenItemMenu => {
                 self.window_stack

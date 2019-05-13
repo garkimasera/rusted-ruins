@@ -36,6 +36,7 @@ pub struct UIConfig {
     pub font: Font,
     pub log_window: LogWindowConfig,
     pub exit_window: ExitWindowConfig,
+    pub help_window: HelpWindowConfig,
     pub talk_window: TalkWindowConfig,
     pub start_dialog: StartDialogConfig,
     pub msg_dialog: MsgDialogConfig,
@@ -103,6 +104,13 @@ pub struct LogWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct ExitWindowConfig {
     pub rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct HelpWindowConfig {
+    pub rect: CfgRect,
+    pub key_label_start: CfgRect,
+    pub key_label_h: i32,
 }
 
 #[derive(Debug, Deserialize)]

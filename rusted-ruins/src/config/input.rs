@@ -9,11 +9,11 @@ pub struct InputConfig {
 }
 
 impl InputConfig {
-    pub fn find_key(&self, command: Command) -> String {
+    pub fn find_key(&self, command: &Command) -> String {
         let mut s = String::new();
 
         for (k, c) in &self.normal {
-            if *c != command {
+            if *c != *command {
                 continue;
             }
 

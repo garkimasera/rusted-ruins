@@ -33,6 +33,11 @@ n_display_line = 9
 rect = { x = -999, y = 120, w = 200, h = 100 }
 list_y = 52
 
+[help_window]
+rect = { x = -999, y = -999, w = 450, h = 300 }
+key_label_start = { x = 4, y = 4 }
+key_label_h = 22
+
 [talk_window]
 rect = { x = -999, y = 50, w = 450, h = 200 }
 text_wrap_width = 435

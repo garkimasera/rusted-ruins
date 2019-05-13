@@ -73,6 +73,8 @@ f - Shot
 
 g - Pick up items
 
+h - Help
+
 i - View inventory
 
 o - Open game information window
