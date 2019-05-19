@@ -45,27 +45,27 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
     let mem_info = vec![
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-list"),
-            text_id: "tab_text.item_list",
+            text_id: "tab_text-item_list",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::List, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-drop"),
-            text_id: "tab_text.item_drop",
+            text_id: "tab_text-item_drop",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drop, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-drink"),
-            text_id: "tab_text.item_drink",
+            text_id: "tab_text-item_drink",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drink, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-eat"),
-            text_id: "tab_text.item_eat",
+            text_id: "tab_text-item_eat",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-release"),
-            text_id: "tab_text.item_release",
+            text_id: "tab_text-item_release",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Release, game)),
         },
     ];

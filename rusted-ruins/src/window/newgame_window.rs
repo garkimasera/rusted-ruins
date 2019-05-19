@@ -49,7 +49,7 @@ impl DummyNewGameDialog {
     pub fn new() -> DummyNewGameDialog {
         DummyNewGameDialog {
             builder: Some(NewGameBuilder::new()),
-            explanation_text: explanation_text_window("newgame.inputplayername"),
+            explanation_text: explanation_text_window("newgame-inputplayername"),
             stage: NewGameBuildStage::PlayerNameInput,
             name_input_dialog: Some(TextInputDialog::new()),
             choose_class_dialog: ChooseClassDialog::new(),
@@ -90,7 +90,7 @@ impl DialogWindow for DummyNewGameDialog {
                         if player_name != "" {
                             // If input text is invalid for character name
                             self.builder.as_mut().unwrap().set_player_name(player_name);
-                            self.explanation_text = explanation_text_window("newgame.chooseclass");
+                            self.explanation_text = explanation_text_window("newgame-chooseclass");
                             self.stage = NewGameBuildStage::ChooseClass;
                         }
                         name_input_dialog.restart();
@@ -201,11 +201,11 @@ impl DialogWindow for ChooseClassDialog {
 fn explanation_text_window(s: &str) -> TextWindow {
     TextWindow::new(
         UI_CFG.newgame_dialog.explanation_text_rect.into(),
-        text::ui_txt(s),
+        &text::ui_txt(s),
     )
 }
 
 /// Create scrolling text window that displays opening text
 fn opening_text_window() -> ScrollingTextWindow {
-    ScrollingTextWindow::new(SCREEN_CFG.main_window.into(), text::misc_txt("!op-scroll"))
+    ScrollingTextWindow::new(SCREEN_CFG.main_window.into(), &text::misc_txt("!op-scroll"))
 }

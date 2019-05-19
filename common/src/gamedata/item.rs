@@ -183,7 +183,7 @@ pub enum WeaponKind {
     Whip,
     Bow = 100,
     Crossbow,
-    Gun,
+    Firearm,
 }
 
 impl WeaponKind {

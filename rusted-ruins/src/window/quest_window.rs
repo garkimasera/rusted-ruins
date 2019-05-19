@@ -106,7 +106,7 @@ impl DialogWindow for QuestWindow {
                 ListWidgetResponse::Select(_) => {
                     // Any item is selected
                     self.dialog = Some(MsgDialog::with_yesno(
-                        crate::text::ui_txt("dialog.undertake_quest"),
+                        &crate::text::ui_txt("dialog-undertake_quest"),
                         |_, a| DialogResult::CloseWithValue(Box::new(a)),
                     ));
                 }
@@ -134,8 +134,7 @@ impl DialogWindow for QuestWindow {
 fn quest_decription_text(quest: &Quest) -> String {
     match quest {
         Quest::SlayMonsters { idx, goal, .. } => {
-            let t = crate::text::misc_txt("!desc.quest.slay_monsters");
-            replace_str!(t; monster=idx, n=goal)
+            misc_txt_format!("desc-quest-slay_monsters"; monster=idx, n=goal)
         }
     }
 }

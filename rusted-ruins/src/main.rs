@@ -18,6 +18,8 @@ mod error;
 mod log;
 #[macro_use]
 mod util;
+#[macro_use]
+mod text;
 mod config;
 mod context;
 mod draw;
@@ -25,7 +27,6 @@ mod eventhandler;
 mod game;
 mod screen;
 mod sdltypeconv;
-mod text;
 mod window;
 
 fn main() {

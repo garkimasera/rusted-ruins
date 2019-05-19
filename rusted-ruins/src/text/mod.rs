@@ -4,6 +4,7 @@ mod to_text;
 use crate::config;
 use crate::error::*;
 use common::basic;
+use fluent::*;
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
@@ -12,84 +13,215 @@ use walkdir::WalkDir;
 
 /// Initialize lazy static
 pub fn init() {
-    ::lazy_static::initialize(&OBJ_TXT_MAP);
-    ::lazy_static::initialize(&LOG_TXT_MAP);
-    ::lazy_static::initialize(&UI_TXT_MAP);
-    ::lazy_static::initialize(&TALK_TXT_MAP);
-    ::lazy_static::initialize(&MISC_TXT_MAP);
+    use lazy_static::initialize;
+    initialize(&OBJ_RES);
+    initialize(&OBJ_BUNDLE);
+    initialize(&LOG_RES);
+    initialize(&LOG_BUNDLE);
+    initialize(&UI_RES);
+    initialize(&UI_BUNDLE);
+    initialize(&TALK_RES);
+    initialize(&TALK_BUNDLE);
+    initialize(&MISC_RES);
+    initialize(&MISC_BUNDLE);
 }
 
 lazy_static! {
-    static ref OBJ_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::OBJ_TXT_DIR);
-    static ref LOG_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::LOG_TXT_DIR);
-    static ref UI_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::UI_TXT_DIR);
-    static ref TALK_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::TALK_TXT_DIR);
-    static ref MISC_TXT_MAP: HashMap<String, String> = load_trans_txt(basic::MISC_TXT_DIR);
+    static ref OBJ_RES: Resource = Resource::load(basic::OBJ_TXT_DIR);
+    static ref OBJ_BUNDLE: Bundle = Bundle::load(&*OBJ_RES);
+    static ref LOG_RES: Resource = Resource::load(basic::LOG_TXT_DIR);
+    static ref LOG_BUNDLE: Bundle = Bundle::load(&*LOG_RES);
+    static ref UI_RES: Resource = Resource::load(basic::UI_TXT_DIR);
+    static ref UI_BUNDLE: Bundle = Bundle::load(&*UI_RES);
+    static ref TALK_RES: Resource = Resource::load(basic::TALK_TXT_DIR);
+    static ref TALK_BUNDLE: Bundle = Bundle::load(&*TALK_RES);
+    static ref MISC_RES: Resource = Resource::load(basic::MISC_TXT_DIR);
+    static ref MISC_BUNDLE: Bundle = Bundle::load(&*MISC_RES);
 }
 
-pub fn obj_txt(id: &str) -> &str {
-    if let Some(txt) = OBJ_TXT_MAP.get(id) {
-        txt
+struct Bundle {
+    first: FluentBundle<'static>,
+    second: FluentBundle<'static>,
+}
+
+impl Bundle {
+    fn load(res: &'static Resource) -> Bundle {
+        Bundle {
+            first: new_bundle(&config::CONFIG.lang, &res.first),
+            second: new_bundle(&config::CONFIG.second_lang, &res.second),
+        }
+    }
+
+    fn format(&self, id: &str, args: Option<&HashMap<&str, FluentValue>>) -> Option<String> {
+        if self.first.has_message(id) {
+            if let Some((s, _err)) = self.first.format(id, args) {
+                return Some(s);
+            }
+        }
+        if self.second.has_message(id) {
+            if let Some((s, _err)) = self.first.format(id, args) {
+                return Some(s);
+            }
+        }
+        None
+    }
+}
+
+fn new_bundle(lang: &str, resource: &'static [FluentResource]) -> FluentBundle<'static> {
+    let mut bundle = FluentBundle::new(&[lang]);
+
+    for res in resource {
+        bundle.add_resource(res);
+    }
+
+    bundle
+}
+
+struct Resource {
+    first: Vec<FluentResource>,
+    second: Vec<FluentResource>,
+}
+
+impl Resource {
+    fn load(kind: &str) -> Resource {
+        let first = load_resource(kind, &config::CONFIG.lang);
+        let second_lang = &config::CONFIG.second_lang;
+        let second = if second_lang == "" {
+            Vec::new()
+        } else {
+            load_resource(kind, second_lang)
+        };
+
+        Resource { first, second }
+    }
+}
+
+fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
+    let mut resource = Vec::new();
+    let textdirs: Vec<PathBuf> = config::get_data_dirs()
+        .into_iter()
+        .map(|mut p| {
+            p.push("text");
+            p.push(lang);
+            p.push(kind);
+            p
+        })
+        .collect();
+
+    for mut dir in textdirs {
+        for f in WalkDir::new(dir).into_iter() {
+            let f = match f {
+                Ok(f) => f,
+                Err(e) => {
+                    warn!("{}", e);
+                    continue;
+                }
+            };
+
+            if !f.file_type().is_file()
+                || f.path().extension().is_none()
+                || f.path().extension().unwrap() != "ftl"
+            {
+                continue;
+            }
+
+            let s = match crate::util::read_file_as_string(f.path()) {
+                Ok(s) => s,
+                Err(e) => {
+                    warn!("IO Error during reading a fluent file: {}", e);
+                    continue;
+                }
+            };
+
+            let r = match FluentResource::try_new(s) {
+                Ok(r) => r,
+                Err((r, err)) => {
+                    for e in &err {
+                        warn!(
+                            "Fluent parse error in \"{}\" : {:?}",
+                            f.path().to_string_lossy(),
+                            e
+                        );
+                    }
+                    r
+                }
+            };
+
+            resource.push(r);
+        }
+    }
+
+    resource
+}
+
+pub fn obj_txt(id: &str) -> String {
+    if let Some(s) = OBJ_BUNDLE.format(id, None) {
+        s
     } else {
-        id
+        id.to_owned()
     }
 }
 
 #[allow(unused)]
-pub fn obj_txt_checked(id: &str) -> Option<&'static str> {
-    OBJ_TXT_MAP.get(id).map(|txt| txt.as_ref())
+pub fn obj_txt_checked(id: &str) -> Option<String> {
+    OBJ_BUNDLE.format(id, None)
 }
 
-pub fn log_txt(id: &str) -> &str {
-    if let Some(txt) = LOG_TXT_MAP.get(id) {
-        txt
+pub fn log_txt(id: &str) -> String {
+    log_txt_with_args(id, None)
+}
+
+pub fn log_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+    if let Some(s) = LOG_BUNDLE.format(id, args) {
+        s
     } else {
-        id
+        id.to_owned()
+    }
+}
+
+pub fn ui_txt(id: &str) -> String {
+    ui_txt_with_args(id, None)
+}
+
+pub fn ui_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+    if let Some(s) = UI_BUNDLE.format(id, args) {
+        s
+    } else {
+        id.to_owned()
     }
 }
 
 #[allow(unused)]
-pub fn log_txt_checked(id: &str) -> Option<&'static str> {
-    LOG_TXT_MAP.get(id).map(|txt| txt.as_ref())
+pub fn ui_txt_checked(id: &str) -> Option<String> {
+    UI_BUNDLE.format(id, None)
 }
 
-pub fn ui_txt(id: &str) -> &str {
-    if let Some(txt) = UI_TXT_MAP.get(id) {
-        txt
+pub fn talk_txt(id: &str) -> String {
+    talk_txt_with_args(id, None)
+}
+
+pub fn talk_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+    if let Some(s) = TALK_BUNDLE.format(id, args) {
+        s
     } else {
-        id
+        id.to_owned()
     }
 }
 
-#[allow(unused)]
-pub fn ui_txt_checked(id: &str) -> Option<&'static str> {
-    UI_TXT_MAP.get(id).map(|txt| txt.as_ref())
+pub fn talk_txt_checked(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> Option<String> {
+    TALK_BUNDLE.format(id, args)
 }
 
-pub fn talk_txt(id: &str) -> &str {
-    if let Some(txt) = TALK_TXT_MAP.get(id) {
-        txt
+pub fn misc_txt(id: &str) -> String {
+    misc_txt_with_args(id, None)
+}
+
+pub fn misc_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+    if let Some(s) = MISC_BUNDLE.format(id, args) {
+        s
     } else {
-        id
+        id.to_owned()
     }
-}
-
-#[allow(unused)]
-pub fn talk_txt_checked(id: &str) -> Option<&'static str> {
-    TALK_TXT_MAP.get(id).map(|txt| txt.as_ref())
-}
-
-pub fn misc_txt(id: &str) -> &str {
-    if let Some(txt) = MISC_TXT_MAP.get(id) {
-        txt
-    } else {
-        id
-    }
-}
-
-#[allow(unused)]
-pub fn misc_txt_checked(id: &str) -> Option<&'static str> {
-    MISC_TXT_MAP.get(id).map(|txt| txt.as_ref())
 }
 
 /// This is helper trait for some data objects that need to be printed in game.
@@ -104,110 +236,34 @@ pub trait ToTextId {
     fn to_textid(&self) -> &'static str;
 }
 
-pub fn to_txt<T: ToTextId>(a: &T) -> &'static str {
+pub fn to_txt<T: ToTextId>(a: &T) -> String {
     misc_txt(a.to_textid())
 }
 
-fn load_trans_txt(kind: &str) -> HashMap<String, String> {
-    let mut map = HashMap::new();
-    let mut textdirs: Vec<PathBuf> = Vec::new();
+macro_rules! misc_txt_format {
+    ($id:expr; $($target:ident = $value:expr),*) => {{
+        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
+            = std::collections::HashMap::new();
+        $(
+            let t: String = $value.to_text().into();
+            let value = fluent::FluentValue::String(t);
+            table.insert(stringify!($target), value);
+        )*;
 
-    // If the second language is specified, search (data_dir)/text/(second_lang)/(kind)/*.txt
-    if config::CONFIG.second_lang != "" {
-        let second_lang = &config::CONFIG.second_lang;
-        let v = config::get_data_dirs();
-        for mut dir in v.into_iter() {
-            dir.push("text");
-            dir.push(second_lang);
-            textdirs.push(dir);
-        }
-    }
-
-    // Pushes the first language's dirs
-    let v = config::get_data_dirs();
-    for mut dir in v.into_iter() {
-        dir.push("text");
-        dir.push(&config::CONFIG.lang);
-        textdirs.push(dir);
-    }
-
-    for mut dir in textdirs {
-        info!("Text file loading from directory : {:?}", dir);
-        dir.push(kind);
-
-        for f in WalkDir::new(dir).into_iter() {
-            let f = match f {
-                Ok(f) => f,
-                Err(e) => {
-                    warn!("{}", e);
-                    continue;
-                }
-            };
-
-            if !f.file_type().is_file()
-                || f.path().extension().is_none()
-                || f.path().extension().unwrap() != "txt"
-            {
-                continue;
-            }
-
-            let _ = add_file(f.path(), &mut map);
-        }
-    }
-
-    map
+        crate::text::misc_txt_with_args($id, Some(&table))
+    }}
 }
 
-fn add_file<P: AsRef<Path>>(p: P, map: &mut HashMap<String, String>) -> Result<(), Error> {
-    let p = p.as_ref();
-    let file = fs::File::open(p)?;
-    let file = BufReader::new(file);
+macro_rules! ui_txt_format {
+    ($id:expr; $($target:ident = $value:expr),*) => {{
+        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
+            = std::collections::HashMap::new();
+        $(
+            let t: String = $value.to_text().into();
+            let value = fluent::FluentValue::String(t);
+            table.insert(stringify!($target), value);
+        )*;
 
-    let mut key: Option<String> = None;
-    let mut value = String::new();
-
-    for line in file.lines() {
-        let line = line?;
-        let mut is_key = false;
-
-        if let Some(first_char) = line.chars().next() {
-            if first_char == '#' {
-                continue;
-            } // Skip comment line
-            if first_char == '%' {
-                is_key = true;
-            }
-        }
-
-        if is_key {
-            if key.is_some() {
-                remove_last_newline(&mut value);
-                map.insert(std::mem::replace(&mut key, None).unwrap(), value.clone());
-                value.clear();
-            } else {
-                // Unnecessary line before the first key line
-            }
-            key = Some(line[1..].trim_start().to_string());
-        } else {
-            value.push_str(&line);
-            value.push('\n');
-        }
-    }
-
-    if key.is_some() {
-        remove_last_newline(&mut value);
-        map.insert(key.unwrap(), value);
-    }
-
-    Ok(())
-}
-
-/// Remove newline of the last line
-fn remove_last_newline(s: &mut String) {
-    let c = s.pop();
-    if let Some(c) = c {
-        if c != '\n' {
-            s.push(c)
-        }
-    }
+        crate::text::ui_txt_with_args($id, Some(&table))
+    }}
 }

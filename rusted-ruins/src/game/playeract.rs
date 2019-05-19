@@ -105,11 +105,9 @@ impl<'a> DoPlayerAction<'a> {
                         if let Some(sid) = region.get_id_by_pos(pos) {
                             let mid = MapId::site_first_floor(sid);
                             let site = gd.region.get_site(sid);
-                            let msg = replace_str!(
-                                crate::text::ui_txt("dialog.enter_site");
-                                site_name=site);
+                            let msg = ui_txt_format!("dialog-enter_site"; site_name=site);
                             log_msg = LogMessage::EnterSite(site.to_text().to_string());
-                            (mid, msg.into())
+                            (mid, msg)
                         } else {
                             warn!("No site existed at {:?}", pos);
                             return;
@@ -325,10 +323,10 @@ impl<'a> DoPlayerAction<'a> {
     }
 }
 
-pub fn msg_switch_map(next_mid: MapId) -> std::borrow::Cow<'static, str> {
+pub fn msg_switch_map(next_mid: MapId) -> String {
     if next_mid.is_region_map() {
-        crate::text::ui_txt("dialog.exit_to_regionmap").into()
+        crate::text::ui_txt("dialog-exit_to_regionmap")
     } else {
-        crate::text::ui_txt("dialog.move_floor").into()
+        crate::text::ui_txt("dialog-move_floor")
     }
 }

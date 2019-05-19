@@ -210,7 +210,7 @@ impl Game {
 pub enum DialogOpenRequest {
     YesNo {
         callback: Box<FnMut(&mut DoPlayerAction, bool)>,
-        msg: Cow<'static, str>,
+        msg: String,
     },
     Talk {
         cid: Option<CharaId>,

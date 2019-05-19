@@ -14,7 +14,7 @@ pub struct ExitWindow {
 impl ExitWindow {
     pub fn new() -> ExitWindow {
         let rect: Rect = UI_CFG.exit_window.rect.into();
-        let text_win = TextWindow::new(rect, text::ui_txt("dialog.exit"));
+        let text_win = TextWindow::new(rect, &text::ui_txt("dialog-exit"));
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
@@ -22,9 +22,9 @@ impl ExitWindow {
         let choose_win = ChooseWindow::new(
             winpos,
             vec![
-                text::ui_txt("dialog.choice.save_game").to_owned(),
-                text::ui_txt("dialog.choice.exit_game").to_owned(),
-                text::ui_txt("dialog.choice.close").to_owned(),
+                text::ui_txt("dialog-choice-save_game").to_owned(),
+                text::ui_txt("dialog-choice-exit_game").to_owned(),
+                text::ui_txt("dialog-choice-close").to_owned(),
             ],
             Some(0),
         );
@@ -90,7 +90,7 @@ pub struct GameOverWindow {
 impl GameOverWindow {
     pub fn new() -> GameOverWindow {
         let rect: Rect = UI_CFG.exit_window.rect.into();
-        let text_win = TextWindow::new(rect, text::ui_txt("dialog.gameover"));
+        let text_win = TextWindow::new(rect, &text::ui_txt("dialog-gameover"));
         let winpos = WindowPos::new(
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),

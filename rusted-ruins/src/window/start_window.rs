@@ -33,9 +33,9 @@ pub struct StartDialog {
 impl StartDialog {
     pub fn new() -> StartDialog {
         let choices = vec![
-            text::ui_txt("dialog.choice.newgame").to_owned(),
-            text::ui_txt("dialog.choice.loadgame").to_owned(),
-            text::ui_txt("dialog.choice.exit").to_owned(),
+            text::ui_txt("dialog-choice-newgame"),
+            text::ui_txt("dialog-choice-loadgame"),
+            text::ui_txt("dialog-choice-exit"),
         ];
         let rect = UI_CFG.start_dialog.rect.into();
         StartDialog {

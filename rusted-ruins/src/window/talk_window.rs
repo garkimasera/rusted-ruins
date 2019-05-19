@@ -171,7 +171,7 @@ struct MsgText {
 
 impl MsgText {
     fn new(text_id: &str) -> MsgText {
-        let text: Vec<String> = if let Some(s) = text::talk_txt_checked(text_id) {
+        let text: Vec<String> = if let Some(s) = text::talk_txt_checked(text_id, None) {
             s.split("\n\n").map(|s| s.to_owned()).collect()
         } else {
             vec![text_id.to_owned()]

@@ -1,0 +1,14 @@
+command-open_creation_win = Creation
+command-open_equip_win = Equipment
+command-open_exit_win = Open Exit Window
+command-open_game_info_win = Game Information
+command-open_help_win = Help
+command-open_status_win = Status
+command-open_item_menu = Item Menu
+command-pick_up_item = Pick Up Item
+command-drop_item = Drop Item
+command-drink_item = Drink Item
+command-eat_item = Eat Item
+command-release_item = Release Item
+command-targetting_mode = Targetting Mode
+command-shot = Shot

@@ -226,7 +226,7 @@ impl StatusInfo {
             for (i, status) in self.status.iter().enumerate() {
                 let label = LabelWidget::bordered(
                     Rect::new(rect.x, rect.y - rect.h * i as i32, 1, 1),
-                    crate::text::to_txt(status),
+                    &crate::text::to_txt(status),
                     FontKind::S,
                 );
                 self.labels.push(label);

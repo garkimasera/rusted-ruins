@@ -18,33 +18,28 @@ impl ItemInfoText {
         let mut info = ItemInfoText::default();
 
         let item_name = item.to_text().into_owned();
-        let item_kind = replace_str!(misc_txt("!item_info_text.item_kind"); item_kind=obj.kind);
+        let item_kind = misc_txt_format!("item_info_text-item_kind"; item_kind=obj.kind);
         let mut desc_text = Vec::new();
 
         match obj.kind {
             ItemKind::Potion | ItemKind::Food => {
-                let t = replace_str!(
-                    misc_txt("!item_info_text.nutrition");
-                    nutrition=obj.nutrition);
+                let t = misc_txt_format!("item_info_text-nutrition"; nutrition=obj.nutrition);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 if obj.medical_effect != MedicalEffect::None {
-                    let t = replace_str!(
-                        misc_txt("!item_info_text.medical_effect");
-                        medical_effect=obj.medical_effect);
+                    let t = misc_txt_format!(
+                        "item_info_text-medical_effect"; medical_effect=obj.medical_effect);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
                 if weapon_kind.is_melee() {
-                    let t = replace_str!(
-                        misc_txt("!item_info_text.melee-weapon");
-                        dice_x=obj.dice_x, dice_n=obj.dice_n);
+                    let t = misc_txt_format!(
+                        "item_info_text-melee_weapon"; dice_x=obj.dice_x, dice_n=obj.dice_n);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 } else {
-                    let t = replace_str!(
-                        misc_txt("!item_info_text.ranged-weapon");
-                        dice_x=obj.dice_x, dice_n=obj.dice_n);
+                    let t = misc_txt_format!(
+                        "item_info_text-ranged_weapon"; dice_x=obj.dice_x, dice_n=obj.dice_n);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }
@@ -55,8 +50,8 @@ impl ItemInfoText {
                 let d3 = format!("{:+}", obj.def[Element::Shock]);
                 let d4 = format!("{:+}", obj.def[Element::Poison]);
                 let d5 = format!("{:+}", obj.def[Element::Spirit]);
-                let t = replace_str!(
-                    misc_txt("!item_info_text.defence");
+                let t = misc_txt_format!(
+                    "item_info_text_defence";
                     physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }

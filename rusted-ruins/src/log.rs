@@ -96,42 +96,42 @@ pub fn latest_line() -> usize {
 }
 
 macro_rules! game_log {
-    ($textid:expr) => {
-        $crate::log::push($crate::text::log_txt($textid).to_owned());
+    ($id:expr) => {
+        $crate::log::push($crate::text::log_txt($id));
     };
-    ($textid:expr; $($target:ident = $value:expr),*) => {{
-        use std::borrow::Cow;
+    ($id:expr; $($target:ident = $value:expr),*) => {{
         use crate::text::ToText;
-
-        let text_raw = $crate::text::log_txt($textid);
-        let mut table: Vec<(&str, Cow<str>)> = Vec::new();
+        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
+            = std::collections::HashMap::new();
         $(
-            table.push((stringify!($target), $value.to_text()));
+            let t: String = $value.to_text().into();
+            let value = fluent::FluentValue::String(t);
+            table.insert(stringify!($target), value);
         )*;
 
-        let t = $crate::util::replace_str(text_raw, table.as_slice());
-        $crate::log::push(t);
+        let s = crate::text::log_txt_with_args($id, Some(&table));
+        crate::log::push(s);
     }}
 }
 
 /// Instantly add a new line after logging
 macro_rules! game_log_i {
-    ($textid:expr) => {
-        $crate::log::push($crate::text::log_txt($textid).to_owned());
+    ($id:expr) => {
+        $crate::log::push($crate::text::log_txt($id));
         $crate::log::new_line()
     };
-    ($textid:expr; $($target:ident = $value:expr),*) => {{
-        use std::borrow::Cow;
+    ($id:expr; $($target:ident = $value:expr),*) => {{
         use crate::text::ToText;
-
-        let text_raw = $crate::text::log_txt($textid);
-        let mut table: Vec<(&str, Cow<str>)> = Vec::new();
+        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
+            = std::collections::HashMap::new();
         $(
-            table.push((stringify!($target), $value.to_text()));
+            let t: String = $value.to_text().into();
+            let value = fluent::FluentValue::String(t);
+            table.insert(stringify!($target), value);
         )*;
 
-        let t = $crate::util::replace_str(text_raw, table.as_slice());
-        $crate::log::push(t);
-        $crate::log::new_line();
+        let s = crate::text::log_txt_with_args($id, Some(&table));
+        crate::log::push(s);
+        crate::log::new_line();
     }}
 }

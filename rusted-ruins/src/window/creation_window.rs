@@ -173,7 +173,7 @@ impl CreationDetailDialog {
         CreationDetailDialog {
             rect,
             recipe,
-            product_name: LabelWidget::new(c.product_name, obj_txt(&recipe.product), FontKind::M),
+            product_name: LabelWidget::new(c.product_name, &obj_txt(&recipe.product), FontKind::M),
             list,
             il: autopicked_items,
             possible,
