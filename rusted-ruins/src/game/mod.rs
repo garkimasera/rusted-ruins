@@ -36,7 +36,6 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::ScriptIdx;
 use geom::Vec2d;
-use std::borrow::Cow;
 use std::path::PathBuf;
 
 #[derive(Clone, Copy, PartialEq, Eq)]

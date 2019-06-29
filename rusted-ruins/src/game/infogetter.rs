@@ -74,8 +74,6 @@ impl InfoGetter for GameData {
     }
 
     fn on_map_entrance(&self) -> bool {
-        use common::gamedata::map::SpecialTileKind;
-
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
         match tile.special {

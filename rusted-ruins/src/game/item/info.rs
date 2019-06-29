@@ -1,4 +1,4 @@
-use crate::text::{misc_txt, ToText};
+use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 

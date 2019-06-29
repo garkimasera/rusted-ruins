@@ -257,8 +257,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             return true;
         }
 
-        use crate::game::playeract::DoPlayerAction;
-
         if !self.window_stack.is_empty() {
             let mut tail = self.window_stack.len() - 1;
             let mut dialog_result = {

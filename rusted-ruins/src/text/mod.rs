@@ -2,13 +2,10 @@ mod text_id_impl;
 mod to_text;
 
 use crate::config;
-use crate::error::*;
 use common::basic;
 use fluent::*;
 use std::collections::HashMap;
-use std::fs;
-use std::io::{BufRead, BufReader};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use walkdir::WalkDir;
 
 /// Initialize lazy static

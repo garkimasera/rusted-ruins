@@ -10,7 +10,6 @@ use crate::text;
 use common::basic::TILE_SIZE;
 use common::objholder::CharaTemplateIdx;
 use std::any::Any;
-use std::borrow::Cow;
 
 pub struct TalkWindow {
     rect: Rect,
