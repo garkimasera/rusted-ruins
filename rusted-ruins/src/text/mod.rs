@@ -68,7 +68,9 @@ fn new_bundle(lang: &str, resource: &'static [FluentResource]) -> FluentBundle<'
     let mut bundle = FluentBundle::new(&[lang]);
 
     for res in resource {
-        bundle.add_resource(res);
+        if let Err(e) = bundle.add_resource(res) {
+            warn!("Fluent add resource error: {:?}", e);
+        }
     }
 
     bundle
