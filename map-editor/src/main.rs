@@ -16,7 +16,7 @@ use std::path::PathBuf;
 
 pub fn main() {
     let application = gtk::Application::new(
-        "com.github.rusted-ruins-map-editor",
+        Some("com.github.rusted-ruins-map-editor"),
         gio::ApplicationFlags::empty(),
     )
     .expect("Initialization failed.");

@@ -117,7 +117,7 @@ pub fn build_ui(application: &gtk::Application) {
     let menu_quit: gtk::MenuItem = get_object!(builder, "menu-quit");
     let menu_resize: gtk::MenuItem = get_object!(builder, "menu-resize");
 
-    ui.window.set_application(application);
+    ui.window.set_application(Some(application));
     // Connect signals
     {
         let uic = ui.clone();
@@ -196,7 +196,7 @@ pub fn build_ui(application: &gtk::Application) {
             uic.new_map_dialog.show();
             let responce_id = uic.new_map_dialog.run();
             uic.new_map_dialog.hide();
-            if responce_id == 1 {
+            if responce_id == gtk::ResponseType::Other(1) {
                 let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.reset_map_size(width, height);
@@ -287,7 +287,7 @@ pub fn build_ui(application: &gtk::Application) {
             uic.resize_dialog.show();
             let responce_id = uic.resize_dialog.run();
             uic.resize_dialog.hide();
-            if responce_id == 1 {
+            if responce_id == gtk::ResponseType::Other(1) {
                 let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.adjustment_map_pos_x.set_value(0.0);
@@ -455,7 +455,7 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
         ("Cancel", gtk::ResponseType::Cancel.into()),
     ]);
     file_chooser.add_filter(&create_file_filter());
-    if file_chooser.run() == Into::<i32>::into(gtk::ResponseType::Ok) {
+    if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
         file_chooser.destroy();
         ui.map_redraw();
@@ -476,7 +476,7 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
         ("Cancel", gtk::ResponseType::Cancel.into()),
     ]);
     file_chooser.add_filter(&create_file_filter());
-    if file_chooser.run() == Into::<i32>::into(gtk::ResponseType::Ok) {
+    if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
         file_chooser.destroy();
         return Some(filename);
@@ -493,7 +493,7 @@ fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<Error>> {
 fn create_file_filter() -> gtk::FileFilter {
     let f = gtk::FileFilter::new();
     f.add_pattern("*.pak");
-    f.set_name("Rusted Ruins pak file");
+    f.set_name(Some("Rusted Ruins pak file"));
     f
 }
 

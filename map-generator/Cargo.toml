@@ -9,7 +9,7 @@ name = "rusted_ruins_map_generator"
 crate-type = ["rlib"]
 
 [dependencies]
-rand = "0.6"
+rand = "0.7"
 
 [dependencies.rusted-ruins-geom]
 path = "../geom"
