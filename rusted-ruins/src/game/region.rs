@@ -23,7 +23,6 @@ pub fn add_region(gd: &mut GameData, id: &str) {
 
 /// Generate dungeons up to the max
 pub fn gen_dungeon_max(gd: &mut GameData, rid: RegionId) {
-    use common::basic::MAX_AUTO_GEN_DUNGEONS;
     let n_autogen_dungeons = gd.region.get(rid).get_site_n(SiteKind::AutoGenDungeon);
 
     if n_autogen_dungeons == MAX_AUTO_GEN_DUNGEONS {

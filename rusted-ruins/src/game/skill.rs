@@ -105,7 +105,6 @@ impl SkillListEx for SkillList {
 }
 
 fn search_adjust_coeff(base_level: u32, skill_level: u32) -> f32 {
-    use rules::RULES;
     let diff = skill_level as isize - base_level as isize;
     let i = RULES.exp.begin_adjust_coeff - diff;
     let adjust_coeff = &RULES.exp.adjust_coeff;

@@ -541,7 +541,6 @@ struct GameWindows {
 impl GameWindows {
     fn new() -> GameWindows {
         use self::widget::{HBorder, VBorder};
-        use crate::config::SCREEN_CFG;
         use indicator::*;
         let mut hborders = Vec::new();
         for hborder in &SCREEN_CFG.hborders {

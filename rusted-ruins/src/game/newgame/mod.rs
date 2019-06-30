@@ -55,7 +55,6 @@ impl NewGameBuilder {
             gd.player.set_money(RULES.newgame.start_money as i64);
 
             /* Test code for equipment */
-            use common::gamedata::chara::Race;
             let slots = &RULES
                 .chara_gen
                 .default_equip_slots

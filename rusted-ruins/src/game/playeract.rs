@@ -144,7 +144,6 @@ impl<'a> DoPlayerAction<'a> {
         } else {
             // Crossing boundary
             let log_msg: LogMessage;
-            use common::gamedata::map::BoundaryBehavior;
             let boundary = {
                 let player_pos = self.gd().player_pos();
                 let map = self.gd().get_current_map();
