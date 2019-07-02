@@ -15,12 +15,12 @@ pub fn create_status_window_group(game: &Game) -> GroupWindow {
     let mem_info = vec![
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-chara-stats"),
-            text_id: "tab_text.chara_stats",
+            text_id: "tab_text-chara_stats",
             creator: |game| Box::new(StatusWindow::new(&game.gd)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-chara-skills"),
-            text_id: "tab_text.chara_skills",
+            text_id: "tab_text-chara_skills",
             creator: |game| Box::new(SkillWindow::new(&game.gd)),
         },
     ];
