@@ -8,6 +8,7 @@ pub struct TextInputDialog {
     label: LabelWidget,
     rect: Rect,
     text: String,
+    callback: Option<Box<Fn(&mut DoPlayerAction, &str)>>,
 }
 
 impl TextInputDialog {
@@ -21,11 +22,16 @@ impl TextInputDialog {
             label: LabelWidget::new(label_rect, "", FontKind::M),
             rect,
             text: String::new(),
+            callback: None,
         }
     }
 
     pub fn get_text(&self) -> &str {
         &self.text
+    }
+
+    pub fn set_callback<F: Fn(&mut DoPlayerAction, &str) + 'static>(&mut self, callback: F) {
+        self.callback = Some(Box::new(callback));
     }
 
     /// This function is used when the result string is invalid,
@@ -43,7 +49,7 @@ impl Window for TextInputDialog {
 }
 
 impl DialogWindow for TextInputDialog {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match command {
             Command::TextInput { ref text } => {
                 self.text.push_str(&text);
@@ -57,6 +63,9 @@ impl DialogWindow for TextInputDialog {
             }
             Command::Enter => {
                 text_input::end();
+                if let Some(callback) = &self.callback {
+                    callback(pa, &self.text);
+                }
                 DialogResult::Close
             }
             Command::Cancel => {

@@ -1,4 +1,5 @@
 command-open_creation_win = Creation
+command-open_debug_command_win = Open Debug Command Window
 command-open_equip_win = Equipment
 command-open_exit_win = Open Exit Window
 command-open_game_info_win = Game Information

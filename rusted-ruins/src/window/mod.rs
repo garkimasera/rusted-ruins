@@ -340,6 +340,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         ItemWindowMode::List,
                     )));
             }
+            Command::OpenDebugCommandWin => {
+                let mut win = text_input_dialog::TextInputDialog::new();
+                win.set_callback(|_pa, s| {
+                    dbg!(s);
+                });
+                self.window_stack.push(Box::new(win));
+            }
             Command::OpenEquipWin => {
                 self.window_stack
                     .push(Box::new(equip_window::EquipWindow::new(

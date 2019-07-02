@@ -15,6 +15,7 @@ s = "open_status_win"
 t = "targeting_mode"
 w = "open_equip_win"
 escape = "open_exit_win"
+f12 = "open_debug_command_win"
 
 [dialog]
 return = "enter"

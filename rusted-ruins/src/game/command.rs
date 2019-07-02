@@ -13,6 +13,7 @@ pub enum Command {
     ItemInfomation,
     Shot,
     OpenCreationWin,
+    OpenDebugCommandWin,
     OpenEquipWin,
     OpenExitWin,
     OpenGameInfoWin,

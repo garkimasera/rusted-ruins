@@ -69,6 +69,7 @@ impl ToText for Command {
             ItemInfomation => "command-item_information",
             Shot => "command-shot",
             OpenCreationWin => "command-open_creation_win",
+            OpenDebugCommandWin => "command-open_debug_command_win",
             OpenEquipWin => "command-open_equip_win",
             OpenExitWin => "command-open_exit_win",
             OpenGameInfoWin => "command-open_game_info_win",
