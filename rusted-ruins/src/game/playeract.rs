@@ -320,6 +320,10 @@ impl<'a> DoPlayerAction<'a> {
         super::creation::start_creation(self.gd_mut(), recipe, il);
         self.0.finish_player_turn();
     }
+
+    pub fn exec_debug_command(&mut self, command: &str) {
+        super::debug_command::exec_debug_command(self.0, command);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> String {

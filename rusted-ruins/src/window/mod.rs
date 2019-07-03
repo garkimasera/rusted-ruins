@@ -342,8 +342,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::OpenDebugCommandWin => {
                 let mut win = text_input_dialog::TextInputDialog::new();
-                win.set_callback(|_pa, s| {
-                    dbg!(s);
+                win.set_callback(|pa, s| {
+                    pa.exec_debug_command(s);
                 });
                 self.window_stack.push(Box::new(win));
             }

@@ -3,6 +3,13 @@
 
 start = Welcome to Rusted Ruins! (version : {$version})
 
+# Messages about debug command
+
+debug-command-invalid = Invalid debug command.
+debug-command-need-1arg = Debug command "{$command}" needs 1 argument.
+debug-command-failed = Debug command "{$command}" failed.
+debug-command-genitem = Item "{$item}" is generated.
+
 # Messages when moving on map
 
 exit-to-outside = {$player} exited to outside.

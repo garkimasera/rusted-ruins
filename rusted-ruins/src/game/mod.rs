@@ -5,6 +5,7 @@ pub mod chara;
 mod combat;
 mod command;
 pub mod creation;
+mod debug_command;
 mod dungeon_gen;
 mod eval_expr;
 pub mod frequent_tex;
