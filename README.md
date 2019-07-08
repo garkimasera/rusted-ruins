@@ -89,5 +89,7 @@ w - Open equipment window
 
 escape - Open exit window
 
+f12 - Debug command
+
 ## License
 GPL v3
