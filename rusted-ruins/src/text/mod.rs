@@ -107,7 +107,7 @@ fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
         })
         .collect();
 
-    for mut dir in textdirs {
+    for dir in textdirs {
         for f in WalkDir::new(dir).into_iter() {
             let f = match f {
                 Ok(f) => f,

@@ -30,7 +30,7 @@ impl ItemInfoWindow {
         let item_kind = LabelWidget::new(c.item_kind, &info.item_kind, FontKind::M);
 
         let mut desc_text = Vec::new();
-        let mut rect = Rect::new(0, 0, 1, 1);
+        let rect = Rect::new(0, 0, 1, 1);
         for (img_id, t) in &info.desc_text {
             let w0 = ImageWidget::ui_img(rect, img_id);
             let w1 = LabelWidget::wrapped(

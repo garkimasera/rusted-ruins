@@ -15,7 +15,6 @@ impl ItemInfoText {
     pub fn new(item: &Item) -> ItemInfoText {
         let idx = item.idx;
         let obj = gobj::get_obj(idx);
-        let mut info = ItemInfoText::default();
 
         let item_name = item.to_text().into_owned();
         let item_kind = misc_txt_format!("item_info_text-item_kind"; item_kind=obj.kind);

@@ -86,7 +86,7 @@ impl<'a> ForegroundDrawInfo<'a> {
             }
         } else {
             let nearest_pos = map.nearest_existent_tile(pos);
-            let mut wallpp = map.observed_tile[nearest_pos].wall;
+            let wallpp = map.observed_tile[nearest_pos].wall;
             if !wallpp.is_empty() {
                 adjust_pattern_from_nearest(&mut wallpp.piece_pattern(), pos, nearest_pos);
             }

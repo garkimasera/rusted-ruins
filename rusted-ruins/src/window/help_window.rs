@@ -52,7 +52,7 @@ impl Window for HelpWindow {
 }
 
 impl DialogWindow for HelpWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
