@@ -1,6 +1,11 @@
-use nom::IResult;
-use nom::character::complete::*;
 use common::script::{Expr, Operator, Value};
+use nom::branch::alt;
+use nom::bytes::complete::tag;
+use nom::character::complete::{char, digit1, multispace0};
+use nom::combinator::complete;
+use nom::multi::fold_many0;
+use nom::sequence::{delimited, pair};
+use nom::IResult;
 
 trait Join {
     fn join(self, op: Operator, e: Expr) -> Expr;
@@ -36,252 +41,226 @@ named!(pub symbol<&str, &str>,
 
 #[test]
 fn id_test() {
-    assert_eq!(
-        id("ab.c"),
-        Ok(("", "ab.c".to_string()))
-    );
-    assert_eq!(
-        id("abc-def "),
-        Ok((" ", "abc-def".to_string()))
-    );
+    assert_eq!(id("ab.c"), Ok(("", "ab.c".to_string())));
+    assert_eq!(id("abc-def "), Ok((" ", "abc-def".to_string())));
 }
 
-named!(true_literal<&str, Expr>,
-    do_parse!(
-        tag!("true") >>
-        (Expr::Value(Value::Bool(true)))
-    )
-);
+fn true_literal(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("true")(input)?;
+    Ok((input, Expr::Value(Value::Bool(true))))
+}
 
-named!(false_literal<&str, Expr>,
-    do_parse!(
-        tag!("false") >>
-        (Expr::Value(Value::Bool(false)))
-    )
-);
+fn false_literal(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("false")(input)?;
+    Ok((input, Expr::Value(Value::Bool(false))))
+}
 
-named!(integer<&str, Expr>,
-    do_parse!(
-        i: digit1 >>
-        (Expr::Value(Value::Int(i32::from_str_radix(&i, 10).unwrap())))
-    )
-);
-
-named!(gvar<&str, Expr>,
-    do_parse!(
-        char!('$') >>
-        char!('(') >>
-        var_name: id >>
-        char!(')') >>
-        (Expr::GVar(var_name))
-    )
-);
-
-named!(gvar_special<&str, Expr>,
-    do_parse!(
-        tag!("$?") >>
-        (Expr::GVar("?".to_owned()))
-    )
-);
-
-named!(is_gvar_empty<&str, Expr>,
-    do_parse!(
-        tag!("is_gvar_empty") >>
-        multispace0 >>
-        char!('(') >>
-        var_name: id >>
-        char!(')') >>
-        (Expr::IsGVarEmpty(var_name))
-    )
-);
-
-named!(current_time<&str, Expr>,
-    do_parse!(
-        tag!("current_time") >>
-        multispace0 >>
-        char!('(') >>
-        multispace0 >>
-        char!(')') >>
-        (Expr::CurrentTime)
-    )
-);
-
-named!(duration_hours<&str, Expr>,
-    do_parse!(
-        tag!("duration_hours") >>
-        multispace0 >>
-        char!('(') >>
-        a: expr >>
-        char!(',') >>
-        b: expr >>
-        char!(')') >>
-        (Expr::DurationHour(Box::new(a), Box::new(b)))
-    )
-);
-
-named!(has_item<&str, Expr>,
-    do_parse!(
-        tag!("has_item") >>
-        multispace0 >>
-        s: delimited!(char!('('), ws!(id), char!(')')) >>
-        (Expr::HasItem(s))
-    )
-);
-
-named!(factor<&str, Expr>,
-    ws!(alt!(
-        complete!(true_literal) |
-        complete!(false_literal) |
-        complete!(integer) |
-        complete!(gvar) |
-        complete!(gvar_special) |
-        complete!(is_gvar_empty) |
-        complete!(current_time) |
-        complete!(duration_hours) |
-        complete!(has_item) |
-        complete!(parens)
+fn integer(input: &str) -> IResult<&str, Expr> {
+    let (input, digits) = digit1(input)?;
+    Ok((
+        input,
+        Expr::Value(Value::Int(i32::from_str_radix(&digits, 10).unwrap())),
     ))
-);
+}
 
-named!(parens<&str, Expr>,
-    delimited!(
-        char!('('),
-        ws!(expr),
-        char!(')')
-    )
-);
+fn gvar(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = char('$')(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, var_name) = id(input)?;
+    let (input, _) = char(')')(input)?;
+    Ok((input, Expr::GVar(var_name)))
+}
+
+fn gvar_special(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("$?")(input)?;
+    Ok((input, Expr::GVar("?".to_owned())))
+}
+
+fn is_gvar_empty(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("is_gvar_empty")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, var_name) = id(input)?;
+    let (input, _) = char(')')(input)?;
+    Ok((input, Expr::IsGVarEmpty(var_name)))
+}
+
+fn current_time(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("current_time")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = char(')')(input)?;
+    Ok((input, Expr::CurrentTime))
+}
+
+fn duration_hours(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("duration_hours")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, expr_a) = expr(input)?;
+    let (input, _) = char(',')(input)?;
+    let (input, expr_b) = expr(input)?;
+    let (input, _) = char(')')(input)?;
+    Ok((
+        input,
+        Expr::DurationHour(Box::new(expr_a), Box::new(expr_b)),
+    ))
+}
+
+fn has_item(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = tag("has_item")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, s) = delimited(char('('), id, char(')'))(input)?;
+    Ok((input, Expr::HasItem(s)))
+}
+
+fn factor(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, expr) = alt((
+        complete(true_literal),
+        complete(false_literal),
+        complete(integer),
+        complete(gvar),
+        complete(gvar_special),
+        complete(is_gvar_empty),
+        complete(current_time),
+        complete(duration_hours),
+        complete(has_item),
+        complete(parens),
+    ))(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, expr))
+}
+
+fn parens(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = char('(')(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, expr) = expr(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = char(')')(input)?;
+    Ok((input, expr))
+}
 
 // Operator precedence is the same as C.
 // term_mul > term_plus > term_ord > term_eq > term_and > expr
 
-named!(term_mul<&str, Expr>,
-    ws!(do_parse!(
-        init: factor >>
-        res: fold_many0!(
-            pair!(alt!(complete!(char!('*')) | complete!(char!('/'))), factor),
-            init,
-            |a: Expr, (op, e): (char, Expr)| {
-                let op = match op {
-                    '*' => Operator::Mul,
-                    '/' => Operator::Div,
-                    _ => unreachable!(),
-                };
-                a.join(op, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+fn term_mul(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = factor(input)?;
+    let (input, res) = fold_many0(
+        pair(alt((char('*'), char('/'))), factor),
+        init,
+        |a: Expr, (op, e): (char, Expr)| {
+            let op = match op {
+                '*' => Operator::Mul,
+                '/' => Operator::Div,
+                _ => unreachable!(),
+            };
+            a.join(op, e)
+        },
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
-named!(term_plus<&str, Expr>,
-    ws!(do_parse!(
-        init: term_mul >>
-        res: fold_many0!(
-            pair!(alt!(complete!(char!('+')) | complete!(char!('-'))), term_mul),
-            init,
-            |a: Expr, (op, e): (char, Expr)| {
-                let op = match op {
-                    '+' => Operator::Add,
-                    '-' => Operator::Sub,
-                    _ => unreachable!(),
-                };
-                a.join(op, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+fn term_plus(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = term_mul(input)?;
+    let (input, res) = fold_many0(
+        pair(alt((char('+'), char('-'))), term_mul),
+        init,
+        |a: Expr, (op, e): (char, Expr)| {
+            let op = match op {
+                '+' => Operator::Add,
+                '-' => Operator::Sub,
+                _ => unreachable!(),
+            };
+            a.join(op, e)
+        },
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
-named!(term_ord<&str, Expr>,
-    ws!(do_parse!(
-        init: term_plus >>
-        res: fold_many0!(
-            pair!(alt!(
-                complete!(tag!("<=")) |
-                complete!(tag!(">=")) |
-                complete!(tag!("<")) |
-                complete!(tag!(">"))), term_plus),
-            init,
-            |a: Expr, (op, e): (&str, Expr)| {
-                let op = match op {
-                    "<" => Operator::Less,
-                    "<=" => Operator::LessEq,
-                    ">" => Operator::Greater,
-                    ">=" => Operator::GreaterEq,
-                    _ => unreachable!(),
-                };
-                a.join(op, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+fn term_ord(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = term_plus(input)?;
+    let (input, res) = fold_many0(
+        pair(
+            alt((
+                complete(tag("<=")),
+                complete(tag(">=")),
+                complete(tag("<")),
+                complete(tag(">")),
+            )),
+            term_plus,
+        ),
+        init,
+        |a: Expr, (op, e): (&str, Expr)| {
+            let op = match op {
+                "<" => Operator::Less,
+                "<=" => Operator::LessEq,
+                ">" => Operator::Greater,
+                ">=" => Operator::GreaterEq,
+                _ => unreachable!(),
+            };
+            a.join(op, e)
+        },
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
-named!(term_eq<&str, Expr>,
-    ws!(do_parse!(
-        init: term_ord >>
-        res: fold_many0!(
-            pair!(alt!(complete!(tag!("==")) | complete!(tag!("!="))), term_ord),
-            init,
-            |a: Expr, (op, e): (&str, Expr)| {
-                let op = match op {
-                    "==" => Operator::Eq,
-                    "!=" => Operator::NotEq,
-                    _ => unreachable!(),
-                };
-                a.join(op, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+fn term_eq(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = term_ord(input)?;
+    let (input, res) = fold_many0(
+        pair(alt((tag("=="), tag("!="))), term_ord),
+        init,
+        |a: Expr, (op, e): (&str, Expr)| {
+            let op = match op {
+                "==" => Operator::Eq,
+                "!=" => Operator::NotEq,
+                _ => unreachable!(),
+            };
+            a.join(op, e)
+        },
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
-named!(term_and<&str, Expr>,
-    ws!(do_parse!(
-        init: term_eq >>
-        res: fold_many0!(
-            pair!(complete!(tag!("&&")), term_eq),
-            init,
-            |a: Expr, (_, e): (&str, Expr)| {
-                a.join(Operator::And, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+fn term_and(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = term_eq(input)?;
+    let (input, res) = fold_many0(
+        pair(tag("&&"), term_eq),
+        init,
+        |a: Expr, (_, e): (&str, Expr)| a.join(Operator::And, e),
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
-named!(pub expr<&str, Expr>,
-    ws!(do_parse!(
-        init: term_and >>
-        res: fold_many0!(
-            pair!(complete!(tag!("||")), term_and),
-            init,
-            |a: Expr, (_, e): (&str, Expr)| {
-                a.join(Operator::Or, e)
-            }
-        ) >>
-        (res)
-    ))
-);
+pub fn expr(input: &str) -> IResult<&str, Expr> {
+    let (input, _) = multispace0(input)?;
+    let (input, init) = term_and(input)?;
+    let (input, res) = fold_many0(
+        pair(tag("||"), term_and),
+        init,
+        |a: Expr, (_, e): (&str, Expr)| a.join(Operator::Or, e),
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    Ok((input, res))
+}
 
 #[test]
 fn expr_test() {
-    assert_eq!(
-        expr("true"),
-        Ok(("", Expr::Value(Value::Bool(true))))
-    );
-    assert_eq!(
-        expr("false"),
-        Ok(("", Expr::Value(Value::Bool(false))))
-    );
-    assert_eq!(
-        expr("1234"),
-        Ok(("", Expr::Value(Value::Int(1234))))
-    );
-    assert_eq!(
-        expr("$(aa)"),
-        Ok(("", Expr::GVar("aa".to_owned())))
-    );
+    assert_eq!(expr("true"), Ok(("", Expr::Value(Value::Bool(true)))));
+    assert_eq!(expr("false"), Ok(("", Expr::Value(Value::Bool(false)))));
+    assert_eq!(expr("1234"), Ok(("", Expr::Value(Value::Int(1234)))));
+    assert_eq!(expr("$(aa)"), Ok(("", Expr::GVar("aa".to_owned()))));
     assert_eq!(
         expr("is_gvar_empty(bb)"),
         Ok(("", Expr::IsGVarEmpty("bb".to_owned())))
@@ -335,18 +314,12 @@ fn expr_test() {
         (Operator::None, Expr::Value(Value::Int(1))),
         (Operator::NotEq, Expr::Value(Value::Int(2))),
     ]);
-    assert_eq!(
-        expr("1 != 2"),
-        Ok(("", term_ne_example))
-    );
+    assert_eq!(expr("1 != 2"), Ok(("", term_ne_example)));
     let term_ord_example = Expr::Term(vec![
         (Operator::None, Expr::Value(Value::Int(1))),
         (Operator::LessEq, Expr::Value(Value::Int(2))),
     ]);
-    assert_eq!(
-        expr("1 <= 2"),
-        Ok(("", term_ord_example.clone()))
-    );
+    assert_eq!(expr("1 <= 2"), Ok(("", term_ord_example.clone())));
     assert_eq!(
         expr("1 != 2 || 1 <= 2"),
         Ok((
