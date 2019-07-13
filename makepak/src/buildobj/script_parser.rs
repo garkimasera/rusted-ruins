@@ -1,15 +1,14 @@
+use nom::character::complete::*;
 use common::hashmap::HashMap;
-use nom::types::CompleteStr;
-use nom::{line_ending, space};
 use std::str::FromStr;
 
 use super::expr_parser::*;
 use crate::error::PakCompileError;
 use common::script::*;
 
-named!(end_line<CompleteStr, ()>,
+named!(end_line<&str, ()>,
     do_parse!(
-        opt!(space) >>
+        opt!(space0) >>
         line_ending >>
         (())
     )
@@ -18,8 +17,8 @@ named!(end_line<CompleteStr, ()>,
 #[test]
 fn end_line_test() {
     assert_eq!(
-        end_line(CompleteStr("   \naabb")),
-        Ok((CompleteStr("aabb"), ()))
+        end_line("   \naabb"),
+        Ok(("aabb", ()))
     );
 }
 
@@ -37,10 +36,10 @@ macro_rules! array(
     );
 );
 
-named!(section_start<CompleteStr, String>,
+named!(section_start<&str, String>,
     do_parse!(
         tag!("---") >>
-        space >>
+        space0 >>
         s: id >>
         end_line >>
         (s)
@@ -50,12 +49,12 @@ named!(section_start<CompleteStr, String>,
 #[test]
 fn section_start_test() {
     assert_eq!(
-        section_start(CompleteStr("---  section_name \n")),
-        Ok((CompleteStr(""), "section_name".to_string()))
+        section_start("---  section_name \n"),
+        Ok(("", "section_name".to_string()))
     );
 }
 
-named!(jump_instruction<CompleteStr, Instruction>,
+named!(jump_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("jump")) >>
         s: delimited!(tag!("("), ws!(id), tag!(")")) >>
@@ -64,7 +63,7 @@ named!(jump_instruction<CompleteStr, Instruction>,
     )
 );
 
-named!(jump_if_instruction<CompleteStr, Instruction>,
+named!(jump_if_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("jump_if")) >>
         char!('(') >>
@@ -80,22 +79,22 @@ named!(jump_if_instruction<CompleteStr, Instruction>,
 #[test]
 fn jump_instruction_test() {
     assert_eq!(
-        jump_instruction(CompleteStr(" jump ( other_section ) \n")),
+        jump_instruction(" jump ( other_section ) \n"),
         Ok((
-            CompleteStr(""),
+            "",
             Instruction::Jump("other_section".to_owned())
         ))
     );
     assert_eq!(
-        jump_if_instruction(CompleteStr("jump_if(has-key, has_item(key))\n")),
+        jump_if_instruction("jump_if(has-key, has_item(key))\n"),
         Ok((
-            CompleteStr(""),
+            "",
             Instruction::JumpIf("has-key".to_owned(), Expr::HasItem("key".to_owned()))
         ))
     );
 }
 
-named!(special_instruction<CompleteStr, Instruction>,
+named!(special_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("special")) >>
         s: map_res!(delimited!(tag!("("), ws!(symbol), tag!(")")), FromStr::from_str) >>
@@ -107,22 +106,22 @@ named!(special_instruction<CompleteStr, Instruction>,
 #[test]
 fn special_instruction_test() {
     assert_eq!(
-        special_instruction(CompleteStr("special(shop_buy)\n")),
+        special_instruction("special(shop_buy)\n"),
         Ok((
-            CompleteStr(""),
+            "",
             Instruction::Special(SpecialInstruction::ShopBuy)
         ))
     );
     assert_eq!(
-        special_instruction(CompleteStr("special(shop_sell)\n")),
+        special_instruction("special(shop_sell)\n"),
         Ok((
-            CompleteStr(""),
+            "",
             Instruction::Special(SpecialInstruction::ShopSell)
         ))
     );
 }
 
-named!(talk_instruction<CompleteStr, Instruction>,
+named!(talk_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
         text_id: delimited!(char!('('), ws!(id), char!(')')) >>
@@ -131,21 +130,21 @@ named!(talk_instruction<CompleteStr, Instruction>,
     )
 );
 
-named!(talk_instruction_with_choices<CompleteStr, Instruction>,
+named!(talk_instruction_with_choices<&str, Instruction>,
     do_parse!(
         ws!(tag!("talk")) >>
         char!('(') >>
         text_id: ws!(id) >>
         char!(',') >>
         choices: array!(delimited!(
-            char!('('), separated_pair!(ws!(id), char!(','), ws!(id)), char!(')') )) >>
+            char!('('), separated_pair!(complete!(ws!(id)), complete!(char!(',')), complete!(ws!(id))), complete!(char!(')')) )) >>
         char!(')') >>
         end_line >>
         (Instruction::Talk(text_id, choices))
     )
 );
 
-named!(gset_instruction<CompleteStr, Instruction>,
+named!(gset_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("gset")) >>
         char!('(') >>
@@ -158,7 +157,7 @@ named!(gset_instruction<CompleteStr, Instruction>,
     )
 );
 
-named!(receive_money_instruction<CompleteStr, Instruction>,
+named!(receive_money_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("receive_money")) >>
         e: delimited!(char!('('), ws!(expr), char!(')')) >>
@@ -167,7 +166,7 @@ named!(receive_money_instruction<CompleteStr, Instruction>,
     )
 );
 
-named!(remove_item_instruction<CompleteStr, Instruction>,
+named!(remove_item_instruction<&str, Instruction>,
     do_parse!(
         ws!(tag!("remove_item")) >>
         item_id: delimited!(char!('('), ws!(id), char!(')')) >>
@@ -186,25 +185,25 @@ fn talk_instruction_test() {
         ],
     );
     assert_eq!(
-        talk_instruction_with_choices(CompleteStr("talk(text-id, [(a, b), (c, d)])\n")),
-        Ok((CompleteStr(""), result))
+        talk_instruction_with_choices("talk(text-id, [(a, b), (c, d)])\n"),
+        Ok(("", result))
     );
 }
 
-named!(instruction<CompleteStr, Instruction>,
+named!(instruction<&str, Instruction>,
     alt!(
-        jump_instruction |
-        jump_if_instruction |
-        talk_instruction_with_choices |
-        talk_instruction |
-        gset_instruction |
-        receive_money_instruction |
-        remove_item_instruction |
-        special_instruction
+        complete!(jump_instruction) |
+        complete!(jump_if_instruction) |
+        complete!(talk_instruction_with_choices) |
+        complete!(talk_instruction) |
+        complete!(gset_instruction) |
+        complete!(receive_money_instruction) |
+        complete!(remove_item_instruction) |
+        complete!(special_instruction)
     )
 );
 
-named!(section<CompleteStr, (String, Vec<Instruction>)>,
+named!(section<&str, (String, Vec<Instruction>)>,
     do_parse!(
         section: section_start >>
         instructions: many0!(instruction) >>
@@ -212,9 +211,9 @@ named!(section<CompleteStr, (String, Vec<Instruction>)>,
     )
 );
 
-named!(sections<CompleteStr, HashMap<String, Vec<Instruction>>>,
+named!(sections<&str, HashMap<String, Vec<Instruction>>>,
     exact!(fold_many0!(
-        section,
+        complete!(section),
         HashMap::default(),
         | mut s: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>) | {
             s.insert(section.0, section.1);
@@ -223,10 +222,10 @@ named!(sections<CompleteStr, HashMap<String, Vec<Instruction>>>,
 );
 
 pub fn parse(input: &str) -> Result<Script, PakCompileError> {
-    match sections(CompleteStr(input)) {
+    match sections(input) {
         Ok(o) => Ok(Script::from_map(o.1)),
         Err(e) => Err(PakCompileError::ScriptParseError {
-            description: e.to_string(),
+            description: format!("{:?}", e),
         }),
     }
 }
@@ -262,5 +261,5 @@ talk(textid1,
         )],
     );
 
-    assert_eq!(sections(CompleteStr(script)), Ok((CompleteStr(""), result)))
+    assert_eq!(sections(script), Ok(("", result)))
 }
