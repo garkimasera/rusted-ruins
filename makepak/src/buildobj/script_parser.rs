@@ -1,25 +1,23 @@
-use nom::character::complete::*;
 use common::hashmap::HashMap;
+use nom::bytes::complete::tag;
+use nom::character::complete::{line_ending, space0};
+use nom::multi::many0;
+use nom::IResult;
 use std::str::FromStr;
 
 use super::expr_parser::*;
 use crate::error::PakCompileError;
 use common::script::*;
 
-named!(end_line<&str, ()>,
-    do_parse!(
-        opt!(space0) >>
-        line_ending >>
-        (())
-    )
-);
+fn end_line(input: &str) -> IResult<&str, ()> {
+    let (input, _) = space0(input)?;
+    let (input, _) = line_ending(input)?;
+    Ok((input, ()))
+}
 
 #[test]
 fn end_line_test() {
-    assert_eq!(
-        end_line("   \naabb"),
-        Ok(("aabb", ()))
-    );
+    assert_eq!(end_line("   \naabb"), Ok(("aabb", ())));
 }
 
 macro_rules! array(
@@ -36,15 +34,13 @@ macro_rules! array(
     );
 );
 
-named!(section_start<&str, String>,
-    do_parse!(
-        tag!("---") >>
-        space0 >>
-        s: id >>
-        end_line >>
-        (s)
-    )
-);
+fn section_start(input: &str) -> IResult<&str, String> {
+    let (input, _) = tag("---")(input)?;
+    let (input, _) = space0(input)?;
+    let (input, s) = id(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, s))
+}
 
 #[test]
 fn section_start_test() {
@@ -80,10 +76,7 @@ named!(jump_if_instruction<&str, Instruction>,
 fn jump_instruction_test() {
     assert_eq!(
         jump_instruction(" jump ( other_section ) \n"),
-        Ok((
-            "",
-            Instruction::Jump("other_section".to_owned())
-        ))
+        Ok(("", Instruction::Jump("other_section".to_owned())))
     );
     assert_eq!(
         jump_if_instruction("jump_if(has-key, has_item(key))\n"),
@@ -107,17 +100,11 @@ named!(special_instruction<&str, Instruction>,
 fn special_instruction_test() {
     assert_eq!(
         special_instruction("special(shop_buy)\n"),
-        Ok((
-            "",
-            Instruction::Special(SpecialInstruction::ShopBuy)
-        ))
+        Ok(("", Instruction::Special(SpecialInstruction::ShopBuy)))
     );
     assert_eq!(
         special_instruction("special(shop_sell)\n"),
-        Ok((
-            "",
-            Instruction::Special(SpecialInstruction::ShopSell)
-        ))
+        Ok(("", Instruction::Special(SpecialInstruction::ShopSell)))
     );
 }
 
@@ -203,13 +190,11 @@ named!(instruction<&str, Instruction>,
     )
 );
 
-named!(section<&str, (String, Vec<Instruction>)>,
-    do_parse!(
-        section: section_start >>
-        instructions: many0!(instruction) >>
-        (section.to_string(), instructions)
-    )
-);
+fn section(input: &str) -> IResult<&str, (String, Vec<Instruction>)> {
+    let (input, section) = section_start(input)?;
+    let (input, instructions) = many0(instruction)(input)?;
+    Ok((input, (section.to_owned(), instructions)))
+}
 
 named!(sections<&str, HashMap<String, Vec<Instruction>>>,
     exact!(fold_many0!(
