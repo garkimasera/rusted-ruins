@@ -74,11 +74,11 @@ impl ImgData {
         for y in 0..self.dimensions.1 {
             for x in 0..self.dimensions.0 {
                 let pixel = self.img.get_pixel(x, y);
-                if pixel.data[3] != 0 {
+                if pixel[3] != 0 {
                     // Not transparent pixel
-                    rgb.0 += pixel.data[0] as u32;
-                    rgb.1 += pixel.data[1] as u32;
-                    rgb.2 += pixel.data[2] as u32;
+                    rgb.0 += pixel[0] as u32;
+                    rgb.1 += pixel[1] as u32;
+                    rgb.2 += pixel[2] as u32;
                     n_pixel_count += 1;
                 }
             }
