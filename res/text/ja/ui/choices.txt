@@ -1,6 +1,0 @@
-% dialog.choice.exit
-終了
-% dialog.choice.newgame
-新しいゲーム
-% dialog.choice.loadgame
-ロード
