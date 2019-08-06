@@ -3,7 +3,6 @@ use crate::error::*;
 use crate::tomlinput::*;
 use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
-use common::obj::*;
 
 pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);

@@ -23,8 +23,8 @@ impl Join for Expr {
     }
 }
 
-/// Id as String in script.
-/// The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
+// Id as String in script.
+// The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
 named!(pub id<&str, String>,
     do_parse!(
         s: re_find_static!("[a-zA-Z0-9][a-zA-Z0-9_.-]*") >>
