@@ -35,7 +35,7 @@ pub fn load_objs_dir<F: FnMut(Object)>(dir: &Path, cb: F) -> Vec<PakLoadingError
     err_stack
 }
 
-fn walk_dir(dir: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingError>) {
+fn walk_dir(dir: &Path, cb: &mut dyn FnMut(Object), err_stack: &mut Vec<PakLoadingError>) {
     let entry_iter = match fs::read_dir(dir) {
         Ok(o) => o,
         Err(e) => {
@@ -62,7 +62,7 @@ fn walk_dir(dir: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingEr
 }
 
 /// Read tar file and load objects
-pub fn read_tar(path: &Path, cb: &mut FnMut(Object), err_stack: &mut Vec<PakLoadingError>) {
+pub fn read_tar(path: &Path, cb: &mut dyn FnMut(Object), err_stack: &mut Vec<PakLoadingError>) {
     let outputfile = match fs::File::open(path) {
         Ok(o) => o,
         Err(e) => {

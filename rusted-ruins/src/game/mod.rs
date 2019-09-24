@@ -209,7 +209,7 @@ impl Game {
 
 pub enum DialogOpenRequest {
     YesNo {
-        callback: Box<FnMut(&mut DoPlayerAction, bool)>,
+        callback: Box<dyn FnMut(&mut DoPlayerAction, bool)>,
         msg: String,
     },
     Talk {

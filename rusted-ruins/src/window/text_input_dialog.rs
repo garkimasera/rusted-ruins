@@ -8,7 +8,7 @@ pub struct TextInputDialog {
     label: LabelWidget,
     rect: Rect,
     text: String,
-    callback: Option<Box<Fn(&mut DoPlayerAction, &str)>>,
+    callback: Option<Box<dyn Fn(&mut DoPlayerAction, &str)>>,
 }
 
 impl TextInputDialog {

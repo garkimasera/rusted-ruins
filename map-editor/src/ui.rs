@@ -485,7 +485,7 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
     None
 }
 
-fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<Error>> {
+fn save_to(ui: &Ui, path: PathBuf) -> Result<(), Box<dyn Error>> {
     let mapobj = ui.map.borrow().create_mapobj();
     crate::file::save_to_file(&path, mapobj)
 }

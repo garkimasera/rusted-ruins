@@ -13,7 +13,7 @@ use common::gamedata::*;
 use common::gobj;
 use sdl2::rect::Rect;
 
-pub type ActionCallback = FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
+pub type ActionCallback = dyn FnMut(&mut DoPlayerAction, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
     List,
     PickUp,

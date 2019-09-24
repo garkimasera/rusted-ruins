@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 #[cfg(feature = "global_state_obj")]
 impl GameData {
     /// Save game data to the specified directory
-    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<dyn std::error::Error>> {
         if cfg!(debug_assertions) {
             print_save_data_size(self); // Debug code for save file size optimization
         }
@@ -52,7 +52,7 @@ impl GameData {
     }
 
     /// Load game data from specified directory
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<std::error::Error>> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<dyn std::error::Error>> {
         let save_dir = path.as_ref();
 
         // Read metadata file
@@ -93,7 +93,7 @@ impl GameData {
         Ok(gamedata)
     }
 
-    pub fn clean_map_dir<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<std::error::Error>> {
+    pub fn clean_map_dir<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<dyn std::error::Error>> {
         let map_dir = path.as_ref().join("maps");
 
         let mut map_files: Vec<PathBuf> = Vec::new();

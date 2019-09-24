@@ -8,7 +8,7 @@ use crate::game::DoPlayerAction;
 pub struct MsgDialog {
     text_win: TextWindow,
     choose_win: ChooseWindow,
-    action_callback: Box<FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static>,
+    action_callback: Box<dyn FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static>,
 }
 
 impl MsgDialog {

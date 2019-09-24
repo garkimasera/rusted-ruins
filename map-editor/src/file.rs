@@ -7,7 +7,7 @@ use std::io::Write;
 use std::path::Path;
 use tar;
 
-pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<Error>> {
+pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<dyn Error>> {
     let mut mapobj: Option<MapTemplateObject> = None;
     let mut errors = Vec::new();
 
@@ -25,7 +25,7 @@ pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<Error>> {
     Ok(mapobj.ok_or("Object is not found")?)
 }
 
-pub fn save_to_file(path: &Path, map: MapTemplateObject) -> Result<(), Box<Error>> {
+pub fn save_to_file(path: &Path, map: MapTemplateObject) -> Result<(), Box<dyn Error>> {
     let file = File::create(path)?;
     let mut builder = tar::Builder::new(file);
     let obj = Object::MapTemplate(map);
