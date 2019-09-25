@@ -115,6 +115,7 @@ impl SiteContent {
 pub enum SiteKind {
     AutoGenDungeon,
     Town,
+    Home,
     Other,
 }
 

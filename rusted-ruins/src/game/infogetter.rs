@@ -96,7 +96,7 @@ impl InfoGetter for GameData {
         match mid {
             MapId::SiteMap { sid, floor } => match sid.kind {
                 SiteKind::AutoGenDungeon => false,
-                SiteKind::Town => floor == 0,
+                SiteKind::Town | SiteKind::Home => floor == 0,
                 SiteKind::Other => false,
             },
             MapId::RegionMap { .. } => true,
