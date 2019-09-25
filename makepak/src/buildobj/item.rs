@@ -22,6 +22,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         "magic_device" => ItemKind::MagicDevice,
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
         "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
+        "tool" => ItemKind::Tool,
         "material" => ItemKind::Material,
         "special" => ItemKind::Special,
         _ => {
@@ -48,6 +49,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         eff: item.eff.unwrap_or(0),
         magical_effect: item.magical_effect,
         medical_effect: item.medical_effect,
+        tool_effect: item.tool_effect,
         nutrition: item.nutrition.unwrap_or(0),
         charge: item.charge,
     })

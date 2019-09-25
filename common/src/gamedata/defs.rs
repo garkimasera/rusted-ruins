@@ -96,6 +96,19 @@ impl Default for MagicalEffect {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ToolEffect {
+    None,
+    Build,
+}
+
+impl Default for ToolEffect {
+    fn default() -> ToolEffect {
+        ToolEffect::None
+    }
+}
+
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {
