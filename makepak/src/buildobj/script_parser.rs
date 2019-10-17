@@ -1,7 +1,10 @@
 use common::hashmap::HashMap;
 use nom::bytes::complete::tag;
-use nom::character::complete::{line_ending, space0};
-use nom::multi::many0;
+use nom::character::complete::{char, line_ending, multispace0, space0};
+use nom::combinator::map_res;
+use nom::error::ParseError;
+use nom::multi::{many0, separated_list};
+use nom::sequence::{delimited, separated_pair};
 use nom::IResult;
 use std::str::FromStr;
 
@@ -20,19 +23,37 @@ fn end_line_test() {
     assert_eq!(end_line("   \naabb"), Ok(("aabb", ())));
 }
 
-macro_rules! array(
-    ($i:expr, $submac:ident!( $($args:tt)* )) => ({
-        ws!($i, delimited!(
-            char!('['),
-            separated_list!(
-                char!(','),
-                ws!( $submac!($($args)*) )),
-            char!(']')))
-    });
-    ($i:expr, $f:expr) => (
-        array!($i, call!($f));
-    );
-);
+fn ws<I, O, E: ParseError<I>, F>(f: F) -> impl Fn(I) -> IResult<I, O, E>
+where
+    I: nom::InputTakeAtPosition,
+    <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
+    F: Fn(I) -> IResult<I, O, E>,
+{
+    move |input: I| {
+        let (input, _) = multispace0(input)?;
+        let (input, o) = f(input)?;
+        let (input, _) = multispace0(input)?;
+        Ok((input, o))
+    }
+}
+
+fn array<I, O, E: ParseError<I>, F>(f: F) -> impl Fn(I) -> IResult<I, Vec<O>, E>
+where
+    I: nom::InputTakeAtPosition
+        + nom::Slice<std::ops::RangeFrom<usize>>
+        + nom::InputIter
+        + Clone
+        + PartialEq,
+    <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
+    <I as nom::InputIter>::Item: nom::AsChar,
+    F: Fn(I) -> IResult<I, O, E>,
+{
+    ws(delimited(
+        char('['),
+        separated_list(char(','), ws(f)),
+        char(']'),
+    ))
+}
 
 fn section_start(input: &str) -> IResult<&str, String> {
     let (input, _) = tag("---")(input)?;
@@ -50,27 +71,23 @@ fn section_start_test() {
     );
 }
 
-named!(jump_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("jump")) >>
-        s: delimited!(tag!("("), ws!(id), tag!(")")) >>
-        end_line >>
-        (Instruction::Jump(s))
-    )
-);
+fn jump_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("jump"))(input)?;
+    let (input, id) = delimited(char('('), ws(id), char(')'))(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::Jump(id)))
+}
 
-named!(jump_if_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("jump_if")) >>
-        char!('(') >>
-        s: ws!(id) >>
-        char!(',') >>
-        e: ws!(expr) >>
-        char!(')') >>
-        end_line >>
-        (Instruction::JumpIf(s, e))
-    )
-);
+fn jump_if_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("jump_if"))(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, id) = ws(id)(input)?;
+    let (input, _) = char(',')(input)?;
+    let (input, expr) = ws(expr)(input)?;
+    let (input, _) = char(')')(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::JumpIf(id, expr)))
+}
 
 #[test]
 fn jump_instruction_test() {
@@ -87,14 +104,15 @@ fn jump_instruction_test() {
     );
 }
 
-named!(special_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("special")) >>
-        s: map_res!(delimited!(tag!("("), ws!(symbol), tag!(")")), FromStr::from_str) >>
-        end_line >>
-        (Instruction::Special(s))
-    )
-);
+fn special_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("special"))(input)?;
+    let (input, s) = map_res(
+        delimited(char('('), ws(symbol), char(')')),
+        FromStr::from_str,
+    )(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::Special(s)))
+}
 
 #[test]
 fn special_instruction_test() {
@@ -108,59 +126,52 @@ fn special_instruction_test() {
     );
 }
 
-named!(talk_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("talk")) >>
-        text_id: delimited!(char!('('), ws!(id), char!(')')) >>
-        end_line >>
-        (Instruction::Talk(text_id, Vec::new()))
-    )
-);
+fn talk_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("talk"))(input)?;
+    let (input, text_id) = delimited(char('('), ws(id), char(')'))(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::Talk(text_id, Vec::new())))
+}
 
-named!(talk_instruction_with_choices<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("talk")) >>
-        char!('(') >>
-        text_id: ws!(id) >>
-        char!(',') >>
-        choices: array!(delimited!(
-            char!('('), separated_pair!(complete!(ws!(id)), complete!(char!(',')), complete!(ws!(id))), complete!(char!(')')) )) >>
-        char!(')') >>
-        end_line >>
-        (Instruction::Talk(text_id, choices))
-    )
-);
+fn talk_instruction_with_choices(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("talk"))(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, text_id) = ws(id)(input)?;
+    let (input, _) = char(',')(input)?;
+    let (input, choices) = array(delimited(
+        char('('),
+        separated_pair(ws(id), char(','), ws(id)),
+        char(')'),
+    ))(input)?;
+    let (input, _) = char(')')(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::Talk(text_id, choices)))
+}
 
-named!(gset_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("gset")) >>
-        char!('(') >>
-        var_name: ws!(id) >>
-        char!(',') >>
-        value: ws!(expr) >>
-        char!(')') >>
-        end_line >>
-        (Instruction::GSet(var_name, value))
-    )
-);
+fn gset_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("gset"))(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, var_name) = ws(id)(input)?;
+    let (input, _) = char(',')(input)?;
+    let (input, value) = ws(expr)(input)?;
+    let (input, _) = char(')')(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::GSet(var_name, value)))
+}
 
-named!(receive_money_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("receive_money")) >>
-        e: delimited!(char!('('), ws!(expr), char!(')')) >>
-        end_line >>
-        (Instruction::ReceiveMoney(e))
-    )
-);
+fn receive_money_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("receive_money"))(input)?;
+    let (input, expr) = delimited(char('('), ws(expr), char(')'))(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::ReceiveMoney(expr)))
+}
 
-named!(remove_item_instruction<&str, Instruction>,
-    do_parse!(
-        ws!(tag!("remove_item")) >>
-        item_id: delimited!(char!('('), ws!(id), char!(')')) >>
-        end_line >>
-        (Instruction::RemoveItem(item_id))
-    )
-);
+fn remove_item_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("remove_item"))(input)?;
+    let (input, item_id) = delimited(char('('), ws(id), char(')'))(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::RemoveItem(item_id)))
+}
 
 #[test]
 fn talk_instruction_test() {
