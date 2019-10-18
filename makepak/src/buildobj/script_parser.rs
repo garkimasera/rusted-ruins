@@ -1,9 +1,10 @@
 use common::hashmap::HashMap;
+use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::character::complete::{char, line_ending, multispace0, space0};
 use nom::combinator::map_res;
 use nom::error::ParseError;
-use nom::multi::{many0, separated_list};
+use nom::multi::{fold_many0, many0, separated_list};
 use nom::sequence::{delimited, separated_pair};
 use nom::IResult;
 use std::str::FromStr;
@@ -188,18 +189,18 @@ fn talk_instruction_test() {
     );
 }
 
-named!(instruction<&str, Instruction>,
-    alt!(
-        complete!(jump_instruction) |
-        complete!(jump_if_instruction) |
-        complete!(talk_instruction_with_choices) |
-        complete!(talk_instruction) |
-        complete!(gset_instruction) |
-        complete!(receive_money_instruction) |
-        complete!(remove_item_instruction) |
-        complete!(special_instruction)
-    )
-);
+fn instruction(input: &str) -> IResult<&str, Instruction> {
+    alt((
+        jump_instruction,
+        jump_if_instruction,
+        talk_instruction_with_choices,
+        talk_instruction,
+        gset_instruction,
+        receive_money_instruction,
+        remove_item_instruction,
+        special_instruction,
+    ))(input)
+}
 
 fn section(input: &str) -> IResult<&str, (String, Vec<Instruction>)> {
     let (input, section) = section_start(input)?;
@@ -207,15 +208,16 @@ fn section(input: &str) -> IResult<&str, (String, Vec<Instruction>)> {
     Ok((input, (section.to_owned(), instructions)))
 }
 
-named!(sections<&str, HashMap<String, Vec<Instruction>>>,
-    exact!(fold_many0!(
-        complete!(section),
+fn sections(input: &str) -> IResult<&str, HashMap<String, Vec<Instruction>>> {
+    fold_many0(
+        section,
         HashMap::default(),
-        | mut s: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>) | {
+        |mut s: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>)| {
             s.insert(section.0, section.1);
             s
-        }))
-);
+        },
+    )(input)
+}
 
 pub fn parse(input: &str) -> Result<Script, PakCompileError> {
     match sections(input) {
