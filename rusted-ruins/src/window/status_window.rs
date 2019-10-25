@@ -8,6 +8,7 @@ use crate::text::ToText;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
+use rules::RULES;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
 
@@ -40,6 +41,7 @@ pub struct StatusWindow {
     image: ImageWidget,
     name_label: LabelWidget,
     hp_label: LabelWidget,
+    sp_label: LabelWidget,
     str_label: LabelWidget,
     vit_label: LabelWidget,
     dex_label: LabelWidget,
@@ -58,6 +60,11 @@ impl StatusWindow {
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect,
             &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
+            FontKind::MonoM,
+        );
+        let sp_label = LabelWidget::new(
+            cfg.sp_label_rect,
+            &format!("SP  {:2.0}", chara.sp),
             FontKind::MonoM,
         );
         let str_label = LabelWidget::new(
@@ -95,6 +102,7 @@ impl StatusWindow {
             image,
             name_label,
             hp_label,
+            sp_label,
             str_label,
             vit_label,
             dex_label,
@@ -111,6 +119,7 @@ impl Window for StatusWindow {
         self.image.draw(context);
         self.name_label.draw(context);
         self.hp_label.draw(context);
+        self.sp_label.draw(context);
         self.str_label.draw(context);
         self.vit_label.draw(context);
         self.dex_label.draw(context);
