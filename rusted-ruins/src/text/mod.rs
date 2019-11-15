@@ -247,7 +247,7 @@ macro_rules! misc_txt_format {
             let t: String = $value.to_text().into();
             let value = fluent::FluentValue::String(t);
             table.insert(stringify!($target), value);
-        )*;
+        )*
 
         crate::text::misc_txt_with_args($id, Some(&table))
     }}
@@ -261,7 +261,7 @@ macro_rules! ui_txt_format {
             let t: String = $value.to_text().into();
             let value = fluent::FluentValue::String(t);
             table.insert(stringify!($target), value);
-        )*;
+        )*
 
         crate::text::ui_txt_with_args($id, Some(&table))
     }}

@@ -107,7 +107,7 @@ macro_rules! game_log {
             let t: String = $value.to_text().into();
             let value = fluent::FluentValue::String(t);
             table.insert(stringify!($target), value);
-        )*;
+        )*
 
         let s = crate::text::log_txt_with_args($id, Some(&table));
         crate::log::push(s);
@@ -128,7 +128,7 @@ macro_rules! game_log_i {
             let t: String = $value.to_text().into();
             let value = fluent::FluentValue::String(t);
             table.insert(stringify!($target), value);
-        )*;
+        )*
 
         let s = crate::text::log_txt_with_args($id, Some(&table));
         crate::log::push(s);
