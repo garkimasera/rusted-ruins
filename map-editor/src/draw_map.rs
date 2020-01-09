@@ -6,7 +6,7 @@ use common::gobj;
 use common::obj::ImgObject;
 use common::objholder::*;
 use common::piece_pattern::*;
-use gdk::prelude::ContextExt;
+use gdk::prelude::GdkContextExt;
 use gdk_pixbuf::Pixbuf;
 use geom::*;
 
