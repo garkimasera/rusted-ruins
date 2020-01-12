@@ -4,85 +4,37 @@ mod to_text;
 use crate::config;
 use common::basic;
 use fluent::*;
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use unic_langid::LanguageIdentifier;
 use walkdir::WalkDir;
 
 /// Initialize lazy static
 pub fn init() {
     use lazy_static::initialize;
-    initialize(&OBJ_RES);
     initialize(&OBJ_BUNDLE);
-    initialize(&LOG_RES);
     initialize(&LOG_BUNDLE);
-    initialize(&UI_RES);
     initialize(&UI_BUNDLE);
-    initialize(&TALK_RES);
     initialize(&TALK_BUNDLE);
-    initialize(&MISC_RES);
     initialize(&MISC_BUNDLE);
 }
 
 lazy_static! {
-    static ref OBJ_RES: Resource = Resource::load(basic::OBJ_TXT_DIR);
-    static ref OBJ_BUNDLE: Bundle = Bundle::load(&*OBJ_RES);
-    static ref LOG_RES: Resource = Resource::load(basic::LOG_TXT_DIR);
-    static ref LOG_BUNDLE: Bundle = Bundle::load(&*LOG_RES);
-    static ref UI_RES: Resource = Resource::load(basic::UI_TXT_DIR);
-    static ref UI_BUNDLE: Bundle = Bundle::load(&*UI_RES);
-    static ref TALK_RES: Resource = Resource::load(basic::TALK_TXT_DIR);
-    static ref TALK_BUNDLE: Bundle = Bundle::load(&*TALK_RES);
-    static ref MISC_RES: Resource = Resource::load(basic::MISC_TXT_DIR);
-    static ref MISC_BUNDLE: Bundle = Bundle::load(&*MISC_RES);
+    static ref OBJ_BUNDLE: Bundle = Bundle::load(basic::OBJ_TXT_DIR);
+    static ref LOG_BUNDLE: Bundle = Bundle::load(basic::LOG_TXT_DIR);
+    static ref UI_BUNDLE: Bundle = Bundle::load(basic::UI_TXT_DIR);
+    static ref TALK_BUNDLE: Bundle = Bundle::load(basic::TALK_TXT_DIR);
+    static ref MISC_BUNDLE: Bundle = Bundle::load(basic::MISC_TXT_DIR);
 }
 
 struct Bundle {
-    first: FluentBundle<'static>,
-    second: FluentBundle<'static>,
+    first: FluentBundle<FluentResource>,
+    second: FluentBundle<FluentResource>,
 }
 
 impl Bundle {
-    fn load(res: &'static Resource) -> Bundle {
-        Bundle {
-            first: new_bundle(&config::CONFIG.lang, &res.first),
-            second: new_bundle(&config::CONFIG.second_lang, &res.second),
-        }
-    }
-
-    fn format(&self, id: &str, args: Option<&HashMap<&str, FluentValue>>) -> Option<String> {
-        if self.first.has_message(id) {
-            if let Some((s, _err)) = self.first.format(id, args) {
-                return Some(s);
-            }
-        }
-        if self.second.has_message(id) {
-            if let Some((s, _err)) = self.first.format(id, args) {
-                return Some(s);
-            }
-        }
-        None
-    }
-}
-
-fn new_bundle(lang: &str, resource: &'static [FluentResource]) -> FluentBundle<'static> {
-    let mut bundle = FluentBundle::new(&[lang]);
-
-    for res in resource {
-        if let Err(e) = bundle.add_resource(res) {
-            warn!("Fluent add resource error: {:?}", e);
-        }
-    }
-
-    bundle
-}
-
-struct Resource {
-    first: Vec<FluentResource>,
-    second: Vec<FluentResource>,
-}
-
-impl Resource {
-    fn load(kind: &str) -> Resource {
+    fn load(kind: &str) -> Bundle {
         let first = load_resource(kind, &config::CONFIG.lang);
         let second_lang = &config::CONFIG.second_lang;
         let second = if second_lang == "" {
@@ -90,9 +42,49 @@ impl Resource {
         } else {
             load_resource(kind, second_lang)
         };
-
-        Resource { first, second }
+        Bundle {
+            first: new_bundle(&config::CONFIG.lang, first),
+            second: new_bundle(&config::CONFIG.second_lang, second),
+        }
     }
+
+    fn format(&self, id: &str, args: Option<&FluentArgs>) -> Option<String> {
+        let mut errors = vec![];
+        if let Some(msg) = self.first.get_message(id) {
+            if let Some(pattern) = msg.value {
+                return Some(
+                    self.first
+                        .format_pattern(&pattern, args, &mut errors)
+                        .into_owned(),
+                );
+            }
+        }
+        if let Some(msg) = self.second.get_message(id) {
+            if let Some(pattern) = msg.value {
+                return Some(
+                    self.second
+                        .format_pattern(&pattern, args, &mut errors)
+                        .into_owned(),
+                );
+            }
+        }
+        None
+    }
+}
+
+fn new_bundle(lang: &str, resource: Vec<FluentResource>) -> FluentBundle<FluentResource> {
+    let langid: LanguageIdentifier = lang
+        .parse()
+        .expect("Parsing to language identifier failed.");
+    let mut bundle = FluentBundle::new(&[langid]);
+
+    for res in resource.into_iter() {
+        if let Err(e) = bundle.add_resource(res) {
+            warn!("Fluent add resource error: {:?}", e);
+        }
+    }
+
+    bundle
 }
 
 fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
@@ -244,8 +236,7 @@ macro_rules! misc_txt_format {
         let mut table: std::collections::HashMap<&str, fluent::FluentValue>
             = std::collections::HashMap::new();
         $(
-            let t: String = $value.to_text().into();
-            let value = fluent::FluentValue::String(t);
+            let value = fluent::FluentValue::String($value.to_text());
             table.insert(stringify!($target), value);
         )*
 
@@ -258,8 +249,7 @@ macro_rules! ui_txt_format {
         let mut table: std::collections::HashMap<&str, fluent::FluentValue>
             = std::collections::HashMap::new();
         $(
-            let t: String = $value.to_text().into();
-            let value = fluent::FluentValue::String(t);
+            let value = fluent::FluentValue::String($value.to_text());
             table.insert(stringify!($target), value);
         )*
 

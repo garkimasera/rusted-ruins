@@ -110,7 +110,7 @@ impl ToText for Quest {
                 let mut table: HashMap<&str, fluent::FluentValue> = HashMap::new();
                 table.insert(
                     "monster",
-                    fluent::FluentValue::String(idx.to_text().to_string()),
+                    fluent::FluentValue::String(idx.to_text()),
                 );
                 crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
             }

@@ -104,8 +104,7 @@ macro_rules! game_log {
         let mut table: std::collections::HashMap<&str, fluent::FluentValue>
             = std::collections::HashMap::new();
         $(
-            let t: String = $value.to_text().into();
-            let value = fluent::FluentValue::String(t);
+            let value = fluent::FluentValue::String($value.to_text());
             table.insert(stringify!($target), value);
         )*
 
@@ -125,8 +124,7 @@ macro_rules! game_log_i {
         let mut table: std::collections::HashMap<&str, fluent::FluentValue>
             = std::collections::HashMap::new();
         $(
-            let t: String = $value.to_text().into();
-            let value = fluent::FluentValue::String(t);
+            let value = fluent::FluentValue::String($value.to_text());
             table.insert(stringify!($target), value);
         )*
 
