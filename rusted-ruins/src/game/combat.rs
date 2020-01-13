@@ -4,7 +4,7 @@ use crate::rng;
 use common::gamedata::*;
 use common::gobj;
 use rng::Rng;
-use rules::RULES;
+// use rules::RULES;
 
 pub enum DamageKind {
     MeleeAttack,
@@ -132,7 +132,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
     game.anim_queue.push_shot(attacker_pos, target_pos);
 
     // Damage calculation
-    let (attack_params, weapon_kind, attacker_pos) = {
+    let (attack_params, weapon_kind) = {
         let weapon_obj = gobj::get_obj(weapon.idx);
         let weapon_kind = get_weapon_kind(weapon_obj);
         let dice_result = rng::dice(weapon_obj.dice_n as i32, weapon_obj.dice_x as i32);
@@ -147,7 +147,7 @@ pub fn shot_target(game: &mut Game, attacker_id: CharaId, target_id: CharaId) ->
             attack_power,
         };
 
-        (attack_params, weapon_kind, attacker_pos)
+        (attack_params, weapon_kind)
     };
     // Logging
     {

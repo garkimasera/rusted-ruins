@@ -1,6 +1,6 @@
 use super::commonuse::*;
 use super::widget::*;
-use crate::config::{SCREEN_CFG, UI_CFG};
+use crate::config::SCREEN_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::game::InfoGetter;
 use crate::text::ToText;

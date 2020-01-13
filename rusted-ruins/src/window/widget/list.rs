@@ -110,13 +110,13 @@ impl<T: ListWidgetRow> ListWidget<T> {
         self.update_page_label();
     }
 
-    pub fn get_page(&self) -> u32 {
-        self.current_page
-    }
+    // pub fn get_page(&self) -> u32 {
+    //     self.current_page
+    // }
 
-    pub fn get_max_page(&self) -> u32 {
-        self.max_page
-    }
+    // pub fn get_max_page(&self) -> u32 {
+    //     self.max_page
+    // }
 
     pub fn page_item_idx(&self) -> (u32, u32) {
         let start = if self.multiple_page && self.update_by_user {

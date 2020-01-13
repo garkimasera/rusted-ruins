@@ -83,9 +83,9 @@ impl TextCache {
         }
     }
 
-    pub fn get_str(&self, i: usize) -> &str {
-        &self.s[i]
-    }
+    // pub fn get_str(&self, i: usize) -> &str {
+    //     &self.s[i]
+    // }
 }
 
 impl Drop for TextCache {

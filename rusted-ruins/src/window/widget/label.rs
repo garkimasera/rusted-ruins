@@ -121,7 +121,7 @@ impl WidgetTrait for LabelWidget {
     }
 }
 
-/// Label widget whose lines are specified by user
+/* /// Label widget whose lines are specified by user
 pub struct LineSpecifiedLabelWidget {
     rect: Rect,
     cache: TextCache,
@@ -177,4 +177,4 @@ impl WidgetTrait for LineSpecifiedLabelWidget {
             try_sdl!(canvas.copy(tex, None, dest));
         }
     }
-}
+} */

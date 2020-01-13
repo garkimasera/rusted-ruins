@@ -29,7 +29,7 @@ impl<'a> BackgroundDrawInfo<'a> {
         //Some(outside_tile.tile.clone().into())
         } else {
             let pos = map.nearest_existent_tile(pos);
-            let tinfo = &map.observed_tile[pos];
+            // let tinfo = &map.observed_tile[pos];
             Some(&map.tile[pos].tile)
         };
 

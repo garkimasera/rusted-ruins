@@ -455,14 +455,14 @@ impl MainWinDrawer {
         )
     }
 
-    fn bottom_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
-        Rect::new(
-            (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
-            tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
-            src.w as u32,
-            src.h as u32,
-        )
-    }
+    // fn bottom_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+    //     Rect::new(
+    //         (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
+    //         tile.1 * TILE_SIZE_I + dy + self.dy + (TILE_SIZE_I - src.h),
+    //         src.w as u32,
+    //         src.h as u32,
+    //     )
+    // }
 
     fn tile_rect(&self, tile: Vec2d, dx: i32, dy: i32) -> Rect {
         Rect::new(

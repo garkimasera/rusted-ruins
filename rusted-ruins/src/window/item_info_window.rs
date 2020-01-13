@@ -11,7 +11,7 @@ use sdl2::rect::Rect;
 
 pub struct ItemInfoWindow {
     rect: Rect,
-    il: ItemLocation,
+    _il: ItemLocation,
     item_image: ImageWidget,
     item_name: LabelWidget,
     item_kind: LabelWidget,
@@ -44,7 +44,7 @@ impl ItemInfoWindow {
 
         ItemInfoWindow {
             rect: UI_CFG.item_info_window.rect.into(),
-            il,
+            _il: il,
             item_image,
             item_name,
             item_kind,

@@ -9,19 +9,19 @@ use sdl2::rect::Rect;
 pub struct ChooseWindow {
     winpos: WindowPos,
     answer_list: TextListWidget,
-    default_choose: Option<u32>,
+    _default_choose: Option<u32>,
 }
 
 impl ChooseWindow {
     pub fn new(
         winpos: WindowPos,
         choices: Vec<String>,
-        default_choose: Option<u32>,
+        _default_choose: Option<u32>,
     ) -> ChooseWindow {
         ChooseWindow {
             winpos,
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
-            default_choose,
+            _default_choose,
         }
     }
 

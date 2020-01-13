@@ -4,7 +4,6 @@ mod to_text;
 use crate::config;
 use common::basic;
 use fluent::*;
-use std::borrow::Cow;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;

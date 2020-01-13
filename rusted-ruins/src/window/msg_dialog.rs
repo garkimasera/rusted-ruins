@@ -12,22 +12,22 @@ pub struct MsgDialog {
 }
 
 impl MsgDialog {
-    pub fn new<F>(msg: &str, choices: Vec<String>, f: F) -> MsgDialog
-    where
-        F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static,
-    {
-        let rect = UI_CFG.msg_dialog.rect.into();
-        let text_win = TextWindow::new(rect, msg);
-        let winpos = WindowPos::new(
-            WindowHPos::RightX(rect.right()),
-            WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
-        );
-        MsgDialog {
-            text_win,
-            choose_win: ChooseWindow::new(winpos, choices, None),
-            action_callback: Box::new(f),
-        }
-    }
+    // pub fn new<F>(msg: &str, choices: Vec<String>, f: F) -> MsgDialog
+    // where
+    //     F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static,
+    // {
+    //     let rect = UI_CFG.msg_dialog.rect.into();
+    //     let text_win = TextWindow::new(rect, msg);
+    //     let winpos = WindowPos::new(
+    //         WindowHPos::RightX(rect.right()),
+    //         WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
+    //     );
+    //     MsgDialog {
+    //         text_win,
+    //         choose_win: ChooseWindow::new(winpos, choices, None),
+    //         action_callback: Box::new(f),
+    //     }
+    // }
 
     pub fn with_yesno<F>(msg: &str, f: F) -> MsgDialog
     where

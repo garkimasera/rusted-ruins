@@ -28,7 +28,7 @@ impl FrequentTextures {
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Overlay {
     Fog = 0,
-    FogDark,
+    _FogDark,
     Night,
     Twilight0, // Darkest
     Twilight1,

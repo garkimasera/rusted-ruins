@@ -8,7 +8,6 @@ use crate::text::ToText;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
-use rules::RULES;
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 2;
 
