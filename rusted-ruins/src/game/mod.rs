@@ -3,7 +3,7 @@ mod anim_queue;
 mod animation;
 pub mod chara;
 mod combat;
-mod command;
+pub mod command;
 pub mod creation;
 mod debug_command;
 mod dungeon_gen;

@@ -5,6 +5,7 @@ use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
+use sdl2::mouse::{MouseButton, MouseWheelDirection};
 use std::collections::{HashMap, VecDeque};
 use std::time::Instant;
 
@@ -42,6 +43,21 @@ enum WaitingDirRelease {
 pub enum RawCommand {
     KeyPress(Keycode),
     TextInput(String),
+    MouseButtonDown {
+        x: i32,
+        y: i32,
+        mouse_btn: MouseButton,
+    },
+    MouseButtonUp {
+        x: i32,
+        y: i32,
+        mouse_btn: MouseButton,
+    },
+    MouseWheel {
+        x: i32,
+        y: i32,
+        direction: MouseWheelDirection,
+    },
 }
 
 impl EventHandler {
@@ -148,7 +164,24 @@ impl EventHandler {
             Event::TextInput { text, .. } => {
                 self.command_queue.push_back(RawCommand::TextInput(text));
             }
-
+            Event::MouseButtonDown {
+                mouse_btn, x, y, ..
+            } => {
+                self.command_queue
+                    .push_back(RawCommand::MouseButtonDown { x, y, mouse_btn });
+            }
+            Event::MouseButtonUp {
+                mouse_btn, x, y, ..
+            } => {
+                self.command_queue
+                    .push_back(RawCommand::MouseButtonUp { x, y, mouse_btn });
+            }
+            Event::MouseWheel {
+                direction, x, y, ..
+            } => {
+                self.command_queue
+                    .push_back(RawCommand::MouseWheel { x, y, direction });
+            }
             _ => {}
         }
         true
@@ -323,6 +356,44 @@ impl CommandConvTable {
             }
         };
 
+        // For mouse event, don't use table
+        match raw {
+            RawCommand::MouseButtonDown { x, y, mouse_btn } => {
+                let button = match mouse_btn {
+                    MouseButton::Left => crate::game::command::MouseButton::Left,
+                    MouseButton::Right => crate::game::command::MouseButton::Right,
+                    MouseButton::Middle => crate::game::command::MouseButton::Middle,
+                    _ => {
+                        return None;
+                    }
+                };
+                return Some(Command::MouseButtonDown { x, y, button });
+            }
+            RawCommand::MouseButtonUp { x, y, mouse_btn } => {
+                let button = match mouse_btn {
+                    MouseButton::Left => crate::game::command::MouseButton::Left,
+                    MouseButton::Right => crate::game::command::MouseButton::Right,
+                    MouseButton::Middle => crate::game::command::MouseButton::Middle,
+                    _ => {
+                        return None;
+                    }
+                };
+                return Some(Command::MouseButtonUp { x, y, button });
+            }
+            RawCommand::MouseWheel { x, y, direction } => {
+                let wheel_direction = match direction {
+                    MouseWheelDirection::Normal => crate::game::command::WheelDirection::Normal,
+                    MouseWheelDirection::Flipped => crate::game::command::WheelDirection::Flipped,
+                    _ => {
+                        return None;
+                    }
+                };
+                return Some(Command::MouseWheel { x, y, wheel_direction });
+            }
+            _ => (),
+        }
+
+        // Conversion by table
         table.get(&raw).cloned()
     }
 }

@@ -84,6 +84,9 @@ impl ToText for Command {
             TargetingMode => "command-targetting_mode",
             TextInput { .. } => "command-text_input",
             TextDelete => "command-text_delete",
+            MouseButtonDown { .. } => "command-mouse_button_down",
+            MouseButtonUp { .. } => "command-mouse_button_up",
+            MouseWheel { .. } => "command-mouse_wheel"
         };
         ui_txt(id).into()
     }
