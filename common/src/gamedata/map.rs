@@ -76,7 +76,7 @@ impl From<TileIdx> for TileArray {
 impl Into<TileArray> for TileLayers {
     fn into(self) -> TileArray {
         let mut v = ArrayVec::new();
-        for idxpp in self.0.into_iter() {
+        for idxpp in &self.0 {
             if !idxpp.is_empty() {
                 v.push(*idxpp);
             }
