@@ -58,6 +58,10 @@ pub enum RawCommand {
         y: i32,
         direction: MouseWheelDirection,
     },
+    MouseMotion {
+        x: i32,
+        y: i32,
+    },
 }
 
 impl EventHandler {
@@ -181,6 +185,19 @@ impl EventHandler {
             } => {
                 self.command_queue
                     .push_back(RawCommand::MouseWheel { x, y, direction });
+            }
+            Event::MouseMotion { x, y, .. } => {
+                if let Some(prev_command) = self.command_queue.pop_back() {
+                    match prev_command {
+                        RawCommand::MouseMotion { .. } => (),
+                        _ => {
+                            self.command_queue.push_back(prev_command);
+                        }
+                    }
+                } else {
+                    self.command_queue
+                        .push_back(RawCommand::MouseMotion { x, y });
+                }
             }
             _ => {}
         }
@@ -388,7 +405,14 @@ impl CommandConvTable {
                         return None;
                     }
                 };
-                return Some(Command::MouseWheel { x, y, wheel_direction });
+                return Some(Command::MouseWheel {
+                    x,
+                    y,
+                    wheel_direction,
+                });
+            }
+            RawCommand::MouseMotion { x, y } => {
+                return Some(Command::MouseMotion { x, y });
             }
             _ => (),
         }

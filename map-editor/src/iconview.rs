@@ -63,7 +63,13 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_tile.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_tile.get_selected_items().get(0) {
                 let iter = uic.iconview.filter_tile.get_iter(&path).unwrap();
-                let id: String = uic.iconview.filter_tile.get_value(&iter, 1).get().unwrap().unwrap();
+                let id: String = uic
+                    .iconview
+                    .filter_tile
+                    .get_value(&iter, 1)
+                    .get()
+                    .unwrap()
+                    .unwrap();
                 uic.item_selected(SelectedItem::Tile(gobj::id_to_idx::<TileIdx>(&id)));
             }
         });
@@ -76,7 +82,13 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_wall.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_wall.get_selected_items().get(0) {
                 let iter = uic.iconview.filter_wall.get_iter(&path).unwrap();
-                let id: String = uic.iconview.filter_wall.get_value(&iter, 1).get().unwrap().unwrap();
+                let id: String = uic
+                    .iconview
+                    .filter_wall
+                    .get_value(&iter, 1)
+                    .get()
+                    .unwrap()
+                    .unwrap();
                 uic.item_selected(SelectedItem::Wall(gobj::id_to_idx::<WallIdx>(&id)));
             }
         });
@@ -89,7 +101,13 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_deco.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_deco.get_selected_items().get(0) {
                 let iter = uic.iconview.filter_deco.get_iter(&path).unwrap();
-                let id: String = uic.iconview.filter_deco.get_value(&iter, 1).get().unwrap().unwrap();
+                let id: String = uic
+                    .iconview
+                    .filter_deco
+                    .get_value(&iter, 1)
+                    .get()
+                    .unwrap()
+                    .unwrap();
                 uic.item_selected(SelectedItem::Deco(gobj::id_to_idx::<DecoIdx>(&id)));
             }
         });

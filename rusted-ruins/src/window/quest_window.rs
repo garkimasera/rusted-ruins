@@ -133,6 +133,8 @@ impl DialogWindow for QuestWindow {
 
 fn quest_decription_text(quest: &Quest) -> String {
     match quest {
-        Quest::SlayMonsters { idx, goal, .. } => misc_txt_format!("desc-quest-slay_monsters"; monster=idx, n=goal),
+        Quest::SlayMonsters { idx, goal, .. } => {
+            misc_txt_format!("desc-quest-slay_monsters"; monster=idx, n=goal)
+        }
     }
 }

@@ -86,7 +86,8 @@ impl ToText for Command {
             TextDelete => "command-text_delete",
             MouseButtonDown { .. } => "command-mouse_button_down",
             MouseButtonUp { .. } => "command-mouse_button_up",
-            MouseWheel { .. } => "command-mouse_wheel"
+            MouseWheel { .. } => "command-mouse_wheel",
+            MouseMotion { .. } => "command-mouse_motion",
         };
         ui_txt(id).into()
     }
@@ -111,10 +112,7 @@ impl ToText for Quest {
             Quest::SlayMonsters { idx, .. } => {
                 use std::collections::HashMap;
                 let mut table: HashMap<&str, fluent::FluentValue> = HashMap::new();
-                table.insert(
-                    "monster",
-                    fluent::FluentValue::String(idx.to_text()),
-                );
+                table.insert("monster", fluent::FluentValue::String(idx.to_text()));
                 crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
             }
         }
