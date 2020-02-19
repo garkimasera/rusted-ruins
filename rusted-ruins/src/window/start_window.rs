@@ -54,6 +54,7 @@ impl Window for StartDialog {
 
 impl DialogWindow for StartDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        let command = command.relative_to(self.rect);
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(0) => {

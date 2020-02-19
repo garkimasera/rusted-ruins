@@ -46,3 +46,26 @@ pub enum WheelDirection {
     Normal,
     Flipped,
 }
+
+impl Command {
+    pub fn relative_to<R: Into<(i32, i32, u32, u32)>>(&self, rect: R) -> Command {
+        let rect = rect.into();
+        self.relative_to_point((rect.0, rect.1))
+    }
+    
+    pub fn relative_to_point<P: Into<(i32, i32)>>(&self, point: P) -> Command {
+        let point = point.into();
+        match *self {
+            Command::MouseButtonDown { x, y, button } => {
+                Command::MouseButtonDown { x: x - point.0, y: y - point.1, button }
+            }
+            Command::MouseButtonUp { x, y, button } => {
+                Command::MouseButtonUp { x: x - point.0, y: y - point.1, button }
+            }
+            Command::MouseWheel { x, y, wheel_direction } => {
+                Command::MouseWheel { x: x - point.0, y: y - point.1, wheel_direction }
+            }
+            _ => self.clone(),
+        }
+    }
+}

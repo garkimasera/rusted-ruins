@@ -1,7 +1,7 @@
 use super::WidgetTrait;
 use crate::config::UI_CFG;
 use crate::context::*;
-use crate::game::Command;
+use crate::game::command::*;
 use geom::*;
 use sdl2::rect::Rect;
 
@@ -52,11 +52,12 @@ impl<T: ListWidgetRow> ListWidget<T> {
         update_by_user: bool,
     ) -> ListWidget<T> {
         let rect = rect.into();
+        let h_row = UI_CFG.list_widget.h_row_default;
 
         let mut w = ListWidget {
             rect,
             rows: Vec::new(),
-            h_row: UI_CFG.list_widget.h_row_default,
+            h_row,
             n_row: 0,
             n_item: 0,
             page_size,
@@ -82,6 +83,9 @@ impl<T: ListWidgetRow> ListWidget<T> {
             self.n_row = rows.len() as u32;
         }
         self.rows = rows;
+        if self.rect.height() < self.h_row * self.n_row {
+            self.rect.set_height(self.h_row * self.n_row);
+        }
     }
 
     pub fn set_items(&mut self, items: Vec<T>) {
@@ -170,6 +174,16 @@ impl<T: ListWidgetRow> ListWidget<T> {
                 UI_CFG.color.normal_font.into(),
             ));
         }
+    }
+
+    fn get_idx_from_pos(&self, x: i32, y: i32) -> Option<u32> {
+        if !self.rect.contains_point((x, y)) {
+            return None;
+        }
+        let y = (y - self.rect.y) as u32;
+        let idx = (y / self.h_row) as u32;
+        assert!(idx < self.n_item);
+        Some(idx)
     }
 }
 
@@ -301,6 +315,17 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                     _ => (),
                 }
                 None
+            }
+            Command::MouseButtonUp { x, y, button } => {
+                if button == MouseButton::Left {
+                    if let Some(idx) = self.get_idx_from_pos(x, y) {
+                        Some(ListWidgetResponse::Select(idx))
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
             }
             _ => None,
         }

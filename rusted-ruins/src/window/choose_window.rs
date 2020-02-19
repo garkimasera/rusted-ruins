@@ -8,6 +8,7 @@ use sdl2::rect::Rect;
 /// This handles text list only.
 pub struct ChooseWindow {
     winpos: WindowPos,
+    rect: Option<Rect>,
     answer_list: TextListWidget,
     _default_choose: Option<u32>,
 }
@@ -20,6 +21,7 @@ impl ChooseWindow {
     ) -> ChooseWindow {
         ChooseWindow {
             winpos,
+            rect: None,
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
             _default_choose,
         }
@@ -56,11 +58,18 @@ impl Window for ChooseWindow {
         draw_rect_border(context, rect);
 
         self.answer_list.draw(context);
+        self.rect = Some(rect);
     }
 }
 
 impl DialogWindow for ChooseWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        let rect = if let Some(rect) = self.rect {
+            rect
+        } else {
+            return DialogResult::Continue;
+        };
+        let command = command.relative_to(rect);
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(n) => {
@@ -71,7 +80,7 @@ impl DialogWindow for ChooseWindow {
             return DialogResult::Continue;
         }
 
-        match *command {
+        match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
