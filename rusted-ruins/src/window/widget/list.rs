@@ -182,7 +182,9 @@ impl<T: ListWidgetRow> ListWidget<T> {
         }
         let y = (y - self.rect.y) as u32;
         let idx = (y / self.h_row) as u32;
-        assert!(idx < self.n_item);
+        if idx >= self.n_item {
+            return None;
+        }
         Some(idx)
     }
 }

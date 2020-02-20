@@ -88,6 +88,7 @@ impl DialogWindow for CreationWindow {
             return result;
         }
 
+        let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
             self.detail_dialog = Some(CreationDetailDialog::new(pa.gd(), self.recipes[i as usize]));
@@ -191,6 +192,7 @@ impl Window for CreationDetailDialog {
 
 impl DialogWindow for CreationDetailDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
             if self.possible && self.recipe.ingredients.len() as u32 == i {

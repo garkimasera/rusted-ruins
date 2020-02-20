@@ -121,6 +121,7 @@ impl Window for ChooseSaveFileDialog {
 
 impl DialogWindow for ChooseSaveFileDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {
@@ -141,7 +142,7 @@ impl DialogWindow for ChooseSaveFileDialog {
             }
             return DialogResult::Continue;
         }
-        match *command {
+        match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
