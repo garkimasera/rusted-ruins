@@ -304,6 +304,17 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         // If self.mode is OnGame
+        let command = match &self.mode {
+            WindowManageMode::OnGame(game_windows) => {
+                if let Some(command) = game_windows.main_window.convert_mouse_event(command) {
+                    command
+                } else {
+                    return true;
+                }
+            }
+            _ => unreachable!(),
+        };
+
         let mut pa = DoPlayerAction::new(&mut self.game);
         use self::item_window::*;
         match command {

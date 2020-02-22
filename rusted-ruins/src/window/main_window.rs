@@ -1,19 +1,23 @@
 use crate::config::SCREEN_CFG;
 use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
-use crate::game::{Animation, Game, InfoGetter};
+use crate::game::{Animation, Command, Game, InfoGetter};
 use crate::window::Window;
 use geom::*;
+use sdl2::rect::Rect;
 
 pub struct MainWindow {
+    rect: Rect,
     drawer: MainWinDrawer,
     centering_tile: Option<Vec2d>,
 }
 
 impl MainWindow {
     pub fn new() -> MainWindow {
+        let rect = SCREEN_CFG.main_window.into();
         MainWindow {
-            drawer: MainWinDrawer::new(SCREEN_CFG.main_window.into()),
+            rect,
+            drawer: MainWinDrawer::new(rect),
             centering_tile: None,
         }
     }
@@ -70,6 +74,17 @@ impl MainWindow {
         }
 
         self.centering_tile = Some(c);
+    }
+
+    /// Convert mouse event on main window to Command
+    pub fn convert_mouse_event(&self, command: Command) -> Option<Command> {
+        match command {
+            Command::MouseButtonDown { .. } => None,
+            Command::MouseButtonUp { .. } => None,
+            Command::MouseWheel { .. } => None,
+            Command::MouseMotion { .. } => None,
+            _ => Some(command),
+        }
     }
 }
 
