@@ -80,11 +80,23 @@ impl MainWindow {
     pub fn convert_mouse_event(&self, command: Command) -> Option<Command> {
         match command {
             Command::MouseButtonDown { .. } => None,
-            Command::MouseButtonUp { .. } => None,
+            Command::MouseButtonUp { x, y, .. } => {
+                if !self.rect.contains_point((x, y)) {
+                    return None;
+                }
+                let _tile = self.cursor_pos_to_tile(x, y);
+                None
+            }
             Command::MouseWheel { .. } => None,
             Command::MouseMotion { .. } => None,
             _ => Some(command),
         }
+    }
+
+    fn cursor_pos_to_tile(&self, x: i32, y: i32) -> Vec2d {
+        let x = x - self.rect.x;
+        let y = y - self.rect.y;
+        self.drawer.pos_to_tile(x, y)
     }
 }
 

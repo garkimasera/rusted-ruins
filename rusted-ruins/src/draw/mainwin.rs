@@ -496,4 +496,10 @@ impl MainWinDrawer {
         let bottom_right = Vec2d(nx + top_left.0, ny + top_left.1 + 1);
         RectIter::new(top_left, bottom_right)
     }
+
+    pub fn pos_to_tile(&self, x: i32, y: i32) -> Vec2d {
+        let x = x - self.dx;
+        let y = y - self.dy;
+        (x / TILE_SIZE_I, y / TILE_SIZE_I).into()
+    }
 }
