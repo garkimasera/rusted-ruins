@@ -159,7 +159,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         if let Some(dialog_open_request) = self.game.pop_dialog_open_request() {
             let dialog = dialogreq::create_dialog_from_request(dialog_open_request, &mut self.game);
             if let Some(dialog) = dialog {
-                self.window_stack.push(dialog);
+                self.push_dialog_window(dialog);
             }
         }
 
@@ -293,7 +293,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         return false;
                     }
                     DialogResult::OpenChildDialog(child) => {
-                        self.window_stack.push(child);
+                        self.push_dialog_window(child);
                     }
                     DialogResult::Special(result) => {
                         self.process_special_result(result);
@@ -334,83 +334,75 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 pa.shot();
             }
             Command::OpenCreationWin => {
-                self.window_stack
-                    .push(Box::new(creation_window::CreationWindow::new(
-                        CreationKind::Cooking,
-                    )));
+                self.push_dialog_window(Box::new(creation_window::CreationWindow::new(
+                    CreationKind::Cooking,
+                )));
             }
             Command::OpenExitWin => {
-                self.window_stack
-                    .push(Box::new(exit_window::ExitWindow::new()));
+                self.push_dialog_window(Box::new(exit_window::ExitWindow::new()));
             }
             Command::OpenHelpWin => {
-                self.window_stack
-                    .push(Box::new(help_window::HelpWindow::new()));
+                self.push_dialog_window(Box::new(help_window::HelpWindow::new()));
             }
             Command::OpenItemMenu => {
-                self.window_stack
-                    .push(Box::new(item_window::create_item_window_group(
-                        pa.game(),
-                        ItemWindowMode::List,
-                    )));
+                let dialog = Box::new(item_window::create_item_window_group(
+                    pa.game(),
+                    ItemWindowMode::List,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::OpenDebugCommandWin => {
                 let mut win = text_input_dialog::TextInputDialog::new();
                 win.set_callback(|pa, s| {
                     pa.exec_debug_command(s);
                 });
-                self.window_stack.push(Box::new(win));
+                self.push_dialog_window(Box::new(win));
             }
             Command::OpenEquipWin => {
-                self.window_stack
-                    .push(Box::new(equip_window::EquipWindow::new(
-                        &mut pa,
-                        CharaId::Player,
-                    )));
+                let dialog = Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player));
+                self.push_dialog_window(dialog);
             }
             Command::OpenStatusWin => {
-                self.window_stack
-                    .push(Box::new(status_window::create_status_window_group(
-                        pa.game(),
-                    )));
+                let dialog = Box::new(status_window::create_status_window_group(pa.game()));
+                self.push_dialog_window(dialog);
             }
             Command::OpenGameInfoWin => {
-                self.window_stack
-                    .push(Box::new(game_info_window::GameInfoWindow::new(pa.game())));
+                let dialog = Box::new(game_info_window::GameInfoWindow::new(pa.game()));
+                self.push_dialog_window(dialog);
             }
             Command::PickUpItem => {
                 if pa.gd().item_on_player_tile().is_some() {
                     let item_window = ItemWindow::new(ItemWindowMode::PickUp, pa.game());
-                    self.window_stack.push(Box::new(item_window));
+                    self.push_dialog_window(Box::new(item_window));
                 }
             }
             Command::DropItem => {
-                self.window_stack
-                    .push(Box::new(item_window::create_item_window_group(
-                        pa.game(),
-                        ItemWindowMode::Drop,
-                    )));
+                let dialog = Box::new(item_window::create_item_window_group(
+                    pa.game(),
+                    ItemWindowMode::Drop,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::DrinkItem => {
-                self.window_stack
-                    .push(Box::new(item_window::create_item_window_group(
-                        pa.game(),
-                        ItemWindowMode::Drink,
-                    )));
+                let dialog = Box::new(item_window::create_item_window_group(
+                    pa.game(),
+                    ItemWindowMode::Drink,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::EatItem => {
-                self.window_stack
-                    .push(Box::new(item_window::create_item_window_group(
-                        pa.game(),
-                        ItemWindowMode::Eat,
-                    )));
+                let dialog = Box::new(item_window::create_item_window_group(
+                    pa.game(),
+                    ItemWindowMode::Eat,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::ReleaseItem => {
-                self.window_stack
-                    .push(Box::new(item_window::create_item_window_group(
-                        pa.game(),
-                        ItemWindowMode::Release,
-                    )));
+                let dialog = Box::new(item_window::create_item_window_group(
+                    pa.game(),
+                    ItemWindowMode::Release,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::TargetingMode => {
                 self.targeting_mode = true;
@@ -435,13 +427,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         info!("Start newgame dialog");
                         self.window_stack.clear();
                         self.mode = WindowManageMode::NewGame(newgame_window::NewGameWindow::new());
-                        self.window_stack
-                            .push(Box::new(newgame_window::DummyNewGameDialog::new()));
+                        self.push_dialog_window(
+                            Box::new(newgame_window::DummyNewGameDialog::new()),
+                        );
                     }
                     // Load game from saved data
                     SpecialDialogResult::StartDialogLoadGame => {
-                        self.window_stack
-                            .push(Box::new(start_window::ChooseSaveFileDialog::new()));
+                        self.push_dialog_window(
+                            Box::new(start_window::ChooseSaveFileDialog::new()),
+                        );
                     }
                     // Load from file
                     SpecialDialogResult::NewGameStart(gd) => {
@@ -476,8 +470,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     info!("Return to start screen");
                     crate::log::clear();
                     self.window_stack.clear();
-                    self.window_stack
-                        .push(Box::new(start_window::StartDialog::new()));
+                    self.push_dialog_window(Box::new(start_window::StartDialog::new()));
                     self.mode = WindowManageMode::Start(start_window::StartWindow::new());
                 }
                 _ => unreachable!(),
@@ -509,6 +502,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             _ => (),
         }
+    }
+
+    fn push_dialog_window(&mut self, w: Box<dyn DialogWindow>) {
+        crate::eventhandler::open_dialog();
+        self.window_stack.push(w);
     }
 }
 

@@ -115,10 +115,11 @@ impl DialogWindow for TalkWindow {
                 }
                 _ => (),
             }
+            return DialogResult::Continue;
         }
 
         match *command {
-            Command::Enter => {
+            Command::Enter | Command::MouseButtonUp { .. } => {
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
                 if self.msg_text.is_final_page() {

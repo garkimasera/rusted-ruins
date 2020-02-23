@@ -6,6 +6,7 @@ use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
 use sdl2::mouse::{MouseButton, MouseState, MouseWheelDirection};
+use std::cell::Cell;
 use std::collections::{HashMap, VecDeque};
 use std::time::Instant;
 
@@ -169,14 +170,19 @@ impl EventHandler {
             Event::MouseButtonDown {
                 mouse_btn, x, y, ..
             } => {
-                self.command_queue
-                    .push_back(RawCommand::MouseButtonDown { x, y, mouse_btn });
+                if let Some(command) =
+                    dialog_command(RawCommand::MouseButtonDown { x, y, mouse_btn })
+                {
+                    self.command_queue.push_back(command);
+                }
             }
             Event::MouseButtonUp {
                 mouse_btn, x, y, ..
             } => {
-                self.command_queue
-                    .push_back(RawCommand::MouseButtonUp { x, y, mouse_btn });
+                if let Some(command) = dialog_command(RawCommand::MouseButtonUp { x, y, mouse_btn })
+                {
+                    self.command_queue.push_back(command);
+                }
             }
             Event::MouseWheel {
                 direction, x, y, ..
@@ -452,3 +458,36 @@ impl_conv_str_to_keycode!(
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, Space, Return,
     Tab, Escape, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
 );
+
+thread_local!(static LEFT_BTN_DOWNED: Cell<bool> = Cell::new(false));
+
+/// Call this when open new dialog.
+pub fn open_dialog() {
+    LEFT_BTN_DOWNED.with(|left_btn_downed| {
+        left_btn_downed.set(false);
+    });
+}
+
+/// Ignores button command event if button has not downed since last dialog open.
+pub fn dialog_command(command: RawCommand) -> Option<RawCommand> {
+    LEFT_BTN_DOWNED.with(|left_btn_downed| match command {
+        RawCommand::MouseButtonUp { mouse_btn, .. } => {
+            if mouse_btn == MouseButton::Left {
+                if left_btn_downed.get() {
+                    Some(command)
+                } else {
+                    None
+                }
+            } else {
+                Some(command)
+            }
+        }
+        RawCommand::MouseButtonDown { mouse_btn, .. } => {
+            if mouse_btn == MouseButton::Left {
+                left_btn_downed.set(true);
+            }
+            Some(command)
+        }
+        _ => Some(command),
+    })
+}
