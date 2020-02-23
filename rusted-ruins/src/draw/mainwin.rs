@@ -44,6 +44,7 @@ impl MainWinDrawer {
         game: &Game,
         anim: Option<(&Animation, u32)>,
         centering_tile: Option<Vec2d>,
+        hover_tile: Option<Vec2d>,
     ) {
         super::frame::next_frame();
         let mut player_move_dir = None;
@@ -79,8 +80,8 @@ impl MainWinDrawer {
             self.draw_anim(canvas, game, sv, anim.0, anim.1);
         }
 
-        if centering_tile.is_some() {
-            self.draw_tile_cursor(canvas, sv, ct);
+        if let Some(t) = hover_tile {
+            self.draw_tile_cursor(canvas, sv, t);
         }
     }
 

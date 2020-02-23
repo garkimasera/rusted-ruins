@@ -58,7 +58,7 @@ impl Screen {
         let mut window_manager = WindowManager::new(sdl_context, &texture_creator);
 
         'mainloop: loop {
-            self.event_handler.update_dir(&event_pump);
+            self.event_handler.update(&event_pump);
             for event in event_pump.poll_iter() {
                 if !self.event_handler.process_event(event) {
                     break 'mainloop;

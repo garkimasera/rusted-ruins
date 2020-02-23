@@ -5,7 +5,7 @@ use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
-use sdl2::mouse::{MouseButton, MouseWheelDirection};
+use sdl2::mouse::{MouseButton, MouseState, MouseWheelDirection};
 use std::collections::{HashMap, VecDeque};
 use std::time::Instant;
 
@@ -21,6 +21,7 @@ pub struct EventHandler {
     is_instant: bool,
     prev_input_mode: InputMode,
     waiting_dir_release: WaitingDirRelease,
+    mouse_state: Option<MouseState>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -58,10 +59,6 @@ pub enum RawCommand {
         y: i32,
         direction: MouseWheelDirection,
     },
-    MouseMotion {
-        x: i32,
-        y: i32,
-    },
 }
 
 impl EventHandler {
@@ -93,6 +90,7 @@ impl EventHandler {
             is_instant: false,
             prev_input_mode: InputMode::Dialog,
             waiting_dir_release: WaitingDirRelease::No,
+            mouse_state: None,
         }
     }
 
@@ -186,19 +184,6 @@ impl EventHandler {
                 self.command_queue
                     .push_back(RawCommand::MouseWheel { x, y, direction });
             }
-            Event::MouseMotion { x, y, .. } => {
-                if let Some(prev_command) = self.command_queue.pop_back() {
-                    match prev_command {
-                        RawCommand::MouseMotion { .. } => (),
-                        _ => {
-                            self.command_queue.push_back(prev_command);
-                        }
-                    }
-                } else {
-                    self.command_queue
-                        .push_back(RawCommand::MouseMotion { x, y });
-                }
-            }
             _ => {}
         }
         true
@@ -250,7 +235,16 @@ impl EventHandler {
 
                 return Some(c);
             }
-            return None;
+
+            // returns mouse state
+            return if let Some(mouse_state) = self.mouse_state {
+                Some(Command::MouseState {
+                    x: mouse_state.x(),
+                    y: mouse_state.y(),
+                })
+            } else {
+                None
+            };
         }
 
         let rawc = self.command_queue.pop_front().unwrap();
@@ -258,8 +252,12 @@ impl EventHandler {
         self.conv_table.conv(rawc, mode)
     }
 
-    /// Update direction input
-    pub fn update_dir(&mut self, event_pump: &sdl2::EventPump) {
+    /// Update event handler at each frame. Handles direction input and mouse cursor.
+    pub fn update(&mut self, event_pump: &sdl2::EventPump) {
+        // Mouse cursor
+        self.mouse_state = Some(MouseState::new(event_pump));
+
+        // Direction
         let keyboard = sdl2::keyboard::KeyboardState::new(event_pump);
         let mut hdir = HDirection::None;
         let mut vdir = VDirection::None;
@@ -410,9 +408,6 @@ impl CommandConvTable {
                     y,
                     wheel_direction,
                 });
-            }
-            RawCommand::MouseMotion { x, y } => {
-                return Some(Command::MouseMotion { x, y });
             }
             _ => (),
         }

@@ -87,7 +87,7 @@ impl ToText for Command {
             MouseButtonDown { .. } => "command-mouse_button_down",
             MouseButtonUp { .. } => "command-mouse_button_up",
             MouseWheel { .. } => "command-mouse_wheel",
-            MouseMotion { .. } => "command-mouse_motion",
+            MouseState { .. } => "command-mouse_state",
         };
         ui_txt(id).into()
     }

@@ -48,7 +48,7 @@ pub enum Command {
         y: i32,
         wheel_direction: WheelDirection,
     },
-    MouseMotion {
+    MouseState {
         x: i32,
         y: i32,
     },
@@ -95,7 +95,7 @@ impl Command {
                 y: y - point.1,
                 wheel_direction,
             },
-            Command::MouseMotion { x, y } => Command::MouseMotion {
+            Command::MouseState { x, y } => Command::MouseState {
                 x: x - point.0,
                 y: y - point.1,
             },

@@ -304,7 +304,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
 
         // If self.mode is OnGame
-        let command = match &self.mode {
+        let command = match &mut self.mode {
             WindowManageMode::OnGame(game_windows) => {
                 if let Some(command) = game_windows.main_window.convert_mouse_event(command) {
                     command

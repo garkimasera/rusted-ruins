@@ -10,6 +10,7 @@ pub struct MainWindow {
     rect: Rect,
     drawer: MainWinDrawer,
     centering_tile: Option<Vec2d>,
+    hover_tile: Option<Vec2d>,
 }
 
 impl MainWindow {
@@ -19,6 +20,7 @@ impl MainWindow {
             rect,
             drawer: MainWinDrawer::new(rect),
             centering_tile: None,
+            hover_tile: None,
         }
     }
 
@@ -77,7 +79,7 @@ impl MainWindow {
     }
 
     /// Convert mouse event on main window to Command
-    pub fn convert_mouse_event(&self, command: Command) -> Option<Command> {
+    pub fn convert_mouse_event(&mut self, command: Command) -> Option<Command> {
         match command {
             Command::MouseButtonDown { .. } => None,
             Command::MouseButtonUp { x, y, .. } => {
@@ -88,7 +90,13 @@ impl MainWindow {
                 None
             }
             Command::MouseWheel { .. } => None,
-            Command::MouseMotion { .. } => None,
+            Command::MouseState { x, y } => {
+                if !self.rect.contains_point((x, y)) {
+                    return None;
+                }
+                self.hover_tile = Some(self.cursor_pos_to_tile(x, y));
+                None
+            }
             _ => Some(command),
         }
     }
@@ -102,6 +110,7 @@ impl MainWindow {
 
 impl Window for MainWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        self.drawer.draw(context, game, anim, self.centering_tile);
+        self.drawer
+            .draw(context, game, anim, self.centering_tile, self.hover_tile);
     }
 }
