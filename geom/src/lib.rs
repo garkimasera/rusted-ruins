@@ -122,7 +122,7 @@ impl<T> Array2d<T> {
 
         assert!(v.len() == len);
 
-        Array2d { w: w, h: h, v: v }
+        Array2d { w, h, v }
     }
 
     pub fn size(&self) -> (u32, u32) {
@@ -171,7 +171,7 @@ where
         let len = (w * h) as usize;
         let v = vec![v; len];
 
-        Array2d { w: w, h: h, v: v }
+        Array2d { w, h, v }
     }
 
     pub fn swap<P: Into<Vec2d>>(&mut self, a: P, b: P) {
@@ -383,8 +383,8 @@ impl RectIter {
         let right_bottom = right_bottom.into();
 
         RectIter {
-            top_left: top_left,
-            right_bottom: right_bottom,
+            top_left,
+            right_bottom,
             value: Vec2d(top_left.0 - 1, top_left.1),
         }
     }
@@ -607,10 +607,7 @@ pub struct Direction {
 
 impl Direction {
     pub fn new(hdir: HDirection, vdir: VDirection) -> Direction {
-        Direction {
-            hdir: hdir,
-            vdir: vdir,
-        }
+        Direction { hdir, vdir }
     }
 
     pub fn none() -> Direction {
