@@ -101,57 +101,33 @@ impl EventHandler {
                 return false;
             }
             // Direction
-            Event::KeyDown {
-                keycode: Option::Some(Keycode::Up),
-                ..
-            } => {
-                //self.update_dir(None, Some(VDirection::Up));
-            }
-            Event::KeyDown {
-                keycode: Option::Some(Keycode::Down),
-                ..
-            } => {
-                //self.update_dir(None, Some(VDirection::Down));
-            }
-            Event::KeyDown {
-                keycode: Option::Some(Keycode::Left),
-                ..
-            } => {
-                //self.update_dir(Some(HDirection::Left), None);
-            }
-            Event::KeyDown {
-                keycode: Option::Some(Keycode::Right),
-                ..
-            } => {
-                //self.update_dir(Some(HDirection::Right), None);
-            }
             Event::KeyUp {
-                keycode: Option::Some(Keycode::Up),
+                keycode: Some(Keycode::Up),
                 ..
             } => {
                 self.set_waiting_dir_release();
             }
             Event::KeyUp {
-                keycode: Option::Some(Keycode::Down),
+                keycode: Some(Keycode::Down),
                 ..
             } => {
                 self.set_waiting_dir_release();
             }
             Event::KeyUp {
-                keycode: Option::Some(Keycode::Left),
+                keycode: Some(Keycode::Left),
                 ..
             } => {
                 self.set_waiting_dir_release();
             }
             Event::KeyUp {
-                keycode: Option::Some(Keycode::Right),
+                keycode: Some(Keycode::Right),
                 ..
             } => {
                 self.set_waiting_dir_release();
             }
             // Shortcut keys
             Event::KeyUp {
-                keycode: Option::Some(keycode),
+                keycode: Some(keycode),
                 ..
             } => {
                 self.command_queue.push_back(RawCommand::KeyPress(keycode));
