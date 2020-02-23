@@ -68,6 +68,28 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
+    pub fn move_to(&mut self, dest: Vec2d) {
+        let d = dest - self.gd().player_pos();
+        let hdir = if d.0 < 0 {
+            HDirection::Left
+        } else if d.0 > 0 {
+            HDirection::Right
+        } else {
+            HDirection::None
+        };
+        let vdir = if d.1 < 0 {
+            VDirection::Up
+        } else if d.1 > 0 {
+            VDirection::Down
+        } else {
+            VDirection::None
+        };
+        let dir = Direction::new(hdir, vdir);
+        if !dir.is_none() {
+            self.try_move(Direction::new(hdir, vdir));
+        }
+    }
+
     /// Try to go to next floor
     /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.

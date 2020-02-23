@@ -321,6 +321,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::Move { dir } => {
                 pa.try_move(dir);
             }
+            Command::MoveTo { dest } => {
+                pa.move_to(dest);
+            }
             Command::Enter => {
                 // If player is on stairs, move from this map
                 if pa.gd().on_map_entrance() {

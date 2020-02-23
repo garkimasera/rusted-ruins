@@ -329,7 +329,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                     None
                 }
             }
-            Command::MouseState { x, y } => {
+            Command::MouseState { x, y, .. } => {
                 if let Some(idx) = self.get_idx_from_pos(x, y) {
                     if self.current_choice != idx {
                         self.current_choice = idx;

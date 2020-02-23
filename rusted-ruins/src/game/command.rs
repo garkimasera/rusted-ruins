@@ -8,6 +8,9 @@ pub enum Command {
     Move {
         dir: Direction,
     },
+    MoveTo {
+        dest: Vec2d,
+    },
     Enter,
     Cancel,
     RotateWindowRight,
@@ -51,6 +54,8 @@ pub enum Command {
     MouseState {
         x: i32,
         y: i32,
+        left_button: bool,
+        right_button: bool,
     },
 }
 
@@ -95,9 +100,16 @@ impl Command {
                 y: y - point.1,
                 wheel_direction,
             },
-            Command::MouseState { x, y } => Command::MouseState {
+            Command::MouseState {
+                x,
+                y,
+                left_button,
+                right_button,
+            } => Command::MouseState {
                 x: x - point.0,
                 y: y - point.1,
+                left_button,
+                right_button,
             },
             _ => self.clone(),
         }

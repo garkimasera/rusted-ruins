@@ -241,6 +241,8 @@ impl EventHandler {
                 Some(Command::MouseState {
                     x: mouse_state.x(),
                     y: mouse_state.y(),
+                    left_button: mouse_state.left(),
+                    right_button: mouse_state.right(),
                 })
             } else {
                 None

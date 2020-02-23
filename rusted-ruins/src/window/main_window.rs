@@ -90,11 +90,19 @@ impl MainWindow {
                 None
             }
             Command::MouseWheel { .. } => None,
-            Command::MouseState { x, y } => {
+            Command::MouseState {
+                x, y, left_button, ..
+            } => {
                 if !self.rect.contains_point((x, y)) {
                     return None;
                 }
-                self.hover_tile = Some(self.cursor_pos_to_tile(x, y));
+                let tile = self.cursor_pos_to_tile(x, y);
+                self.hover_tile = Some(tile);
+
+                if left_button {
+                    return Some(Command::MoveTo { dest: tile });
+                }
+
                 None
             }
             _ => Some(command),
