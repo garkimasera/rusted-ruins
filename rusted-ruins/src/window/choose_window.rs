@@ -1,6 +1,7 @@
 use super::commonuse::*;
 use super::widget::*;
 use super::winpos::WindowPos;
+use crate::text::ui_txt;
 use sdl2::rect::Rect;
 
 /// Player chooses one item from list.
@@ -10,29 +11,52 @@ pub struct ChooseWindow {
     winpos: WindowPos,
     rect: Option<Rect>,
     answer_list: TextListWidget,
-    _default_choose: Option<u32>,
+    default_behavior: DefaultBehavior,
+    callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>>,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum DefaultBehavior {
+    Close,
+    Ignore,
 }
 
 impl ChooseWindow {
     pub fn new(
         winpos: WindowPos,
         choices: Vec<String>,
-        _default_choose: Option<u32>,
+        default_behavior: DefaultBehavior,
     ) -> ChooseWindow {
         ChooseWindow {
             winpos,
             rect: None,
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
-            _default_choose,
+            default_behavior,
+            callbacks: Vec::new(),
         }
     }
 
     /// Create ChooseWindow with two choices, yes and no
     /// default_choose: When Esc is inputed, which choice will be returned
-    pub fn with_yesno(winpos: WindowPos, default_choose: Option<bool>) -> ChooseWindow {
+    pub fn with_yesno(winpos: WindowPos, default_behavior: DefaultBehavior) -> ChooseWindow {
         let choices = vec!["Yes".to_owned(), "No".to_owned()];
-        let default_choose = default_choose.map(|a| if a { 0 } else { 1 });
-        ChooseWindow::new(winpos, choices, default_choose)
+        ChooseWindow::new(winpos, choices, default_behavior)
+    }
+
+    /// Create menu with callbacks
+    pub fn menu(
+        winpos: WindowPos,
+        text_ids: Vec<&str>,
+        callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>>,
+    ) -> ChooseWindow {
+        let choices: Vec<String> = text_ids.iter().map(|tid| ui_txt(tid)).collect();
+        ChooseWindow {
+            winpos,
+            rect: None,
+            answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
+            default_behavior: DefaultBehavior::Close,
+            callbacks,
+        }
     }
 
     pub fn set_winpos(&mut self, winpos: WindowPos) {
@@ -81,7 +105,10 @@ impl DialogWindow for ChooseWindow {
         }
 
         match command {
-            Command::Cancel => DialogResult::Close,
+            Command::Cancel => match self.default_behavior {
+                DefaultBehavior::Close => DialogResult::Close,
+                DefaultBehavior::Ignore => DialogResult::Continue,
+            },
             _ => DialogResult::Continue,
         }
     }

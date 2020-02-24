@@ -1,4 +1,4 @@
-use super::choose_window::ChooseWindow;
+use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
 use super::text_window::TextWindow;
 use super::winpos::{WindowHPos, WindowPos, WindowVPos};
@@ -26,7 +26,7 @@ impl ExitWindow {
                 text::ui_txt("dialog-choice-exit_game").to_owned(),
                 text::ui_txt("dialog-choice-close").to_owned(),
             ],
-            Some(0),
+            DefaultBehavior::Close,
         );
         ExitWindow {
             text_win,
@@ -98,7 +98,11 @@ impl GameOverWindow {
         let choices = vec!["Return to start screen".to_owned(), "Quit".to_owned()];
         GameOverWindow {
             text_win,
-            choose_win: ChooseWindow::new(winpos, choices, None),
+            choose_win: ChooseWindow::new(
+                winpos,
+                choices,
+                super::choose_window::DefaultBehavior::Ignore,
+            ),
         }
     }
 }

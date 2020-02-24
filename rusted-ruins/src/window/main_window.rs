@@ -2,7 +2,7 @@ use crate::config::SCREEN_CFG;
 use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
 use crate::game::command::MouseButton;
-use crate::game::{Animation, Command, Game, InfoGetter};
+use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
 use crate::window::{DialogWindow, Window};
 use geom::*;
 use sdl2::rect::Rect;
@@ -140,9 +140,14 @@ impl Window for MainWindow {
 
 fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow> {
     let winpos = super::winpos::WindowPos::from_left_top(x, y);
-    Box::new(super::choose_window::ChooseWindow::new(
-        winpos,
-        vec!["dummy".to_owned()],
-        None,
+
+    let mut text_ids = vec![];
+    let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
+
+    text_ids.push("tile-menu-infomation");
+    callbacks.push(Box::new(|pa: &mut DoPlayerAction| {}));
+
+    Box::new(super::choose_window::ChooseWindow::menu(
+        winpos, text_ids, callbacks,
     ))
 }

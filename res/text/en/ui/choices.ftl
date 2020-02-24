@@ -5,3 +5,4 @@ dialog-choice-close = Close
 dialog-choice-exit_game = Exit Game
 dialog-choice-save_game = Save Game
 creation-start = Start
+tile-menu-infomation = Infomation

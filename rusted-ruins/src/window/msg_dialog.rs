@@ -1,4 +1,4 @@
-use super::choose_window::ChooseWindow;
+use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
 use super::text_window::TextWindow;
 use super::winpos::{WindowHPos, WindowPos, WindowVPos};
@@ -41,7 +41,7 @@ impl MsgDialog {
         );
         MsgDialog {
             text_win,
-            choose_win: ChooseWindow::with_yesno(winpos, None),
+            choose_win: ChooseWindow::with_yesno(winpos, DefaultBehavior::Close),
             action_callback: Box::new(f),
         }
     }

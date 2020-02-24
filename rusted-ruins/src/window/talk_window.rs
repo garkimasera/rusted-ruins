@@ -1,4 +1,4 @@
-use super::choose_window::ChooseWindow;
+use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
 use super::misc_window::ImageWindow;
 use super::widget::*;
@@ -71,7 +71,7 @@ impl TalkWindow {
                     .iter()
                     .map(|a| text::talk_txt(&*a.0).to_owned())
                     .collect();
-                self.choose_win = Some(ChooseWindow::new(winpos, choices, None));
+                self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
             }
         }
 
