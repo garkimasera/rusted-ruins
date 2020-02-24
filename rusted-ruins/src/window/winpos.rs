@@ -29,6 +29,13 @@ impl WindowPos {
         WindowPos { h, v }
     }
 
+    pub fn from_left_top(x: i32, y: i32) -> WindowPos {
+        WindowPos {
+            h: WindowHPos::LeftMargin(x),
+            v: WindowVPos::TopMargin(y),
+        }
+    }
+
     pub fn calc_left_top(&self, w: u32, h: u32) -> (i32, i32) {
         let parent_w = SCREEN_CFG.screen_w as i32;
         let parent_h = SCREEN_CFG.screen_h as i32;

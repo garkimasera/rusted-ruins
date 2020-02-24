@@ -306,10 +306,18 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         // If self.mode is OnGame
         let command = match &mut self.mode {
             WindowManageMode::OnGame(game_windows) => {
-                if let Some(command) = game_windows.main_window.convert_mouse_event(command) {
-                    command
-                } else {
-                    return true;
+                match game_windows
+                    .main_window
+                    .convert_mouse_event(command, &self.game)
+                {
+                    main_window::ConvertMouseEventResult::Command(command) => command,
+                    main_window::ConvertMouseEventResult::OpenWindow(window) => {
+                        self.push_dialog_window(window);
+                        return true;
+                    }
+                    main_window::ConvertMouseEventResult::None => {
+                        return true;
+                    }
                 }
             }
             _ => unreachable!(),

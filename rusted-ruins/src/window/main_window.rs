@@ -1,8 +1,9 @@
 use crate::config::SCREEN_CFG;
 use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
+use crate::game::command::MouseButton;
 use crate::game::{Animation, Command, Game, InfoGetter};
-use crate::window::Window;
+use crate::window::{DialogWindow, Window};
 use geom::*;
 use sdl2::rect::Rect;
 
@@ -11,6 +12,12 @@ pub struct MainWindow {
     drawer: MainWinDrawer,
     centering_tile: Option<Vec2d>,
     hover_tile: Option<Vec2d>,
+}
+
+pub enum ConvertMouseEventResult {
+    None,
+    Command(Command),
+    OpenWindow(Box<dyn DialogWindow>),
 }
 
 impl MainWindow {
@@ -79,33 +86,41 @@ impl MainWindow {
     }
 
     /// Convert mouse event on main window to Command
-    pub fn convert_mouse_event(&mut self, command: Command) -> Option<Command> {
+    pub fn convert_mouse_event(
+        &mut self,
+        command: Command,
+        game: &Game,
+    ) -> ConvertMouseEventResult {
         match command {
-            Command::MouseButtonDown { .. } => None,
-            Command::MouseButtonUp { x, y, .. } => {
+            Command::MouseButtonDown { .. } => ConvertMouseEventResult::None,
+            Command::MouseButtonUp { x, y, button } => {
                 if !self.rect.contains_point((x, y)) {
-                    return None;
+                    return ConvertMouseEventResult::None;
                 }
-                let _tile = self.cursor_pos_to_tile(x, y);
-                None
+                let tile = self.cursor_pos_to_tile(x, y);
+                if button == MouseButton::Right {
+                    ConvertMouseEventResult::OpenWindow(create_menu(game, tile, x, y))
+                } else {
+                    ConvertMouseEventResult::None
+                }
             }
-            Command::MouseWheel { .. } => None,
+            Command::MouseWheel { .. } => ConvertMouseEventResult::None,
             Command::MouseState {
                 x, y, left_button, ..
             } => {
                 if !self.rect.contains_point((x, y)) {
-                    return None;
+                    return ConvertMouseEventResult::None;
                 }
                 let tile = self.cursor_pos_to_tile(x, y);
                 self.hover_tile = Some(tile);
 
                 if left_button {
-                    return Some(Command::MoveTo { dest: tile });
+                    return ConvertMouseEventResult::Command(Command::MoveTo { dest: tile });
                 }
 
-                None
+                ConvertMouseEventResult::None
             }
-            _ => Some(command),
+            _ => ConvertMouseEventResult::Command(command),
         }
     }
 
@@ -121,4 +136,13 @@ impl Window for MainWindow {
         self.drawer
             .draw(context, game, anim, self.centering_tile, self.hover_tile);
     }
+}
+
+fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow> {
+    let winpos = super::winpos::WindowPos::from_left_top(x, y);
+    Box::new(super::choose_window::ChooseWindow::new(
+        winpos,
+        vec!["dummy".to_owned()],
+        None,
+    ))
 }
