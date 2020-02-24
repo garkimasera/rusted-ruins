@@ -1,6 +1,7 @@
 use super::img::build_img;
 use crate::error::*;
 use crate::tomlinput::*;
+use anyhow::*;
 use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
 

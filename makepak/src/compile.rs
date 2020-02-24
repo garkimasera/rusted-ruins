@@ -2,6 +2,7 @@ use crate::dir;
 use crate::error::*;
 use crate::rrscript::read_rrscript;
 use crate::verbose::print_verbose;
+use anyhow::*;
 use common::obj::Object;
 use common::pakutil::write_object;
 use std::fs::File;
@@ -33,9 +34,9 @@ pub fn compile(files: &[&str], output_file: &String) {
 
         let obj = match read_result {
             Ok(o) => o,
-            Err(echain) => {
+            Err(e) => {
                 eprintln!("Cannot process \"{}\"", f.to_string_lossy());
-                for e in echain.iter_chain() {
+                for e in e.chain() {
                     eprintln!("{}", e);
                 }
                 continue;

@@ -6,7 +6,6 @@ extern crate rusted_ruins_rng as rng;
 extern crate rusted_ruins_rules as rules;
 #[macro_use]
 extern crate lazy_static;
-extern crate failure;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]

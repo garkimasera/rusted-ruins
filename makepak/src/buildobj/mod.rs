@@ -5,8 +5,8 @@ mod script_parser;
 
 use self::img::*;
 use self::item::build_item_object;
-use crate::error::*;
 use crate::tomlinput::TomlInput;
+use anyhow::*;
 use common::gamedata;
 use common::gamedata::CharaBaseAttr;
 use common::obj::*;

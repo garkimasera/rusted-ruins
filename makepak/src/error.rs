@@ -1,26 +1,20 @@
-pub use failure::{Error, ResultExt};
+use thiserror::Error;
 
-#[derive(Debug, Fail)]
+#[derive(Error, Debug)]
 pub enum PakCompileError {
-    #[fail(display = "missing field: {}", field_name)]
+    #[error("missing field: {field_name}")]
     MissingField { field_name: String },
-    #[fail(
-        display = "unexpected value \"{}\" for field \"{}\"",
-        value, field_name
-    )]
+    #[error("unexpected value \"{field_name}\" for field \"{value}\"")]
     UnexpectedValue { field_name: String, value: String },
-    #[fail(
-        display = "image size error: expected size is ({}, {}), but png file size is ({}, {})",
-        input_x, input_y, image_x, image_y
-    )]
+    #[error("image size error: expected size is ({input_x}, {input_y}), but png file size is ({image_x}, {image_y})")]
     ImageSizeError {
         input_x: u32,
         input_y: u32,
         image_x: u32,
         image_y: u32,
     },
-    #[fail(display = "object writing error\n{}", description)]
+    #[error("object writing error\n{description}")]
     ObjWriteError { description: String },
-    #[fail(display = "script parse error\n{}", description)]
+    #[error("script parse error\n{description}")]
     ScriptParseError { description: String },
 }

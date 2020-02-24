@@ -1,5 +1,6 @@
 use crate::error::*;
 use crate::tomlinput::*;
+use anyhow::*;
 use common::obj::*;
 use image::{self, GenericImageView};
 use std::fs::File;

@@ -1,5 +1,3 @@
-pub use failure::Error;
-
 macro_rules! try_sdl {
     ($rst:expr) => {
         match $rst {

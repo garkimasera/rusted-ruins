@@ -1,7 +1,7 @@
-use crate::error::*;
+use anyhow::Result;
 use std::path::Path;
 
-pub fn read_file_as_string<P: AsRef<Path>>(path: P) -> Result<String, Error> {
+pub fn read_file_as_string<P: AsRef<Path>>(path: P) -> Result<String> {
     use std::fs::File;
     use std::io::Read;
 

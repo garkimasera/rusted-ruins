@@ -3,8 +3,6 @@ extern crate lazy_static;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
-extern crate failure;
-#[macro_use]
 extern crate nom;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;

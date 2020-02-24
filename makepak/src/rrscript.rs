@@ -1,13 +1,13 @@
 use crate::buildobj::script_parse;
-use crate::error::*;
 use crate::verbose::print_verbose;
+use anyhow::*;
 use common::obj::{Object, ScriptObject};
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::path::Path;
 
 /// Read rrscript file
-pub fn read_rrscript<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
+pub fn read_rrscript<P: AsRef<Path>>(path: P) -> Result<Object> {
     let mut f = BufReader::new(File::open(path.as_ref())?);
     let mut first_line = String::new();
     f.read_line(&mut first_line)?;

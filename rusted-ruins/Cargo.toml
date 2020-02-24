@@ -5,10 +5,10 @@ edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
 [dependencies]
+anyhow = "1"
 clap = "2"
 dirs = "2"
 env_logger = "0.7"
-failure = "0.1.1"
 fluent = "0.9"
 fnv = "1"
 lazy_static = "1"
