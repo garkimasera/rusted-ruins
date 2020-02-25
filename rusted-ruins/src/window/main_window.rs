@@ -145,7 +145,9 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
     let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
 
     text_ids.push("tile-menu-infomation");
-    callbacks.push(Box::new(|pa: &mut DoPlayerAction| {}));
+    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+        pa.print_tile_info(tile);
+    }));
 
     Box::new(super::choose_window::ChooseWindow::menu(
         winpos, text_ids, callbacks,

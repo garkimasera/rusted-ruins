@@ -346,6 +346,11 @@ impl<'a> DoPlayerAction<'a> {
     pub fn exec_debug_command(&mut self, command: &str) {
         super::debug_command::exec_debug_command(self.0, command);
     }
+
+    /// Print infomation of specified tile
+    pub fn print_tile_info(&mut self, tile: Vec2d) {
+        super::map::tile_info::print_tile_info(self.0, tile);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> String {

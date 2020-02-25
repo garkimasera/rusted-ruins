@@ -11,6 +11,10 @@ debug-command-failed = Debug command "{$command}" failed.
 debug-command-genchara = Character "{$chara}" is generated.
 debug-command-genitem = Item "{$item}" is generated.
 
+# Messages about tile information
+
+tile-information-no-info = No infomation about this tile.
+
 # Messages when moving on map
 
 exit-to-outside = {$player} exited to outside.

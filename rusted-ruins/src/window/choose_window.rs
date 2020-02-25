@@ -87,7 +87,7 @@ impl Window for ChooseWindow {
 }
 
 impl DialogWindow for ChooseWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         let rect = if let Some(rect) = self.rect {
             rect
         } else {
@@ -97,7 +97,12 @@ impl DialogWindow for ChooseWindow {
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(n) => {
-                    return DialogResult::CloseWithValue(Box::new(n));
+                    if self.callbacks.is_empty() {
+                        return DialogResult::CloseWithValue(Box::new(n));
+                    } else {
+                        self.callbacks.get_mut(n as usize).unwrap()(pa);
+                        return DialogResult::Close;
+                    }
                 }
                 _ => (),
             }
@@ -109,6 +114,12 @@ impl DialogWindow for ChooseWindow {
                 DefaultBehavior::Close => DialogResult::Close,
                 DefaultBehavior::Ignore => DialogResult::Continue,
             },
+            Command::MouseButtonUp { x, y, .. } if x < 0 || x >= rect.w || y < 0 || y >= rect.h => {
+                match self.default_behavior {
+                    DefaultBehavior::Close => DialogResult::Close,
+                    DefaultBehavior::Ignore => DialogResult::Continue,
+                }
+            }
             _ => DialogResult::Continue,
         }
     }
