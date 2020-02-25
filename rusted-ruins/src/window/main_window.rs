@@ -139,10 +139,35 @@ impl Window for MainWindow {
 }
 
 fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow> {
+    use crate::game::map::tile_info::*;
+    use common::gamedata::BoundaryBehavior;
+
     let winpos = super::winpos::WindowPos::from_left_top(x, y);
 
     let mut text_ids = vec![];
     let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
+
+    let map = game.gd.get_current_map();
+    let t = tile_info_query(map, tile);
+    let player_same_tile = tile == game.gd.player_pos();
+
+    if player_same_tile {
+        match t.boundary {
+            None | Some((_, BoundaryBehavior::None)) => (),
+            Some((dir, BoundaryBehavior::RegionMap)) => {
+                text_ids.push("tile-menu-exit-to-region-map");
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    pa.goto_next_floor(dir);
+                }));
+            }
+            Some((dir, _)) => {
+                text_ids.push("tile-menu-move-to-next-map");
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    pa.goto_next_floor(dir);
+                }));
+            }
+        }
+    }
 
     text_ids.push("tile-menu-infomation");
     callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {

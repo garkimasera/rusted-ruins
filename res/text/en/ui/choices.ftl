@@ -6,3 +6,5 @@ dialog-choice-exit_game = Exit Game
 dialog-choice-save_game = Save Game
 creation-start = Start
 tile-menu-infomation = Infomation
+tile-menu-exit-to-region-map = Exit to region map
+tile-menu-move-to-next-map = Move to next map

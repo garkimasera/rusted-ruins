@@ -12,7 +12,7 @@ pub mod frequent_tex;
 mod infogetter;
 pub mod item;
 mod magic;
-mod map;
+pub mod map;
 pub mod newgame;
 mod npc;
 pub mod playeract;
