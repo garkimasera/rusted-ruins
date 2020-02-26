@@ -335,7 +335,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::Enter => {
                 // If player is on stairs, move from this map
                 if pa.gd().on_map_entrance() {
-                    pa.goto_next_floor(Direction::none());
+                    pa.goto_next_floor(Direction::none(), true);
                 }
             }
             Command::Shot => {

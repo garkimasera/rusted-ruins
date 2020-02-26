@@ -59,7 +59,7 @@ impl<'a> DoPlayerAction<'a> {
         }
         // If destination is out of boundary
         if !self.gd().get_current_map().is_inside(dest_tile) {
-            self.goto_next_floor(dir);
+            self.goto_next_floor(dir, true);
             return;
         }
         // Move to the next tile
@@ -93,7 +93,7 @@ impl<'a> DoPlayerAction<'a> {
     /// Try to go to next floor
     /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.
-    pub fn goto_next_floor(&mut self, dir: Direction) {
+    pub fn goto_next_floor(&mut self, dir: Direction, dialog: bool) {
         enum LogMessage {
             ExitToOutside,
             EnterSite(String),
@@ -159,8 +159,12 @@ impl<'a> DoPlayerAction<'a> {
                 }
                 super::map::switch_map(pa.0, next_mid);
             });
-            self.0
-                .request_dialog_open(DialogOpenRequest::YesNo { callback: cb, msg });
+            if dialog {
+                self.0
+                    .request_dialog_open(DialogOpenRequest::YesNo { callback: cb, msg });
+            } else {
+                cb(self, true);
+            }
 
             return;
         } else {
@@ -207,10 +211,14 @@ impl<'a> DoPlayerAction<'a> {
                 }
                 super::map::switch_map(pa.0, next_mid);
             });
-            self.0.request_dialog_open(DialogOpenRequest::YesNo {
-                callback: cb,
-                msg: msg_switch_map(next_mid),
-            });
+            if dialog {
+                self.0.request_dialog_open(DialogOpenRequest::YesNo {
+                    callback: cb,
+                    msg: msg_switch_map(next_mid),
+                });
+            } else {
+                cb(self, true);
+            }
         }
     }
 

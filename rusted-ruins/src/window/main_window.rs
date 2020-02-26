@@ -157,13 +157,13 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
             Some((dir, BoundaryBehavior::RegionMap)) => {
                 text_ids.push("tile-menu-exit-to-region-map");
                 callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
-                    pa.goto_next_floor(dir);
+                    pa.goto_next_floor(dir, false);
                 }));
             }
             Some((dir, _)) => {
                 text_ids.push("tile-menu-move-to-next-map");
                 callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
-                    pa.goto_next_floor(dir);
+                    pa.goto_next_floor(dir, false);
                 }));
             }
         }
