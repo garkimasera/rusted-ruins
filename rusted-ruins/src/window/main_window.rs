@@ -140,18 +140,35 @@ impl Window for MainWindow {
 
 fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow> {
     use crate::game::map::tile_info::*;
-    use common::gamedata::BoundaryBehavior;
+    use common::gamedata::{BoundaryBehavior, SpecialTileKind, StairsKind};
 
     let winpos = super::winpos::WindowPos::from_left_top(x, y);
 
     let mut text_ids = vec![];
     let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
 
-    let map = game.gd.get_current_map();
-    let t = tile_info_query(map, tile);
+    let t = tile_info_query(&game.gd, tile);
     let player_same_tile = tile == game.gd.player_pos();
 
     if player_same_tile {
+        match t.move_symbol {
+            Some(SpecialTileKind::Stairs { kind, .. }) => {
+                text_ids.push(match kind {
+                    StairsKind::UpStairs => "tile-menu-up-stairs",
+                    StairsKind::DownStairs => "tile-menu-down-stairs",
+                });
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    pa.goto_next_floor(Direction::NONE, false);
+                }));
+            }
+            Some(SpecialTileKind::SiteSymbol { .. }) => {
+                text_ids.push("tile-menu-enter-site");
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    pa.goto_next_floor(Direction::NONE, false);
+                }));
+            }
+            _ => (),
+        }
         match t.boundary {
             None | Some((_, BoundaryBehavior::None)) => (),
             Some((dir, BoundaryBehavior::RegionMap)) => {
