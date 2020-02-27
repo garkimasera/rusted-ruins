@@ -1,6 +1,7 @@
 use super::commonuse::*;
 use super::widget::*;
 use super::winpos::WindowPos;
+use crate::config::SCREEN_CFG;
 use crate::text::ui_txt;
 use sdl2::rect::Rect;
 
@@ -71,12 +72,16 @@ impl Window for ChooseWindow {
         let left_top_point = self
             .winpos
             .calc_left_top(list_widget_size.0, list_widget_size.1);
-        let rect = Rect::new(
+        let mut rect = Rect::new(
             left_top_point.0,
             left_top_point.1,
             list_widget_size.0,
             list_widget_size.1,
         );
+
+        if rect.right() > SCREEN_CFG.screen_w as i32 {
+            rect.offset(-(rect.right() - SCREEN_CFG.screen_w as i32), 0)
+        }
 
         // Drawing
         draw_rect_border(context, rect);
