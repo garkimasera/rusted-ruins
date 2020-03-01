@@ -16,14 +16,10 @@ pub struct ListWidget<T> {
     n_item: u32,
     /// The number of rows in one page
     page_size: u32,
-    multiple_page: bool,
     /// x positions of each column
     column_pos: Vec<i32>,
     current_choice: u32,
-    current_page: u32,
-    max_page: u32,
     update_by_user: bool,
-    page_label: Option<TextCache>,
     draw_border: bool,
 }
 
@@ -48,40 +44,27 @@ impl<T: ListWidgetRow> ListWidget<T> {
         rect: R,
         column_pos: Vec<i32>,
         page_size: u32,
-        multiple_page: bool,
         update_by_user: bool,
     ) -> ListWidget<T> {
         let rect = rect.into();
         let h_row = UI_CFG.list_widget.h_row_default;
 
-        let mut w = ListWidget {
+        ListWidget {
             rect,
             rows: Vec::new(),
             h_row,
             n_row: 0,
             n_item: 0,
             page_size,
-            multiple_page,
             column_pos,
             current_choice: 0,
-            current_page: 0,
-            max_page: 0,
             update_by_user,
-            page_label: None,
-            draw_border: multiple_page,
-        };
-        if multiple_page {
-            w.update_page_label();
+            draw_border: false,
         }
-        w
     }
 
     fn set_rows(&mut self, rows: Vec<T>) {
-        if self.multiple_page {
-            self.n_row = std::cmp::min(self.page_size, rows.len() as u32);
-        } else {
-            self.n_row = rows.len() as u32;
-        }
+        self.n_row = rows.len() as u32;
         self.rows = rows;
         if self.rect.height() < self.h_row * self.n_row {
             self.rect.set_height(self.h_row * self.n_row);
@@ -95,56 +78,22 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
     pub fn set_n_item(&mut self, n_item: u32) {
         self.n_item = n_item;
-        if self.multiple_page {
-            if n_item > 0 {
-                self.max_page = (n_item - 1) / self.page_size;
-            } else {
-                self.max_page = 0;
-            }
-            if self.current_page > self.max_page {
-                self.set_page(self.max_page)
-            } else {
-                self.update_page_label();
-            }
-        }
     }
-
-    pub fn set_page(&mut self, page: u32) {
-        self.current_page = page;
-        self.update_page_label();
-    }
-
-    // pub fn get_page(&self) -> u32 {
-    //     self.current_page
-    // }
-
-    // pub fn get_max_page(&self) -> u32 {
-    //     self.max_page
-    // }
 
     pub fn page_item_idx(&self) -> (u32, u32) {
-        let start = if self.multiple_page && self.update_by_user {
-            self.page_size * self.current_page
-        } else {
-            0
-        };
-        let end = if self.multiple_page {
-            std::cmp::min(start + self.page_size, self.n_item)
-        } else {
-            self.n_item
-        };
-        (start, end)
+        (0, self.n_item)
     }
 
     /// Get current choice
     /// This function considers current page position
     pub fn get_current_choice(&self) -> u32 {
-        self.current_page * self.page_size + self.current_choice
+        self.current_choice
     }
 
     pub fn update_rows_by_func<F: FnMut(u32) -> T>(&mut self, mut f: F) {
         let mut rows = Vec::new();
-        let (start, end) = self.page_item_idx();
+        let start = 0;
+        let end = self.n_item;
         for i in start..end {
             rows.push(f(i));
         }
@@ -153,27 +102,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
     /// Transmute an idx of item to an idx of row
     fn row_idx(&mut self, i: u32) -> u32 {
-        if self.update_by_user {
-            i - self.page_size * self.current_page
-        } else {
-            i
-        }
-    }
-
-    fn update_page_label(&mut self) {
-        let text = format!(
-            "{} {}/{}",
-            "page:",
-            self.current_page + 1,
-            self.max_page + 1
-        );
-        if self.multiple_page {
-            self.page_label = Some(TextCache::one(
-                text,
-                FontKind::M,
-                UI_CFG.color.normal_font.into(),
-            ));
-        }
+        i
     }
 
     fn get_idx_from_pos(&self, x: i32, y: i32) -> Option<u32> {
@@ -198,13 +127,7 @@ impl ListWidget<TextCache> {
             .map(|s| TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()))
             .collect();
 
-        let mut list = ListWidget::new(
-            rect,
-            vec![UI_CFG.list_widget.left_margin],
-            n_item,
-            false,
-            false,
-        );
+        let mut list = ListWidget::new(rect, vec![UI_CFG.list_widget.left_margin], n_item, false);
         list.h_row = UI_CFG.list_widget.h_row_with_text;
         list.set_rows(choices);
         list.set_n_item(n_item);
@@ -249,7 +172,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         match *command {
             Command::Enter => {
                 if !self.rows.is_empty() {
-                    let i = self.current_choice + self.current_page * self.page_size;
+                    let i = self.current_choice;
                     Some(ListWidgetResponse::Select(i))
                 } else {
                     None
@@ -279,7 +202,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         return Some(ListWidgetResponse::SelectionChanged);
                     }
                     // Switching page
-                    VDirection::None if self.multiple_page && self.max_page > 0 => {
+                    /*                    VDirection::None if self.multiple_page && self.max_page > 0 => {
                         let new_page = match dir.hdir {
                             HDirection::Left => {
                                 if self.current_page == 0 {
@@ -313,7 +236,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                             }
                         }
                         return Some(ListWidgetResponse::PageChanged);
-                    }
+                    }*/
                     _ => (),
                 }
                 None
@@ -342,22 +265,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     }
 
     fn draw(&mut self, context: &mut Context) {
-        // Draw page label
-        if self.multiple_page {
-            let tc = self.page_label.as_mut().unwrap();
-            let tex = context.sv.tt_one(tc);
-            let w = tex.query().width;
-            let h = tex.query().height;
-            let x = self.rect.right() - w as i32;
-            let y = (self.h_row * self.page_size) as i32;
-            let dest = Rect::new(x, y, w, h);
-            try_sdl!(context.canvas.copy(tex, None, dest));
-        }
-
         // Draw borders between rows
         if self.draw_border {
-            let a = if self.multiple_page { 1 } else { 0 };
-            for i in 1..(self.page_size + a) {
+            for i in 1..self.page_size {
                 let y = (self.h_row * i) as i32;
                 context.canvas.set_draw_color(UI_CFG.color.list_border);
                 try_sdl!(context.canvas.draw_line((0, y), (self.rect.right(), y)));

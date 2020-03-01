@@ -28,7 +28,6 @@ impl QuestWindow {
                 vec![6],
                 UI_CFG.quest_window.n_row,
                 true,
-                false,
             ),
             dialog: None,
             description: LabelWidget::wrapped(

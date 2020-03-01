@@ -29,7 +29,6 @@ impl EquipWindow {
                 UI_CFG.equip_window.column_pos.clone(),
                 UI_CFG.equip_window.n_row,
                 true,
-                true,
             ),
             cid,
         };

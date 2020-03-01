@@ -99,7 +99,6 @@ impl ItemWindow {
                 UI_CFG.item_window.column_pos.clone(),
                 UI_CFG.item_window.n_row,
                 true,
-                true,
             ),
             mode,
             item_locations: Vec::new(),

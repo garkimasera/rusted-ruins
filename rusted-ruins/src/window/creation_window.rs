@@ -28,7 +28,6 @@ impl CreationWindow {
                 c.column_pos.clone(),
                 c.n_row,
                 true,
-                false,
             ),
             recipes: Vec::new(),
             kind,
@@ -124,7 +123,6 @@ impl CreationDetailDialog {
             (0i32, c.list_margin, rect.w as u32, rect.h as u32),
             c.column_pos.clone(),
             c.n_row,
-            false,
             false,
         );
 
