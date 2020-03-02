@@ -135,3 +135,7 @@ left_margin = 3
 h_row_default = 26
 h_row_with_text = 24
 left_margin = 5
+
+[vscroll_widget]
+width = 23
+button_height = 26

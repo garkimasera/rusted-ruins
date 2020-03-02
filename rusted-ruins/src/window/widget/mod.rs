@@ -3,6 +3,7 @@ mod gauge;
 mod image;
 mod label;
 mod list;
+mod vscroll;
 
 use crate::context::*;
 use crate::game::Command;
@@ -20,3 +21,4 @@ pub use self::gauge::*;
 pub use self::image::*;
 pub use self::label::*;
 pub use self::list::*;
+pub use self::vscroll::*;

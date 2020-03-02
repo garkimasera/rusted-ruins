@@ -109,7 +109,7 @@ impl DialogWindow for QuestWindow {
                         |_, a| DialogResult::CloseWithValue(Box::new(a)),
                     ));
                 }
-                ListWidgetResponse::PageChanged => {}
+                ListWidgetResponse::Scrolled => {}
                 _ => (),
             }
             return DialogResult::Continue;

@@ -1,4 +1,4 @@
-use super::WidgetTrait;
+use super::{VScrollWidget, WidgetTrait};
 use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::command::*;
@@ -19,15 +19,17 @@ pub struct ListWidget<T> {
     /// x positions of each column
     column_pos: Vec<i32>,
     current_choice: u32,
+    /// Need update after Scrolled response returned or not
     update_by_user: bool,
     draw_border: bool,
+    scroll: Option<VScrollWidget>,
 }
 
 #[derive(Clone, Copy, Debug)]
 pub enum ListWidgetResponse {
     Select(u32),
     SelectionChanged,
-    PageChanged,
+    Scrolled,
 }
 
 pub trait ListWidgetRow {
@@ -60,6 +62,42 @@ impl<T: ListWidgetRow> ListWidget<T> {
             current_choice: 0,
             update_by_user,
             draw_border: false,
+            scroll: None,
+        }
+    }
+
+    pub fn with_scroll_bar<R: Into<Rect>>(
+        rect: R,
+        column_pos: Vec<i32>,
+        page_size: u32,
+        update_by_user: bool,
+    ) -> ListWidget<T> {
+        let rect = rect.into();
+        let h_row = UI_CFG.list_widget.h_row_default;
+
+        let scroll_w = UI_CFG.vscroll_widget.width;
+        let rect = Rect::new(rect.x, rect.y, rect.width() - scroll_w - 1, rect.height());
+        let vscroll_rect = Rect::new(
+            rect.right() - scroll_w as i32,
+            rect.y,
+            scroll_w,
+            rect.height(),
+        );
+
+        let scroll = VScrollWidget::new(rect);
+
+        ListWidget {
+            rect,
+            rows: Vec::new(),
+            h_row,
+            n_row: 0,
+            n_item: 0,
+            page_size,
+            column_pos,
+            current_choice: 0,
+            update_by_user,
+            draw_border: false,
+            scroll: None,
         }
     }
 

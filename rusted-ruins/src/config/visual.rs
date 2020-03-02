@@ -57,6 +57,7 @@ pub struct UIConfig {
     pub quest_window: QuestWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
+    pub vscroll_widget: VScrollWidgetConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -251,4 +252,10 @@ pub struct ListWidgetConfig {
     pub h_row_default: u32,
     pub h_row_with_text: u32,
     pub left_margin: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct VScrollWidgetConfig {
+    pub width: u32,
+    pub button_height: u32,
 }

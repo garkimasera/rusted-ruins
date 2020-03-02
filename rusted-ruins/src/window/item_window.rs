@@ -94,7 +94,7 @@ impl ItemWindow {
 
         let mut item_window = ItemWindow {
             rect,
-            list: ListWidget::new(
+            list: ListWidget::with_scroll_bar(
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.item_window.column_pos.clone(),
                 UI_CFG.item_window.n_row,
@@ -290,7 +290,7 @@ impl DialogWindow for ItemWindow {
                     let il = self.item_locations[i as usize];
                     return self.do_action_for_item(pa, il);
                 }
-                ListWidgetResponse::PageChanged => {
+                ListWidgetResponse::Scrolled => {
                     self.update_by_mode(pa.gd());
                 }
                 _ => (),
