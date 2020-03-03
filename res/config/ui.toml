@@ -19,6 +19,8 @@ gauge_bg = { r=7, g=7, b =7 }
 gauge_hp = { r=237, g=47, b =37 }
 gauge_sp = { r=200, g=200, b =0 }
 gauge_exp = { r=153, g=153, b=117 }
+vscroll_border = { r=0, g=69, b=140 }
+vscroll_border_inner = { r=0, g=46, b=94 }
 
 [font]
 s = { size=11 }

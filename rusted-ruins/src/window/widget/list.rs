@@ -77,14 +77,9 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
         let scroll_w = UI_CFG.vscroll_widget.width;
         let rect = Rect::new(rect.x, rect.y, rect.width() - scroll_w - 1, rect.height());
-        let vscroll_rect = Rect::new(
-            rect.right() - scroll_w as i32,
-            rect.y,
-            scroll_w,
-            rect.height(),
-        );
+        let vscroll_rect = Rect::new(rect.right() + 1, rect.y, scroll_w, rect.height());
 
-        let scroll = VScrollWidget::new(rect);
+        let scroll = VScrollWidget::new(vscroll_rect);
 
         ListWidget {
             rect,
@@ -97,7 +92,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             current_choice: 0,
             update_by_user,
             draw_border: false,
-            scroll: None,
+            scroll: Some(scroll),
         }
     }
 
@@ -358,6 +353,11 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         );
         canvas.set_draw_color(UI_CFG.color.border_highlight_light);
         try_sdl!(canvas.draw_rect(r));
+
+        // Draw scrollbar
+        if let Some(scroll) = self.scroll.as_mut() {
+            scroll.draw(context);
+        }
     }
 }
 

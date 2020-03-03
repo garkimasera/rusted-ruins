@@ -11,6 +11,7 @@ pub use self::textrenderer::FontKind;
 pub use self::texture::IconIdx;
 
 use common::objholder::Holder;
+use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
 
@@ -41,18 +42,18 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
         try_sdl!(self.canvas.copy(tex, None, dest));
     }
 
-    // pub fn render_tex_n<I, O>(&mut self, idx: I, dest: Rect, n_image: u32)
-    // where
-    //     for<'th> self::texture::TextureHolder<'th>:
-    //         common::objholder::Holder<I, ReturnType = Texture<'th>>,
-    //     I: common::objholder::ObjectIndex<ObjectType = O> + Copy,
-    //     O: common::obj::ImgObject + 'static,
-    // {
-    //     let tex = self.sv.tex().get(idx);
-    //     let obj = common::gobj::get_obj(idx);
-    //     let src: Rect = obj.img_rect_nth(n_image).into();
-    //     try_sdl!(self.canvas.copy(tex, src, dest));
-    // }
+    pub fn render_tex_n<I, O>(&mut self, idx: I, dest: Rect, n_image: u32)
+    where
+        for<'th> self::texture::TextureHolder<'th>:
+            common::objholder::Holder<I, ReturnType = Texture<'th>>,
+        I: common::objholder::ObjectIndex<ObjectType = O> + Copy,
+        O: common::obj::ImgObject + 'static,
+    {
+        let tex = self.sv.tex().get(idx);
+        let obj = common::gobj::get_obj(idx);
+        let src: Rect = obj.img_rect_nth(n_image).into();
+        try_sdl!(self.canvas.copy(tex, src, dest));
+    }
 
     pub fn render_tex_n_center<I, O>(&mut self, idx: I, dest: Rect, n_image: u32)
     where
@@ -90,5 +91,10 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
             src.h as u32,
         );
         try_sdl!(self.canvas.copy(tex, src, dest));
+    }
+
+    pub fn draw_rect(&mut self, rect: Rect, color: Color) {
+        self.canvas.set_draw_color(color);
+        try_sdl!(self.canvas.draw_rect(rect))
     }
 }

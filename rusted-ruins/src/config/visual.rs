@@ -78,6 +78,8 @@ pub struct UIColorConfig {
     pub gauge_hp: CfgColor,
     pub gauge_sp: CfgColor,
     pub gauge_exp: CfgColor,
+    pub vscroll_border: CfgColor,
+    pub vscroll_border_inner: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]
