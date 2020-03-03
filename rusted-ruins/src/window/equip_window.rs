@@ -1,7 +1,7 @@
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::*;
-use crate::draw::border::draw_rect_border;
+use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
 use crate::game::item::filter::*;
 use crate::game::{Animation, Command, DoPlayerAction, Game};
@@ -61,7 +61,7 @@ impl EquipWindow {
 
 impl Window for EquipWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         self.list.draw(context);
     }
 }

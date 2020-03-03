@@ -164,7 +164,7 @@ impl Window for TabsNavigator {
         lazy_static! {
             static ref MAKE_DARK_IDX: UIImgIdx = common::gobj::id_to_idx("!make-dark");
         };
-        crate::draw::border::draw_rect_border(context, self.rect);
+        crate::draw::border::draw_window_border(context, self.rect);
 
         use sdl2::pixels::Color;
         let window_bg: Color = UI_CFG.color.window_bg.into();

@@ -40,7 +40,7 @@ use std::any::Any;
 mod commonuse {
     pub use crate::config::{SCREEN_CFG, UI_CFG};
     pub use crate::context::*;
-    pub use crate::draw::border::draw_rect_border;
+    pub use crate::draw::border::draw_window_border;
     pub use crate::eventhandler::InputMode;
     pub use crate::game::{Animation, Command, DoPlayerAction, Game};
     pub use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};

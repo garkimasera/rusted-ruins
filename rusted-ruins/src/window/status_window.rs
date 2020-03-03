@@ -114,7 +114,7 @@ impl StatusWindow {
 
 impl Window for StatusWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         self.image.draw(context);
         self.name_label.draw(context);
         self.hp_label.draw(context);
@@ -193,7 +193,7 @@ impl SkillWindow {
 
 impl Window for SkillWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         for w in &mut self.gauges {
             w.draw(context);
         }

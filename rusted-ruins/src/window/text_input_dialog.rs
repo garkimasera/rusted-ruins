@@ -43,7 +43,7 @@ impl TextInputDialog {
 
 impl Window for TextInputDialog {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         self.label.draw(context);
     }
 }

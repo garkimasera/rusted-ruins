@@ -28,7 +28,7 @@ impl Window for TextWindow {
         self.rect.w = std::cmp::max(window_size.0 as i32, self.min_w);
         self.rect.h = window_size.1 as i32;
 
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         self.label.draw(context);
     }
 }

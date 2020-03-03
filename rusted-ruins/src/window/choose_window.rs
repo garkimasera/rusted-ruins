@@ -84,7 +84,7 @@ impl Window for ChooseWindow {
         }
 
         // Drawing
-        draw_rect_border(context, rect);
+        draw_window_border(context, rect);
 
         self.answer_list.draw(context);
         self.rect = Some(rect);

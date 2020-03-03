@@ -84,7 +84,7 @@ impl Window for TalkWindow {
         if let Some(image_window) = self.image_window.as_mut() {
             image_window.draw(context, game, anim);
         }
-        draw_rect_border(context, self.rect);
+        draw_window_border(context, self.rect);
         self.label.draw(context);
         if let Some(ref mut choose_win) = self.choose_win {
             choose_win.draw(context, game, anim);
