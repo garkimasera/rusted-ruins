@@ -202,6 +202,10 @@ impl ListWidget<TextCache> {
 impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     type Response = ListWidgetResponse;
     fn process_command(&mut self, command: &Command) -> Option<ListWidgetResponse> {
+        if let Some(scroll) = self.scroll.as_mut() {
+            scroll.process_command(command);
+        }
+
         match *command {
             Command::Enter => {
                 if !self.rows.is_empty() {

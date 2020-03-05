@@ -283,6 +283,8 @@ impl DialogWindow for ItemWindow {
             _ => (),
         }
 
+        let command = command.relative_to(self.rect);
+
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {
@@ -298,8 +300,13 @@ impl DialogWindow for ItemWindow {
             return DialogResult::Continue;
         }
 
-        match *command {
+        match command {
             Command::Cancel => DialogResult::Close,
+            Command::MouseButtonUp { x, y, .. }
+                if x < 0 || x >= self.rect.w || y < 0 || y >= self.rect.h =>
+            {
+                DialogResult::Close
+            }
             _ => DialogResult::Continue,
         }
     }

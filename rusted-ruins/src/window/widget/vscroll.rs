@@ -1,6 +1,7 @@
 use super::WidgetTrait;
 use crate::config::UI_CFG;
 use crate::context::*;
+use crate::game::command::*;
 use common::gobj;
 use common::objholder::UIImgIdx;
 use sdl2::rect::Rect;
@@ -8,16 +9,47 @@ use sdl2::rect::Rect;
 /// Vertical scroll widget
 pub struct VScrollWidget {
     rect: Rect,
+    up_button_rect: Rect,
+    down_button_rect: Rect,
+    up_button_hover: bool,
+    down_button_hover: bool,
 }
+
+pub enum ScrollResponse {}
 
 impl VScrollWidget {
     pub fn new(rect: Rect) -> VScrollWidget {
-        VScrollWidget { rect }
+        let cfg = &UI_CFG.vscroll_widget;
+        let up_button_rect = Rect::new(rect.x, rect.y, cfg.width, cfg.button_height);
+        let down_button_rect = Rect::new(
+            rect.x,
+            rect.bottom() as i32 - cfg.button_height as i32,
+            cfg.width,
+            cfg.button_height,
+        );
+        VScrollWidget {
+            rect,
+            up_button_rect,
+            down_button_rect,
+            up_button_hover: false,
+            down_button_hover: false,
+        }
     }
 }
 
 impl WidgetTrait for VScrollWidget {
-    type Response = ();
+    type Response = ScrollResponse;
+
+    fn process_command(&mut self, command: &Command) -> Option<ScrollResponse> {
+        match command {
+            Command::MouseState { x, y, .. } => {
+                self.up_button_hover = self.up_button_rect.contains_point((*x, *y));
+                self.down_button_hover = self.down_button_rect.contains_point((*x, *y));
+                None
+            }
+            _ => None,
+        }
+    }
 
     fn draw(&mut self, context: &mut Context) {
         let cfg = &UI_CFG.vscroll_widget;
@@ -40,14 +72,16 @@ impl WidgetTrait for VScrollWidget {
         lazy_static! {
             static ref VSCROLL_BUTTON: UIImgIdx = gobj::id_to_idx("!vscroll-button");
         };
-        let up_button_rect = Rect::new(self.rect.x, self.rect.y, cfg.width, cfg.button_height);
-        context.render_tex_n(*VSCROLL_BUTTON, up_button_rect, 0);
-        let down_button_rect = Rect::new(
-            self.rect.x,
-            self.rect.bottom() as i32 - cfg.button_height as i32,
-            cfg.width,
-            cfg.button_height,
+
+        context.render_tex_n(
+            *VSCROLL_BUTTON,
+            self.up_button_rect,
+            if self.up_button_hover { 1 } else { 0 },
         );
-        context.render_tex_n(*VSCROLL_BUTTON, down_button_rect, 2);
+        context.render_tex_n(
+            *VSCROLL_BUTTON,
+            self.down_button_rect,
+            if self.down_button_hover { 3 } else { 2 },
+        );
     }
 }
