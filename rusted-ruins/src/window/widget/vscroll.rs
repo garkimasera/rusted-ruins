@@ -13,12 +13,18 @@ pub struct VScrollWidget {
     down_button_rect: Rect,
     up_button_hover: bool,
     down_button_hover: bool,
+    page_size: u32,
+    total_size: u32,
+    value: u32,
+    limit: u32,
 }
 
-pub enum ScrollResponse {}
+pub enum ScrollResponse {
+    Scrolled,
+}
 
 impl VScrollWidget {
-    pub fn new(rect: Rect) -> VScrollWidget {
+    pub fn new(rect: Rect, page_size: u32) -> VScrollWidget {
         let cfg = &UI_CFG.vscroll_widget;
         let up_button_rect = Rect::new(rect.x, rect.y, cfg.width, cfg.button_height);
         let down_button_rect = Rect::new(
@@ -33,6 +39,45 @@ impl VScrollWidget {
             down_button_rect,
             up_button_hover: false,
             down_button_hover: false,
+            page_size,
+            total_size: 0,
+            value: 0,
+            limit: 0,
+        }
+    }
+
+    pub fn set_total_size(&mut self, total_size: u32) {
+        self.total_size = total_size;
+        if total_size <= self.page_size {
+            self.limit = 0;
+        } else {
+            self.limit = total_size - self.page_size;
+        }
+    }
+
+    pub fn value(&self) -> u32 {
+        self.value
+    }
+
+    pub fn page_size(&self) -> u32 {
+        self.page_size
+    }
+
+    fn try_up_scroll(&mut self) -> Option<ScrollResponse> {
+        if self.value > 0 {
+            self.value -= 1;
+            Some(ScrollResponse::Scrolled)
+        } else {
+            None
+        }
+    }
+
+    fn try_down_scroll(&mut self) -> Option<ScrollResponse> {
+        if self.value < self.limit {
+            self.value += 1;
+            Some(ScrollResponse::Scrolled)
+        } else {
+            None
         }
     }
 }
@@ -46,6 +91,16 @@ impl WidgetTrait for VScrollWidget {
                 self.up_button_hover = self.up_button_rect.contains_point((*x, *y));
                 self.down_button_hover = self.down_button_rect.contains_point((*x, *y));
                 None
+            }
+            Command::MouseButtonDown { x, y, .. } => {
+                if self.up_button_rect.contains_point((*x, *y)) && self.value > 0 {
+                    self.try_up_scroll()
+                } else if self.down_button_rect.contains_point((*x, *y)) && self.value < self.limit
+                {
+                    self.try_down_scroll()
+                } else {
+                    None
+                }
             }
             _ => None,
         }

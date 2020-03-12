@@ -1,4 +1,4 @@
-use super::{VScrollWidget, WidgetTrait};
+use super::{ScrollResponse, VScrollWidget, WidgetTrait};
 use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::command::*;
@@ -79,7 +79,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
         let rect = Rect::new(rect.x, rect.y, rect.width() - scroll_w - 1, rect.height());
         let vscroll_rect = Rect::new(rect.right() + 1, rect.y, scroll_w, rect.height());
 
-        let scroll = VScrollWidget::new(vscroll_rect);
+        let scroll = VScrollWidget::new(vscroll_rect, page_size);
 
         ListWidget {
             rect,
@@ -101,6 +101,9 @@ impl<T: ListWidgetRow> ListWidget<T> {
         self.rows = rows;
         if self.rect.height() < self.h_row * self.n_row {
             self.rect.set_height(self.h_row * self.n_row);
+        }
+        if let Some(scroll) = self.scroll.as_mut() {
+            scroll.set_total_size(self.n_item);
         }
     }
 
@@ -125,8 +128,11 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
     pub fn update_rows_by_func<F: FnMut(u32) -> T>(&mut self, mut f: F) {
         let mut rows = Vec::new();
-        let start = 0;
-        let end = self.n_item;
+        let (start, end) = if let Some(scroll) = self.scroll.as_ref() {
+            (scroll.value(), scroll.value() + scroll.page_size())
+        } else {
+            (0, self.n_item)
+        };
         for i in start..end {
             rows.push(f(i));
         }
@@ -203,7 +209,16 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     type Response = ListWidgetResponse;
     fn process_command(&mut self, command: &Command) -> Option<ListWidgetResponse> {
         if let Some(scroll) = self.scroll.as_mut() {
-            scroll.process_command(command);
+            match scroll.process_command(command) {
+                Some(ScrollResponse::Scrolled) => {
+                    if self.update_by_user {
+                        return Some(ListWidgetResponse::Scrolled);
+                    } else {
+                        todo!();
+                    }
+                }
+                None => (),
+            }
         }
 
         match *command {
