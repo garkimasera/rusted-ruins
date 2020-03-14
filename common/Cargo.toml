@@ -28,5 +28,6 @@ log = "0.4"
 bitflags = "1"
 tar = "0.4"
 fnv = "1"
+thiserror = "1"
 arrayvec = { version = "0.5", features = ["serde"] }
 
