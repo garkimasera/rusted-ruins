@@ -53,6 +53,9 @@ impl VScrollWidget {
         } else {
             self.limit = total_size - self.page_size;
         }
+        if self.limit < self.value {
+            self.value = self.limit;
+        }
     }
 
     pub fn value(&self) -> u32 {
@@ -61,6 +64,10 @@ impl VScrollWidget {
 
     pub fn page_size(&self) -> u32 {
         self.page_size
+    }
+
+    pub fn total_size(&self) -> u32 {
+        self.total_size
     }
 
     fn try_up_scroll(&mut self) -> Option<ScrollResponse> {

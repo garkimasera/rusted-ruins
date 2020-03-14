@@ -102,9 +102,6 @@ impl<T: ListWidgetRow> ListWidget<T> {
         if self.rect.height() < self.h_row * self.n_row {
             self.rect.set_height(self.h_row * self.n_row);
         }
-        if let Some(scroll) = self.scroll.as_mut() {
-            scroll.set_total_size(self.n_item);
-        }
     }
 
     pub fn set_items(&mut self, items: Vec<T>) {
@@ -114,6 +111,9 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
     pub fn set_n_item(&mut self, n_item: u32) {
         self.n_item = n_item;
+        if let Some(scroll) = self.scroll.as_mut() {
+            scroll.set_total_size(self.n_item);
+        }
     }
 
     pub fn page_item_idx(&self) -> (u32, u32) {
@@ -121,15 +121,22 @@ impl<T: ListWidgetRow> ListWidget<T> {
     }
 
     /// Get current choice
-    /// This function considers current page position
+    /// This function considers current scroll position
     pub fn get_current_choice(&self) -> u32 {
-        self.current_choice
+        if let Some(scroll) = self.scroll.as_ref() {
+            scroll.value() + self.current_choice
+        } else {
+            self.current_choice
+        }
     }
 
     pub fn update_rows_by_func<F: FnMut(u32) -> T>(&mut self, mut f: F) {
         let mut rows = Vec::new();
         let (start, end) = if let Some(scroll) = self.scroll.as_ref() {
-            (scroll.value(), scroll.value() + scroll.page_size())
+            (
+                scroll.value(),
+                std::cmp::min(scroll.value() + scroll.page_size(), scroll.total_size()),
+            )
         } else {
             (0, self.n_item)
         };
@@ -224,8 +231,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         match *command {
             Command::Enter => {
                 if !self.rows.is_empty() {
-                    let i = self.current_choice;
-                    Some(ListWidgetResponse::Select(i))
+                    Some(ListWidgetResponse::Select(self.get_current_choice()))
                 } else {
                     None
                 }
@@ -296,7 +302,12 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             Command::MouseButtonUp { x, y, button } => {
                 if button == MouseButton::Left {
                     if let Some(idx) = self.get_idx_from_pos(x, y) {
-                        Some(ListWidgetResponse::Select(idx))
+                        let i = if let Some(scroll) = self.scroll.as_ref() {
+                            idx + scroll.value()
+                        } else {
+                            idx
+                        };
+                        Some(ListWidgetResponse::Select(i))
                     } else {
                         None
                     }
