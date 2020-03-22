@@ -149,8 +149,8 @@ impl WidgetTrait for VScrollWidget {
             self.rect.width(),
             self.rect.height() - cfg.button_height * 2,
         );
-        context.draw_rect(knob_space_outer_rect, color.vscroll_border.into());
-        context.draw_rect(self.knob_space_rect, color.vscroll_border_inner.into());
+        context.draw_rect(knob_space_outer_rect, color.vscroll_border);
+        context.draw_rect(self.knob_space_rect, color.vscroll_border_inner);
 
         // Draw arrow buttons
         lazy_static! {
@@ -169,7 +169,7 @@ impl WidgetTrait for VScrollWidget {
         );
 
         // Draw knob
-        context.fill_rect(self.knob_rect, color.vscroll_knob.into());
-        context.draw_rect(self.knob_rect, color.vscroll_knob_border.into());
+        context.fill_rect(self.knob_rect, color.vscroll_knob);
+        context.draw_rect(self.knob_rect, color.vscroll_knob_border);
     }
 }

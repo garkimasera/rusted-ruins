@@ -93,13 +93,13 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
         try_sdl!(self.canvas.copy(tex, src, dest));
     }
 
-    pub fn draw_rect(&mut self, rect: Rect, color: Color) {
-        self.canvas.set_draw_color(color);
+    pub fn draw_rect<T: Into<Color>>(&mut self, rect: Rect, color: T) {
+        self.canvas.set_draw_color(color.into());
         try_sdl!(self.canvas.draw_rect(rect))
     }
 
-    pub fn fill_rect(&mut self, rect: Rect, color: Color) {
-        self.canvas.set_draw_color(color);
+    pub fn fill_rect<T: Into<Color>>(&mut self, rect: Rect, color: T) {
+        self.canvas.set_draw_color(color.into());
         try_sdl!(self.canvas.fill_rect(rect))
     }
 }
