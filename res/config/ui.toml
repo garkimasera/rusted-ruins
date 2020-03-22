@@ -21,6 +21,7 @@ gauge_sp = { r=200, g=200, b =0 }
 gauge_exp = { r=153, g=153, b=117 }
 vscroll_border = { r=0, g=69, b=140 }
 vscroll_border_inner = { r=0, g=46, b=94 }
+vscroll_knob = { r=34, g=40, b=60 }
 vscroll_knob_border = { r=0, g=117, b=225 }
 
 [font]

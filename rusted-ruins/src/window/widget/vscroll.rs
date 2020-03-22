@@ -169,6 +169,7 @@ impl WidgetTrait for VScrollWidget {
         );
 
         // Draw knob
+        context.fill_rect(self.knob_rect, color.vscroll_knob.into());
         context.draw_rect(self.knob_rect, color.vscroll_knob_border.into());
     }
 }

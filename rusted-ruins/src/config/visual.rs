@@ -80,6 +80,7 @@ pub struct UIColorConfig {
     pub gauge_exp: CfgColor,
     pub vscroll_border: CfgColor,
     pub vscroll_border_inner: CfgColor,
+    pub vscroll_knob: CfgColor,
     pub vscroll_knob_border: CfgColor,
 }
 
