@@ -115,9 +115,12 @@ impl VScrollWidget {
             UI_CFG.vscroll_widget.min_knob_size,
             knob_size,
         ));
-        self.knob_rect.y = ((self.knob_space_rect.height() - self.knob_rect.height()) * self.value
-            / self.limit) as i32
-            + self.knob_space_rect.y;
+        self.knob_rect.y = if self.limit > 0 {
+            ((self.knob_space_rect.height() - self.knob_rect.height()) * self.value / self.limit)
+                as i32
+        } else {
+            0
+        } + self.knob_space_rect.y;
     }
 }
 
