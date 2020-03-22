@@ -5,7 +5,7 @@ use sdl2;
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;
-use sdl2::mouse::{MouseButton, MouseState, MouseWheelDirection};
+use sdl2::mouse::{MouseButton, MouseState};
 use std::cell::Cell;
 use std::collections::{HashMap, VecDeque};
 use std::time::Instant;
@@ -58,7 +58,6 @@ pub enum RawCommand {
     MouseWheel {
         x: i32,
         y: i32,
-        direction: MouseWheelDirection,
     },
 }
 
@@ -163,8 +162,13 @@ impl EventHandler {
             Event::MouseWheel {
                 direction, x, y, ..
             } => {
-                self.command_queue
-                    .push_back(RawCommand::MouseWheel { x, y, direction });
+                if direction == sdl2::mouse::MouseWheelDirection::Flipped {
+                    self.command_queue
+                        .push_back(RawCommand::MouseWheel { x: -x, y: -y });
+                } else {
+                    self.command_queue
+                        .push_back(RawCommand::MouseWheel { x, y });
+                }
             }
             _ => {}
         }
@@ -379,19 +383,8 @@ impl CommandConvTable {
                 };
                 return Some(Command::MouseButtonUp { x, y, button });
             }
-            RawCommand::MouseWheel { x, y, direction } => {
-                let wheel_direction = match direction {
-                    MouseWheelDirection::Normal => crate::game::command::WheelDirection::Normal,
-                    MouseWheelDirection::Flipped => crate::game::command::WheelDirection::Flipped,
-                    _ => {
-                        return None;
-                    }
-                };
-                return Some(Command::MouseWheel {
-                    x,
-                    y,
-                    wheel_direction,
-                });
+            RawCommand::MouseWheel { x, y } => {
+                return Some(Command::MouseWheel { x, y });
             }
             _ => (),
         }

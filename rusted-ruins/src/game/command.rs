@@ -49,7 +49,6 @@ pub enum Command {
     MouseWheel {
         x: i32,
         y: i32,
-        wheel_direction: WheelDirection,
     },
     MouseState {
         x: i32,
@@ -64,12 +63,6 @@ pub enum MouseButton {
     Left,
     Right,
     Middle,
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum WheelDirection {
-    Normal,
-    Flipped,
 }
 
 impl Command {
@@ -91,15 +84,7 @@ impl Command {
                 y: y - point.1,
                 button,
             },
-            Command::MouseWheel {
-                x,
-                y,
-                wheel_direction,
-            } => Command::MouseWheel {
-                x: x - point.0,
-                y: y - point.1,
-                wheel_direction,
-            },
+            Command::MouseWheel { x, y } => Command::MouseWheel { x, y },
             Command::MouseState {
                 x,
                 y,

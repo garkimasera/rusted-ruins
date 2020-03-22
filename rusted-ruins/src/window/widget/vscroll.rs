@@ -168,6 +168,15 @@ impl WidgetTrait for VScrollWidget {
                 self.down_button_last = None;
                 None
             }
+            Command::MouseWheel { y, .. } => {
+                if *y > 0 {
+                    self.try_up_scroll()
+                } else if *y < 0 {
+                    self.try_down_scroll()
+                } else {
+                    None
+                }
+            }
             _ => None,
         }
     }
