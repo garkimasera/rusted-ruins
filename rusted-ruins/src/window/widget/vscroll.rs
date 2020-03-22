@@ -5,6 +5,7 @@ use crate::game::command::*;
 use common::gobj;
 use common::objholder::UIImgIdx;
 use sdl2::rect::Rect;
+use std::time::{Duration, Instant};
 
 /// Vertical scroll widget
 pub struct VScrollWidget {
@@ -15,6 +16,8 @@ pub struct VScrollWidget {
     knob_rect: Rect,
     up_button_hover: bool,
     down_button_hover: bool,
+    up_button_last: Option<Instant>,
+    down_button_last: Option<Instant>,
     page_size: u32,
     total_size: u32,
     value: u32,
@@ -50,6 +53,8 @@ impl VScrollWidget {
             knob_rect: knob_space_rect,
             up_button_hover: false,
             down_button_hover: false,
+            up_button_last: None,
+            down_button_last: None,
             page_size,
             total_size: 0,
             value: 0,
@@ -122,19 +127,43 @@ impl WidgetTrait for VScrollWidget {
     fn process_command(&mut self, command: &Command) -> Option<ScrollResponse> {
         match command {
             Command::MouseState { x, y, .. } => {
+                let button_repeat_duration =
+                    Duration::from_millis(UI_CFG.vscroll_widget.button_repeat_duration);
                 self.up_button_hover = self.up_button_rect.contains_point((*x, *y));
+                if self.up_button_hover {
+                    if let Some(up_button_last) = self.up_button_last.as_mut() {
+                        if Instant::now().duration_since(*up_button_last) > button_repeat_duration {
+                            return self.try_up_scroll();
+                        }
+                    }
+                }
                 self.down_button_hover = self.down_button_rect.contains_point((*x, *y));
+                if self.down_button_hover {
+                    if let Some(down_button_last) = self.down_button_last.as_mut() {
+                        if Instant::now().duration_since(*down_button_last) > button_repeat_duration
+                        {
+                            return self.try_down_scroll();
+                        }
+                    }
+                }
                 None
             }
             Command::MouseButtonDown { x, y, .. } => {
                 if self.up_button_rect.contains_point((*x, *y)) && self.value > 0 {
+                    self.up_button_last = Some(Instant::now());
                     self.try_up_scroll()
                 } else if self.down_button_rect.contains_point((*x, *y)) && self.value < self.limit
                 {
+                    self.down_button_last = Some(Instant::now());
                     self.try_down_scroll()
                 } else {
                     None
                 }
+            }
+            Command::MouseButtonUp { .. } => {
+                self.up_button_last = None;
+                self.down_button_last = None;
+                None
             }
             _ => None,
         }

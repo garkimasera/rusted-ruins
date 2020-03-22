@@ -144,3 +144,4 @@ left_margin = 5
 width = 23
 button_height = 26
 min_knob_size = 20
+button_repeat_duration = 350

@@ -263,4 +263,5 @@ pub struct VScrollWidgetConfig {
     pub width: u32,
     pub button_height: u32,
     pub min_knob_size: u32,
+    pub button_repeat_duration: u64,
 }
