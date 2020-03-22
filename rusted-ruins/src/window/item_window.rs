@@ -91,13 +91,15 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
 impl ItemWindow {
     pub fn new(mode: ItemWindowMode, game: &Game) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
+        let n_row = UI_CFG.item_window.n_row;
+        let list_h = UI_CFG.list_widget.h_row_default;
 
         let mut item_window = ItemWindow {
             rect,
             list: ListWidget::with_scroll_bar(
-                (0i32, 0i32, rect.w as u32, rect.h as u32),
+                (0i32, 0i32, rect.w as u32, n_row * list_h),
                 UI_CFG.item_window.column_pos.clone(),
-                UI_CFG.item_window.n_row,
+                n_row,
                 true,
             ),
             mode,
