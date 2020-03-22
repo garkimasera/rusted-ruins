@@ -80,6 +80,7 @@ pub struct UIColorConfig {
     pub gauge_exp: CfgColor,
     pub vscroll_border: CfgColor,
     pub vscroll_border_inner: CfgColor,
+    pub vscroll_knob_border: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]
@@ -260,4 +261,5 @@ pub struct ListWidgetConfig {
 pub struct VScrollWidgetConfig {
     pub width: u32,
     pub button_height: u32,
+    pub min_knob_size: u32,
 }

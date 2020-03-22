@@ -11,6 +11,8 @@ pub struct VScrollWidget {
     rect: Rect,
     up_button_rect: Rect,
     down_button_rect: Rect,
+    knob_space_rect: Rect,
+    knob_rect: Rect,
     up_button_hover: bool,
     down_button_hover: bool,
     page_size: u32,
@@ -33,10 +35,19 @@ impl VScrollWidget {
             cfg.width,
             cfg.button_height,
         );
+        let knob_space_rect = Rect::new(
+            rect.x + 1,
+            rect.y + cfg.button_height as i32 + 1,
+            cfg.width - 2,
+            rect.height() - cfg.button_height * 2 - 2,
+        );
+
         VScrollWidget {
             rect,
             up_button_rect,
             down_button_rect,
+            knob_space_rect,
+            knob_rect: knob_space_rect,
             up_button_hover: false,
             down_button_hover: false,
             page_size,
@@ -56,6 +67,7 @@ impl VScrollWidget {
         if self.limit < self.value {
             self.value = self.limit;
         }
+        self.update_knob();
     }
 
     pub fn value(&self) -> u32 {
@@ -87,6 +99,21 @@ impl VScrollWidget {
             None
         }
     }
+
+    fn update_knob(&mut self) {
+        let knob_size = if self.page_size < self.total_size {
+            self.knob_space_rect.height() * self.page_size / self.total_size
+        } else {
+            self.knob_space_rect.height()
+        };
+        self.knob_rect.set_height(std::cmp::max(
+            UI_CFG.vscroll_widget.min_knob_size,
+            knob_size,
+        ));
+        self.knob_rect.y = ((self.knob_space_rect.height() - self.knob_rect.height()) * self.value
+            / self.limit) as i32
+            + self.knob_space_rect.y;
+    }
 }
 
 impl WidgetTrait for VScrollWidget {
@@ -116,21 +143,16 @@ impl WidgetTrait for VScrollWidget {
     fn draw(&mut self, context: &mut Context) {
         let cfg = &UI_CFG.vscroll_widget;
         let color = &UI_CFG.color;
-        let middle_bar_rect = Rect::new(
+        let knob_space_outer_rect = Rect::new(
             self.rect.x,
             self.rect.y + cfg.button_height as i32,
             self.rect.width(),
             self.rect.height() - cfg.button_height * 2,
         );
-        context.draw_rect(middle_bar_rect, color.vscroll_border.into());
-        let middle_bar_inner_rect = Rect::new(
-            middle_bar_rect.x + 1,
-            middle_bar_rect.y + 1,
-            middle_bar_rect.width() - 2,
-            middle_bar_rect.height() - 2,
-        );
-        context.draw_rect(middle_bar_inner_rect, color.vscroll_border_inner.into());
+        context.draw_rect(knob_space_outer_rect, color.vscroll_border.into());
+        context.draw_rect(self.knob_space_rect, color.vscroll_border_inner.into());
 
+        // Draw arrow buttons
         lazy_static! {
             static ref VSCROLL_BUTTON: UIImgIdx = gobj::id_to_idx("!vscroll-button");
         };
@@ -145,5 +167,8 @@ impl WidgetTrait for VScrollWidget {
             self.down_button_rect,
             if self.down_button_hover { 3 } else { 2 },
         );
+
+        // Draw knob
+        context.draw_rect(self.knob_rect, color.vscroll_knob_border.into());
     }
 }
