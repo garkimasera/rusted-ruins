@@ -176,19 +176,27 @@ impl WidgetTrait for VScrollWidget {
                 None
             }
             Command::MouseButtonDown { x, y, button } => {
+                let (x, y) = (*x, *y);
                 if *button != MouseButton::Left {
                     return None;
                 }
-                if self.up_button_rect.contains_point((*x, *y)) && self.value > 0 {
+                if self.up_button_rect.contains_point((x, y)) && self.value > 0 {
                     self.up_button_last = Some(Instant::now());
                     self.try_up_scroll()
-                } else if self.down_button_rect.contains_point((*x, *y)) && self.value < self.limit
-                {
+                } else if self.down_button_rect.contains_point((x, y)) && self.value < self.limit {
                     self.down_button_last = Some(Instant::now());
                     self.try_down_scroll()
-                } else if self.knob_rect.contains_point((*x, *y)) {
-                    self.gripped = Some((*y, self.value));
+                } else if self.knob_rect.contains_point((x, y)) {
+                    self.gripped = Some((y, self.value));
                     None
+                } else if self.knob_space_rect.contains_point((x, y)) {
+                    if y < self.knob_rect.top() {
+                        self.try_move_to(0)
+                    } else if y > self.knob_rect.bottom() {
+                        self.try_move_to(self.limit)
+                    } else {
+                        None
+                    }
                 } else {
                     None
                 }
