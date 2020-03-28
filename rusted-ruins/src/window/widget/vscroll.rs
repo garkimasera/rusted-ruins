@@ -18,6 +18,7 @@ pub struct VScrollWidget {
     down_button_hover: bool,
     up_button_last: Option<Instant>,
     down_button_last: Option<Instant>,
+    gripped: Option<(i32, u32)>,
     page_size: u32,
     total_size: u32,
     value: u32,
@@ -55,6 +56,7 @@ impl VScrollWidget {
             down_button_hover: false,
             up_button_last: None,
             down_button_last: None,
+            gripped: None,
             page_size,
             total_size: 0,
             value: 0,
@@ -105,6 +107,15 @@ impl VScrollWidget {
         }
     }
 
+    fn try_move_to(&mut self, new_value: u32) -> Option<ScrollResponse> {
+        if new_value == self.value || new_value > self.limit {
+            None
+        } else {
+            self.value = new_value;
+            Some(ScrollResponse::Scrolled)
+        }
+    }
+
     fn update_knob(&mut self) {
         let knob_size = if self.page_size < self.total_size {
             self.knob_space_rect.height() * self.page_size / self.total_size
@@ -130,6 +141,19 @@ impl WidgetTrait for VScrollWidget {
     fn process_command(&mut self, command: &Command) -> Option<ScrollResponse> {
         match command {
             Command::MouseState { x, y, .. } => {
+                if let Some((origin_y, origin_value)) = self.gripped.as_ref() {
+                    let diff = *y - origin_y;
+                    let knob_free_space_size =
+                        self.knob_space_rect.height() - self.knob_rect.height();
+                    if knob_free_space_size == 0 {
+                        return None;
+                    }
+                    let diff = diff * self.limit as i32 / knob_free_space_size as i32;
+                    let new_value = *origin_value as i32 + diff;
+                    let new_value = if new_value < 0 { 0 } else { new_value as u32 };
+                    return self.try_move_to(new_value);
+                }
+
                 let button_repeat_duration =
                     Duration::from_millis(UI_CFG.vscroll_widget.button_repeat_duration);
                 self.up_button_hover = self.up_button_rect.contains_point((*x, *y));
@@ -151,7 +175,10 @@ impl WidgetTrait for VScrollWidget {
                 }
                 None
             }
-            Command::MouseButtonDown { x, y, .. } => {
+            Command::MouseButtonDown { x, y, button } => {
+                if *button != MouseButton::Left {
+                    return None;
+                }
                 if self.up_button_rect.contains_point((*x, *y)) && self.value > 0 {
                     self.up_button_last = Some(Instant::now());
                     self.try_up_scroll()
@@ -159,16 +186,26 @@ impl WidgetTrait for VScrollWidget {
                 {
                     self.down_button_last = Some(Instant::now());
                     self.try_down_scroll()
+                } else if self.knob_rect.contains_point((*x, *y)) {
+                    self.gripped = Some((*y, self.value));
+                    None
                 } else {
                     None
                 }
             }
-            Command::MouseButtonUp { .. } => {
+            Command::MouseButtonUp { button, .. } => {
+                if *button != MouseButton::Left {
+                    return None;
+                }
                 self.up_button_last = None;
                 self.down_button_last = None;
+                self.gripped = None;
                 None
             }
             Command::MouseWheel { y, .. } => {
+                if self.gripped.is_some() {
+                    return None;
+                }
                 if *y > 0 {
                     self.try_up_scroll()
                 } else if *y < 0 {
