@@ -2,6 +2,7 @@ use super::commonuse::*;
 use super::widget::LabelWidget;
 use super::widget::WidgetTrait;
 use crate::context::textrenderer::FontKind;
+use crate::game::command::MouseButton;
 use common::basic::*;
 use common::objholder::*;
 
@@ -93,6 +94,15 @@ impl DialogWindow for GroupWindow {
             Command::RotateWindowLeft => {
                 self.rotate_left(pa.game());
                 return DialogResult::Continue;
+            }
+            Command::MouseButtonUp { x, y, button } => {
+                if *button == MouseButton::Left && self.tab_navigator.rect.contains_point((*x, *y))
+                {
+                    let x = *x - self.tab_navigator.rect.x;
+                    let n = x as u32 / TAB_ICON_W;
+                    self.switch(n, pa.game());
+                    return DialogResult::Continue;
+                }
             }
             _ => (),
         }
