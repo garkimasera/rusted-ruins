@@ -37,6 +37,7 @@ pub struct ItemWindow {
     list: ListWidget<(IconIdx, TextCache, TextCache)>,
     mode: ItemWindowMode,
     item_locations: Vec<ItemLocation>,
+    escape_click: bool,
 }
 
 const STATUS_WINDOW_GROUP_SIZE: usize = 5;
@@ -104,6 +105,7 @@ impl ItemWindow {
             ),
             mode,
             item_locations: Vec::new(),
+            escape_click: false,
         };
         item_window.update_by_mode(&game.gd);
         item_window
@@ -277,6 +279,8 @@ impl Window for ItemWindow {
 
 impl DialogWindow for ItemWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         match command {
             Command::ItemInfomation => {
                 let il = self.item_locations[self.list.get_current_choice() as usize];
@@ -304,11 +308,6 @@ impl DialogWindow for ItemWindow {
 
         match command {
             Command::Cancel => DialogResult::Close,
-            Command::MouseButtonUp { x, y, .. }
-                if x < 0 || x >= self.rect.w || y < 0 || y >= self.rect.h =>
-            {
-                DialogResult::Close
-            }
             _ => DialogResult::Continue,
         }
     }

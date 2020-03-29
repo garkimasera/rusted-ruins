@@ -1,3 +1,5 @@
+#[macro_use]
+mod tools;
 mod choose_window;
 mod creation_window;
 mod dialogreq;
