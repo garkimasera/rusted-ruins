@@ -40,7 +40,7 @@ pub struct ItemWindow {
     escape_click: bool,
 }
 
-const STATUS_WINDOW_GROUP_SIZE: usize = 5;
+const STATUS_WINDOW_GROUP_SIZE: u32 = 5;
 
 pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
     let mem_info = vec![

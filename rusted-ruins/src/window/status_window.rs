@@ -9,7 +9,7 @@ use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
 
-const STATUS_WINDOW_GROUP_SIZE: usize = 2;
+const STATUS_WINDOW_GROUP_SIZE: u32 = 2;
 
 pub fn create_status_window_group(game: &Game) -> GroupWindow {
     let mem_info = vec![

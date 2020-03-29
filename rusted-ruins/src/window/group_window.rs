@@ -15,8 +15,8 @@ pub struct MemberInfo {
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.
 pub struct GroupWindow {
-    size: usize,
-    current_window: usize,
+    size: u32,
+    current_window: u32,
     members: Vec<Option<Box<dyn DialogWindow>>>,
     mem_info: Vec<MemberInfo>,
     tab_navigator: TabsNavigator,
@@ -24,8 +24,8 @@ pub struct GroupWindow {
 
 impl GroupWindow {
     pub fn new(
-        size: usize,
-        init_win: usize,
+        size: u32,
+        init_win: u32,
         game: &Game,
         mem_info: Vec<MemberInfo>,
         window_top_left: (i32, i32),
@@ -45,11 +45,11 @@ impl GroupWindow {
         group_window
     }
 
-    pub fn switch(&mut self, i_win: usize, game: &Game) {
+    pub fn switch(&mut self, i_win: u32, game: &Game) {
         assert!(i_win < self.size);
         self.current_window = i_win;
-        if self.members[i_win].is_none() {
-            self.members[i_win] = Some((self.mem_info[i_win].creator)(game));
+        if self.members[i_win as usize].is_none() {
+            self.members[i_win as usize] = Some((self.mem_info[i_win as usize].creator)(game));
         }
         self.tab_navigator.set_current_tab(i_win);
     }
@@ -75,7 +75,7 @@ impl GroupWindow {
 
 impl Window for GroupWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
-        if let Some(ref mut member) = self.members[self.current_window] {
+        if let Some(ref mut member) = self.members[self.current_window as usize] {
             member.draw(context, game, anim);
         }
 
@@ -96,7 +96,7 @@ impl DialogWindow for GroupWindow {
             }
             _ => (),
         }
-        if let Some(ref mut member) = self.members[self.current_window] {
+        if let Some(ref mut member) = self.members[self.current_window as usize] {
             match member.process_command(command, pa) {
                 DialogResult::Close | DialogResult::CloseAll => DialogResult::Close,
                 _ => DialogResult::Continue,
@@ -114,13 +114,13 @@ impl DialogWindow for GroupWindow {
 /// Display icons and texts of tabs
 struct TabsNavigator {
     rect: Rect,
-    i: usize,
+    i: u32,
     mem_info: Vec<MemberInfo>,
     labels: Vec<LabelWidget>,
 }
 
 impl TabsNavigator {
-    fn new(p: (i32, i32), mem_info: Vec<MemberInfo>, init: usize) -> TabsNavigator {
+    fn new(p: (i32, i32), mem_info: Vec<MemberInfo>, init: u32) -> TabsNavigator {
         assert!(!mem_info.is_empty());
 
         let size = mem_info.len();
@@ -154,7 +154,7 @@ impl TabsNavigator {
         }
     }
 
-    fn set_current_tab(&mut self, i: usize) {
+    fn set_current_tab(&mut self, i: u32) {
         self.i = i;
     }
 }
