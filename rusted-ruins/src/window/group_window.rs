@@ -51,6 +51,9 @@ impl GroupWindow {
         self.current_window = i_win;
         if self.members[i_win as usize].is_none() {
             self.members[i_win as usize] = Some((self.mem_info[i_win as usize].creator)(game));
+        } else {
+            let item_window = self.members[i_win as usize].as_mut().unwrap();
+            item_window.update(&game.gd);
         }
         self.tab_navigator.set_current_tab(i_win);
     }

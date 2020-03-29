@@ -87,6 +87,7 @@ pub trait DialogWindow: Window {
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::Normal
     }
+    fn update(&mut self, _gd: &GameData) {}
 }
 
 /// The current main mode

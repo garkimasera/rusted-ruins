@@ -319,4 +319,8 @@ impl DialogWindow for ItemWindow {
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::SkipUnderWindows
     }
+
+    fn update(&mut self, gd: &GameData) {
+        self.update_by_mode(gd);
+    }
 }
