@@ -1,4 +1,4 @@
-use super::{CfgColor, CfgRect};
+use super::{CfgColor, CfgPos, CfgRect};
 
 /// Size of screen and rects of windows
 /// These parameters will change if screen size is different
@@ -9,6 +9,7 @@ pub struct ScreenConfig {
     pub main_window: CfgRect,
     pub log_window: CfgRect,
     pub minimap_window: CfgRect,
+    pub sidebar: CfgPos,
     pub hp_indicator: CfgRect,
     pub sp_indicator: CfgRect,
     pub floor_info: CfgRect,
@@ -58,6 +59,7 @@ pub struct UIConfig {
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
     pub vscroll_widget: VScrollWidgetConfig,
+    pub sidebar: SidebarConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -264,4 +266,11 @@ pub struct VScrollWidgetConfig {
     pub button_height: u32,
     pub min_knob_size: u32,
     pub button_repeat_duration: u64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SidebarConfig {
+    pub icon_w: u32,
+    pub icon_h: u32,
+    pub space: u32,
 }

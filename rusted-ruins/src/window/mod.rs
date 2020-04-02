@@ -18,6 +18,7 @@ mod misc_window;
 mod msg_dialog;
 mod newgame_window;
 mod quest_window;
+mod sidebar;
 mod start_window;
 mod status_window;
 mod talk_window;
@@ -559,6 +560,7 @@ struct GameWindows {
     main_window: MainWindow,
     log_window: LogWindow,
     minimap_window: minimap::MiniMapWindow,
+    sidebar: sidebar::Sidebar,
     indicator_hp: indicator::BarIndicator,
     indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
@@ -585,6 +587,7 @@ impl GameWindows {
             main_window: MainWindow::new(),
             log_window: LogWindow::new(),
             minimap_window: minimap::MiniMapWindow::new(),
+            sidebar: sidebar::Sidebar::new(),
             indicator_hp: BarIndicator::new(BarIndicatorKind::Hp),
             indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
             floor_info: FloorInfo::new(),
@@ -599,6 +602,7 @@ impl GameWindows {
         self.main_window.draw(context, game, anim);
         self.log_window.draw(context, game, anim);
         self.minimap_window.draw(context, game, anim);
+        self.sidebar.draw(context, game, anim);
         self.indicator_hp.draw(context, game, anim);
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
