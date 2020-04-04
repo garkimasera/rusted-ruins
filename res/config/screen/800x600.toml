@@ -20,6 +20,10 @@ y = 423
 w = 200
 h = 177
 
+[sidebar]
+x = 0
+y = 40
+
 [hp_indicator]
 x = 12
 y = 360

@@ -145,3 +145,8 @@ width = 23
 button_height = 26
 min_knob_size = 20
 button_repeat_duration = 350
+
+[sidebar]
+icon_w = 32
+icon_h = 32
+space = 4

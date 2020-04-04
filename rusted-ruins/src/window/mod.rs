@@ -58,6 +58,7 @@ pub enum DialogResult {
     Close,
     CloseWithValue(Box<dyn Any>),
     CloseAll,
+    Command(Option<Command>),
     Quit,
     OpenChildDialog(Box<dyn DialogWindow>),
     Special(SpecialDialogResult),
@@ -293,6 +294,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     DialogResult::CloseAll => {
                         self.window_stack.clear();
                     }
+                    DialogResult::Command(_) => (),
                     DialogResult::Quit => {
                         return false;
                     }
@@ -310,6 +312,20 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         // If self.mode is OnGame
         let command = match &mut self.mode {
             WindowManageMode::OnGame(game_windows) => {
+                let command = match game_windows
+                    .sidebar
+                    .process_command(&command, &mut DoPlayerAction::new(&mut self.game))
+                {
+                    DialogResult::Command(command) => {
+                        if let Some(command) = command {
+                            command
+                        } else {
+                            return true;
+                        }
+                    }
+                    _ => command,
+                };
+
                 match game_windows
                     .main_window
                     .convert_mouse_event(command, &self.game)
@@ -328,6 +344,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         };
 
         let mut pa = DoPlayerAction::new(&mut self.game);
+
         use self::item_window::*;
         match command {
             Command::Move { dir } => {

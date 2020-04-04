@@ -1,32 +1,33 @@
 use super::commonuse::*;
 use crate::config::SCREEN_CFG;
 use crate::config::UI_CFG;
+use crate::game::command::MouseButton;
 use common::gobj;
 use common::objholder::UIImgIdx;
 
 pub struct Sidebar {
     rect: Rect,
+    mouseover: Option<u32>,
 }
-
-const ICON_ID: &[&str] = &["sidebar-inventory", "sidebar-equip"];
 
 lazy_static! {
-    static ref ICON_IDX: Vec<UIImgIdx> = ICON_ID.iter().map(|id| gobj::id_to_idx(id)).collect();
+    static ref ICON_IDX: UIImgIdx = gobj::id_to_idx("sidebar-icon");
 }
+
+const ITEM_INVENTORY: u32 = 0;
+const ITEM_EQUIPMENT: u32 = 1;
+const N_ITEM: u32 = 2;
 
 impl Sidebar {
     pub fn new() -> Sidebar {
         let pos = SCREEN_CFG.sidebar;
         let cfg = &UI_CFG.sidebar;
-        let n_item = ICON_ID.len();
-        let rect = Rect::new(
-            pos.x,
-            pos.y,
-            cfg.icon_w,
-            (cfg.icon_h + cfg.space) * n_item as u32,
-        );
+        let rect = Rect::new(pos.x, pos.y, cfg.icon_w, (cfg.icon_h + cfg.space) * N_ITEM);
 
-        Sidebar { rect }
+        Sidebar {
+            rect,
+            mouseover: None,
+        }
     }
 }
 
@@ -35,15 +36,68 @@ impl Window for Sidebar {
         let cfg = &UI_CFG.sidebar;
         context.set_viewport(None);
 
-        for (i, &icon_idx) in ICON_IDX.iter().enumerate() {
+        for i in 0..N_ITEM {
             let rect = Rect::new(
                 self.rect.x,
                 self.rect.y + (cfg.icon_h + cfg.space) as i32 * i as i32,
                 cfg.icon_w,
                 cfg.icon_h,
             );
-            dbg!(rect);
-            context.render_tex(icon_idx, rect);
+            let mouseover = if let Some(mouseover) = self.mouseover.as_ref() {
+                if *mouseover == i {
+                    1
+                } else {
+                    0
+                }
+            } else {
+                0
+            };
+            context.render_tex_n(*ICON_IDX, rect, i * 2 + mouseover);
         }
+    }
+}
+
+impl DialogWindow for Sidebar {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        match command {
+            Command::MouseState { x, y, .. } => {
+                self.mouseover = None;
+                if self.rect.contains_point((*x, *y)) {
+                    let i =
+                        (*y - self.rect.y) as u32 / (UI_CFG.sidebar.icon_h + UI_CFG.sidebar.space);
+                    if i < N_ITEM {
+                        self.mouseover = Some(i);
+                    }
+                    return DialogResult::Command(None);
+                }
+            }
+            Command::MouseButtonDown { x, y, .. } => {
+                if !self.rect.contains_point((*x, *y)) {
+                    return DialogResult::Continue;
+                }
+                return DialogResult::Command(None);
+            }
+            Command::MouseButtonUp { x, y, button } => {
+                if !self.rect.contains_point((*x, *y)) {
+                    return DialogResult::Continue;
+                }
+                if *button != MouseButton::Left {
+                    return DialogResult::Command(None);
+                }
+                let i = (*y - self.rect.y) as u32 / (UI_CFG.sidebar.icon_h + UI_CFG.sidebar.space);
+                if i == ITEM_INVENTORY {
+                    return DialogResult::Command(Some(Command::OpenItemMenu));
+                } else if i == ITEM_EQUIPMENT {
+                    return DialogResult::Command(Some(Command::OpenEquipWin));
+                }
+            }
+            _ => (),
+        }
+
+        DialogResult::Continue
+    }
+
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
     }
 }
