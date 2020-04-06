@@ -259,42 +259,6 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         }
                         return Some(ListWidgetResponse::SelectionChanged);
                     }
-                    // Switching page
-                    /*                    VDirection::None if self.multiple_page && self.max_page > 0 => {
-                        let new_page = match dir.hdir {
-                            HDirection::Left => {
-                                if self.current_page == 0 {
-                                    self.max_page
-                                } else {
-                                    self.current_page - 1
-                                }
-                            }
-                            HDirection::Right => {
-                                if self.current_page == self.max_page {
-                                    0
-                                } else {
-                                    self.current_page + 1
-                                }
-                            }
-                            _ => {
-                                return None;
-                            }
-                        };
-                        self.set_page(new_page);
-
-                        if new_page == self.max_page {
-                            let n_choice_last_page = self.n_item % self.page_size;
-                            let n_choice_last_page = if n_choice_last_page == 0 {
-                                self.page_size
-                            } else {
-                                n_choice_last_page
-                            };
-                            if self.current_choice >= n_choice_last_page {
-                                self.current_choice = n_choice_last_page - 1;
-                            }
-                        }
-                        return Some(ListWidgetResponse::PageChanged);
-                    }*/
                     _ => (),
                 }
                 None
