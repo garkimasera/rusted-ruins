@@ -16,6 +16,7 @@ pub struct EquipWindow {
     rect: Rect,
     list: ListWidget<(IconIdx, IconIdx, TextCache)>,
     cid: CharaId,
+    escape_click: bool,
 }
 
 impl EquipWindow {
@@ -31,6 +32,7 @@ impl EquipWindow {
                 true,
             ),
             cid,
+            escape_click: false,
         };
         equip_window.update_list(pa);
         equip_window
@@ -68,6 +70,10 @@ impl Window for EquipWindow {
 
 impl DialogWindow for EquipWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
+        let command = command.relative_to(self.rect);
+
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {
@@ -106,7 +112,7 @@ impl DialogWindow for EquipWindow {
             return DialogResult::Continue;
         }
 
-        match *command {
+        match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
