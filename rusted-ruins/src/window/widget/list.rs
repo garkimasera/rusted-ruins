@@ -301,52 +301,50 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             }
         }
 
-        if self.n_row == 0 {
-            return;
-        }
+        if self.n_row > 0 {
+            let h_row = self.h_row;
 
-        let h_row = self.h_row;
+            // Draw highlighted row background
+            let highlight_rect = Rect::new(
+                self.rect.x,
+                self.rect.y + h_row as i32 * self.current_choice as i32,
+                self.rect.w as u32,
+                h_row as u32,
+            );
+            context
+                .canvas
+                .set_draw_color(UI_CFG.color.window_bg_highlight);
+            try_sdl!(context.canvas.fill_rect(highlight_rect));
 
-        // Draw highlighted row background
-        let highlight_rect = Rect::new(
-            self.rect.x,
-            self.rect.y + h_row as i32 * self.current_choice as i32,
-            self.rect.w as u32,
-            h_row as u32,
-        );
-        context
-            .canvas
-            .set_draw_color(UI_CFG.color.window_bg_highlight);
-        try_sdl!(context.canvas.fill_rect(highlight_rect));
-
-        // Draw each rows
-        let (start, end) = self.page_item_idx();
-        for (j, i) in (start..end).enumerate() {
-            let i = self.row_idx(i);
-            if let Some(row) = self.rows.get_mut(i as usize) {
-                let rect = Rect::new(
-                    self.rect.x,
-                    self.rect.y + j as i32 * self.h_row as i32,
-                    self.rect.width(),
-                    self.h_row,
-                );
-                row.draw(context, rect, &self.column_pos);
+            // Draw each rows
+            let (start, end) = self.page_item_idx();
+            for (j, i) in (start..end).enumerate() {
+                let i = self.row_idx(i);
+                if let Some(row) = self.rows.get_mut(i as usize) {
+                    let rect = Rect::new(
+                        self.rect.x,
+                        self.rect.y + j as i32 * self.h_row as i32,
+                        self.rect.width(),
+                        self.h_row,
+                    );
+                    row.draw(context, rect, &self.column_pos);
+                }
             }
+
+            let canvas = &mut context.canvas;
+
+            // Draw highlight row borders
+            canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
+            try_sdl!(canvas.draw_rect(highlight_rect));
+            let r = Rect::new(
+                highlight_rect.x + 1,
+                highlight_rect.y + 1,
+                highlight_rect.w as u32 - 2,
+                highlight_rect.h as u32 - 2,
+            );
+            canvas.set_draw_color(UI_CFG.color.border_highlight_light);
+            try_sdl!(canvas.draw_rect(r));
         }
-
-        let canvas = &mut context.canvas;
-
-        // Draw highlight row borders
-        canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
-        try_sdl!(canvas.draw_rect(highlight_rect));
-        let r = Rect::new(
-            highlight_rect.x + 1,
-            highlight_rect.y + 1,
-            highlight_rect.w as u32 - 2,
-            highlight_rect.h as u32 - 2,
-        );
-        canvas.set_draw_color(UI_CFG.color.border_highlight_light);
-        try_sdl!(canvas.draw_rect(r));
 
         // Draw scrollbar
         if let Some(scroll) = self.scroll.as_mut() {
