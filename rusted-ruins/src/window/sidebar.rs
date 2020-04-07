@@ -16,7 +16,8 @@ lazy_static! {
 
 const ITEM_INVENTORY: u32 = 0;
 const ITEM_EQUIPMENT: u32 = 1;
-const N_ITEM: u32 = 2;
+const ITEM_CHARAINFO: u32 = 2;
+const N_ITEM: u32 = 3;
 
 impl Sidebar {
     pub fn new() -> Sidebar {
@@ -89,6 +90,8 @@ impl DialogWindow for Sidebar {
                     return DialogResult::Command(Some(Command::OpenItemMenu));
                 } else if i == ITEM_EQUIPMENT {
                     return DialogResult::Command(Some(Command::OpenEquipWin));
+                } else if i == ITEM_CHARAINFO {
+                    return DialogResult::Command(Some(Command::OpenStatusWin));
                 }
             }
             _ => (),
