@@ -14,6 +14,7 @@ pub struct CreationWindow {
     recipes: Vec<&'static Recipe>,
     kind: CreationKind,
     detail_dialog: Option<CreationDetailDialog>,
+    escape_click: bool,
 }
 
 impl CreationWindow {
@@ -32,6 +33,7 @@ impl CreationWindow {
             recipes: Vec::new(),
             kind,
             detail_dialog: None,
+            escape_click: false,
         };
 
         w.update(kind);
@@ -75,6 +77,8 @@ impl Window for CreationWindow {
 
 impl DialogWindow for CreationWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
             let result = detail_dialog.process_command(command, pa);
             match result {
@@ -112,6 +116,7 @@ pub struct CreationDetailDialog {
     list: ListWidget<(IconIdx, TextCache, IconIdx)>,
     il: Vec<Option<ItemLocation>>,
     possible: bool,
+    escape_click: bool,
 }
 
 impl CreationDetailDialog {
@@ -176,6 +181,7 @@ impl CreationDetailDialog {
             list,
             il: autopicked_items,
             possible,
+            escape_click: false,
         }
     }
 }
@@ -190,6 +196,8 @@ impl Window for CreationDetailDialog {
 
 impl DialogWindow for CreationDetailDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected

@@ -47,6 +47,7 @@ pub struct StatusWindow {
     int_label: LabelWidget,
     wil_label: LabelWidget,
     cha_label: LabelWidget,
+    escape_click: bool,
 }
 
 impl StatusWindow {
@@ -108,6 +109,7 @@ impl StatusWindow {
             int_label,
             wil_label,
             cha_label,
+            escape_click: false,
         }
     }
 }
@@ -130,6 +132,8 @@ impl Window for StatusWindow {
 
 impl DialogWindow for StatusWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         match *command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
@@ -148,6 +152,7 @@ pub struct SkillWindow {
     gauges: Vec<GaugeWidget>,
     /// Skill name label
     labels: Vec<LabelWidget>,
+    escape_click: bool,
 }
 
 impl SkillWindow {
@@ -187,6 +192,7 @@ impl SkillWindow {
             rect,
             gauges,
             labels,
+            escape_click: false,
         }
     }
 }
@@ -205,6 +211,8 @@ impl Window for SkillWindow {
 
 impl DialogWindow for SkillWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         match *command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
