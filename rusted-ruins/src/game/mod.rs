@@ -223,6 +223,7 @@ pub enum DialogOpenRequest {
         cid: CharaId,
     },
     ShopSell,
+    PickUpItem,
     Quest,
     GameOver,
 }

@@ -2,7 +2,7 @@ use crate::config::SCREEN_CFG;
 use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
 use crate::game::command::MouseButton;
-use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
+use crate::game::{Animation, Command, DialogOpenRequest, DoPlayerAction, Game, InfoGetter};
 use crate::window::{DialogWindow, Window};
 use geom::*;
 use sdl2::rect::Rect;
@@ -183,6 +183,12 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
                     pa.goto_next_floor(dir, false);
                 }));
             }
+        }
+        if game.gd.item_on_player_tile().is_some() {
+            text_ids.push("tile-menu-pick-up-items");
+            callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                pa.request_dialog_open(DialogOpenRequest::PickUpItem);
+            }));
         }
     }
 
