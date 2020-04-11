@@ -11,6 +11,9 @@ pub enum Command {
     MoveTo {
         dest: Vec2d,
     },
+    Shoot {
+        target: Vec2d,
+    },
     Enter,
     Cancel,
     RotateWindowRight,
@@ -40,11 +43,13 @@ pub enum Command {
         x: i32,
         y: i32,
         button: MouseButton,
+        key_state: KeyState,
     },
     MouseButtonUp {
         x: i32,
         y: i32,
         button: MouseButton,
+        key_state: KeyState,
     },
     MouseWheel {
         x: i32,
@@ -55,6 +60,7 @@ pub enum Command {
         y: i32,
         left_button: bool,
         right_button: bool,
+        key_state: KeyState,
     },
 }
 
@@ -63,6 +69,12 @@ pub enum MouseButton {
     Left,
     Right,
     Middle,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash, Serialize, Deserialize)]
+pub struct KeyState {
+    pub ctrl: bool,
+    pub shift: bool,
 }
 
 impl Command {
@@ -74,15 +86,27 @@ impl Command {
     pub fn relative_to_point<P: Into<(i32, i32)>>(&self, point: P) -> Command {
         let point = point.into();
         match *self {
-            Command::MouseButtonDown { x, y, button } => Command::MouseButtonDown {
+            Command::MouseButtonDown {
+                x,
+                y,
+                button,
+                key_state,
+            } => Command::MouseButtonDown {
                 x: x - point.0,
                 y: y - point.1,
                 button,
+                key_state,
             },
-            Command::MouseButtonUp { x, y, button } => Command::MouseButtonUp {
+            Command::MouseButtonUp {
+                x,
+                y,
+                button,
+                key_state,
+            } => Command::MouseButtonUp {
                 x: x - point.0,
                 y: y - point.1,
                 button,
+                key_state,
             },
             Command::MouseWheel { x, y } => Command::MouseWheel { x, y },
             Command::MouseState {
@@ -90,11 +114,13 @@ impl Command {
                 y,
                 left_button,
                 right_button,
+                key_state,
             } => Command::MouseState {
                 x: x - point.0,
                 y: y - point.1,
                 left_button,
                 right_button,
+                key_state,
             },
             _ => self.clone(),
         }

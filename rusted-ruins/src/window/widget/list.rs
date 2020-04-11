@@ -263,7 +263,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 }
                 None
             }
-            Command::MouseButtonUp { x, y, button } => {
+            Command::MouseButtonUp { x, y, button, .. } => {
                 if button == MouseButton::Left {
                     if let Some(idx) = self.get_idx_from_pos(x, y) {
                         let i = if let Some(scroll) = self.scroll.as_ref() {

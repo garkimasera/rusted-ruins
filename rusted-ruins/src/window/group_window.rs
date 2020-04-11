@@ -98,7 +98,7 @@ impl DialogWindow for GroupWindow {
                 self.rotate_left(pa.game());
                 return DialogResult::Continue;
             }
-            Command::MouseButtonUp { x, y, button } => {
+            Command::MouseButtonUp { x, y, button, .. } => {
                 if *button == MouseButton::Left && self.tab_navigator.rect.contains_point((*x, *y))
                 {
                     let x = *x - self.tab_navigator.rect.x;

@@ -93,7 +93,7 @@ impl MainWindow {
     ) -> ConvertMouseEventResult {
         match command {
             Command::MouseButtonDown { .. } => ConvertMouseEventResult::None,
-            Command::MouseButtonUp { x, y, button } => {
+            Command::MouseButtonUp { x, y, button, .. } => {
                 if !self.rect.contains_point((x, y)) {
                     return ConvertMouseEventResult::None;
                 }
@@ -106,7 +106,11 @@ impl MainWindow {
             }
             Command::MouseWheel { .. } => ConvertMouseEventResult::None,
             Command::MouseState {
-                x, y, left_button, ..
+                x,
+                y,
+                left_button,
+                key_state,
+                ..
             } => {
                 if !self.rect.contains_point((x, y)) {
                     return ConvertMouseEventResult::None;
@@ -115,7 +119,11 @@ impl MainWindow {
                 self.hover_tile = Some(tile);
 
                 if left_button {
-                    return ConvertMouseEventResult::Command(Command::MoveTo { dest: tile });
+                    if key_state.ctrl {
+                        return ConvertMouseEventResult::Command(Command::Shoot { target: tile });
+                    } else {
+                        return ConvertMouseEventResult::Command(Command::MoveTo { dest: tile });
+                    }
                 }
 
                 ConvertMouseEventResult::None

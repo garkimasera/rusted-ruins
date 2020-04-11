@@ -79,7 +79,7 @@ impl DialogWindow for Sidebar {
                 }
                 return DialogResult::Command(None);
             }
-            Command::MouseButtonUp { x, y, button } => {
+            Command::MouseButtonUp { x, y, button, .. } => {
                 if !self.rect.contains_point((*x, *y)) {
                     return DialogResult::Continue;
                 }

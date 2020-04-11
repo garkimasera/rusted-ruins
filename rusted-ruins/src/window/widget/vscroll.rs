@@ -175,7 +175,7 @@ impl WidgetTrait for VScrollWidget {
                 }
                 None
             }
-            Command::MouseButtonDown { x, y, button } => {
+            Command::MouseButtonDown { x, y, button, .. } => {
                 let (x, y) = (*x, *y);
                 if *button != MouseButton::Left {
                     return None;

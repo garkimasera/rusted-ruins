@@ -90,6 +90,15 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
+    pub fn shoot(&mut self, target: Vec2d) {
+        let map = self.gd().get_current_map();
+        if let Some(target_id) = map.get_chara(target) {
+            if super::action::shot_target(&mut self.0, CharaId::Player, target_id) {
+                self.0.finish_player_turn();
+            }
+        }
+    }
+
     /// Try to go to next floor
     /// This function will be called when players use stairs or try to exit from map boundaries.
     /// In the latter case, dir is not None and represents player's move direction.

@@ -63,6 +63,7 @@ impl ToText for Command {
         let id = match self {
             Move { .. } => "command-move",
             MoveTo { .. } => "command-move_to",
+            Shoot { .. } => "command-shoot",
             Enter => "command-enter",
             Cancel => "command-cancel",
             RotateWindowRight => "command-rotate_window_right",

@@ -1,4 +1,5 @@
 use crate::config::{INPUT_CFG, UI_CFG};
+use crate::game::command::KeyState;
 use crate::game::Command;
 use geom::*;
 use sdl2;
@@ -23,6 +24,7 @@ pub struct EventHandler {
     prev_input_mode: InputMode,
     waiting_dir_release: WaitingDirRelease,
     mouse_state: Option<MouseState>,
+    key_state: KeyState,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -49,11 +51,13 @@ pub enum RawCommand {
         x: i32,
         y: i32,
         mouse_btn: MouseButton,
+        key_state: KeyState,
     },
     MouseButtonUp {
         x: i32,
         y: i32,
         mouse_btn: MouseButton,
+        key_state: KeyState,
     },
     MouseWheel {
         x: i32,
@@ -91,6 +95,7 @@ impl EventHandler {
             prev_input_mode: InputMode::Dialog,
             waiting_dir_release: WaitingDirRelease::No,
             mouse_state: None,
+            key_state: KeyState::default(),
         }
     }
 
@@ -124,6 +129,31 @@ impl EventHandler {
             } => {
                 self.set_waiting_dir_release();
             }
+            // Ctrl & Shift keys
+            Event::KeyDown {
+                keycode: Some(Keycode::LCtrl),
+                ..
+            } => {
+                self.key_state.ctrl = true;
+            }
+            Event::KeyUp {
+                keycode: Some(Keycode::LCtrl),
+                ..
+            } => {
+                self.key_state.ctrl = false;
+            }
+            Event::KeyDown {
+                keycode: Some(Keycode::LShift),
+                ..
+            } => {
+                self.key_state.shift = true;
+            }
+            Event::KeyUp {
+                keycode: Some(Keycode::LShift),
+                ..
+            } => {
+                self.key_state.shift = false;
+            }
             // Shortcut keys
             Event::KeyUp {
                 keycode: Some(keycode),
@@ -145,17 +175,24 @@ impl EventHandler {
             Event::MouseButtonDown {
                 mouse_btn, x, y, ..
             } => {
-                if let Some(command) =
-                    dialog_command(RawCommand::MouseButtonDown { x, y, mouse_btn })
-                {
+                if let Some(command) = dialog_command(RawCommand::MouseButtonDown {
+                    x,
+                    y,
+                    mouse_btn,
+                    key_state: self.key_state,
+                }) {
                     self.command_queue.push_back(command);
                 }
             }
             Event::MouseButtonUp {
                 mouse_btn, x, y, ..
             } => {
-                if let Some(command) = dialog_command(RawCommand::MouseButtonUp { x, y, mouse_btn })
-                {
+                if let Some(command) = dialog_command(RawCommand::MouseButtonUp {
+                    x,
+                    y,
+                    mouse_btn,
+                    key_state: self.key_state,
+                }) {
                     self.command_queue.push_back(command);
                 }
             }
@@ -229,6 +266,7 @@ impl EventHandler {
                     y: mouse_state.y(),
                     left_button: mouse_state.left(),
                     right_button: mouse_state.right(),
+                    key_state: self.key_state,
                 })
             } else {
                 None
@@ -361,7 +399,12 @@ impl CommandConvTable {
 
         // For mouse event, don't use table
         match raw {
-            RawCommand::MouseButtonDown { x, y, mouse_btn } => {
+            RawCommand::MouseButtonDown {
+                x,
+                y,
+                mouse_btn,
+                key_state,
+            } => {
                 let button = match mouse_btn {
                     MouseButton::Left => crate::game::command::MouseButton::Left,
                     MouseButton::Right => crate::game::command::MouseButton::Right,
@@ -370,9 +413,19 @@ impl CommandConvTable {
                         return None;
                     }
                 };
-                return Some(Command::MouseButtonDown { x, y, button });
+                return Some(Command::MouseButtonDown {
+                    x,
+                    y,
+                    button,
+                    key_state,
+                });
             }
-            RawCommand::MouseButtonUp { x, y, mouse_btn } => {
+            RawCommand::MouseButtonUp {
+                x,
+                y,
+                mouse_btn,
+                key_state,
+            } => {
                 let button = match mouse_btn {
                     MouseButton::Left => crate::game::command::MouseButton::Left,
                     MouseButton::Right => crate::game::command::MouseButton::Right,
@@ -381,7 +434,12 @@ impl CommandConvTable {
                         return None;
                     }
                 };
-                return Some(Command::MouseButtonUp { x, y, button });
+                return Some(Command::MouseButtonUp {
+                    x,
+                    y,
+                    button,
+                    key_state,
+                });
             }
             RawCommand::MouseWheel { x, y } => {
                 return Some(Command::MouseWheel { x, y });
