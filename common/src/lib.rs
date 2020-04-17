@@ -1,8 +1,14 @@
+#![cfg_attr(not(global_state_obj), allow(dead_code))]
+#![cfg_attr(not(global_state_obj), allow(unused_variables))]
+#![cfg_attr(not(global_state_obj), allow(unused_imports))]
+
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_geom as geom;
+
+mod utils;
 
 pub mod basic;
 pub mod hashmap;
