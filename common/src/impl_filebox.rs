@@ -1,6 +1,7 @@
 use crate::gamedata::Map;
+use crate::utils::to_writer_packed;
 use filebox::*;
-use serde_cbor::{error::Error as SerdeError, from_reader, ser::to_writer_packed};
+use serde_cbor::{error::Error as SerdeError, from_reader};
 use std::io::{Error as IoError, Read, Write};
 use thiserror::Error;
 

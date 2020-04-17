@@ -1,4 +1,5 @@
-use serde_cbor::{from_reader, ser::to_writer_packed};
+use crate::utils::to_writer_packed;
+use serde_cbor::from_reader;
 use std::io::{Read, Write};
 
 use super::obj::Object;
