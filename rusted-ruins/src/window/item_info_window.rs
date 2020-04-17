@@ -17,6 +17,7 @@ pub struct ItemInfoWindow {
     item_kind: LabelWidget,
     desc_text: Vec<(ImageWidget, LabelWidget)>,
     size_adjusted: bool,
+    escape_click: bool,
 }
 
 impl ItemInfoWindow {
@@ -50,6 +51,7 @@ impl ItemInfoWindow {
             item_kind,
             desc_text,
             size_adjusted: false,
+            escape_click: false,
         }
     }
 }
@@ -93,6 +95,8 @@ impl Window for ItemInfoWindow {
 
 impl DialogWindow for ItemInfoWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,

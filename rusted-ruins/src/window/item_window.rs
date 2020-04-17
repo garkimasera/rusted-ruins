@@ -228,7 +228,10 @@ impl ItemWindow {
 
     fn do_action_for_item(&mut self, pa: &mut DoPlayerAction, il: ItemLocation) -> DialogResult {
         match self.mode {
-            ItemWindowMode::List => DialogResult::Continue,
+            ItemWindowMode::List => {
+                pa.request_dialog_open(DialogOpenRequest::ItemInfo { il });
+                DialogResult::Continue
+            }
             ItemWindowMode::PickUp => {
                 pa.pick_up_item(il, 1);
                 if pa.gd().is_item_on_player_tile() {
