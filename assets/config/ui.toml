@@ -3,26 +3,27 @@ cursor_move_duration = 160 # in milli secs
 gap_len_between_dialogs = 8
 
 [color]
-border_light = { r=209, g=136, b=84 }
 border_dark = { r=131, g=85, b=53 }
-border_highlight_light = { r=250, g=220, b=12 }
 border_highlight_dark = { r=210, g=160, b=12 }
-window_bg = { r=4, g=10, b=20 }
-window_bg_highlight = { r=34, g=40, b=60 }
-list_border = { r=59, g=69, b=103 }
-log_window_bg = { r=20, g=4, b=4 }
-log_font = { r=250, g=250, b=250 }
-normal_font = { r=250, g=250, b=250 }
-gauge_border_light = { r=229, g=211, b =4 }
-gauge_border_dark = { r=153, g=116, b =20 }
+border_highlight_light = { r=250, g=220, b=12 }
+border_light = { r=209, g=136, b=84 }
 gauge_bg = { r=7, g=7, b =7 }
+gauge_border_dark = { r=153, g=116, b =20 }
+gauge_border_light = { r=229, g=211, b =4 }
+gauge_exp = { r=153, g=153, b=117 }
 gauge_hp = { r=237, g=47, b =37 }
 gauge_sp = { r=200, g=200, b =0 }
-gauge_exp = { r=153, g=153, b=117 }
+list_border = { r=59, g=69, b=103 }
+log_font = { r=250, g=250, b=250 }
+log_window_bg = { r=20, g=4, b=4 }
+normal_font = { r=250, g=250, b=250 }
+sidebar_bg = { r=20, g=4, b=4 }
 vscroll_border = { r=0, g=69, b=140 }
 vscroll_border_inner = { r=0, g=46, b=94 }
 vscroll_knob = { r=34, g=40, b=60 }
 vscroll_knob_border = { r=0, g=117, b=225 }
+window_bg = { r=4, g=10, b=20 }
+window_bg_highlight = { r=34, g=40, b=60 }
 
 [font]
 s = { size=11 }
@@ -52,7 +53,7 @@ image_window_pos_y = 0
 rect = { x = -999, y = 120, w = 200, h = 0 }
 
 [start_dialog]
-rect = { x = -999, y = -1000, w = 200, h = 72 }
+rect = { x = -1000, y = -1000, w = 200, h = 72 }
 
 [text_input_dialog]
 rect = { x = -999, y = -999, w = 200, h = 40 }
@@ -145,6 +146,10 @@ width = 23
 button_height = 26
 min_knob_size = 20
 button_repeat_duration = 350
+
+[time_info]
+time_label = { x = 2, y = 16 }
+date_label = { x = 2, y = 3 }
 
 [sidebar]
 icon_w = 32

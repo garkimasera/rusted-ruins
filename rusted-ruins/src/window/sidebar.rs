@@ -38,6 +38,8 @@ impl Window for Sidebar {
         let cfg = &UI_CFG.sidebar;
         context.set_viewport(None);
 
+        context.fill_rect(SCREEN_CFG.sidebar, UI_CFG.color.sidebar_bg);
+
         for i in 0..N_ITEM {
             let rect = Rect::new(
                 self.rect.x,

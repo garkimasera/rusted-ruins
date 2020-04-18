@@ -619,6 +619,12 @@ impl GameWindows {
     }
 
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        for hborder in self.hborders.iter_mut() {
+            hborder.draw(context);
+        }
+        for vborder in self.vborders.iter_mut() {
+            vborder.draw(context);
+        }
         self.main_window.draw(context, game, anim);
         self.log_window.draw(context, game, anim);
         self.minimap_window.draw(context, game, anim);
@@ -628,12 +634,5 @@ impl GameWindows {
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);
         self.time_info.draw(context, game, anim);
-
-        for hborder in self.hborders.iter_mut() {
-            hborder.draw(context);
-        }
-        for vborder in self.vborders.iter_mut() {
-            vborder.draw(context);
-        }
     }
 }

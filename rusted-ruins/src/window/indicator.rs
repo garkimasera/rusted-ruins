@@ -147,9 +147,9 @@ pub struct TimeInfo {
 
 impl TimeInfo {
     pub fn new() -> TimeInfo {
-        let rect: Rect = SCREEN_CFG.date_info.into();
+        let rect: Rect = UI_CFG.time_info.date_label.into();
         let date_label = LabelWidget::bordered(rect, "", FontKind::S);
-        let rect: Rect = SCREEN_CFG.time_info.into();
+        let rect: Rect = UI_CFG.time_info.time_label.into();
         let time_label = LabelWidget::bordered(rect, "", FontKind::M);
         TimeInfo {
             date_label,
@@ -165,6 +165,8 @@ impl TimeInfo {
 
 impl Window for TimeInfo {
     fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+        draw_window_border(context, SCREEN_CFG.time_info);
+
         let date = game.gd.time.current_date();
         let mut date_changed = false;
         if self.year != date.year {

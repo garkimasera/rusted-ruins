@@ -1,4 +1,4 @@
-use super::{CfgColor, CfgPos, CfgRect};
+use super::{CfgColor, CfgRect};
 
 /// Size of screen and rects of windows
 /// These parameters will change if screen size is different
@@ -9,7 +9,7 @@ pub struct ScreenConfig {
     pub main_window: CfgRect,
     pub log_window: CfgRect,
     pub minimap_window: CfgRect,
-    pub sidebar: CfgPos,
+    pub sidebar: CfgRect,
     pub hp_indicator: CfgRect,
     pub sp_indicator: CfgRect,
     pub floor_info: CfgRect,
@@ -58,32 +58,34 @@ pub struct UIConfig {
     pub quest_window: QuestWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
+    pub time_info: TimeInfoConfig,
     pub vscroll_widget: VScrollWidgetConfig,
     pub sidebar: SidebarConfig,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UIColorConfig {
-    pub border_light: CfgColor,
     pub border_dark: CfgColor,
-    pub border_highlight_light: CfgColor,
     pub border_highlight_dark: CfgColor,
-    pub window_bg: CfgColor,
-    pub window_bg_highlight: CfgColor,
-    pub list_border: CfgColor,
-    pub log_window_bg: CfgColor,
-    pub log_font: CfgColor,
-    pub normal_font: CfgColor,
-    pub gauge_border_light: CfgColor,
-    pub gauge_border_dark: CfgColor,
+    pub border_highlight_light: CfgColor,
+    pub border_light: CfgColor,
     pub gauge_bg: CfgColor,
+    pub gauge_border_dark: CfgColor,
+    pub gauge_border_light: CfgColor,
+    pub gauge_exp: CfgColor,
     pub gauge_hp: CfgColor,
     pub gauge_sp: CfgColor,
-    pub gauge_exp: CfgColor,
+    pub list_border: CfgColor,
+    pub log_font: CfgColor,
+    pub log_window_bg: CfgColor,
+    pub normal_font: CfgColor,
+    pub sidebar_bg: CfgColor,
     pub vscroll_border: CfgColor,
     pub vscroll_border_inner: CfgColor,
     pub vscroll_knob: CfgColor,
     pub vscroll_knob_border: CfgColor,
+    pub window_bg: CfgColor,
+    pub window_bg_highlight: CfgColor,
 }
 
 #[derive(Debug, Deserialize)]
@@ -258,6 +260,12 @@ pub struct ListWidgetConfig {
     pub h_row_default: u32,
     pub h_row_with_text: u32,
     pub left_margin: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TimeInfoConfig {
+    pub time_label: CfgRect,
+    pub date_label: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
