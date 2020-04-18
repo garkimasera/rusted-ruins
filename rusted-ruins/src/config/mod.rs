@@ -43,7 +43,7 @@ macro_rules! load_config_file {
 /// Initialize lazy static
 pub fn init() {
     use lazy_static::initialize;
-    initialize(&APP_DIR);
+    initialize(&ASSETS_DIR);
     initialize(&USER_DIR);
     initialize(&CONFIG);
     initialize(&SCREEN_CFG);
@@ -53,7 +53,7 @@ pub fn init() {
 }
 
 lazy_static! {
-    pub static ref APP_DIR: PathBuf = get_app_dir().expect("Cannot get data directory path");
+    pub static ref ASSETS_DIR: PathBuf = get_assets_dir().expect("Cannot get data directory path");
     pub static ref USER_DIR: PathBuf = get_user_dir();
     pub static ref ADDON_DIR: Option<PathBuf> = get_addon_dir();
     pub static ref CONFIG: Config = {
@@ -72,19 +72,19 @@ lazy_static! {
 }
 
 /// Get application directory
-fn get_app_dir() -> Option<PathBuf> {
-    if let Some(e) = env::var_os("RUSTED_RUINS_APP_DIR") {
+fn get_assets_dir() -> Option<PathBuf> {
+    if let Some(e) = env::var_os("RUSTED_RUINS_ASSETS_DIR") {
         return Some(PathBuf::from(e));
     }
 
     if let Ok(mut exe_file) = env::current_exe() {
         exe_file.pop();
-        exe_file.push("data");
+        exe_file.push("assets");
         return Some(exe_file);
     }
 
     if let Ok(mut cdir) = env::current_dir() {
-        cdir.push("data");
+        cdir.push("assets");
         return Some(cdir);
     }
     None
@@ -108,7 +108,7 @@ fn get_addon_dir() -> Option<PathBuf> {
 /// They will be the root path for searching pak or text, and other data files.
 pub fn get_data_dirs() -> Vec<PathBuf> {
     let mut v = Vec::new();
-    v.push(APP_DIR.clone());
+    v.push(ASSETS_DIR.clone());
 
     if ADDON_DIR.is_some() {
         v.push(ADDON_DIR.clone().unwrap());
@@ -119,14 +119,14 @@ pub fn get_data_dirs() -> Vec<PathBuf> {
 
 /// Create absolute path from relative path which root is application directory
 pub fn abs_path(s: &str) -> PathBuf {
-    let mut path = APP_DIR.clone();
+    let mut path = ASSETS_DIR.clone();
     path.push(s);
     path
 }
 
 /// Create absolute path from config directory
 pub fn cfg_path(s: &str) -> PathBuf {
-    let mut path = APP_DIR.clone();
+    let mut path = ASSETS_DIR.clone();
     path.push(basic::CFG_FILES_DIR);
     path.push(s);
     path

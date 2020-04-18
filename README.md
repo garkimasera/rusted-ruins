@@ -52,7 +52,7 @@ After that, clone this repository, download pak files, and run.
 git clone https://github.com/garkimasera/rusted-ruins.git
 cd rusted-ruins
 ./download-pak.sh
-RUSTED_RUINS_APP_DIR=./res cargo run --release -p rusted-ruins
+RUSTED_RUINS_ASSETS_DIR=./res cargo run --release -p rusted-ruins
 ```
 
 If you are a Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
