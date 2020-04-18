@@ -1,4 +1,4 @@
-use super::defs::{ElementArray, MagicalEffect, MedicalEffect, ToolEffect};
+use super::defs::{ElementArray, Harvest, MagicalEffect, MedicalEffect, ToolEffect};
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
@@ -47,6 +47,8 @@ pub struct ItemObject {
     pub nutrition: u16,
     /// Range of charges
     pub charge: [u8; 2],
+    /// For harvestable items
+    pub harvest: Option<Harvest>,
 }
 
 impl Ord for Item {

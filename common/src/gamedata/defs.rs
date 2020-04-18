@@ -115,3 +115,20 @@ pub struct Reward {
     pub money: i64,
     pub item: Vec<ItemIdx>,
 }
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct Harvest {
+    pub harvest_type: HarvestType,
+    pub target_item: String,
+    pub difficulty: u32,
+    pub n_yield: u32,
+}
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum HarvestType {
+    Animal,
+    Chop,
+    Crop,
+    Deconstruct,
+    Mine,
+}

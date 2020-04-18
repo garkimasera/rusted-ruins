@@ -1,3 +1,4 @@
+use common::gamedata::defs::Harvest;
 use common::gamedata::{self, ElementArray};
 use common::sitegen;
 use geom::Vec2d;
@@ -107,6 +108,7 @@ pub struct ItemDepInput {
     pub nutrition: Option<u16>,
     #[serde(default)]
     pub charge: [u8; 2],
+    pub harvest: Option<Harvest>,
 }
 
 #[derive(Debug, Deserialize)]
