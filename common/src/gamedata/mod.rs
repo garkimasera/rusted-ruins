@@ -268,6 +268,12 @@ impl GameData {
         self.check_item_list_on_tile(item_location.0);
     }
 
+    /// Add item on specified tile of the current map
+    pub fn add_item_on_tile(&mut self, pos: Vec2d, item: Item, n: u32) {
+        let map = self.get_current_map_mut();
+        map.locate_item(item, pos, n);
+    }
+
     /// Checks item list on tile is empty or not. If so, delete
     fn check_item_list_on_tile(&mut self, item_list_location: ItemListLocation) {
         match item_list_location {
