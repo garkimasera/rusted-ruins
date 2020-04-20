@@ -368,6 +368,10 @@ impl<'a> DoPlayerAction<'a> {
     pub fn print_tile_info(&mut self, tile: Vec2d) {
         super::map::tile_info::print_tile_info(self.0, tile);
     }
+
+    pub fn harvest_item(&mut self, il: ItemLocation) {
+        super::item::harvest::harvest_item(self.gd_mut(), il);
+    }
 }
 
 pub fn msg_switch_map(next_mid: MapId) -> String {

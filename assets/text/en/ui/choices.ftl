@@ -5,6 +5,7 @@ dialog-choice-exit_game = Exit Game
 dialog-choice-loadgame = Load Game
 dialog-choice-newgame = New Game
 dialog-choice-save_game = Save Game
+tile-menu-chop = Chop a tree
 tile-menu-down-stairs = Go down the stairs
 tile-menu-enter-site = Enter this site
 tile-menu-exit-to-region-map = Exit to region map

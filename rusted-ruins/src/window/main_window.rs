@@ -4,6 +4,7 @@ use crate::draw::mainwin::MainWinDrawer;
 use crate::game::command::MouseButton;
 use crate::game::{Animation, Command, DialogOpenRequest, DoPlayerAction, Game, InfoGetter};
 use crate::window::{DialogWindow, Window};
+use common::gobj;
 use geom::*;
 use sdl2::rect::Rect;
 
@@ -156,7 +157,8 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
     let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
 
     let t = tile_info_query(&game.gd, tile);
-    let player_same_tile = tile == game.gd.player_pos();
+    let player_pos = game.gd.player_pos();
+    let player_same_tile = tile == player_pos;
 
     if player_same_tile {
         match t.move_symbol {
@@ -197,6 +199,26 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
             callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
                 pa.request_dialog_open(DialogOpenRequest::PickUpItem);
             }));
+        }
+    }
+
+    // Same tile or adjacent tile
+    if player_same_tile || tile.is_adjacent(player_pos) {
+        // Add harvest items
+        let list = game.gd.search_harvestable_item(tile);
+        for (il, item_idx) in &list {
+            let item_obj = gobj::get_obj(*item_idx);
+            let harvest = item_obj.harvest.as_ref().unwrap();
+            let il = *il;
+
+            use common::gamedata::defs::HarvestType;
+            match harvest.harvest_type {
+                HarvestType::Chop => {
+                    text_ids.push("tile-menu-chop");
+                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| pa.harvest_item(il)));
+                }
+                _ => todo!(),
+            }
         }
     }
 

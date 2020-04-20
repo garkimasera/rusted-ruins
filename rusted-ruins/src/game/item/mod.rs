@@ -1,5 +1,6 @@
 pub mod filter;
 pub mod gen;
+pub mod harvest;
 pub mod info;
 
 use common::gamedata::*;

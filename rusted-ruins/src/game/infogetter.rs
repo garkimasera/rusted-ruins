@@ -30,6 +30,8 @@ pub trait InfoGetter {
     fn has_item(&self, idx: ItemIdx) -> u32;
     /// Get the item location of specified item
     fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation>;
+    /// Get list of harvestable items
+    fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)>;
 }
 
 impl InfoGetter for GameData {
@@ -124,5 +126,28 @@ impl InfoGetter for GameData {
             }
         }
         il
+    }
+
+    fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)> {
+        let item_list = if let Some(item_list) = self.get_item_list_on_current_map(tile) {
+            item_list
+        } else {
+            return Vec::new();
+        };
+        let ill = ItemListLocation::OnMap {
+            mid: self.get_current_mapid(),
+            pos: tile,
+        };
+
+        let mut v = Vec::new();
+        for (i, item) in item_list.items.iter().enumerate() {
+            let item_idx = item.0.idx;
+            let item_obj = gobj::get_obj(item_idx);
+
+            if item_obj.harvest.is_some() {
+                v.push(((ill, i as u32), item_idx))
+            }
+        }
+        v
     }
 }
