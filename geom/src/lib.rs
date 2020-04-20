@@ -29,6 +29,17 @@ impl Vec2d {
     pub fn mdistance(self, another: Vec2d) -> i32 {
         (self.0 - another.0).abs() + (self.1 - another.1).abs()
     }
+
+    /// Gien tile is adjacent or not
+    pub fn is_adjacent(self, another: Vec2d) -> bool {
+        if self == another {
+            false
+        } else {
+            let diff_x = (self.0 - another.0).abs();
+            let diff_y = (self.1 - another.1).abs();
+            (diff_x == 0 || diff_x == 1) && (diff_y == 0 || diff_y == 1)
+        }
+    }
 }
 
 impl From<(i32, i32)> for Vec2d {
