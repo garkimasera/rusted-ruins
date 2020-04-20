@@ -211,6 +211,12 @@ impl GameData {
         }
     }
 
+    /// Get item list on the current map
+    pub fn get_item_list_on_current_map(&self, pos: Vec2d) -> Option<&ItemList> {
+        let mid = self.get_current_mapid();
+        self.region.get_map(mid).tile[pos].item_list.as_ref()
+    }
+
     pub fn get_item(&self, item_location: ItemLocation) -> (&Item, u32) {
         let a = &self.get_item_list(item_location.0).items[item_location.1 as usize];
         (&a.0, a.1)
