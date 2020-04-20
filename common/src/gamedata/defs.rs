@@ -125,6 +125,7 @@ pub struct Harvest {
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum HarvestType {
     Animal,
     Chop,
