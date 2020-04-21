@@ -15,5 +15,9 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) {
 
     let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.target_item);
     let target_item = super::gen::gen_item_from_idx(target_item_idx);
-    gd.add_item_on_tile(gd.player_pos(), target_item, harvest.n_yield);
+    let n_yield = harvest.n_yield;
+
+    game_log_i!("harvest-chop"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
+    audio::play_sound("chop-tree");
+    gd.add_item_on_tile(gd.player_pos(), target_item.clone(), n_yield);
 }

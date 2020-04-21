@@ -66,3 +66,7 @@ quest-reward-receive-money = Recieved {$money} gold as the quest reward.
 
 creation-start = {$chara} started making {$product}.
 creation-finish = {$chara} finished making {$product}.
+
+# Messages about harvest
+
+harvest-chop = {$chara} chopped a tree, and get {$item} x {$n}.
