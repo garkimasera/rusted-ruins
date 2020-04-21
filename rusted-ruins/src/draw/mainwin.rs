@@ -247,7 +247,7 @@ impl MainWinDrawer {
 
         // Draw items
         for item_idx in di.items {
-            context.render_tex_n_center(*item_idx, tile_rect, 0);
+            context.render_tex_n_center_height_checked(*item_idx, tile_rect, 0);
         }
 
         // Draw character on the tile

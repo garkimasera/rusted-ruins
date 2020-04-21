@@ -93,6 +93,22 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
         try_sdl!(self.canvas.copy(tex, src, dest));
     }
 
+    pub fn render_tex_n_center_height_checked<I, O>(&mut self, idx: I, dest: Rect, n_image: u32)
+    where
+        for<'th> self::texture::TextureHolder<'th>:
+            common::objholder::Holder<I, ReturnType = Texture<'th>>,
+        I: common::objholder::ObjectIndex<ObjectType = O> + Copy,
+        O: common::obj::ImgObject + 'static,
+    {
+        let obj = common::gobj::get_obj(idx);
+        let src: Rect = obj.img_rect_nth(n_image).into();
+        if src.h < common::basic::TILE_SIZE_I {
+            self.render_tex_n_center(idx, dest, n_image);
+        } else {
+            self.render_tex_n_bottom(idx, dest, n_image);
+        }
+    }
+
     pub fn draw_rect<R: Into<Rect>, T: Into<Color>>(&mut self, rect: R, color: T) {
         self.canvas.set_draw_color(color.into());
         try_sdl!(self.canvas.draw_rect(rect.into()))
