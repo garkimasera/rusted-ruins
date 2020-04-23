@@ -80,15 +80,5 @@ fn init_rules() {
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.
 fn setup_logger() {
-    use crate::applog::LevelFilter;
-    use std::env;
-    use std::io::Write;
-    let mut builder = env_logger::Builder::new();
-
-    builder.format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()));
-    builder.filter(None, LevelFilter::Info);
-    if let Ok(e) = env::var("RUST_LOG") {
-        builder.parse_filters(&e);
-    }
-    builder.init();
+    env_logger::builder().format_timestamp(None).init();
 }
