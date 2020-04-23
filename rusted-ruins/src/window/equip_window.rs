@@ -136,6 +136,7 @@ fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
     let id = match esk {
         EquipSlotKind::MeleeWeapon => "!icon-melee-weapon",
         EquipSlotKind::RangedWeapon => "!icon-ranged-weapon",
+        EquipSlotKind::Tool => "!icon-tool",
         EquipSlotKind::BodyArmor => "!icon-bodyarmor",
         EquipSlotKind::Shield => "!icon-shield",
     };

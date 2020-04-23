@@ -1,7 +1,7 @@
 
 {
     "default_equip_slots": {
-        "human": [["melee_weapon", 1], ["ranged_weapon", 1], ["body_armor", 1]]
+        "human": [["melee_weapon", 1], ["ranged_weapon", 1], ["body_armor", 1], ["tool", 1]]
     },
     "common_skills": ["endurance", "healing", "martial_arts"]
 }

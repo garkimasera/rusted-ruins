@@ -88,7 +88,7 @@ pub enum ItemKind {
     Weapon(WeaponKind),
     /// Equipment to protect character from attacks.
     Armor(ArmorKind),
-    /// Can apply.
+    /// Equipment for specific work.
     Tool,
     /// Contains some items.
     Container,
@@ -355,15 +355,19 @@ impl From<u32> for ItemMoveNum {
 pub enum EquipSlotKind {
     MeleeWeapon,
     RangedWeapon,
+    Tool,
     BodyArmor,
     Shield,
 }
+
+impl EquipSlotKind {}
 
 impl ItemKind {
     pub fn equip_slot_kind(self) -> Option<EquipSlotKind> {
         match self {
             ItemKind::Weapon(weapon_kind) => Some(weapon_kind.equip_slot_kind()),
             ItemKind::Armor(armor_kind) => Some(armor_kind.equip_slot_kind()),
+            ItemKind::Tool => Some(EquipSlotKind::Tool),
             _ => None,
         }
     }
