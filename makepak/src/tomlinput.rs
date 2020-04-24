@@ -75,6 +75,8 @@ pub struct TileDepInput {
 #[serde(deny_unknown_fields)]
 pub struct WallDepInput {
     pub base_draw: Option<bool>,
+    pub build_skill: Option<u32>,
+    pub materials: Option<Vec<(String, u32)>>,
 }
 
 #[derive(Debug, Deserialize)]

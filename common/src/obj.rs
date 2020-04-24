@@ -96,6 +96,8 @@ pub struct WallObject {
     pub base_draw: bool,
     pub img: Img,
     pub symbol_color: (u8, u8, u8),
+    pub build_skill: Option<u32>,
+    pub materials: Option<Vec<(String, u32)>>,
 }
 
 pub use crate::gamedata::item::ItemObject;
