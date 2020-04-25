@@ -7,6 +7,7 @@ use crate::context::textrenderer::FontKind;
 pub struct GameInfoWindow {
     rect: Rect,
     money_label: LabelWidget,
+    escape_click: bool,
 }
 
 impl GameInfoWindow {
@@ -19,7 +20,11 @@ impl GameInfoWindow {
             FontKind::MonoM,
         );
 
-        GameInfoWindow { rect, money_label }
+        GameInfoWindow {
+            rect,
+            money_label,
+            escape_click: false,
+        }
     }
 }
 
@@ -32,6 +37,8 @@ impl Window for GameInfoWindow {
 
 impl DialogWindow for GameInfoWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command);
+
         match *command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,

@@ -18,7 +18,8 @@ const ITEM_INVENTORY: u32 = 0;
 const ITEM_EQUIPMENT: u32 = 1;
 const ITEM_CHARAINFO: u32 = 2;
 const ITEM_CREATION: u32 = 3;
-const N_ITEM: u32 = 4;
+const ITEM_GAMEINFO: u32 = 4;
+const N_ITEM: u32 = 5;
 
 impl Sidebar {
     pub fn new() -> Sidebar {
@@ -97,6 +98,8 @@ impl DialogWindow for Sidebar {
                     return DialogResult::Command(Some(Command::OpenStatusWin));
                 } else if i == ITEM_CREATION {
                     return DialogResult::Command(Some(Command::OpenCreationWin));
+                } else if i == ITEM_GAMEINFO {
+                    return DialogResult::Command(Some(Command::OpenGameInfoWin));
                 }
             }
             _ => (),
