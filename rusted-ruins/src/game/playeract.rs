@@ -85,9 +85,28 @@ impl<'a> DoPlayerAction<'a> {
             VDirection::None
         };
         let dir = Direction::new(hdir, vdir);
-        if !dir.is_none() {
-            self.try_move(Direction::new(hdir, vdir));
+        if dir.is_none() {
+            return;
         }
+        let map = self.gd().get_current_map();
+        let player = self.gd().chara.get(CharaId::Player);
+        let is_passable = |dir: Direction| {
+            use super::map::MapEx;
+            let dest_tile = map.chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+            map.is_passable(&player, dest_tile)
+        };
+
+        let dir = if is_passable(dir) {
+            dir
+        } else if is_passable(Direction::new(dir.hdir, VDirection::None)) {
+            Direction::new(dir.hdir, VDirection::None)
+        } else if is_passable(Direction::new(HDirection::None, dir.vdir)) {
+            Direction::new(HDirection::None, dir.vdir)
+        } else {
+            return;
+        };
+
+        self.try_move(dir);
     }
 
     pub fn shoot(&mut self, target: Vec2d) {
