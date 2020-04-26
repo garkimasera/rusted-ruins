@@ -19,7 +19,8 @@ const ITEM_EQUIPMENT: u32 = 1;
 const ITEM_CHARAINFO: u32 = 2;
 const ITEM_CREATION: u32 = 3;
 const ITEM_GAMEINFO: u32 = 4;
-const N_ITEM: u32 = 5;
+const ITEM_SAVE: u32 = 5;
+const N_ITEM: u32 = 6;
 
 impl Sidebar {
     pub fn new() -> Sidebar {
@@ -100,6 +101,8 @@ impl DialogWindow for Sidebar {
                     return DialogResult::Command(Some(Command::OpenCreationWin));
                 } else if i == ITEM_GAMEINFO {
                     return DialogResult::Command(Some(Command::OpenGameInfoWin));
+                } else if i == ITEM_SAVE {
+                    return DialogResult::Command(Some(Command::OpenExitWin));
                 }
             }
             _ => (),
