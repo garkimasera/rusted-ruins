@@ -47,6 +47,7 @@ item-pickup = {$chara} picked up {$item}.
 item-drop = {$chara} dropped {$item}.
 drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
+use-tool-without-equip = No tool equiped!
 
 # Messages when a character is affected
 

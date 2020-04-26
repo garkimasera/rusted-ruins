@@ -1,6 +1,7 @@
 mod action;
 mod anim_queue;
 mod animation;
+mod building;
 pub mod chara;
 mod combat;
 pub mod command;
