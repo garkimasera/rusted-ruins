@@ -19,7 +19,6 @@ const COMMANDS: &[Command] = &[
     Command::DropItem,
     Command::OpenExitWin,
     Command::OpenCreationWin,
-    Command::Shot,
 ];
 
 impl HelpWindow {

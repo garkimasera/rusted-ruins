@@ -1,5 +1,6 @@
 //! Functions to search objects in a map
 
+/*
 use crate::game::view::calc_visual_distance;
 use common::gamedata::*;
 
@@ -50,3 +51,4 @@ pub fn search_nearest_target(
 
     target_cid
 }
+*/

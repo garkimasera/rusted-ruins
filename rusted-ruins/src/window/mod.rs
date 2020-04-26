@@ -362,9 +362,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     pa.goto_next_floor(Direction::none(), true);
                 }
             }
-            Command::Shot => {
-                pa.shot();
-            }
             Command::OpenCreationWin => {
                 self.push_dialog_window(Box::new(creation_window::CreationWindow::new(
                     CreationKind::Cooking,

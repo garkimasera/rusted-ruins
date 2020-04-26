@@ -75,12 +75,12 @@ pub fn update_view_map(game: &mut Game) {
     }
 }
 
-pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> {
-    for pos in LineIter::new(orig, dist) {
-        if !map.tile[pos].wall.is_empty() {
-            return None;
-        }
-    }
+// pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> {
+//     for pos in LineIter::new(orig, dist) {
+//         if !map.tile[pos].wall.is_empty() {
+//             return None;
+//         }
+//     }
 
-    Some(dist.mdistance(orig))
-}
+//     Some(dist.mdistance(orig))
+// }

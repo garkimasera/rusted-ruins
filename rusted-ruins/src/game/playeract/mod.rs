@@ -35,23 +35,6 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
-    /// Shot to target using long range weapon
-    pub fn shot(&mut self) {
-        if self.0.target_chara.is_none() {
-            self.0.target_chara = crate::game::map::search::search_nearest_target(
-                self.gd(),
-                CharaId::Player,
-                Relationship::HOSTILE,
-            );
-        }
-
-        if let Some(target) = self.0.target_chara {
-            if super::action::shot_target(&mut self.0, CharaId::Player, target) {
-                self.0.finish_player_turn();
-            }
-        }
-    }
-
     /// Pick up an item on tile
     pub fn pick_up_item(&mut self, il: ItemLocation, n: u32) -> bool {
         let gd = self.gd_mut();
