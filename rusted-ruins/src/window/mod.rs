@@ -356,6 +356,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::Shoot { target } => {
                 pa.shoot(target);
             }
+            Command::UseTool { target } => {
+                pa.use_tool(target);
+            }
             Command::Enter => {
                 // If player is on stairs, move from this map
                 if pa.gd().on_map_entrance() {

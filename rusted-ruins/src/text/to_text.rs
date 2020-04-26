@@ -64,6 +64,7 @@ impl ToText for Command {
             Move { .. } => "command-move",
             MoveTo { .. } => "command-move_to",
             Shoot { .. } => "command-shoot",
+            UseTool { .. } => "command-use-tool",
             Enter => "command-enter",
             Cancel => "command-cancel",
             RotateWindowRight => "command-rotate_window_right",

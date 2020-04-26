@@ -14,6 +14,9 @@ pub enum Command {
     Shoot {
         target: Vec2d,
     },
+    UseTool {
+        target: Vec2d,
+    },
     Enter,
     Cancel,
     RotateWindowRight,

@@ -1,4 +1,5 @@
 mod moving;
+mod use_tool;
 
 use super::Game;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};

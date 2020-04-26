@@ -122,6 +122,8 @@ impl MainWindow {
                 if left_button {
                     if key_state.ctrl {
                         return ConvertMouseEventResult::Command(Command::Shoot { target: tile });
+                    } else if key_state.shift {
+                        return ConvertMouseEventResult::Command(Command::UseTool { target: tile });
                     } else {
                         return ConvertMouseEventResult::Command(Command::MoveTo { dest: tile });
                     }
