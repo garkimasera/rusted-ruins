@@ -290,7 +290,7 @@ impl<T> Index<Vec2d> for Array2d<T> {
             OUT_OF_BOUNDS_ERR_MSG
         );
         debug_assert!(
-            0 <= index.0 && index.1 < self.h as i32,
+            0 <= index.1 && index.1 < self.h as i32,
             OUT_OF_BOUNDS_ERR_MSG
         );
 
