@@ -47,7 +47,10 @@ item-pickup = {$chara} picked up {$item}.
 item-drop = {$chara} dropped {$item}.
 drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
+
+# Messages about using tools
 use-tool-without-equip = No tool equiped!
+building-not-adjacent-tile = Need to specify an adjacent tile to build.
 
 # Messages when a character is affected
 

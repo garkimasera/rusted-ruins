@@ -1,11 +1,13 @@
 use super::DoPlayerAction;
+use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
 
 impl<'a> DoPlayerAction<'a> {
-    pub fn use_tool(&mut self, target: Vec2d) {
+    pub fn use_tool(&mut self, pos: Vec2d) {
         let player = self.gd().chara.get(CharaId::Player);
+        let player_pos = self.gd().player_pos();
         let tool = if let Some(tool) = player.equip.item(EquipSlotKind::Tool, 0) {
             tool
         } else {
@@ -20,8 +22,12 @@ impl<'a> DoPlayerAction<'a> {
                 warn!("try to use item that does not have any effect.");
             }
             ToolEffect::Build => {
-                trace!("building at {}", &target);
-                crate::game::building::start_build(self.0, target, CharaId::Player);
+                if !pos.is_adjacent(player_pos) {
+                    game_log_i!("building-not-adjacent-tile");
+                    return;
+                }
+                trace!("building at {}", &pos);
+                crate::game::building::start_build(self.0, pos, CharaId::Player);
             }
         }
     }

@@ -24,7 +24,7 @@ pub fn finish_build(game: &mut Game, pos: Vec2d, wall_idx: WallIdx) {
     map.tile[pos].wall = WallIdxPP::new(wall_idx);
 
     for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
-        if map.tile[p].wall.idx() != Some(wall_idx) {
+        if !map.is_inside(p) || map.tile[p].wall.idx() != Some(wall_idx) {
             continue;
         }
         let ppf = PiecePatternFlags::from_fn(p, |p| {
