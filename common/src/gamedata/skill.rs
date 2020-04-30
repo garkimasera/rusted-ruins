@@ -9,7 +9,7 @@ pub enum SkillKind {
     Defence,
     Evasion,
     MagicDevice,
-    MartialArts,
+    BareHands,
     Weapon(WeaponKind),
 }
 

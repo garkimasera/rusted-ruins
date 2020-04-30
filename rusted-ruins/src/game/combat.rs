@@ -20,7 +20,7 @@ pub struct AttackParams {
     pub attack_power: f64,
 }
 
-/// Attack neighbor enemy by short range weapon or martial arts
+/// Attack neighbor enemy by short range weapon or bare hands
 pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId) {
     // Logging
     {
@@ -67,8 +67,8 @@ pub fn attack_neighbor(game: &mut Game, attacker_id: CharaId, target_id: CharaId
             let weapon_skill_level = attacker.skills.get(skill_kind);
             calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level)
         } else {
-            // Attack by martial arts
-            skill_kind = SkillKind::MartialArts;
+            // Attack by bare hands
+            skill_kind = SkillKind::BareHands;
             let weapon_skill_level = attacker.skills.get(skill_kind);
             let dice_result = rng::dice(1, weapon_skill_level as i32 / 3 + 1);
             calc_attack_power(dice_result, attacker.attr.str, weapon_skill_level)

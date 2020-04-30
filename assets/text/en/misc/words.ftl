@@ -29,7 +29,7 @@ item_kind-object = Object
 
 skill_kind-endurance = Endurance
 skill_kind-healing = Healing
-skill_kind-martial_arts = Martial Arts
+skill_kind-bare_hands = Bare Hands
 skill_kind-defence = Defence
 skill_kind-evasion = Evasion
 skill_kind-magic_device = Magic Device

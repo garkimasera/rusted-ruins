@@ -49,7 +49,7 @@ impl ToTextId for SkillKind {
         match self {
             Endurance => "skill_kind-endurance",
             Healing => "skill_kind-healing",
-            MartialArts => "skill_kind-martial_arts",
+            BareHands => "skill_kind-bare_hands",
             Defence => "skill_kind-defence",
             Evasion => "skill_kind-evasion",
             MagicDevice => "skill_kind-magic_device",

@@ -28,7 +28,7 @@ item_kind-object = オブジェクト
 
 skill_kind-endurance = 耐久
 skill_kind-healing = 回復力
-skill_kind-martial_arts = 格闘
+skill_kind-bare_hands = 格闘
 skill_kind-defence = 守備
 skill_kind-evasion = 回避
 skill_kind-magic_device = 魔道具
