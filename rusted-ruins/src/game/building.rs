@@ -9,10 +9,34 @@ use geom::*;
 pub fn start_build(game: &mut Game, pos: Vec2d, _builder: CharaId) {
     let wall_id = "wooden-wall-01";
     let wall_idx: WallIdx = gobj::id_to_idx(wall_id);
-    let _wall_obj = gobj::get_obj(wall_idx);
+    let wall_obj = gobj::get_obj(wall_idx);
 
     if !is_buildable(&game.gd, pos) {
         return;
+    }
+
+    let item_list = game.gd.get_item_list_mut(ItemListLocation::Chara {
+        cid: CharaId::Player,
+    });
+
+    let materials = wall_obj.materials.as_ref().unwrap();
+
+    // Check player has needed materials
+    for &(ref item_id, n) in materials {
+        let item_idx: ItemIdx = gobj::id_to_idx(item_id);
+        let has = item_list.count(item_idx);
+        if has < n {
+            let needed = n - has;
+            let item = crate::text::obj_txt(item_id);
+            game_log_i!("building-shortage-material"; item=item, n=needed);
+            return;
+        }
+    }
+
+    // Consume needed materials
+    for &(ref item_id, n) in materials {
+        let item_idx: ItemIdx = gobj::id_to_idx(item_id);
+        item_list.consume(item_idx, n, |_, _| {}, false);
     }
 
     finish_build(game, pos, wall_idx);

@@ -51,6 +51,7 @@ eat-item = {$chara} ate a {$item}.
 # Messages about using tools
 use-tool-without-equip = No tool equiped!
 building-not-adjacent-tile = Need to specify an adjacent tile to build.
+building-shortage-material = Need {$item} x {$n} more to build it.
 
 # Messages when a character is affected
 
