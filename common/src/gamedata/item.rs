@@ -1,4 +1,4 @@
-use super::defs::{ElementArray, Harvest, MagicalEffect, MedicalEffect, ToolEffect};
+use super::defs::*;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
@@ -43,6 +43,7 @@ pub struct ItemObject {
     pub magical_effect: MagicalEffect,
     pub medical_effect: MedicalEffect,
     pub tool_effect: ToolEffect,
+    pub use_effect: UseEffect,
     /// Character's nutrition will be increased by this value after eating this item
     pub nutrition: u16,
     /// Range of charges

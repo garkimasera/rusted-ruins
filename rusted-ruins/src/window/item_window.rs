@@ -20,6 +20,7 @@ pub enum ItemWindowMode {
     Drop,
     Drink,
     Eat,
+    Use,
     Release,
     ShopSell,
     ShopBuy {
@@ -40,7 +41,7 @@ pub struct ItemWindow {
     escape_click: bool,
 }
 
-const STATUS_WINDOW_GROUP_SIZE: u32 = 5;
+const STATUS_WINDOW_GROUP_SIZE: u32 = 6;
 
 pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
     let mem_info = vec![
@@ -63,6 +64,11 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
             idx: gobj::id_to_idx("!tab-icon-item-eat"),
             text_id: "tab_text-item_eat",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-use"),
+            text_id: "tab_text-item_use",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Use, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-release"),
@@ -165,6 +171,13 @@ impl ItemWindow {
                     gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
                 self.update_list(filtered_list);
             }
+            ItemWindowMode::Use => {
+                let ill = ItemListLocation::Chara {
+                    cid: CharaId::Player,
+                };
+                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new().usable(true));
+                self.update_list(filtered_list);
+            }
             ItemWindowMode::Release => {
                 let ill = ItemListLocation::Chara {
                     cid: CharaId::Player,
@@ -252,6 +265,10 @@ impl ItemWindow {
             }
             ItemWindowMode::Eat => {
                 pa.eat_item(il);
+                DialogResult::CloseAll
+            }
+            ItemWindowMode::Use => {
+                pa.use_item(il);
                 DialogResult::CloseAll
             }
             ItemWindowMode::Release => {

@@ -1,5 +1,4 @@
-use common::gamedata::item::*;
-use common::gamedata::GameData;
+use common::gamedata::*;
 use common::gobj;
 
 /// Used for creating filtered list and saving filtering state
@@ -9,6 +8,7 @@ pub struct ItemFilter {
     pub equip_slot_kind: Option<EquipSlotKind>,
     pub flags: ItemFlags,
     pub kind_rough: Option<ItemKindRough>,
+    pub usable: bool,
 }
 
 impl ItemFilter {
@@ -45,6 +45,10 @@ impl ItemFilter {
             }
         }
 
+        if self.usable && o.use_effect == UseEffect::None {
+            return false;
+        }
+
         true
     }
 
@@ -62,6 +66,11 @@ impl ItemFilter {
         self.kind_rough = Some(kind_rough);
         self
     }
+
+    pub fn usable(mut self, usable: bool) -> ItemFilter {
+        self.usable = usable;
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -71,6 +80,7 @@ impl Default for ItemFilter {
             equip_slot_kind: None,
             flags: ItemFlags::empty(),
             kind_rough: None,
+            usable: false,
         }
     }
 }

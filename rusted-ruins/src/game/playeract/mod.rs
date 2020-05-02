@@ -71,6 +71,11 @@ impl<'a> DoPlayerAction<'a> {
         self.0.finish_player_turn();
     }
 
+    /// Use one item
+    pub fn use_item(&mut self, il: ItemLocation) {
+        self.0.finish_player_turn();
+    }
+
     /// Release one magic device item
     pub fn release_item(&mut self, il: ItemLocation) {
         super::action::release_item(self.0, il, CharaId::Player);

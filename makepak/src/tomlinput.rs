@@ -105,6 +105,8 @@ pub struct ItemDepInput {
     pub magical_effect: gamedata::MagicalEffect,
     #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
+    #[serde(default)]
+    pub use_effect: gamedata::UseEffect,
     /// For armor items
     pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,

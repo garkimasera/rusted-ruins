@@ -51,6 +51,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         magical_effect: item.magical_effect,
         medical_effect: item.medical_effect,
         tool_effect: item.tool_effect,
+        use_effect: item.use_effect,
         nutrition: item.nutrition.unwrap_or(0),
         charge: item.charge,
         harvest: item.harvest,
