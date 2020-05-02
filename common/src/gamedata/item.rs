@@ -10,7 +10,7 @@ pub struct Item {
     pub idx: ItemIdx,
     pub kind: ItemKind,
     pub flags: ItemFlags,
-    pub rank: ItemRank,
+    pub quality: ItemQuality,
     pub attributes: Vec<ItemAttribute>,
 }
 
@@ -61,7 +61,7 @@ impl Ord for Item {
         if order != Ordering::Equal {
             return order;
         }
-        let order = self.rank.cmp(&other.rank);
+        let order = self.quality.cmp(&other.quality);
         if order != Ordering::Equal {
             return order;
         }
@@ -139,20 +139,20 @@ bitflags! {
     }
 }
 
-/// Item rank is used to calculate the effects.
+/// Item quality is used to calculate the effects.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub struct ItemRank {
-    /// Base rank of the item
+pub struct ItemQuality {
+    /// Base quality of the item
     pub base: i32,
-    /// This rank will be changed by some magical effects
+    /// Additional quality by magic, smithing, etc.
     pub enchant: u16,
     /// If the item is damaged, this value will decrease
     pub damage: u16,
 }
 
-impl Default for ItemRank {
-    fn default() -> ItemRank {
-        ItemRank {
+impl Default for ItemQuality {
+    fn default() -> ItemQuality {
+        ItemQuality {
             base: 0,
             enchant: 0,
             damage: 0,
@@ -160,8 +160,8 @@ impl Default for ItemRank {
     }
 }
 
-impl ItemRank {
-    /// Return the summation of rank values
+impl ItemQuality {
+    /// Return the summation of quality values
     pub fn as_int(&self) -> i32 {
         self.base + self.enchant as i32 + self.damage as i32
     }

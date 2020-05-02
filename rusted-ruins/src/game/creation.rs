@@ -47,7 +47,7 @@ pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<Ite
         idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
-        rank: ItemRank::default(),
+        quality: ItemQuality::default(),
         attributes: vec![],
     };
 
