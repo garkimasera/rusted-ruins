@@ -6,7 +6,7 @@ use common::objholder::*;
 use common::piece_pattern::{PiecePatternFlags, WallIdxPP};
 use geom::*;
 
-pub fn start_build(game: &mut Game, pos: Vec2d, _builder: CharaId) {
+pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId) {
     let wall_id = "wooden-wall-01";
     let wall_idx: WallIdx = gobj::id_to_idx(wall_id);
     let wall_obj = gobj::get_obj(wall_idx);
@@ -15,9 +15,9 @@ pub fn start_build(game: &mut Game, pos: Vec2d, _builder: CharaId) {
         return;
     }
 
-    let item_list = game.gd.get_item_list_mut(ItemListLocation::Chara {
-        cid: CharaId::Player,
-    });
+    let item_list = game
+        .gd
+        .get_item_list_mut(ItemListLocation::Chara { cid: builder });
 
     let materials = wall_obj.materials.as_ref().unwrap();
 
