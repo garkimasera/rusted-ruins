@@ -62,6 +62,7 @@ pub fn finish_build(game: &mut Game, pos: Vec2d, wall_idx: WallIdx) {
             WallIdxPP::with_piece_pattern(wall_idx, ppf.to_piece_pattern(wall_obj.img.n_pattern));
         map.tile[p].wall = wallpp;
     }
+    audio::play_sound("finish-build");
 }
 
 fn is_buildable(gd: &GameData, pos: Vec2d) -> bool {
