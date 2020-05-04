@@ -21,6 +21,7 @@ impl ToText for Site {
         match self.content {
             SiteContent::AutoGenDungeon { dungeon_kind } => text::to_txt(&dungeon_kind).into(),
             SiteContent::Town { ref town } => text::obj_txt(town.id()).into(),
+            SiteContent::Base { .. } => "base".into(),
             SiteContent::Other => {
                 warn!("Unnamed other kind site");
                 "".into()

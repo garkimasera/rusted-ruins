@@ -31,6 +31,8 @@ pub enum SiteContent {
         /// Detail data for this town
         town: Box<Town>,
     },
+    /// Player's base
+    Base { kind: BaseKind },
     /// This does not include specific data, but character and other elements can be placed its map
     Other,
 }
@@ -105,6 +107,7 @@ impl SiteContent {
         match self {
             &SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
             &SiteContent::Town { .. } => SiteKind::Town,
+            &SiteContent::Base { .. } => SiteKind::Base,
             &SiteContent::Other { .. } => SiteKind::Other,
         }
     }
@@ -115,7 +118,7 @@ impl SiteContent {
 pub enum SiteKind {
     AutoGenDungeon,
     Town,
-    Home,
+    Base,
     Other,
 }
 
@@ -153,4 +156,9 @@ impl DungeonKind {
             _ => false,
         }
     }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub enum BaseKind {
+    Home,
 }
