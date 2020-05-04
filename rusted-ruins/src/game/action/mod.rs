@@ -1,5 +1,7 @@
 //! Process characters action
 
+pub mod use_item;
+
 use super::combat;
 use super::extrait::*;
 use super::Game;
