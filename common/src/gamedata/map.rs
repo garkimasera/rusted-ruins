@@ -128,6 +128,7 @@ pub enum SiteSymbolKind {
     Tower,
     Town,
     Village,
+    HomeInitial,
 }
 
 impl SpecialTileKind {
@@ -147,6 +148,7 @@ impl SpecialTileKind {
                 SiteSymbolKind::Tower => "!rm-tower",
                 SiteSymbolKind::Town => "!rm-town",
                 SiteSymbolKind::Village => "!rm-village",
+                SiteSymbolKind::HomeInitial => "!rm-home-initial",
             },
         })
     }

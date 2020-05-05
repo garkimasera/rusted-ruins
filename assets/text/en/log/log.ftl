@@ -53,6 +53,11 @@ use-tool-without-equip = No tool equiped!
 building-not-adjacent-tile = Need to specify an adjacent tile to build.
 building-shortage-material = Need {$item} x {$n} more to build it.
 
+# Messages about using items
+use_item-deed-invalid-map = You can not use deeds in this area.
+use_item-deed-occupied = You can not use deeds at this occupied area.
+use_item-deed-succeed = You built new home!
+
 # Messages when a character is affected
 
 heal-hp = {$chara} was healed ({$value}).
