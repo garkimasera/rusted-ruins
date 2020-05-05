@@ -336,7 +336,7 @@ impl ItemList {
     pub fn retain<F: FnMut(&Item, u32) -> u32>(&mut self, mut f: F, reverse_order: bool) {
         let iter = std::mem::replace(&mut self.items, Vec::new()).into_iter();
         let mut items = Vec::new();
-        if reverse_order {
+        if !reverse_order {
             for (item, n) in iter {
                 let n = f(&item, n);
                 if n > 0 {
@@ -350,6 +350,7 @@ impl ItemList {
                     items.push((item, n));
                 }
             }
+            items.reverse();
         }
         self.items = items;
     }
@@ -366,20 +367,21 @@ impl ItemList {
         self.retain(
             |item, n| {
                 if item.idx != idx {
-                    return 0;
+                    return n;
                 }
                 let consumed = if need_consumed == 0 {
                     0
                 } else if need_consumed < n {
-                    let d = n - need_consumed;
+                    let consumed = need_consumed;
                     need_consumed = 0;
-                    d
+                    consumed
                 } else {
                     need_consumed -= n;
-                    0
+                    n
                 };
+
                 f(&item, consumed);
-                consumed
+                n - consumed
             },
             prior_high_quality,
         );
