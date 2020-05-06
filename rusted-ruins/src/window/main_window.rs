@@ -208,18 +208,12 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
     if player_same_tile || tile.is_adjacent(player_pos) {
         // Add harvest items
         let list = game.gd.search_harvestable_item(tile);
-        for (il, item_idx) in &list {
+        for (_il, item_idx) in &list {
             let item_obj = gobj::get_obj(*item_idx);
             let harvest = item_obj.harvest.as_ref().unwrap();
-            let il = *il;
 
-            use common::gamedata::defs::HarvestType;
             match harvest.harvest_type {
-                HarvestType::Chop => {
-                    text_ids.push("tile-menu-chop");
-                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| pa.harvest_item(il)));
-                }
-                _ => todo!(),
+                _ => (),
             }
         }
     }

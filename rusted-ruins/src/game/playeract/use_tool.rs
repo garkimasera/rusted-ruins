@@ -3,6 +3,7 @@ use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
+use CharaId::Player;
 
 impl<'a> DoPlayerAction<'a> {
     pub fn use_tool(&mut self, pos: Vec2d) {
@@ -27,7 +28,11 @@ impl<'a> DoPlayerAction<'a> {
                     return;
                 }
                 trace!("building at {}", &pos);
-                crate::game::building::start_build(self.0, pos, CharaId::Player);
+                crate::game::building::start_build(self.0, pos, Player);
+            }
+            ToolEffect::Chop => {
+                trace!("chopping at {}", &pos);
+                crate::game::action::harvest::harvest_by_tool(self.gd_mut(), CharaId::Player, pos);
             }
         }
     }

@@ -163,7 +163,7 @@ impl<'a> DoPlayerAction<'a> {
         super::map::tile_info::print_tile_info(self.0, tile);
     }
 
-    pub fn harvest_item(&mut self, il: ItemLocation) {
-        super::item::harvest::harvest_item(self.gd_mut(), il);
-    }
+    // pub fn harvest_item(&mut self, il: ItemLocation) {
+    //     super::action::harvest::harvest_item(self.gd_mut(), il);
+    // }
 }

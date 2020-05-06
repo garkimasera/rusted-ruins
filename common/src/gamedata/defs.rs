@@ -101,6 +101,7 @@ impl Default for MagicalEffect {
 pub enum ToolEffect {
     None,
     Build,
+    Chop,
 }
 
 impl Default for ToolEffect {

@@ -1,5 +1,6 @@
 //! Process characters action
 
+pub mod harvest;
 pub mod use_item;
 
 use super::combat;
