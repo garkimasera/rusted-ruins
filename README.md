@@ -57,11 +57,36 @@ RUSTED_RUINS_ASSETS_DIR=./res cargo run --release -p rusted-ruins
 
 If you are a Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
 
-## Keys
+## How to operate
+
+Operate the player character with the keyboard and mouse.
+
+Left click on tiles - Move to the tile, melee atack, or start talking.
+
+Left click + Ctrl - Shoot by the ranged weapon.
+
+Left click + Shift - Use the equipped tool.
+
+Right click - Open action menu. Actions for specified tile are available through the menu. For example, you can use stairs and enter/exit the map by opening menu at the tile that player is on.
 
 Arrow keys - Move
 
 Enter key - Enter towns or dungeons, walk up/down stairs, and select an answer when talking.
+
+### Sidebar
+
+There are some icons on the sidebar. Click icons to open windows.
+
+Icon list
+
+* Inventory window
+* Equipment window
+* Status window
+* Creation window
+* Game information window
+* Save / Exit game
+
+### Shortcut keys
 
 c - Open creation window
 
@@ -82,8 +107,6 @@ o - Open game information window
 q - Drink an item
 
 s - Open status window
-
-t - Targetting mode
 
 w - Open equipment window
 
