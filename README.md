@@ -13,7 +13,7 @@ Town (Example of created map by map-editor)
 
 ## Video
 
-https://www.youtube.com/watch?v=Dtdy2Twbc_Y
+https://www.youtube.com/watch?v=A8feGXnssuM
 
 ## Game Objective
 
@@ -23,6 +23,10 @@ The player arrives at a recently discovered continent where a lot of ruins remai
 This is a very early project. Many features for playing are not completed.
 
 Binary format of pak files and save files may be changed before version 1.0.
+
+## Changelog
+
+[See this wiki.](https://github.com/garkimasera/rusted-ruins/wiki/Changelog)
 
 ## Design
 
@@ -52,7 +56,7 @@ After that, clone this repository, download pak files, and run.
 git clone https://github.com/garkimasera/rusted-ruins.git
 cd rusted-ruins
 ./download-pak.sh
-RUSTED_RUINS_ASSETS_DIR=./res cargo run --release -p rusted-ruins
+RUSTED_RUINS_ASSETS_DIR=./assets cargo run --release -p rusted-ruins
 ```
 
 If you are a Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
