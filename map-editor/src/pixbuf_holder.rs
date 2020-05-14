@@ -52,7 +52,8 @@ impl_pixbuf_holder! {
     {chara_template, CharaTemplateIdx},
     {special_tile, SpecialTileIdx},
     {tile, TileIdx},
-    {wall, WallIdx}
+    {wall, WallIdx},
+    {item, ItemIdx}
 }
 
 fn load_png(img: &Img) -> PixbufSet {

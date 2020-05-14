@@ -12,12 +12,15 @@ pub struct IconView {
     pub iconview_tile: gtk::IconView,
     pub iconview_wall: gtk::IconView,
     pub iconview_deco: gtk::IconView,
+    pub iconview_item: gtk::IconView,
     pub liststore_tile: gtk::ListStore,
     pub liststore_wall: gtk::ListStore,
     pub liststore_deco: gtk::ListStore,
+    pub liststore_item: gtk::ListStore,
     pub filter_tile: gtk::TreeModelFilter,
     pub filter_wall: gtk::TreeModelFilter,
     pub filter_deco: gtk::TreeModelFilter,
+    pub filter_item: gtk::TreeModelFilter,
 }
 
 impl IconView {
@@ -25,23 +28,29 @@ impl IconView {
         let liststore_tile = get_object!(builder, "liststore-tile");
         let liststore_wall = get_object!(builder, "liststore-wall");
         let liststore_deco = get_object!(builder, "liststore-deco");
+        let liststore_item = get_object!(builder, "liststore-item");
         let filter_tile: gtk::TreeModelFilter = get_object!(builder, "filter-tile");
         let filter_wall: gtk::TreeModelFilter = get_object!(builder, "filter-wall");
         let filter_deco: gtk::TreeModelFilter = get_object!(builder, "filter-deco");
+        let filter_item: gtk::TreeModelFilter = get_object!(builder, "filter-item");
         filter_tile.set_visible_func(|m, i| item_filter(m, i));
         filter_wall.set_visible_func(|m, i| item_filter(m, i));
         filter_deco.set_visible_func(|m, i| item_filter(m, i));
+        filter_item.set_visible_func(|m, i| item_filter(m, i));
 
         IconView {
             iconview_tile: get_object!(builder, "iconview-tile"),
             iconview_wall: get_object!(builder, "iconview-wall"),
             iconview_deco: get_object!(builder, "iconview-deco"),
+            iconview_item: get_object!(builder, "iconview-item"),
             liststore_tile,
             liststore_wall,
             liststore_deco,
+            liststore_item,
             filter_tile,
             filter_wall,
             filter_deco,
+            filter_item,
         }
     }
 
@@ -112,6 +121,25 @@ pub fn set_iconview(ui: &Ui) {
             }
         });
     }
+    {
+        // Set item icons
+        iconview.iconview_item.set_pixbuf_column(0);
+        iconview.iconview_item.set_text_column(1);
+        let uic = ui.clone();
+        iconview.iconview_item.connect_selection_changed(move |_| {
+            if let Some(path) = uic.iconview.iconview_item.get_selected_items().get(0) {
+                let iter = uic.iconview.filter_item.get_iter(&path).unwrap();
+                let id: String = uic
+                    .iconview
+                    .filter_item
+                    .get_value(&iter, 1)
+                    .get()
+                    .unwrap()
+                    .unwrap();
+                uic.item_selected(SelectedItem::Item(gobj::id_to_idx::<ItemIdx>(&id)));
+            }
+        });
+    }
     update_liststore(ui);
     iconview.refilter(false);
 }
@@ -142,6 +170,14 @@ fn update_liststore(ui: &Ui) {
             None,
             &[0, 1],
             &[&pbh.get(DecoIdx::from_usize(i)).icon, &deco.id],
+        );
+    }
+    let liststore_item = &ui.iconview.liststore_item;
+    for (i, item) in objholder.item.iter().enumerate() {
+        liststore_item.insert_with_values(
+            None,
+            &[0, 1],
+            &[&pbh.get(ItemIdx::from_usize(i)).icon, &item.id],
         );
     }
 }

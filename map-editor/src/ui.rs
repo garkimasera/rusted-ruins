@@ -3,6 +3,7 @@ use crate::iconview::IconView;
 use crate::pixbuf_holder::PixbufHolder;
 use crate::property_controls::PropertyControls;
 use common::basic::TILE_SIZE_I;
+use common::gamedata::ItemGen;
 use common::objholder::*;
 use geom::Vec2d;
 use gtk::prelude::*;
@@ -518,6 +519,12 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
             SelectedItem::Deco(idx) => {
                 ui.map.borrow_mut().set_deco(Vec2d(ix, iy), Some(idx));
             }
+            SelectedItem::Item(idx) => {
+                let id = common::gobj::idx_to_id(idx).to_owned();
+                ui.map
+                    .borrow_mut()
+                    .set_item(Vec2d(ix, iy), Some(ItemGen { id }));
+            }
             SelectedItem::SelectTile => {
                 ui.property_controls.selected_tile.set(Vec2d(ix, iy));
                 ui.property_controls
@@ -575,6 +582,9 @@ fn try_erase(ui: &Ui, pos: (f64, f64)) {
             ui.map
                 .borrow_mut()
                 .erase_layer(Vec2d(ix, iy), ui.current_layer.get());
+        }
+        SelectedItem::Item(_) => {
+            ui.map.borrow_mut().set_item(Vec2d(ix, iy), None);
         }
         _ => {
             ui.map.borrow_mut().erase(Vec2d(ix, iy));
@@ -645,5 +655,6 @@ pub enum SelectedItem {
     Tile(TileIdx),
     Wall(WallIdx),
     Deco(DecoIdx),
+    Item(ItemIdx),
     SelectTile,
 }

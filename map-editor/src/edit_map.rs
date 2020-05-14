@@ -40,25 +40,36 @@ impl EditingMap {
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
         if let Some(idx) = wall {
-            let piece_pattern = {
-                let f = |pos: Vec2d| {
-                    if let Some(w) = self.wall.get(pos) {
-                        w.idx() == Some(idx)
-                    } else {
-                        true
-                    }
-                };
-                let mut piece_pattern_flags = PiecePatternFlags::new();
-                for dir in &Direction::EIGHT_DIRS {
-                    piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
-                }
-                let wall_obj = gobj::get_obj(idx);
-                piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
-            };
-
-            self.wall[pos] = WallIdxPP::with_piece_pattern(idx, piece_pattern);
+            self.wall[pos] = WallIdxPP::new(idx);
         } else {
             self.wall[pos] = WallIdxPP::default();
+        }
+
+        for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
+            if !self.is_inside(p) || self.wall[p].is_empty() {
+                continue;
+            }
+
+            let wall_idx = self.wall[p].idx().unwrap();
+            let wall_obj = gobj::get_obj(wall_idx);
+
+            if wall_obj.img.n_pattern == 1 {
+                continue;
+            }
+
+            let ppf = PiecePatternFlags::from_fn(p, |p| {
+                if self.is_inside(p) {
+                    self.wall[p].idx() == Some(wall_idx)
+                } else {
+                    false
+                }
+            });
+
+            let wallpp = WallIdxPP::with_piece_pattern(
+                wall_idx,
+                ppf.to_piece_pattern(wall_obj.img.n_pattern),
+            );
+            self.wall[p] = wallpp;
         }
     }
 
@@ -79,7 +90,7 @@ impl EditingMap {
     }
 
     pub fn erase(&mut self, pos: Vec2d) {
-        self.wall[pos] = WallIdxPP::default();
+        self.set_wall(pos, None);
         self.deco[pos] = None;
     }
 
@@ -120,6 +131,10 @@ impl EditingMap {
         self.wall = wall;
         let deco = self.deco.clip_with_default((0, 0), (new_w, new_h), None);
         self.deco = deco;
+    }
+
+    pub fn is_inside(&self, p: Vec2d) -> bool {
+        p.0 >= 0 && p.0 < self.width as i32 && p.1 >= 0 && p.1 < self.height as i32
     }
 
     pub fn create_mapobj(&self) -> MapTemplateObject {
@@ -198,11 +213,11 @@ impl EditingMap {
             id: self.property.id.to_owned(),
             w: self.width,
             h: self.height,
-            tile_table: tile_table,
+            tile_table,
             tile: tile_map,
-            wall_table: wall_table,
+            wall_table,
             wall: wall_map,
-            deco_table: deco_table,
+            deco_table,
             deco: deco_map,
             boundary: self.property.boundary,
             items,

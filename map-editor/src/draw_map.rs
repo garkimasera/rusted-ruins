@@ -67,6 +67,19 @@ pub fn draw_map(
                 );
                 cr.paint();
             }
+
+            // Draw item
+            for item in &map.items[p] {
+                let item_idx: ItemIdx = gobj::id_to_idx(&item.id);
+                let pixbuf = &pbh.get(item_idx).image;
+                let height = pixbuf.get_height();
+                cr.set_source_pixbuf(
+                    pixbuf,
+                    (ix * TILE_SIZE_I) as f64,
+                    (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
+                );
+                cr.paint();
+            }
         }
     }
 }
