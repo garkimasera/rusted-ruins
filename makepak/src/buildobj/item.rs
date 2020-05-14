@@ -39,6 +39,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         img: build_img(img)?.0,
         default_flags: flags,
         kind,
+        group: item.group,
         basic_price: item.basic_price,
         w: item.w,
         gen_weight: item.gen_weight,
@@ -55,5 +56,6 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         nutrition: item.nutrition.unwrap_or(0),
         charge: item.charge,
         harvest: item.harvest,
+        facility: item.facility,
     })
 }

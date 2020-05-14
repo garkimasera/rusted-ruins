@@ -36,7 +36,7 @@ pub fn harvest_by_tool(gd: &mut GameData, chara_id: CharaId, pos: Vec2d) {
         .equip
         .item(EquipSlotKind::Tool, 0)
         .expect("tried to non-existent tool");
-    let tool_obj = gobj::get_obj(tool.idx);
+    let tool_obj = tool.obj();
 
     let list = gd.search_harvestable_item(pos);
     for (il, item_idx) in &list {

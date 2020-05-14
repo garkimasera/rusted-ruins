@@ -1,6 +1,5 @@
 use crate::text::ToText;
 use common::gamedata::*;
-use common::gobj;
 
 const UI_IMG_ID_ITEM_INFO: &str = "!icon-item-info";
 
@@ -13,8 +12,7 @@ pub struct ItemInfoText {
 
 impl ItemInfoText {
     pub fn new(item: &Item) -> ItemInfoText {
-        let idx = item.idx;
-        let obj = gobj::get_obj(idx);
+        let obj = item.obj();
 
         let item_name = item.to_text().into_owned();
         let item_kind = misc_txt_format!("item_info_text-item_kind"; item_kind=obj.kind);

@@ -7,7 +7,6 @@ use super::combat;
 use super::extrait::*;
 use super::Game;
 use common::gamedata::*;
-use common::gobj;
 use geom::*;
 use rng::dice;
 use rules::RULES;
@@ -64,7 +63,7 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
 /// Drink one item
 pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
-    let item_obj = gobj::get_obj(item.idx);
+    let item_obj = item.obj();
 
     let chara = gd.chara.get_mut(cid);
     game_log!("drink-item"; chara=chara, item=item);
@@ -76,7 +75,7 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 /// Eat one item
 pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
-    let item_obj = gobj::get_obj(item.idx);
+    let item_obj = item.obj();
 
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
@@ -88,7 +87,7 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let mut item = game.gd.remove_item_and_get(il, 1);
-    let item_obj = gobj::get_obj(item.idx);
+    let item_obj = item.obj();
     let item_dice: f64 = dice(item_obj.dice_n, item_obj.dice_x).into();
 
     match item.charge() {

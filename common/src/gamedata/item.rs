@@ -20,6 +20,8 @@ pub struct ItemObject {
     pub id: String,
     pub img: crate::obj::Img,
     pub kind: ItemKind,
+    /// The name of item group. It is used for sorting.
+    pub group: String,
     /// Defalut item flags
     /// They are set at making object based on object setting files
     pub default_flags: ItemFlags,
@@ -50,11 +52,17 @@ pub struct ItemObject {
     pub charge: [u8; 2],
     /// For harvestable items
     pub harvest: Option<Harvest>,
+    /// Facility type for creation
+    pub facility: Option<String>,
 }
 
 impl Ord for Item {
     fn cmp(&self, other: &Item) -> Ordering {
         let order = self.kind.cmp(&other.kind);
+        if order != Ordering::Equal {
+            return order;
+        }
+        let order = self.group_order(other);
         if order != Ordering::Equal {
             return order;
         }
@@ -73,6 +81,23 @@ impl Ord for Item {
 impl PartialOrd for Item {
     fn partial_cmp(&self, other: &Item) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+}
+
+impl Item {
+    #[cfg(feature = "global_state_obj")]
+    pub fn group_order(&self, other: &Item) -> Ordering {
+        self.obj().group.cmp(&other.obj().group)
+    }
+
+    #[cfg(not(feature = "global_state_obj"))]
+    pub fn group_order(&self, _order: &Item) -> Ordering {
+        Ordering::Equal
+    }
+
+    #[cfg(feature = "global_state_obj")]
+    pub fn obj(&self) -> &'static ItemObject {
+        crate::gobj::get_obj(self.idx)
     }
 }
 

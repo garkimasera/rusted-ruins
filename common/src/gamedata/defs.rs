@@ -54,6 +54,7 @@ pub enum CreationKind {
 pub struct Recipe {
     pub product: String,
     pub ingredients: Vec<String>,
+    pub facility: Option<String>,
     pub difficulty: u32,
     pub required_time: CreationRequiredTime,
 }

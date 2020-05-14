@@ -89,6 +89,7 @@ pub struct SpecialTileDepInput {
 #[serde(deny_unknown_fields)]
 pub struct ItemDepInput {
     pub item_kind: String,
+    pub group: String,
     pub basic_price: u32,
     pub w: u32,
     pub gen_weight: f32,
@@ -113,6 +114,7 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub charge: [u8; 2],
     pub harvest: Option<Harvest>,
+    pub facility: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
