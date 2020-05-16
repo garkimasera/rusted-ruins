@@ -43,7 +43,13 @@ impl Game {
 pub fn save_file_list() -> Result<Vec<PathBuf>, std::io::Error> {
     let mut list = Vec::new();
 
-    for entry in fs::read_dir(get_save_dir())? {
+    let save_dir = get_save_dir();
+
+    if !save_dir.exists() {
+        fs::create_dir_all(&save_dir)?;
+    }
+
+    for entry in fs::read_dir(save_dir)? {
         let file = entry?;
 
         if !file.file_type()?.is_dir() {
