@@ -60,7 +60,7 @@ lazy_static! {
         let config: Config = load_config_file!("config.toml");
         args::modify_config_by_args(config)
     };
-    pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!("screen/800x600.toml");
+    pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!(&CONFIG.screen_config);
     pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
     pub static ref INPUT_CFG: input::InputConfig = load_config_file!("input.toml");
     pub static ref FONT_CFG: font::FontConfig = load_config_file!("font.toml");
