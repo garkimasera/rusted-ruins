@@ -440,7 +440,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.targeting_mode = true;
                 match self.mode {
                     WindowManageMode::OnGame(ref mut game_windows) => {
-                        game_windows.main_window.start_targeting_mode(pa.game());
+                        let tile = pa.gd().player_pos();
+                        game_windows.main_window.start_centering_mode(tile);
                     }
                     _ => unreachable!(),
                 }
@@ -522,14 +523,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
             Command::Cancel => {
                 self.targeting_mode = false;
-                main_window.stop_targeting_mode();
+                main_window.stop_centering_mode();
             }
             Command::Enter => {
                 // Set target
                 let ct = main_window.get_current_centering_tile();
                 if self.game.set_target(ct) {
                     self.targeting_mode = false;
-                    main_window.stop_targeting_mode();
+                    main_window.stop_centering_mode();
                 }
             }
             _ => (),

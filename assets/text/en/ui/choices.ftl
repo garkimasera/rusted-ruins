@@ -12,4 +12,6 @@ tile-menu-exit-to-region-map = Exit to region map
 tile-menu-infomation = Infomation
 tile-menu-move-to-next-map = Move to next map
 tile-menu-pick-up-items = Pick up items
+tile-menu-start-centering = Centering
+tile-menu-stop-centering = Stop centering
 tile-menu-up-stairs = Go up the stairs

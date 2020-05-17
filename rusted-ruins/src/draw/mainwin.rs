@@ -70,7 +70,12 @@ impl MainWinDrawer {
         };
 
         let map = game.gd.get_current_map();
-        self.update_draw_params((map.w as i32, map.h as i32), ct, player_move_adjust);
+        self.update_draw_params(
+            (map.w as i32, map.h as i32),
+            ct,
+            player_move_adjust,
+            centering_tile.is_some(),
+        );
         self.draw_except_anim(context, game, player_move_adjust, player_move_dir);
         let canvas = &mut context.canvas;
         let sv = &mut context.sv;
@@ -418,7 +423,13 @@ impl MainWinDrawer {
         map_size: (i32, i32),
         centering_tile: Vec2d,
         player_move_adjust: (i32, i32),
+        centering_mode: bool,
     ) {
+        let player_move_adjust = if centering_mode {
+            (0, 0)
+        } else {
+            player_move_adjust
+        };
         // Center point by pixel
         let center_p = (
             centering_tile.0 * TILE_SIZE_I + TILE_SIZE_I / 2 - player_move_adjust.0,

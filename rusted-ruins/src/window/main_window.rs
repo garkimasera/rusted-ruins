@@ -7,6 +7,12 @@ use crate::window::{DialogWindow, Window};
 use common::gobj;
 use geom::*;
 use sdl2::rect::Rect;
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref CENTERING_START_REQ: Mutex<Option<Vec2d>> = Mutex::new(None);
+    static ref CENTERING_STOP_REQ: Mutex<bool> = Mutex::new(false);
+}
 
 pub struct MainWindow {
     rect: Rect,
@@ -32,13 +38,13 @@ impl MainWindow {
         }
     }
 
-    pub fn start_targeting_mode(&mut self, game: &Game) {
-        info!("Start targeting mode");
-        self.centering_tile = Some(game.gd.player_pos());
+    pub fn start_centering_mode(&mut self, tile: Vec2d) {
+        info!("Start centering mode");
+        self.centering_tile = Some(tile);
     }
 
-    pub fn stop_targeting_mode(&mut self) {
-        info!("Stop targeting mode");
+    pub fn stop_centering_mode(&mut self) {
+        info!("Stop centering mode");
         self.centering_tile = None;
     }
 
@@ -100,10 +106,21 @@ impl MainWindow {
                 }
                 let tile = self.cursor_pos_to_tile(x, y);
                 if button == MouseButton::Right {
-                    ConvertMouseEventResult::OpenWindow(create_menu(game, tile, x, y))
-                } else {
-                    ConvertMouseEventResult::None
+                    return ConvertMouseEventResult::OpenWindow(create_menu(
+                        game,
+                        tile,
+                        x,
+                        y,
+                        self.centering_tile.is_some(),
+                    ));
                 }
+
+                if button == MouseButton::Middle {
+                    let tile = self.cursor_pos_to_tile(x, y);
+                    self.start_centering_mode(tile);
+                }
+
+                ConvertMouseEventResult::None
             }
             Command::MouseWheel { .. } => ConvertMouseEventResult::None,
             Command::MouseState {
@@ -144,12 +161,30 @@ impl MainWindow {
 
 impl Window for MainWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        let mut centering_start_req = CENTERING_START_REQ.lock().unwrap();
+        if let Some(tile) = *centering_start_req {
+            self.centering_tile = Some(tile);
+            *centering_start_req = None;
+        }
+
+        let mut centering_stop_req = CENTERING_STOP_REQ.lock().unwrap();
+        if *centering_stop_req {
+            self.centering_tile = None;
+            *centering_stop_req = false;
+        }
+
         self.drawer
             .draw(context, game, anim, self.centering_tile, self.hover_tile);
     }
 }
 
-fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow> {
+fn create_menu(
+    game: &Game,
+    tile: Vec2d,
+    x: i32,
+    y: i32,
+    centering_mode: bool,
+) -> Box<dyn DialogWindow> {
     use crate::game::map::tile_info::*;
     use common::gamedata::{BoundaryBehavior, SpecialTileKind, StairsKind};
 
@@ -216,6 +251,18 @@ fn create_menu(game: &Game, tile: Vec2d, x: i32, y: i32) -> Box<dyn DialogWindow
                 _ => (),
             }
         }
+    }
+
+    text_ids.push("tile-menu-start-centering");
+    callbacks.push(Box::new(move |_| {
+        *CENTERING_START_REQ.lock().unwrap() = Some(tile);
+    }));
+
+    if centering_mode {
+        text_ids.push("tile-menu-stop-centering");
+        callbacks.push(Box::new(move |_| {
+            *CENTERING_STOP_REQ.lock().unwrap() = true;
+        }));
     }
 
     text_ids.push("tile-menu-infomation");
