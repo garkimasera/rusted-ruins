@@ -13,5 +13,6 @@
     "sp_consumption_regen": 0.2,
     "sp_hungry": 20.0,
     "sp_weak": 10.0,
-    "sp_starving": 0.0
+    "sp_starving": 0.0,
+    "sp_nutrition_factor": 0.04
 }

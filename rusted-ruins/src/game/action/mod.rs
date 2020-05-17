@@ -79,7 +79,8 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
-    chara.add_sp(item_obj.nutrition.into(), cid);
+    let nutrition: f32 = item_obj.nutrition.into();
+    chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid);
 
     let eff: i32 = item_obj.eff.into();
     apply_medical_effect(chara, item_obj.medical_effect, eff);

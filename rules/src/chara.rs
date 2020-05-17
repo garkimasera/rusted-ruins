@@ -27,4 +27,6 @@ pub struct Chara {
     pub sp_weak: f32,
     /// sp border of starving
     pub sp_starving: f32,
+    /// (additional sp) = (nutriton) * (sp_nutrition_factor)
+    pub sp_nutrition_factor: f32,
 }
