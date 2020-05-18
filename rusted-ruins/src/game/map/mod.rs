@@ -49,6 +49,7 @@ impl MapEx for Map {
 
 /// Switch current map to the specified map
 pub fn switch_map(game: &mut Game, mid: MapId) {
+    game.ui_request.push_back(super::UiRequest::StopCentering);
     {
         let save_dir = game.save_dir.as_ref().unwrap();
         let gd = &mut game.gd;

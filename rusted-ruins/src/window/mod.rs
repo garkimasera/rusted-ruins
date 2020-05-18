@@ -31,7 +31,7 @@ use self::log_window::LogWindow;
 use self::main_window::MainWindow;
 use self::widget::WidgetTrait;
 use crate::eventhandler::EventHandler;
-use crate::game::{Command, DoPlayerAction, GameState, InfoGetter};
+use crate::game::{Command, DoPlayerAction, GameState, InfoGetter, UiRequest};
 use crate::SdlContext;
 use common::gamedata::*;
 use geom::*;
@@ -159,6 +159,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         if self.game.get_state() == GameState::WaitingForNextTurn && self.mode.is_on_game() {
             self.game.advance_turn();
         }
+
+        // Process ui requests
+        self.process_ui_request();
 
         // If game requests dialog popup for player
         if let Some(dialog_open_request) = self.game.pop_dialog_open_request() {
@@ -540,6 +543,19 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     fn push_dialog_window(&mut self, w: Box<dyn DialogWindow>) {
         crate::eventhandler::open_dialog();
         self.window_stack.push(w);
+    }
+
+    fn process_ui_request(&mut self) {
+        while let Some(req) = self.game.pop_ui_request() {
+            match req {
+                UiRequest::StopCentering => match self.mode {
+                    WindowManageMode::OnGame(ref mut windows) => {
+                        windows.main_window.stop_centering_mode();
+                    }
+                    _ => (),
+                },
+            }
+        }
     }
 }
 

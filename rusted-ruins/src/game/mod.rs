@@ -38,6 +38,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::ScriptIdx;
 use geom::Vec2d;
+use std::collections::VecDeque;
 use std::path::PathBuf;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -54,6 +55,7 @@ pub struct Game {
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
     dialog_open_request: Option<DialogOpenRequest>,
+    ui_request: VecDeque<UiRequest>,
     script: Option<ScriptEngine>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
@@ -73,6 +75,7 @@ impl Game {
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
+            ui_request: VecDeque::new(),
             script: None,
             target_chara: None,
             save_dir: Some(save_dir),
@@ -88,6 +91,7 @@ impl Game {
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
             dialog_open_request: None,
+            ui_request: VecDeque::new(),
             script: None,
             target_chara: None,
             save_dir: None,
@@ -122,6 +126,10 @@ impl Game {
 
     pub fn pop_animation(&mut self) -> Option<Animation> {
         self.anim_queue.pop()
+    }
+
+    pub fn pop_ui_request(&mut self) -> Option<UiRequest> {
+        self.ui_request.pop_front()
     }
 
     pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {
@@ -227,6 +235,12 @@ pub enum DialogOpenRequest {
     PickUpItem,
     Quest,
     GameOver,
+}
+
+/// User interface request from game
+#[derive(Debug)]
+pub enum UiRequest {
+    StopCentering,
 }
 
 pub enum AdvanceScriptResult {
