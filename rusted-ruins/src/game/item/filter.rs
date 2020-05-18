@@ -8,6 +8,8 @@ pub struct ItemFilter {
     pub equip_slot_kind: Option<EquipSlotKind>,
     pub flags: ItemFlags,
     pub kind_rough: Option<ItemKindRough>,
+    pub eatable: bool,
+    pub drinkable: bool,
     pub usable: bool,
 }
 
@@ -45,6 +47,14 @@ impl ItemFilter {
             }
         }
 
+        if self.eatable && o.kind != ItemKind::Food {
+            return false;
+        }
+
+        if self.drinkable && o.kind != ItemKind::Potion {
+            return false;
+        }
+
         if self.usable && o.use_effect == UseEffect::None {
             return false;
         }
@@ -57,13 +67,23 @@ impl ItemFilter {
         self
     }
 
-    pub fn flags(mut self, flags: ItemFlags) -> ItemFilter {
-        self.flags = flags;
-        self
-    }
+    // pub fn flags(mut self, flags: ItemFlags) -> ItemFilter {
+    //     self.flags = flags;
+    //     self
+    // }
 
     pub fn kind_rough(mut self, kind_rough: ItemKindRough) -> ItemFilter {
         self.kind_rough = Some(kind_rough);
+        self
+    }
+
+    pub fn eatable(mut self, eatable: bool) -> ItemFilter {
+        self.eatable = eatable;
+        self
+    }
+
+    pub fn drinkable(mut self, drinkable: bool) -> ItemFilter {
+        self.drinkable = drinkable;
         self
     }
 
@@ -80,6 +100,8 @@ impl Default for ItemFilter {
             equip_slot_kind: None,
             flags: ItemFlags::empty(),
             kind_rough: None,
+            eatable: false,
+            drinkable: false,
             usable: false,
         }
     }

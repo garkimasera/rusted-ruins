@@ -160,15 +160,14 @@ impl ItemWindow {
                     cid: CharaId::Player,
                 };
                 let filtered_list =
-                    gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::DRINKABLE));
+                    gd.get_filtered_item_list(ill, ItemFilter::new().drinkable(true));
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Eat => {
                 let ill = ItemListLocation::Chara {
                     cid: CharaId::Player,
                 };
-                let filtered_list =
-                    gd.get_filtered_item_list(ill, ItemFilter::new().flags(ItemFlags::EATABLE));
+                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new().eatable(true));
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Use => {

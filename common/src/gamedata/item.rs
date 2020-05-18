@@ -46,7 +46,7 @@ pub struct ItemObject {
     pub medical_effect: MedicalEffect,
     pub tool_effect: ToolEffect,
     pub use_effect: UseEffect,
-    /// Character's nutrition will be increased by this value after eating this item
+    /// (additional sp) = (nutriton) * (sp_nutrition_factor)
     pub nutrition: u16,
     /// Range of charges
     pub charge: [u8; 2],
@@ -160,8 +160,8 @@ impl ItemKind {
 
 bitflags! {
     pub struct ItemFlags: u64 {
-        const EATABLE   = 1 << 0;
-        const DRINKABLE = 1 << 1;
+        const FIXED = 1 << 0;
+        const OWNED = 1 << 1;
     }
 }
 

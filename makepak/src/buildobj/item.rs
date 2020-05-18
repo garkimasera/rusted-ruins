@@ -8,18 +8,12 @@ use common::gamedata::item::*;
 pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let item = get_optional_field!(tomlinput, item);
-    let mut flags = ItemFlags::empty();
+    let flags = ItemFlags::empty();
 
     let kind = match item.item_kind.as_str() {
         "object" => ItemKind::Object,
-        "potion" => {
-            flags |= ItemFlags::DRINKABLE;
-            ItemKind::Potion
-        }
-        "food" => {
-            flags |= ItemFlags::EATABLE;
-            ItemKind::Food
-        }
+        "potion" => ItemKind::Potion,
+        "food" => ItemKind::Food,
         "magic_device" => ItemKind::MagicDevice,
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
         "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
