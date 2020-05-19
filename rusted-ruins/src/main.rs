@@ -75,7 +75,10 @@ fn init_obj() {
 }
 
 fn init_rules() {
-    rules::init(&*crate::config::ASSETS_DIR);
+    rules::init(
+        &*crate::config::ASSETS_DIR,
+        crate::config::ADDON_DIR.as_ref(),
+    );
 }
 
 /// Setup logger. It is not game logger. It is for debug and warning infomation.

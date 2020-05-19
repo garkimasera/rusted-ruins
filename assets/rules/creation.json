@@ -6,42 +6,5 @@
         "medium": 16,
         "long": 32,
         "very_long": 50
-    },
-    "cooking_recipes": [
-        {
-            "product": "boiled-potato",
-            "ingredients": ["potato"],
-            "facility": "stove",
-            "difficulty": 1,
-            "required_time": "short"
-        },
-        {
-            "product": "fried-egg",
-            "ingredients": ["egg"],
-            "facility": "stove",
-            "difficulty": 2,
-            "required_time": "short"
-        },
-        {
-            "product": "hard-biscuit",
-            "ingredients": ["wheat-flour"],
-            "facility": "stove",
-            "difficulty": 4,
-            "required_time": "short"
-        },
-        {
-            "product": "bread",
-            "ingredients": ["wheat-flour"],
-            "facility": "stove",
-            "difficulty": 10,
-            "required_time": "medium"
-        },
-        {
-            "product": "french-fries",
-            "ingredients": ["potato", "cooking-oil"],
-            "facility": "stove",
-            "difficulty": 10,
-            "required_time": "short"
-        }
-    ]
+    }
 }

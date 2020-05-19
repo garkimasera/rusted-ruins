@@ -39,8 +39,22 @@ pub struct Rules {
 }
 
 impl Rules {
-    fn load_from_dir(rules_dir: &Path) -> Rules {
+    fn load_from_dir(rules_dir: &Path, addon_dir: Option<&Path>) -> Rules {
         let mut creation: creation::Creation = read_from_json(&rules_dir.join("creation.json"));
+
+        if let Some(addon_dir) = addon_dir {
+            let addon_recipe_dir = addon_dir.join("recipes");
+            if addon_recipe_dir.exists() {
+                if let Err(e) = creation.join_from_dir(&addon_recipe_dir) {
+                    warn!(
+                        "recipe loading error at {}\n{}",
+                        addon_recipe_dir.to_string_lossy(),
+                        e
+                    );
+                }
+            }
+        }
+
         creation.sort();
 
         Rules {
@@ -83,15 +97,22 @@ fn exit_err() -> ! {
 
 lazy_static! {
     static ref RULES_DIR: Mutex<Option<PathBuf>> = Mutex::new(None);
+    static ref ADDON_RULES_DIR: Mutex<Option<PathBuf>> = Mutex::new(None);
     /// Global state rules holder
-    pub static ref RULES: Rules = Rules::load_from_dir(&RULES_DIR.lock().unwrap().as_ref().unwrap());
+    pub static ref RULES: Rules = Rules::load_from_dir(
+        &RULES_DIR.lock().unwrap().as_ref().unwrap(),
+        ADDON_RULES_DIR.lock().unwrap().as_ref().map(|path| path.as_ref()));
 }
 
 /// Initialize Rules
-pub fn init<P: AsRef<Path>>(app_dirs: P) {
+pub fn init<P: AsRef<Path>>(app_dirs: P, addon_dir: Option<P>) {
     let rules_dir = app_dirs.as_ref().join("rules");
-
     *RULES_DIR.lock().unwrap() = Some(rules_dir);
+
+    if let Some(addon_dir) = addon_dir {
+        let addon_rules_dir = addon_dir.as_ref().join("rules");
+        *ADDON_RULES_DIR.lock().unwrap() = Some(addon_rules_dir);
+    }
 
     lazy_static::initialize(&RULES);
 }
