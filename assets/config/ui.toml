@@ -81,9 +81,9 @@ list_margin = 26
 product_name = { x = 2, y = 2 }
 
 [item_window]
-rect = { x = -999, y = -999, w = 450, h = 286 }
+rect = { x = -999, y = -999, w = 520, h = 286 }
 n_row = 10
-column_pos = [1, 27, 380]
+column_pos = [1, 34, 400]
 
 [item_info_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
