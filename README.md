@@ -55,7 +55,7 @@ After that, clone this repository, download pak files, and run.
 ```shell
 git clone https://github.com/garkimasera/rusted-ruins.git
 cd rusted-ruins
-./download-pak.sh
+./build-pak.sh
 RUSTED_RUINS_ASSETS_DIR=./assets cargo run --release -p rusted-ruins
 ```
 
