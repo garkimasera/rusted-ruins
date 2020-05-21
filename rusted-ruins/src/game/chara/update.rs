@@ -1,3 +1,4 @@
+use crate::game::extrait::*;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::CharaTemplateObject;
@@ -26,4 +27,33 @@ pub fn update_attributes(chara: &mut Chara) {
 
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
     (chara.skills.get(SkillKind::Endurance) as i32 + 8) * ct.base_attr.base_hp / 8
+}
+
+pub fn update_encumbrance_status(chara: &mut Chara) {
+    let cap = calc_carrying_capacity(chara);
+    let total_weight = chara.item_list.sum_weight() as f32;
+    let ratio = total_weight / cap;
+
+    if ratio > RULES.chara.carrying_capacity_threshold_overloaded {
+        chara.add_status(CharaStatus::Overloaded);
+        return;
+    } else if ratio > RULES.chara.carrying_capacity_threshold_strained {
+        chara.add_status(CharaStatus::Strained);
+        return;
+    } else if ratio > RULES.chara.carrying_capacity_threshold_stressed {
+        chara.add_status(CharaStatus::Stressed);
+        return;
+    } else if ratio > RULES.chara.carrying_capacity_threshold_burdened {
+        chara.add_status(CharaStatus::Burdened);
+        return;
+    }
+    chara.remove_encumbrance_status();
+}
+
+fn calc_carrying_capacity(chara: &Chara) -> f32 {
+    let skill_level = chara.skills.get(SkillKind::Carrying) as f32;
+
+    (chara.attr.str as f32 / 2.0 + chara.attr.vit as f32)
+        * (skill_level + 10.0)
+        * RULES.chara.carrying_capacity_factor
 }

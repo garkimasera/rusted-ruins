@@ -5,13 +5,17 @@ use common::gamedata::*;
 pub trait CharaStatusOperation {
     fn add_status(&mut self, new_status: CharaStatus);
     fn remove_sp_status(&mut self);
+    fn remove_encumbrance_status(&mut self);
 }
 
 impl CharaStatusOperation for Chara {
     fn add_status(&mut self, new_status: CharaStatus) {
         match new_status {
             CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => {
-                self.remove_sp_status();
+                if let Some((i, _)) = self.status.iter().enumerate().find(|(_, s)| s.about_sp()) {
+                    self.status[i] = new_status;
+                    return;
+                }
             }
             CharaStatus::Asleep {
                 turn_left: turn_left_new,
@@ -39,6 +43,20 @@ impl CharaStatusOperation for Chara {
                     }
                 }
             }
+            CharaStatus::Burdened
+            | CharaStatus::Strained
+            | CharaStatus::Stressed
+            | CharaStatus::Overloaded => {
+                if let Some((i, _)) = self
+                    .status
+                    .iter()
+                    .enumerate()
+                    .find(|(_, s)| s.about_encumbrance())
+                {
+                    self.status[i] = new_status;
+                    return;
+                }
+            }
             _ => (),
         }
         self.status.push(new_status);
@@ -48,10 +66,16 @@ impl CharaStatusOperation for Chara {
     fn remove_sp_status(&mut self) {
         self.status.retain(|s| !s.about_sp());
     }
+
+    // Remove encumbrance status
+    fn remove_encumbrance_status(&mut self) {
+        self.status.retain(|s| !s.about_encumbrance());
+    }
 }
 
 pub trait CharaStatusEx {
     fn about_sp(&self) -> bool;
+    fn about_encumbrance(&self) -> bool;
     fn advance_turn(&mut self, n: u16);
     /// If this status is expired, returns true.
     /// Expired status will be removed from character.
@@ -87,6 +111,16 @@ impl CharaStatusEx for CharaStatus {
     fn about_sp(&self) -> bool {
         match *self {
             CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => true,
+            _ => false,
+        }
+    }
+
+    fn about_encumbrance(&self) -> bool {
+        match *self {
+            CharaStatus::Burdened
+            | CharaStatus::Strained
+            | CharaStatus::Stressed
+            | CharaStatus::Overloaded => true,
             _ => false,
         }
     }

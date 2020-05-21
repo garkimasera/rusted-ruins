@@ -29,4 +29,10 @@ pub struct Chara {
     pub sp_starving: f32,
     /// (additional sp) = (nutriton) * (sp_nutrition_factor)
     pub sp_nutrition_factor: f32,
+    /// (carrying capacity) = ((STR) / 2 + (VIT)) * (SKILL + 10) * (carrying_capacity_factor)
+    pub carrying_capacity_factor: f32,
+    pub carrying_capacity_threshold_burdened: f32,
+    pub carrying_capacity_threshold_stressed: f32,
+    pub carrying_capacity_threshold_strained: f32,
+    pub carrying_capacity_threshold_overloaded: f32,
 }

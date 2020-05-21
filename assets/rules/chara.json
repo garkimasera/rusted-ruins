@@ -14,5 +14,10 @@
     "sp_hungry": 20.0,
     "sp_weak": 10.0,
     "sp_starving": 0.0,
-    "sp_nutrition_factor": 0.04
+    "sp_nutrition_factor": 0.04,
+    "carrying_capacity_factor": 100,
+    "carrying_capacity_threshold_burdened": 1.0,
+    "carrying_capacity_threshold_stressed": 1.5,
+    "carrying_capacity_threshold_strained": 2.0,
+    "carrying_capacity_threshold_overloaded": 3.0
 }

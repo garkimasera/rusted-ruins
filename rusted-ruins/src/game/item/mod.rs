@@ -62,6 +62,8 @@ impl ItemEx for Item {
 pub trait ItemListEx {
     /// Return the first item found
     fn find(&self, idx: ItemIdx) -> Option<u32>;
+    /// Sum of item weight
+    fn sum_weight(&self) -> u32;
 }
 
 impl ItemListEx for ItemList {
@@ -72,6 +74,15 @@ impl ItemListEx for ItemList {
             }
         }
         None
+    }
+
+    fn sum_weight(&self) -> u32 {
+        self.iter()
+            .map(|(item, n)| {
+                let obj = item.obj();
+                obj.w * n
+            })
+            .sum()
     }
 }
 

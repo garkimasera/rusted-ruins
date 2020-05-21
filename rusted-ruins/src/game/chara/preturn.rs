@@ -11,6 +11,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     let mut is_poisoned = false;
 
     let chara = game.gd.chara.get_mut(cid);
+    chara.update();
 
     // Process character status
     for s in chara.status.iter_mut() {

@@ -18,6 +18,10 @@ impl ToTextId for CharaStatus {
             CharaStatus::Hungry => "chara_status-hungry",
             CharaStatus::Weak => "chara_status-weak",
             CharaStatus::Starving => "chara_status-starving",
+            CharaStatus::Burdened => "chara_status-burdened",
+            CharaStatus::Stressed => "chara_status-stressed",
+            CharaStatus::Strained => "chara_status-strained",
+            CharaStatus::Overloaded => "chara_status-overloaded",
             CharaStatus::Asleep { .. } => "chara_status-asleep",
             CharaStatus::Poisoned => "chara_status-poisoned",
             CharaStatus::Creation { .. } => "chara_status-creation",
@@ -52,6 +56,7 @@ impl ToTextId for SkillKind {
             BareHands => "skill_kind-bare_hands",
             Defence => "skill_kind-defence",
             Evasion => "skill_kind-evasion",
+            Carrying => "skill_kind-carrying",
             MagicDevice => "skill_kind-magic_device",
             Weapon(weapon_kind) => weapon_kind.to_textid(),
         }

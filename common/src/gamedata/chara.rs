@@ -168,6 +168,14 @@ pub enum CharaStatus {
     Weak,
     /// Sp status
     Starving,
+    /// Encumbrance status
+    Burdened,
+    /// Encumbrance status
+    Stressed,
+    /// Encumbrance status
+    Strained,
+    /// Encumbrance status
+    Overloaded,
     Asleep {
         turn_left: u16,
     },
