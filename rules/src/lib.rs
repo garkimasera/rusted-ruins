@@ -15,6 +15,7 @@ pub mod magic;
 pub mod newgame;
 pub mod params;
 pub mod quest;
+pub mod race;
 pub mod town;
 
 use lazy_static::lazy_static;
@@ -35,6 +36,7 @@ pub struct Rules {
     pub newgame: newgame::NewGame,
     pub params: params::Params,
     pub quest: quest::Quest,
+    pub race: race::Races,
     pub town: town::Town,
 }
 
@@ -68,6 +70,7 @@ impl Rules {
             newgame: read_from_json(&rules_dir.join("newgame.json")),
             params: read_from_json(&rules_dir.join("params.json")),
             quest: read_from_json(&rules_dir.join("quest.json")),
+            race: read_from_json(&rules_dir.join("race.json")),
             town: read_from_json(&rules_dir.join("town.json")),
         }
     }

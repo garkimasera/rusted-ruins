@@ -9,7 +9,7 @@ pub struct DungeonGenParams {
     /// Specify floor generation type that is described in floor_gen and its weight.
     pub floor_gen: Vec<(String, f32)>,
     /// The probability of npc generation for each race
-    pub npc_race_probability: HashMap<Race, f32>,
+    pub npc_race_probability: HashMap<String, f32>,
     /// Tile and wall ids
     pub terrain: Vec<[String; 2]>,
     /// Items generatation probability on each tile

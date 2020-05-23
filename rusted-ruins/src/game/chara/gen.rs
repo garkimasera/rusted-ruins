@@ -54,7 +54,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
 }
 
 /// Choose one chara_template by race, gen_level and gen_weight
-pub fn choose_npc_chara_template(nrp: &HashMap<Race, f32>, floor_level: u32) -> CharaTemplateIdx {
+pub fn choose_npc_chara_template(nrp: &HashMap<String, f32>, floor_level: u32) -> CharaTemplateIdx {
     let chara_templates = &gobj::get_objholder().chara_template;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
@@ -126,14 +126,7 @@ pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
 
 /// Set skills to npc
 fn set_skill(chara: &mut Chara) {
-    let ct = gobj::get_obj(chara.template);
-
-    match ct.race {
-        Race::Animal | Race::Bug | Race::Slime => chara
-            .skills
-            .set_skill_level(SkillKind::BareHands, ct.gen_level / 2 + 5),
-        _ => (),
-    }
+    let _ct = gobj::get_obj(chara.template);
 }
 
 /// Generate skill list based on floor level and CharaTemplateObject

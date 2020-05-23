@@ -51,7 +51,7 @@ pub struct ImgInput {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct CharaTemplateDepInput {
-    pub race: gamedata::Race,
+    pub race: String,
     pub gen_weight: f32,
     pub gen_level: u32,
     pub default_ai_kind: Option<gamedata::NpcAIKind>,

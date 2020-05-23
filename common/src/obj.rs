@@ -38,7 +38,7 @@ pub struct CharaTemplateObject {
     pub id: String,
     pub img: Img,
     /// Character's race
-    pub race: gamedata::Race,
+    pub race: String,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
     /// Generation level

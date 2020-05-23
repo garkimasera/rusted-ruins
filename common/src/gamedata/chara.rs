@@ -7,19 +7,6 @@ use super::unknown_id_err;
 use crate::objholder::CharaTemplateIdx;
 use std::collections::HashMap;
 
-/// Character's races
-#[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum Race {
-    Animal,
-    Human,
-    Bug,
-    Slime,
-    Devil,
-    Phantom,
-    Ghost,
-}
-
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(u16)]
