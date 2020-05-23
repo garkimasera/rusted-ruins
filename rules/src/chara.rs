@@ -9,6 +9,8 @@ pub struct Chara {
     /// Default value of CharaParams::view_range.
     /// The actual value will be adjusted by character traits, and map attributes, etc.
     pub default_view_range: i32,
+    /// Minimul speed
+    pub min_spd: u16,
     /// The probability of HP regeneration per turn.
     pub hp_regeneration_probability: f32,
     /// Multiplying factor of HP regeneration

@@ -146,8 +146,8 @@ impl CharaEx for Chara {
     }
 
     fn update(&mut self) {
-        update::update_attributes(self);
         update::update_encumbrance_status(self);
+        update::update_attributes(self);
     }
 
     fn reset_wait_time(&mut self) {

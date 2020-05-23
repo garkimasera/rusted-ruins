@@ -21,7 +21,29 @@ pub fn update_attributes(chara: &mut Chara) {
     chara.attr.int = base_attr.int as u16;
     chara.attr.wil = base_attr.wil as u16;
     chara.attr.cha = base_attr.cha as u16;
-    chara.attr.spd = base_attr.spd as u16;
+
+    // Speed
+    let mut factor = 1.0;
+    for status in &chara.status {
+        match status {
+            CharaStatus::Burdened => {
+                factor *= RULES.chara.carrying_capacity_threshold_burdened;
+            }
+            CharaStatus::Strained => {
+                factor *= RULES.chara.carrying_capacity_threshold_strained;
+            }
+            CharaStatus::Stressed => {
+                factor *= RULES.chara.carrying_capacity_threshold_stressed;
+            }
+            CharaStatus::Overloaded => {
+                factor *= RULES.chara.carrying_capacity_threshold_overloaded;
+            }
+            _ => (),
+        }
+    }
+    chara.attr.spd = std::cmp::max((base_attr.spd as f32 * factor) as u16, RULES.chara.min_spd);
+
+    // View range
     chara.attr.view_range = RULES.chara.default_view_range;
 }
 
