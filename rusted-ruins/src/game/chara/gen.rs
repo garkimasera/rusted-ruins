@@ -124,6 +124,13 @@ pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
     CharaAI { kind: ai_kind }
 }
 
+/// Get equip slot list
+pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
+    let mut slots = RULES.chara_gen.equip_slots.clone();
+    slots.extend_from_slice(&RULES.race.get(race).equip_slots);
+    slots
+}
+
 /// Set skills to npc
 fn set_skill(chara: &mut Chara) {
     let _ct = gobj::get_obj(chara.template);

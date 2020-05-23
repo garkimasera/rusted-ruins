@@ -13,6 +13,6 @@ impl Races {
 /// Rules for character generation
 #[derive(Serialize, Deserialize)]
 pub struct Race {
-    /// Default equipment slots by race
-    pub default_equip_slots: Vec<(EquipSlotKind, u8)>,
+    /// Available Equipment slots
+    pub equip_slots: Vec<EquipSlotKind>,
 }

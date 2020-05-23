@@ -55,8 +55,8 @@ impl NewGameBuilder {
             gd.player.set_money(RULES.newgame.start_money as i64);
 
             /* Test code for equipment */
-            let slots = &RULES.race.get("human").default_equip_slots;
-            let equip = gamedata::item::EquipItemList::new(slots);
+            let slots = super::chara::gen::equip_slots("human");
+            let equip = gamedata::item::EquipItemList::new(&slots);
             chara.equip = equip;
             let cid = gd.add_chara(chara, CharaKind::Player);
             gd.region.get_map_mut(mid).locate_chara(cid, start_pos);

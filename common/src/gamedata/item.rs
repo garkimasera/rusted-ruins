@@ -511,14 +511,18 @@ impl SlotInfo {
 pub const MAX_SLOT_NUM_PER_KIND: usize = crate::basic::MAX_EQUIP_SLOT as usize;
 
 impl EquipItemList {
-    pub fn new(slots: &[(EquipSlotKind, u8)]) -> EquipItemList {
+    pub fn new(slots: &[EquipSlotKind]) -> EquipItemList {
         let mut slots = slots.to_vec();
-        slots.sort_by_key(|&(ik, _)| ik);
+        slots.sort();
         let mut new_slots = Vec::new();
-        for &(esk, n) in slots.iter() {
-            for i in 0..n {
-                new_slots.push(SlotInfo::new(esk, i));
+        let mut last_esk = None;
+        let mut i = 0;
+        for esk in slots.iter() {
+            if last_esk == Some(esk) {
+                i += 1;
             }
+            new_slots.push(SlotInfo::new(*esk, i));
+            last_esk = Some(esk);
         }
 
         EquipItemList {

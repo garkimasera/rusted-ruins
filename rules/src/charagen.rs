@@ -5,4 +5,6 @@ use common::gamedata::*;
 pub struct CharaGen {
     /// List of skills all character must have
     pub common_skills: Vec<SkillKind>,
+    /// Equipment slots all character must have
+    pub equip_slots: Vec<EquipSlotKind>,
 }
