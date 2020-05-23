@@ -9,7 +9,7 @@ use rules::RULES;
 use std::collections::HashMap;
 
 /// Create character from chara_template
-pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
+pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32, faction: FactionId) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
 
     let mut chara = Chara {
@@ -17,6 +17,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         attr: CharaAttributes::default(),
         template: chara_template_idx,
         class: CharaClass::default(),
+        faction,
         level: lv,
         item_list: ItemList::new(),
         equip: EquipItemList::new(&[]),
@@ -47,7 +48,8 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
         floor_level,
     );
     let ct = gobj::get_obj(idx);
-    let mut chara = create_chara(idx, ct.gen_level);
+    let faction = RULES.faction.name_to_faction("monster");
+    let mut chara = create_chara(idx, ct.gen_level, faction);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     chara

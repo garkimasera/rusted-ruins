@@ -1,5 +1,6 @@
 pub mod chara;
 pub mod defs;
+pub mod faction;
 pub mod item;
 pub mod map;
 pub mod meta;
@@ -17,6 +18,7 @@ use geom::Vec2d;
 
 pub use self::chara::*;
 pub use self::defs::*;
+pub use self::faction::*;
 pub use self::item::*;
 pub use self::map::*;
 pub use self::meta::*;

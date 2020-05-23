@@ -11,6 +11,7 @@ pub mod class;
 pub mod creation;
 pub mod dungeon_gen;
 pub mod exp;
+pub mod faction;
 pub mod floor_gen;
 pub mod magic;
 pub mod newgame;
@@ -33,6 +34,7 @@ pub struct Rules {
     pub class: class::Classes,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
+    pub faction: faction::Faction,
     pub floor_gen: floor_gen::FloorGen,
     pub magic: magic::Magic,
     pub newgame: newgame::NewGame,
@@ -68,6 +70,7 @@ impl Rules {
             creation,
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),
+            faction: read_from_json(&rules_dir.join("faction.json")),
             floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
             magic: read_from_json(&rules_dir.join("magic.json")),
             newgame: read_from_json(&rules_dir.join("newgame.json")),

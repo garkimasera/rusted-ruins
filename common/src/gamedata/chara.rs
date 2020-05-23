@@ -1,4 +1,5 @@
 use super::defs::Recipe;
+use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList};
 use super::map::MapId;
 use super::site::SiteId;
@@ -19,11 +20,6 @@ impl CharaClass {
 }
 
 /// Relationship between one chara to another.
-///         |A|F|N|H
-/// ALLY    |A|F|N|H
-/// FRIENDLY|F|F|N|H
-/// NEUTRAL |N|N|N|N
-/// HOSTILE |H|H|N|F
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Relationship {
     ALLY = 0,
@@ -57,6 +53,7 @@ pub struct Chara {
     pub attr: CharaAttributes,
     pub template: CharaTemplateIdx,
     pub class: CharaClass,
+    pub faction: FactionId,
     pub level: u32,
     pub item_list: ItemList,
     pub equip: EquipItemList,
@@ -171,6 +168,7 @@ impl Default for Chara {
             attr: CharaAttributes::default(),
             template: CharaTemplateIdx::default(),
             class: CharaClass::default(),
+            faction: FactionId::default(),
             level: 0,
             item_list: ItemList::new(),
             equip: EquipItemList::new(&[]),
