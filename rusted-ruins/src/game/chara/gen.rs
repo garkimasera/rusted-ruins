@@ -16,7 +16,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32) -> Chara {
         name: None,
         attr: CharaAttributes::default(),
         template: chara_template_idx,
-        class: CharaClass::Civilian,
+        class: CharaClass::default(),
         level: lv,
         item_list: ItemList::new(),
         equip: EquipItemList::new(&[]),

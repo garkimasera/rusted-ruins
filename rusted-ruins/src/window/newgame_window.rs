@@ -157,7 +157,7 @@ impl ChooseClassDialog {
             .newgame
             .class_choices
             .iter()
-            .map(|c| format!("{:?}", c))
+            .map(|c| text::misc_txt(c.as_str()))
             .collect();
 
         ChooseClassDialog {

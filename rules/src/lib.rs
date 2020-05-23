@@ -7,6 +7,7 @@ extern crate rusted_ruins_geom as geom;
 
 pub mod chara;
 pub mod charagen;
+pub mod class;
 pub mod creation;
 pub mod dungeon_gen;
 pub mod exp;
@@ -29,6 +30,7 @@ pub struct Rules {
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
     pub creation: creation::Creation,
+    pub class: class::Classes,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
     pub floor_gen: floor_gen::FloorGen,
@@ -62,6 +64,7 @@ impl Rules {
         Rules {
             chara: read_from_json(&rules_dir.join("chara.json")),
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
+            class: read_from_json(&rules_dir.join("class.json")),
             creation,
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),

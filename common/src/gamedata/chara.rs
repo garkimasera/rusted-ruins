@@ -8,23 +8,13 @@ use crate::objholder::CharaTemplateIdx;
 use std::collections::HashMap;
 
 /// Character classes
-#[derive(Clone, Copy, Hash, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[repr(u16)]
-#[serde(rename_all = "snake_case")]
-pub enum CharaClass {
-    None = 0,
-    // Playable classes
-    Adventurer = 100,
-    Rogue,
-    Sorcerer,
-    Warrior,
-    // Npc classes
-    Civilian = 200,
-}
+#[derive(Clone, Copy, Hash, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct CharaClass(arrayvec::ArrayString<[u8; 16]>);
 
-impl Default for CharaClass {
-    fn default() -> CharaClass {
-        CharaClass::Civilian
+impl CharaClass {
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
     }
 }
 
