@@ -72,6 +72,12 @@ impl NewGameBuilder {
                 RULES.params.initial_date_day,
                 RULES.params.initial_date_hour,
             );
+
+            // Faction relation setting
+            for faction in &RULES.faction.factions {
+                let id = RULES.faction.name_to_faction(&faction.name);
+                gd.faction.set(id, faction.default_relation);
+            }
         }
         self.gd
     }

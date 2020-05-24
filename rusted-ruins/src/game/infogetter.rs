@@ -158,6 +158,10 @@ impl InfoGetter for GameData {
         let f1 = self.chara.get(chara).faction;
         let f2 = self.chara.get(other).faction;
 
+        if f1 == f2 {
+            return Relationship::ALLY;
+        }
+
         let faction_relation = if f1 == FactionId::PLAYER {
             self.faction.get(f2)
         } else if f2 == FactionId::PLAYER {
