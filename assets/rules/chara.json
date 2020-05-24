@@ -3,9 +3,6 @@
     "default_view_range": 5,
     "min_spd": 10,
     
-    "class_revision": {
-         "adventurer": { "hp": 10, "str": -2, "vit": 2, "dex": 0, "int": 2, "wil": 2, "cha": 2, "spd": 0 }
-    },
     "hp_regeneration_probability": 0.3,
     "hp_regeneration_factor": 1.5,
     "sp_default": 100.0,

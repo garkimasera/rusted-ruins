@@ -8,11 +8,7 @@ use rules::RULES;
 pub fn update_attributes(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.template);
 
-    let base_attr = if let Some(&r) = RULES.chara.class_revision.get(&chara.class) {
-        ct.base_attr.revise(r)
-    } else {
-        ct.base_attr
-    };
+    let base_attr = ct.base_attr.revise(RULES.class.get(chara.class).revision);
 
     chara.attr.max_hp = calc_max_hp(chara, ct);
     chara.attr.str = base_attr.str as u16;

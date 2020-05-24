@@ -1,6 +1,14 @@
 {
-    "": {},
-    "archaeologist": {},
-    "rogue": {},
-    "warrior": {}
+    "": {
+        "revision": { "hp": 0, "str": 0, "vit": 0, "dex": 0, "int": 0, "wil": 0, "cha": 0, "spd": 0 }
+    },
+    "archaeologist": {
+        "revision": { "hp": 10, "str": -2, "vit": 2, "dex": 0, "int": 2, "wil": 2, "cha": 2, "spd": 0 }
+    },
+    "rogue": {
+        "revision": { "hp": -10, "str": -2, "vit": 0, "dex": 4, "int": -1, "wil": -2, "cha": 0, "spd": 5 }
+    },
+    "warrior": {
+        "revision": { "hp": 20, "str": 6, "vit": 5, "dex": 0, "int": -2, "wil": -3, "cha": 0, "spd": 0 }
+    }
 }

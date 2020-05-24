@@ -1,11 +1,6 @@
-use common::gamedata::*;
-use std::collections::HashMap;
-
 /// Rules for character parameter calculation
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Chara {
-    /// Attribute revisions by class
-    pub class_revision: HashMap<CharaClass, CharaAttrRevision>,
     /// Default value of CharaParams::view_range.
     /// The actual value will be adjusted by character traits, and map attributes, etc.
     pub default_view_range: i32,
