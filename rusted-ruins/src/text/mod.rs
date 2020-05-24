@@ -51,20 +51,22 @@ impl Bundle {
         let mut errors = vec![];
         if let Some(msg) = self.first.get_message(id) {
             if let Some(pattern) = msg.value {
-                return Some(
-                    self.first
-                        .format_pattern(&pattern, args, &mut errors)
-                        .into_owned(),
-                );
+                let mut s = self
+                    .first
+                    .format_pattern(&pattern, args, &mut errors)
+                    .into_owned();
+                s.retain(|c| c != '\u{2068}' && c != '\u{2069}');
+                return Some(s);
             }
         }
         if let Some(msg) = self.second.get_message(id) {
             if let Some(pattern) = msg.value {
-                return Some(
-                    self.second
-                        .format_pattern(&pattern, args, &mut errors)
-                        .into_owned(),
-                );
+                let mut s = self
+                    .second
+                    .format_pattern(&pattern, args, &mut errors)
+                    .into_owned();
+                s.retain(|c| c != '\u{2068}' && c != '\u{2069}');
+                return Some(s);
             }
         }
         None
