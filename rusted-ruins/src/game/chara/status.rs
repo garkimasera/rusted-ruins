@@ -127,17 +127,18 @@ impl CharaStatusEx for CharaStatus {
 
     fn expire(self, gd: &mut GameData, cid: CharaId) {
         match self {
-            CharaStatus::Creation {
-                recipe,
-                ingredients,
-                ..
-            } => {
-                assert!(cid == CharaId::Player);
-                crate::game::creation::finish_creation(gd, &recipe, ingredients);
-            }
+            CharaStatus::Work { work, .. } => match work {
+                Work::Creation {
+                    recipe,
+                    ingredients,
+                } => {
+                    assert!(cid == CharaId::Player);
+                    crate::game::creation::finish_creation(gd, &recipe, ingredients);
+                }
+            },
             _ => (),
         }
     }
 
-    impl_chara_status_ex!(Asleep, Creation);
+    impl_chara_status_ex!(Asleep, Work);
 }

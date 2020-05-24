@@ -136,8 +136,15 @@ pub enum CharaStatus {
         turn_left: u16,
     },
     Poisoned,
-    Creation {
+    Work {
         turn_left: u16,
+        work: Work,
+    },
+}
+
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+pub enum Work {
+    Creation {
         recipe: Recipe,
         ingredients: Vec<Item>,
     },

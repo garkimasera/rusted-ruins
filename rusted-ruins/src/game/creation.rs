@@ -29,10 +29,13 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
     }
 
     let player = gd.chara.get_mut(CharaId::Player);
-    player.add_status(CharaStatus::Creation {
-        turn_left: RULES.creation.required_time[&recipe.required_time],
+    let work = Work::Creation {
         recipe: recipe.clone(),
         ingredients,
+    };
+    player.add_status(CharaStatus::Work {
+        turn_left: RULES.creation.required_time[&recipe.required_time],
+        work,
     });
 
     let player = gd.chara.get(CharaId::Player);
