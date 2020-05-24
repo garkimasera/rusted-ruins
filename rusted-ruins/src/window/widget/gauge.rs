@@ -19,6 +19,7 @@ pub enum GaugeColorMode {
     Hp,
     Sp,
     Exp,
+    Work,
 }
 
 impl GaugeColorMode {
@@ -38,6 +39,12 @@ impl GaugeColorMode {
             },
             GaugeColorMode::Exp => Colors {
                 bar: UI_CFG.color.gauge_exp.into(),
+                bg: UI_CFG.color.gauge_bg.into(),
+                border_light: UI_CFG.color.border_light.into(),
+                border_dark: UI_CFG.color.border_dark.into(),
+            },
+            GaugeColorMode::Work => Colors {
+                bar: UI_CFG.color.gauge_work.into(),
                 bg: UI_CFG.color.gauge_bg.into(),
                 border_light: UI_CFG.color.border_light.into(),
                 border_dark: UI_CFG.color.border_dark.into(),

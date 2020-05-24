@@ -13,6 +13,7 @@ gauge_border_light = { r=229, g=211, b =4 }
 gauge_exp = { r=153, g=153, b=117 }
 gauge_hp = { r=237, g=47, b =37 }
 gauge_sp = { r=200, g=200, b =0 }
+gauge_work = { r = 224, g = 224, b = 20 }
 list_border = { r=59, g=69, b=103 }
 log_font = { r=250, g=250, b=250 }
 log_window_bg = { r=20, g=4, b=4 }
@@ -150,6 +151,9 @@ button_repeat_duration = 350
 [time_info]
 time_label = { x = 2, y = 16 }
 date_label = { x = 2, y = 3 }
+
+[progress_bar]
+rect = { x = -999, y = 35, w = 120, h = 15}
 
 [sidebar]
 icon_w = 32

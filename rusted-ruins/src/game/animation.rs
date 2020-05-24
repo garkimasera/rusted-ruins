@@ -26,6 +26,10 @@ pub enum Animation {
         idx: AnimImgIdx,
         tiles: Vec<Vec2d>,
     },
+    Work {
+        n_frame: u32,
+        ratio: f32,
+    },
 }
 
 impl Animation {
@@ -35,6 +39,7 @@ impl Animation {
             &Animation::Img { n_frame, .. } => n_frame,
             &Animation::Shot { n_frame, .. } => n_frame,
             &Animation::Destroy { n_frame, .. } => n_frame,
+            &Animation::Work { n_frame, .. } => n_frame,
         }
     }
 

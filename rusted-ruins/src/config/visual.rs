@@ -59,6 +59,7 @@ pub struct UIConfig {
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
     pub time_info: TimeInfoConfig,
+    pub progress_bar: ProgressBarConfig,
     pub vscroll_widget: VScrollWidgetConfig,
     pub sidebar: SidebarConfig,
 }
@@ -75,6 +76,7 @@ pub struct UIColorConfig {
     pub gauge_exp: CfgColor,
     pub gauge_hp: CfgColor,
     pub gauge_sp: CfgColor,
+    pub gauge_work: CfgColor,
     pub list_border: CfgColor,
     pub log_font: CfgColor,
     pub log_window_bg: CfgColor,
@@ -266,6 +268,11 @@ pub struct ListWidgetConfig {
 pub struct TimeInfoConfig {
     pub time_label: CfgRect,
     pub date_label: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProgressBarConfig {
+    pub rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

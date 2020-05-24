@@ -138,6 +138,7 @@ pub enum CharaStatus {
     Poisoned,
     Work {
         turn_left: u16,
+        needed_turn: u16,
         work: Work,
     },
 }

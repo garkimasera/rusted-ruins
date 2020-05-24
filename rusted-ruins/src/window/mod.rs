@@ -17,6 +17,7 @@ mod minimap;
 mod misc_window;
 mod msg_dialog;
 mod newgame_window;
+mod progress_bar;
 mod quest_window;
 mod sidebar;
 mod start_window;
@@ -46,6 +47,7 @@ mod commonuse {
     pub use crate::draw::border::draw_window_border;
     pub use crate::eventhandler::InputMode;
     pub use crate::game::{Animation, Command, DoPlayerAction, Game};
+    pub use crate::window::widget::WidgetTrait;
     pub use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
     pub use sdl2::rect::Rect;
     pub use sdl2::render::WindowCanvas;
@@ -605,6 +607,7 @@ struct GameWindows {
     time_info: indicator::TimeInfo,
     hborders: Vec<self::widget::HBorder>,
     vborders: Vec<self::widget::VBorder>,
+    progress_bar: progress_bar::ProgressBar,
 }
 
 impl GameWindows {
@@ -632,6 +635,7 @@ impl GameWindows {
             time_info: TimeInfo::new(),
             hborders,
             vborders,
+            progress_bar: progress_bar::ProgressBar::new(),
         }
     }
 
@@ -651,5 +655,6 @@ impl GameWindows {
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);
         self.time_info.draw(context, game, anim);
+        self.progress_bar.draw(context, game, anim);
     }
 }

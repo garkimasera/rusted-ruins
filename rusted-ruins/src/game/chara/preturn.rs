@@ -8,8 +8,6 @@ use rules::RULES;
 /// This function will be called before the character's turn
 ///
 pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
-    let mut is_poisoned = false;
-
     let chara = game.gd.chara.get_mut(cid);
     chara.update();
 
@@ -34,10 +32,21 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     }
 
     let chara = game.gd.chara.get_mut(cid);
+    let mut is_poisoned = false;
+    let mut progress_anim = None;
+
     for s in chara.status.iter() {
         match *s {
             CharaStatus::Poisoned => {
                 is_poisoned = true;
+            }
+            CharaStatus::Work {
+                turn_left,
+                needed_turn,
+                ..
+            } => {
+                let ratio = turn_left as f32 / (needed_turn as f32 - 1.0);
+                progress_anim = Some(ratio);
             }
             _ => (),
         }
@@ -48,6 +57,10 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let damage = chara.attr.max_hp / 20;
         game_log!("poison-damage"; chara=chara, damage=damage);
         chara.damage(damage, DamageKind::Poison);
+    }
+
+    if let Some(ratio) = progress_anim {
+        game.anim_queue.push_work(ratio);
     }
 
     let chara = game.gd.chara.get_mut(cid);

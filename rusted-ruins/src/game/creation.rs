@@ -1,5 +1,6 @@
 use super::extrait::*;
 use super::InfoGetter;
+use crate::game::Game;
 use crate::text::obj_txt;
 use common::gamedata::*;
 use common::gobj;
@@ -21,7 +22,8 @@ pub fn item_auto_pick(gd: &GameData, recipe: &Recipe) -> Vec<Option<ItemLocation
     result
 }
 
-pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>) {
+pub fn start_creation(game: &mut Game, recipe: &Recipe, il: Vec<ItemLocation>) {
+    let gd = &mut game.gd;
     let mut ingredients = Vec::new();
 
     for item_location in &il {
@@ -33,13 +35,16 @@ pub fn start_creation(gd: &mut GameData, recipe: &Recipe, il: Vec<ItemLocation>)
         recipe: recipe.clone(),
         ingredients,
     };
+    let needed_turn = RULES.creation.required_time[&recipe.required_time];
     player.add_status(CharaStatus::Work {
-        turn_left: RULES.creation.required_time[&recipe.required_time],
+        turn_left: needed_turn,
+        needed_turn,
         work,
     });
 
     let player = gd.chara.get(CharaId::Player);
     let product = obj_txt(&recipe.product);
+    game.anim_queue.push_work(1.0);
     game_log_i!("creation-start"; chara=player, product=product);
 }
 

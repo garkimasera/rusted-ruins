@@ -43,4 +43,8 @@ impl AnimQueue {
     pub fn push_destroy(&mut self, tile: Vec2d) {
         self.push(Animation::destroy(vec![tile]));
     }
+
+    pub fn push_work(&mut self, ratio: f32) {
+        self.push(Animation::Work { n_frame: 2, ratio });
+    }
 }
