@@ -5,7 +5,7 @@ pub mod use_item;
 
 use super::combat;
 use super::extrait::*;
-use super::Game;
+use super::{Game, InfoGetter};
 use common::gamedata::*;
 use geom::*;
 use rng::dice;
@@ -32,12 +32,9 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
             game.anim_queue.push_player_move(dir);
         }
     } else {
-        let rel = {
-            let chara = game.gd.chara.get(chara_id);
-            let other_chara = game.gd.chara.get(other_chara.unwrap());
-            chara.rel.relative(other_chara.rel)
-        };
-        match rel {
+        let relation = game.gd.chara_relation(chara_id, other_chara.unwrap());
+
+        match relation {
             Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
                 {
                     let current_map = game.gd.get_current_map_mut();

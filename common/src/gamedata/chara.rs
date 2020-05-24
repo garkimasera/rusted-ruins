@@ -28,24 +28,6 @@ pub enum Relationship {
     HOSTILE,
 }
 
-impl Relationship {
-    pub fn relative(&self, other: Relationship) -> Relationship {
-        use self::Relationship::*;
-        match (*self, other) {
-            (ALLY, o) => o,
-            (FRIENDLY, ALLY) => FRIENDLY,
-            (FRIENDLY, FRIENDLY) => FRIENDLY,
-            (FRIENDLY, NEUTRAL) => NEUTRAL,
-            (FRIENDLY, HOSTILE) => HOSTILE,
-            (NEUTRAL, _) => NEUTRAL,
-            (HOSTILE, ALLY) => HOSTILE,
-            (HOSTILE, FRIENDLY) => HOSTILE,
-            (HOSTILE, NEUTRAL) => NEUTRAL,
-            (HOSTILE, HOSTILE) => FRIENDLY,
-        }
-    }
-}
-
 /// All data for one character
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Chara {

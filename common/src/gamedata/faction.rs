@@ -1,3 +1,26 @@
+/// Faction information.
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct Faction {
+    /// Faction relation to player.
+    relation_table: Vec<FactionRelation>,
+}
+
+impl Faction {
+    pub fn new() -> Faction {
+        Faction {
+            relation_table: vec![FactionRelation(0); 0xFF],
+        }
+    }
+
+    pub fn get(&self, faction: FactionId) -> FactionRelation {
+        self.relation_table[faction.0 as usize]
+    }
+
+    pub fn set(&mut self, faction: FactionId, relation: FactionRelation) {
+        self.relation_table[faction.0 as usize] = relation;
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub struct FactionId(pub u8);
 

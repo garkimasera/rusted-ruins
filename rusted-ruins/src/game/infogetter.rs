@@ -3,6 +3,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
 use geom::*;
+use rules::RULES;
 
 /// Helper functions to get information for event processing and drawing
 pub trait InfoGetter {
@@ -32,6 +33,8 @@ pub trait InfoGetter {
     fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation>;
     /// Get list of harvestable items
     fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)>;
+    /// Get relationship between two characters
+    fn chara_relation(&self, chara: CharaId, other: CharaId) -> Relationship;
 }
 
 impl InfoGetter for GameData {
@@ -149,5 +152,26 @@ impl InfoGetter for GameData {
             }
         }
         v
+    }
+
+    fn chara_relation(&self, chara: CharaId, other: CharaId) -> Relationship {
+        let f1 = self.chara.get(chara).faction;
+        let f2 = self.chara.get(other).faction;
+
+        let faction_relation = if f1 == FactionId::PLAYER {
+            self.faction.get(f2)
+        } else if f2 == FactionId::PLAYER {
+            self.faction.get(f1)
+        } else {
+            RULES.faction.relation(f1, f2)
+        };
+
+        if faction_relation >= RULES.faction.relation_friend {
+            Relationship::FRIENDLY
+        } else if faction_relation >= RULES.faction.relation_neutral {
+            Relationship::NEUTRAL
+        } else {
+            Relationship::HOSTILE
+        }
     }
 }

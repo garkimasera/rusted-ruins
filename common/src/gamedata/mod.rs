@@ -44,6 +44,7 @@ pub struct GameData {
     pub player: Player,
     pub quest: QuestHolder,
     pub vars: Variables,
+    pub faction: Faction,
     current_mapid: MapId,
 }
 
@@ -57,6 +58,7 @@ impl GameData {
             player: Player::default(),
             quest: QuestHolder::new(),
             vars: Variables::new(),
+            faction: Faction::new(),
             current_mapid: MapId::default(),
         }
     }

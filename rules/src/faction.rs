@@ -21,7 +21,7 @@ impl Faction {
             .unwrap_or(&self.factions[0])
     }
 
-    pub fn name_to_faction(&self, faction_name: &str) -> common::gamedata::FactionId {
+    pub fn name_to_faction(&self, faction_name: &str) -> FactionId {
         let i = self
             .factions
             .iter()
@@ -34,7 +34,13 @@ impl Faction {
                 }
             })
             .unwrap_or(0);
-        common::gamedata::FactionId(i as u8)
+        FactionId(i as u8)
+    }
+
+    pub fn relation(&self, f1: FactionId, f2: FactionId) -> FactionRelation {
+        let f1 = self.get(f1);
+        let f2 = self.get(f2);
+        std::cmp::min(f1.default_relation, f2.default_relation)
     }
 }
 

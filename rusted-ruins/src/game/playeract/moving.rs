@@ -17,11 +17,11 @@ impl<'a> DoPlayerAction<'a> {
         let will_talk = {
             if dir.as_vec() != (0, 0) {
                 let gd = self.gd();
-                let player_chara = gd.chara.get(CharaId::Player);
                 if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
+                    let relation = gd.chara_relation(CharaId::Player, other_chara);
                     let other_chara = gd.chara.get(other_chara);
-                    match player_chara.rel.relative(other_chara.rel) {
-                        Relationship::ALLY | Relationship::FRIENDLY => {
+                    match relation {
+                        Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
                             other_chara.trigger_talk.is_some()
                         }
                         _ => false,

@@ -109,13 +109,13 @@ impl<'a> DoPlayerAction<'a> {
         let mut cid = None;
         {
             let gd = self.gd();
-            let player_chara = gd.chara.get(CharaId::Player);
             let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
             if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
                 cid = Some(other_chara);
+                let relation = gd.chara_relation(CharaId::Player, other_chara);
                 let other_chara = gd.chara.get(other_chara);
-                match player_chara.rel.relative(other_chara.rel) {
-                    Relationship::ALLY | Relationship::FRIENDLY => {
+                match relation {
+                    Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
                         if let Some(ref t) = other_chara.trigger_talk {
                             trigger_talk = Some(t.clone())
                         }
