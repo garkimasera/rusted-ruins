@@ -1,38 +1,53 @@
+use crate::hashmap::HashMap;
+use arrayvec::ArrayString;
+
 /// Faction information.
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct Faction {
     /// Faction relation to player.
-    relation_table: Vec<FactionRelation>,
+    relation_table: HashMap<FactionId, FactionRelation>,
 }
 
 impl Faction {
     pub fn new() -> Faction {
         Faction {
-            relation_table: vec![FactionRelation(0); 0xFF],
+            relation_table: HashMap::default(),
         }
     }
 
     pub fn get(&self, faction: FactionId) -> FactionRelation {
-        self.relation_table[faction.0 as usize]
+        self.relation_table
+            .get(&faction)
+            .map(|f| *f)
+            .unwrap_or(FactionRelation(0))
     }
 
     pub fn set(&mut self, faction: FactionId, relation: FactionRelation) {
-        self.relation_table[faction.0 as usize] = relation;
+        self.relation_table.insert(faction, relation);
     }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-pub struct FactionId(pub u8);
+pub struct FactionId(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl Default for FactionId {
     fn default() -> FactionId {
-        FactionId::UNKNOWN
+        FactionId::unknown()
     }
 }
 
 impl FactionId {
-    pub const UNKNOWN: FactionId = FactionId(0);
-    pub const PLAYER: FactionId = FactionId(1);
+    pub fn new(name: &str) -> Option<FactionId> {
+        ArrayString::from(name).map(|s| FactionId(s)).ok()
+    }
+
+    pub fn unknown() -> FactionId {
+        FactionId::new("!unknown").unwrap()
+    }
+
+    pub fn player() -> FactionId {
+        FactionId::new("!player").unwrap()
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]

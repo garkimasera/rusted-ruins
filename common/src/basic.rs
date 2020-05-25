@@ -53,3 +53,6 @@ pub const MAX_ITEM_FOR_DRAW: usize = 5;
 
 /// The number of tile image layers
 pub const N_TILE_IMG_LAYER: usize = 4;
+
+/// Length of ArrayString id types
+pub const ARRAY_STR_ID_LEN: usize = 15;

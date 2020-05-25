@@ -1,22 +1,22 @@
 {
     "relation_friend": 80,
     "relation_neutral": 0,
-    "factions": [
-        {
-            "name": "unknown",
+    "factions": {
+        "!unknown": {
+            "name": "faction_unknown",
             "default_relation": 0
         },
-        {
-            "name": "player",
+        "!player": {
+            "name": "faction_player",
             "default_relation": 100
         },
-        {
-            "name": "monster",
+        "monster": {
+            "name": "faction_monster",
             "default_relation": -100
         },
-        {
-            "name": "citizen",
+        "citizen": {
+            "name": "faction_citizen",
             "default_relation": 20
         }
-    ]
+    }
 }

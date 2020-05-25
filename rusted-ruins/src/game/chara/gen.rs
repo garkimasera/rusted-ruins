@@ -48,7 +48,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
         floor_level,
     );
     let ct = gobj::get_obj(idx);
-    let faction = RULES.faction.name_to_faction("monster");
+    let faction = FactionId::new("monster").unwrap();
     let mut chara = create_chara(idx, ct.gen_level, faction);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;

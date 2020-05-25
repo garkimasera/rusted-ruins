@@ -49,7 +49,7 @@ impl NewGameBuilder {
             let mut chara = super::chara::gen::create_chara(
                 gobj::id_to_idx(chara_template_id),
                 1,
-                FactionId::PLAYER,
+                FactionId::player(),
             );
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.as_ref().unwrap().clone());
@@ -74,9 +74,8 @@ impl NewGameBuilder {
             );
 
             // Faction relation setting
-            for faction in &RULES.faction.factions {
-                let id = RULES.faction.name_to_faction(&faction.name);
-                gd.faction.set(id, faction.default_relation);
+            for (faction_id, faction) in &RULES.faction.factions {
+                gd.faction.set(*faction_id, faction.default_relation);
             }
         }
         self.gd

@@ -11,7 +11,7 @@ use std::collections::HashMap;
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct CharaClass(arrayvec::ArrayString<[u8; 16]>);
+pub struct CharaClass(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl CharaClass {
     pub fn as_str(&self) -> &str {

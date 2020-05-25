@@ -2,14 +2,13 @@ use crate::game;
 use common::gamedata::*;
 use common::gobj;
 use common::sitegen::*;
-use rules::RULES;
 
 /// Add unique citizens from SiteGenObject
 pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
     for uc in &sg.unique_citizens {
-        let faction = RULES.faction.name_to_faction("citizen");
+        let faction_id = FactionId::new("citizen").unwrap();
         let mut chara =
-            game::chara::gen::create_chara(gobj::id_to_idx(&uc.chara_template_id), 1, faction);
+            game::chara::gen::create_chara(gobj::id_to_idx(&uc.chara_template_id), 1, faction_id);
         let mid = MapId::SiteMap {
             sid,
             floor: uc.floor,
