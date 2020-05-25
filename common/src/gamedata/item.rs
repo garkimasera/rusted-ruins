@@ -238,7 +238,7 @@ pub struct ItemGen {
     pub id: String,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum ItemListLocation {
     OnMap { mid: super::map::MapId, pos: Vec2d },
     Chara { cid: super::chara::CharaId },

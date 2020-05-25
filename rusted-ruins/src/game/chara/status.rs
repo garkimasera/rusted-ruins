@@ -135,6 +135,9 @@ impl CharaStatusEx for CharaStatus {
                     assert!(cid == CharaId::Player);
                     crate::game::creation::finish_creation(gd, &recipe, ingredients);
                 }
+                Work::Harvest { item_idx, il } => {
+                    crate::game::action::harvest::finish_harvest(gd, cid, item_idx, il);
+                }
             },
             _ => (),
         }

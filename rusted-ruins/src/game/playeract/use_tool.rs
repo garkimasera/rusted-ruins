@@ -32,7 +32,8 @@ impl<'a> DoPlayerAction<'a> {
             }
             ToolEffect::Chop => {
                 trace!("chopping at {}", &pos);
-                crate::game::action::harvest::harvest_by_tool(self.gd_mut(), CharaId::Player, pos);
+                crate::game::action::harvest::harvest_by_tool(self.0, CharaId::Player, pos);
+                self.0.finish_player_turn();
             }
         }
     }

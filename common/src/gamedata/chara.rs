@@ -1,11 +1,11 @@
 use super::defs::Recipe;
 use super::faction::FactionId;
-use super::item::{EquipItemList, Item, ItemList};
+use super::item::{EquipItemList, Item, ItemList, ItemLocation};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::SkillList;
 use super::unknown_id_err;
-use crate::objholder::CharaTemplateIdx;
+use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use std::collections::HashMap;
 
 /// Character classes
@@ -116,7 +116,7 @@ impl CharaBaseAttr {
 }
 
 /// Represents chara status
-#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum CharaStatus {
     /// Sp status
     Hungry,
@@ -143,11 +143,15 @@ pub enum CharaStatus {
     },
 }
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Work {
     Creation {
         recipe: Recipe,
         ingredients: Vec<Item>,
+    },
+    Harvest {
+        item_idx: ItemIdx,
+        il: ItemLocation,
     },
 }
 
