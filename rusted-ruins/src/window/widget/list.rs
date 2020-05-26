@@ -34,7 +34,7 @@ pub enum ListWidgetResponse {
 
 pub trait ListWidgetRow {
     const N_COLUMN: usize;
-    fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]);
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]);
 }
 
 pub type TextListWidget = ListWidget<TextCache>;
@@ -327,7 +327,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         self.rect.width(),
                         self.h_row,
                     );
-                    row.draw(context, rect, &self.column_pos);
+                    row.row_draw(context, rect, &self.column_pos);
                 }
             }
 
@@ -356,7 +356,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
 impl ListWidgetRow for TextCache {
     const N_COLUMN: usize = 1;
 
-    fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let tex = context.sv.tt_one(self);
         let w = tex.query().width;
         let h = tex.query().height;
@@ -369,10 +369,22 @@ impl ListWidgetRow for TextCache {
 impl ListWidgetRow for IconIdx {
     const N_COLUMN: usize = 1;
 
-    fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let (t, orig) = context.sv.tex().get_icon(*self);
         let dest = Rect::new(rect.x + column_pos[0], rect.y, orig.width(), orig.height());
         try_sdl!(context.canvas.copy(t, orig, dest));
+    }
+}
+
+impl<T> ListWidgetRow for T
+where
+    T: super::MovableWidget,
+{
+    const N_COLUMN: usize = 1;
+
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+        self.move_to(rect.x + column_pos[0], rect.y);
+        self.draw(context);
     }
 }
 
@@ -380,13 +392,13 @@ impl ListWidgetRow for IconIdx {
 impl<T1: ListWidgetRow, T2: ListWidgetRow> ListWidgetRow for (T1, T2) {
     const N_COLUMN: usize = 2;
 
-    fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let w = column_pos[1] - column_pos[0];
         let rect0 = Rect::new(rect.x + column_pos[0], rect.y, w as u32, rect.height());
-        self.0.draw(context, rect0, &[0]);
+        self.0.row_draw(context, rect0, &[0]);
         let w = rect.right() - column_pos[1];
         let rect1 = Rect::new(rect.x + column_pos[1], rect.y, w as u32, rect.height());
-        self.1.draw(context, rect1, &[0]);
+        self.1.row_draw(context, rect1, &[0]);
     }
 }
 
@@ -394,15 +406,15 @@ impl<T1: ListWidgetRow, T2: ListWidgetRow> ListWidgetRow for (T1, T2) {
 impl<T1: ListWidgetRow, T2: ListWidgetRow, T3: ListWidgetRow> ListWidgetRow for (T1, T2, T3) {
     const N_COLUMN: usize = 3;
 
-    fn draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
         let w = column_pos[1] - column_pos[0];
         let rect0 = Rect::new(rect.x + column_pos[0], rect.y, w as u32, rect.height());
-        self.0.draw(context, rect0, &[0]);
+        self.0.row_draw(context, rect0, &[0]);
         let w = column_pos[2] - column_pos[1];
         let rect1 = Rect::new(rect.x + column_pos[1], rect.y, w as u32, rect.height());
-        self.1.draw(context, rect1, &[0]);
+        self.1.row_draw(context, rect1, &[0]);
         let w = rect.right() - column_pos[2];
         let rect2 = Rect::new(rect.x + column_pos[2], rect.y, w as u32, rect.height());
-        self.2.draw(context, rect2, &[0]);
+        self.2.row_draw(context, rect2, &[0]);
     }
 }

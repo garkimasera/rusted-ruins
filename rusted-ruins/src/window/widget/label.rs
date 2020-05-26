@@ -1,4 +1,4 @@
-use super::WidgetTrait;
+use super::{MovableWidget, WidgetTrait};
 use crate::config::UI_CFG;
 use crate::context::*;
 use sdl2::rect::Rect;
@@ -10,7 +10,14 @@ pub struct LabelWidget {
     font: FontKind,
     wrap_w: Option<u32>,
     is_bordered: bool,
-    centering: bool,
+    align: TextAlignment,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum TextAlignment {
+    Left,
+    Right,
+    Center,
 }
 
 impl LabelWidget {
@@ -23,7 +30,7 @@ impl LabelWidget {
             font,
             wrap_w: None,
             is_bordered: false,
-            centering: false,
+            align: TextAlignment::Left,
         }
     }
 
@@ -36,7 +43,7 @@ impl LabelWidget {
             font,
             wrap_w: None,
             is_bordered: true,
-            centering: false,
+            align: TextAlignment::Left,
         }
     }
 
@@ -49,7 +56,7 @@ impl LabelWidget {
             font,
             wrap_w: Some(w),
             is_bordered: false,
-            centering: false,
+            align: TextAlignment::Left,
         }
     }
 
@@ -86,7 +93,12 @@ impl LabelWidget {
     }
 
     pub fn centering(mut self) -> LabelWidget {
-        self.centering = true;
+        self.align = TextAlignment::Center;
+        self
+    }
+
+    pub fn right(mut self) -> LabelWidget {
+        self.align = TextAlignment::Right;
         self
     }
 }
@@ -101,23 +113,35 @@ impl WidgetTrait for LabelWidget {
 
         let w = tex.query().width;
         let h = tex.query().height;
-        let dest = if self.centering {
-            Rect::new(
-                self.rect.x + (self.rect.w - w as i32) / 2,
-                self.rect.y + (self.rect.h - h as i32) / 2,
-                w,
-                h,
-            )
-        } else {
-            Rect::new(
+        let dest = match self.align {
+            TextAlignment::Left => Rect::new(
                 self.rect.x + UI_CFG.label_widget.left_margin,
                 self.rect.y,
                 w,
                 h,
-            )
+            ),
+            TextAlignment::Right => Rect::new(
+                self.rect.x + self.rect.w - w as i32 - UI_CFG.label_widget.left_margin,
+                self.rect.y,
+                w,
+                h,
+            ),
+            TextAlignment::Center => Rect::new(
+                self.rect.x + (self.rect.w - w as i32) / 2,
+                self.rect.y + (self.rect.h - h as i32) / 2,
+                w,
+                h,
+            ),
         };
 
         try_sdl!(canvas.copy(tex, None, dest));
+    }
+}
+
+impl MovableWidget for LabelWidget {
+    fn move_to(&mut self, x: i32, y: i32) {
+        self.rect.x = x;
+        self.rect.y = y;
     }
 }
 

@@ -16,6 +16,10 @@ pub trait WidgetTrait {
     fn draw(&mut self, context: &mut Context);
 }
 
+pub trait MovableWidget: WidgetTrait {
+    fn move_to(&mut self, x: i32, y: i32);
+}
+
 pub use self::border::*;
 pub use self::gauge::*;
 pub use self::image::*;

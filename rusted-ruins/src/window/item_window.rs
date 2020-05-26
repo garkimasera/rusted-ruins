@@ -35,7 +35,7 @@ pub enum ItemWindowMode {
 
 pub struct ItemWindow {
     rect: Rect,
-    list: ListWidget<(IconIdx, TextCache, TextCache)>,
+    list: ListWidget<(IconIdx, TextCache, LabelWidget)>,
     mode: ItemWindowMode,
     item_locations: Vec<ItemLocation>,
     escape_click: bool,
@@ -216,7 +216,9 @@ impl ItemWindow {
             self.item_locations.push(il);
         }
 
-        self.list.update_rows_by_func(|i| {
+        let window_width = self.rect.width();
+
+        self.list.update_rows_by_func(move |i| {
             let (_, ref item, n_item) = list.clone().nth(i as usize).unwrap();
 
             let item_text = format!("{} x {}", item.to_text(), n_item);
@@ -229,11 +231,16 @@ impl ItemWindow {
             };
 
             let t1 = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
-            let t2 = TextCache::one(
-                additional_info,
+            let w = window_width
+                - UI_CFG.item_window.column_pos.clone()[2] as u32
+                - UI_CFG.vscroll_widget.width;
+            let t2 = LabelWidget::new(
+                Rect::new(0, 0, w, UI_CFG.list_widget.h_row_default),
+                &additional_info,
                 FontKind::M,
-                UI_CFG.color.normal_font.into(),
-            );
+            )
+            .right();
+
             (IconIdx::Item(item.idx), t1, t2)
         });
     }
