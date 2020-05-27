@@ -10,6 +10,8 @@ pub struct DungeonGenParams {
     pub floor_gen: Vec<(String, f32)>,
     /// The probability of npc generation for each race
     pub npc_race_probability: HashMap<String, f32>,
+    /// Default npc faction
+    pub default_faction_id: FactionId,
     /// Tile and wall ids
     pub terrain: Vec<[String; 2]>,
     /// Items generatation probability on each tile

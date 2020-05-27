@@ -39,17 +39,14 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32, faction: Fact
 
 /// Create npc character from the race
 pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
-    let idx = choose_npc_chara_template(
-        &RULES
-            .dungeon_gen
-            .get(&dungeon)
-            .expect("No rule for npc generation")
-            .npc_race_probability,
-        floor_level,
-    );
+    let dungeon_gen_rule = &RULES
+        .dungeon_gen
+        .get(&dungeon)
+        .expect("No rule for npc generation");
+    let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level);
     let ct = gobj::get_obj(idx);
-    let faction = FactionId::new("monster").unwrap();
-    let mut chara = create_chara(idx, ct.gen_level, faction);
+    let faction_id = dungeon_gen_rule.default_faction_id;
+    let mut chara = create_chara(idx, ct.gen_level, faction_id);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     chara

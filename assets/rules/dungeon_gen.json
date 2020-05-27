@@ -8,6 +8,7 @@
             "animal": 0.2,
             "ghost": 0.4
         },
+        "default_faction_id": "monster",
         "terrain": [
             ["soil-01", "soil-wall-01"]
         ],
@@ -21,6 +22,7 @@
             "slime": 0.5,
             "ghost": 0.6
         },
+        "default_faction_id": "monster",
         "terrain": [
             ["concrete-rust-01", "concrete-rust-wall-01"]
         ],

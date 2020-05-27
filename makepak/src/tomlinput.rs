@@ -1,5 +1,5 @@
 use common::gamedata::defs::Harvest;
-use common::gamedata::{self, ElementArray};
+use common::gamedata::{self, ElementArray, FactionId};
 use common::sitegen;
 use geom::Vec2d;
 
@@ -136,6 +136,7 @@ pub struct SiteGenIdAndPos {
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
     pub map_template_id: Vec<String>,
+    pub default_faction_id: FactionId,
     pub unique_citizens: Option<Vec<sitegen::UniqueCitizenGenData>>,
     pub shops: Option<Vec<sitegen::ShopGenData>>,
 }
