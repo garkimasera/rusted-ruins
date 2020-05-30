@@ -7,7 +7,6 @@ use self::img::*;
 use self::item::build_item_object;
 use crate::tomlinput::TomlInput;
 use anyhow::*;
-use common::gamedata;
 use common::gamedata::CharaBaseAttr;
 use common::obj::*;
 use geom::Vec2d;
@@ -157,9 +156,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
-        default_ai_kind: chara_dep_input
-            .default_ai_kind
-            .unwrap_or(gamedata::NpcAIKind::None),
+        default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or_default(),
         base_attr,
     })
 }

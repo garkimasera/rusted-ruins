@@ -1,0 +1,8 @@
+{
+    "default": {
+        "move_kind": "no_move"
+    },
+    "melee": {
+        "move_kind": "melee"
+    }
+}

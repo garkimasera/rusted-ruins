@@ -15,6 +15,7 @@ pub mod faction;
 pub mod floor_gen;
 pub mod magic;
 pub mod newgame;
+pub mod npc_ai;
 pub mod params;
 pub mod quest;
 pub mod race;
@@ -38,6 +39,7 @@ pub struct Rules {
     pub floor_gen: floor_gen::FloorGen,
     pub magic: magic::Magic,
     pub newgame: newgame::NewGame,
+    pub npc_ai: npc_ai::NpcAIs,
     pub params: params::Params,
     pub quest: quest::Quest,
     pub race: race::Races,
@@ -74,6 +76,7 @@ impl Rules {
             floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
             magic: read_from_json(&rules_dir.join("magic.json")),
             newgame: read_from_json(&rules_dir.join("newgame.json")),
+            npc_ai: read_from_json(&rules_dir.join("npc_ai.json")),
             params: read_from_json(&rules_dir.join("params.json")),
             quest: read_from_json(&rules_dir.join("quest.json")),
             race: read_from_json(&rules_dir.join("race.json")),

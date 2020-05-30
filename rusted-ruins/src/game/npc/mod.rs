@@ -7,17 +7,16 @@ use super::{Game, InfoGetter};
 use common::gamedata::*;
 use geom::*;
 use rng::*;
+use rules::{npc_ai::*, RULES};
 
 pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
     {
         let chara = game.gd.chara.get(cid);
         let ai = &chara.ai;
+        let ai_rule = RULES.npc_ai.get(ai.kind);
 
-        match ai.kind {
-            NpcAIKind::None => {
-                return;
-            }
-            NpcAIKind::NoMove => {
+        match ai_rule.move_kind {
+            MoveKind::NoMove => {
                 return;
             }
             _ => (),
