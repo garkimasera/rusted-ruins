@@ -35,6 +35,8 @@ pub trait CharaEx {
     fn update(&mut self);
     /// Reset wait time
     fn reset_wait_time(&mut self);
+    /// Returns (current item weight, capacity)
+    fn item_weight(&self) -> (f32, f32);
 }
 
 impl CharaEx for Chara {
@@ -152,5 +154,12 @@ impl CharaEx for Chara {
 
     fn reset_wait_time(&mut self) {
         self.wait_time = WAIT_TIME_NUMERATOR / self.attr.spd as u32;
+    }
+
+    fn item_weight(&self) -> (f32, f32) {
+        (
+            self.item_list.sum_weight() as f32,
+            update::calc_carrying_capacity(self),
+        )
     }
 }

@@ -68,7 +68,7 @@ pub fn update_encumbrance_status(chara: &mut Chara) {
     chara.remove_encumbrance_status();
 }
 
-fn calc_carrying_capacity(chara: &Chara) -> f32 {
+pub fn calc_carrying_capacity(chara: &Chara) -> f32 {
     let skill_level = chara.skills.get(SkillKind::Carrying) as f32;
 
     (chara.attr.str as f32 / 2.0 + chara.attr.vit as f32)
