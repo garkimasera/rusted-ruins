@@ -118,18 +118,20 @@ impl EditingMap {
         self.tile[pos][layer] = TileIdxPP::with_piece_pattern(new_tile_idx, piece_pattern);
     }
 
-    pub fn resize(&mut self, new_w: u32, new_h: u32) {
+    pub fn resize(&mut self, new_w: u32, new_h: u32, offset_x: i32, offset_y: i32) {
         self.width = new_w;
         self.height = new_h;
+        let top_left = Vec2d(offset_x, offset_y);
+        let bottom_right = Vec2d(new_w as i32 + offset_x, new_h as i32 + offset_y);
         let tile = self
             .tile
-            .clip_with_default((0, 0), (new_w, new_h), TileLayers::default());
+            .clip_with_default(top_left, bottom_right, TileLayers::default());
         self.tile = tile;
         let wall = self
             .wall
-            .clip_with_default((0, 0), (new_w, new_h), WallIdxPP::default());
+            .clip_with_default(top_left, bottom_right, WallIdxPP::default());
         self.wall = wall;
-        let deco = self.deco.clip_with_default((0, 0), (new_w, new_h), None);
+        let deco = self.deco.clip_with_default(top_left, bottom_right, None);
         self.deco = deco;
     }
 

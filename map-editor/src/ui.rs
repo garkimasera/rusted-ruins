@@ -34,6 +34,8 @@ pub struct Ui {
     pub adjustment_map_height: gtk::Adjustment,
     pub adjustment_map_pos_x: gtk::Adjustment,
     pub adjustment_map_pos_y: gtk::Adjustment,
+    pub adjustment_offset_x: gtk::Adjustment,
+    pub adjustment_offset_y: gtk::Adjustment,
     pub label_cursor_pos: gtk::Label,
     pub label_selected_item: gtk::Label,
     pub radiobutton_layer0: gtk::RadioButton,
@@ -86,6 +88,8 @@ pub fn build_ui(application: &gtk::Application) {
         adjustment_map_height: get_object!(builder, "adjustment-map-height"),
         adjustment_map_pos_x: get_object!(builder, "adjustment-map-pos-x"),
         adjustment_map_pos_y: get_object!(builder, "adjustment-map-pos-y"),
+        adjustment_offset_x: get_object!(builder, "adjustment-offset-x"),
+        adjustment_offset_y: get_object!(builder, "adjustment-offset-y"),
         label_cursor_pos: get_object!(builder, "label-cursor-pos"),
         label_selected_item: get_object!(builder, "label-selected-item"),
         radiobutton_layer0: get_object!(builder, "radiobutton-layer0"),
@@ -291,11 +295,15 @@ pub fn build_ui(application: &gtk::Application) {
             if responce_id == gtk::ResponseType::Other(1) {
                 let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
+                let offset_x = uic.adjustment_offset_x.get_value() as i32;
+                let offset_y = uic.adjustment_offset_y.get_value() as i32;
                 uic.adjustment_map_pos_x.set_value(0.0);
                 uic.adjustment_map_pos_y.set_value(0.0);
                 uic.adjustment_map_pos_x.set_upper(width as f64);
                 uic.adjustment_map_pos_y.set_upper(height as f64);
-                uic.map.borrow_mut().resize(width, height);
+                uic.map
+                    .borrow_mut()
+                    .resize(width, height, offset_x, offset_y);
                 uic.map_redraw();
             }
         });
