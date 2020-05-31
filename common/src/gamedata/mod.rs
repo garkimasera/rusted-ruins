@@ -192,10 +192,7 @@ impl GameData {
         match list_location {
             ItemListLocation::Chara { cid } => &self.chara.get(cid).item_list,
             ItemListLocation::Equip { cid } => self.chara.get(cid).equip.list(),
-            ItemListLocation::OnMap { mid, pos } => &self.region.get_map(mid).tile[pos]
-                .item_list
-                .as_ref()
-                .expect("Get item list to empty tile"),
+            ItemListLocation::OnMap { mid, pos } => &self.region.get_map(mid).tile[pos].item_list,
             ItemListLocation::Shop { cid } => &self.get_shop(cid).items,
         }
     }
@@ -207,18 +204,17 @@ impl GameData {
             ItemListLocation::Equip { .. } => {
                 panic!("Mutable borrow is prohibited for equipment list");
             }
-            ItemListLocation::OnMap { mid, pos } => self.region.get_map_mut(mid).tile[pos]
-                .item_list
-                .as_mut()
-                .expect("Get item list to empty tile"),
+            ItemListLocation::OnMap { mid, pos } => {
+                &mut self.region.get_map_mut(mid).tile[pos].item_list
+            }
             ItemListLocation::Shop { cid } => &mut self.get_shop_mut(cid).items,
         }
     }
 
     /// Get item list on the current map
-    pub fn get_item_list_on_current_map(&self, pos: Vec2d) -> Option<&ItemList> {
+    pub fn get_item_list_on_current_map(&self, pos: Vec2d) -> &ItemList {
         let mid = self.get_current_mapid();
-        self.region.get_map(mid).tile[pos].item_list.as_ref()
+        &self.region.get_map(mid).tile[pos].item_list
     }
 
     pub fn get_item(&self, item_location: ItemLocation) -> (&Item, u32) {
@@ -228,11 +224,8 @@ impl GameData {
 
     /// Remove item from list
     pub fn remove_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T) {
-        {
-            let item_list = self.get_item_list_mut(item_location.0);
-            item_list.remove(item_location.1, n);
-        }
-        self.check_item_list_on_tile(item_location.0);
+        let item_list = self.get_item_list_mut(item_location.0);
+        item_list.remove(item_location.1, n);
     }
 
     /// Remove item from list and get its clone or moved value
@@ -241,12 +234,8 @@ impl GameData {
         item_location: ItemLocation,
         n: T,
     ) -> Item {
-        let result = {
-            let item_list = self.get_item_list_mut(item_location.0);
-            item_list.remove_and_get(item_location.1, n)
-        };
-        self.check_item_list_on_tile(item_location.0);
-        result
+        let item_list = self.get_item_list_mut(item_location.0);
+        item_list.remove_and_get(item_location.1, n)
     }
 
     /// Move item to dest
@@ -265,41 +254,14 @@ impl GameData {
             (src_list.remove_and_get(item_location.1, n), n)
         };
 
-        self.create_item_list_on_tile(dest);
         let dest_list = self.get_item_list_mut(dest);
         dest_list.append(item, n);
-
-        self.check_item_list_on_tile(item_location.0);
     }
 
     /// Add item on specified tile of the current map
     pub fn add_item_on_tile(&mut self, pos: Vec2d, item: Item, n: u32) {
         let map = self.get_current_map_mut();
         map.locate_item(item, pos, n);
-    }
-
-    /// Checks item list on tile is empty or not. If so, delete
-    fn check_item_list_on_tile(&mut self, item_list_location: ItemListLocation) {
-        match item_list_location {
-            ItemListLocation::OnMap { mid, pos } => {
-                if self.get_item_list(item_list_location).is_empty() {
-                    self.region.get_map_mut(mid).tile[pos].item_list = None;
-                }
-            }
-            _ => (),
-        }
-    }
-
-    /// Create item list on tile if empty
-    fn create_item_list_on_tile(&mut self, item_list_location: ItemListLocation) {
-        match item_list_location {
-            ItemListLocation::OnMap { mid, pos } => {
-                if self.region.get_map_mut(mid).tile[pos].item_list.is_none() {
-                    self.region.get_map_mut(mid).tile[pos].item_list = Some(ItemList::new());
-                }
-            }
-            _ => (),
-        }
     }
 
     pub fn get_equip_list(&self, cid: CharaId) -> &EquipItemList {

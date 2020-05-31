@@ -160,6 +160,13 @@ pub trait FilteredListHolder {
         list_location: ItemListLocation,
         filter: ItemFilter,
     ) -> FilteredItemList;
+
+    fn get_merged_filtered_item_list(
+        &self,
+        list_location0: ItemListLocation,
+        list_location1: ItemListLocation,
+        filter: ItemFilter,
+    ) -> FilteredItemList;
 }
 
 impl FilteredListHolder for GameData {
@@ -169,6 +176,16 @@ impl FilteredListHolder for GameData {
         filter: ItemFilter,
     ) -> FilteredItemList {
         let item_list = self.get_merged_item_list(list_location, None);
+        FilteredItemList::new(item_list, filter)
+    }
+
+    fn get_merged_filtered_item_list(
+        &self,
+        list_location0: ItemListLocation,
+        list_location1: ItemListLocation,
+        filter: ItemFilter,
+    ) -> FilteredItemList {
+        let item_list = self.get_merged_item_list(list_location0, Some(list_location1));
         FilteredItemList::new(item_list, filter)
     }
 }

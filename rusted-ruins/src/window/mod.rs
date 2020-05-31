@@ -408,7 +408,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.push_dialog_window(dialog);
             }
             Command::PickUpItem => {
-                if pa.gd().item_on_player_tile().is_some() {
+                if !pa.gd().item_on_player_tile().is_empty() {
                     let item_window = ItemWindow::new(ItemWindowMode::PickUp, pa.game());
                     self.push_dialog_window(Box::new(item_window));
                 }

@@ -203,10 +203,8 @@ pub fn update_observed_map(game: &mut Game) {
         observed_tile.special = tile.special;
         observed_tile.items.clear();
 
-        if let Some(ref item_list) = tile.item_list {
-            for &(ref item, _) in item_list.iter().take(MAX_ITEM_FOR_DRAW) {
-                observed_tile.items.push(item.idx);
-            }
+        for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
+            observed_tile.items.push(item.idx);
         }
     }
 }

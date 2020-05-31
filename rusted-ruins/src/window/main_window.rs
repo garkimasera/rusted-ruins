@@ -231,7 +231,7 @@ fn create_menu(
                 }));
             }
         }
-        if game.gd.item_on_player_tile().is_some() {
+        if !game.gd.item_on_player_tile().is_empty() {
             text_ids.push("tile-menu-pick-up-items");
             callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
                 pa.request_dialog_open(DialogOpenRequest::PickUpItem);

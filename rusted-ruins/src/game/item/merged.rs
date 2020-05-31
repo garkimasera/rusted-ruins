@@ -65,7 +65,7 @@ impl<'a> MergedItemList<'a> {
             if i < first_len {
                 &self.first.1.items[i]
             } else {
-                &second.1.items[i]
+                &second.1.items[i - first_len]
             }
         } else {
             &self.first.1.items[i]

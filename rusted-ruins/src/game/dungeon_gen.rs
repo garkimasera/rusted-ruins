@@ -74,5 +74,5 @@ pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
 
     let mut item_list = ItemList::new();
     item_list.append(item, 1);
-    map.tile[p].item_list = Some(item_list);
+    map.tile[p].item_list = item_list;
 }

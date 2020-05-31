@@ -166,7 +166,7 @@ pub struct TileInfo {
     /// Decoration for this tile
     pub deco: Option<DecoIdx>,
     /// Items on this tile
-    pub item_list: Option<ItemList>,
+    pub item_list: ItemList,
     pub chara: Option<CharaId>,
     pub special: SpecialTileKind,
 }
@@ -218,7 +218,7 @@ impl Default for TileInfo {
             tile: ArrayVec::new(),
             wall: WallIdxPP::default(),
             deco: None,
-            item_list: None,
+            item_list: ItemList::new(),
             chara: None,
             special: SpecialTileKind::None,
         }
@@ -330,13 +330,7 @@ impl Map {
     /// Locate item at the specified tile.
     /// Usually should use GameData functions instead of this to move and append item.
     pub fn locate_item(&mut self, item: Item, pos: Vec2d, n: u32) {
-        if let Some(ref mut item_list) = self.tile[pos].item_list {
-            item_list.append(item, n);
-            return;
-        }
-        let mut item_list = ItemList::new();
-        item_list.append(item, n);
-        self.tile[pos].item_list = Some(item_list)
+        self.tile[pos].item_list.append(item, n);
     }
 
     pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {
