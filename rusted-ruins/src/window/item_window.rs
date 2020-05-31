@@ -134,57 +134,55 @@ impl ItemWindow {
     }
 
     fn update_by_mode(&mut self, gd: &GameData) {
+        let ill_player = ItemListLocation::Chara {
+            cid: CharaId::Player,
+        };
+        let ill_ground = ItemListLocation::OnMap {
+            mid: gd.get_current_mapid(),
+            pos: gd.player_pos(),
+        };
+
         match self.mode {
             ItemWindowMode::List => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
+                let filtered_list = gd.get_filtered_item_list(ill_player, ItemFilter::all());
                 self.update_list(filtered_list);
             }
             ItemWindowMode::PickUp => {
-                let ill = ItemListLocation::OnMap {
-                    mid: gd.get_current_mapid(),
-                    pos: gd.player_pos(),
-                };
-                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
+                let filtered_list = gd.get_filtered_item_list(ill_ground, ItemFilter::all());
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Drop => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::all());
+                let filtered_list = gd.get_filtered_item_list(ill_player, ItemFilter::all());
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Drink => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list =
-                    gd.get_filtered_item_list(ill, ItemFilter::new().drinkable(true));
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().drinkable(true),
+                );
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Eat => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new().eatable(true));
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().eatable(true),
+                );
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Use => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new().usable(true));
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().usable(true),
+                );
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Release => {
-                let ill = ItemListLocation::Chara {
-                    cid: CharaId::Player,
-                };
-                let filtered_list = gd.get_filtered_item_list(
-                    ill,
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
                     ItemFilter::new().kind_rough(ItemKindRough::MagicDevice),
                 );
                 self.update_list(filtered_list);
