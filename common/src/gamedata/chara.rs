@@ -43,6 +43,7 @@ pub struct Chara {
     pub ai: CharaAI,
     pub hp: i32,
     pub sp: f32,
+    pub morale: Morale,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
     /// Relationship to player character
@@ -170,6 +171,7 @@ impl Default for Chara {
             ai: CharaAI::default(),
             hp: 100,
             sp: 0.0,
+            morale: Morale::default(),
             status: Vec::new(),
             skills: SkillList::default(),
             rel: Relationship::NEUTRAL,
@@ -291,3 +293,7 @@ pub struct CharaTalk {
     /// Section of the TalkScript
     pub section: String,
 }
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct Morale(i8);
