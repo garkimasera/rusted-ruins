@@ -133,6 +133,10 @@ impl EditingMap {
         self.wall = wall;
         let deco = self.deco.clip_with_default(top_left, bottom_right, None);
         self.deco = deco;
+        let items = self
+            .items
+            .clip_with_default(top_left, bottom_right, Vec::new());
+        self.items = items;
     }
 
     pub fn is_inside(&self, p: Vec2d) -> bool {
