@@ -23,7 +23,11 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
         }
         "genitem" => {
             if let Some(arg1) = args.next() {
-                gen_item(game, arg1);
+                let n = args
+                    .next()
+                    .map(|s| s.parse::<u32>().unwrap_or(1))
+                    .unwrap_or(1);
+                gen_item(game, arg1, n);
             } else {
                 game_log_i!("debug-command-need-1arg"; command="genitem");
             }
@@ -56,7 +60,7 @@ fn gen_chara(game: &mut Game, arg1: &str) {
     }
 }
 
-fn gen_item(game: &mut Game, arg1: &str) {
+fn gen_item(game: &mut Game, arg1: &str, n: u32) {
     let item_gen = ItemGen {
         id: arg1.to_owned(),
     };
@@ -69,5 +73,5 @@ fn gen_item(game: &mut Game, arg1: &str) {
 
     game_log_i!("debug-command-genitem"; item=item);
     let pos = game.gd.player_pos();
-    game.gd.get_current_map_mut().locate_item(item, pos, 1);
+    game.gd.get_current_map_mut().locate_item(item, pos, n);
 }
