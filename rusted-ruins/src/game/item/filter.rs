@@ -1,3 +1,4 @@
+use super::merged::*;
 use common::gamedata::*;
 use common::gobj;
 
@@ -109,21 +110,15 @@ impl Default for ItemFilter {
 
 #[derive(Clone)]
 pub struct FilteredItemList<'a> {
-    item_list: &'a ItemList,
-    location: ItemListLocation,
+    item_list: MergedItemList<'a>,
     filter: ItemFilter,
     count: usize,
 }
 
 impl<'a> FilteredItemList<'a> {
-    pub fn new(
-        item_list: &'a ItemList,
-        location: ItemListLocation,
-        filter: ItemFilter,
-    ) -> FilteredItemList<'a> {
+    pub fn new(item_list: MergedItemList<'a>, filter: ItemFilter) -> FilteredItemList<'a> {
         FilteredItemList {
             item_list,
-            location,
             filter,
             count: 0,
         }
@@ -142,18 +137,18 @@ impl<'a> FilteredItemList<'a> {
 impl<'a> Iterator for FilteredItemList<'a> {
     type Item = (ItemLocation, &'a Item, u32);
 
-    fn next(&mut self) -> Option<Self::Item> {
+    fn next(&mut self) -> Option<(ItemLocation, &'a Item, u32)> {
         loop {
-            if self.item_list.items.len() <= self.count {
+            if self.item_list.len() <= self.count {
                 return None;
             }
-            let a = &self.item_list.items[self.count];
+            let a = &self.item_list.get(self.count);
 
-            let prev_count = self.count;
+            let il = self.item_list.item_location(self.count);
             self.count += 1;
 
             if self.filter.judge(&a.0) {
-                return Some(((self.location, prev_count as u32), &a.0, a.1));
+                return Some((il, &a.0, a.1));
             }
         }
     }
@@ -173,7 +168,7 @@ impl FilteredListHolder for GameData {
         list_location: ItemListLocation,
         filter: ItemFilter,
     ) -> FilteredItemList {
-        let item_list = self.get_item_list(list_location);
-        FilteredItemList::new(item_list, list_location, filter)
+        let item_list = self.get_merged_item_list(list_location, None);
+        FilteredItemList::new(item_list, filter)
     }
 }

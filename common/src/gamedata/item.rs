@@ -350,6 +350,11 @@ impl ItemList {
         self.items.iter()
     }
 
+    /// Return list size
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
     /// Count specified item
     pub fn count(&self, idx: ItemIdx) -> u32 {
         self.iter()
