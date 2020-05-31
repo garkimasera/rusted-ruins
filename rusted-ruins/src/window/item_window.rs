@@ -264,7 +264,7 @@ impl ItemWindow {
                 DialogResult::Continue
             }
             ItemWindowMode::PickUp => {
-                pa.pick_up_item(il, 1);
+                pa.pick_up_item(il, ItemMoveNum::All);
                 if pa.gd().is_item_on_player_tile() {
                     self.update_by_mode(pa.gd());
                     DialogResult::Continue
