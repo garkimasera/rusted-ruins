@@ -10,6 +10,7 @@ pub fn print_tile_info(_game: &Game, _pos: Vec2d) {
 pub struct TileInfoQuery {
     pub move_symbol: Option<SpecialTileKind>,
     pub boundary: Option<(Direction, BoundaryBehavior)>,
+    pub chara: Option<CharaId>,
 }
 
 pub fn tile_info_query(gd: &GameData, pos: Vec2d) -> TileInfoQuery {
@@ -34,8 +35,11 @@ pub fn tile_info_query(gd: &GameData, pos: Vec2d) -> TileInfoQuery {
         None
     };
 
+    let chara = map.get_chara(pos);
+
     TileInfoQuery {
         move_symbol,
         boundary,
+        chara,
     }
 }

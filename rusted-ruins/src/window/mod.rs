@@ -128,7 +128,6 @@ pub struct WindowManager<'sdl, 't> {
     anim: Option<Animation>,
     passed_frame: u32,
     window_stack: Vec<Box<dyn DialogWindow>>,
-    targeting_mode: bool,
 }
 
 impl<'sdl, 't> WindowManager<'sdl, 't> {
@@ -149,7 +148,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             anim: None,
             passed_frame: 0,
             window_stack,
-            targeting_mode: false,
         }
     }
 
@@ -249,11 +247,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         let mode = if !self.window_stack.is_empty() {
             self.window_stack[self.window_stack.len() - 1].mode()
         } else {
-            if self.targeting_mode {
-                InputMode::Targeting
-            } else {
-                InputMode::Normal
-            }
+            InputMode::Normal
         };
 
         let command = event_handler.get_command(mode);
@@ -261,11 +255,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             return true;
         }
         let command = command.unwrap();
-
-        if self.targeting_mode {
-            self.process_command_targeting_mode(command);
-            return true;
-        }
 
         if !self.window_stack.is_empty() {
             let mut tail = self.window_stack.len() - 1;
@@ -441,16 +430,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 ));
                 self.push_dialog_window(dialog);
             }
-            Command::TargetingMode => {
-                self.targeting_mode = true;
-                match self.mode {
-                    WindowManageMode::OnGame(ref mut game_windows) => {
-                        let tile = pa.gd().player_pos();
-                        game_windows.main_window.start_centering_mode(tile);
-                    }
-                    _ => unreachable!(),
-                }
-            }
             _ => (),
         }
         true
@@ -513,32 +492,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 }
                 _ => unreachable!(),
             },
-        }
-    }
-
-    fn process_command_targeting_mode(&mut self, command: Command) {
-        let main_window = match self.mode {
-            WindowManageMode::OnGame(ref mut game_windows) => &mut game_windows.main_window,
-            _ => unreachable!(),
-        };
-
-        match command {
-            Command::Move { dir } => {
-                main_window.move_centering_tile(dir, &self.game);
-            }
-            Command::Cancel => {
-                self.targeting_mode = false;
-                main_window.stop_centering_mode();
-            }
-            Command::Enter => {
-                // Set target
-                let ct = main_window.get_current_centering_tile();
-                if self.game.set_target(ct) {
-                    self.targeting_mode = false;
-                    main_window.stop_centering_mode();
-                }
-            }
-            _ => (),
         }
     }
 

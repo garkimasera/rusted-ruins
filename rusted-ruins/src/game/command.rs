@@ -35,7 +35,6 @@ pub enum Command {
     DrinkItem,
     EatItem,
     ReleaseItem,
-    TargetingMode,
     TextInput {
         text: String,
     },

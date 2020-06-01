@@ -11,5 +11,4 @@ command-drop_item = アイテムを置く
 command-drink_item = アイテムを飲む
 command-eat_item = アイテムを食べる
 command-release_item = 魔道具を使う
-command-targetting_mode = ターゲットモード
 command-shot = 撃つ

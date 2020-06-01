@@ -48,50 +48,6 @@ impl MainWindow {
         self.centering_tile = None;
     }
 
-    pub fn get_current_centering_tile(&mut self) -> Vec2d {
-        self.centering_tile
-            .expect("get_current_centering tile must called when targeting mode")
-    }
-
-    pub fn move_centering_tile(&mut self, dir: Direction, game: &Game) {
-        let mut c = if let Some(c) = self.centering_tile {
-            c
-        } else {
-            return;
-        };
-        let limit = game.gd.map_size();
-
-        match dir.hdir {
-            HDirection::Left => {
-                if c.0 > 0 {
-                    c.0 -= 1;
-                }
-            }
-            HDirection::Right => {
-                if c.0 < limit.0 as i32 - 1 {
-                    c.0 += 1;
-                }
-            }
-            HDirection::None => (),
-        }
-
-        match dir.vdir {
-            VDirection::Up => {
-                if c.1 > 0 {
-                    c.1 -= 1;
-                }
-            }
-            VDirection::Down => {
-                if c.1 < limit.1 as i32 - 1 {
-                    c.1 += 1;
-                }
-            }
-            VDirection::None => (),
-        }
-
-        self.centering_tile = Some(c);
-    }
-
     /// Convert mouse event on main window to Command
     pub fn convert_mouse_event(
         &mut self,
@@ -250,6 +206,15 @@ fn create_menu(
             match harvest.harvest_type {
                 _ => (),
             }
+        }
+    }
+
+    if !player_same_tile {
+        if t.chara.is_some() {
+            text_ids.push("tile-menu-target");
+            callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                pa.set_target(tile);
+            }));
         }
     }
 

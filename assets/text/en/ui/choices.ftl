@@ -10,6 +10,7 @@ tile-menu-down-stairs = Go down the stairs
 tile-menu-enter-site = Enter this site
 tile-menu-exit-to-region-map = Exit to region map
 tile-menu-infomation = Infomation
+tile-menu-target = Target
 tile-menu-move-to-next-map = Move to next map
 tile-menu-pick-up-items = Pick up items
 tile-menu-start-centering = Centering

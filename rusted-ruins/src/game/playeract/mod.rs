@@ -36,6 +36,10 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
+    pub fn set_target(&mut self, pos: Vec2d) -> bool {
+        self.0.set_target(pos)
+    }
+
     /// Pick up an item on tile
     pub fn pick_up_item<T: Into<ItemMoveNum>>(&mut self, il: ItemLocation, n: T) -> bool {
         let gd = self.gd_mut();

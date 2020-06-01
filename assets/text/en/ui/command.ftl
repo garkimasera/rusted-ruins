@@ -11,5 +11,4 @@ command-drop_item = Drop Item
 command-drink_item = Drink Item
 command-eat_item = Eat Item
 command-release_item = Release Item
-command-targetting_mode = Targetting Mode
 command-shot = Shot
