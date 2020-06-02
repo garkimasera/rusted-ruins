@@ -3,7 +3,8 @@ mod to_text;
 
 use crate::config;
 use common::basic;
-use fluent::*;
+use fluent::concurrent::FluentBundle;
+use fluent::{FluentArgs, FluentResource, FluentValue};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;
