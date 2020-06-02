@@ -45,6 +45,7 @@ killed-by-starve-damage = {$chara} starved to death.
 item-equip = {$chara} equipped {$item}.
 item-pickup = {$chara} picked up {$item}.
 item-drop = {$chara} dropped {$item}.
+item-owned-by-others = {$item} is owned by others.
 drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
 

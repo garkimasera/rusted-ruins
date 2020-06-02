@@ -43,7 +43,12 @@ impl<'a> DoPlayerAction<'a> {
     /// Pick up an item on tile
     pub fn pick_up_item<T: Into<ItemMoveNum>>(&mut self, il: ItemLocation, n: T) -> bool {
         let gd = self.gd_mut();
-        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
+        let item = gd.get_item(il).0;
+        if item.flags.contains(ItemFlags::OWNED) {
+            game_log_i!("item-owned-by-others"; item=item);
+            return false;
+        }
+        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=item);
         super::action::get_item::get_item(gd, il, CharaId::Player, n);
         true
     }
