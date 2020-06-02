@@ -159,6 +159,8 @@ impl ItemKind {
 }
 
 bitflags! {
+    #[derive(Serialize, Deserialize)]
+    #[serde(transparent)]
     pub struct ItemFlags: u64 {
         const FIXED = 1 << 0;
         const OWNED = 1 << 1;
@@ -700,50 +702,6 @@ impl<'a> Iterator for EquipItemIter<'a> {
                 return Some(result);
             }
             self.n += 1;
-        }
-    }
-}
-
-// Implement serialize & deserialize for ItemFlags
-mod impl_serde {
-    use super::ItemFlags;
-    use serde::de::{Deserialize, Deserializer, Visitor};
-    use serde::ser::{Serialize, Serializer};
-    use std::fmt;
-
-    impl Serialize for ItemFlags {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-        {
-            let bits = self.bits();
-            serializer.serialize_u64(bits)
-        }
-    }
-
-    struct ItemFlagsVisitor;
-
-    impl<'de> Visitor<'de> for ItemFlagsVisitor {
-        type Value = ItemFlags;
-
-        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("an integer")
-        }
-
-        fn visit_u64<E>(self, v: u64) -> Result<ItemFlags, E>
-        where
-            E: ::serde::de::Error,
-        {
-            Ok(ItemFlags::from_bits_truncate(v))
-        }
-    }
-
-    impl<'de> Deserialize<'de> for ItemFlags {
-        fn deserialize<D>(deserializer: D) -> Result<ItemFlags, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            deserializer.deserialize_u64(ItemFlagsVisitor)
         }
     }
 }
