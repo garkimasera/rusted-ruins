@@ -31,7 +31,8 @@ pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
             let sid = gd.add_site(site, SiteKind::Base, rid, pos).unwrap();
 
             let map_random_id = crate::game::saveload::gen_box_id(gd);
-            let map = crate::game::map::from_template::from_template_id("home-default").unwrap();
+            let map =
+                crate::game::map::from_template::from_template_id("home-default", false).unwrap();
             gd.add_map(map, sid, map_random_id);
 
             let map = gd.get_current_map_mut();

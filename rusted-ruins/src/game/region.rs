@@ -9,7 +9,7 @@ use rng::*;
 pub fn add_region(gd: &mut GameData, id: &str) {
     let rg: &RegionGenObject = gobj::get_by_id(id);
 
-    let map = if let Some(map) = super::map::from_template::from_template_id(&rg.id) {
+    let map = if let Some(map) = super::map::from_template::from_template_id(&rg.id, false) {
         map
     } else {
         error!("Map generation failed from \"{}\"", rg.id);

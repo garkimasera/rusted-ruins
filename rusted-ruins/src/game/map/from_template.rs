@@ -3,15 +3,15 @@ use common::gamedata::*;
 use common::gobj;
 use common::maptemplate::*;
 
-pub fn from_template(t: &MapTemplateObject) -> Map {
+pub fn from_template(t: &MapTemplateObject, item_own_flag: bool) -> Map {
     let mut map = create_terrain(t);
     set_boundary(&mut map, t, 0);
-    gen_items(&mut map, t);
+    gen_items(&mut map, t, item_own_flag);
     map
 }
 
-pub fn from_template_id(id: &str) -> Option<Map> {
-    Some(from_template(gobj::get_by_id_checked(id)?))
+pub fn from_template_id(id: &str, item_own_flag: bool) -> Option<Map> {
+    Some(from_template(gobj::get_by_id_checked(id)?, item_own_flag))
 }
 
 /// Create map its terrains (tile, wall) are loaded from template
@@ -64,13 +64,17 @@ pub fn set_boundary(map: &mut Map, t: &MapTemplateObject, floor: u32) {
 }
 
 /// Generate items
-fn gen_items(map: &mut Map, t: &MapTemplateObject) {
+fn gen_items(map: &mut Map, t: &MapTemplateObject, item_own_flag: bool) {
     for (pos, item_gen) in &t.items {
-        let item = if let Some(item) = from_item_gen(item_gen) {
+        let mut item = if let Some(item) = from_item_gen(item_gen) {
             item
         } else {
             continue;
         };
+
+        if item_own_flag {
+            item.flags |= ItemFlags::OWNED;
+        }
 
         // Locate item at the specified tile
         map.locate_item(item, *pos, 1);
