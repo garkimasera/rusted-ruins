@@ -122,6 +122,7 @@ pub struct ItemDepInput {
 pub struct RegionGenDepInput {
     pub map_template_id: String,
     pub towns: Vec<SiteGenIdAndPos>,
+    pub others: Vec<SiteGenIdAndPos>,
 }
 
 #[derive(Debug, Deserialize)]

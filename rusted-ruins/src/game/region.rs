@@ -78,4 +78,13 @@ fn add_sites_from_genobj(gd: &mut GameData, rg: &RegionGenObject, rid: RegionId)
             site_gen_id, pos, rid
         );
     }
+
+    // Add other sites
+    for &(ref site_gen_id, pos) in &rg.others {
+        super::site::gen::add_site_from_obj(gd, rid, pos, site_gen_id);
+        debug!(
+            "Created new town \"{}\" at {} in {:?}",
+            site_gen_id, pos, rid
+        );
+    }
 }

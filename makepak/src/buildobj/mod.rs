@@ -182,6 +182,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
         id: tomlinput.id,
         map_template_id: rg.map_template_id,
         towns: f(rg.towns),
+        others: f(rg.others),
     })
 }
 
