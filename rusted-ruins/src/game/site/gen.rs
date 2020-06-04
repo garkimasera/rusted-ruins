@@ -59,12 +59,10 @@ pub fn add_site_from_obj(
     add_unique_citizens(gd, sid, sg);
 
     // Add symbol to region map
-    {
-        let map = gd.region.get_map_mut(MapId::from(rid));
-        map.tile[pos].special = SpecialTileKind::SiteSymbol {
-            kind: SiteSymbolKind::Town,
-        };
-    }
+    let map = gd.region.get_map_mut(MapId::from(rid));
+    map.tile[pos].special = SpecialTileKind::SiteSymbol {
+        kind: sg.site_symbol,
+    };
 
     Some(sid)
 }

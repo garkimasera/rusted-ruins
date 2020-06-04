@@ -61,8 +61,8 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
 
     let region_map = gd.region.get_map_mut(mid);
     let site_symbol_kind = match dungeon_kind {
-        DungeonKind::Cave => SiteSymbolKind::Cave,
-        _ => SiteSymbolKind::Ruin,
+        DungeonKind::Cave => SiteSymbolKind::from("!rm-cave"),
+        _ => SiteSymbolKind::from("!rm-ruin"),
     };
     region_map.tile[pos].special = SpecialTileKind::SiteSymbol {
         kind: site_symbol_kind,

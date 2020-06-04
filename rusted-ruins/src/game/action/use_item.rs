@@ -37,7 +37,7 @@ pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
 
             let map = gd.get_current_map_mut();
             map.tile[pos].special = SpecialTileKind::SiteSymbol {
-                kind: SiteSymbolKind::HomeInitial,
+                kind: SiteSymbolKind::from("!rm-h0"),
             };
             game_log_i!("use_item-deed-succeed");
             gd.remove_item(il, 1);

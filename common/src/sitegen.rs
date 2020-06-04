@@ -1,4 +1,5 @@
 use crate::gamedata::faction::FactionId;
+use crate::gamedata::map::SiteSymbolKind;
 use crate::gamedata::shop::ShopKind;
 use crate::gamedata::site::SiteKind;
 use geom::Vec2d;
@@ -8,6 +9,7 @@ use geom::Vec2d;
 pub struct SiteGenObject {
     pub id: String,
     pub kind: SiteKind,
+    pub site_symbol: SiteSymbolKind,
     pub default_faction_id: FactionId,
     pub map_template_id: Vec<String>,
     pub unique_citizens: Vec<UniqueCitizenGenData>,

@@ -136,6 +136,7 @@ pub struct SiteGenIdAndPos {
 #[serde(deny_unknown_fields)]
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
+    pub site_symbol: gamedata::map::SiteSymbolKind,
     pub map_template_id: Vec<String>,
     pub default_faction_id: FactionId,
     pub unique_citizens: Option<Vec<sitegen::UniqueCitizenGenData>>,

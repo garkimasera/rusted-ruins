@@ -4,7 +4,7 @@ use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
 use crate::gamedata::site::SiteId;
 use crate::objholder::*;
-use arrayvec::ArrayVec;
+use arrayvec::{ArrayString, ArrayVec};
 use geom::*;
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
@@ -122,18 +122,17 @@ pub enum StairsKind {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum SiteSymbolKind {
-    Cave,
-    Ruin,
-    Tower,
-    Town,
-    Village,
-    HomeInitial,
+pub struct SiteSymbolKind(ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
+
+impl From<&str> for SiteSymbolKind {
+    fn from(kind: &str) -> SiteSymbolKind {
+        SiteSymbolKind(ArrayString::from(kind).expect("too long site symbol kind name"))
+    }
 }
 
 impl SpecialTileKind {
     /// Convert to id of SpecialTileObject
-    pub fn obj_id(&self) -> Option<&'static str> {
+    pub fn obj_id(&self) -> Option<&str> {
         Some(match *self {
             SpecialTileKind::None => {
                 return None;
@@ -142,14 +141,7 @@ impl SpecialTileKind {
                 StairsKind::DownStairs => "!downstairs",
                 StairsKind::UpStairs => "!upstairs",
             },
-            SpecialTileKind::SiteSymbol { kind } => match kind {
-                SiteSymbolKind::Cave => "!rm-cave",
-                SiteSymbolKind::Ruin => "!rm-ruin",
-                SiteSymbolKind::Tower => "!rm-tower",
-                SiteSymbolKind::Town => "!rm-town",
-                SiteSymbolKind::Village => "!rm-village",
-                SiteSymbolKind::HomeInitial => "!rm-home-initial",
-            },
+            SpecialTileKind::SiteSymbol { ref kind } => kind.0.as_str(),
         })
     }
 }

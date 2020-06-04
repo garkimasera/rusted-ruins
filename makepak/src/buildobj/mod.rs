@@ -202,6 +202,7 @@ fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject, Error> {
     Ok(SiteGenObject {
         id: tomlinput.id,
         kind: sg.kind,
+        site_symbol: sg.site_symbol,
         default_faction_id: sg.default_faction_id,
         map_template_id: sg.map_template_id,
         unique_citizens: sg.unique_citizens.unwrap_or(vec![]),
