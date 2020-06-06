@@ -127,6 +127,23 @@ impl GameData {
         cid
     }
 
+    /// Remove specified character from the current map.
+    /// If the chara is not OnMap, removes from the current map, but remains the data.
+    pub fn remove_chara_from_map(&mut self, cid: CharaId) {
+        match cid {
+            CharaId::Player => {
+                panic!();
+            }
+            CharaId::OnMap { .. } => {
+                self.get_current_map_mut().remove_chara(cid);
+                self.chara.remove_chara(cid);
+            }
+            _ => {
+                self.get_current_map_mut().remove_chara(cid);
+            }
+        }
+    }
+
     /// Remove specified character from game.
     /// If the character is in the current map, remove from map data
     pub fn remove_chara(&mut self, cid: CharaId) {

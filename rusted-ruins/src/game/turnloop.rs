@@ -71,7 +71,7 @@ fn remove_dying_charas(game: &mut Game) -> bool {
                 return true;
             }
             // Remove dying chara
-            game.gd.remove_chara(cid);
+            game.gd.remove_chara_from_map(cid);
             // If the current target is cid, remove it
             if game.target_chara == Some(cid) {
                 game.target_chara = None;

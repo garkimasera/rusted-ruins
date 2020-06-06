@@ -343,17 +343,15 @@ impl Map {
         let pos = self.chara_pos(cid).unwrap();
         self.tile[pos].chara = None;
 
-        if let CharaId::OnMap { .. } = cid {
-            let i = self
-                .charaid
-                .iter()
-                .enumerate()
-                .find(|&(_, cid_o)| *cid_o == cid)
-                .unwrap()
-                .0;
-            let removed_cid = self.charaid.swap_remove(i);
-            assert!(removed_cid == cid);
-        }
+        let i = self
+            .charaid
+            .iter()
+            .enumerate()
+            .find(|&(_, cid_o)| *cid_o == cid)
+            .unwrap()
+            .0;
+        let removed_cid = self.charaid.swap_remove(i);
+        debug_assert!(removed_cid == cid);
     }
 
     /// Get tile index with extrapolation
