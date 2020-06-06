@@ -22,4 +22,5 @@ pub struct NpcAI {
 pub enum MoveKind {
     NoMove,
     Melee,
+    Wander,
 }

@@ -4,5 +4,8 @@
     },
     "melee": {
         "move_kind": "melee"
+    },
+    "wander" : {
+        "move_kind": "wander"
     }
 }
