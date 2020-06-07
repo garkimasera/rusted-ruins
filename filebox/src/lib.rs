@@ -55,7 +55,7 @@ impl<T: WithId> FileBox<T> {
     pub fn new(id: u64, data: T) -> FileBox<T> {
         FileBox {
             id,
-            changed: Cell::new(false),
+            changed: Cell::new(true),
             inner: Some(Box::new(data)),
         }
     }
