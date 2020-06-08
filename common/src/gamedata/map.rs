@@ -231,8 +231,8 @@ impl TileInfo {
 impl Map {
     pub fn new(w: u32, h: u32) -> Map {
         Map {
-            w: w,
-            h: h,
+            w,
+            h,
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
             player_pos: Vec2d(0, 0),

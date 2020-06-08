@@ -224,10 +224,10 @@ impl Region {
         let n = self.search_empty_n(kind);
         let sid = SiteId {
             rid: self.id,
-            kind: kind,
-            n: n,
+            kind,
+            n,
         };
-        let site_info = SiteInfo { site, pos: pos };
+        let site_info = SiteInfo { site, pos };
         self.sites.insert(sid, site_info);
         Some(sid)
     }

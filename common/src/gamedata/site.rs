@@ -10,6 +10,8 @@ pub type BoxedMap = FileBox<Map>;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Site {
     pub name: Option<String>,
+    /// id of SiteGenObject. None for auto generated sites.
+    pub id: Option<String>,
     map: Vec<BoxedMap>,
     /// The maximum nubmer of floor
     max_floor: u32,
@@ -38,9 +40,10 @@ pub enum SiteContent {
 }
 
 impl Site {
-    pub fn new(max_floor: u32) -> Site {
+    pub fn new(max_floor: u32, id: Option<String>) -> Site {
         Site {
             name: None,
+            id,
             map: Vec::new(),
             max_floor,
             content: SiteContent::Other,
@@ -81,6 +84,10 @@ impl Site {
             SiteContent::AutoGenDungeon { dungeon_kind, .. } => dungeon_kind.is_underground(),
             _ => false,
         }
+    }
+
+    pub fn id(&self) -> Option<&str> {
+        self.id.as_ref().map(|s| s.as_ref())
     }
 
     pub fn floor_num(&self) -> u32 {

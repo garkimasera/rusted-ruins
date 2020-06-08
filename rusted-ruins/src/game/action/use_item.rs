@@ -23,7 +23,7 @@ pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
                 game_log_i!("use_item-deed-occupied");
             }
 
-            let mut site = Site::new(1);
+            let mut site = Site::new(1, None);
             site.content = SiteContent::Base {
                 kind: BaseKind::Home,
             };
