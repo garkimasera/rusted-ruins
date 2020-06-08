@@ -95,7 +95,11 @@ impl GameOverWindow {
             WindowHPos::RightX(rect.right()),
             WindowVPos::TopMargin(rect.bottom() + UI_CFG.gap_len_between_dialogs),
         );
-        let choices = vec!["Return to start screen".to_owned(), "Quit".to_owned()];
+        let choices = vec![
+            text::ui_txt("dialog-choice-restart"),
+            text::ui_txt("dialog-choice-main_menu"),
+            text::ui_txt("dialog-choice-exit_game"),
+        ];
         GameOverWindow {
             text_win,
             choose_win: ChooseWindow::new(
@@ -135,8 +139,12 @@ impl DialogWindow for GameOverWindow {
                 // An choice is choosed
                 let n = *v.downcast::<u32>().unwrap();
                 match n {
-                    0 => return DialogResult::Special(ReturnToStartScreen),
-                    1 => return DialogResult::Quit,
+                    0 => {
+                        pa.restart();
+                        return DialogResult::Close;
+                    }
+                    1 => return DialogResult::Special(ReturnToStartScreen),
+                    2 => return DialogResult::Quit,
                     _ => panic!(),
                 }
             }

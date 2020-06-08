@@ -1,4 +1,5 @@
 mod moving;
+mod restart;
 mod use_tool;
 
 use super::Game;

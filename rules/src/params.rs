@@ -13,4 +13,6 @@ pub struct Params {
     pub initial_date_day: u32,
     /// Initial game date (hour)
     pub initial_date_hour: u32,
+    /// Restart map path
+    pub restart_path: String,
 }

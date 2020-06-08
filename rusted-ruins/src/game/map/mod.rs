@@ -47,42 +47,49 @@ impl MapEx for Map {
     }
 }
 
-/// Switch current map to the specified map
-pub fn switch_map(game: &mut Game, mid: MapId) {
+pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
     game.ui_request.push_back(super::UiRequest::StopCentering);
-    {
-        let save_dir = game.save_dir.as_ref().unwrap();
-        let gd = &mut game.gd;
 
-        trace!("Switch map to {:?}", mid);
-        // If next_mid floor doesn't exist, create new floor
-        if !mid.is_region_map() && !gd.region.map_exist(mid) {
-            info!("{:?} is not exist, so try to create new floor", mid);
-            super::dungeon_gen::extend_site_floor(gd, mid.sid());
-        }
-        let prev_mid = gd.get_current_mapid();
-        gd.region.preload_map(mid, save_dir.join("maps"));
-        gd.set_current_mapid(mid);
+    let save_dir = game.save_dir.as_ref().unwrap();
+    let gd = &mut game.gd;
 
-        let new_player_pos =
-            if mid.is_region_map() && !prev_mid.is_region_map() && mid.rid() == prev_mid.rid() {
-                // Exit from a site to region map
-                gd.region.get_site_pos(prev_mid.sid())
-            } else {
-                // Move to another floor of the same site
-                let current_map = gd.get_current_map();
-                if let Some(p) = current_map.search_stairs(prev_mid.floor()) {
-                    p
-                } else {
-                    current_map.entrance
-                }
-            };
-
-        gd.get_current_map_mut()
-            .locate_chara(CharaId::Player, new_player_pos);
+    trace!("Switch map to {:?}", mid);
+    // If next_mid floor doesn't exist, create new floor
+    if !mid.is_region_map() && !gd.region.map_exist(mid) {
+        info!("{:?} is not exist, so try to create new floor", mid);
+        super::dungeon_gen::extend_site_floor(gd, mid.sid());
     }
+    let prev_mid = gd.get_current_mapid();
+    gd.region.preload_map(mid, save_dir.join("maps"));
+    gd.set_current_mapid(mid);
+
+    let new_player_pos = if let Some(pos) = pos {
+        pos
+    } else {
+        if mid.is_region_map() && !prev_mid.is_region_map() && mid.rid() == prev_mid.rid() {
+            // Exit from a site to region map
+            gd.region.get_site_pos(prev_mid.sid())
+        } else {
+            // Move to another floor of the same site
+            let current_map = gd.get_current_map();
+            if let Some(p) = current_map.search_stairs(prev_mid.floor()) {
+                p
+            } else {
+                current_map.entrance
+            }
+        }
+    };
+
+    gd.get_current_map_mut()
+        .locate_chara(CharaId::Player, new_player_pos);
+
     crate::audio::play_sound("floor-change");
     super::view::update_view_map(game);
+}
+
+/// Switch current map to the specified map
+pub fn switch_map(game: &mut Game, mid: MapId) {
+    switch_map_with_pos(game, mid, None);
 }
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
