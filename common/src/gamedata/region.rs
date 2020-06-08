@@ -205,6 +205,69 @@ impl RegionHolder {
             }
         }
     }
+
+    /// Covnert map path to MapId and pos.
+    pub fn path_to_map_id_and_pos(&self, path: &str) -> Option<(MapId, Vec2d)> {
+        fn floor_and_pos(a: &str) -> Option<(u32, Vec2d)> {
+            let a: Vec<&str> = a.split(':').collect();
+            if a.len() != 2 {
+                return None;
+            }
+            let floor: u32 = if let Ok(floor) = a[0].parse() {
+                floor
+            } else {
+                return None;
+            };
+            let pos: Vec<&str> = a[1].split(',').collect();
+            let pos_x: u32 = if let Ok(pos_x) = pos[0].parse() {
+                pos_x
+            } else {
+                return None;
+            };
+            let pos_y: u32 = if let Ok(pos_y) = pos[1].parse() {
+                pos_y
+            } else {
+                return None;
+            };
+            Some((floor, Vec2d::from((pos_x, pos_y))))
+        }
+
+        let path_elements: Vec<&str> = path.split('/').collect();
+
+        if path_elements.len() == 2 {
+            let region_name = path_elements[0];
+            let (floor, pos) = if let Some(a) = floor_and_pos(path_elements[1]) {
+                a
+            } else {
+                return None;
+            };
+            for (&rid, region) in self.0.iter() {
+                if region.name == region_name {
+                    return Some((MapId::RegionMap { rid }, pos));
+                }
+            }
+        } else if path_elements.len() == 3 {
+            let region_name = path_elements[0];
+            let site_name = path_elements[1];
+            let (floor, pos) = if let Some(a) = floor_and_pos(path_elements[2]) {
+                a
+            } else {
+                return None;
+            };
+
+            for (_, region) in self.0.iter() {
+                if region.name != region_name {
+                    continue;
+                }
+                for (&sid, site) in region.sites.iter() {
+                    if site.site.id.is_some() && site.site.id.as_ref().unwrap() == site_name {
+                        return Some((MapId::SiteMap { sid, floor }, pos));
+                    }
+                }
+            }
+        }
+        None
+    }
 }
 
 impl Region {
