@@ -426,13 +426,13 @@ impl Map {
         dir: Direction,
     ) -> Option<BoundaryBehavior> {
         let dest_pos = pos + dir.as_vec();
-        if dest_pos.0 < 0 {
+        if dest_pos.1 < 0 {
             Some(self.boundary.n)
-        } else if dest_pos.0 >= self.h as i32 {
+        } else if dest_pos.1 >= self.h as i32 {
             Some(self.boundary.s)
-        } else if dest_pos.1 < 0 {
+        } else if dest_pos.0 < 0 {
             Some(self.boundary.w)
-        } else if dest_pos.1 >= self.w as i32 {
+        } else if dest_pos.0 >= self.w as i32 {
             Some(self.boundary.e)
         } else {
             None
