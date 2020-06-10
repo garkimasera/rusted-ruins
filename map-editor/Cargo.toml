@@ -14,4 +14,4 @@ gio = "0.8"
 gdk-pixbuf = "0.8"
 cairo-rs = "0.8"
 tar = "0.4"
-
+arrayvec = "0.5"

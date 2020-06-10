@@ -6,6 +6,7 @@ extern crate serde_derive;
 
 use std::fmt;
 use std::ops::{Add, Index, IndexMut, Mul, Range, Sub};
+use thiserror::Error;
 
 const OUT_OF_BOUNDS_ERR_MSG: &'static str = "Array2d: index out of bounds";
 
@@ -106,6 +107,38 @@ impl fmt::Display for Vec2d {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}, {})", self.0, self.1)
     }
+}
+
+impl std::str::FromStr for Vec2d {
+    type Err = Vec2dParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut s = s.split(',');
+        let x: i32 = if let Some(s0) = s.next() {
+            s0.parse()?
+        } else {
+            return Err(Vec2dParseError::InvalidInput);
+        };
+        let y: i32 = if let Some(s1) = s.next() {
+            s1.parse()?
+        } else {
+            return Err(Vec2dParseError::InvalidInput);
+        };
+
+        if s.next().is_some() {
+            return Err(Vec2dParseError::InvalidInput);
+        }
+
+        Ok(Vec2d(x, y))
+    }
+}
+
+#[derive(Error, Debug)]
+pub enum Vec2dParseError {
+    #[error("{0}")]
+    ParseIntError(#[from] std::num::ParseIntError),
+    #[error("")]
+    InvalidInput,
 }
 
 /// Base type for 2D map

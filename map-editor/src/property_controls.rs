@@ -10,6 +10,7 @@ use std::rc::Rc;
 pub struct PropertyControls {
     pub map_id: gtk::Entry,
     pub region_map: gtk::CheckButton,
+    pub entrance_pos: gtk::Entry,
     pub boundary_n_none: gtk::RadioButton,
     pub boundary_n_next: gtk::RadioButton,
     pub boundary_n_prev: gtk::RadioButton,
@@ -37,6 +38,7 @@ impl PropertyControls {
         PropertyControls {
             map_id: get_object!(builder, "property-map-id"),
             region_map: get_object!(builder, "property-region-map"),
+            entrance_pos: get_object!(builder, "property-entrance-pos"),
             boundary_n_none: get_object!(builder, "property-boundary-n-none"),
             boundary_n_next: get_object!(builder, "property-boundary-n-next"),
             boundary_n_prev: get_object!(builder, "property-boundary-n-prev"),
@@ -63,6 +65,10 @@ impl PropertyControls {
     pub fn update(&self, map: &EditingMap) {
         self.map_id.set_text(&map.property.id);
         self.region_map.set_active(map.property.is_region_map);
+        if let Some(entrance) = map.property.entrance.get(0) {
+            self.entrance_pos
+                .set_text(&format!("{},{}", entrance.0, entrance.1));
+        }
         match map.property.boundary.n {
             MapTemplateBoundaryBehavior::None => {
                 self.boundary_n_none.set_active(true);
@@ -145,6 +151,20 @@ pub fn connect_for_property_controls(ui: &Ui) {
                 let mode = widget.get_active();
                 uic.map.borrow_mut().property.is_region_map = mode;
                 uic.iconview.refilter(mode);
+            }
+        });
+
+    // entrancxe editting
+    let uic = ui.clone();
+    ui.property_controls
+        .entrance_pos
+        .connect_changed(move |widget| {
+            if uic.get_signal_mode() {
+                let text = widget.get_text().unwrap_or("".into());
+                uic.map.borrow_mut().property.entrance.clear();
+                if let Ok(entrance) = text.parse::<Vec2d>() {
+                    uic.map.borrow_mut().property.entrance.push(entrance);
+                }
             }
         });
 

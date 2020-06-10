@@ -5,6 +5,7 @@ use crate::gamedata::ItemGen;
 #[cfg(feature = "global_state_obj")]
 use crate::objholder::ObjectIndex;
 use crate::piece_pattern::*;
+use arrayvec::ArrayVec;
 use geom::*;
 use std::ops::{Index, IndexMut};
 
@@ -25,6 +26,8 @@ pub struct MapTemplateObject {
     pub deco: Array2d<Option<u32>>,
     pub boundary: MapTemplateBoundary,
     pub items: Vec<(Vec2d, ItemGen)>,
+    #[serde(default)]
+    pub entrance: ArrayVec<[Vec2d; 4]>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]

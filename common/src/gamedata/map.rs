@@ -18,7 +18,7 @@ pub struct Map {
     pub tile: Array2d<TileInfo>,
     pub observed_tile: Array2d<ObservedTileInfo>,
     pub player_pos: Vec2d,
-    pub entrance: Vec2d,
+    pub entrance: ArrayVec<[Vec2d; 4]>,
     /// Characters on this map
     charaid: Vec<CharaId>,
     /// Character data on this map. The current map's charas are moved to CharaHolder temporary.
@@ -236,7 +236,7 @@ impl Map {
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
             player_pos: Vec2d(0, 0),
-            entrance: Vec2d(0, 0),
+            entrance: ArrayVec::new(),
             charaid: Vec::new(),
             charas: Some(HashMap::new()),
             outside_tile: None,

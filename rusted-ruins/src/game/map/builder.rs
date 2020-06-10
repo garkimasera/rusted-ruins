@@ -117,7 +117,7 @@ pub fn generated_map_to_map(
     let exit_stairs = StairsKind::DownStairs;
 
     let dest_floor = if floor == 0 { FLOOR_OUTSIDE } else { floor - 1 };
-    map.entrance = gm.entrance;
+    map.entrance.push(gm.entrance);
     map.tile[gm.entrance].special = SpecialTileKind::Stairs {
         dest_floor,
         kind: entrance_stairs,

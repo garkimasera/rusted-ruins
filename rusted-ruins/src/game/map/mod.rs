@@ -75,7 +75,11 @@ pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
             if let Some(p) = current_map.search_stairs(prev_mid.floor()) {
                 p
             } else {
-                current_map.entrance
+                current_map
+                    .entrance
+                    .get(0)
+                    .map(|pos| *pos)
+                    .unwrap_or(Vec2d(0, 0))
             }
         }
     };

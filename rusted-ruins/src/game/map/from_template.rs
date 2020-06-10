@@ -36,6 +36,8 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
         }
     }
 
+    map.entrance = t.entrance.clone();
+
     map
 }
 

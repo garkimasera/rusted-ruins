@@ -1,3 +1,4 @@
+use arrayvec::ArrayVec;
 use common::basic::N_TILE_IMG_LAYER;
 use common::gamedata::{ItemGen, TileLayers};
 use common::gobj;
@@ -226,6 +227,7 @@ impl EditingMap {
             deco_table,
             deco: deco_map,
             boundary: self.property.boundary,
+            entrance: self.property.entrance.clone(),
             items,
         }
     }
@@ -236,6 +238,7 @@ pub struct MapProperty {
     pub id: String,
     pub is_region_map: bool,
     pub boundary: MapTemplateBoundary,
+    pub entrance: ArrayVec<[Vec2d; 4]>,
 }
 
 impl MapProperty {
@@ -244,6 +247,7 @@ impl MapProperty {
             id: id.to_owned(),
             is_region_map: false,
             boundary: MapTemplateBoundary::default(),
+            entrance: ArrayVec::new(),
         }
     }
 }
@@ -272,6 +276,7 @@ impl From<MapTemplateObject> for EditingMap {
         }
 
         map.property.boundary = obj.boundary;
+        map.property.entrance = obj.entrance;
 
         map
     }
