@@ -289,6 +289,10 @@ pub fn build_ui(application: &gtk::Application) {
         // Menu (resize)
         let uic = ui.clone();
         menu_resize.connect_activate(move |_| {
+            uic.adjustment_map_width
+                .set_value(uic.map.borrow().width as f64);
+            uic.adjustment_map_height
+                .set_value(uic.map.borrow().height as f64);
             uic.resize_dialog.show();
             let responce_id = uic.resize_dialog.run();
             uic.resize_dialog.hide();
