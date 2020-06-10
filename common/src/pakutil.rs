@@ -1,4 +1,4 @@
-use crate::utils::to_writer_packed;
+use crate::utils::to_writer_with_mode;
 use serde_cbor::from_reader;
 use std::io::{Read, Write};
 
@@ -11,7 +11,7 @@ pub fn read_object<R: Read>(r: R) -> Result<Object, ::serde_cbor::error::Error> 
 
 /// Write object as msgpack
 pub fn write_object<W: Write>(w: &mut W, obj: &Object) -> Result<(), String> {
-    to_writer_packed(w, obj).map_err(|e| e.to_string())
+    to_writer_with_mode(w, obj).map_err(|e| e.to_string())
 }
 
 /*

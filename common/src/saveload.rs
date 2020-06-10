@@ -1,7 +1,7 @@
 use crate::basic::SAVE_EXTENSION;
 use crate::gamedata::*;
 use crate::impl_filebox::MapLoadError;
-use crate::utils::to_writer_packed;
+use crate::utils::to_writer_with_mode;
 use serde_cbor::from_reader;
 use std::fs::{self, create_dir_all, File};
 use std::io::{BufReader, BufWriter, Write};
@@ -31,7 +31,7 @@ impl GameData {
 
         // Write GameData
         let mut file = BufWriter::new(File::create(save_dir.join("gamedata"))?);
-        to_writer_packed(&mut file, &self)?;
+        to_writer_with_mode(&mut file, &self)?;
 
         // Write maps
         let map_dir = save_dir.join("maps");

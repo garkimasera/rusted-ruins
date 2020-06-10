@@ -1,5 +1,5 @@
 use crate::gamedata::Map;
-use crate::utils::to_writer_packed;
+use crate::utils::to_writer_with_mode;
 use filebox::*;
 use serde_cbor::{error::Error as SerdeError, from_reader};
 use std::io::{Error as IoError, Read, Write};
@@ -9,7 +9,7 @@ impl WithId for Map {
     type Error = MapLoadError;
 
     fn write<W: Write>(mut w: W, a: &Self) -> Result<(), MapLoadError> {
-        to_writer_packed(&mut w, a)?;
+        to_writer_with_mode(&mut w, a)?;
         Ok(())
     }
 
