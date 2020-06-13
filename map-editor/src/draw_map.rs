@@ -19,6 +19,9 @@ pub fn draw_map(
     height: i32,
     pos: (i32, i32),
     layer_visible: [bool; N_TILE_IMG_LAYER],
+    wall_visible: bool,
+    deco_visible: bool,
+    item_visible: bool,
 ) {
     let tile_nx = width / TILE_SIZE_I + 1;
     let tile_ny = height / TILE_SIZE_I + 1;
@@ -45,7 +48,7 @@ pub fn draw_map(
             }
 
             // Draw wall
-            if !map.wall[p].is_empty() {
+            if wall_visible && !map.wall[p].is_empty() {
                 draw_wall_pieces(
                     cr,
                     pbh,
@@ -57,28 +60,32 @@ pub fn draw_map(
             }
 
             // Draw deco
-            if let Some(deco_idx) = map.deco[p] {
-                let pixbuf = &pbh.get(deco_idx).image;
-                let height = pixbuf.get_height();
-                cr.set_source_pixbuf(
-                    pixbuf,
-                    (ix * TILE_SIZE_I) as f64,
-                    (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
-                );
-                cr.paint();
+            if deco_visible {
+                if let Some(deco_idx) = map.deco[p] {
+                    let pixbuf = &pbh.get(deco_idx).image;
+                    let height = pixbuf.get_height();
+                    cr.set_source_pixbuf(
+                        pixbuf,
+                        (ix * TILE_SIZE_I) as f64,
+                        (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
+                    );
+                    cr.paint();
+                }
             }
 
             // Draw item
-            for item in &map.items[p] {
-                let item_idx: ItemIdx = gobj::id_to_idx(&item.id);
-                let pixbuf = &pbh.get(item_idx).image;
-                let height = pixbuf.get_height();
-                cr.set_source_pixbuf(
-                    pixbuf,
-                    (ix * TILE_SIZE_I) as f64,
-                    (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
-                );
-                cr.paint();
+            if item_visible {
+                for item in &map.items[p] {
+                    let item_idx: ItemIdx = gobj::id_to_idx(&item.id);
+                    let pixbuf = &pbh.get(item_idx).image;
+                    let height = pixbuf.get_height();
+                    cr.set_source_pixbuf(
+                        pixbuf,
+                        (ix * TILE_SIZE_I) as f64,
+                        (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
+                    );
+                    cr.paint();
+                }
             }
         }
     }

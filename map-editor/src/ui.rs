@@ -46,6 +46,9 @@ pub struct Ui {
     pub checkbutton_layer1: gtk::CheckButton,
     pub checkbutton_layer2: gtk::CheckButton,
     pub checkbutton_layer3: gtk::CheckButton,
+    pub checkbutton_wall: gtk::CheckButton,
+    pub checkbutton_deco: gtk::CheckButton,
+    pub checkbutton_item: gtk::CheckButton,
     pub radiobutton_rect: gtk::RadioButton,
     pub iconview: IconView,
     pub property_controls: PropertyControls,
@@ -61,6 +64,9 @@ pub struct Ui {
     /// Current layer to draw
     pub current_layer: Rc<Cell<usize>>,
     pub layer_visible: Rc<RefCell<[bool; 4]>>,
+    pub wall_visible: Rc<Cell<bool>>,
+    pub deco_visible: Rc<Cell<bool>>,
+    pub item_visible: Rc<Cell<bool>>,
     pub drag_start: Rc<Cell<Option<Vec2d>>>,
 }
 
@@ -100,6 +106,9 @@ pub fn build_ui(application: &gtk::Application) {
         checkbutton_layer1: get_object!(builder, "checkbutton-layer1"),
         checkbutton_layer2: get_object!(builder, "checkbutton-layer2"),
         checkbutton_layer3: get_object!(builder, "checkbutton-layer3"),
+        checkbutton_wall: get_object!(builder, "checkbutton-wall"),
+        checkbutton_deco: get_object!(builder, "checkbutton-deco"),
+        checkbutton_item: get_object!(builder, "checkbutton-item"),
         radiobutton_rect: get_object!(builder, "radiobutton-rect"),
         iconview: IconView::build(&builder),
         property_controls: PropertyControls::build(&builder),
@@ -112,6 +121,9 @@ pub fn build_ui(application: &gtk::Application) {
         shift: Rc::new(Cell::new(false)),
         current_layer: Rc::new(Cell::new(0)),
         layer_visible: Rc::new(RefCell::new([true; 4])),
+        wall_visible: Rc::new(Cell::new(true)),
+        deco_visible: Rc::new(Cell::new(true)),
+        item_visible: Rc::new(Cell::new(true)),
         drag_start: Rc::new(Cell::new(None)),
     };
 
@@ -147,6 +159,9 @@ pub fn build_ui(application: &gtk::Application) {
                 height,
                 pos,
                 *uic.layer_visible.borrow(),
+                uic.wall_visible.get(),
+                uic.deco_visible.get(),
+                uic.item_visible.get(),
             );
             Inhibit(false)
         });
@@ -393,6 +408,24 @@ pub fn build_ui(application: &gtk::Application) {
         ui.checkbutton_layer3.connect_toggled(move |b| {
             // Layer 3
             uic.layer_visible.borrow_mut()[3] = b.get_active();
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_wall.connect_toggled(move |b| {
+            // Wall
+            uic.wall_visible.set(b.get_active());
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_deco.connect_toggled(move |b| {
+            // Deco
+            uic.deco_visible.set(b.get_active());
+            uic.map_redraw();
+        });
+        let uic = ui.clone();
+        ui.checkbutton_item.connect_toggled(move |b| {
+            // Item
+            uic.item_visible.set(b.get_active());
             uic.map_redraw();
         });
     }
