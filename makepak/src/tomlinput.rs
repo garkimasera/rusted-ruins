@@ -2,6 +2,7 @@ use common::gamedata::defs::Harvest;
 use common::gamedata::{self, ElementArray, FactionId};
 use common::sitegen;
 use geom::Vec2d;
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct TomlInput {
@@ -55,6 +56,8 @@ pub struct CharaTemplateDepInput {
     pub gen_weight: f32,
     pub gen_level: u32,
     pub default_ai_kind: Option<gamedata::NpcAIKind>,
+    #[serde(default)]
+    pub skill_bonus: HashMap<String, gamedata::SkillBonus>,
     pub base_hp: i32,
     pub str: u16,
     pub vit: u16,

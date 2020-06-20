@@ -1,12 +1,30 @@
 use super::defs::Recipe;
+use super::defs::SkillBonus;
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation};
 use super::map::MapId;
 use super::site::SiteId;
-use super::skill::SkillList;
+use super::skill::{SkillKind, SkillList};
 use super::unknown_id_err;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use std::collections::HashMap;
+
+#[derive(Serialize, Deserialize)]
+pub struct CharaTemplateObject {
+    pub id: String,
+    pub img: crate::obj::Img,
+    /// Character's race
+    pub race: String,
+    /// The frequency of character generation for random map
+    pub gen_weight: f32,
+    /// Generation level
+    /// If it is higher, and the character will be generated on deeper floors
+    pub gen_level: u32,
+    /// Default AI kind for this character
+    pub default_ai_kind: NpcAIKind,
+    pub base_attr: CharaBaseAttr,
+    pub skill_bonus: HashMap<SkillKind, SkillBonus>,
+}
 
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]

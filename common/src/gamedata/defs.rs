@@ -45,6 +45,24 @@ impl<T> IndexMut<Element> for ElementArray<T> {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SkillBonus {
+    None,
+    VeryLow,
+    Low,
+    Normal,
+    High,
+    VeryHigh,
+    Superb,
+}
+
+impl Default for SkillBonus {
+    fn default() -> SkillBonus {
+        SkillBonus::None
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum CreationKind {
     Cooking,
 }

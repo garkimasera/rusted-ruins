@@ -1,5 +1,6 @@
 use crate::gamedata;
 use crate::gamedata::CharaBaseAttr;
+use crate::hashmap::HashMap;
 use std::fmt;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -31,22 +32,6 @@ pub enum Object {
 pub struct AnimImgObject {
     pub id: String,
     pub img: Img,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct CharaTemplateObject {
-    pub id: String,
-    pub img: Img,
-    /// Character's race
-    pub race: String,
-    /// The frequency of character generation for random map
-    pub gen_weight: f32,
-    /// Generation level
-    /// If it is higher, and the character will be generated on deeper floors
-    pub gen_level: u32,
-    /// Default AI kind for this character
-    pub default_ai_kind: gamedata::NpcAIKind,
-    pub base_attr: CharaBaseAttr,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -100,6 +85,7 @@ pub struct WallObject {
     pub materials: Option<Vec<(String, u32)>>,
 }
 
+pub use crate::gamedata::chara::CharaTemplateObject;
 pub use crate::gamedata::item::ItemObject;
 
 #[derive(Serialize, Deserialize)]
