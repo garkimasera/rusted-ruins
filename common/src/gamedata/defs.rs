@@ -44,6 +44,10 @@ impl<T> IndexMut<Element> for ElementArray<T> {
     }
 }
 
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct ElementProtection(i8);
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SkillBonus {

@@ -15,4 +15,6 @@ impl Races {
 pub struct Race {
     /// Available Equipment slots
     pub equip_slots: Vec<EquipSlotKind>,
+    /// Default element protection
+    pub element_protection: ElementArray<ElementProtection>,
 }
