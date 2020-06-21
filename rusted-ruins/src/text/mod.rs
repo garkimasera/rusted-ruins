@@ -151,6 +151,16 @@ pub fn obj_txt(id: &str) -> String {
     if let Some(s) = OBJ_BUNDLE.format(id, None) {
         s
     } else {
+        use regex::Regex;
+        lazy_static! {
+            static ref RE: Regex = Regex::new("(.+)-[0-9]+").unwrap();
+        };
+        if let Some(cap) = RE.captures(id) {
+            let id_without_suffix_number = cap.get(1).unwrap().as_str();
+            if let Some(s) = OBJ_BUNDLE.format(id_without_suffix_number, None) {
+                return s;
+            }
+        }
         id.to_owned()
     }
 }
