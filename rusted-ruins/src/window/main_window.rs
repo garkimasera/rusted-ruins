@@ -1,4 +1,4 @@
-use crate::config::SCREEN_CFG;
+use crate::config::{CONTROL_CFG, SCREEN_CFG};
 use crate::context::*;
 use crate::draw::mainwin::MainWinDrawer;
 use crate::game::command::MouseButton;
@@ -218,10 +218,12 @@ fn create_menu(
         }
     }
 
-    text_ids.push("tile-menu-start-centering");
-    callbacks.push(Box::new(move |_| {
-        *CENTERING_START_REQ.lock().unwrap() = Some(tile);
-    }));
+    if CONTROL_CFG.menu_centering {
+        text_ids.push("tile-menu-start-centering");
+        callbacks.push(Box::new(move |_| {
+            *CENTERING_START_REQ.lock().unwrap() = Some(tile);
+        }));
+    }
 
     if centering_mode {
         text_ids.push("tile-menu-stop-centering");
