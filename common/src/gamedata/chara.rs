@@ -7,6 +7,7 @@ use super::site::SiteId;
 use super::skill::{SkillKind, SkillList};
 use super::unknown_id_err;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
+use geom::Vec2d;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
@@ -223,9 +224,10 @@ pub enum CharaId {
 }
 
 /// Data to determine NPC character's actions
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct CharaAI {
     pub kind: NpcAIKind,
+    pub initial_pos: Vec2d,
 }
 
 /// Rough kind of NPC AI
@@ -243,6 +245,7 @@ impl Default for CharaAI {
     fn default() -> CharaAI {
         CharaAI {
             kind: NpcAIKind::default(),
+            initial_pos: Vec2d::new(0, 0),
         }
     }
 }

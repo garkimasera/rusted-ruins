@@ -4,6 +4,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
+use geom::Vec2d;
 use rng::gen_range;
 use rules::RULES;
 use std::collections::HashMap;
@@ -121,7 +122,10 @@ impl CalcLevelWeightDist {
 
 /// Create AI parameters
 pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
-    CharaAI { kind: ai_kind }
+    CharaAI {
+        kind: ai_kind,
+        initial_pos: Vec2d::new(0, 0),
+    }
 }
 
 /// Get equip slot list

@@ -23,4 +23,5 @@ pub enum MoveKind {
     NoMove,
     Melee,
     Wander,
+    Return,
 }
