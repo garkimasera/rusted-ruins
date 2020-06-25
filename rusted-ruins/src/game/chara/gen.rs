@@ -27,6 +27,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32, faction: Fact
         hp: 1,
         sp: RULES.chara.sp_default,
         morale: Morale::default(),
+        traits: Vec::new(),
         status: Vec::new(),
         skills: gen_skill_list(ct, lv),
         rel: Relationship::NEUTRAL,

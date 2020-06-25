@@ -53,6 +53,9 @@ impl NewGameBuilder {
             );
             chara.rel = gamedata::chara::Relationship::ALLY;
             chara.name = Some(self.player_name.as_ref().unwrap().clone());
+            chara
+                .traits
+                .push((CharaTraitOrigin::Inherent, CharaTrait::MainCharacter));
             set_initial_skills(&mut chara);
             chara.update();
 

@@ -12,6 +12,7 @@ pub mod site;
 pub mod skill;
 pub mod time;
 pub mod town;
+pub mod traits;
 pub mod variables;
 
 use geom::Vec2d;
@@ -30,6 +31,7 @@ pub use self::site::*;
 pub use self::skill::*;
 pub use self::time::*;
 pub use self::town::*;
+pub use self::traits::*;
 pub use self::variables::*;
 
 /// Includes all data for one game world.
