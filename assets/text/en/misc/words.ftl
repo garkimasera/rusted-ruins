@@ -1,5 +1,9 @@
 # Words for specific enums
 
+# Misc
+
+you = you
+
 # DungeonKind
 
 dungeon_kind-cave = Cave

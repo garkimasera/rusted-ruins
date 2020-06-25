@@ -14,6 +14,8 @@ use rules::RULES;
 
 /// Additional Chara method
 pub trait CharaEx {
+    /// Get this chara is main character or not.
+    fn is_main_character(&self) -> bool;
     /// Add exp to specified skill. This method should be used in this module only.
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32);
     /// Add exp when this character attacks.
@@ -40,6 +42,13 @@ pub trait CharaEx {
 }
 
 impl CharaEx for Chara {
+    fn is_main_character(&self) -> bool {
+        self.traits
+            .iter()
+            .find(|t| t.1 == CharaTrait::MainCharacter)
+            .is_some()
+    }
+
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) {
         let result = self.skills.add_exp(kind, add_exp, base_level);
         trace!("{} gains {} exp for {:?}", self.to_text(), result.1, kind);

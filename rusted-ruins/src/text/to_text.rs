@@ -50,6 +50,10 @@ impl ToText for CharaTemplateIdx {
 
 impl ToText for Chara {
     fn to_text(&self) -> Cow<str> {
+        use crate::game::chara::CharaEx;
+        if self.is_main_character() {
+            return misc_txt("you").into();
+        }
         if let Some(ref name) = self.name {
             name.into()
         } else {
