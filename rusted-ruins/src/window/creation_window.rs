@@ -1,4 +1,5 @@
 use super::commonuse::*;
+use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_window_border;
@@ -7,6 +8,58 @@ use common::gamedata::{CreationKind, GameData, ItemLocation, Recipe};
 use common::gobj;
 use common::objholder::*;
 use rules::RULES;
+
+pub fn create_creation_window_group(
+    game: &Game,
+    creation_kind: Option<CreationKind>,
+) -> GroupWindow {
+    let mem_info = vec![
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-art"),
+            text_id: "tab_text-creation_art",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Art)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-construction"),
+            text_id: "tab_text-creation_construction",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Construction)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-cooking"),
+            text_id: "tab_text-creation_cooking",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Cooking)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-craft"),
+            text_id: "tab_text-creation_craft",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Craft)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-pharmacy"),
+            text_id: "tab_text-creation_pharmacy",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Pharmacy)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-creation-smith"),
+            text_id: "tab_text-creation_smith",
+            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Smith)),
+        },
+    ];
+    let rect: Rect = UI_CFG.creation_window.rect.into();
+    let i = if let Some(creation_kind) = creation_kind {
+        match creation_kind {
+            CreationKind::Art => 0,
+            CreationKind::Construction => 1,
+            CreationKind::Cooking => 2,
+            CreationKind::Craft => 3,
+            CreationKind::Pharmacy => 4,
+            CreationKind::Smith => 5,
+        }
+    } else {
+        0
+    };
+    GroupWindow::new(mem_info.len() as u32, i, game, mem_info, (rect.x, rect.y))
+}
 
 pub struct CreationWindow {
     rect: Rect,
@@ -18,7 +71,7 @@ pub struct CreationWindow {
 }
 
 impl CreationWindow {
-    pub fn new(kind: CreationKind) -> CreationWindow {
+    pub fn new(_gd: &GameData, kind: CreationKind) -> CreationWindow {
         let c = &UI_CFG.creation_window;
         let rect: Rect = c.rect.into();
 

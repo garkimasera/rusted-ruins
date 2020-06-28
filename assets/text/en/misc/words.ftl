@@ -53,6 +53,14 @@ weapon_kind-whip = Whip
 armor_kind-body = Body
 armor_kind-shield = Shield
 
+# CreationKind
+
+creation_kind-art = Art
+creation_kind-construction = Construction
+creation_kind-cooking = Cooking
+creation_kind-craft = Craft
+creation_kind-smith = Smith
+
 # MedicalEffect
 
 medical_effect-none = No effect

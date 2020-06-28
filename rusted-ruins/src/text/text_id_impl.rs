@@ -59,6 +59,7 @@ impl ToTextId for SkillKind {
             Carrying => "skill_kind-carrying",
             MagicDevice => "skill_kind-magic_device",
             Weapon(weapon_kind) => weapon_kind.to_textid(),
+            Creation(creation_kind) => creation_kind.to_textid(),
         }
     }
 }
@@ -84,6 +85,20 @@ impl ToTextId for ArmorKind {
         match self {
             Body => "armor_kind-body",
             Shield => "armor_kind-shield",
+        }
+    }
+}
+
+impl ToTextId for CreationKind {
+    fn to_textid(&self) -> &'static str {
+        use CreationKind::*;
+        match self {
+            Art => "creation_kind-art",
+            Construction => "creation_kind-construction",
+            Cooking => "creation_kind-cooking",
+            Craft => "creation_kind-craft",
+            Pharmacy => "creation_kind-pharmacy",
+            Smith => "creation_kind-smith",
         }
     }
 }

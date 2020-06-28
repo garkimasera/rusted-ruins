@@ -48,7 +48,7 @@ impl<T> IndexMut<Element> for ElementArray<T> {
 #[serde(transparent)]
 pub struct ElementProtection(i8);
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SkillBonus {
     None,
@@ -66,9 +66,14 @@ impl Default for SkillBonus {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Serialize, Deserialize)]
 pub enum CreationKind {
+    Art,
+    Construction,
     Cooking,
+    Craft,
+    Pharmacy,
+    Smith,
 }
 
 /// A recipe for creation

@@ -360,9 +360,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 }
             }
             Command::OpenCreationWin => {
-                self.push_dialog_window(Box::new(creation_window::CreationWindow::new(
-                    CreationKind::Cooking,
-                )));
+                let dialog = Box::new(creation_window::create_creation_window_group(
+                    pa.game(),
+                    None,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::OpenExitWin => {
                 self.push_dialog_window(Box::new(exit_window::ExitWindow::new()));

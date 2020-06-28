@@ -1,3 +1,4 @@
+use super::defs::CreationKind;
 use super::item::WeaponKind;
 use fnv::FnvHashMap;
 use std::str::FromStr;
@@ -14,6 +15,7 @@ pub enum SkillKind {
     MagicDevice,
     BareHands,
     Weapon(WeaponKind),
+    Creation(CreationKind),
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Error)]
@@ -39,6 +41,12 @@ impl FromStr for SkillKind {
             "bow" => SkillKind::Weapon(WeaponKind::Bow),
             "cross_bow" => SkillKind::Weapon(WeaponKind::Crossbow),
             "fire_arm" => SkillKind::Weapon(WeaponKind::Firearm),
+            "art" => SkillKind::Creation(CreationKind::Art),
+            "construction" => SkillKind::Creation(CreationKind::Construction),
+            "cooking" => SkillKind::Creation(CreationKind::Cooking),
+            "craft" => SkillKind::Creation(CreationKind::Craft),
+            "pharmacy" => SkillKind::Creation(CreationKind::Pharmacy),
+            "smith" => SkillKind::Creation(CreationKind::Smith),
             _ => {
                 return Err(SkillKindParseError(s.to_owned()));
             }
