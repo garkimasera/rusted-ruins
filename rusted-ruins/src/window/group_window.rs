@@ -218,16 +218,9 @@ impl Window for TabsNavigator {
 
             if self.i as i32 != i {
                 // Draw horizontal border
-                context.canvas.set_draw_color(border_dark);
-                try_sdl!(context.canvas.draw_line((i * w, h), ((i + 1) * w, h)));
-                context.canvas.set_draw_color(border_light);
-                try_sdl!(context
-                    .canvas
-                    .draw_line((i * w, h + 1), ((i + 1) * w, h + 1)));
-                context.canvas.set_draw_color(border_dark);
-                try_sdl!(context
-                    .canvas
-                    .draw_line((i * w + 1, h + 2), ((i + 1) * w + 1, h + 2)));
+                context.draw_line((i * w, h), ((i + 1) * w, h), border_dark);
+                context.draw_line((i * w, h + 1), ((i + 1) * w, h + 1), border_light);
+                context.draw_line((i * w + 1, h + 2), ((i + 1) * w + 1, h + 2), border_dark);
 
                 // Make rendered text and icon dark if not selected
                 context.render_tex(
@@ -242,18 +235,9 @@ impl Window for TabsNavigator {
             }
 
             // Draw vertical border
-            context.canvas.set_draw_color(border_dark);
-            try_sdl!(context
-                .canvas
-                .draw_line(((i + 1) * w - 1, 0), ((i + 1) * w - 1, h + 1)));
-            context.canvas.set_draw_color(border_light);
-            try_sdl!(context
-                .canvas
-                .draw_line(((i + 1) * w, 0), ((i + 1) * w, h + 1)));
-            context.canvas.set_draw_color(border_dark);
-            try_sdl!(context
-                .canvas
-                .draw_line(((i + 1) * w + 1, 0), ((i + 1) * w + 1, h + 1)));
+            context.draw_line(((i + 1) * w - 1, 0), ((i + 1) * w - 1, h + 1), border_dark);
+            context.draw_line(((i + 1) * w, 0), ((i + 1) * w, h + 1), border_light);
+            context.draw_line(((i + 1) * w + 1, 0), ((i + 1) * w + 1, h + 1), border_dark);
         }
     }
 }

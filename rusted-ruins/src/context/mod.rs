@@ -118,4 +118,14 @@ impl<'a, 'b, 't, 'sdl> Context<'a, 'b, 't, 'sdl> {
         self.canvas.set_draw_color(color.into());
         try_sdl!(self.canvas.fill_rect(rect.into()))
     }
+
+    pub fn draw_line<P: Into<sdl2::rect::Point>, T: Into<Color>>(
+        &mut self,
+        p0: P,
+        p1: P,
+        color: T,
+    ) {
+        self.canvas.set_draw_color(color.into());
+        try_sdl!(self.canvas.draw_line(p0, p1));
+    }
 }
