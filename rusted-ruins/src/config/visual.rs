@@ -70,6 +70,10 @@ pub struct UIColorConfig {
     pub border_highlight_dark: CfgColor,
     pub border_highlight_light: CfgColor,
     pub border_light: CfgColor,
+    pub button_normal_bg: CfgColor,
+    pub button_normal_bg_covered: CfgColor,
+    pub button_normal_border_dark: CfgColor,
+    pub button_normal_border_light: CfgColor,
     pub gauge_bg: CfgColor,
     pub gauge_border_dark: CfgColor,
     pub gauge_border_light: CfgColor,
@@ -185,6 +189,7 @@ pub struct CreationDetailDialogConfig {
     pub column_pos: Vec<i32>,
     pub list_margin: i32,
     pub product_name: CfgRect,
+    pub start_button_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

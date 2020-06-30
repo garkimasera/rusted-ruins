@@ -7,6 +7,10 @@ border_dark = { r=131, g=85, b=53 }
 border_highlight_dark = { r=210, g=160, b=12 }
 border_highlight_light = { r=250, g=220, b=12 }
 border_light = { r=209, g=136, b=84 }
+button_normal_bg = { r=4, g=10, b=20 }
+button_normal_bg_covered = { r=39, g=40, b=42 }
+button_normal_border_dark = { r=131, g=85, b=53 }
+button_normal_border_light = { r=210, g=160, b=12 }
 gauge_bg = { r=7, g=7, b =7 }
 gauge_border_dark = { r=153, g=116, b =20 }
 gauge_border_light = { r=229, g=211, b =4 }
@@ -19,10 +23,10 @@ log_font = { r=250, g=250, b=250 }
 log_window_bg = { r=20, g=4, b=4 }
 normal_font = { r=250, g=250, b=250 }
 sidebar_bg = { r=20, g=4, b=4 }
-vscroll_border = { r=0, g=69, b=140 }
-vscroll_border_inner = { r=0, g=46, b=94 }
-vscroll_knob = { r=34, g=40, b=60 }
-vscroll_knob_border = { r=0, g=117, b=225 }
+vscroll_border = { r=140, g=76, b=0 }
+vscroll_border_inner = { r=94, g=51, b=0 }
+vscroll_knob = { r=39, g=40, b=42 }
+vscroll_knob_border = { r=218, g=129, b=22 }
 window_bg = { r=4, g=10, b=20 }
 window_bg_highlight = { r=34, g=40, b=60 }
 
@@ -80,6 +84,7 @@ n_row = 7
 column_pos = [1, 50, 420]
 list_margin = 26
 product_name = { x = 2, y = 2 }
+start_button_rect = { x = 40, y = 265, w = 80, h = 30 }
 
 [item_window]
 rect = { x = -999, y = -999, w = 520, h = 286 }
