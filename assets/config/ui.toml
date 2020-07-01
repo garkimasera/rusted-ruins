@@ -81,10 +81,11 @@ column_pos = [1, 50]
 [creation_detail_dialog]
 rect = { x = -999, y = -999, w = 450, h = 300 }
 n_row = 7
-column_pos = [1, 50, 420]
+column_pos = [1, 50, 400]
 list_margin = 26
 product_name = { x = 2, y = 2 }
-start_button_rect = { x = 40, y = 265, w = 80, h = 30 }
+start_button_rect = { x = 60, y = 265, w = 100, h = 30 }
+cancel_button_rect = { x = 290, y = 265, w = 100, h = 30 }
 
 [item_window]
 rect = { x = -999, y = -999, w = 520, h = 286 }

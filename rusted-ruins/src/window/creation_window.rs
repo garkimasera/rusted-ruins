@@ -3,8 +3,8 @@ use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_window_border;
-use crate::text::{obj_txt, ToText};
-use common::gamedata::{CreationKind, GameData, ItemLocation, Recipe};
+use crate::text::obj_txt;
+use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
 use rules::RULES;
@@ -166,9 +166,9 @@ pub struct CreationDetailDialog {
     rect: Rect,
     recipe: &'static Recipe,
     product_name: LabelWidget,
-    list: ListWidget<(IconIdx, TextCache, IconIdx)>,
-    il: Vec<Option<ItemLocation>>,
-    possible: bool,
+    start_button: Option<ButtonWidget>,
+    cancel_button: ButtonWidget,
+    list: ListWidget<(IconIdx, TextCache, TextCache)>,
     escape_click: bool,
 }
 
@@ -184,56 +184,54 @@ impl CreationDetailDialog {
             false,
         );
 
-        let icon_idx_ok: UIImgIdx = gobj::id_to_idx("!icon-ok");
-        let icon_idx_ng: UIImgIdx = gobj::id_to_idx("!icon-ng");
+        let item_list = gd.get_item_list(ItemListLocation::PLAYER);
+        let mut possible = true;
 
-        let autopicked_items = crate::game::creation::item_auto_pick(gd, recipe);
-        let mut list_items: Vec<(IconIdx, TextCache, IconIdx)> = autopicked_items
+        let list_items: Vec<(IconIdx, TextCache, TextCache)> = recipe
+            .ingredients
             .iter()
-            .enumerate()
-            .map(|(i, il)| {
-                if let Some(il) = il {
-                    let item = gd.get_item(*il);
-                    let text = TextCache::one(
-                        format!("{} x {}", item.0.to_text(), item.1),
-                        FontKind::M,
-                        UI_CFG.color.normal_font.into(),
-                    );
-                    (IconIdx::Item(item.0.idx), text, IconIdx::UIImg(icon_idx_ok))
-                } else {
-                    let ingredient_idx: ItemIdx = gobj::id_to_idx(&recipe.ingredients[i]);
-                    let text = TextCache::one(
-                        format!("{} x {}", obj_txt(&recipe.ingredients[i]), 0),
-                        FontKind::M,
-                        UI_CFG.color.normal_font.into(),
-                    );
-                    (
-                        IconIdx::Item(ingredient_idx),
-                        text,
-                        IconIdx::UIImg(icon_idx_ng),
-                    )
+            .map(|(item_id, n)| {
+                let idx: ItemIdx = gobj::id_to_idx(item_id);
+                let total = item_list.count(idx);
+                if total < *n {
+                    possible = false;
                 }
+                let item_name = TextCache::one(
+                    obj_txt(item_id),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                let item_n = TextCache::one(
+                    format!("{}/{}", total, n),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                (IconIdx::Item(idx), item_name, item_n)
             })
             .collect();
-        let possible = autopicked_items.iter().all(|a| a.is_some());
-        list_items.push((
-            IconIdx::UIImg(if possible { icon_idx_ok } else { icon_idx_ng }),
-            TextCache::one(
-                crate::text::ui_txt("creation.start"),
-                FontKind::M,
-                UI_CFG.color.normal_font.into(),
-            ),
-            IconIdx::UIImg(gobj::id_to_idx("!")),
-        ));
         list.set_items(list_items);
+        let start_button = if possible {
+            Some(ButtonWidget::new(
+                c.start_button_rect,
+                &crate::text::ui_txt("button_text-creation-start"),
+                FontKind::M,
+            ))
+        } else {
+            None
+        };
+        let cancel_button = ButtonWidget::new(
+            c.cancel_button_rect,
+            &crate::text::ui_txt("button_text-creation-cancel"),
+            FontKind::M,
+        );
 
         CreationDetailDialog {
             rect,
             recipe,
             product_name: LabelWidget::new(c.product_name, &obj_txt(&recipe.product), FontKind::M),
             list,
-            il: autopicked_items,
-            possible,
+            start_button,
+            cancel_button,
             escape_click: false,
         }
     }
@@ -244,6 +242,10 @@ impl Window for CreationDetailDialog {
         draw_window_border(context, self.rect);
         self.product_name.draw(context);
         self.list.draw(context);
+        if let Some(start_button) = self.start_button.as_mut() {
+            start_button.draw(context);
+        }
+        self.cancel_button.draw(context);
     }
 }
 
@@ -252,14 +254,21 @@ impl DialogWindow for CreationDetailDialog {
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);
-        if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
+        if let Some(ListWidgetResponse::Select(_)) = self.list.process_command(&command) {
             // Any item is selected
-            if self.possible && self.recipe.ingredients.len() as u32 == i {
-                let il: Vec<ItemLocation> = self.il.iter().map(|a| a.unwrap()).collect();
-                pa.start_creation(self.recipe, il);
+            return DialogResult::Continue;
+        }
+
+        if let Some(start_button) = self.start_button.as_mut() {
+            if let Some(_) = start_button.process_command(&command) {
+                // If start button is pressed, start creation.
+                pa.start_creation(self.recipe, ItemListLocation::PLAYER, false);
                 return DialogResult::CloseAll;
             }
-            return DialogResult::Continue;
+        }
+
+        if let Some(_) = self.cancel_button.process_command(&command) {
+            return DialogResult::Close;
         }
 
         match command {

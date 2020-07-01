@@ -169,7 +169,7 @@ pub enum CharaStatus {
 pub enum Work {
     Creation {
         recipe: Recipe,
-        ingredients: Vec<Item>,
+        ingredients: Vec<(Item, u32)>,
     },
     Harvest {
         item_idx: ItemIdx,

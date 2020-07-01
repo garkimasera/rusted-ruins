@@ -156,8 +156,13 @@ impl<'a> DoPlayerAction<'a> {
         self.0.request_dialog_open(req);
     }
 
-    pub fn start_creation(&mut self, recipe: &Recipe, il: Vec<ItemLocation>) {
-        super::creation::start_creation(self.0, recipe, il);
+    pub fn start_creation(
+        &mut self,
+        recipe: &Recipe,
+        ill: ItemListLocation,
+        prior_high_quality: bool,
+    ) {
+        super::creation::start_creation(self.0, recipe, ill, prior_high_quality);
         self.0.finish_player_turn();
     }
 

@@ -190,6 +190,7 @@ pub struct CreationDetailDialogConfig {
     pub list_margin: i32,
     pub product_name: CfgRect,
     pub start_button_rect: CfgRect,
+    pub cancel_button_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

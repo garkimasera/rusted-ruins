@@ -80,7 +80,7 @@ pub enum CreationKind {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Recipe {
     pub product: String,
-    pub ingredients: Vec<String>,
+    pub ingredients: Vec<(String, u32)>,
     pub facility: Option<String>,
     pub difficulty: u32,
     pub required_time: CreationRequiredTime,

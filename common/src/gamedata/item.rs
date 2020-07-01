@@ -248,6 +248,12 @@ pub enum ItemListLocation {
     Shop { cid: super::CharaId },
 }
 
+impl ItemListLocation {
+    pub const PLAYER: ItemListLocation = ItemListLocation::Chara {
+        cid: super::chara::CharaId::Player,
+    };
+}
+
 pub type ItemLocation = (ItemListLocation, u32);
 
 /// Item list that records all items owned by one character or one tile
