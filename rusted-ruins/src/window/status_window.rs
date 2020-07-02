@@ -56,7 +56,12 @@ impl StatusWindow {
         let rect: Rect = UI_CFG.info_window.rect.into();
         let chara = gd.chara.get(CharaId::Player);
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
-        let name_label = LabelWidget::new(cfg.name_label_rect, &chara.to_text(), FontKind::M);
+        let chara_name = if let Some(chara_name) = chara.name.clone() {
+            chara_name
+        } else {
+            chara.to_text().into()
+        };
+        let name_label = LabelWidget::new(cfg.name_label_rect, &chara_name, FontKind::M);
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect,
             &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
