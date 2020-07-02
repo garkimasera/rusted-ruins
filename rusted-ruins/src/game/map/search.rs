@@ -1,8 +1,27 @@
 //! Functions to search objects in a map
 
+use common::gamedata::*;
+
+/// Search specified facility item.
+pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a Item> {
+    let il = gd.get_item_list(ItemListLocation::PLAYER);
+    let mut facility_item = None;
+    let mut quality = std::i8::MIN;
+
+    for (item, _) in il.iter() {
+        if let Some((f, q)) = item.obj().facility.as_ref() {
+            if facility_type == f && *q > quality {
+                facility_item = Some(item);
+                quality = *q;
+            }
+        }
+    }
+
+    facility_item
+}
+
 /*
 use crate::game::view::calc_visual_distance;
-use common::gamedata::*;
 
 /// Search the nearest chara's position that has given Relationship on the current map.
 pub fn search_nearest_target(

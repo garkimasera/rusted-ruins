@@ -186,6 +186,15 @@ impl CreationDetailDialog {
 
         let item_list = gd.get_item_list(ItemListLocation::PLAYER);
         let mut possible = true;
+        let facility_item = if let Some(facility_type) = recipe.facility.as_ref() {
+            let facility_item = crate::game::map::search::search_facility(gd, &facility_type);
+            if facility_item.is_none() {
+                possible = false;
+            }
+            facility_item
+        } else {
+            None
+        };
 
         let list_items: Vec<(IconIdx, TextCache, TextCache)> = recipe
             .ingredients

@@ -52,8 +52,8 @@ pub struct ItemObject {
     pub charge: [u8; 2],
     /// For harvestable items
     pub harvest: Option<Harvest>,
-    /// Facility type for creation
-    pub facility: Option<String>,
+    /// Facility type for creation and additional quality.
+    pub facility: Option<(String, i8)>,
 }
 
 impl Ord for Item {
