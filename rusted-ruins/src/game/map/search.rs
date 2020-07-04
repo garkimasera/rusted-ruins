@@ -1,6 +1,8 @@
 //! Functions to search objects in a map
 
+use crate::game::InfoGetter;
 use common::gamedata::*;
+use geom::*;
 
 /// Search specified facility item.
 pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a Item> {
@@ -8,11 +10,34 @@ pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a 
     let mut facility_item = None;
     let mut quality = std::i8::MIN;
 
+    // Search player character inventory.
     for (item, _) in il.iter() {
         if let Some((f, q)) = item.obj().facility.as_ref() {
             if facility_type == f && *q > quality {
                 facility_item = Some(item);
                 quality = *q;
+            }
+        }
+    }
+
+    let player_pos = gd.player_pos();
+    let rect_iter = RectIter::new(player_pos + (-1, -1), player_pos + (1, 1));
+    let map = gd.get_current_map();
+    let mid = gd.get_current_mapid();
+
+    // Search player surrounding tiles.
+    for pos in rect_iter {
+        if !map.is_inside(pos) {
+            continue;
+        }
+        let ill = ItemListLocation::OnMap { mid, pos };
+        let il = gd.get_item_list(ill);
+        for (item, _) in il.iter() {
+            if let Some((f, q)) = item.obj().facility.as_ref() {
+                if facility_type == f && *q > quality {
+                    facility_item = Some(item);
+                    quality = *q;
+                }
             }
         }
     }
