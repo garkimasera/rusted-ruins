@@ -3,7 +3,7 @@ use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_window_border;
-use crate::text::obj_txt;
+use crate::text::{misc_txt, obj_txt, ui_txt, ToText};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -170,6 +170,8 @@ pub struct CreationDetailDialog {
     cancel_button: ButtonWidget,
     list: ListWidget<(IconIdx, TextCache, TextCache)>,
     escape_click: bool,
+    facility_ok_icon: ImageWidget,
+    facility_label: LabelWidget,
 }
 
 impl CreationDetailDialog {
@@ -222,7 +224,7 @@ impl CreationDetailDialog {
         let start_button = if possible {
             Some(ButtonWidget::new(
                 c.start_button_rect,
-                &crate::text::ui_txt("button_text-creation-start"),
+                &ui_txt("button_text-creation-start"),
                 FontKind::M,
             ))
         } else {
@@ -230,9 +232,33 @@ impl CreationDetailDialog {
         };
         let cancel_button = ButtonWidget::new(
             c.cancel_button_rect,
-            &crate::text::ui_txt("button_text-creation-cancel"),
+            &ui_txt("button_text-creation-cancel"),
             FontKind::M,
         );
+
+        let icon_id = if facility_item.is_some() || recipe.facility.is_none() {
+            "!icon-ok"
+        } else {
+            "!icon-ng"
+        };
+        let facility_ok_icon = ImageWidget::ui_img(c.facility_ok_icon_rect, icon_id);
+        let label = if let Some(facility_item) = facility_item {
+            format!(
+                "{}: {}",
+                ui_txt("label_text-creation-use-facility"),
+                facility_item.to_text()
+            )
+        } else if let Some(facility_name) = recipe.facility.as_ref() {
+            let text_id = format!("facility-{}", facility_name);
+            format!(
+                "{}: {}",
+                ui_txt("label_text-creation-required-facility"),
+                misc_txt(&text_id),
+            )
+        } else {
+            ui_txt("label_text-creation-no-required-facility")
+        };
+        let facility_label = LabelWidget::new(c.facility_label_rect, &label, FontKind::M);
 
         CreationDetailDialog {
             rect,
@@ -242,6 +268,8 @@ impl CreationDetailDialog {
             start_button,
             cancel_button,
             escape_click: false,
+            facility_ok_icon,
+            facility_label,
         }
     }
 }
@@ -251,6 +279,8 @@ impl Window for CreationDetailDialog {
         draw_window_border(context, self.rect);
         self.product_name.draw(context);
         self.list.draw(context);
+        self.facility_ok_icon.draw(context);
+        self.facility_label.draw(context);
         if let Some(start_button) = self.start_button.as_mut() {
             start_button.draw(context);
         }

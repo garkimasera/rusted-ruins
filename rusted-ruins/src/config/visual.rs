@@ -189,6 +189,8 @@ pub struct CreationDetailDialogConfig {
     pub column_pos: Vec<i32>,
     pub list_margin: i32,
     pub product_name: CfgRect,
+    pub facility_ok_icon_rect: CfgRect,
+    pub facility_label_rect: CfgRect,
     pub start_button_rect: CfgRect,
     pub cancel_button_rect: CfgRect,
 }

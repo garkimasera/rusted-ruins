@@ -14,3 +14,6 @@ tab_text-item_use = Use
 tab_text-item_release = Release
 button_text-creation-cancel = Cancel
 button_text-creation-start = Start
+label_text-creation-use-facility = Facility to use
+label_text-creation-required-facility = Required facility
+label_text-creation-no-required-facility = No required facility
