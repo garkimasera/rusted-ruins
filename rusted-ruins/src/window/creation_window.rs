@@ -172,6 +172,8 @@ pub struct CreationDetailDialog {
     escape_click: bool,
     facility_ok_icon: ImageWidget,
     facility_label: LabelWidget,
+    enough_ingredients_icon: ImageWidget,
+    enough_ingredients_label: LabelWidget,
 }
 
 impl CreationDetailDialog {
@@ -198,6 +200,7 @@ impl CreationDetailDialog {
             None
         };
 
+        let mut enough_ingredients = true;
         let list_items: Vec<(IconIdx, TextCache, TextCache)> = recipe
             .ingredients
             .iter()
@@ -206,6 +209,7 @@ impl CreationDetailDialog {
                 let total = item_list.count(idx);
                 if total < *n {
                     possible = false;
+                    enough_ingredients = false;
                 }
                 let item_name = TextCache::one(
                     obj_txt(item_id),
@@ -260,6 +264,19 @@ impl CreationDetailDialog {
         };
         let facility_label = LabelWidget::new(c.facility_label_rect, &label, FontKind::M);
 
+        let (enough_ingredients_icon, enough_ingredients_label) = if enough_ingredients {
+            ("!icon-ok", "label_text-creation-enough-ingredients")
+        } else {
+            ("!icon-ng", "label_text-creation-not-enough-ingredients")
+        };
+        let enough_ingredients_icon =
+            ImageWidget::ui_img(c.enough_ingredients_icon_rect, enough_ingredients_icon);
+        let enough_ingredients_label = LabelWidget::new(
+            c.enough_ingredients_label_rect,
+            &ui_txt(enough_ingredients_label),
+            FontKind::M,
+        );
+
         CreationDetailDialog {
             rect,
             recipe,
@@ -270,6 +287,8 @@ impl CreationDetailDialog {
             escape_click: false,
             facility_ok_icon,
             facility_label,
+            enough_ingredients_icon,
+            enough_ingredients_label,
         }
     }
 }
@@ -281,6 +300,8 @@ impl Window for CreationDetailDialog {
         self.list.draw(context);
         self.facility_ok_icon.draw(context);
         self.facility_label.draw(context);
+        self.enough_ingredients_icon.draw(context);
+        self.enough_ingredients_label.draw(context);
         if let Some(start_button) = self.start_button.as_mut() {
             start_button.draw(context);
         }
