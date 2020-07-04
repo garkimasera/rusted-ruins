@@ -10,6 +10,10 @@ dungeon_kind-ruin = 遺跡
 chara_status-hungry = 空腹
 chara_status-weak = 衰弱
 chara_status-starving = 飢え
+chara_status-burdened = 重荷
+chara_status-stressed = 圧迫
+chara_status-strained = 超過
+chara_status-overloaded = 潰れ中
 chara_status-asleep = 睡眠
 chara_status-poisoned = 毒
 
