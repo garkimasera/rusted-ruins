@@ -7,7 +7,7 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 [dependencies]
 anyhow = "1"
 clap = "2"
-dirs = "2"
+dirs = "3"
 env_logger = "0.7"
 fluent = "0.12"
 fnv = "1"
