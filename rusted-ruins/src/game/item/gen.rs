@@ -103,6 +103,12 @@ pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
         attributes: vec![],
     };
 
+    let item = if item_obj.titles.is_empty() {
+        item
+    } else {
+        gen_readable_item(item, item_obj)
+    };
+
     match item_obj.kind {
         ItemKind::MagicDevice => gen_magic_device(item, item_obj),
         _ => item,
@@ -113,5 +119,13 @@ pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
 fn gen_magic_device(mut item: Item, item_obj: &ItemObject) -> Item {
     let charge_n: u32 = rng::gen_range_inclusive(item_obj.charge[0], item_obj.charge[1]).into();
     item.attributes.push(ItemAttribute::Charge { n: charge_n });
+    item
+}
+
+/// Generate a readable item
+fn gen_readable_item(mut item: Item, item_obj: &ItemObject) -> Item {
+    use rand::prelude::*;
+    let title = item_obj.titles.choose(&mut rng::GameRng).cloned().unwrap();
+    item.attributes.push(ItemAttribute::Title(title));
     item
 }

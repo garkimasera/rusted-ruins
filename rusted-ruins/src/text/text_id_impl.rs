@@ -41,6 +41,7 @@ impl ToTextId for ItemKind {
             Tool => "item_kind-tool",
             Container => "item_kind-container",
             Special => "item_kind-special",
+            Readable => "item_kind-readable",
             Material => "item_kind-material",
             Object => "item_kind-object",
         }

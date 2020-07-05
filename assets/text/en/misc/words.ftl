@@ -31,6 +31,7 @@ item_kind-magic_device = Magic Device
 item_kind-tool = Tool
 item_kind-container = Container
 item_kind-special = Special
+item_kind-readable = Readable
 item_kind-material = Material
 item_kind-object = Object
 

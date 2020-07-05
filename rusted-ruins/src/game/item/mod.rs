@@ -16,6 +16,7 @@ pub trait ItemEx {
     fn w(&self) -> u32;
     fn charge(&self) -> Option<u32>;
     fn charge_mut(&mut self) -> Option<&mut u32>;
+    fn title(&self) -> Option<&str>;
 }
 
 impl ItemEx for Item {
@@ -52,6 +53,18 @@ impl ItemEx for Item {
             match attr {
                 ItemAttribute::Charge { n } => {
                     return Some(n);
+                }
+                _ => (),
+            }
+        }
+        None
+    }
+
+    fn title(&self) -> Option<&str> {
+        for attr in &self.attributes {
+            match attr {
+                ItemAttribute::Title(title) => {
+                    return Some(title);
                 }
                 _ => (),
             }

@@ -38,6 +38,11 @@ impl ToText for Item {
         if let Some(n) = self.charge() {
             text = format!("{} ({} : {})", text, ui_txt("item-charges"), n).into();
         }
+
+        if let Some(title) = self.title() {
+            text = format!("{} <{}>", text, title).into();
+        }
+
         text
     }
 }

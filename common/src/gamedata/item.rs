@@ -54,6 +54,8 @@ pub struct ItemObject {
     pub harvest: Option<Harvest>,
     /// Facility type for creation and additional quality.
     pub facility: Option<(String, i8)>,
+    /// Available titles for readable items.
+    pub titles: Vec<String>,
 }
 
 impl Ord for Item {
@@ -120,6 +122,8 @@ pub enum ItemKind {
     Container,
     /// Other items that have some effects.
     Special,
+    /// Readable books or other items.
+    Readable,
     /// Usable to create other items.
     Material,
     /// Other items that might not have effects, but have some price.
@@ -137,6 +141,7 @@ pub enum ItemKindRough {
     Tool,
     Container,
     Special,
+    Readable,
     Material,
     Object,
 }
@@ -152,6 +157,7 @@ impl ItemKind {
             ItemKind::Tool => ItemKindRough::Tool,
             ItemKind::Container => ItemKindRough::Container,
             ItemKind::Special => ItemKindRough::Special,
+            ItemKind::Readable => ItemKindRough::Readable,
             ItemKind::Material => ItemKindRough::Material,
             ItemKind::Object => ItemKindRough::Object,
         }
@@ -203,6 +209,8 @@ pub enum ItemAttribute {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },
+    /// Title for readable item.
+    Title(String),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]

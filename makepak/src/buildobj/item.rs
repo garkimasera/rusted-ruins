@@ -18,6 +18,7 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
         "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
         "tool" => ItemKind::Tool,
+        "readable" => ItemKind::Readable,
         "material" => ItemKind::Material,
         "special" => ItemKind::Special,
         _ => {
@@ -51,5 +52,6 @@ pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
         charge: item.charge,
         harvest: item.harvest,
         facility: item.facility,
+        titles: item.titles,
     })
 }

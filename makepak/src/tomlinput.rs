@@ -118,6 +118,8 @@ pub struct ItemDepInput {
     pub charge: [u8; 2],
     pub harvest: Option<Harvest>,
     pub facility: Option<(String, i8)>,
+    #[serde(default)]
+    pub titles: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]

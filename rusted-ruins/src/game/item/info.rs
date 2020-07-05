@@ -55,6 +55,7 @@ impl ItemInfoText {
             ItemKind::Tool => {}
             ItemKind::Container => {}
             ItemKind::Special => {}
+            ItemKind::Readable => {}
             ItemKind::Material => {}
             ItemKind::Object => {}
         }
