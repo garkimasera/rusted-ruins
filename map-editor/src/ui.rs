@@ -82,7 +82,7 @@ macro_rules! get_object {
 
 pub fn build_ui(application: &gtk::Application) {
     // Get widgets from glade file
-    let builder = gtk::Builder::new_from_string(include_str!("ui.glade"));
+    let builder = gtk::Builder::from_string(include_str!("ui.glade"));
 
     let ui = Ui {
         window: get_object!(builder, "window1"),
@@ -139,7 +139,7 @@ pub fn build_ui(application: &gtk::Application) {
     {
         let uic = ui.clone();
         ui.window.connect_delete_event(move |_, _| {
-            uic.window.destroy();
+            uic.window.close();
             Inhibit(false)
         });
     }
@@ -220,7 +220,12 @@ pub fn build_ui(application: &gtk::Application) {
                 let width = uic.adjustment_map_width.get_value() as u32;
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.reset_map_size(width, height);
-                let new_map_id = uic.new_map_id.get_text().unwrap_or("newmap".into());
+                let new_map_id: String = uic.new_map_id.get_text().into();
+                let new_map_id = if new_map_id == "" {
+                    "newmap".to_owned()
+                } else {
+                    new_map_id
+                };
                 let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
                 uic.set_signal_mode(false);
@@ -297,7 +302,7 @@ pub fn build_ui(application: &gtk::Application) {
         // Menu (quit)
         let uic = ui.clone();
         menu_quit.connect_activate(move |_| {
-            uic.window.destroy();
+            uic.window.close();
         });
     }
     {
@@ -343,7 +348,7 @@ pub fn build_ui(application: &gtk::Application) {
     }
     {
         // Key press
-        use gdk::enums::key::{Shift_L, Shift_R};
+        use gdk::keys::constants::{Shift_L, Shift_R};
         let uic = ui.clone();
         ui.window.connect_key_press_event(move |_, event_key| {
             let keyval = event_key.get_keyval();
@@ -503,11 +508,11 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
     file_chooser.add_filter(&create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
-        file_chooser.destroy();
+        file_chooser.close();
         ui.map_redraw();
         return Some(filename);
     }
-    file_chooser.destroy();
+    file_chooser.close();
     None
 }
 
@@ -524,10 +529,10 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
     file_chooser.add_filter(&create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.get_filename().expect("Couldn't get filename");
-        file_chooser.destroy();
+        file_chooser.close();
         return Some(filename);
     }
-    file_chooser.destroy();
+    file_chooser.close();
     None
 }
 
@@ -658,7 +663,7 @@ fn show_err_dialog(ui: &Ui, msg: &str) {
     );
     dialog.show();
     dialog.run();
-    dialog.destroy();
+    dialog.close();
 }
 
 impl Ui {

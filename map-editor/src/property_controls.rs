@@ -138,7 +138,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
     let uic = ui.clone();
     ui.property_controls.map_id.connect_changed(move |widget| {
         if uic.get_signal_mode() {
-            let text = widget.get_text().unwrap_or("".into());
+            let text = widget.get_text();
             uic.map.borrow_mut().property.id = text.into();
         }
     });
@@ -160,7 +160,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
         .entrance_pos
         .connect_changed(move |widget| {
             if uic.get_signal_mode() {
-                let text = widget.get_text().unwrap_or("".into());
+                let text = widget.get_text();
                 uic.map.borrow_mut().property.entrance.clear();
                 if let Ok(entrance) = text.parse::<Vec2d>() {
                     uic.map.borrow_mut().property.entrance.push(entrance);
@@ -320,12 +320,12 @@ fn connect_for_tile_edit_controls(ui: &Ui) {
         .connect_changed(move |widget| {
             if uic.get_signal_mode() {
                 let text = widget.get_text();
-                let item_gen = if text.is_none() || text.as_ref().unwrap() == "" {
+                let item_gen = if text == "" {
                     None
                 } else {
                     use common::gamedata::ItemGen;
                     Some(ItemGen {
-                        id: text.unwrap().to_owned(),
+                        id: text.to_owned(),
                     })
                 };
                 uic.map
