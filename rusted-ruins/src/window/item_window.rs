@@ -22,6 +22,7 @@ pub enum ItemWindowMode {
     Eat,
     Use,
     Release,
+    Read,
     ShopSell,
     ShopBuy {
         cid: CharaId,
@@ -42,7 +43,7 @@ pub struct ItemWindow {
     info_label: LabelWidget,
 }
 
-const STATUS_WINDOW_GROUP_SIZE: u32 = 6;
+const ITEM_WINDOW_GROUP_SIZE: u32 = 7;
 
 pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
     let mem_info = vec![
@@ -76,6 +77,11 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
             text_id: "tab_text-item_release",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Release, game)),
         },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-read"),
+            text_id: "tab_text-item_read",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Read, game)),
+        },
     ];
     let rect: Rect = UI_CFG.item_window.rect.into();
     let i = match mode {
@@ -84,16 +90,11 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
         ItemWindowMode::Drink => 2,
         ItemWindowMode::Eat => 3,
         ItemWindowMode::Release => 4,
+        ItemWindowMode::Read => 5,
         _ => unreachable!(),
     };
 
-    GroupWindow::new(
-        STATUS_WINDOW_GROUP_SIZE,
-        i,
-        game,
-        mem_info,
-        (rect.x, rect.y),
-    )
+    GroupWindow::new(ITEM_WINDOW_GROUP_SIZE, i, game, mem_info, (rect.x, rect.y))
 }
 
 impl ItemWindow {
@@ -184,6 +185,14 @@ impl ItemWindow {
                     ill_ground,
                     ill_player,
                     ItemFilter::new().kind_rough(ItemKindRough::MagicDevice),
+                );
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Read => {
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().readable(true),
                 );
                 self.update_list(filtered_list);
             }
@@ -293,6 +302,7 @@ impl ItemWindow {
                 pa.release_item(il);
                 DialogResult::CloseAll
             }
+            ItemWindowMode::Read => DialogResult::CloseAll,
             ItemWindowMode::ShopBuy { .. } => {
                 pa.buy_item(il);
                 self.update_by_mode(pa.gd());

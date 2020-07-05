@@ -6,4 +6,4 @@ tab_text-item_drink = 飲む
 tab_text-item_eat = 食べる
 tab_text-item_use = 使う
 tab_text-item_release = 解放
-
+tab_text-item_read = 読む

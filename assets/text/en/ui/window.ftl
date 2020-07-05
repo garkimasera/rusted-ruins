@@ -12,6 +12,7 @@ tab_text-item_drink = Drink
 tab_text-item_eat = Eat
 tab_text-item_use = Use
 tab_text-item_release = Release
+tab_text-item_read = Read
 button_text-creation-cancel = Cancel
 button_text-creation-start = Start
 label_text-creation-use-facility = Facility to use

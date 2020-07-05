@@ -1,4 +1,5 @@
 use super::merged::*;
+use super::ItemEx;
 use common::gamedata::*;
 use common::gobj;
 
@@ -12,6 +13,7 @@ pub struct ItemFilter {
     pub eatable: bool,
     pub drinkable: bool,
     pub usable: bool,
+    pub readable: bool,
 }
 
 impl ItemFilter {
@@ -60,6 +62,10 @@ impl ItemFilter {
             return false;
         }
 
+        if self.readable && item.title().is_none() {
+            return false;
+        }
+
         true
     }
 
@@ -92,6 +98,11 @@ impl ItemFilter {
         self.usable = usable;
         self
     }
+
+    pub fn readable(mut self, readable: bool) -> ItemFilter {
+        self.readable = readable;
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -104,6 +115,7 @@ impl Default for ItemFilter {
             eatable: false,
             drinkable: false,
             usable: false,
+            readable: false,
         }
     }
 }
