@@ -1,3 +1,4 @@
+pub mod readable;
 mod text_id_impl;
 mod to_text;
 
@@ -18,6 +19,7 @@ pub fn init() {
     initialize(&UI_BUNDLE);
     initialize(&TALK_BUNDLE);
     initialize(&MISC_BUNDLE);
+    initialize(&READABLE_BUNDLE);
 }
 
 lazy_static! {
@@ -26,6 +28,7 @@ lazy_static! {
     static ref UI_BUNDLE: Bundle = Bundle::load(basic::UI_TXT_DIR);
     static ref TALK_BUNDLE: Bundle = Bundle::load(basic::TALK_TXT_DIR);
     static ref MISC_BUNDLE: Bundle = Bundle::load(basic::MISC_TXT_DIR);
+    static ref READABLE_BUNDLE: Bundle = Bundle::load(basic::READABLE_TXT_DIR);
 }
 
 struct Bundle {

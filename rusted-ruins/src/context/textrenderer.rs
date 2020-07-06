@@ -14,6 +14,8 @@ pub enum FontKind {
     M,
     /// For small UI texts
     S,
+    /// For talk or book texts
+    Talk,
     /// For monospace texts. This font may include ascii characters only
     MonoM,
 }
@@ -22,6 +24,7 @@ pub struct TextRenderer<'sdl> {
     font_s: Font<'sdl, 'static>,
     font_m: Font<'sdl, 'static>,
     font_log: Font<'sdl, 'static>,
+    font_talk: Font<'sdl, 'static>,
     font_mono_m: Font<'sdl, 'static>,
 }
 
@@ -44,6 +47,7 @@ impl<'sdl> TextRenderer<'sdl> {
             font_s: f(&font.s),
             font_m: f(&font.m),
             font_log: f(&font.log),
+            font_talk: f(&font.talk),
             font_mono_m: sdl_context
                 .ttf_context
                 .load_font(&font_path(&FONT_CFG.mono_font), font.m.size)
@@ -81,6 +85,7 @@ impl<'sdl> TextRenderer<'sdl> {
             FontKind::Log => &self.font_log,
             FontKind::S => &self.font_s,
             FontKind::M => &self.font_m,
+            FontKind::Talk => &self.font_talk,
             FontKind::MonoM => &self.font_mono_m,
         }
     }

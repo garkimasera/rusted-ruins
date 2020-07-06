@@ -38,6 +38,7 @@ pub const LOG_TXT_DIR: &'static str = "log";
 pub const UI_TXT_DIR: &'static str = "ui";
 pub const TALK_TXT_DIR: &'static str = "talk";
 pub const MISC_TXT_DIR: &'static str = "misc";
+pub const READABLE_TXT_DIR: &'static str = "readable";
 pub const SAVE_DIR_NAME: &'static str = "save";
 pub const SAVE_EXTENSION: &'static str = "rrsve";
 

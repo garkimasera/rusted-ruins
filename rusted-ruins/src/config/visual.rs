@@ -39,6 +39,7 @@ pub struct UIConfig {
     pub exit_window: ExitWindowConfig,
     pub help_window: HelpWindowConfig,
     pub talk_window: TalkWindowConfig,
+    pub read_window: ReadWindowConfig,
     pub start_dialog: StartDialogConfig,
     pub msg_dialog: MsgDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
@@ -108,6 +109,8 @@ pub struct Font {
     pub s: FontConfig,
     /// Mediam size text
     pub m: FontConfig,
+    /// For talk or book texts
+    pub talk: FontConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -136,6 +139,12 @@ pub struct TalkWindowConfig {
     pub image_window_pos_x: i32,
     /// Relative position to parent talk window
     pub image_window_pos_y: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ReadWindowConfig {
+    pub rect: CfgRect,
+    pub text_wrap_width: u32,
 }
 
 #[derive(Debug, Deserialize)]

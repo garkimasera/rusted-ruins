@@ -19,6 +19,7 @@ mod msg_dialog;
 mod newgame_window;
 mod progress_bar;
 mod quest_window;
+mod read_window;
 mod sidebar;
 mod start_window;
 mod status_window;

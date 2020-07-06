@@ -1,6 +1,7 @@
 use super::item_info_window;
 use super::item_window::*;
 use super::msg_dialog;
+use super::read_window;
 use super::talk_window;
 use super::DialogWindow;
 use crate::game::{DialogOpenRequest, Game, TalkText};
@@ -22,6 +23,7 @@ pub fn create_dialog_from_request(
         DialogOpenRequest::ItemInfo { il } => {
             Box::new(item_info_window::ItemInfoWindow::new(il, game))
         }
+        DialogOpenRequest::Read { title } => Box::new(read_window::ReadWindow::new(&title)),
         DialogOpenRequest::ShopBuy { cid } => {
             Box::new(ItemWindow::new(ItemWindowMode::ShopBuy { cid }, game))
         }
