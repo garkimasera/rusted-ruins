@@ -1,6 +1,6 @@
 use super::READABLE_BUNDLE;
 
-const NEW_PAGE_LINE: &str = "<new page>";
+const NEW_PAGE_LINE: &str = "<newpage>";
 
 pub fn readable_title_txt(id: &str) -> Option<String> {
     let id = format!("{}-title", id);
@@ -24,6 +24,10 @@ pub fn readable_txt(id: &str) -> Vec<String> {
         } else {
             v.push(std::mem::replace(&mut s, String::new()));
         }
+    }
+
+    if !s.is_empty() {
+        v.push(s);
     }
 
     v

@@ -40,7 +40,9 @@ impl ToText for Item {
         }
 
         if let Some(title) = self.title() {
-            text = format!("{} <{}>", text, title).into();
+            if let Some(title) = super::readable::readable_title_txt(title) {
+                text = format!("{} <{}>", text, title).into();
+            }
         }
 
         text

@@ -7,7 +7,8 @@ use sdl2::rect::Rect;
 /// Simple label widget.
 pub struct ButtonWidget {
     rect: Rect,
-    cache: TextCache,
+    cache: Option<TextCache>,
+    icon: Option<IconIdx>,
     covered: bool,
     pressed: bool,
 }
@@ -18,7 +19,18 @@ impl ButtonWidget {
         let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
         ButtonWidget {
             rect,
-            cache,
+            cache: Some(cache),
+            icon: None,
+            covered: false,
+            pressed: false,
+        }
+    }
+
+    pub fn with_icon<R: Into<Rect>>(rect: R, icon: IconIdx) -> ButtonWidget {
+        ButtonWidget {
+            rect: rect.into(),
+            cache: None,
+            icon: Some(icon),
             covered: false,
             pressed: false,
         }
@@ -77,12 +89,22 @@ impl WidgetTrait for ButtonWidget {
         context.fill_rect((x + 2, y + 2, w - 4, h - 4), c_bg);
 
         // Draw text
-        let tex = context.sv.tt_one(&mut self.cache);
-        let w = tex.query().width;
-        let h = tex.query().height;
-        let x = self.rect.x + (self.rect.w - w as i32) / 2;
-        let y = self.rect.y + (self.rect.h - h as i32) / 2;
-        let dest = Rect::new(x, y, w, h);
-        try_sdl!(context.canvas.copy(tex, None, dest));
+        if let Some(cache) = self.cache.as_mut() {
+            let tex = context.sv.tt_one(cache);
+            let w = tex.query().width;
+            let h = tex.query().height;
+            let x = self.rect.x + (self.rect.w - w as i32) / 2;
+            let y = self.rect.y + (self.rect.h - h as i32) / 2;
+            let dest = Rect::new(x, y, w, h);
+            try_sdl!(context.canvas.copy(tex, None, dest));
+        } else if let Some(icon) = self.icon {
+            let (tex, orig) = context.sv.tex().get_icon(icon);
+            let w = orig.width();
+            let h = orig.height();
+            let x = self.rect.x + (self.rect.w - w as i32) / 2;
+            let y = self.rect.y + (self.rect.h - h as i32) / 2;
+            let dest = Rect::new(x, y, w, h);
+            try_sdl!(context.canvas.copy(tex, None, dest));
+        }
     }
 }
