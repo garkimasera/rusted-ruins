@@ -84,7 +84,7 @@ rect = { x = -999, y = -999, w = 200, h = 200 }
 [creation_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
 n_row = 6
-column_pos = [1, 50]
+column_pos = [1, 34]
 
 [creation_detail_dialog]
 rect = { x = -999, y = -999, w = 450, h = 300 }
@@ -159,6 +159,7 @@ left_margin = 3
 [list_widget]
 h_row_default = 26
 h_row_with_text = 24
+icon_column_w = 32
 left_margin = 5
 
 [vscroll_widget]

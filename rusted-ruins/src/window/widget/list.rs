@@ -370,6 +370,9 @@ impl ListWidgetRow for IconIdx {
     const N_COLUMN: usize = 1;
 
     fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+        let h_row = UI_CFG.list_widget.h_row_default as i32;
+        let icon_column_w = UI_CFG.list_widget.icon_column_w as i32;
+
         let (t, orig) = context.sv.tex().get_icon(*self);
         const ICON_SIZE_LIMIT: u32 = 32;
         let (w, h) = (orig.width(), orig.height());
@@ -378,7 +381,9 @@ impl ListWidgetRow for IconIdx {
         } else {
             (w, h)
         };
-        let dest = Rect::new(rect.x + column_pos[0], rect.y, w, h);
+        let x = (icon_column_w - w as i32) / 2 + column_pos[0];
+        let y = (h_row - h as i32) / 2;
+        let dest = Rect::new(rect.x + x, rect.y + y, w, h);
         try_sdl!(context.canvas.copy(t, orig, dest));
     }
 }
