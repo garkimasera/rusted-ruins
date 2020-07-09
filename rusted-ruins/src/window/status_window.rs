@@ -153,50 +153,61 @@ impl DialogWindow for StatusWindow {
 /// Character skill viewer
 pub struct SkillWindow {
     rect: Rect,
-    /// Gauge widget to display skill level and exp
-    gauges: Vec<GaugeWidget>,
-    /// Skill name label
-    labels: Vec<LabelWidget>,
+    list: ListWidget<(TextCache, TextCache, TextCache)>,
     escape_click: bool,
 }
 
 impl SkillWindow {
     pub fn new(gd: &GameData) -> SkillWindow {
         let rect: Rect = UI_CFG.info_window.rect.into();
-        let mut gauges: Vec<GaugeWidget> = Vec::new();
-        let mut labels: Vec<LabelWidget> = Vec::new();
+        let cfg = &UI_CFG.skill_window;
+
+        let mut list = ListWidget::with_scroll_bar(
+            cfg.list_rect,
+            cfg.column_pos.clone(),
+            cfg.list_size,
+            false,
+        );
 
         let chara = gd.chara.get(common::gamedata::chara::CharaId::Player);
-        for (i, skill_kind) in chara.skills.skills.keys().enumerate() {
-            let (skill_level, exp) = chara.skills.get_level_exp(*skill_kind);
-            let i0 = i as i32 / UI_CFG.skill_window.n_row as i32;
-            let i1 = i as i32 % UI_CFG.skill_window.n_row as i32;
+        let items: Vec<_> = chara
+            .skills
+            .skills
+            .keys()
+            .map(|skill_kind| {
+                let (lv, adj) = chara.skill_level(*skill_kind);
+                let skill_name = TextCache::one(
+                    skill_kind.to_text(),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                let skill_level = if adj == 0 {
+                    format!("Lv. {}", lv)
+                } else if adj < 0 {
+                    format!("Lv. {} - {}", lv, -adj)
+                } else {
+                    format!("Lv. {} + {}", lv, adj)
+                };
+                let skill_level =
+                    TextCache::one(skill_level, FontKind::M, UI_CFG.color.normal_font.into());
+                let (_, skill_exp) = chara.skills.get_level_exp(*skill_kind);
+                let skill_exp = TextCache::one(
+                    format!(
+                        "({:0.1} %)",
+                        skill_exp as f32 / SKILL_EXP_LVUP as f32 * 100.0
+                    ),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                (skill_name, skill_level, skill_exp)
+            })
+            .collect();
 
-            let pos_x = i0 * UI_CFG.skill_window.gauge_w;
-            let pos_y = i1 * UI_CFG.skill_window.gauge_h;
-
-            let mut label_rect: Rect = UI_CFG.skill_window.label_rect.into();
-            label_rect.offset(pos_x, pos_y);
-
-            let label_text = skill_kind.to_text();
-            let label = LabelWidget::new(label_rect, &label_text, FontKind::S);
-            labels.push(label);
-
-            let mut gauge_rect: Rect = UI_CFG.skill_window.gauge_rect.into();
-            gauge_rect.offset(pos_x, pos_y);
-
-            let level_text = format!("{}", skill_level);
-
-            let mut gauge =
-                GaugeWidget::with_label(gauge_rect, 0.0, 1.0, GaugeColorMode::Exp, &level_text);
-            gauge.set_value(exp as f32 / SKILL_EXP_LVUP as f32);
-            gauges.push(gauge);
-        }
+        list.set_items(items);
 
         SkillWindow {
             rect,
-            gauges,
-            labels,
+            list,
             escape_click: false,
         }
     }
@@ -205,20 +216,18 @@ impl SkillWindow {
 impl Window for SkillWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_window_border(context, self.rect);
-        for w in &mut self.gauges {
-            w.draw(context);
-        }
-        for w in &mut self.labels {
-            w.draw(context);
-        }
+        self.list.draw(context);
     }
 }
 
 impl DialogWindow for SkillWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         check_escape_click!(self, command);
+        let command = command.relative_to(self.rect);
 
-        match *command {
+        self.list.process_command(&command);
+
+        match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }

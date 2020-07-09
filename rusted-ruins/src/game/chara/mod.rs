@@ -39,6 +39,8 @@ pub trait CharaEx {
     fn reset_wait_time(&mut self);
     /// Returns (current item weight, capacity)
     fn item_weight(&self) -> (f32, f32);
+    /// Get character's skill level, and the adjustment value.
+    fn skill_level(&self, kind: SkillKind) -> (u32, i32);
 }
 
 impl CharaEx for Chara {
@@ -170,5 +172,12 @@ impl CharaEx for Chara {
             self.item_list.sum_weight() as f32,
             update::calc_carrying_capacity(self),
         )
+    }
+
+    fn skill_level(&self, kind: SkillKind) -> (u32, i32) {
+        let lv = self.skills.skills.get(&kind).copied().unwrap_or(0);
+        let adj = 0;
+
+        (lv, adj)
     }
 }

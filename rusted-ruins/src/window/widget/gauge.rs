@@ -18,7 +18,7 @@ pub struct GaugeWidget {
 pub enum GaugeColorMode {
     Hp,
     Sp,
-    Exp,
+    // Exp,
     Work,
 }
 
@@ -33,12 +33,6 @@ impl GaugeColorMode {
             },
             GaugeColorMode::Sp => Colors {
                 bar: UI_CFG.color.gauge_sp.into(),
-                bg: UI_CFG.color.gauge_bg.into(),
-                border_light: UI_CFG.color.border_light.into(),
-                border_dark: UI_CFG.color.border_dark.into(),
-            },
-            GaugeColorMode::Exp => Colors {
-                bar: UI_CFG.color.gauge_exp.into(),
                 bg: UI_CFG.color.gauge_bg.into(),
                 border_light: UI_CFG.color.border_light.into(),
                 border_dark: UI_CFG.color.border_dark.into(),
@@ -73,22 +67,22 @@ impl GaugeWidget {
         }
     }
 
-    pub fn with_label(
-        rect: Rect,
-        min: f32,
-        max: f32,
-        mode: GaugeColorMode,
-        text: &str,
-    ) -> GaugeWidget {
-        GaugeWidget {
-            rect,
-            colors: mode.colors(),
-            label: Some(LabelWidget::bordered(rect, text, FontKind::MonoM).centering()),
-            value: min,
-            min,
-            max,
-        }
-    }
+    // pub fn with_label(
+    //     rect: Rect,
+    //     min: f32,
+    //     max: f32,
+    //     mode: GaugeColorMode,
+    //     text: &str,
+    // ) -> GaugeWidget {
+    //     GaugeWidget {
+    //         rect,
+    //         colors: mode.colors(),
+    //         label: Some(LabelWidget::bordered(rect, text, FontKind::MonoM).centering()),
+    //         value: min,
+    //         min,
+    //         max,
+    //     }
+    // }
 
     pub fn set_params(&mut self, min: f32, max: f32, value: f32) {
         self.value = value;

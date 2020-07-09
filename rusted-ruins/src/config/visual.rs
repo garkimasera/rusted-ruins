@@ -78,7 +78,6 @@ pub struct UIColorConfig {
     pub gauge_bg: CfgColor,
     pub gauge_border_dark: CfgColor,
     pub gauge_border_light: CfgColor,
-    pub gauge_exp: CfgColor,
     pub gauge_hp: CfgColor,
     pub gauge_sp: CfgColor,
     pub gauge_work: CfgColor,
@@ -260,12 +259,9 @@ pub struct GameInfoWindowConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct SkillWindowConfig {
-    pub label_rect: CfgRect,
-    pub gauge_rect: CfgRect,
-    pub gauge_w: i32,
-    pub gauge_h: i32,
-    pub n_row: u32,
-    pub n_column: u32,
+    pub list_rect: CfgRect,
+    pub list_size: u32,
+    pub column_pos: Vec<i32>,
 }
 
 #[derive(Debug, Deserialize)]
