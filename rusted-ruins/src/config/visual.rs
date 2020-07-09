@@ -143,7 +143,7 @@ pub struct TalkWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct ReadWindowConfig {
     pub rect: CfgRect,
-    pub text_wrap_width: u32,
+    pub text_rect: CfgRect,
     pub next_button_rect: CfgRect,
     pub prev_button_rect: CfgRect,
     pub page_label_rect: CfgRect,

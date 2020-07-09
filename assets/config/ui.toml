@@ -57,7 +57,7 @@ image_window_pos_y = 0
 
 [read_window]
 rect = { x = -999, y = 50, w = 480, h = 340 }
-text_wrap_width = 460
+text_rect = { x = 5, y = 5, w = 470, h = 300 }
 next_button_rect = { x = 270, y = 310, w = 25, h = 25 }
 prev_button_rect = { x = 185, y = 310, w = 25, h = 25 }
 page_label_rect = { x = 205, y = 310, w = 70, h = 25 }

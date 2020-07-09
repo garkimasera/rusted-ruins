@@ -17,25 +17,20 @@ pub struct ReadWindow {
 
 impl ReadWindow {
     pub fn new(title: &str) -> ReadWindow {
-        let c = &UI_CFG.read_window;
-        let rect: Rect = c.rect.into();
+        let cfg = &UI_CFG.read_window;
+        let rect: Rect = cfg.rect.into();
         let text = crate::text::readable::readable_txt(title);
-        let label = LabelWidget::wrapped(
-            Rect::new(0, 0, rect.width(), rect.height()),
-            &text[0],
-            FontKind::Talk,
-            c.text_wrap_width,
-        );
+        let label = LabelWidget::wrapped(cfg.text_rect, &text[0], FontKind::Talk, cfg.text_rect.w);
         let next_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-next");
         let next_button =
-            ButtonWidget::with_icon(c.next_button_rect, IconIdx::UIImg(next_icon_idx));
+            ButtonWidget::with_icon(cfg.next_button_rect, IconIdx::UIImg(next_icon_idx));
         let prev_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-prev");
         let prev_button =
-            ButtonWidget::with_icon(c.prev_button_rect, IconIdx::UIImg(prev_icon_idx));
+            ButtonWidget::with_icon(cfg.prev_button_rect, IconIdx::UIImg(prev_icon_idx));
         let n_page = text.len();
         let page_label = format!("{} / {}", 1, n_page);
         let page_label =
-            LabelWidget::new(c.page_label_rect, &page_label, FontKind::Talk).centering();
+            LabelWidget::new(cfg.page_label_rect, &page_label, FontKind::Talk).centering();
 
         ReadWindow {
             rect,
