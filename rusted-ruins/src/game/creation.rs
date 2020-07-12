@@ -1,5 +1,5 @@
 use super::extrait::*;
-use crate::game::Game;
+use crate::game::{Game, InfoGetter};
 use crate::text::obj_txt;
 use common::gamedata::*;
 use common::gobj;
@@ -61,9 +61,17 @@ pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<(It
         attributes: vec![],
     };
 
-    let il = gd.get_item_list_mut(ItemListLocation::Chara {
-        cid: CharaId::Player,
-    });
+    let ill = if recipe.put_on_ground {
+        ItemListLocation::OnMap {
+            mid: gd.get_current_mapid(),
+            pos: gd.player_pos(),
+        }
+    } else {
+        ItemListLocation::Chara {
+            cid: CharaId::Player,
+        }
+    };
+    let il = gd.get_item_list_mut(ill);
     il.append(item, 1);
 
     let player = gd.chara.get(CharaId::Player);

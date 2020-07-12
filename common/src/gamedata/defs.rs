@@ -84,6 +84,8 @@ pub struct Recipe {
     pub facility: Option<String>,
     pub difficulty: u32,
     pub required_time: CreationRequiredTime,
+    #[serde(default)]
+    pub put_on_ground: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
