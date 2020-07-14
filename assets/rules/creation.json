@@ -6,5 +6,7 @@
         "medium": 16,
         "long": 32,
         "very_long": 50
-    }
+    },
+    "recipe_learning_item_factor": 8,
+    "recipe_learning_item_initial": 5
 }

@@ -303,9 +303,11 @@ impl ItemWindow {
                 DialogResult::CloseAll
             }
             ItemWindowMode::Read => {
-                let title = pa.gd().get_item(il).0.title().unwrap().to_owned();
-                pa.request_dialog_open(DialogOpenRequest::Read { title });
-                DialogResult::Continue
+                if pa.read_item(il) {
+                    DialogResult::Continue
+                } else {
+                    DialogResult::CloseAll
+                }
             }
             ItemWindowMode::ShopBuy { .. } => {
                 pa.buy_item(il);

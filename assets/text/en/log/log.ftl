@@ -79,6 +79,8 @@ quest-reward-receive-money = Recieved {$money} gold as the quest reward.
 
 creation-start = {$chara} started making {$product}.
 creation-finish = {$chara} finished making {$product}.
+recipe-learned = {$chara} learned a new recipe "{$item}".
+recipe-learning-failed = {$chara} could not learn a new recipe from this item.
 
 # Messages about harvest
 

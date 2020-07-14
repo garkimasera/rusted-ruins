@@ -84,6 +84,26 @@ impl<'a> DoPlayerAction<'a> {
         self.0.finish_player_turn();
     }
 
+    /// Read item, returns continue dialog or not.
+    pub fn read_item(&mut self, il: ItemLocation) -> bool {
+        use crate::game::creation::LearnRecipeResult;
+        use crate::game::item::ItemEx;
+
+        let title = self.gd().get_item(il).0.title().unwrap().to_owned();
+        match crate::game::creation::learn_recipe(self.gd_mut(), il) {
+            LearnRecipeResult::Success => {
+                self.0.finish_player_turn();
+                return false;
+            }
+            LearnRecipeResult::NoAvailableRecipe => {
+                return true;
+            }
+            _ => (),
+        }
+        self.request_dialog_open(DialogOpenRequest::Read { title });
+        true
+    }
+
     /// Release one magic device item
     pub fn release_item(&mut self, il: ItemLocation) {
         super::action::release_item(self.0, il, CharaId::Player);

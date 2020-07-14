@@ -7,7 +7,6 @@ use crate::text::{misc_txt, obj_txt, ui_txt, ToText};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
-use rules::RULES;
 
 pub fn create_creation_window_group(
     game: &Game,
@@ -71,7 +70,7 @@ pub struct CreationWindow {
 }
 
 impl CreationWindow {
-    pub fn new(_gd: &GameData, kind: CreationKind) -> CreationWindow {
+    pub fn new(gd: &GameData, kind: CreationKind) -> CreationWindow {
         let c = &UI_CFG.creation_window;
         let rect: Rect = c.rect.into();
 
@@ -89,15 +88,13 @@ impl CreationWindow {
             escape_click: false,
         };
 
-        w.update(kind);
+        w.update(gd, kind);
         w
     }
 
-    pub fn update(&mut self, kind: CreationKind) {
+    pub fn update(&mut self, gd: &GameData, kind: CreationKind) {
         self.kind = kind;
-
-        let recipes = RULES.creation.recipes(kind);
-        self.recipes = recipes.iter().map(|r| r).collect(); // TODO: Recipe filtering
+        self.recipes = crate::game::creation::available_recipes(gd, kind);
 
         let items: Vec<(IconIdx, TextCache)> = self
             .recipes
