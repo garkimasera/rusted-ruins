@@ -2,6 +2,7 @@ pub mod chara;
 pub mod defs;
 pub mod faction;
 pub mod item;
+pub mod learned_recipes;
 pub mod map;
 pub mod meta;
 pub mod player;
@@ -21,6 +22,7 @@ pub use self::chara::*;
 pub use self::defs::*;
 pub use self::faction::*;
 pub use self::item::*;
+pub use self::learned_recipes::*;
 pub use self::map::*;
 pub use self::meta::*;
 pub use self::player::*;
@@ -47,6 +49,7 @@ pub struct GameData {
     pub quest: QuestHolder,
     pub vars: Variables,
     pub faction: Faction,
+    pub learned_recipes: LearnedRecipes,
     current_mapid: MapId,
 }
 
@@ -61,6 +64,7 @@ impl GameData {
             quest: QuestHolder::new(),
             vars: Variables::new(),
             faction: Faction::new(),
+            learned_recipes: LearnedRecipes::new(),
             current_mapid: MapId::default(),
         }
     }
