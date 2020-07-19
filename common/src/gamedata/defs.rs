@@ -76,6 +76,17 @@ pub enum CreationKind {
     Smith,
 }
 
+impl CreationKind {
+    pub const ALL: &'static [CreationKind] = &[
+        CreationKind::Art,
+        CreationKind::Construction,
+        CreationKind::Cooking,
+        CreationKind::Craft,
+        CreationKind::Pharmacy,
+        CreationKind::Smith,
+    ];
+}
+
 /// A recipe for creation
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Recipe {
@@ -145,6 +156,7 @@ impl Default for ToolEffect {
 pub enum UseEffect {
     None,
     Deed,
+    SkillLearning,
 }
 
 impl Default for UseEffect {

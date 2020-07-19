@@ -1,7 +1,7 @@
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
-use rng;
+use rng::SliceRandom;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32) -> Item {
@@ -95,7 +95,7 @@ pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
 pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
     let item_obj = gobj::get_obj(idx);
 
-    let item = Item {
+    let mut item = Item {
         idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
@@ -103,29 +103,47 @@ pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
         attributes: vec![],
     };
 
-    let item = if item_obj.titles.is_empty() {
-        item
-    } else {
-        gen_readable_item(item, item_obj)
-    };
+    if !item_obj.titles.is_empty() {
+        gen_readable_item(&mut item, item_obj)
+    }
 
     match item_obj.kind {
-        ItemKind::MagicDevice => gen_magic_device(item, item_obj),
-        _ => item,
-    }
+        ItemKind::MagicDevice => gen_magic_device(&mut item, item_obj),
+        _ => (),
+    };
+
+    match item_obj.use_effect {
+        UseEffect::SkillLearning => gen_skill_lerning_item(&mut item, item_obj),
+        _ => (),
+    };
+
+    item
 }
 
 /// Generate a magic device item
-fn gen_magic_device(mut item: Item, item_obj: &ItemObject) -> Item {
+fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
     let charge_n: u32 = rng::gen_range_inclusive(item_obj.charge[0], item_obj.charge[1]).into();
     item.attributes.push(ItemAttribute::Charge { n: charge_n });
-    item
 }
 
 /// Generate a readable item
-fn gen_readable_item(mut item: Item, item_obj: &ItemObject) -> Item {
-    use rand::prelude::*;
+fn gen_readable_item(item: &mut Item, item_obj: &ItemObject) {
     let title = item_obj.titles.choose(&mut rng::GameRng).cloned().unwrap();
     item.attributes.push(ItemAttribute::Title(title));
-    item
+}
+
+/// Generate a skill learning item
+fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
+    let skill_kind = if rng::gen_range(0, 3) == 0 {
+        SkillKind::Creation(
+            CreationKind::ALL
+                .choose(&mut rng::GameRng)
+                .copied()
+                .unwrap(),
+        )
+    } else {
+        SkillKind::Weapon(WeaponKind::ALL.choose(&mut rng::GameRng).copied().unwrap())
+    };
+    item.attributes
+        .push(ItemAttribute::SkillLearning(skill_kind));
 }

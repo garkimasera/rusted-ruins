@@ -209,6 +209,8 @@ pub enum ItemAttribute {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },
+    /// For skill learning items.
+    SkillLearning(super::skill::SkillKind),
     /// Title for readable item.
     Title(String),
 }
@@ -233,6 +235,16 @@ impl WeaponKind {
     pub fn is_ranged(self) -> bool {
         self.is_melee()
     }
+
+    pub const ALL: &'static [WeaponKind] = &[
+        WeaponKind::Sword,
+        WeaponKind::Spear,
+        WeaponKind::Axe,
+        WeaponKind::Whip,
+        WeaponKind::Bow,
+        WeaponKind::Crossbow,
+        WeaponKind::Firearm,
+    ];
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]

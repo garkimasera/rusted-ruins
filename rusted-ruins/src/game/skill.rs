@@ -5,7 +5,7 @@ use rules::RULES;
 
 pub trait SkillListEx {
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32);
-    fn learn_new_skill(&mut self, kind: SkillKind);
+    fn learn_new_skill(&mut self, kind: SkillKind) -> bool;
     fn set_skill_level(&mut self, kind: SkillKind, lv: u32);
     fn get_level_exp(&self, kind: SkillKind) -> (u32, u16);
 }
@@ -60,19 +60,22 @@ impl SkillListEx for SkillList {
     }
 
     /// Insert new skill slot
-    fn learn_new_skill(&mut self, kind: SkillKind) {
+    fn learn_new_skill(&mut self, kind: SkillKind) -> bool {
+        if self.skills.get(&kind).is_some() {
+            return false;
+        }
+
         self.skills.entry(kind).or_insert(1);
 
         if self.exp.is_none() {
             self.exp = Some(FnvHashMap::default());
         }
-        if let Some(ref mut exp) = self.exp {
-            if !exp.contains_key(&kind) {
-                exp.insert(kind, 0);
-            }
-        } else {
-            unreachable!();
+        let exp = self.exp.as_mut().unwrap();
+        if !exp.contains_key(&kind) {
+            exp.insert(kind, 0);
         }
+
+        true
     }
 
     /// Set skill level directly. Do not add exp.

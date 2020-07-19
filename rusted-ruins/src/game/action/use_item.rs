@@ -1,3 +1,4 @@
+use crate::game::extrait::*;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
@@ -41,6 +42,24 @@ pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
             };
             game_log_i!("use_item-deed-succeed");
             gd.remove_item(il, 1);
+        }
+        UseEffect::SkillLearning => {
+            for attr in &item.0.attributes {
+                match attr {
+                    ItemAttribute::SkillLearning(skill_kind) => {
+                        let skill_kind = *skill_kind;
+                        let chara = gd.chara.get_mut(cid);
+                        if chara.skills.learn_new_skill(skill_kind) {
+                            game_log_i!("skill-learned"; chara=chara, skill=skill_kind);
+                            gd.remove_item(il, 1);
+                        } else {
+                            game_log_i!("skill-already-learned"; chara=chara, skill=skill_kind);
+                        }
+                        return;
+                    }
+                    _ => (),
+                }
+            }
         }
     }
 }
