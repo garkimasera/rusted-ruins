@@ -296,8 +296,8 @@ impl Map {
         use std::mem::replace;
         let temp0 = replace(&mut self.tile[a].chara, None);
         let temp1 = replace(&mut self.tile[b].chara, None);
-        replace(&mut self.tile[a].chara, temp1);
-        replace(&mut self.tile[b].chara, temp0);
+        let _ = replace(&mut self.tile[a].chara, temp1);
+        let _ = replace(&mut self.tile[b].chara, temp0);
         true
     }
 
