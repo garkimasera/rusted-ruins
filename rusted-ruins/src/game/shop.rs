@@ -1,6 +1,7 @@
 use crate::game::extrait::*;
 use crate::game::item::gen::gen_item_by_level;
 use common::gamedata::*;
+use common::sitegen::ShopGenData;
 use rules::RULES;
 
 pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
@@ -26,19 +27,27 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
 }
 
 /// Update items on a shop
-pub fn update_items_on_shop(shop: &mut Shop) {
+pub fn update_items_on_shop(shop: &mut Shop, shop_gen: &ShopGenData) {
     shop.items.clear();
 
     let n_gen_item = rng::gen_range(RULES.town.min_shop_items, RULES.town.max_shop_items);
 
     for _ in 0..n_gen_item {
-        shop.items.append(gen_shop_item(shop.level, &shop.kind), 1);
+        shop.items
+            .append(gen_shop_item(shop.level, &shop.kind, shop_gen), 1);
     }
 }
 
 /// Generate new item at shops
-fn gen_shop_item(floor_level: u32, shop_kind: &ShopKind) -> Item {
+fn gen_shop_item(floor_level: u32, shop_kind: &ShopKind, shop_gen: &ShopGenData) -> Item {
     let f = |item_obj: &ItemObject| match shop_kind {
+        ShopKind::Specified => {
+            if shop_gen.id.iter().any(|id| item_obj.id == *id) {
+                1.0
+            } else {
+                0.0
+            }
+        }
         ShopKind::Equipment => match item_obj.kind {
             ItemKind::Weapon(_) | ItemKind::Armor(_) => 1.0,
             _ => 0.0,

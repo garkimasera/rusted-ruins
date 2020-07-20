@@ -31,11 +31,11 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
             town.add_shop(shop, shop_gen_data.chara_n);
         }
     }
-    update_shops(gd, sid);
+    update_shops(gd, sid, sg);
 }
 
 /// Update shop states
-pub fn update_shops(gd: &mut GameData, sid: SiteId) {
+pub fn update_shops(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
     use crate::game::shop::update_items_on_shop;
 
     let site = gd.region.get_site_mut(sid);
@@ -47,7 +47,8 @@ pub fn update_shops(gd: &mut GameData, sid: SiteId) {
         }
     };
 
-    for shop in town.iter_shops_mut() {
-        update_items_on_shop(shop)
+    for (i, shop) in town.iter_shops_mut().enumerate() {
+        let shop_gen = &sg.shops[i];
+        update_items_on_shop(shop, shop_gen);
     }
 }

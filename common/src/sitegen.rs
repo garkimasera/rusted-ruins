@@ -34,4 +34,6 @@ pub struct ShopGenData {
     /// Shopkeeper's id (n)
     pub chara_n: u32,
     pub kind: ShopKind,
+    #[serde(default)]
+    pub id: Vec<String>,
 }

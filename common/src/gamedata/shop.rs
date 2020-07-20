@@ -3,6 +3,8 @@ use crate::gamedata::item::ItemList;
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ShopKind {
+    /// Items are specified by id or group.
+    Specified,
     /// Sells weapons and armors
     Equipment,
     /// Sells foods
