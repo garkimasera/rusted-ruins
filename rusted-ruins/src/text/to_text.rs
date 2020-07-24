@@ -33,19 +33,28 @@ impl ToText for Site {
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
         use crate::game::item::ItemEx;
-        let mut text: Cow<str> = obj_txt(gobj::idx_to_id(self.idx)).into();
+        let mut text: String = obj_txt(gobj::idx_to_id(self.idx)).into();
 
         if let Some(n) = self.charge() {
-            text = format!("{} ({} : {})", text, ui_txt("item-charges"), n).into();
+            text.push_str(&format!(" ({} : {})", ui_txt("item-charges"), n));
         }
 
         if let Some(title) = self.title() {
             if let Some(title) = super::readable::readable_title_txt(title) {
-                text = format!("{} <{}>", text, title).into();
+                text.push_str(&format!(" <{}>", title));
             }
         }
 
-        text
+        for attr in &self.attributes {
+            match attr {
+                ItemAttribute::SkillLearning(kind) => {
+                    text.push_str(&format!(" <{}>", kind.to_text()));
+                }
+                _ => (),
+            }
+        }
+
+        text.into()
     }
 }
 
