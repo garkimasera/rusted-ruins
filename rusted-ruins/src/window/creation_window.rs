@@ -144,7 +144,11 @@ impl DialogWindow for CreationWindow {
         let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
-            self.detail_dialog = Some(CreationDetailDialog::new(pa.gd(), self.recipes[i as usize]));
+            self.detail_dialog = Some(CreationDetailDialog::new(
+                pa.gd(),
+                self.recipes[i as usize],
+                self.kind,
+            ));
             return DialogResult::Continue;
         }
 
@@ -161,6 +165,7 @@ impl DialogWindow for CreationWindow {
 
 pub struct CreationDetailDialog {
     rect: Rect,
+    kind: CreationKind,
     recipe: &'static Recipe,
     product_name: LabelWidget,
     start_button: Option<ButtonWidget>,
@@ -171,10 +176,12 @@ pub struct CreationDetailDialog {
     facility_label: LabelWidget,
     enough_ingredients_icon: ImageWidget,
     enough_ingredients_label: LabelWidget,
+    required_skill_icon: ImageWidget,
+    required_skill_label: LabelWidget,
 }
 
 impl CreationDetailDialog {
-    fn new(gd: &GameData, recipe: &'static Recipe) -> CreationDetailDialog {
+    fn new(gd: &GameData, recipe: &'static Recipe, kind: CreationKind) -> CreationDetailDialog {
         let c = &UI_CFG.creation_detail_dialog;
         let rect: Rect = c.rect.into();
 
@@ -198,6 +205,12 @@ impl CreationDetailDialog {
         };
 
         let mut enough_ingredients = true;
+        let required_skill =
+            crate::game::creation::enough_skill(gd.chara.get(CharaId::Player), recipe, kind);
+        if !required_skill {
+            possible = false;
+        }
+
         let list_items: Vec<(IconIdx, TextCache, TextCache)> = recipe
             .ingredients
             .iter()
@@ -274,8 +287,27 @@ impl CreationDetailDialog {
             FontKind::M,
         );
 
+        let icon_id = if required_skill {
+            "!icon-ok"
+        } else {
+            "!icon-ng"
+        };
+        let required_skill_icon = ImageWidget::ui_img(c.required_skill_icon_rect, icon_id);
+        let required_skill_label = format!(
+            "{} ({}: {})",
+            ui_txt("label_text-creation-required_skill"),
+            kind.to_text(),
+            recipe.difficulty
+        );
+        let required_skill_label = LabelWidget::new(
+            c.required_skill_label_rect,
+            &required_skill_label,
+            FontKind::M,
+        );
+
         CreationDetailDialog {
             rect,
+            kind,
             recipe,
             product_name: LabelWidget::new(c.product_name, &obj_txt(&recipe.product), FontKind::M),
             list,
@@ -286,6 +318,8 @@ impl CreationDetailDialog {
             facility_label,
             enough_ingredients_icon,
             enough_ingredients_label,
+            required_skill_icon,
+            required_skill_label,
         }
     }
 }
@@ -299,6 +333,8 @@ impl Window for CreationDetailDialog {
         self.facility_label.draw(context);
         self.enough_ingredients_icon.draw(context);
         self.enough_ingredients_label.draw(context);
+        self.required_skill_icon.draw(context);
+        self.required_skill_label.draw(context);
         if let Some(start_button) = self.start_button.as_mut() {
             start_button.draw(context);
         }
@@ -319,7 +355,7 @@ impl DialogWindow for CreationDetailDialog {
         if let Some(start_button) = self.start_button.as_mut() {
             if let Some(_) = start_button.process_command(&command) {
                 // If start button is pressed, start creation.
-                pa.start_creation(self.recipe, ItemListLocation::PLAYER, false);
+                pa.start_creation(self.kind, self.recipe, ItemListLocation::PLAYER, false);
                 return DialogResult::CloseAll;
             }
         }

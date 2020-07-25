@@ -1,5 +1,5 @@
 use super::defs::Recipe;
-use super::defs::SkillBonus;
+use super::defs::{CreationKind, SkillBonus};
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation};
 use super::map::MapId;
@@ -168,6 +168,7 @@ pub enum CharaStatus {
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Work {
     Creation {
+        kind: CreationKind,
         recipe: Recipe,
         ingredients: Vec<(Item, u32)>,
     },

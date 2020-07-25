@@ -178,11 +178,12 @@ impl<'a> DoPlayerAction<'a> {
 
     pub fn start_creation(
         &mut self,
+        kind: CreationKind,
         recipe: &Recipe,
         ill: ItemListLocation,
         prior_high_quality: bool,
     ) {
-        super::creation::start_creation(self.0, recipe, ill, prior_high_quality);
+        super::creation::start_creation(self.0, kind, recipe, ill, prior_high_quality);
         self.0.finish_player_turn();
     }
 

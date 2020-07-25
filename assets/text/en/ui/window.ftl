@@ -20,3 +20,4 @@ label_text-creation-required-facility = Required facility
 label_text-creation-no-required-facility = No required facility
 label_text-creation-enough-ingredients = Enough ingredients
 label_text-creation-not-enough-ingredients = Not enough ingredients
+label_text-creation-required_skill = Required Skill

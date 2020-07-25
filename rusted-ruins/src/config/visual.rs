@@ -204,6 +204,8 @@ pub struct CreationDetailDialogConfig {
     pub facility_label_rect: CfgRect,
     pub enough_ingredients_icon_rect: CfgRect,
     pub enough_ingredients_label_rect: CfgRect,
+    pub required_skill_icon_rect: CfgRect,
+    pub required_skill_label_rect: CfgRect,
     pub start_button_rect: CfgRect,
     pub cancel_button_rect: CfgRect,
 }

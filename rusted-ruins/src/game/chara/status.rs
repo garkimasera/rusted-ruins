@@ -129,11 +129,12 @@ impl CharaStatusEx for CharaStatus {
         match self {
             CharaStatus::Work { work, .. } => match work {
                 Work::Creation {
+                    kind,
                     recipe,
                     ingredients,
                 } => {
                     assert!(cid == CharaId::Player);
-                    crate::game::creation::finish_creation(gd, &recipe, ingredients);
+                    crate::game::creation::finish_creation(gd, kind, &recipe, ingredients);
                 }
                 Work::Harvest { item_idx, il } => {
                     crate::game::action::harvest::finish_harvest(gd, cid, item_idx, il);

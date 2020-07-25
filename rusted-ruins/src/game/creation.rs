@@ -8,6 +8,7 @@ use rules::RULES;
 
 pub fn start_creation(
     game: &mut Game,
+    kind: CreationKind,
     recipe: &Recipe,
     ill: ItemListLocation,
     prior_high_quality: bool,
@@ -34,6 +35,7 @@ pub fn start_creation(
 
     let player = gd.chara.get_mut(CharaId::Player);
     let work = Work::Creation {
+        kind,
         recipe: recipe.clone(),
         ingredients,
     };
@@ -50,7 +52,12 @@ pub fn start_creation(
     game_log_i!("creation-start"; chara=player, product=product);
 }
 
-pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<(Item, u32)>) {
+pub fn finish_creation(
+    gd: &mut GameData,
+    kind: CreationKind,
+    recipe: &Recipe,
+    _ingredients: Vec<(Item, u32)>,
+) {
     let idx: ItemIdx = gobj::id_to_idx(&recipe.product);
     let item_obj = gobj::get_obj(idx);
     let item = Item {
@@ -74,8 +81,17 @@ pub fn finish_creation(gd: &mut GameData, recipe: &Recipe, _ingredients: Vec<(It
     let il = gd.get_item_list_mut(ill);
     il.append(item, 1);
 
-    let player = gd.chara.get(CharaId::Player);
     let product = obj_txt(&recipe.product);
+    let player = gd.chara.get_mut(CharaId::Player);
+
+    // Exp
+    let skill_kind = SkillKind::Creation(kind);
+    let skill_level = player.skills.get(skill_kind);
+    if skill_level > 0 {
+        let exp = RULES.exp.creation_base_exp;
+        player.skills.add_exp(skill_kind, exp, recipe.difficulty);
+    }
+
     game_log_i!("creation-finish"; chara=player, product=product);
 }
 
@@ -147,4 +163,11 @@ pub fn available_recipes(gd: &GameData, kind: CreationKind) -> Vec<&'static Reci
         .iter()
         .filter(|recipe| gd.learned_recipes.learned(kind, &recipe.product))
         .collect()
+}
+
+/// Determine a character has enough skill for given creation or not.
+pub fn enough_skill(chara: &Chara, recipe: &Recipe, kind: CreationKind) -> bool {
+    let skill_level = chara.skills.get(SkillKind::Creation(kind));
+
+    skill_level >= recipe.difficulty
 }
