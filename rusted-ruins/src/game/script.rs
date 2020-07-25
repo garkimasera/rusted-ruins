@@ -136,6 +136,11 @@ impl ScriptEngine {
                     let v = v.eval(gd);
                     gd.vars.set_global_var(name, v);
                 }
+                Instruction::ReceiveItem(id) => {
+                    let item = crate::game::item::gen::gen_item_from_id(&id);
+                    let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
+                    il.append(item, 1);
+                }
                 Instruction::ReceiveMoney(v) => {
                     let v = v.eval(gd);
                     gd.player.add_money(as_int!(v) as i64);

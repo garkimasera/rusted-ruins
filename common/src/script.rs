@@ -14,6 +14,8 @@ pub enum Instruction {
     Talk(String, Vec<(String, String)>),
     /// Set global variable
     GSet(String, Expr),
+    /// Player receive item
+    ReceiveItem(String),
     /// Player receive money
     ReceiveMoney(Expr),
     /// Remove item form player's inventory

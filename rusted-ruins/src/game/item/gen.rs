@@ -92,6 +92,10 @@ pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
     }
 }
 
+pub fn gen_item_from_id(id: &str) -> Item {
+    gen_item_from_idx(gobj::id_to_idx(id))
+}
+
 pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
     let item_obj = gobj::get_obj(idx);
 

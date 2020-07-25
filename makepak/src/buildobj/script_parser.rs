@@ -160,6 +160,13 @@ fn gset_instruction(input: &str) -> IResult<&str, Instruction> {
     Ok((input, Instruction::GSet(var_name, value)))
 }
 
+fn receive_item_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("receive_item"))(input)?;
+    let (input, id) = delimited(char('('), ws(id), char(')'))(input)?;
+    let (input, _) = end_line(input)?;
+    Ok((input, Instruction::ReceiveItem(id)))
+}
+
 fn receive_money_instruction(input: &str) -> IResult<&str, Instruction> {
     let (input, _) = ws(tag("receive_money"))(input)?;
     let (input, expr) = delimited(char('('), ws(expr), char(')'))(input)?;
@@ -196,6 +203,7 @@ fn instruction(input: &str) -> IResult<&str, Instruction> {
         talk_instruction_with_choices,
         talk_instruction,
         gset_instruction,
+        receive_item_instruction,
         receive_money_instruction,
         remove_item_instruction,
         special_instruction,
