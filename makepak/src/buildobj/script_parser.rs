@@ -162,9 +162,13 @@ fn gset_instruction(input: &str) -> IResult<&str, Instruction> {
 
 fn receive_item_instruction(input: &str) -> IResult<&str, Instruction> {
     let (input, _) = ws(tag("receive_item"))(input)?;
-    let (input, id) = delimited(char('('), ws(id), char(')'))(input)?;
+    let (input, _) = char('(')(input)?;
+    let (input, id) = ws(id)(input)?;
+    let (input, _) = char(',')(input)?;
+    let (input, n) = ws(expr)(input)?;
+    let (input, _) = char(')')(input)?;
     let (input, _) = end_line(input)?;
-    Ok((input, Instruction::ReceiveItem(id)))
+    Ok((input, Instruction::ReceiveItem(id, n)))
 }
 
 fn receive_money_instruction(input: &str) -> IResult<&str, Instruction> {

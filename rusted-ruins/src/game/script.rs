@@ -136,14 +136,19 @@ impl ScriptEngine {
                     let v = v.eval(gd);
                     gd.vars.set_global_var(name, v);
                 }
-                Instruction::ReceiveItem(id) => {
+                Instruction::ReceiveItem(id, n) => {
                     let item = crate::game::item::gen::gen_item_from_id(&id);
+                    let n = as_int!(n.eval(gd));
                     let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
-                    il.append(item, 1);
+                    il.append(item.clone(), n as u32);
+                    let player = gd.chara.get(CharaId::Player);
+                    game_log_i!("player-receive-item"; chara=player, item=item, n=n);
                 }
                 Instruction::ReceiveMoney(v) => {
-                    let v = v.eval(gd);
-                    gd.player.add_money(as_int!(v) as i64);
+                    let amount = as_int!(v.eval(gd));
+                    gd.player.add_money(amount.into());
+                    let player = gd.chara.get(CharaId::Player);
+                    game_log_i!("player-receive-money"; chara=player, amount=amount);
                 }
                 Instruction::RemoveItem(item_id) => {
                     let il = ur!(gd.player_item_location(item_id), "cannot find item");

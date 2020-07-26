@@ -15,7 +15,7 @@ pub enum Instruction {
     /// Set global variable
     GSet(String, Expr),
     /// Player receive item
-    ReceiveItem(String),
+    ReceiveItem(String, Expr),
     /// Player receive money
     ReceiveMoney(Expr),
     /// Remove item form player's inventory

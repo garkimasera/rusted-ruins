@@ -87,3 +87,8 @@ recipe-learning-failed = {$chara} could not learn a new recipe from this item.
 # Messages about harvest
 
 harvest-chop = {$chara} chopped a tree, and get {$item} x {$n}.
+
+# Message about script
+
+player-receive-item = {$chara} received {$item} x {$n}.
+player-receive-money = {$chara} received {$amount} gold.
