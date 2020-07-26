@@ -69,7 +69,7 @@ rect = { x = -999, y = 120, w = 200, h = 0 }
 rect = { x = -1000, y = -1000, w = 200, h = 72 }
 
 [text_input_dialog]
-rect = { x = -999, y = -999, w = 200, h = 40 }
+rect = { x = -999, y = -999, w = 350, h = 28 }
 
 [newgame_dialog]
 explanation_text_rect = { x = -999, y = 50, w = 300 }
