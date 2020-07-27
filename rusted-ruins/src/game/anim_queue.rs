@@ -17,7 +17,7 @@ impl AnimQueue {
         self.0.pop_front()
     }
 
-    fn push(&mut self, animation: Animation) {
+    pub fn push(&mut self, animation: Animation) {
         self.0.push_back(animation);
     }
 

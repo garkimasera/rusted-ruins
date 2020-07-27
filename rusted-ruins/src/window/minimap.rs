@@ -23,6 +23,9 @@ impl MiniMapWindow {
 
 impl Window for MiniMapWindow {
     fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+        context.canvas.set_draw_color((0, 0, 0));
+        context.set_viewport(None);
+        try_sdl!(context.canvas.fill_rect(self.rect));
         context.set_viewport(self.rect);
         draw_minimap(context.canvas, self.rect, game, context.sv);
     }

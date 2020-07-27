@@ -32,6 +32,30 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
                 game_log_i!("debug-command-need-1arg"; command="genitem");
             }
         }
+        "anim" => {
+            if let Some(arg1) = args.next() {
+                if let Some(idx) = gobj::id_to_idx_checked::<AnimImgIdx>(arg1) {
+                    debug!("animation test: {}", arg1);
+                    let anim = crate::game::Animation::img_onetile(
+                        idx,
+                        game.gd.chara_pos(CharaId::Player).unwrap(),
+                    );
+
+                    let n = args
+                        .next()
+                        .map(|s| s.parse::<u32>().unwrap_or(1))
+                        .unwrap_or(1);
+
+                    for _ in 0..n {
+                        game.anim_queue.push(anim.clone());
+                    }
+                } else {
+                    debug!("unknown animation id: {}", arg1);
+                }
+            } else {
+                game_log_i!("debug-command-need-1arg"; command="anim");
+            }
+        }
         _ => {
             game_log_i!("debug-command-invalid");
         }
