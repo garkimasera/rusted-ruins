@@ -10,5 +10,6 @@ popd
 mkdir -p ./assets/paks
 mkdir -p ./assets/sound
 cp -r rusted-ruins-pak/paks/* -t ./assets/paks
+cp -r rusted-ruins-pak/rules/* -t ./assets/rules
 cp -r rusted-ruins-pak/text/* -t ./assets/text
 cp -r rusted-ruins-pak/sound/* -t ./assets/sound
