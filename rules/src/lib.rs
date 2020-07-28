@@ -5,6 +5,7 @@ extern crate log;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
 
+pub mod active_skill;
 pub mod chara;
 pub mod charagen;
 pub mod class;
@@ -27,8 +28,12 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
+const ACTIVE_SKILL_DIR_NAME: &'static str = "active_skill";
+const RECIPE_DIR_NAME: &'static str = "recipe";
+
 /// Contain game rules
 pub struct Rules {
+    pub active_skills: active_skill::ActiveSkills,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
     pub creation: creation::Creation,
@@ -48,10 +53,44 @@ pub struct Rules {
 
 impl Rules {
     fn load_from_dir(rules_dir: &Path, addon_dir: Option<&Path>) -> Rules {
-        let mut creation: creation::Creation = read_from_json(&rules_dir.join("creation.json"));
+        let mut active_skills = active_skill::ActiveSkills::default();
+        let active_skill_dir = rules_dir.join(ACTIVE_SKILL_DIR_NAME);
+        if active_skill_dir.exists() {
+            if let Err(e) = active_skills.join_from_dir(&active_skill_dir) {
+                warn!(
+                    "active skill loading error at {}\n{}",
+                    active_skill_dir.to_string_lossy(),
+                    e
+                );
+            }
+        }
 
+        let mut creation: creation::Creation = read_from_json(&rules_dir.join("creation.json"));
+        let recipe_dir = rules_dir.join(RECIPE_DIR_NAME);
+        if recipe_dir.exists() {
+            if let Err(e) = creation.join_from_dir(&recipe_dir) {
+                warn!(
+                    "recipe loading error at {}\n{}",
+                    recipe_dir.to_string_lossy(),
+                    e
+                );
+            }
+        }
+
+        // Load active skill / creation(recipe) rule files in addon dir
         if let Some(addon_dir) = addon_dir {
-            let addon_recipe_dir = addon_dir.join("recipes");
+            let addon_active_skill_dir = addon_dir.join(ACTIVE_SKILL_DIR_NAME);
+            if addon_active_skill_dir.exists() {
+                if let Err(e) = active_skills.join_from_dir(&addon_active_skill_dir) {
+                    warn!(
+                        "active skill loading error at {}\n{}",
+                        addon_active_skill_dir.to_string_lossy(),
+                        e
+                    );
+                }
+            }
+
+            let addon_recipe_dir = addon_dir.join(RECIPE_DIR_NAME);
             if addon_recipe_dir.exists() {
                 if let Err(e) = creation.join_from_dir(&addon_recipe_dir) {
                     warn!(
@@ -66,6 +105,7 @@ impl Rules {
         creation.sort();
 
         Rules {
+            active_skills,
             chara: read_from_json(&rules_dir.join("chara.json")),
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
             class: read_from_json(&rules_dir.join("class.json")),
