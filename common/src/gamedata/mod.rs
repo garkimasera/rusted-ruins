@@ -1,5 +1,6 @@
 pub mod chara;
 pub mod defs;
+pub mod effect;
 pub mod faction;
 pub mod item;
 pub mod learned_recipes;
@@ -20,6 +21,7 @@ use geom::Vec2d;
 
 pub use self::chara::*;
 pub use self::defs::*;
+pub use self::effect::*;
 pub use self::faction::*;
 pub use self::item::*;
 pub use self::learned_recipes::*;

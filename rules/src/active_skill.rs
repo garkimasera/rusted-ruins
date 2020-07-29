@@ -1,3 +1,4 @@
+use common::gamedata::*;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
@@ -37,4 +38,6 @@ impl ActiveSkills {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ActiveSkill {}
+pub struct ActiveSkill {
+    effect: Effect,
+}

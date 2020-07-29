@@ -4,7 +4,7 @@ use crate::objholder::ItemIdx;
 use std::ops::{Index, IndexMut};
 
 /// Elements of damage/attack
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Element {
     None = -1,
