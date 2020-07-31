@@ -100,7 +100,12 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
                 .into();
             let power =
                 (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
-            super::magic::do_magic(game, cid, item_obj.magical_effect, power);
+            if let Some(rule) = RULES.active_skills.get_opt(&item_obj.magical_effect) {
+                super::effect::process_effect(game, cid, rule, power);
+            } else {
+                return;
+            }
+            //            super::magic::do_magic(game, cid, item_obj.magical_effect, power);
             *item.charge_mut().unwrap() = n - 1;
         }
         _ => (),

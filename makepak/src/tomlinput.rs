@@ -106,7 +106,7 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub medical_effect: gamedata::MedicalEffect,
     #[serde(default)]
-    pub magical_effect: gamedata::MagicalEffect,
+    pub magical_effect: Option<String>,
     #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
     #[serde(default)]

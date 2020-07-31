@@ -1,19 +1,18 @@
 use super::combat::{attack_target, AttackParams, DamageKind};
 use crate::game::Game;
 use common::gamedata::*;
+use rules::active_skill::ActiveSkill;
 
-pub fn do_magic(game: &mut Game, cid: CharaId, me: MagicalEffect, power: f64) {
-    match me {
-        MagicalEffect::None => {
-            return;
+pub fn process_effect(game: &mut Game, cid: CharaId, rule: &'static ActiveSkill, power: f64) {
+    match rule.effect {
+        Effect::Ranged(element) => {
+            ranged_attack(game, cid, power, element);
         }
-        MagicalEffect::Arrow => {
-            arrow(game, cid, power);
-        }
+        _ => (),
     }
 }
 
-pub fn arrow(game: &mut Game, cid: CharaId, power: f64) {
+fn ranged_attack(game: &mut Game, cid: CharaId, attack_power: f64, element: Element) {
     if game.target_chara.is_none() {
         let player = game.gd.chara.get(CharaId::Player);
         game_log_i!("no-target"; chara=player);
@@ -28,12 +27,10 @@ pub fn arrow(game: &mut Game, cid: CharaId, power: f64) {
     let target = game.gd.chara.get(target_id);
     game_log!("arrow-hit"; chara=target);
 
-    let attack_power = power;
-
     let attack_params = AttackParams {
         attacker_id: Some(cid),
         kind: DamageKind::RangedAttack,
-        element: Element::Physical,
+        element,
         attack_power,
     };
 

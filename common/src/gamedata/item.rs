@@ -42,7 +42,7 @@ pub struct ItemObject {
     pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
-    pub magical_effect: MagicalEffect,
+    pub magical_effect: Option<String>,
     pub medical_effect: MedicalEffect,
     pub tool_effect: ToolEffect,
     pub use_effect: UseEffect,

@@ -13,6 +13,18 @@ impl ActiveSkills {
         }
     }
 
+    pub fn get(&self, id: &str) -> Option<&ActiveSkill> {
+        self.get_opt(&Some(id))
+    }
+
+    pub fn get_opt<S: AsRef<str>>(&self, id: &Option<S>) -> Option<&ActiveSkill> {
+        if let Some(id) = id {
+            self.0.get(id.as_ref())
+        } else {
+            None
+        }
+    }
+
     pub fn join_from_dir(&mut self, dir: &Path) -> Result<(), std::io::Error> {
         for entry in fs::read_dir(dir)? {
             let entry = entry?;
@@ -39,5 +51,5 @@ impl ActiveSkills {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActiveSkill {
-    effect: Effect,
+    pub effect: Effect,
 }
