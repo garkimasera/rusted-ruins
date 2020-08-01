@@ -6,6 +6,7 @@ extern crate log;
 
 #[macro_use]
 mod tool;
+mod datwalker;
 mod musictable;
 mod wavtable;
 
@@ -104,7 +105,7 @@ fn init_device() -> sdl2::mixer::Sdl2MixerContext {
     let channels = DEFAULT_CHANNELS; // Stereo
     let chunk_size = 1024;
     sdl2::mixer::open_audio(frequency, format, channels, chunk_size).unwrap();
-    let mixer_context = sdl2::mixer::init(InitFlag::OGG).unwrap();
+    let mixer_context = sdl2::mixer::init(InitFlag::OPUS).unwrap();
 
     sdl2::mixer::allocate_channels(1);
 
@@ -121,11 +122,10 @@ mod tests {
         let sdl = sdl2::init().unwrap();
         let _audio = sdl.audio().unwrap();
 
-        let app_dir = match var("RUSTED_RUINS_APP_DIR") {
+        let app_dir = match var("RUSTED_RUINS_ASSETS_DIR") {
             Ok(o) => o,
             Err(e) => {
-                println!("{}", e);
-                return;
+                panic!("{}", e);
             }
         };
 

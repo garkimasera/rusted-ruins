@@ -21,16 +21,34 @@ impl MusicTable {
 
                 // If this file isn't ogg
                 let path = entry.path();
-                if path.extension().is_none() || path.extension().unwrap() != "ogg" {
+                if path.extension().is_none() {
                     continue;
                 }
+                let extension = path.extension().unwrap();
 
-                let m = warn_continue!(Music::from_file(&path));
-                let filename = warn_continue!(path.file_stem().ok_or("Invalid file name"))
-                    .to_string_lossy()
-                    .into_owned();
+                if extension == "opus" {
+                    let m = warn_continue!(Music::from_file(&path));
+                    let filename = warn_continue!(path.file_stem().ok_or("Invalid file name"))
+                        .to_string_lossy()
+                        .into_owned();
 
-                music.insert(filename, m);
+                    music.insert(filename, m);
+                } else if extension == "dat" {
+                    warn_continue!(crate::datwalker::datwalker(
+                        &path,
+                        "opus",
+                        |filename, data| {
+                            let m = match Music::from_static_bytes(data) {
+                                Ok(m) => m,
+                                Err(e) => {
+                                    warn!("{}", e);
+                                    return;
+                                }
+                            };
+                            music.insert(filename, m);
+                        }
+                    ));
+                }
             }
         }
 
