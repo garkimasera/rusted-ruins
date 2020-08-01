@@ -28,6 +28,7 @@ pub struct Map {
     /// If this is None, nearest tile's infomation will be used
     pub outside_tile: Option<OutsideTileInfo>,
     pub boundary: MapBoundary,
+    pub music: String,
 }
 
 pub type TileArray = ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]>;
@@ -241,6 +242,7 @@ impl Map {
             charas: Some(HashMap::new()),
             outside_tile: None,
             boundary: MapBoundary::default(),
+            music: String::default(),
         }
     }
 

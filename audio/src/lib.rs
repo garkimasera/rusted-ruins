@@ -50,6 +50,10 @@ pub fn play_sound(name: &str) {
 
 /// Play an music (ogg file)
 pub fn play_music(name: &str) {
+    if name.is_empty() {
+        return;
+    }
+
     with_audio_player(|a| {
         a.play_music(name);
     });

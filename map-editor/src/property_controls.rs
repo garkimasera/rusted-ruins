@@ -11,6 +11,7 @@ pub struct PropertyControls {
     pub map_id: gtk::Entry,
     pub region_map: gtk::CheckButton,
     pub entrance_pos: gtk::Entry,
+    pub music: gtk::Entry,
     pub boundary_n_none: gtk::RadioButton,
     pub boundary_n_next: gtk::RadioButton,
     pub boundary_n_prev: gtk::RadioButton,
@@ -39,6 +40,7 @@ impl PropertyControls {
             map_id: get_object!(builder, "property-map-id"),
             region_map: get_object!(builder, "property-region-map"),
             entrance_pos: get_object!(builder, "property-entrance-pos"),
+            music: get_object!(builder, "property-music"),
             boundary_n_none: get_object!(builder, "property-boundary-n-none"),
             boundary_n_next: get_object!(builder, "property-boundary-n-next"),
             boundary_n_prev: get_object!(builder, "property-boundary-n-prev"),
@@ -69,6 +71,7 @@ impl PropertyControls {
             self.entrance_pos
                 .set_text(&format!("{},{}", entrance.0, entrance.1));
         }
+        self.music.set_text(&map.property.music);
         match map.property.boundary.n {
             MapTemplateBoundaryBehavior::None => {
                 self.boundary_n_none.set_active(true);
@@ -167,6 +170,15 @@ pub fn connect_for_property_controls(ui: &Ui) {
                 }
             }
         });
+
+    // music editting
+    let uic = ui.clone();
+    ui.property_controls.music.connect_changed(move |widget| {
+        if uic.get_signal_mode() {
+            let text = widget.get_text();
+            uic.map.borrow_mut().property.music = text.into();
+        }
+    });
 
     connect_for_boundary_radio_bottons(ui);
     connect_for_tile_edit_controls(ui);

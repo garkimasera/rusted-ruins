@@ -88,6 +88,7 @@ pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
         .locate_chara(CharaId::Player, new_player_pos);
 
     crate::audio::play_sound("floor-change");
+    crate::audio::play_music(&gd.get_current_map().music);
     super::view::update_view_map(game);
 }
 

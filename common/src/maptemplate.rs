@@ -27,6 +27,8 @@ pub struct MapTemplateObject {
     pub boundary: MapTemplateBoundary,
     pub entrance: ArrayVec<[Vec2d; 4]>,
     pub items: Vec<(Vec2d, ItemGen)>,
+    #[serde(default)]
+    pub music: String,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]

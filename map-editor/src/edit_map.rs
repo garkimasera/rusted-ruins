@@ -229,6 +229,7 @@ impl EditingMap {
             boundary: self.property.boundary,
             entrance: self.property.entrance.clone(),
             items,
+            music: self.property.music.clone(),
         }
     }
 }
@@ -239,6 +240,7 @@ pub struct MapProperty {
     pub is_region_map: bool,
     pub boundary: MapTemplateBoundary,
     pub entrance: ArrayVec<[Vec2d; 4]>,
+    pub music: String,
 }
 
 impl MapProperty {
@@ -248,6 +250,7 @@ impl MapProperty {
             is_region_map: false,
             boundary: MapTemplateBoundary::default(),
             entrance: ArrayVec::new(),
+            music: String::default(),
         }
     }
 }
@@ -277,6 +280,7 @@ impl From<MapTemplateObject> for EditingMap {
 
         map.property.boundary = obj.boundary;
         map.property.entrance = obj.entrance;
+        map.property.music = obj.music;
 
         map
     }
