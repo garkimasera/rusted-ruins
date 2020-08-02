@@ -1,10 +1,12 @@
 use sdl2::mixer::Music;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
 pub struct MusicTable {
     music: HashMap<String, Music<'static>>,
+    current_music: RefCell<Option<String>>,
 }
 
 impl MusicTable {
@@ -52,12 +54,21 @@ impl MusicTable {
             }
         }
 
-        MusicTable { music }
+        MusicTable {
+            music,
+            current_music: RefCell::new(None),
+        }
     }
 
     pub fn play(&self, name: &str) -> Result<(), String> {
+        let mut current_music = self.current_music.borrow_mut();
+        if current_music.is_some() && current_music.as_ref().unwrap() == name {
+            return Ok(());
+        }
+
         if let Some(m) = self.music.get(name) {
             m.play(-1)?; // Pass -1 for infinite loop
+            *current_music = Some(name.to_owned());
             Ok(())
         } else {
             Err(format!("Unknown music \"{}\"", name))

@@ -467,6 +467,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.game = game;
                         self.game.update_before_player_turn();
                         game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
+                        audio::play_music(&self.game.gd.get_current_map().music);
                     }
                     _ => unreachable!(),
                 }
