@@ -80,6 +80,8 @@ impl DialogWindow for StartDialog {
     fn mode(&self) -> InputMode {
         InputMode::Dialog
     }
+
+    fn sound(&self, _: bool) {}
 }
 
 pub struct ChooseSaveFileDialog {
@@ -151,4 +153,6 @@ impl DialogWindow for ChooseSaveFileDialog {
     fn mode(&self) -> InputMode {
         InputMode::Dialog
     }
+
+    fn sound(&self, _: bool) {}
 }

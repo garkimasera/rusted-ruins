@@ -93,6 +93,14 @@ pub trait DialogWindow: Window {
         WindowDrawMode::Normal
     }
     fn update(&mut self, _gd: &GameData) {}
+
+    fn sound(&self, open: bool) {
+        if open {
+            audio::play_sound("window-open");
+        } else {
+            audio::play_sound("window-close");
+        }
+    }
 }
 
 /// The current main mode
@@ -267,7 +275,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 match dialog_result {
                     DialogResult::Continue => (),
                     DialogResult::Close => {
-                        self.window_stack.pop();
+                        if let Some(w) = self.window_stack.pop() {
+                            w.sound(false);
+                        }
+
                         if tail > 0 {
                             tail -= 1;
                             let mut pa = DoPlayerAction::new(&mut self.game);
@@ -277,7 +288,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         }
                     }
                     DialogResult::CloseWithValue(v) => {
-                        self.window_stack.pop();
+                        if let Some(w) = self.window_stack.pop() {
+                            w.sound(false);
+                        }
+
                         if tail > 0 {
                             tail -= 1;
                             let mut pa = DoPlayerAction::new(&mut self.game);
@@ -287,6 +301,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         }
                     }
                     DialogResult::CloseAll => {
+                        if let Some(w) = self.window_stack.pop() {
+                            w.sound(false);
+                        }
                         self.window_stack.clear();
                     }
                     DialogResult::Command(_) => (),
@@ -500,6 +517,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     }
 
     fn push_dialog_window(&mut self, w: Box<dyn DialogWindow>) {
+        w.sound(true);
         crate::eventhandler::open_dialog();
         self.window_stack.push(w);
     }
