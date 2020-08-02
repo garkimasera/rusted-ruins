@@ -18,4 +18,6 @@ pub struct DungeonGenParams {
     pub item_gen_probability: f64,
     /// The range of number of floor of auto generated dungeons
     pub floor_range: [u32; 2],
+    /// Default map music
+    pub music: String,
 }

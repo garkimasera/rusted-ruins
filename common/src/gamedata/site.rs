@@ -147,6 +147,7 @@ impl Default for SiteId {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum DungeonKind {
     None,
     Cave,

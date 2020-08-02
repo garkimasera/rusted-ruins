@@ -25,7 +25,8 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     let is_deepest_floor = floor >= gd.region.get_site(sid).max_floor() - 1;
     let map = match gd.region.get_site(sid).content {
         SiteContent::AutoGenDungeon { dungeon_kind } => {
-            let floor_gen_id = &RULES.dungeon_gen[&dungeon_kind]
+            let gen_params = &RULES.dungeon_gen[&dungeon_kind];
+            let floor_gen_id = &gen_params
                 .floor_gen
                 .choose_weighted(&mut GameRng, |item| item.1)
                 .unwrap()
@@ -38,6 +39,7 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
                 .wall(wall_idx)
                 .deepest_floor(is_deepest_floor)
                 .floor_gen_id(floor_gen_id)
+                .music(&gen_params.music)
                 .build()
         }
         _ => MapBuilder::new(40, 40).floor(floor).build(),

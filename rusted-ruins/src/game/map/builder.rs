@@ -15,6 +15,7 @@ pub struct MapBuilder {
     floor_gen_params: Option<&'static FloorGenParams>,
     tile: TileIdx,
     wall: WallIdx,
+    music: String,
 }
 
 impl MapBuilder {
@@ -45,13 +46,15 @@ impl MapBuilder {
         } else {
             MapGenerator::new((self.w, self.h)).flat().generate()
         };
-        generated_map_to_map(
+        let mut map = generated_map_to_map(
             generated_map,
             self.tile,
             self.wall,
             self.floor,
             self.is_deepest_floor,
-        )
+        );
+        map.music = self.music;
+        map
     }
 
     pub fn floor(mut self, floor: u32) -> MapBuilder {
@@ -71,6 +74,11 @@ impl MapBuilder {
 
     pub fn deepest_floor(mut self, is_deepest_floor: bool) -> MapBuilder {
         self.is_deepest_floor = is_deepest_floor;
+        self
+    }
+
+    pub fn music(mut self, music: &str) -> MapBuilder {
+        self.music = music.to_owned();
         self
     }
 }
