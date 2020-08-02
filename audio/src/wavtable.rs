@@ -43,6 +43,7 @@ impl WavTable {
 
     pub fn play(&self, name: &str) -> Result<(), String> {
         if let Some(chunk) = self.chunks.get(name) {
+            self.channel.halt();
             self.channel.play(&chunk, 0)?;
             Ok(())
         } else {

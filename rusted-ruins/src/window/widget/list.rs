@@ -283,6 +283,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 if let Some(idx) = self.get_idx_from_pos(x, y) {
                     if self.current_choice != idx {
                         self.current_choice = idx;
+                        audio::play_sound("select-item");
                     }
                 }
                 None
