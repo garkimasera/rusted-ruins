@@ -22,13 +22,14 @@ pub struct AudioContext {
 }
 
 /// Initialize AudioPlayer
-pub fn init<P: AsRef<Path>>(data_dirs: &[P]) -> AudioContext {
+pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext {
     let mixer_context = init_device();
 
     AUDIO_PLAYER.with(|a| {
         assert!(a.borrow().is_none());
         *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
     });
+    sdl2::mixer::Music::set_volume(music_volume);
     AudioContext {
         _mixer_context: mixer_context,
     }

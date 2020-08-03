@@ -169,4 +169,5 @@ pub struct Config {
     pub double_scale_mode: bool,
     #[serde(default)]
     pub fix_rand: bool,
+    pub music_volume: i32,
 }
