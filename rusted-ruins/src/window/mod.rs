@@ -61,9 +61,11 @@ pub enum DialogResult {
     Close,
     CloseWithValue(Box<dyn Any>),
     CloseAll,
+    CloseAllAndReprocess(Command),
     Command(Option<Command>),
     Quit,
     OpenChildDialog(Box<dyn DialogWindow>),
+    Reprocess(Command),
     Special(SpecialDialogResult),
 }
 
@@ -265,7 +267,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         }
         let command = command.unwrap();
 
-        if !self.window_stack.is_empty() {
+        let command = if !self.window_stack.is_empty() {
             let mut tail = self.window_stack.len() - 1;
             let mut dialog_result = {
                 let mut pa = DoPlayerAction::new(&mut self.game);
@@ -300,6 +302,13 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                             continue;
                         }
                     }
+                    DialogResult::CloseAllAndReprocess(command) => {
+                        if let Some(w) = self.window_stack.pop() {
+                            w.sound(false);
+                        }
+                        self.window_stack.clear();
+                        break command;
+                    }
                     DialogResult::CloseAll => {
                         if let Some(w) = self.window_stack.pop() {
                             w.sound(false);
@@ -313,13 +322,18 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     DialogResult::OpenChildDialog(child) => {
                         self.push_dialog_window(child);
                     }
+                    DialogResult::Reprocess(command) => {
+                        break command;
+                    }
                     DialogResult::Special(result) => {
                         self.process_special_result(result);
                     }
                 }
                 return true;
             }
-        }
+        } else {
+            command
+        };
 
         // If self.mode is OnGame
         let command = match &mut self.mode {

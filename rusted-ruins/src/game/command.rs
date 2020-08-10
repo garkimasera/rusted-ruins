@@ -62,6 +62,7 @@ pub enum Command {
         left_button: bool,
         right_button: bool,
         key_state: KeyState,
+        ui_only: bool,
     },
 }
 
@@ -116,12 +117,14 @@ impl Command {
                 left_button,
                 right_button,
                 key_state,
+                ui_only,
             } => Command::MouseState {
                 x: x - point.0,
                 y: y - point.1,
                 left_button,
                 right_button,
                 key_state,
+                ui_only,
             },
             _ => self.clone(),
         }

@@ -266,6 +266,7 @@ impl EventHandler {
                     left_button: mouse_state.left(),
                     right_button: mouse_state.right(),
                     key_state: self.key_state,
+                    ui_only: false,
                 })
             } else {
                 None

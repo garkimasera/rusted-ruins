@@ -84,8 +84,12 @@ impl MainWindow {
                 y,
                 left_button,
                 key_state,
+                ui_only,
                 ..
             } => {
+                if ui_only {
+                    return ConvertMouseEventResult::None;
+                }
                 if !self.rect.contains_point((x, y)) {
                     return ConvertMouseEventResult::None;
                 }
