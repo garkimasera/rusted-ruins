@@ -134,7 +134,7 @@ mod tests {
             }
         };
 
-        let _audio_context = init(&[app_dir]);
+        let _audio_context = init(&[app_dir], 80);
 
         play_music("test");
         std::thread::sleep(std::time::Duration::from_millis(3000));
