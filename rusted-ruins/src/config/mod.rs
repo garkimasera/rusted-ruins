@@ -129,9 +129,19 @@ pub fn abs_path(s: &str) -> PathBuf {
 
 /// Create absolute path from config directory
 pub fn cfg_path(s: &str) -> PathBuf {
+    let mut path = USER_DIR.clone();
+    path.push(basic::CFG_FILES_DIR);
+    path.push(s);
+    if path.exists() {
+        return path;
+    }
+
     let mut path = ASSETS_DIR.clone();
     path.push(basic::CFG_FILES_DIR);
     path.push(s);
+    if !path.exists() {
+        panic!("Config file {} does not exist", path.to_string_lossy());
+    }
     path
 }
 
