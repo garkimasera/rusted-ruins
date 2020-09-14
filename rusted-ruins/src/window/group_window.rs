@@ -48,6 +48,11 @@ impl GroupWindow {
 
     pub fn switch(&mut self, i_win: u32, game: &Game) {
         assert!(i_win < self.size);
+
+        if self.current_window != i_win {
+            crate::audio::play_sound("page-switch");
+        }
+
         self.current_window = i_win;
         if self.members[i_win as usize].is_none() {
             self.members[i_win as usize] = Some((self.mem_info[i_win as usize].creator)(game));
