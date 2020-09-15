@@ -50,7 +50,7 @@ impl GroupWindow {
         assert!(i_win < self.size);
 
         if self.current_window != i_win {
-            crate::audio::play_sound("page-switch");
+            audio::play_sound("page-switch");
         }
 
         self.current_window = i_win;

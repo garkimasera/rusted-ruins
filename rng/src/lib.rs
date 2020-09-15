@@ -81,6 +81,12 @@ pub fn dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
     sum
 }
 
+/// Return bool from given probability
+pub fn gen_bool(p: f32) -> bool {
+    let mut rng = GameRng;
+    rng.gen_bool(p.into())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -6,9 +6,11 @@
         "move_kind": "melee"
     },
     "wander" : {
-        "move_kind": "wander"
+        "move_kind": "wander",
+        "walk_prob": 0.4
     },
     "shopkeeper": {
-        "move_kind": "return"
+        "move_kind": "return",
+        "walk_prob": 0.1
     }
 }

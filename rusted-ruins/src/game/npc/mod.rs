@@ -23,7 +23,9 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
             }
         }
         MoveKind::Wander => {
-            random_walk(game, cid);
+            if gen_bool(ai_rule.walk_prob) {
+                random_walk(game, cid);
+            }
             return;
         }
         MoveKind::Return => {
@@ -36,9 +38,8 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
                     return;
                 }
             } else {
-                if gen_range(0, 1) == 0 {
+                if gen_bool(ai_rule.walk_prob) {
                     random_walk(game, cid);
-                    return;
                 }
             }
         }
