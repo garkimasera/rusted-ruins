@@ -129,8 +129,9 @@ mod tests {
 
         let app_dir = match var("RUSTED_RUINS_ASSETS_DIR") {
             Ok(o) => o,
-            Err(e) => {
-                panic!("{}", e);
+            Err(_) => {
+                eprintln!("skip sound test");
+                return;
             }
         };
 
