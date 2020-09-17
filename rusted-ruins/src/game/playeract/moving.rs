@@ -85,6 +85,10 @@ impl<'a> DoPlayerAction<'a> {
             return;
         };
 
+        if dir.is_none() {
+            return;
+        }
+
         self.try_move(dir);
     }
 
