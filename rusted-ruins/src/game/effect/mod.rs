@@ -4,11 +4,13 @@ use common::gamedata::*;
 use rules::active_skill::ActiveSkill;
 
 pub fn process_effect(game: &mut Game, cid: CharaId, rule: &'static ActiveSkill, power: f64) {
-    match rule.effect {
-        Effect::Ranged(element) => {
-            ranged_attack(game, cid, power, element);
+    for effect_kind in &rule.effect.kind {
+        match effect_kind {
+            EffectKind::Ranged { element } => {
+                ranged_attack(game, cid, power, *element);
+            }
+            _ => (),
         }
-        _ => (),
     }
 }
 
