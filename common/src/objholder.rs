@@ -101,11 +101,15 @@ macro_rules! impl_objholder {
                 let mut objholder = ObjectHolder::new();
 
                 for dir in dirs {
-                    load_objs_dir(dir.as_ref(), |object| {
+                    let err_stack = load_objs_dir(dir.as_ref(), |object| {
                         match object {
                             $(Object::$a(o) => { objholder.$mem.push(o); }),*
                         }
                     });
+
+                    if !err_stack.is_empty() {
+                        warn!("object loading error in {}\n{:?}", dir.as_ref().to_string_lossy(), err_stack);
+                    }
                 }
 
                 objholder.sort();
@@ -131,6 +135,17 @@ macro_rules! impl_objholder {
                     }
                 })*
                 Ok(())
+            }
+
+            pub fn debug_print(&self, ty: &str) {
+                $({
+                    if ty == stringify!($mem) {
+                        for o in &self.$mem {
+                            println!("{}", o.id);
+                        }
+                        return;
+                    }
+                })*
             }
         }
 

@@ -56,6 +56,14 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
                 game_log_i!("debug-command-need-1arg"; command="anim");
             }
         }
+        "print_ids" => {
+            if let Some(arg1) = args.next() {
+                let obj_holder = common::gobj::get_objholder();
+                obj_holder.debug_print(arg1);
+            } else {
+                game_log_i!("debug-command-need-1arg"; command="print_ids");
+            }
+        }
         _ => {
             game_log_i!("debug-command-invalid");
         }
