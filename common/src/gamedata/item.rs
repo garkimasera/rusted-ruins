@@ -1,4 +1,5 @@
 use super::defs::*;
+use super::effect::Effect;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
@@ -42,7 +43,7 @@ pub struct ItemObject {
     pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
-    pub magical_effect: Option<String>,
+    pub magical_effect: Option<Effect>,
     pub medical_effect: MedicalEffect,
     pub tool_effect: ToolEffect,
     pub use_effect: UseEffect,

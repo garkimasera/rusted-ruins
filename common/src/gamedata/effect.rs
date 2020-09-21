@@ -10,7 +10,6 @@ pub struct Effect {
 /// Effect defines the game effect of items, magics, or other active skills.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-#[serde(tag = "type")]
 pub enum EffectKind {
     None,
     RecoverHp,
