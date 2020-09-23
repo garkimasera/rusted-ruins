@@ -1,11 +1,11 @@
 use super::img::build_img;
 use crate::error::*;
-use crate::tomlinput::*;
+use crate::input::*;
 use anyhow::*;
 use common::gamedata::defs::ElementArray;
 use common::gamedata::item::*;
 
-pub fn build_item_object(tomlinput: TomlInput) -> Result<ItemObject, Error> {
+pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let item = get_optional_field!(tomlinput, item);
     let flags = ItemFlags::empty();

@@ -9,7 +9,7 @@ extern crate rusted_ruins_geom as geom;
 
 mod verbose;
 #[macro_use]
-mod tomlinput;
+mod input;
 mod buildobj;
 mod compile;
 mod dir;

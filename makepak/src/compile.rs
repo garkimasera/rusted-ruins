@@ -12,7 +12,7 @@ use tar;
 use toml::de::from_str;
 
 use crate::buildobj::build_object;
-use crate::tomlinput::TomlInput;
+use crate::input::Input;
 
 pub fn compile(files: &[&str], output_file: &String) {
     let out = File::create(output_file).unwrap();
@@ -56,11 +56,11 @@ fn read_toml<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
         s
     };
 
-    let tomlinput: TomlInput = from_str(&s)?;
+    let input: Input = from_str(&s)?;
 
     print_verbose(|| format!("Processing \"{:?}\"", path.as_ref()));
-    print_verbose(|| format!("{:?}", tomlinput));
-    let object = build_object(tomlinput)?;
+    print_verbose(|| format!("{:?}", input));
+    let object = build_object(input)?;
 
     Ok(object)
 }

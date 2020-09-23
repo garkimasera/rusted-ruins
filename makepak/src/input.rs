@@ -1,11 +1,12 @@
 use common::gamedata::defs::Harvest;
+use common::gamedata::effect::Effect;
 use common::gamedata::{self, ElementArray, FactionId};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
 
-#[derive(Debug, Deserialize)]
-pub struct TomlInput {
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Input {
     pub object_type: String,
     pub id: String,
     pub image: Option<ImgInput>,
@@ -31,7 +32,7 @@ macro_rules! get_optional_field {
     };
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ImgInput {
     pub path: String,
@@ -49,7 +50,7 @@ pub struct ImgInput {
 
 // Type dependent fields
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct CharaTemplateDepInput {
     pub race: String,
@@ -68,13 +69,13 @@ pub struct CharaTemplateDepInput {
     pub spd: u16,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TileDepInput {
     pub kind: ::common::obj::TileKind,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct WallDepInput {
     pub base_draw: Option<bool>,
@@ -82,13 +83,13 @@ pub struct WallDepInput {
     pub materials: Option<Vec<(String, u32)>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SpecialTileDepInput {
     pub always_background: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ItemDepInput {
     pub item_kind: String,
@@ -106,7 +107,7 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub medical_effect: gamedata::MedicalEffect,
     #[serde(default)]
-    pub magical_effect: Option<String>,
+    pub magical_effect: Option<Effect>,
     #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
     #[serde(default)]
@@ -122,7 +123,7 @@ pub struct ItemDepInput {
     pub titles: Vec<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RegionGenDepInput {
     pub map_template_id: String,
@@ -130,14 +131,14 @@ pub struct RegionGenDepInput {
     pub others: Vec<SiteGenIdAndPos>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SiteGenIdAndPos {
     pub id: String,
     pub pos: Vec2d,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SiteGenDepInput {
     pub kind: gamedata::site::SiteKind,
@@ -148,7 +149,7 @@ pub struct SiteGenDepInput {
     pub shops: Option<Vec<sitegen::ShopGenData>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ScriptDepInput {
     pub script: String,

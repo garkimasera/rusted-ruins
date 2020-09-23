@@ -1,5 +1,5 @@
 use crate::error::*;
-use crate::tomlinput::*;
+use crate::input::*;
 use anyhow::*;
 use common::obj::*;
 use image::{self, GenericImageView};

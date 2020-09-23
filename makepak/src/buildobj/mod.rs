@@ -5,7 +5,7 @@ mod script_parser;
 
 use self::img::*;
 use self::item::build_item_object;
-use crate::tomlinput::TomlInput;
+use crate::input::Input;
 use anyhow::*;
 use common::gamedata::{CharaBaseAttr, SkillBonus, SkillKind};
 use common::obj::*;
@@ -13,7 +13,7 @@ use geom::Vec2d;
 pub use script_parser::parse as script_parse;
 use std::collections::HashMap;
 
-pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
+pub fn build_object(tomlinput: Input) -> Result<Object, Error> {
     let object_type = tomlinput.object_type.clone();
     match object_type.as_ref() {
         "anim_img" => {
@@ -58,7 +58,7 @@ pub fn build_object(tomlinput: TomlInput) -> Result<Object, Error> {
     }
 }
 
-fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject, Error> {
+fn build_deco_object(tomlinput: Input) -> Result<DecoObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
     Ok(DecoObject {
@@ -67,7 +67,7 @@ fn build_deco_object(tomlinput: TomlInput) -> Result<DecoObject, Error> {
     })
 }
 
-fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject, Error> {
+fn build_effect_object(tomlinput: Input) -> Result<EffectObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
     Ok(EffectObject {
@@ -76,7 +76,7 @@ fn build_effect_object(tomlinput: TomlInput) -> Result<EffectObject, Error> {
     })
 }
 
-fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject, Error> {
+fn build_special_tile_object(tomlinput: Input) -> Result<SpecialTileObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let always_background = if let Some(special_tile) = tomlinput.special_tile {
         special_tile.always_background.unwrap_or(false)
@@ -91,7 +91,7 @@ fn build_special_tile_object(tomlinput: TomlInput) -> Result<SpecialTileObject, 
     })
 }
 
-fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject, Error> {
+fn build_tile_object(tomlinput: Input) -> Result<TileObject, Error> {
     let tile_dep_input = get_optional_field!(tomlinput, tile);
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
@@ -104,7 +104,7 @@ fn build_tile_object(tomlinput: TomlInput) -> Result<TileObject, Error> {
     })
 }
 
-fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject, Error> {
+fn build_ui_img_object(tomlinput: Input) -> Result<UIImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
     Ok(UIImgObject {
@@ -113,7 +113,7 @@ fn build_ui_img_object(tomlinput: TomlInput) -> Result<UIImgObject, Error> {
     })
 }
 
-fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
+fn build_wall_object(tomlinput: Input) -> Result<WallObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
     let (base_draw, build_skill, materials) = if let Some(wall) = tomlinput.wall {
@@ -136,7 +136,7 @@ fn build_wall_object(tomlinput: TomlInput) -> Result<WallObject, Error> {
     })
 }
 
-fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObject, Error> {
+fn build_chara_template_object(tomlinput: Input) -> Result<CharaTemplateObject, Error> {
     let chara_dep_input = get_optional_field!(tomlinput, chara_template);
     let img = get_optional_field!(tomlinput, image);
 
@@ -170,7 +170,7 @@ fn build_chara_template_object(tomlinput: TomlInput) -> Result<CharaTemplateObje
     })
 }
 
-fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject, Error> {
+fn build_anim_img_object(tomlinput: Input) -> Result<AnimImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
     Ok(AnimImgObject {
@@ -179,9 +179,9 @@ fn build_anim_img_object(tomlinput: TomlInput) -> Result<AnimImgObject, Error> {
     })
 }
 
-fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Error> {
+fn build_region_gen_object(tomlinput: Input) -> Result<RegionGenObject, Error> {
     let rg = get_optional_field!(tomlinput, region_gen);
-    use crate::tomlinput::SiteGenIdAndPos;
+    use crate::input::SiteGenIdAndPos;
 
     let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
         v.into_iter().map(|a| (a.id, a.pos)).collect()
@@ -195,7 +195,7 @@ fn build_region_gen_object(tomlinput: TomlInput) -> Result<RegionGenObject, Erro
     })
 }
 
-fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
+fn build_script_object(tomlinput: Input) -> Result<ScriptObject, Error> {
     let s = get_optional_field!(tomlinput, script);
     let script = script_parse(&s.script)?;
 
@@ -205,7 +205,7 @@ fn build_script_object(tomlinput: TomlInput) -> Result<ScriptObject, Error> {
     })
 }
 
-fn build_site_gen_object(tomlinput: TomlInput) -> Result<SiteGenObject, Error> {
+fn build_site_gen_object(tomlinput: Input) -> Result<SiteGenObject, Error> {
     let sg = get_optional_field!(tomlinput, site_gen);
 
     Ok(SiteGenObject {
