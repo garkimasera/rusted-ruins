@@ -26,8 +26,8 @@ pub fn build_object(tomlinput: Input) -> Result<Object, Error> {
         "deco" => {
             return build_deco_object(tomlinput).map(|o| Object::Deco(o));
         }
-        "effect" => {
-            return build_effect_object(tomlinput).map(|o| Object::Effect(o));
+        "effect_img" => {
+            return build_effect_object(tomlinput).map(|o| Object::EffectImg(o));
         }
         "item" => {
             return build_item_object(tomlinput).map(|o| Object::Item(o));
@@ -68,10 +68,10 @@ fn build_deco_object(tomlinput: Input) -> Result<DecoObject, Error> {
     })
 }
 
-fn build_effect_object(tomlinput: Input) -> Result<EffectObject, Error> {
+fn build_effect_object(tomlinput: Input) -> Result<EffectImgObject, Error> {
     let img = get_optional_field!(tomlinput, image);
 
-    Ok(EffectObject {
+    Ok(EffectImgObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
     })
@@ -87,7 +87,7 @@ fn build_special_tile_object(tomlinput: Input) -> Result<SpecialTileObject, Erro
 
     Ok(SpecialTileObject {
         id: tomlinput.id,
-        always_background: always_background,
+        always_background,
         img: build_img(img)?.0,
     })
 }
@@ -99,7 +99,7 @@ fn build_tile_object(tomlinput: Input) -> Result<TileObject, Error> {
 
     Ok(TileObject {
         id: tomlinput.id,
-        img: img,
+        img,
         kind: tile_dep_input.kind,
         symbol_color: imgdata.calc_average_color(),
     })
@@ -129,8 +129,8 @@ fn build_wall_object(tomlinput: Input) -> Result<WallObject, Error> {
 
     Ok(WallObject {
         id: tomlinput.id,
-        base_draw: base_draw,
-        img: img,
+        base_draw,
+        img,
         symbol_color: imgdata.calc_average_color(),
         build_skill,
         materials,

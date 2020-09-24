@@ -3,7 +3,7 @@ use common::objholder::*;
 
 /// Holds frequent used texture's ids
 pub struct FrequentTextures {
-    effect_idx: Vec<EffectIdx>,
+    effect_idx: Vec<EffectImgIdx>,
 }
 
 impl FrequentTextures {
@@ -20,7 +20,7 @@ impl FrequentTextures {
         FrequentTextures { effect_idx }
     }
 
-    pub fn overlay_idx(&self, o: Overlay) -> EffectIdx {
+    pub fn overlay_idx(&self, o: Overlay) -> EffectImgIdx {
         self.effect_idx[o as usize]
     }
 }

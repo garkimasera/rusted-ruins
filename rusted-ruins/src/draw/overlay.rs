@@ -1,13 +1,13 @@
 use crate::game::frequent_tex::Overlay;
 use crate::game::{Game, InfoGetter};
-use common::objholder::EffectIdx;
+use common::objholder::EffectImgIdx;
 use common::piece_pattern::*;
 use geom::*;
 
 pub enum FogPattern {
     None,
-    Fog(EffectIdx),
-    PiecePattern(EffectIdx, PiecePattern),
+    Fog(EffectImgIdx),
+    PiecePattern(EffectImgIdx, PiecePattern),
 }
 
 pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
@@ -30,7 +30,7 @@ pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
     }
 }
 
-pub fn all(game: &Game) -> Option<EffectIdx> {
+pub fn all(game: &Game) -> Option<EffectImgIdx> {
     // If current map is indoor, don't draw night overlay
     if !game.gd.is_open_air(game.gd.get_current_mapid()) {
         return None;

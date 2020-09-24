@@ -349,4 +349,4 @@ pub trait PieceImgObject: ImgObject {
 
 impl PieceImgObject for crate::obj::TileObject {}
 impl PieceImgObject for crate::obj::WallObject {}
-impl PieceImgObject for crate::obj::EffectObject {}
+impl PieceImgObject for crate::obj::EffectImgObject {}

@@ -180,7 +180,7 @@ impl_objholder! {
     {AnimImg, AnimImgObject, anim_img, AnimImgIdx},
     {CharaTemplate, CharaTemplateObject, chara_template, CharaTemplateIdx},
     {Deco, DecoObject, deco, DecoIdx},
-    {Effect, EffectObject, effect, EffectIdx},
+    {EffectImg, EffectImgObject, effect_img, EffectImgIdx},
     {Item, ItemObject, item, ItemIdx},
     {SpecialTile, SpecialTileObject, special_tile, SpecialTileIdx},
     {Tile, TileObject, tile, TileIdx},
