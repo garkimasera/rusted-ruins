@@ -9,7 +9,6 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 use tar;
-use toml::de::from_str;
 
 use crate::buildobj::build_object;
 use crate::input::Input;
@@ -29,7 +28,7 @@ pub fn compile(files: &[&str], output_file: &String) {
         let read_result = if Some(true) == f.extension().map(|e| e == "rrscript") {
             read_rrscript(f)
         } else {
-            read_toml(f)
+            read_input_file(f)
         };
 
         let obj = match read_result {
@@ -48,17 +47,32 @@ pub fn compile(files: &[&str], output_file: &String) {
     builder.finish().unwrap();
 }
 
-fn read_toml<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
+fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
+    let path = path.as_ref();
     let s = {
-        let mut f = File::open(path.as_ref())?;
+        let mut f = File::open(path)?;
         let mut s = String::new();
         f.read_to_string(&mut s)?;
         s
     };
 
-    let input: Input = from_str(&s)?;
+    print_verbose(|| format!("Processing \"{:?}\"", path));
 
-    print_verbose(|| format!("Processing \"{:?}\"", path.as_ref()));
+    let ext = if let Some(ext) = path.extension() {
+        ext
+    } else {
+        bail!(
+            "given file does not have extension: {}",
+            path.to_string_lossy()
+        );
+    };
+
+    let input: Input = if ext == "toml" {
+        toml::de::from_str(&s)?
+    } else {
+        bail!("invalid input file type: {}", path.to_string_lossy());
+    };
+
     print_verbose(|| format!("{:?}", input));
     let object = build_object(input)?;
 

@@ -1,6 +1,4 @@
-use common::gamedata::defs::Harvest;
-use common::gamedata::effect::Effect;
-use common::gamedata::{self, ElementArray, FactionId};
+use common::gamedata::{self, Element, ElementArray, FactionId, Harvest, StatusEffect};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -107,7 +105,7 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub medical_effect: gamedata::MedicalEffect,
     #[serde(default)]
-    pub magical_effect: Option<Effect>,
+    pub magical_effect: Option<EffectInput>,
     #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
     #[serde(default)]
@@ -153,4 +151,20 @@ pub struct SiteGenDepInput {
 #[serde(deny_unknown_fields)]
 pub struct ScriptDepInput {
     pub script: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EffectInput {
+    pub kind: Vec<EffectKindInput>,
+    #[serde(default)]
+    pub power_adjust: Vec<f32>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EffectKindInput {
+    pub kind: String,
+    pub element: Option<Element>,
+    pub status: Option<StatusEffect>,
 }

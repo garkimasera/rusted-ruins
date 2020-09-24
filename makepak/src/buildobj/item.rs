@@ -1,3 +1,4 @@
+use super::effect::convert_effect_input;
 use super::img::build_img;
 use crate::error::*;
 use crate::input::*;
@@ -44,7 +45,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         dice_x: item.dice_x.unwrap_or(0),
         def: item.def.unwrap_or(ElementArray([0, 0, 0, 0, 0, 0])),
         eff: item.eff.unwrap_or(0),
-        magical_effect: item.magical_effect,
+        magical_effect: convert_effect_input(item.magical_effect)?,
         medical_effect: item.medical_effect,
         tool_effect: item.tool_effect,
         use_effect: item.use_effect,

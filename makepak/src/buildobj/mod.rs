@@ -1,3 +1,4 @@
+mod effect;
 mod expr_parser;
 mod img;
 mod item;
