@@ -46,7 +46,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         def: item.def.unwrap_or(ElementArray([0, 0, 0, 0, 0, 0])),
         eff: item.eff.unwrap_or(0),
         magical_effect: convert_effect_input(item.magical_effect)?,
-        medical_effect: item.medical_effect,
+        medical_effect: convert_effect_input(item.medical_effect)?,
         tool_effect: item.tool_effect,
         use_effect: item.use_effect,
         nutrition: item.nutrition.unwrap_or(0),

@@ -111,21 +111,6 @@ pub enum CreationRequiredTime {
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum MedicalEffect {
-    None,
-    Heal,
-    Sleep,
-    Poison,
-}
-
-impl Default for MedicalEffect {
-    fn default() -> MedicalEffect {
-        MedicalEffect::None
-    }
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum ToolEffect {
     None,
     Build,

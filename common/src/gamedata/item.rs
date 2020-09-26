@@ -44,7 +44,7 @@ pub struct ItemObject {
     /// Effectiveness of this item
     pub eff: u16,
     pub magical_effect: Option<Effect>,
-    pub medical_effect: MedicalEffect,
+    pub medical_effect: Option<Effect>,
     pub tool_effect: ToolEffect,
     pub use_effect: UseEffect,
     /// (additional sp) = (nutriton) * (sp_nutrition_factor)

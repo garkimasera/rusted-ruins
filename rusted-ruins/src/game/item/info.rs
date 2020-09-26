@@ -22,10 +22,9 @@ impl ItemInfoText {
             ItemKind::Potion | ItemKind::Food => {
                 let t = misc_txt_format!("item_info_text-nutrition"; nutrition=obj.nutrition);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
-                if obj.medical_effect != MedicalEffect::None {
-                    let t = misc_txt_format!(
-                        "item_info_text-medical_effect"; medical_effect=obj.medical_effect);
-                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                if obj.medical_effect.is_some() {
+                    // let t = // TODO: Add text by its medical effect
+                    // desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }
             ItemKind::MagicDevice => {}

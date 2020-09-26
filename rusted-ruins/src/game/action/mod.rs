@@ -59,7 +59,8 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
 }
 
 /// Drink one item
-pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
+pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+    let gd = &mut game.gd;
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = item.obj();
 
@@ -67,11 +68,12 @@ pub fn drink_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     game_log!("drink-item"; chara=chara, item=item);
 
     let eff: i32 = item_obj.eff.into();
-    apply_medical_effect(chara, item_obj.medical_effect, eff);
+    apply_medical_effect(game, cid, &item_obj.medical_effect, eff);
 }
 
 /// Eat one item
-pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
+pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+    let gd = &mut game.gd;
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = item.obj();
 
@@ -81,7 +83,7 @@ pub fn eat_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
     chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid);
 
     let eff: i32 = item_obj.eff.into();
-    apply_medical_effect(chara, item_obj.medical_effect, eff);
+    apply_medical_effect(game, cid, &item_obj.medical_effect, eff);
 }
 
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
@@ -114,23 +116,10 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     game.gd.get_item_list_mut(il.0).append(item, 1);
 }
 
-fn apply_medical_effect(chara: &mut Chara, me: MedicalEffect, eff: i32) {
-    match me {
-        MedicalEffect::None => (),
-        MedicalEffect::Heal => {
-            use std::cmp::min;
-            chara.hp = min(chara.attr.max_hp, chara.hp + eff);
-            game_log!("heal-hp"; chara=chara, value=eff);
-        }
-        MedicalEffect::Sleep => {
-            chara.add_status(CharaStatus::Asleep {
-                turn_left: eff as u16,
-            });
-            game_log!("fall-asleep"; chara=chara);
-        }
-        MedicalEffect::Poison => {
-            chara.add_status(CharaStatus::Poisoned);
-            game_log!("poisoned"; chara=chara);
-        }
+fn apply_medical_effect(game: &mut Game, cid: CharaId, effect: &Option<Effect>, eff: i32) {
+    if effect.is_none() {
+        return;
     }
+    let effect = effect.as_ref().unwrap();
+    super::effect::process_effect(game, cid, effect, eff.into());
 }

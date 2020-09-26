@@ -115,19 +115,6 @@ impl ToText for Command {
     }
 }
 
-impl ToText for MedicalEffect {
-    fn to_text(&self) -> Cow<str> {
-        use MedicalEffect::*;
-        match self {
-            None => misc_txt("medical_effect-none"),
-            Heal => misc_txt("medical_effect-heal"),
-            Sleep => misc_txt("medical_effect-sleep"),
-            Poison => misc_txt("medical_effect-poison"),
-        }
-        .into()
-    }
-}
-
 impl ToText for Quest {
     fn to_text(&self) -> Cow<str> {
         match self {

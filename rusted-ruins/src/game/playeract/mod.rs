@@ -68,13 +68,13 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Drink one item
     pub fn drink_item(&mut self, il: ItemLocation) {
-        super::action::drink_item(self.gd_mut(), il, CharaId::Player);
+        super::action::drink_item(self.0, il, CharaId::Player);
         self.0.finish_player_turn();
     }
 
     /// Eat one item
     pub fn eat_item(&mut self, il: ItemLocation) {
-        super::action::eat_item(self.gd_mut(), il, CharaId::Player);
+        super::action::eat_item(self.0, il, CharaId::Player);
         self.0.finish_player_turn();
     }
 
