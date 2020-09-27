@@ -1,4 +1,5 @@
 use super::combat::{attack_target, AttackParams, DamageKind};
+use crate::game::extrait::CharaStatusOperation;
 use crate::game::Game;
 use common::gamedata::*;
 use geom::*;
@@ -32,11 +33,17 @@ pub fn process_effect(
                     ranged_attack(game, *cid, power, *element);
                 }
             }
+            EffectKind::Status { status } => {
+                for cid in &cids {
+                    cause_status(game, *cid, power, *status);
+                }
+            }
             _ => (),
         }
     }
 }
 
+// Ranged attack to a chara.
 fn ranged_attack(game: &mut Game, cid: CharaId, attack_power: f64, element: Element) {
     if game.target_chara.is_none() {
         let player = game.gd.chara.get(CharaId::Player);
@@ -60,4 +67,22 @@ fn ranged_attack(game: &mut Game, cid: CharaId, attack_power: f64, element: Elem
     };
 
     attack_target(game, attack_params, target_id);
+}
+
+// Cause status effect to given chara.
+fn cause_status(game: &mut Game, cid: CharaId, power: f64, status: StatusEffect) {
+    let chara = game.gd.chara.get_mut(cid);
+
+    match status {
+        StatusEffect::Asleep => {
+            chara.add_status(CharaStatus::Asleep {
+                turn_left: power as u16,
+            });
+            game_log!("fall-asleep"; chara=chara);
+        }
+        StatusEffect::Poison => {
+            chara.add_status(CharaStatus::Poisoned);
+            game_log!("poisoned"; chara=chara);
+        }
+    }
 }
