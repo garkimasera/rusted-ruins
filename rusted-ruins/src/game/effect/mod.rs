@@ -1,12 +1,36 @@
 use super::combat::{attack_target, AttackParams, DamageKind};
 use crate::game::Game;
 use common::gamedata::*;
+use geom::*;
 
-pub fn process_effect(game: &mut Game, cid: CharaId, effect: &Effect, power: f64) {
+pub fn process_effect(
+    game: &mut Game,
+    effect: &Effect,
+    cid: Option<CharaId>,
+    pos: Option<Vec2d>,
+    power: f64,
+) {
+    // TODO: multiple cids will be needed for widely ranged effect.
+    let cids = if cid.is_some() {
+        vec![cid.unwrap()]
+    } else {
+        if let Some(pos) = pos {
+            if let Some(cid) = game.gd.get_current_map().get_chara(pos) {
+                vec![cid]
+            } else {
+                vec![]
+            }
+        } else {
+            vec![]
+        }
+    };
+
     for effect_kind in &effect.kind {
         match effect_kind {
             EffectKind::Ranged { element } => {
-                ranged_attack(game, cid, power, *element);
+                for cid in &cids {
+                    ranged_attack(game, *cid, power, *element);
+                }
             }
             _ => (),
         }
