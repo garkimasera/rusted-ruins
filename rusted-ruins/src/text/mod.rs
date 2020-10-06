@@ -5,8 +5,7 @@ mod to_text;
 use crate::config;
 use common::basic;
 use fluent::concurrent::FluentBundle;
-use fluent::{FluentArgs, FluentResource, FluentValue};
-use std::collections::HashMap;
+use fluent::{FluentArgs, FluentResource};
 use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;
 use walkdir::WalkDir;
@@ -177,7 +176,7 @@ pub fn log_txt(id: &str) -> String {
     log_txt_with_args(id, None)
 }
 
-pub fn log_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+pub fn log_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
     if let Some(s) = LOG_BUNDLE.format(id, args) {
         s
     } else {
@@ -189,7 +188,7 @@ pub fn ui_txt(id: &str) -> String {
     ui_txt_with_args(id, None)
 }
 
-pub fn ui_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+pub fn ui_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
     if let Some(s) = UI_BUNDLE.format(id, args) {
         s
     } else {
@@ -206,7 +205,7 @@ pub fn talk_txt(id: &str) -> String {
     talk_txt_with_args(id, None)
 }
 
-pub fn talk_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+pub fn talk_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
     if let Some(s) = TALK_BUNDLE.format(id, args) {
         s
     } else {
@@ -214,7 +213,7 @@ pub fn talk_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -
     }
 }
 
-pub fn talk_txt_checked(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> Option<String> {
+pub fn talk_txt_checked(id: &str, args: Option<&FluentArgs>) -> Option<String> {
     TALK_BUNDLE.format(id, args)
 }
 
@@ -222,7 +221,7 @@ pub fn misc_txt(id: &str) -> String {
     misc_txt_with_args(id, None)
 }
 
-pub fn misc_txt_with_args(id: &str, args: Option<&HashMap<&str, FluentValue>>) -> String {
+pub fn misc_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
     if let Some(s) = MISC_BUNDLE.format(id, args) {
         s
     } else {
@@ -248,11 +247,10 @@ pub fn to_txt<T: ToTextId>(a: &T) -> String {
 
 macro_rules! misc_txt_format {
     ($id:expr; $($target:ident = $value:expr),*) => {{
-        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
-            = std::collections::HashMap::new();
+        let mut table = fluent::FluentArgs::new();
         $(
             let value = fluent::FluentValue::String($value.to_text());
-            table.insert(stringify!($target), value);
+            table.add(stringify!($target), value);
         )*
 
         crate::text::misc_txt_with_args($id, Some(&table))
@@ -261,11 +259,10 @@ macro_rules! misc_txt_format {
 
 macro_rules! ui_txt_format {
     ($id:expr; $($target:ident = $value:expr),*) => {{
-        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
-            = std::collections::HashMap::new();
+        let mut table = fluent::FluentArgs::new();
         $(
             let value = fluent::FluentValue::String($value.to_text());
-            table.insert(stringify!($target), value);
+            table.add(stringify!($target), value);
         )*
 
         crate::text::ui_txt_with_args($id, Some(&table))

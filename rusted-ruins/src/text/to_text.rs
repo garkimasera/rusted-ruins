@@ -119,9 +119,8 @@ impl ToText for Quest {
     fn to_text(&self) -> Cow<str> {
         match self {
             Quest::SlayMonsters { idx, .. } => {
-                use std::collections::HashMap;
-                let mut table: HashMap<&str, fluent::FluentValue> = HashMap::new();
-                table.insert("monster", fluent::FluentValue::String(idx.to_text()));
+                let mut table = fluent::FluentArgs::new();
+                table.add("monster", fluent::FluentValue::String(idx.to_text()));
                 crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
             }
         }

@@ -101,11 +101,10 @@ macro_rules! game_log {
     };
     ($id:expr; $($target:ident = $value:expr),*) => {{
         use crate::text::ToText;
-        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
-            = std::collections::HashMap::new();
+        let mut table = fluent::FluentArgs::new();
         $(
             let value = fluent::FluentValue::String($value.to_text());
-            table.insert(stringify!($target), value);
+            table.add(stringify!($target), value);
         )*
 
         let s = crate::text::log_txt_with_args($id, Some(&table));
@@ -121,11 +120,10 @@ macro_rules! game_log_i {
     };
     ($id:expr; $($target:ident = $value:expr),*) => {{
         use crate::text::ToText;
-        let mut table: std::collections::HashMap<&str, fluent::FluentValue>
-            = std::collections::HashMap::new();
+        let mut table = fluent::FluentArgs::new();
         $(
             let value = fluent::FluentValue::String($value.to_text());
-            table.insert(stringify!($target), value);
+            table.add(stringify!($target), value);
         )*
 
         let s = crate::text::log_txt_with_args($id, Some(&table));
