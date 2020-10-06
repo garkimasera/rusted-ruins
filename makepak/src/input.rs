@@ -1,6 +1,6 @@
 use common::gamedata::{self, Element, ElementArray, FactionId, Harvest, StatusEffect};
 use common::sitegen;
-use geom::Vec2d;
+use geom::{shape::ShapeKind, Vec2d};
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -159,6 +159,12 @@ pub struct EffectInput {
     pub kind: Vec<EffectKindInput>,
     #[serde(default)]
     pub power_adjust: Vec<f32>,
+    #[serde(default)]
+    pub range: u32,
+    #[serde(default)]
+    pub shape: ShapeKind,
+    #[serde(default)]
+    pub size: u32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

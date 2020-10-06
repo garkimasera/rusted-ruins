@@ -48,7 +48,10 @@ pub fn convert_effect_input(e: Option<EffectInput>) -> Result<Option<Effect>> {
     }
 
     Ok(Some(Effect {
-        power_adjust: e.power_adjust,
         kind,
+        power_adjust: e.power_adjust,
+        range: e.range,
+        shape: e.shape,
+        size: e.size,
     }))
 }

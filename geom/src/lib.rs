@@ -4,6 +4,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+pub mod shape;
+
 use std::fmt;
 use std::ops::{Add, Index, IndexMut, Mul, Range, Sub};
 use thiserror::Error;

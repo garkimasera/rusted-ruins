@@ -1,10 +1,17 @@
 use super::defs::Element;
+use geom::shape::ShapeKind;
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 pub struct Effect {
     pub kind: Vec<EffectKind>,
     #[serde(default)]
     pub power_adjust: Vec<f32>,
+    #[serde(default)]
+    pub range: u32,
+    #[serde(default)]
+    pub shape: ShapeKind,
+    #[serde(default)]
+    pub size: u32,
 }
 
 /// Effect defines the game effect of items, magics, or other active skills.
