@@ -4,15 +4,47 @@ use crate::game::Game;
 use common::gamedata::*;
 use geom::*;
 
-pub fn process_effect(
+pub fn cause_effect(
     game: &mut Game,
     effect: &Effect,
-    cid: Option<CharaId>,
     pos: Option<Vec2d>,
+    cid: Option<CharaId>,
     power: f64,
 ) {
+    for effect_kind in &effect.kind {
+        match effect_kind {
+            EffectKind::Ranged { element } => {
+                let cids = get_cids(game, effect, pos, cid);
+                for cid in &cids {
+                    ranged_attack(game, *cid, power, *element);
+                }
+                return;
+            }
+            EffectKind::Status { status } => {
+                let cids = get_cids(game, effect, pos, cid);
+                for cid in &cids {
+                    cause_status(game, *cid, power, *status);
+                }
+                return;
+            }
+            _ => (),
+        }
+    }
+}
+
+pub fn cause_effect_to_chara(game: &mut Game, effect: &Effect, cid: CharaId, power: f64) {
+    cause_effect(game, effect, None, Some(cid), power);
+}
+
+// Get characters list in range of the effect.
+fn get_cids(
+    game: &Game,
+    _effect: &Effect,
+    pos: Option<Vec2d>,
+    cid: Option<CharaId>,
+) -> Vec<CharaId> {
     // TODO: multiple cids will be needed for widely ranged effect.
-    let cids = if cid.is_some() {
+    if cid.is_some() {
         vec![cid.unwrap()]
     } else {
         if let Some(pos) = pos {
@@ -23,22 +55,6 @@ pub fn process_effect(
             }
         } else {
             vec![]
-        }
-    };
-
-    for effect_kind in &effect.kind {
-        match effect_kind {
-            EffectKind::Ranged { element } => {
-                for cid in &cids {
-                    ranged_attack(game, *cid, power, *element);
-                }
-            }
-            EffectKind::Status { status } => {
-                for cid in &cids {
-                    cause_status(game, *cid, power, *status);
-                }
-            }
-            _ => (),
         }
     }
 }

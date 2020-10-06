@@ -103,7 +103,7 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
             let power =
                 (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
-                super::effect::process_effect(game, effect, Some(cid), None, power);
+                super::effect::cause_effect_to_chara(game, effect, cid, power);
             } else {
                 return;
             }
@@ -121,5 +121,5 @@ fn apply_medical_effect(game: &mut Game, cid: CharaId, effect: &Option<Effect>, 
         return;
     }
     let effect = effect.as_ref().unwrap();
-    super::effect::process_effect(game, effect, Some(cid), None, eff.into());
+    super::effect::cause_effect_to_chara(game, effect, cid, eff.into());
 }
