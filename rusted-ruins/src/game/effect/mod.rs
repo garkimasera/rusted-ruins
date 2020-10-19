@@ -1,27 +1,92 @@
-use super::combat::{attack_target, AttackParams, DamageKind};
+mod attack;
+
+pub use attack::weapon_to_effect;
+
 use crate::game::extrait::CharaStatusOperation;
 use crate::game::Game;
+use crate::game::InfoGetter;
 use common::gamedata::*;
 use geom::*;
 
-pub fn cause_effect(
+#[derive(Clone, Copy, Debug)]
+pub enum EffectTarget {
+    // None,
+    Tile(Vec2d),
+    Chara(CharaId),
+}
+
+impl From<Vec2d> for EffectTarget {
+    fn from(pos: Vec2d) -> EffectTarget {
+        EffectTarget::Tile(pos)
+    }
+}
+
+impl From<CharaId> for EffectTarget {
+    fn from(cid: CharaId) -> EffectTarget {
+        EffectTarget::Chara(cid)
+    }
+}
+
+pub fn do_effect<T: Into<EffectTarget>>(
     game: &mut Game,
     effect: &Effect,
-    pos: Option<Vec2d>,
-    cid: Option<CharaId>,
-    power: f64,
+    cause: Option<CharaId>,
+    target: T,
+    power: f32,
+    hit_power: f32,
 ) {
+    let target = target.into();
+
     for effect_kind in &effect.kind {
         match effect_kind {
-            EffectKind::Ranged { element } => {
-                let cids = get_cids(game, effect, pos, cid);
+            EffectKind::Melee { element } => {
+                let cids = get_cids(game, effect, target);
                 for cid in &cids {
-                    ranged_attack(game, *cid, power, *element);
+                    self::attack::melee_attack(
+                        game,
+                        cause.unwrap(),
+                        *cid,
+                        power,
+                        hit_power,
+                        *element,
+                    );
+                }
+                let tile = game.gd.chara_pos(cids[0]).unwrap();
+                game.anim_queue.push_effect(effect, tile, None);
+                if !effect.sound.is_empty() {
+                    audio::play_sound(&effect.sound);
+                }
+                return;
+            }
+            EffectKind::Ranged { element } => {
+                let cids = get_cids(game, effect, target);
+                for cid in &cids {
+                    self::attack::ranged_attack(
+                        game,
+                        cause.unwrap(),
+                        *cid,
+                        power,
+                        hit_power,
+                        *element,
+                    );
+                }
+                let start = cause.map(|cause| {
+                    game.gd
+                        .chara_pos(cause)
+                        .expect("chara position search error")
+                });
+                let tile = game
+                    .gd
+                    .chara_pos(cids[0])
+                    .expect("chara position search error");
+                game.anim_queue.push_effect(effect, tile, start);
+                if !effect.sound.is_empty() {
+                    audio::play_sound(&effect.sound);
                 }
                 return;
             }
             EffectKind::Status { status } => {
-                let cids = get_cids(game, effect, pos, cid);
+                let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     cause_status(game, *cid, power, *status);
                 }
@@ -32,61 +97,24 @@ pub fn cause_effect(
     }
 }
 
-pub fn cause_effect_to_chara(game: &mut Game, effect: &Effect, cid: CharaId, power: f64) {
-    cause_effect(game, effect, None, Some(cid), power);
-}
-
 // Get characters list in range of the effect.
-fn get_cids(
-    game: &Game,
-    _effect: &Effect,
-    pos: Option<Vec2d>,
-    cid: Option<CharaId>,
-) -> Vec<CharaId> {
+fn get_cids(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<CharaId> {
     // TODO: multiple cids will be needed for widely ranged effect.
-    if cid.is_some() {
-        vec![cid.unwrap()]
-    } else {
-        if let Some(pos) = pos {
+    match target {
+        // EffectTarget::None => vec![],
+        EffectTarget::Tile(pos) => {
             if let Some(cid) = game.gd.get_current_map().get_chara(pos) {
                 vec![cid]
             } else {
                 vec![]
             }
-        } else {
-            vec![]
         }
+        EffectTarget::Chara(cid) => vec![cid],
     }
-}
-
-// Ranged attack to a chara.
-fn ranged_attack(game: &mut Game, cid: CharaId, attack_power: f64, element: Element) {
-    if game.target_chara.is_none() {
-        let player = game.gd.chara.get(CharaId::Player);
-        game_log_i!("no-target"; chara=player);
-        return;
-    }
-    let target_id = game.target_chara.unwrap();
-    let start = game.gd.get_current_map().chara_pos(cid).unwrap();
-    let target_pos = game.gd.get_current_map().chara_pos(target_id).unwrap();
-
-    game.anim_queue.push_magic_arrow(start, target_pos);
-
-    let target = game.gd.chara.get(target_id);
-    game_log!("arrow-hit"; chara=target);
-
-    let attack_params = AttackParams {
-        attacker_id: Some(cid),
-        kind: DamageKind::RangedAttack,
-        element,
-        attack_power,
-    };
-
-    attack_target(game, attack_params, target_id);
 }
 
 // Cause status effect to given chara.
-fn cause_status(game: &mut Game, cid: CharaId, power: f64, status: StatusEffect) {
+fn cause_status(game: &mut Game, cid: CharaId, power: f32, status: StatusEffect) {
     let chara = game.gd.chara.get_mut(cid);
 
     match status {

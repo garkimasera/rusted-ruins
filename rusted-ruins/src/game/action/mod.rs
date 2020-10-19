@@ -4,10 +4,12 @@ pub mod get_item;
 pub mod harvest;
 pub mod use_item;
 
-use super::combat;
 use super::extrait::*;
 use super::{Game, InfoGetter};
+use crate::game::effect::{do_effect, weapon_to_effect};
 use common::gamedata::*;
+use common::gobj;
+use geom::shape::ShapeKind;
 use geom::*;
 use rng::dice;
 use rules::RULES;
@@ -46,16 +48,78 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
                 }
             }
             Relationship::HOSTILE => {
-                combat::attack_neighbor(game, chara_id, other_chara.unwrap());
+                melee_attack(game, chara_id, other_chara.unwrap());
+                // attack::attack_neighbor(game, chara_id, other_chara.unwrap());
             }
         }
     }
     true
 }
 
+/// Melee attack
+pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
+    use crate::game::chara::power::*;
+
+    let attacker = game.gd.chara.get(cid);
+    let (effect, skill_kind) =
+        if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
+            let skill_kind = get_skill_kind_from_weapon(&weapon);
+            (weapon_to_effect(weapon), skill_kind)
+        } else {
+            // Attack by bare hands
+            let effect = Effect {
+                kind: vec![EffectKind::Melee {
+                    element: Element::Physical,
+                }],
+                power_adjust: vec![],
+                range: 1,
+                shape: ShapeKind::OneTile,
+                size: 0,
+                anim_img: "!damage-blunt".into(),
+                anim_img_shot: String::new(),
+                sound: "punch".into(),
+            };
+            (effect, SkillKind::BareHands)
+        };
+    let (power, hit_power) = calc_power(
+        attacker,
+        CharaPowerKind::MeleeAttack,
+        Element::Physical,
+        skill_kind,
+    );
+
+    do_effect(game, &effect, Some(cid), target, power, hit_power);
+}
+
 /// Shot target
 pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
-    combat::shot_target(game, cid, target)
+    use crate::game::chara::power::*;
+
+    let attacker = game.gd.chara.get(cid);
+    let (effect, skill_kind) =
+        if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
+            let skill_kind = get_skill_kind_from_weapon(&weapon);
+            (weapon_to_effect(weapon), skill_kind)
+        } else {
+            return false;
+        };
+    let (power, hit_power) = calc_power(
+        attacker,
+        CharaPowerKind::RangedAttack,
+        Element::Physical,
+        skill_kind,
+    );
+    do_effect(game, &effect, Some(cid), target, power, hit_power);
+
+    true
+}
+
+fn get_skill_kind_from_weapon(item: &Item) -> SkillKind {
+    let weapon_obj = gobj::get_obj(item.idx);
+    match weapon_obj.kind {
+        ItemKind::Weapon(kind) => SkillKind::Weapon(kind),
+        _ => SkillKind::BareHands,
+    }
 }
 
 /// Drink one item
@@ -89,25 +153,18 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
-    let item_dice: f64 = dice(item_obj.dice_n, item_obj.dice_x).into();
+    let item_dice = dice(item_obj.dice_n, item_obj.dice_x) as f32;
 
     match item.charge() {
         Some(n) if n >= 1 => {
-            let skill_level: f64 = game
-                .gd
-                .chara
-                .get(cid)
-                .skills
-                .get(SkillKind::MagicDevice)
-                .into();
+            let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice) as f32;
             let power =
                 (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
-                super::effect::cause_effect_to_chara(game, effect, cid, power);
+                super::effect::do_effect(game, effect, Some(cid), cid, power, 1.0);
             } else {
                 return;
             }
-            //            super::magic::do_magic(game, cid, item_obj.magical_effect, power);
             *item.charge_mut().unwrap() = n - 1;
         }
         _ => (),
@@ -121,5 +178,5 @@ fn apply_medical_effect(game: &mut Game, cid: CharaId, effect: &Option<Effect>, 
         return;
     }
     let effect = effect.as_ref().unwrap();
-    super::effect::cause_effect_to_chara(game, effect, cid, eff.into());
+    super::effect::do_effect(game, effect, None, cid, eff as f32, 1.0);
 }

@@ -165,6 +165,12 @@ pub struct EffectInput {
     pub shape: ShapeKind,
     #[serde(default)]
     pub size: u32,
+    #[serde(default)]
+    pub anim_img: String,
+    #[serde(default)]
+    pub anim_img_shot: String,
+    #[serde(default)]
+    pub sound: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

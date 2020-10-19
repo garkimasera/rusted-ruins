@@ -2,14 +2,19 @@ use super::chara::preturn::preturn;
 use super::chara::CharaEx;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
-use super::{Game, GameState};
+use super::{Game, GameState, InfoGetter};
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
 use rules::RULES;
 
+/// Main game turn loop
 pub fn turn_loop(game: &mut Game) {
     loop {
+        if check_dying(game) {
+            return;
+        }
         if remove_dying_charas(game) {
+            // If player died
             game.state = GameState::PlayerTurn;
             return;
         }
@@ -58,6 +63,28 @@ fn decrease_wait_time(game: &mut Game) -> (CharaId, u32) {
         }
     }
     unreachable!()
+}
+
+/// Check dying charas and push destroy animation.
+fn check_dying(game: &mut Game) -> bool {
+    if game.destroy_anim_queued {
+        game.destroy_anim_queued = false;
+        return false;
+    }
+
+    let mut dying_chara_found = false;
+
+    for &cid in &game.gd.get_charas_on_map() {
+        let chara = game.gd.chara.get(cid);
+        if chara.hp <= 0 {
+            dying_chara_found = true;
+            game.destroy_anim_queued = true;
+            if let Some(pos) = game.gd.chara_pos(cid) {
+                game.anim_queue.push_destroy(pos);
+            }
+        }
+    }
+    dying_chara_found
 }
 
 /// Dying chara is removed before new turn processing.

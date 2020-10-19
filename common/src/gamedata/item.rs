@@ -234,7 +234,7 @@ impl WeaponKind {
     }
 
     pub fn is_ranged(self) -> bool {
-        self.is_melee()
+        !self.is_melee()
     }
 
     pub const ALL: &'static [WeaponKind] = &[

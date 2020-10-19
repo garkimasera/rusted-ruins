@@ -1,5 +1,5 @@
 use super::Game;
-use crate::game::combat::DamageKind;
+use crate::game::chara::CharaDamageKind;
 use crate::game::extrait::*;
 use common::gamedata::*;
 use rng::{dice, get_rng, Rng};
@@ -56,7 +56,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let chara = game.gd.chara.get_mut(cid);
         let damage = chara.attr.max_hp / 20;
         game_log!("poison-damage"; chara=chara, damage=damage);
-        chara.damage(damage, DamageKind::Poison);
+        chara.damage(damage, CharaDamageKind::Poison);
     }
 
     if let Some(ratio) = progress_anim {

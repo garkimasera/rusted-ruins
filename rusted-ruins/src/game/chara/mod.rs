@@ -1,9 +1,9 @@
 pub mod gen;
+pub mod power;
 pub mod preturn;
 pub mod status;
 mod update;
 
-use super::combat::DamageKind;
 use super::extrait::*;
 use super::Game;
 use crate::text::ToText;
@@ -30,14 +30,14 @@ pub trait CharaEx {
     fn add_sp(&mut self, v: f32, cid: CharaId);
     fn sub_sp(&mut self, v: f32, cid: CharaId);
     /// Give damage to this character
-    fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32;
+    fn damage(&mut self, damage: i32, damage_kind: CharaDamageKind) -> i32;
     /// Heal HP of this character
     fn heal(&mut self, value: i32);
     /// Update character parameters by its status
     fn update(&mut self);
     /// Reset wait time
     fn reset_wait_time(&mut self);
-    /// Returns (current item weight, capacity)
+    /// Return (current item weight, capacity)
     fn item_weight(&self) -> (f32, f32);
     /// Get character's skill level, and the adjustment value.
     fn skill_level(&self, kind: SkillKind) -> (u32, i32);
@@ -89,7 +89,7 @@ impl CharaEx for Chara {
         let new_sp = if self.sp + v < r.sp_starving {
             let d = r.sp_starving - (self.sp + v);
             let damage = 4 * (self.attr.max_hp as f32 * d / r.sp_max) as i32;
-            self.damage(damage, DamageKind::Starve);
+            self.damage(damage, CharaDamageKind::Starve);
             r.sp_starving
         } else {
             self.sp + v
@@ -131,22 +131,22 @@ impl CharaEx for Chara {
         self.add_sp(-v, cid);
     }
 
-    fn damage(&mut self, damage: i32, damage_kind: DamageKind) -> i32 {
+    fn damage(&mut self, damage: i32, damage_kind: CharaDamageKind) -> i32 {
         self.hp -= damage;
 
         if self.hp < 0 {
             // Logging
             match damage_kind {
-                DamageKind::MeleeAttack => {
+                CharaDamageKind::MeleeAttack => {
                     game_log!("killed-by-melee-attack"; chara=self);
                 }
-                DamageKind::RangedAttack => {
+                CharaDamageKind::RangedAttack => {
                     game_log!("killed-by-ranged-attack"; chara=self);
                 }
-                DamageKind::Poison => {
+                CharaDamageKind::Poison => {
                     game_log!("killed-by-poison-damage"; chara=self);
                 }
-                DamageKind::Starve => {
+                CharaDamageKind::Starve => {
                     game_log!("killed-by-starve-damage"; chara=self);
                 }
             }
@@ -180,4 +180,12 @@ impl CharaEx for Chara {
 
         (lv, adj)
     }
+}
+
+#[derive(Clone, Copy)]
+pub enum CharaDamageKind {
+    MeleeAttack,
+    RangedAttack,
+    Poison,
+    Starve,
 }

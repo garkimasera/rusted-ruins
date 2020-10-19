@@ -3,7 +3,6 @@ mod anim_queue;
 mod animation;
 mod building;
 pub mod chara;
-mod combat;
 pub mod command;
 pub mod creation;
 mod debug_command;
@@ -54,6 +53,7 @@ pub struct Game {
     pub gd: GameData,
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
+    destroy_anim_queued: bool,
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,
     script: Option<ScriptEngine>,
@@ -74,6 +74,7 @@ impl Game {
             gd,
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
+            destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
             script: None,
@@ -90,6 +91,7 @@ impl Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
             anim_queue: anim_queue::AnimQueue::default(),
+            destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
             script: None,
