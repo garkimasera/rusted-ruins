@@ -7,6 +7,7 @@ extern crate serde_derive;
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_geom as geom;
+extern crate rusted_ruins_rng as rng;
 
 mod utils;
 

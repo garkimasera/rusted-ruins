@@ -15,6 +15,10 @@ global_state_obj = []
 path = "../geom"
 package = "rusted-ruins-geom"
 
+[dependencies.rusted-ruins-rng]
+path = "../rng"
+package = "rusted-ruins-rng"
+
 [dependencies.filebox]
 path = "../filebox"
 

@@ -71,7 +71,7 @@ pub fn gen_range_inclusive<T: SampleUniform, B: SampleBorrow<T> + Sized>(low: B,
 
 /// Calculate the sum of dices
 /// n is the number of dice rolled, and x is the number of die faces
-pub fn dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
+pub fn roll_dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
     let n = n.into();
     let x = x.into();
     let mut sum = 0;
@@ -79,6 +79,20 @@ pub fn dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
         sum += gen_range(1, x + 1);
     }
     sum
+}
+
+pub trait Dice {
+    fn dice_param(&self) -> (i32, i32);
+
+    fn roll_dice(&self) -> i32 {
+        let (n, x) = self.dice_param();
+        roll_dice(n, x)
+    }
+
+    fn max(&self) -> i32 {
+        let (n, x) = self.dice_param();
+        n * x
+    }
 }
 
 /// Return bool from given probability

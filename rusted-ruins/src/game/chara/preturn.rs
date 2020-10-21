@@ -2,7 +2,7 @@ use super::Game;
 use crate::game::chara::CharaDamageKind;
 use crate::game::extrait::*;
 use common::gamedata::*;
-use rng::{dice, get_rng, Rng};
+use rng::{get_rng, roll_dice, Rng};
 use rules::RULES;
 
 /// This function will be called before the character's turn
@@ -70,7 +70,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let lv = chara.skills.get(SkillKind::Healing) as f32;
         if get_rng().gen_bool(RULES.chara.hp_regeneration_probability.into()) {
             let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
-            let v = dice(1, a);
+            let v = roll_dice(1, a);
             chara.heal(v);
         }
         chara.sub_sp(RULES.chara.sp_consumption_regen, cid);

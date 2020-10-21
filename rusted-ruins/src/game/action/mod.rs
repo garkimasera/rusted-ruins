@@ -11,7 +11,7 @@ use common::gamedata::*;
 use common::gobj;
 use geom::shape::ShapeKind;
 use geom::*;
-use rng::dice;
+use rng::Dice;
 use rules::RULES;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
@@ -153,7 +153,7 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
-    let item_dice = dice(item_obj.dice_n, item_obj.dice_x) as f32;
+    let item_dice = item_obj.roll_dice() as f32;
 
     match item.charge() {
         Some(n) if n >= 1 => {

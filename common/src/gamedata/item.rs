@@ -59,6 +59,12 @@ pub struct ItemObject {
     pub titles: Vec<String>,
 }
 
+impl rng::Dice for ItemObject {
+    fn dice_param(&self) -> (i32, i32) {
+        (self.dice_n.into(), self.dice_x.into())
+    }
+}
+
 impl Ord for Item {
     fn cmp(&self, other: &Item) -> Ordering {
         let order = self.kind.cmp(&other.kind);
