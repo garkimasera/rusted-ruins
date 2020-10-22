@@ -61,10 +61,11 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind) =
+    let (effect, skill_kind, dice) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            (weapon_to_effect(weapon), skill_kind)
+            let dice = weapon.obj().roll_dice();
+            (weapon_to_effect(weapon), skill_kind, dice)
         } else {
             // Attack by bare hands
             let effect = Effect {
@@ -79,7 +80,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
                 anim_img_shot: String::new(),
                 sound: "punch".into(),
             };
-            (effect, SkillKind::BareHands)
+            (effect, SkillKind::BareHands, 1)
         };
     let (power, hit_power) = calc_power(
         attacker,
@@ -87,6 +88,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
         Element::Physical,
         skill_kind,
     );
+    let power = power * dice as f32;
 
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 }
@@ -96,10 +98,11 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind) =
+    let (effect, skill_kind, dice) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            (weapon_to_effect(weapon), skill_kind)
+            let dice = weapon.obj().roll_dice();
+            (weapon_to_effect(weapon), skill_kind, dice)
         } else {
             return false;
         };
@@ -109,6 +112,7 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
         Element::Physical,
         skill_kind,
     );
+    let power = power * dice as f32;
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
     true
