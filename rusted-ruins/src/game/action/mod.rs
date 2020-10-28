@@ -6,6 +6,7 @@ pub mod use_item;
 
 use super::extrait::*;
 use super::{Game, InfoGetter};
+use crate::game::damage::*;
 use crate::game::effect::{do_effect, weapon_to_effect};
 use common::gamedata::*;
 use common::gobj;
@@ -148,7 +149,9 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
     let nutrition: f32 = item_obj.nutrition.into();
-    chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid);
+    if let Some(damage) = chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid) {
+        do_damage(game, cid, damage, CharaDamageKind::Starve);
+    }
 
     let eff: i32 = item_obj.eff.into();
     apply_medical_effect(game, cid, &item_obj.medical_effect, eff);

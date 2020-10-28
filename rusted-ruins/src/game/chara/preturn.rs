@@ -1,5 +1,5 @@
 use super::Game;
-use crate::game::chara::CharaDamageKind;
+use crate::game::damage::*;
 use crate::game::extrait::*;
 use common::gamedata::*;
 use rng::{get_rng, roll_dice, Rng};
@@ -56,7 +56,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let chara = game.gd.chara.get_mut(cid);
         let damage = chara.attr.max_hp / 20;
         game_log!("poison-damage"; chara=chara, damage=damage);
-        chara.damage(damage, CharaDamageKind::Poison);
+        do_damage(game, cid, damage, CharaDamageKind::Poison);
     }
 
     if let Some(ratio) = progress_anim {
@@ -76,10 +76,13 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         chara.sub_sp(RULES.chara.sp_consumption_regen, cid);
         chara.add_healing_exp();
     } else {
-        chara.sub_sp(RULES.chara.sp_consumption, cid);
+        let damage = chara.sub_sp(RULES.chara.sp_consumption, cid);
+        if let Some(damage) = damage {
+            do_damage(game, cid, damage, CharaDamageKind::Starve);
+        }
     }
 
-    can_act(chara)
+    can_act(game.gd.chara.get_mut(cid))
 }
 
 /// Judges this character can act or not

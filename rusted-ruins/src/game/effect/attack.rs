@@ -1,4 +1,4 @@
-use crate::game::chara::CharaDamageKind;
+use crate::game::damage::*;
 use crate::game::extrait::CharaEx;
 use crate::game::Game;
 use crate::rng;
@@ -90,7 +90,7 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     game_log!("damaged-chara"; chara=target, damage=damage);
 
     // Give damage
-    let hp = target.damage(damage, attack_params.kind);
+    let hp = do_damage(game, target_id, damage, attack_params.kind);
 
     if hp > 0 {
         // Exp for targetted character
