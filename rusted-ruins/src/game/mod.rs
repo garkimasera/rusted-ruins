@@ -5,7 +5,7 @@ mod building;
 pub mod chara;
 pub mod command;
 pub mod creation;
-mod damage;
+pub mod damage;
 mod debug_command;
 mod dungeon_gen;
 mod effect;
@@ -54,7 +54,7 @@ pub struct Game {
     pub gd: GameData,
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
-    damage_view: damage::DamageView,
+    pub damage_view: damage::DamageView,
     destroy_anim_queued: bool,
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,

@@ -242,9 +242,11 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             self.window_stack[*i].draw(&mut context, &self.game, anim);
         }
 
+        // Advance animation frame
         if anim.is_some() {
             self.passed_frame += 1;
         }
+        self.game.damage_view.advance();
     }
 
     pub fn animation_now(&self) -> bool {

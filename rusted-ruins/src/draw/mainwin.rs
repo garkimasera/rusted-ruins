@@ -88,6 +88,8 @@ impl MainWinDrawer {
         if let Some(t) = hover_tile {
             self.draw_tile_cursor(canvas, sv, t);
         }
+
+        self.draw_damage(context, game);
     }
 
     fn draw_except_anim(
@@ -476,7 +478,7 @@ impl MainWinDrawer {
     //     )
     // }
 
-    fn tile_rect(&self, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+    pub fn tile_rect(&self, tile: Vec2d, dx: i32, dy: i32) -> Rect {
         Rect::new(
             TILE_SIZE_I * tile.0 + dx + self.dx,
             TILE_SIZE_I * tile.1 + dy + self.dy,
@@ -502,7 +504,7 @@ impl MainWinDrawer {
     }
 
     /// Gets needed range of tiles to draw over the window
-    fn tile_range(&self) -> RectIter {
+    pub fn tile_range(&self) -> RectIter {
         let (nx, ny) = self.calc_tile_num();
         let top_left = self.topleft;
         let bottom_right = Vec2d(nx + top_left.0, ny + top_left.1 + 1);
