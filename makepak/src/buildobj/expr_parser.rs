@@ -4,8 +4,10 @@ use nom::bytes::complete::tag;
 use nom::character::complete::{char, digit1, multispace0};
 use nom::combinator::complete;
 use nom::multi::fold_many0;
+use nom::regexp::str::re_find;
 use nom::sequence::{delimited, pair};
 use nom::IResult;
+use regex::Regex;
 
 trait Join {
     fn join(self, op: Operator, e: Expr) -> Expr;
@@ -25,19 +27,21 @@ impl Join for Expr {
 
 // Id as String in script.
 // The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
-named!(pub id<&str, String>,
-    do_parse!(
-        s: re_find_static!("[a-zA-Z0-9][a-zA-Z0-9_.-]*") >>
-        (s.to_string())
-    )
-);
+pub fn id(input: &str) -> IResult<&str, String> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new("[a-zA-Z0-9][a-zA-Z0-9_.-]*").unwrap();
+    }
+    let (input, s) = re_find(RE.clone())(input)?;
+    Ok((input, s.into()))
+}
 
-named!(pub symbol<&str, &str>,
-    do_parse!(
-        s: re_find_static!("[a-zA-Z][a-zA-Z0-9_]*") >>
-        (&*s)
-    )
-);
+pub fn symbol(input: &str) -> IResult<&str, &str> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new("[a-zA-Z][a-zA-Z0-9_]*").unwrap();
+    }
+    let (input, s) = re_find(RE.clone())(input)?;
+    Ok((input, s))
+}
 
 #[test]
 fn id_test() {

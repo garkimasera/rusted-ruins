@@ -4,7 +4,7 @@ use nom::bytes::complete::tag;
 use nom::character::complete::{char, line_ending, multispace0, space0};
 use nom::combinator::map_res;
 use nom::error::ParseError;
-use nom::multi::{fold_many0, many0, separated_list};
+use nom::multi::{fold_many0, many0, separated_list0};
 use nom::sequence::{delimited, separated_pair};
 use nom::IResult;
 use std::str::FromStr;
@@ -24,11 +24,11 @@ fn end_line_test() {
     assert_eq!(end_line("   \naabb"), Ok(("aabb", ())));
 }
 
-fn ws<I, O, E: ParseError<I>, F>(f: F) -> impl Fn(I) -> IResult<I, O, E>
+fn ws<I, O, E: ParseError<I>, F>(mut f: F) -> impl FnMut(I) -> IResult<I, O, E>
 where
     I: nom::InputTakeAtPosition,
     <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
-    F: Fn(I) -> IResult<I, O, E>,
+    F: FnMut(I) -> IResult<I, O, E>,
 {
     move |input: I| {
         let (input, _) = multispace0(input)?;
@@ -38,7 +38,7 @@ where
     }
 }
 
-fn array<I, O, E: ParseError<I>, F>(f: F) -> impl Fn(I) -> IResult<I, Vec<O>, E>
+fn array<I, O, E: ParseError<I>, F>(f: F) -> impl FnMut(I) -> IResult<I, Vec<O>, E>
 where
     I: nom::InputTakeAtPosition
         + nom::Slice<std::ops::RangeFrom<usize>>
@@ -47,11 +47,11 @@ where
         + PartialEq,
     <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
     <I as nom::InputIter>::Item: nom::AsChar,
-    F: Fn(I) -> IResult<I, O, E>,
+    F: FnMut(I) -> IResult<I, O, E>,
 {
     ws(delimited(
         char('['),
-        separated_list(char(','), ws(f)),
+        separated_list0(char(','), ws(f)),
         char(']'),
     ))
 }
