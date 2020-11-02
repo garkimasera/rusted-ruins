@@ -1,4 +1,5 @@
 mod args;
+pub mod changeable;
 pub mod control;
 pub mod font;
 pub mod input;
@@ -52,6 +53,7 @@ pub fn init() {
     initialize(&INPUT_CFG);
     initialize(&CONTROL_CFG);
     initialize(&PAK_DIRS);
+    changeable::initialize();
 }
 
 lazy_static! {

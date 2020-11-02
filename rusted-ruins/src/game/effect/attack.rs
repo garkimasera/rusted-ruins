@@ -1,3 +1,4 @@
+use crate::config::changeable::game_log_cfg;
 use crate::game::damage::*;
 use crate::game::extrait::CharaEx;
 use crate::game::Game;
@@ -28,7 +29,10 @@ pub fn melee_attack(
 ) {
     let attacker = game.gd.chara.get(cid);
     let target = game.gd.chara.get(target_id);
-    game_log!("attack"; attacker=attacker, target=target);
+
+    if game_log_cfg().combat_log.attack() {
+        game_log!("attack"; attacker=attacker, target=target);
+    }
 
     let attack_params = AttackParams {
         attacker_id: Some(cid),
@@ -51,7 +55,10 @@ pub fn ranged_attack(
     element: Element,
 ) {
     let target = game.gd.chara.get(target_id);
-    game_log!("arrow-hit"; chara=target);
+
+    if game_log_cfg().combat_log.attack() {
+        game_log!("arrow-hit"; chara=target);
+    }
 
     let attack_params = AttackParams {
         attacker_id: Some(cid),
@@ -86,9 +93,6 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     );
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
-    // Dagame log
-    game_log!("damaged-chara"; chara=target, damage=damage);
-
     // Give damage
     let hp = do_damage(game, target_id, damage, attack_params.kind);
 
@@ -101,8 +105,6 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
         }
     } else {
         crate::game::quest::count_slayed_monster(&mut game.gd, idx);
-        //        game.anim_queue
-        //            .push_destroy(game.gd.chara_pos(target_id).unwrap());
     }
 
     damage
@@ -168,7 +170,7 @@ fn hit_judge(
     let p = 1.0 / (1.0 + (-d * 0.125).exp());
     let is_hit = rng::get_rng().gen_bool(p.into());
 
-    if !is_hit {
+    if !is_hit && game_log_cfg().combat_log.attack() {
         game_log!("attack-evade"; chara=gd.chara.get(target_id));
     }
 

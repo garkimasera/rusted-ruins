@@ -1,3 +1,4 @@
+use crate::config::changeable::game_log_cfg;
 use crate::config::UI_CFG;
 use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
@@ -69,6 +70,11 @@ pub fn do_damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: CharaD
     let chara = game.gd.chara.get_mut(cid);
 
     chara.hp -= damage;
+
+    // Damage log
+    if game_log_cfg().combat_log.damage() {
+        game_log!("damaged-chara"; chara=chara, damage=damage);
+    }
 
     if let Some(pos) = pos {
         game.damage_view.push(cid, pos, damage);
