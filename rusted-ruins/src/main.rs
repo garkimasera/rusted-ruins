@@ -16,8 +16,6 @@ mod error;
 #[macro_use]
 mod log;
 #[macro_use]
-mod util;
-#[macro_use]
 mod text;
 mod config;
 mod context;

@@ -5,9 +5,9 @@ pub mod font;
 pub mod input;
 pub mod visual;
 
-use crate::util::read_file_as_string;
 use common::basic;
 use std::env;
+use std::fs::read_to_string;
 use std::path::PathBuf;
 use std::process::exit;
 use toml;
@@ -16,7 +16,7 @@ macro_rules! load_config_file {
     ($path:expr) => {{
         let path = cfg_path($path);
         info!("Loading config file : \"{}\"", path.to_string_lossy());
-        let s = match read_file_as_string(&path) {
+        let s = match read_to_string(&path) {
             Ok(s) => s,
             Err(e) => {
                 error!(

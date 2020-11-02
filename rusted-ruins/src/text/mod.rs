@@ -6,6 +6,7 @@ use crate::config;
 use common::basic;
 use fluent::concurrent::FluentBundle;
 use fluent::{FluentArgs, FluentResource};
+use std::fs::read_to_string;
 use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;
 use walkdir::WalkDir;
@@ -120,7 +121,7 @@ fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
                 continue;
             }
 
-            let s = match crate::util::read_file_as_string(f.path()) {
+            let s = match read_to_string(f.path()) {
                 Ok(s) => s,
                 Err(e) => {
                     warn!("IO Error during reading a fluent file: {}", e);
