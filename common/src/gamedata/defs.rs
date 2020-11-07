@@ -123,20 +123,6 @@ impl Default for ToolEffect {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum UseEffect {
-    None,
-    Deed,
-    SkillLearning,
-}
-
-impl Default for UseEffect {
-    fn default() -> UseEffect {
-        UseEffect::None
-    }
-}
-
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {

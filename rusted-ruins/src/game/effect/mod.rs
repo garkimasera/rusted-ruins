@@ -1,4 +1,6 @@
 mod attack;
+mod deed;
+mod skill_learn;
 
 pub use attack::weapon_to_effect;
 
@@ -10,7 +12,7 @@ use geom::*;
 
 #[derive(Clone, Copy, Debug)]
 pub enum EffectTarget {
-    // None,
+    None,
     Tile(Vec2d),
     Chara(CharaId),
 }
@@ -92,7 +94,20 @@ pub fn do_effect<T: Into<EffectTarget>>(
                 }
                 return;
             }
-            _ => (),
+            EffectKind::Deed => {
+                self::deed::use_deed(game);
+                return;
+            }
+            EffectKind::SkillLearning { skills } => {
+                let cids = get_cids(game, effect, target);
+                for cid in &cids {
+                    self::skill_learn::skill_learn(game, *cid, skills);
+                }
+                return;
+            }
+            other => {
+                error!("unimplemented effect: {:?}", other);
+            }
         }
     }
 }
@@ -101,7 +116,7 @@ pub fn do_effect<T: Into<EffectTarget>>(
 fn get_cids(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<CharaId> {
     // TODO: multiple cids will be needed for widely ranged effect.
     match target {
-        // EffectTarget::None => vec![],
+        EffectTarget::None => vec![],
         EffectTarget::Tile(pos) => {
             if let Some(cid) = game.gd.get_current_map().get_chara(pos) {
                 vec![cid]

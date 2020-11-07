@@ -80,7 +80,7 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Use one item
     pub fn use_item(&mut self, il: ItemLocation) {
-        super::action::use_item::use_item(self.gd_mut(), il, CharaId::Player);
+        super::action::use_item::use_item(self.0, il, CharaId::Player);
         self.0.finish_player_turn();
     }
 

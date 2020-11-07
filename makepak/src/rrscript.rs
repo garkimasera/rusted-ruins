@@ -19,8 +19,6 @@ pub fn read_rrscript<P: AsRef<Path>>(path: P) -> Result<Object> {
     let object_id = first_line.trim().to_owned();
     let script = script_parse(&script_text)?;
 
-    dbg!(&script);
-
     Ok(Object::Script(ScriptObject {
         id: object_id,
         script,

@@ -58,7 +58,7 @@ impl ItemFilter {
             return false;
         }
 
-        if self.usable && o.use_effect == UseEffect::None {
+        if self.usable && o.use_effect.is_none() {
             return false;
         }
 

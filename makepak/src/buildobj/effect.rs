@@ -4,10 +4,10 @@ use common::gamedata::{Effect, EffectKind};
 
 macro_rules! need_field {
     ($e:expr, $field:ident) => {
-        if let Some(field) = $e.$field {
+        if let Some(field) = $e.$field.clone() {
             field
         } else {
-            bail!("{} does not exist for effect kind")
+            bail!("{} does not exist for effect kind", stringify!($field))
         }
     };
 }
@@ -43,6 +43,10 @@ pub fn convert_effect_input(e: Option<EffectInput>) -> Result<Option<Effect>> {
                 status: need_field!(k, status),
             },
             "chara_scan" => EffectKind::CharaScan,
+            "deed" => EffectKind::Deed,
+            "skill_learning" => EffectKind::SkillLearning {
+                skills: need_field!(k, skills),
+            },
             _ => bail!("unknown field \"{}\" for effect kind"),
         });
     }

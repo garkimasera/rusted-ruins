@@ -30,7 +30,6 @@ impl AnimQueue {
         if !effect.anim_img_shot.is_empty() {
             if let Some(start) = start {
                 if let Some(idx) = gobj::id_to_idx_checked::<AnimImgIdx>(&effect.anim_img_shot) {
-                    dbg!();
                     self.push(Animation::shot(idx, start, tile));
                 } else {
                     warn!("unknown AnimImgObject: {}", effect.anim_img_shot);

@@ -1,4 +1,5 @@
 use super::defs::Element;
+use super::skill::SkillKind;
 use geom::shape::ShapeKind;
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
@@ -21,7 +22,7 @@ pub struct Effect {
 }
 
 /// Effect defines the game effect of items, magics, or other active skills.
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EffectKind {
     None,
@@ -34,6 +35,8 @@ pub enum EffectKind {
     Direct { element: Element },
     Status { status: StatusEffect },
     CharaScan,
+    SkillLearning { skills: Vec<SkillKind> },
+    Deed,
 }
 
 impl Default for EffectKind {

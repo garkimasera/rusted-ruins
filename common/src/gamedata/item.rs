@@ -45,8 +45,8 @@ pub struct ItemObject {
     pub eff: u16,
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
+    pub use_effect: Option<Effect>,
     pub tool_effect: ToolEffect,
-    pub use_effect: UseEffect,
     /// (additional sp) = (nutriton) * (sp_nutrition_factor)
     pub nutrition: u16,
     /// Range of charges

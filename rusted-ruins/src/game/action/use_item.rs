@@ -1,47 +1,43 @@
-use crate::game::extrait::*;
-use crate::game::InfoGetter;
+use crate::game::effect::{do_effect, EffectTarget};
+use crate::game::Game;
 use common::gamedata::*;
 use common::gobj;
 
-pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
-    let item = gd.get_item(il);
+pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+    let item = game.gd.get_item(il);
     let item_obj = gobj::get_obj(item.0.idx);
 
-    match item_obj.use_effect {
+    let use_effect = item_obj.use_effect.as_ref().unwrap();
+
+    match &use_effect.kind[0] {
+        EffectKind::SkillLearning { skills } => {
+            let mut effect = use_effect.clone();
+            let mut skills = skills.clone();
+            for attr in &item.0.attributes {
+                match attr {
+                    ItemAttribute::SkillLearning(skill_kind) => {
+                        skills.push(*skill_kind);
+                    }
+                    _ => (),
+                }
+            }
+            effect.kind[0] = EffectKind::SkillLearning { skills };
+            do_effect(game, &effect, Some(cid), EffectTarget::Chara(cid), 1.0, 1.0);
+            game.gd.remove_item(il, 1);
+            return;
+        }
+        _ => (),
+    }
+
+    do_effect(game, use_effect, Some(cid), EffectTarget::None, 1.0, 1.0);
+
+    game.gd.remove_item(il, 1);
+    /*match item_obj.use_effect {
         UseEffect::None => panic!("use invalid item"),
         UseEffect::Deed => {
             assert_eq!(cid, CharaId::Player);
 
-            let mapid = gd.get_current_mapid();
-            if !mapid.is_region_map() {
-                game_log_i!("use_item-deed-invalid-map");
-                return;
-            }
 
-            let pos = gd.player_pos();
-            let map = gd.get_current_map();
-            if !map.tile[pos].special.is_none() {
-                game_log_i!("use_item-deed-occupied");
-            }
-
-            let mut site = Site::new(1, None);
-            site.content = SiteContent::Base {
-                kind: BaseKind::Home,
-            };
-            let rid = mapid.rid();
-            let sid = gd.add_site(site, SiteKind::Base, rid, pos).unwrap();
-
-            let map_random_id = crate::game::saveload::gen_box_id(gd);
-            let map =
-                crate::game::map::from_template::from_template_id("home-default", false).unwrap();
-            gd.add_map(map, sid, map_random_id);
-
-            let map = gd.get_current_map_mut();
-            map.tile[pos].special = SpecialTileKind::SiteSymbol {
-                kind: SiteSymbolKind::from("!rm-h0"),
-            };
-            game_log_i!("use_item-deed-succeed");
-            gd.remove_item(il, 1);
         }
         UseEffect::SkillLearning => {
             for attr in &item.0.attributes {
@@ -61,5 +57,5 @@ pub fn use_item(gd: &mut GameData, il: ItemLocation, cid: CharaId) {
                 }
             }
         }
-    }
+    }*/
 }

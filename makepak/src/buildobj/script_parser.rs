@@ -66,7 +66,6 @@ fn section_start(input: &str) -> IResult<&str, String> {
 
 #[test]
 fn section_start_test() {
-    dbg!(section_start("---  section_name \n"));
     assert_eq!(
         section_start("---  section_name \n"),
         Ok(("", "section_name".to_string()))

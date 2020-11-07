@@ -1,4 +1,4 @@
-use common::gamedata::{self, Element, ElementArray, FactionId, Harvest, StatusEffect};
+use common::gamedata::{self, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect};
 use common::sitegen;
 use geom::{shape::ShapeKind, Vec2d};
 use std::collections::HashMap;
@@ -107,9 +107,9 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub magical_effect: Option<EffectInput>,
     #[serde(default)]
-    pub tool_effect: gamedata::ToolEffect,
+    pub use_effect: Option<EffectInput>,
     #[serde(default)]
-    pub use_effect: gamedata::UseEffect,
+    pub tool_effect: gamedata::ToolEffect,
     /// For armor items
     pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,
@@ -179,4 +179,5 @@ pub struct EffectKindInput {
     pub kind: String,
     pub element: Option<Element>,
     pub status: Option<StatusEffect>,
+    pub skills: Option<Vec<SkillKind>>,
 }
