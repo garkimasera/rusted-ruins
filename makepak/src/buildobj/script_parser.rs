@@ -2,16 +2,16 @@ use common::hashmap::HashMap;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::character::complete::{char, line_ending, multispace0, space0};
-use nom::combinator::map_res;
-use nom::error::ParseError;
-use nom::multi::{fold_many0, many0, separated_list0};
+use nom::combinator::{cut, map_res};
+use nom::multi::{fold_many0, many1, separated_list0};
 use nom::sequence::{delimited, separated_pair};
-use nom::IResult;
 use std::str::FromStr;
 
 use super::expr_parser::*;
 use crate::error::PakCompileError;
 use common::script::*;
+
+type IResult<I, O> = nom::IResult<I, O, nom::error::VerboseError<I>>;
 
 fn end_line(input: &str) -> IResult<&str, ()> {
     let (input, _) = space0(input)?;
@@ -24,11 +24,11 @@ fn end_line_test() {
     assert_eq!(end_line("   \naabb"), Ok(("aabb", ())));
 }
 
-fn ws<I, O, E: ParseError<I>, F>(mut f: F) -> impl FnMut(I) -> IResult<I, O, E>
+fn ws<I, O, F>(mut f: F) -> impl FnMut(I) -> IResult<I, O>
 where
     I: nom::InputTakeAtPosition,
     <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
-    F: FnMut(I) -> IResult<I, O, E>,
+    F: FnMut(I) -> IResult<I, O>,
 {
     move |input: I| {
         let (input, _) = multispace0(input)?;
@@ -38,7 +38,7 @@ where
     }
 }
 
-fn array<I, O, E: ParseError<I>, F>(f: F) -> impl FnMut(I) -> IResult<I, Vec<O>, E>
+fn array<I, O, F>(f: F) -> impl FnMut(I) -> IResult<I, Vec<O>>
 where
     I: nom::InputTakeAtPosition
         + nom::Slice<std::ops::RangeFrom<usize>>
@@ -47,7 +47,7 @@ where
         + PartialEq,
     <I as nom::InputTakeAtPosition>::Item: nom::AsChar + Clone,
     <I as nom::InputIter>::Item: nom::AsChar,
-    F: FnMut(I) -> IResult<I, O, E>,
+    F: FnMut(I) -> IResult<I, O>,
 {
     ws(delimited(
         char('['),
@@ -66,6 +66,7 @@ fn section_start(input: &str) -> IResult<&str, String> {
 
 #[test]
 fn section_start_test() {
+    dbg!(section_start("---  section_name \n"));
     assert_eq!(
         section_start("---  section_name \n"),
         Ok(("", "section_name".to_string()))
@@ -216,27 +217,37 @@ fn instruction(input: &str) -> IResult<&str, Instruction> {
 
 fn section(input: &str) -> IResult<&str, (String, Vec<Instruction>)> {
     let (input, section) = section_start(input)?;
-    let (input, instructions) = many0(instruction)(input)?;
+    let (input, instructions) = cut(many1(instruction))(input)?;
     Ok((input, (section.to_owned(), instructions)))
 }
 
 fn sections(input: &str) -> IResult<&str, HashMap<String, Vec<Instruction>>> {
-    fold_many0(
+    let (input, sections) = fold_many0(
         section,
         HashMap::default(),
         |mut s: HashMap<String, Vec<Instruction>>, section: (String, Vec<Instruction>)| {
             s.insert(section.0, section.1);
             s
         },
-    )(input)
+    )(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = nom::combinator::eof(input)?;
+    Ok((input, sections))
 }
 
 pub fn parse(input: &str) -> Result<Script, PakCompileError> {
     match sections(input) {
         Ok(o) => Ok(Script::from_map(o.1)),
-        Err(e) => Err(PakCompileError::ScriptParseError {
-            description: format!("{:?}", e),
-        }),
+        Err(e) => {
+            use nom::Err;
+            let description = match e {
+                Err::Incomplete(_) => e.to_string(),
+                Err::Error(e) => nom::error::convert_error(input, e),
+                Err::Failure(e) => nom::error::convert_error(input, e),
+            };
+
+            Err(PakCompileError::ScriptParseError { description })
+        }
     }
 }
 

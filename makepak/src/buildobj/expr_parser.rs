@@ -6,8 +6,9 @@ use nom::combinator::complete;
 use nom::multi::fold_many0;
 use nom::regexp::str::re_find;
 use nom::sequence::{delimited, pair};
-use nom::IResult;
 use regex::Regex;
+
+type IResult<I, O> = nom::IResult<I, O, nom::error::VerboseError<I>>;
 
 trait Join {
     fn join(self, op: Operator, e: Expr) -> Expr;
