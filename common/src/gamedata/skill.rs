@@ -7,13 +7,14 @@ use thiserror::Error;
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SkillKind {
-    Endurance,
-    Healing,
-    Defence,
-    Evasion,
-    Carrying,
-    MagicDevice,
     BareHands,
+    Carrying,
+    Defence,
+    Endurance,
+    Evasion,
+    Healing,
+    MagicDevice,
+    Mining,
     Weapon(WeaponKind),
     Creation(CreationKind),
 }
@@ -27,13 +28,14 @@ impl FromStr for SkillKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s {
-            "endurance" => SkillKind::Endurance,
-            "healing" => SkillKind::Healing,
-            "defence" => SkillKind::Defence,
-            "evasion" => SkillKind::Evasion,
-            "carrying" => SkillKind::Carrying,
-            "magic_device" => SkillKind::MagicDevice,
             "bare_hands" => SkillKind::BareHands,
+            "carrying" => SkillKind::Carrying,
+            "defence" => SkillKind::Defence,
+            "endurance" => SkillKind::Endurance,
+            "evasion" => SkillKind::Evasion,
+            "healing" => SkillKind::Healing,
+            "magic_device" => SkillKind::MagicDevice,
+            "mining" => SkillKind::Mining,
             "sword" => SkillKind::Weapon(WeaponKind::Sword),
             "spear" => SkillKind::Weapon(WeaponKind::Spear),
             "axe" => SkillKind::Weapon(WeaponKind::Axe),

@@ -37,12 +37,13 @@ item_kind-object = Object
 
 # SkillKind
 
-skill_kind-endurance = Endurance
-skill_kind-healing = Healing
 skill_kind-bare_hands = Bare Hands
 skill_kind-defence = Defence
+skill_kind-endurance = Endurance
 skill_kind-evasion = Evasion
+skill_kind-healing = Healing
 skill_kind-magic_device = Magic Device
+skill_kind-mining = Mining
 
 # WeaponKind
 
