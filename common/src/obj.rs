@@ -77,6 +77,7 @@ pub struct UIImgObject {
 #[derive(Serialize, Deserialize)]
 pub struct WallObject {
     pub id: String,
+    pub hp: u16,
     /// If this is false, skips base tile drawing
     pub base_draw: bool,
     pub img: Img,

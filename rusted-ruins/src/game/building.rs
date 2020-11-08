@@ -3,7 +3,6 @@ use common::gamedata::*;
 use common::gobj;
 use common::obj::*;
 use common::objholder::*;
-use common::piece_pattern::{PiecePatternFlags, WallIdxPP};
 use geom::*;
 
 pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId) {
@@ -44,24 +43,7 @@ pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId) {
 
 pub fn finish_build(game: &mut Game, pos: Vec2d, wall_idx: WallIdx) {
     let map = game.gd.get_current_map_mut();
-    let wall_obj = gobj::get_obj(wall_idx);
-    map.tile[pos].wall = WallIdxPP::new(wall_idx);
-
-    for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
-        if !map.is_inside(p) || map.tile[p].wall.idx() != Some(wall_idx) {
-            continue;
-        }
-        let ppf = PiecePatternFlags::from_fn(p, |p| {
-            if map.is_inside(p) {
-                map.tile[p].wall.idx() == Some(wall_idx)
-            } else {
-                false
-            }
-        });
-        let wallpp =
-            WallIdxPP::with_piece_pattern(wall_idx, ppf.to_piece_pattern(wall_obj.img.n_pattern));
-        map.tile[p].wall = wallpp;
-    }
+    map.set_wall(pos, wall_idx);
     audio::play_sound("finish-build");
 }
 

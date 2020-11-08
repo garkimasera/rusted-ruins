@@ -92,6 +92,7 @@ pub fn generated_map_to_map(
 ) -> Map {
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
+    let wall_obj = gobj::get_obj(wall);
 
     trace!("New map creating");
 
@@ -115,6 +116,7 @@ pub fn generated_map_to_map(
                     piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
                 map.tile[p].wall = WallIdxPP::with_piece_pattern(wall, piece_pattern);
+                map.tile[p].wall_hp = wall_obj.hp;
             }
             _ => (),
         }

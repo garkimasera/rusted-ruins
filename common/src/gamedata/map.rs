@@ -156,6 +156,8 @@ pub struct TileInfo {
     pub tile: TileArray,
     /// If wall is presented, the tile is no walkable
     pub wall: WallIdxPP,
+    /// Wall HP
+    pub wall_hp: u16,
     /// Decoration for this tile
     pub deco: Option<DecoIdx>,
     /// Items on this tile
@@ -210,6 +212,7 @@ impl Default for TileInfo {
         TileInfo {
             tile: ArrayVec::new(),
             wall: WallIdxPP::default(),
+            wall_hp: 0,
             deco: None,
             item_list: ItemList::new(),
             chara: None,
@@ -354,6 +357,32 @@ impl Map {
             .0;
         let removed_cid = self.charaid.swap_remove(i);
         debug_assert!(removed_cid == cid);
+    }
+
+    /// Set wall and wall hp to given pos
+    #[cfg(feature = "global_state_obj")]
+    pub fn set_wall(&mut self, pos: Vec2d, wall_idx: WallIdx) {
+        let wall_obj = crate::gobj::get_obj(wall_idx);
+        self.tile[pos].wall = WallIdxPP::new(wall_idx);
+        self.tile[pos].wall_hp = wall_obj.hp;
+
+        for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
+            if !self.is_inside(p) || self.tile[p].wall.idx() != Some(wall_idx) {
+                continue;
+            }
+            let ppf = PiecePatternFlags::from_fn(p, |p| {
+                if self.is_inside(p) {
+                    self.tile[p].wall.idx() == Some(wall_idx)
+                } else {
+                    false
+                }
+            });
+            let wallpp = WallIdxPP::with_piece_pattern(
+                wall_idx,
+                ppf.to_piece_pattern(wall_obj.img.n_pattern),
+            );
+            self.tile[p].wall = wallpp;
+        }
     }
 
     /// Get tile index with extrapolation
