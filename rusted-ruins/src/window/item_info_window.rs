@@ -95,7 +95,7 @@ impl Window for ItemInfoWindow {
 
 impl DialogWindow for ItemInfoWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
-        check_escape_click!(self, command);
+        check_escape_click!(self, command, false);
 
         match command {
             Command::Cancel => DialogResult::Close,
