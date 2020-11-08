@@ -2,6 +2,7 @@ pub mod builder;
 pub mod from_template;
 pub mod search;
 pub mod tile_info;
+pub mod wall_damage;
 
 use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;

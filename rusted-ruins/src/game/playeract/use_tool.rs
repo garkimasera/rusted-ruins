@@ -1,4 +1,5 @@
 use super::DoPlayerAction;
+use crate::game::effect::do_effect;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
@@ -33,6 +34,24 @@ impl<'a> DoPlayerAction<'a> {
             ToolEffect::Chop => {
                 trace!("chopping at {}", &pos);
                 crate::game::action::harvest::harvest_by_tool(self.0, CharaId::Player, pos);
+                self.0.finish_player_turn();
+            }
+            ToolEffect::Mine => {
+                let map = self.0.gd.get_current_map();
+                if map.tile[pos].wall.is_empty() {
+                    return;
+                }
+                if !pos.is_adjacent(player_pos) {
+                    game_log_i!("mining-not-adjacent-tile");
+                    return;
+                }
+
+                trace!("mining at {}", &pos);
+                let effect = Effect {
+                    kind: vec![EffectKind::WallDamage],
+                    ..Effect::default()
+                };
+                do_effect(self.0, &effect, Some(CharaId::Player), pos, 1.0, 0.0);
                 self.0.finish_player_turn();
             }
         }

@@ -94,6 +94,12 @@ pub fn do_effect<T: Into<EffectTarget>>(
                 }
                 return;
             }
+            EffectKind::WallDamage => {
+                let pos_list = get_pos(game, effect, target);
+                for pos in &pos_list {
+                    crate::game::map::wall_damage::wall_damage(game, *pos, power);
+                }
+            }
             EffectKind::Deed => {
                 self::deed::use_deed(game);
                 return;
@@ -126,6 +132,24 @@ fn get_cids(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<CharaId>
         }
         EffectTarget::Chara(cid) => vec![cid],
     }
+}
+
+// Get tile positions of the effect
+fn get_pos(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<Vec2d> {
+    let center = match target {
+        EffectTarget::None => {
+            return vec![];
+        }
+        EffectTarget::Tile(pos) => pos,
+        EffectTarget::Chara(cid) => {
+            if let Some(pos) = game.gd.chara_pos(cid) {
+                pos
+            } else {
+                return vec![];
+            }
+        }
+    };
+    vec![center]
 }
 
 // Cause status effect to given chara.

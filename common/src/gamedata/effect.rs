@@ -21,6 +21,21 @@ pub struct Effect {
     pub sound: String,
 }
 
+impl Default for Effect {
+    fn default() -> Effect {
+        Effect {
+            kind: Vec::new(),
+            power_adjust: Vec::new(),
+            range: 1,
+            shape: ShapeKind::OneTile,
+            size: 1,
+            anim_img: "".into(),
+            anim_img_shot: "".into(),
+            sound: "".into(),
+        }
+    }
+}
+
 /// Effect defines the game effect of items, magics, or other active skills.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -34,6 +49,7 @@ pub enum EffectKind {
     Explosion { element: Element },
     Direct { element: Element },
     Status { status: StatusEffect },
+    WallDamage,
     CharaScan,
     SkillLearning { skills: Vec<SkillKind> },
     Deed,

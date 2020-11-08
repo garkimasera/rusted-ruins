@@ -115,6 +115,7 @@ pub enum ToolEffect {
     None,
     Build,
     Chop,
+    Mine,
 }
 
 impl Default for ToolEffect {
