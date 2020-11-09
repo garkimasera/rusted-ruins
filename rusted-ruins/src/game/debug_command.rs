@@ -1,8 +1,10 @@
+use crate::game::extrait::*;
 use crate::game::{Game, InfoGetter};
 use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
+use std::str::FromStr;
 
 pub fn exec_debug_command(game: &mut Game, command: &str) {
     let mut args = command.split_whitespace();
@@ -55,6 +57,23 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
             } else {
                 game_log_i!("debug-command-need-1arg"; command="anim");
             }
+        }
+        "learn_skill" => {
+            let arg1 = if let Some(arg1) = args.next() {
+                arg1
+            } else {
+                game_log_i!("debug-command-need-1arg"; command="learn_skill");
+                return;
+            };
+            let skill_kind = match SkillKind::from_str(arg1) {
+                Ok(o) => o,
+                Err(e) => {
+                    debug!("unknown skill kind: {}", e);
+                    return;
+                }
+            };
+            let player = game.gd.chara.get_mut(CharaId::Player);
+            player.skills.learn_new_skill(skill_kind);
         }
         "print_ids" => {
             if let Some(arg1) = args.next() {
