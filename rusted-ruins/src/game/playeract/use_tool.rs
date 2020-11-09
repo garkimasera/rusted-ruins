@@ -1,9 +1,11 @@
 use super::DoPlayerAction;
 use crate::game::effect::do_effect;
+use crate::game::extrait::*;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
+use rules::RULES;
 use CharaId::Player;
 
 impl<'a> DoPlayerAction<'a> {
@@ -51,7 +53,15 @@ impl<'a> DoPlayerAction<'a> {
                     kind: vec![EffectKind::WallDamage],
                     ..Effect::default()
                 };
-                do_effect(self.0, &effect, Some(CharaId::Player), pos, 1.0, 0.0);
+                let skill_level = player.skills.get(SkillKind::Mining);
+                let power = skill_level as f32 * RULES.effect.mining_power_factor
+                    + RULES.effect.mining_power_base;
+                do_effect(self.0, &effect, Some(CharaId::Player), pos, power, 0.0);
+                let floor_level = self.0.gd.get_current_mapid().floor();
+                let player = self.0.gd.chara.get_mut(CharaId::Player);
+                player
+                    .skills
+                    .add_exp(SkillKind::Mining, RULES.exp.mining, floor_level);
                 self.0.finish_player_turn();
             }
         }

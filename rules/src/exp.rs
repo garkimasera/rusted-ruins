@@ -17,6 +17,8 @@ pub struct Exp {
     pub healing: u32,
     /// Probability to gain Healing skill exp
     pub healing_probability: f32,
+    /// Base exp to Mining skill
+    pub mining: u32,
     /// Base exp for creation
     pub creation_base_exp: u32,
 }

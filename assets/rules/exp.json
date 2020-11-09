@@ -8,5 +8,6 @@
     "evasion": 200,
     "healing": 50,
     "healing_probability": 0.2,
+    "mining": 100,
     "creation_base_exp": 1000
 }
