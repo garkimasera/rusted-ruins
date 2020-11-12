@@ -1,12 +1,17 @@
 use super::DoPlayerAction;
 use crate::game::effect::do_effect;
 use crate::game::extrait::*;
-use crate::game::InfoGetter;
+use crate::game::{Animation, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
+use common::objholder::AnimImgIdx;
 use geom::*;
 use rules::RULES;
 use CharaId::Player;
+
+lazy_static! {
+    static ref MINING_ANIM_IDX: AnimImgIdx = gobj::id_to_idx("mining");
+}
 
 impl<'a> DoPlayerAction<'a> {
     pub fn use_tool(&mut self, pos: Vec2d) {
@@ -62,6 +67,10 @@ impl<'a> DoPlayerAction<'a> {
                 player
                     .skills
                     .add_exp(SkillKind::Mining, RULES.exp.mining, floor_level);
+                self.0
+                    .anim_queue
+                    .push(Animation::img_onetile(*MINING_ANIM_IDX, pos));
+                audio::play_sound("mining");
                 self.0.finish_player_turn();
             }
         }
