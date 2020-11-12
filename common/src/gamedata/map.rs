@@ -365,11 +365,32 @@ impl Map {
         let wall_obj = crate::gobj::get_obj(wall_idx);
         self.tile[pos].wall = WallIdxPP::new(wall_idx);
         self.tile[pos].wall_hp = wall_obj.hp;
+        self.reset_wall_pp(pos, pos);
+    }
 
-        for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
-            if !self.is_inside(p) || self.tile[p].wall.idx() != Some(wall_idx) {
+    /// Erase wall
+    #[cfg(feature = "global_state_obj")]
+    pub fn erase_wall(&mut self, pos: Vec2d) {
+        self.tile[pos].wall = WallIdxPP::empty();
+        self.tile[pos].wall_hp = 0;
+        self.reset_wall_pp(pos, pos);
+    }
+
+    /// Reset wall piece patterns
+    #[cfg(feature = "global_state_obj")]
+    pub fn reset_wall_pp(&mut self, top_left: Vec2d, bottom_right: Vec2d) {
+        let rect_iter = RectIter::new(top_left - (1, 1), bottom_right + (1, 1));
+
+        for p in rect_iter {
+            if !self.is_inside(p) {
                 continue;
             }
+            let wall_idx = if let Some(wall_idx) = self.tile[p].wall.idx() {
+                wall_idx
+            } else {
+                continue;
+            };
+
             let ppf = PiecePatternFlags::from_fn(p, |p| {
                 if self.is_inside(p) {
                     self.tile[p].wall.idx() == Some(wall_idx)
@@ -377,6 +398,7 @@ impl Map {
                     false
                 }
             });
+            let wall_obj = crate::gobj::get_obj(wall_idx);
             let wallpp = WallIdxPP::with_piece_pattern(
                 wall_idx,
                 ppf.to_piece_pattern(wall_obj.img.n_pattern),

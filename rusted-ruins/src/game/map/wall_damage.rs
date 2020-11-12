@@ -1,5 +1,4 @@
 use crate::game::Game;
-use common::gamedata::*;
 use geom::*;
 
 pub fn wall_damage(game: &mut Game, pos: Vec2d, power: f32) {
@@ -19,8 +18,7 @@ pub fn wall_damage(game: &mut Game, pos: Vec2d, power: f32) {
     let damage = power as u16;
 
     if wall_hp <= damage {
-        tile.wall_hp = 0;
-        tile.wall = WallIdxPP::empty();
+        map.erase_wall(pos);
     } else {
         tile.wall_hp = wall_hp - damage;
     }
