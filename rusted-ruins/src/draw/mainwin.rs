@@ -89,6 +89,9 @@ impl MainWinDrawer {
             self.draw_tile_cursor(canvas, sv, t);
         }
 
+        // Draw character infomation UI
+        self.draw_chara_info(context, game);
+        // Draw damage digits
         self.draw_damage(context, game);
     }
 
@@ -197,7 +200,7 @@ impl MainWinDrawer {
                     .copy(context.sv.tex().get(chara.template), src, dest));
             }
         }
-        // Draw background parts
+        // Draw overlay
         for p in tile_range {
             self.draw_overlay(context.canvas, game, context.sv, p);
         }

@@ -63,6 +63,7 @@ pub struct UIConfig {
     pub progress_bar: ProgressBarConfig,
     pub vscroll_widget: VScrollWidgetConfig,
     pub sidebar: SidebarConfig,
+    pub chara_info: CharaInfoConfig,
     pub damage: DamageConfig,
 }
 
@@ -311,6 +312,12 @@ pub struct SidebarConfig {
     pub icon_w: u32,
     pub icon_h: u32,
     pub space: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CharaInfoConfig {
+    pub target_icon_x: i32,
+    pub target_icon_y: i32,
 }
 
 #[derive(Debug, Deserialize)]

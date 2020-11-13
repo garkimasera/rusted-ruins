@@ -179,6 +179,10 @@ icon_w = 32
 icon_h = 32
 space = 4
 
+[chara_info]
+target_icon_x = 32
+target_icon_y = 28
+
 [damage]
 damage_view_dy = 20
 n_frame = 12

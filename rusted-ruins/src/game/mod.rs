@@ -209,6 +209,10 @@ impl Game {
         }
     }
 
+    pub fn target_chara(&self) -> Option<CharaId> {
+        self.target_chara
+    }
+
     /// Start new generated game
     pub fn start_new_game(&mut self) {
         const START_SCRIPT_ID: &str = "!start";
