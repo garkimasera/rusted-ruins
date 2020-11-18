@@ -3,7 +3,6 @@ use crate::config::UI_CFG;
 use crate::context::*;
 use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
-use crate::game::item::filter::*;
 use crate::game::{Animation, Command, DoPlayerAction, Game};
 use crate::text;
 use crate::window::{DialogResult, DialogWindow, Window};
@@ -89,19 +88,8 @@ impl DialogWindow for EquipWindow {
                         .nth(i as usize)
                         .unwrap();
                     let slot = (esk, esk_i);
-                    let equip_selected_item = move |pa: &mut DoPlayerAction, il: ItemLocation| {
-                        pa.change_equipment(cid, slot, il);
-                        DialogResult::Close
-                    };
 
-                    let select_window = ItemWindow::new_select(
-                        ItemListLocation::Chara {
-                            cid: CharaId::Player,
-                        },
-                        ItemFilter::new().equip_slot_kind(slot.0),
-                        Box::new(equip_selected_item),
-                        pa,
-                    );
+                    let select_window = ItemWindow::new_select_and_equip(cid, slot, pa);
                     return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
                 ListWidgetResponse::Scrolled => {

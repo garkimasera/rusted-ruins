@@ -23,6 +23,7 @@ log_font = { r=250, g=250, b=250 }
 log_window_bg = { r=20, g=4, b=4 }
 normal_font = { r=250, g=250, b=250 }
 sidebar_bg = { r=20, g=4, b=4 }
+toolbar_bg = { r=4, g=10, b=4 }
 vscroll_border = { r=140, g=76, b=0 }
 vscroll_border_inner = { r=94, g=51, b=0 }
 vscroll_knob = { r=39, g=40, b=42 }
@@ -38,7 +39,7 @@ log = { size=14 }
 
 [log_window]
 h = 19
-n_display_line = 9
+n_display_line = 7
 
 [exit_window]
 rect = { x = -999, y = 120, w = 200, h = 100 }
@@ -178,6 +179,10 @@ rect = { x = -999, y = 35, w = 120, h = 15}
 icon_w = 32
 icon_h = 32
 space = 4
+
+[toolbar]
+icon_w = 34
+icon_h = 34
 
 [chara_info]
 target_icon_x = 32

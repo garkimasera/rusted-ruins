@@ -134,6 +134,24 @@ impl ItemWindow {
         ItemWindow::new(mode, pa.game())
     }
 
+    pub fn new_select_and_equip(
+        cid: CharaId,
+        slot: (EquipSlotKind, u8),
+        pa: &mut DoPlayerAction,
+    ) -> ItemWindow {
+        let equip_selected_item = move |pa: &mut DoPlayerAction, il: ItemLocation| {
+            pa.change_equipment(cid, slot, il);
+            DialogResult::Close
+        };
+
+        ItemWindow::new_select(
+            ItemListLocation::Chara { cid },
+            ItemFilter::new().equip_slot_kind(slot.0),
+            Box::new(equip_selected_item),
+            pa,
+        )
+    }
+
     fn update_by_mode(&mut self, gd: &GameData) {
         let ill_player = ItemListLocation::Chara {
             cid: CharaId::Player,

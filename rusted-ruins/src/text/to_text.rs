@@ -104,6 +104,7 @@ impl ToText for Command {
             DrinkItem => "command-drink_item",
             EatItem => "command-eat_item",
             ReleaseItem => "command-release_item",
+            ChangeEquip { .. } => "command-change_equip",
             TextInput { .. } => "command-text_input",
             TextDelete => "command-text_delete",
             MouseButtonDown { .. } => "command-mouse_button_down",

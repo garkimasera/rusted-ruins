@@ -10,6 +10,7 @@ pub struct ScreenConfig {
     pub log_window: CfgRect,
     pub minimap_window: CfgRect,
     pub sidebar: CfgRect,
+    pub toolbar: CfgRect,
     pub hp_indicator: CfgRect,
     pub sp_indicator: CfgRect,
     pub floor_info: CfgRect,
@@ -63,6 +64,7 @@ pub struct UIConfig {
     pub progress_bar: ProgressBarConfig,
     pub vscroll_widget: VScrollWidgetConfig,
     pub sidebar: SidebarConfig,
+    pub toolbar: ToolbarConfig,
     pub chara_info: CharaInfoConfig,
     pub damage: DamageConfig,
 }
@@ -88,6 +90,7 @@ pub struct UIColorConfig {
     pub log_window_bg: CfgColor,
     pub normal_font: CfgColor,
     pub sidebar_bg: CfgColor,
+    pub toolbar_bg: CfgColor,
     pub vscroll_border: CfgColor,
     pub vscroll_border_inner: CfgColor,
     pub vscroll_knob: CfgColor,
@@ -312,6 +315,12 @@ pub struct SidebarConfig {
     pub icon_w: u32,
     pub icon_h: u32,
     pub space: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ToolbarConfig {
+    pub icon_w: u32,
+    pub icon_h: u32,
 }
 
 #[derive(Debug, Deserialize)]

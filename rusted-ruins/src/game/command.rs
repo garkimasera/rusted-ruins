@@ -1,3 +1,4 @@
+use common::gamedata::*;
 use geom::*;
 
 /// User inputs are converted to command
@@ -35,6 +36,9 @@ pub enum Command {
     DrinkItem,
     EatItem,
     ReleaseItem,
+    ChangeEquip {
+        kind: EquipSlotKind,
+    },
     TextInput {
         text: String,
     },

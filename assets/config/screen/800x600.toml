@@ -10,9 +10,9 @@ h = 420
 
 [log_window]
 x = 203
-y = 423
+y = 460
 w = 600
-h = 177
+h = 140
 
 [minimap_window]
 x = 0
@@ -25,6 +25,12 @@ x = 0
 y = 43
 w = 33
 h = 377
+
+[toolbar]
+x = 203
+y = 423
+w = 600
+h = 34
 
 [hp_indicator]
 x = 52
@@ -63,6 +69,11 @@ h = 40
 x = 0
 y = 420
 len = 800
+
+[[hborders]]
+x = 200
+y = 457
+len = 600
 
 [[vborders]]
 x = 33

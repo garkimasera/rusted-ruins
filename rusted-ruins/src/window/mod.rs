@@ -26,6 +26,7 @@ mod status_window;
 mod talk_window;
 mod text_input_dialog;
 mod text_window;
+mod toolbar;
 mod widget;
 mod winpos;
 
@@ -354,6 +355,20 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     _ => command,
                 };
 
+                let command = match game_windows
+                    .toolbar
+                    .process_command(&command, &mut DoPlayerAction::new(&mut self.game))
+                {
+                    DialogResult::Command(command) => {
+                        if let Some(command) = command {
+                            command
+                        } else {
+                            return true;
+                        }
+                    }
+                    _ => command,
+                };
+
                 match game_windows
                     .main_window
                     .convert_mouse_event(command, &self.game)
@@ -463,6 +478,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 let dialog = Box::new(item_window::create_item_window_group(
                     pa.game(),
                     ItemWindowMode::Release,
+                ));
+                self.push_dialog_window(dialog);
+            }
+            Command::ChangeEquip { kind } => {
+                let dialog = Box::new(item_window::ItemWindow::new_select_and_equip(
+                    CharaId::Player,
+                    (kind, 0),
+                    &mut pa,
                 ));
                 self.push_dialog_window(dialog);
             }
@@ -591,6 +614,7 @@ struct GameWindows {
     log_window: LogWindow,
     minimap_window: minimap::MiniMapWindow,
     sidebar: sidebar::Sidebar,
+    toolbar: toolbar::Toolbar,
     indicator_hp: indicator::BarIndicator,
     indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
@@ -619,6 +643,7 @@ impl GameWindows {
             log_window: LogWindow::new(),
             minimap_window: minimap::MiniMapWindow::new(),
             sidebar: sidebar::Sidebar::new(),
+            toolbar: toolbar::Toolbar::new(),
             indicator_hp: BarIndicator::new(BarIndicatorKind::Hp),
             indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
             floor_info: FloorInfo::new(),
@@ -641,6 +666,7 @@ impl GameWindows {
         self.log_window.draw(context, game, anim);
         self.minimap_window.draw(context, game, anim);
         self.sidebar.draw(context, game, anim);
+        self.toolbar.draw(context, game, anim);
         self.indicator_hp.draw(context, game, anim);
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
