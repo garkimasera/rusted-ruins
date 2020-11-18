@@ -38,6 +38,9 @@ impl MainWinDrawer {
         let target_chara = game.target_chara();
 
         for p in self.tile_range() {
+            if !map.is_inside(p) {
+                continue;
+            }
             let tile_info = &map.tile[p];
             let cid = if let Some(cid) = tile_info.chara.as_ref() {
                 *cid
