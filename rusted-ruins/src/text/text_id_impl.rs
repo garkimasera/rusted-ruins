@@ -22,6 +22,7 @@ impl ToTextId for CharaStatus {
             CharaStatus::Stressed => "chara_status-stressed",
             CharaStatus::Strained => "chara_status-strained",
             CharaStatus::Overloaded => "chara_status-overloaded",
+            CharaStatus::Scanned => "chara_status-scanned",
             CharaStatus::Asleep { .. } => "chara_status-asleep",
             CharaStatus::Poisoned => "chara_status-poisoned",
             CharaStatus::Work { .. } => "chara_status-work",

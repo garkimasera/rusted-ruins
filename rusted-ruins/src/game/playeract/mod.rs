@@ -193,6 +193,26 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Print infomation of specified tile
     pub fn print_tile_info(&mut self, tile: Vec2d) {
+        // Open StatusWindow for selected character
+        if let Some(cid) = self.gd().get_current_map().get_chara(tile) {
+            let scanned = self
+                .gd()
+                .chara
+                .get(cid)
+                .status
+                .iter()
+                .any(|status| *status == CharaStatus::Scanned);
+
+            if scanned {
+                self.0
+                    .request_dialog_open(DialogOpenRequest::CharaStatus { cid });
+            } else {
+                let chara = self.gd().chara.get(cid);
+                game_log_i!("not-scanned"; chara=chara);
+                return;
+            }
+        }
+
         super::map::tile_info::print_tile_info(self.0, tile);
     }
 

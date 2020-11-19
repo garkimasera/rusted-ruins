@@ -11,17 +11,34 @@ use common::gobj;
 
 const STATUS_WINDOW_GROUP_SIZE: u32 = 2;
 
-pub fn create_status_window_group(game: &Game) -> GroupWindow {
+pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
+    // Workaround to specify cid for window creation
+    use std::sync::Mutex;
+    lazy_static! {
+        static ref TARGET_CID: Mutex<Option<CharaId>> = Mutex::new(None);
+    }
+    *TARGET_CID.lock().unwrap() = Some(cid);
+
     let mem_info = vec![
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-chara-stats"),
             text_id: "tab_text-chara_stats",
-            creator: |game| Box::new(StatusWindow::new(&game.gd)),
+            creator: |game| {
+                Box::new(StatusWindow::new(
+                    &game.gd,
+                    TARGET_CID.lock().unwrap().unwrap(),
+                ))
+            },
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-chara-skills"),
             text_id: "tab_text-chara_skills",
-            creator: |game| Box::new(SkillWindow::new(&game.gd)),
+            creator: |game| {
+                Box::new(SkillWindow::new(
+                    &game.gd,
+                    TARGET_CID.lock().unwrap().unwrap(),
+                ))
+            },
         },
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();
@@ -51,10 +68,10 @@ pub struct StatusWindow {
 }
 
 impl StatusWindow {
-    pub fn new(gd: &GameData) -> StatusWindow {
+    pub fn new(gd: &GameData, cid: CharaId) -> StatusWindow {
         let cfg = &UI_CFG.status_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
-        let chara = gd.chara.get(CharaId::Player);
+        let chara = gd.chara.get(cid);
         let image = ImageWidget::chara(cfg.image_rect, chara.template);
         let chara_name = if let Some(chara_name) = chara.name.clone() {
             chara_name
@@ -158,7 +175,7 @@ pub struct SkillWindow {
 }
 
 impl SkillWindow {
-    pub fn new(gd: &GameData) -> SkillWindow {
+    pub fn new(gd: &GameData, cid: CharaId) -> SkillWindow {
         let rect: Rect = UI_CFG.info_window.rect.into();
         let cfg = &UI_CFG.skill_window;
 
@@ -169,7 +186,7 @@ impl SkillWindow {
             false,
         );
 
-        let chara = gd.chara.get(common::gamedata::chara::CharaId::Player);
+        let chara = gd.chara.get(cid);
         let items: Vec<_> = chara
             .skills
             .skills

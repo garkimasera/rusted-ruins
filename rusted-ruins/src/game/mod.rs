@@ -238,6 +238,9 @@ pub enum DialogOpenRequest {
     ItemInfo {
         il: ItemLocation,
     },
+    CharaStatus {
+        cid: CharaId,
+    },
     Read {
         title: String,
     },

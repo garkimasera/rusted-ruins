@@ -26,6 +26,7 @@ mod status_window;
 mod talk_window;
 mod text_input_dialog;
 mod text_window;
+mod tile_menu;
 mod toolbar;
 mod widget;
 mod winpos;
@@ -440,7 +441,10 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.push_dialog_window(dialog);
             }
             Command::OpenStatusWin => {
-                let dialog = Box::new(status_window::create_status_window_group(pa.game()));
+                let dialog = Box::new(status_window::create_status_window_group(
+                    pa.game(),
+                    CharaId::Player,
+                ));
                 self.push_dialog_window(dialog);
             }
             Command::OpenGameInfoWin => {

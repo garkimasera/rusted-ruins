@@ -67,4 +67,5 @@ impl Default for EffectKind {
 pub enum StatusEffect {
     Asleep,
     Poison,
+    Scanned,
 }

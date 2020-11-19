@@ -68,7 +68,9 @@ use_item-deed-succeed = You built new home!
 
 heal-hp = {$chara} was healed ({$value}).
 fall-asleep = {$chara} fell asleep.
-poisoned = {$chara} is poisoned.
+poisoned = {$chara} was poisoned.
+scanned = {$chara} was scanned.
+not-scanned = {$chara} isn't scanned.
 asleep = {$chara} is asleep.
 poison-damage = {$chara} was damaged by poison ({$damage}).
 shop-lack-of-money = {$chara} do not have enough money to buy it.

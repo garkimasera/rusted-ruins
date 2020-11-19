@@ -167,5 +167,9 @@ fn cause_status(game: &mut Game, cid: CharaId, power: f32, status: StatusEffect)
             chara.add_status(CharaStatus::Poisoned);
             game_log!("poisoned"; chara=chara);
         }
+        StatusEffect::Scanned => {
+            chara.add_status(CharaStatus::Scanned);
+            game_log!("scanned"; chara=chara);
+        }
     }
 }

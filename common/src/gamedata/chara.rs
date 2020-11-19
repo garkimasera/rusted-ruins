@@ -154,6 +154,8 @@ pub enum CharaStatus {
     Strained,
     /// Encumbrance status
     Overloaded,
+    /// Scanned and can open StatusWindow
+    Scanned,
     Asleep {
         turn_left: u16,
     },

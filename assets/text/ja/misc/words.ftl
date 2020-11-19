@@ -14,6 +14,7 @@ chara_status-burdened = 重荷
 chara_status-stressed = 圧迫
 chara_status-strained = 超過
 chara_status-overloaded = 潰れ中
+chara_status-scanned = 調査済
 chara_status-asleep = 睡眠
 chara_status-poisoned = 毒
 

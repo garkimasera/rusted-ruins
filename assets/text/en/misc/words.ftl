@@ -18,6 +18,7 @@ chara_status-burdened = Burdened
 chara_status-stressed = Stressed
 chara_status-strained = Strained
 chara_status-overloaded = Overloaded
+chara_status-scanned = Scanned
 chara_status-asleep = Asleep
 chara_status-poisoned = Poisoned
 chara_status-work = Working

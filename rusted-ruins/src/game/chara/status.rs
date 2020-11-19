@@ -57,6 +57,12 @@ impl CharaStatusOperation for Chara {
                     return;
                 }
             }
+            CharaStatus::Scanned => {
+                if self.status.iter().all(|s| *s != CharaStatus::Scanned) {
+                    self.status.push(new_status);
+                }
+                return;
+            }
             _ => (),
         }
         self.status.push(new_status);
