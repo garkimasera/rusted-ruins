@@ -5,6 +5,7 @@ use geom::shape::ShapeKind;
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 pub struct Effect {
     pub kind: Vec<EffectKind>,
+    pub target_mode: TargetMode,
     #[serde(default)]
     pub power_adjust: Vec<f32>,
     #[serde(default)]
@@ -25,6 +26,7 @@ impl Default for Effect {
     fn default() -> Effect {
         Effect {
             kind: Vec::new(),
+            target_mode: TargetMode::default(),
             power_adjust: Vec::new(),
             range: 1,
             shape: ShapeKind::OneTile,
@@ -58,6 +60,21 @@ pub enum EffectKind {
 impl Default for EffectKind {
     fn default() -> Self {
         EffectKind::None
+    }
+}
+
+/// Default kind for target selection, used by NPC AI.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TargetMode {
+    None,
+    Enemy,
+    Ally,
+}
+
+impl Default for TargetMode {
+    fn default() -> Self {
+        TargetMode::Enemy
     }
 }
 

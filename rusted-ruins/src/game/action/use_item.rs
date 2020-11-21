@@ -1,4 +1,5 @@
-use crate::game::effect::{do_effect, EffectTarget};
+use crate::game::effect::do_effect;
+use crate::game::target::Target;
 use crate::game::Game;
 use common::gamedata::*;
 use common::gobj;
@@ -22,14 +23,14 @@ pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
                 }
             }
             effect.kind[0] = EffectKind::SkillLearning { skills };
-            do_effect(game, &effect, Some(cid), EffectTarget::Chara(cid), 1.0, 1.0);
+            do_effect(game, &effect, Some(cid), Target::Chara(cid), 1.0, 1.0);
             game.gd.remove_item(il, 1);
             return;
         }
         _ => (),
     }
 
-    do_effect(game, use_effect, Some(cid), EffectTarget::None, 1.0, 1.0);
+    do_effect(game, use_effect, Some(cid), Target::None, 1.0, 1.0);
 
     game.gd.remove_item(il, 1);
     /*match item_obj.use_effect {

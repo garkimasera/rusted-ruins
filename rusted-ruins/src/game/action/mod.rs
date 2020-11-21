@@ -5,6 +5,7 @@ pub mod harvest;
 pub mod use_item;
 
 use super::extrait::*;
+use super::target::Target;
 use super::{Game, InfoGetter};
 use crate::game::damage::*;
 use crate::game::effect::{do_effect, weapon_to_effect};
@@ -73,6 +74,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
                 kind: vec![EffectKind::Melee {
                     element: Element::Physical,
                 }],
+                target_mode: TargetMode::Enemy,
                 power_adjust: vec![],
                 range: 1,
                 shape: ShapeKind::OneTile,
@@ -157,7 +159,7 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     apply_medical_effect(game, cid, &item_obj.medical_effect, eff);
 }
 
-pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
     let item_dice = item_obj.roll_dice() as f32;
@@ -168,7 +170,7 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
             let power =
                 (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
-                super::effect::do_effect(game, effect, Some(cid), cid, power, 1.0);
+                super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);
             } else {
                 return;
             }

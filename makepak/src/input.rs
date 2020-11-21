@@ -1,4 +1,6 @@
-use common::gamedata::{self, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect};
+use common::gamedata::{
+    self, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect, TargetMode,
+};
 use common::sitegen;
 use geom::{shape::ShapeKind, Vec2d};
 use std::collections::HashMap;
@@ -158,6 +160,8 @@ pub struct ScriptDepInput {
 #[serde(deny_unknown_fields)]
 pub struct EffectInput {
     pub kind: Vec<EffectKindInput>,
+    #[serde(default)]
+    pub target_mode: TargetMode,
     #[serde(default)]
     pub power_adjust: Vec<f32>,
     #[serde(default)]

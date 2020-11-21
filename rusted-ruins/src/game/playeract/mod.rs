@@ -3,6 +3,7 @@ mod restart;
 mod use_tool;
 
 use super::Game;
+use crate::game::target::auto_target_for_player;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
 use geom::*;
@@ -106,7 +107,19 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Release one magic device item
     pub fn release_item(&mut self, il: ItemLocation) {
-        super::action::release_item(self.0, il, CharaId::Player);
+        let item_obj = self.gd().get_item(il).0.obj();
+        let effect = if let Some(effect) = item_obj.magical_effect.as_ref() {
+            effect
+        } else {
+            error!("release item that doesn't have effect");
+            return;
+        };
+        let target = if let Ok(Some(target)) = auto_target_for_player(self.0, effect) {
+            target
+        } else {
+            todo!();
+        };
+        super::action::release_item(self.0, il, CharaId::Player, target);
         self.0.finish_player_turn();
     }
 

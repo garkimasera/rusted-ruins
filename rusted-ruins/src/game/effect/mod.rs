@@ -5,31 +5,13 @@ mod skill_learn;
 pub use attack::weapon_to_effect;
 
 use crate::game::extrait::CharaStatusOperation;
+use crate::game::target::Target;
 use crate::game::Game;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 use geom::*;
 
-#[derive(Clone, Copy, Debug)]
-pub enum EffectTarget {
-    None,
-    Tile(Vec2d),
-    Chara(CharaId),
-}
-
-impl From<Vec2d> for EffectTarget {
-    fn from(pos: Vec2d) -> EffectTarget {
-        EffectTarget::Tile(pos)
-    }
-}
-
-impl From<CharaId> for EffectTarget {
-    fn from(cid: CharaId) -> EffectTarget {
-        EffectTarget::Chara(cid)
-    }
-}
-
-pub fn do_effect<T: Into<EffectTarget>>(
+pub fn do_effect<T: Into<Target>>(
     game: &mut Game,
     effect: &Effect,
     cause: Option<CharaId>,
@@ -119,29 +101,29 @@ pub fn do_effect<T: Into<EffectTarget>>(
 }
 
 // Get characters list in range of the effect.
-fn get_cids(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<CharaId> {
+fn get_cids(game: &Game, _effect: &Effect, target: Target) -> Vec<CharaId> {
     // TODO: multiple cids will be needed for widely ranged effect.
     match target {
-        EffectTarget::None => vec![],
-        EffectTarget::Tile(pos) => {
+        Target::None => vec![],
+        Target::Tile(pos) => {
             if let Some(cid) = game.gd.get_current_map().get_chara(pos) {
                 vec![cid]
             } else {
                 vec![]
             }
         }
-        EffectTarget::Chara(cid) => vec![cid],
+        Target::Chara(cid) => vec![cid],
     }
 }
 
 // Get tile positions of the effect
-fn get_pos(game: &Game, _effect: &Effect, target: EffectTarget) -> Vec<Vec2d> {
+fn get_pos(game: &Game, _effect: &Effect, target: Target) -> Vec<Vec2d> {
     let center = match target {
-        EffectTarget::None => {
+        Target::None => {
             return vec![];
         }
-        EffectTarget::Tile(pos) => pos,
-        EffectTarget::Chara(cid) => {
+        Target::Tile(pos) => pos,
+        Target::Chara(cid) => {
             if let Some(pos) = game.gd.chara_pos(cid) {
                 pos
             } else {

@@ -24,6 +24,7 @@ mod script;
 pub mod shop;
 pub mod site;
 mod skill;
+mod target;
 mod town;
 mod turnloop;
 pub mod view;

@@ -215,6 +215,7 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
 
     Effect {
         kind: effect_kind,
+        target_mode: TargetMode::Enemy,
         power_adjust: vec![],
         range: 1,
         shape: ShapeKind::OneTile,
