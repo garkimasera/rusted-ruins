@@ -207,7 +207,9 @@ impl<'a> DoPlayerAction<'a> {
     /// Print infomation of specified tile
     pub fn print_tile_info(&mut self, tile: Vec2d) {
         // Open StatusWindow for selected character
-        if let Some(cid) = self.gd().get_current_map().get_chara(tile) {
+        let cid = self.gd().get_current_map().get_chara(tile);
+        if cid.is_some() && cid.unwrap() != CharaId::Player {
+            let cid = cid.unwrap();
             let scanned = self
                 .gd()
                 .chara

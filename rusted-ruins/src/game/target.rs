@@ -47,7 +47,7 @@ pub fn auto_target_for_player(game: &Game, effect: &Effect) -> Result<Option<Tar
             }
         }
         TargetMode::None => {
-            return Ok(None);
+            return Ok(Some(Target::None));
         }
     }
 }
