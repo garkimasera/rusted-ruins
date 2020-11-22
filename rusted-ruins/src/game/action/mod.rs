@@ -11,7 +11,6 @@ use crate::game::damage::*;
 use crate::game::effect::{do_effect, weapon_to_effect};
 use common::gamedata::*;
 use common::gobj;
-use geom::shape::ShapeKind;
 use geom::*;
 use rng::Dice;
 use rules::RULES;

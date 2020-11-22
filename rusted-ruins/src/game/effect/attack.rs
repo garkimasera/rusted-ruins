@@ -5,7 +5,7 @@ use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;
 use common::gobj;
-use geom::shape::ShapeKind;
+use geom::ShapeKind;
 use rng::Rng;
 // use rules::RULES;
 

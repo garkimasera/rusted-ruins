@@ -8,7 +8,7 @@ pub mod creation;
 pub mod damage;
 mod debug_command;
 mod dungeon_gen;
-mod effect;
+pub mod effect;
 mod eval_expr;
 pub mod frequent_tex;
 mod infogetter;
@@ -35,6 +35,7 @@ pub use self::infogetter::InfoGetter;
 pub use self::playeract::DoPlayerAction;
 pub use self::script::TalkText;
 use self::script::*;
+pub use self::target::Target;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ScriptIdx;
@@ -255,9 +256,12 @@ pub enum DialogOpenRequest {
 }
 
 /// User interface request from game
-#[derive(Debug)]
 pub enum UiRequest {
     StopCentering,
+    StartTargeting {
+        effect: Effect,
+        callback: Box<dyn Fn(&mut DoPlayerAction, self::target::Target) + 'static>,
+    },
 }
 
 pub enum AdvanceScriptResult {

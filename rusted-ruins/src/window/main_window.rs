@@ -1,9 +1,10 @@
 use crate::config::SCREEN_CFG;
 use crate::context::*;
-use crate::draw::mainwin::MainWinDrawer;
+use crate::draw::mainwin::{MainWinDrawer, TargetModeDrawInfo};
 use crate::game::command::MouseButton;
-use crate::game::{Animation, Command, Game};
+use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter, Target};
 use crate::window::{DialogWindow, Window};
+use common::gamedata::Effect;
 use geom::*;
 use sdl2::rect::Rect;
 use std::sync::Mutex;
@@ -13,17 +14,44 @@ lazy_static! {
     pub(super) static ref CENTERING_STOP_REQ: Mutex<bool> = Mutex::new(false);
 }
 
+enum MainWindowMode {
+    Normal,
+    Target {
+        callback: Box<dyn Fn(&mut DoPlayerAction, Target) + 'static>,
+        draw_info: TargetModeDrawInfo,
+    },
+    // TargetPreview,
+}
+
+impl MainWindowMode {
+    fn input_target(&self) -> bool {
+        match self {
+            MainWindowMode::Target { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn get_draw_info(&mut self) -> Option<&mut TargetModeDrawInfo> {
+        match self {
+            MainWindowMode::Target { draw_info, .. } => Some(draw_info),
+            _ => None,
+        }
+    }
+}
+
 pub struct MainWindow {
     rect: Rect,
     drawer: MainWinDrawer,
     centering_tile: Option<Vec2d>,
     hover_tile: Option<Vec2d>,
+    mode: MainWindowMode,
 }
 
 pub enum ConvertMouseEventResult {
     None,
     Command(Command),
     OpenWindow(Box<dyn DialogWindow>),
+    DoAction(Box<dyn Fn(&mut DoPlayerAction) + 'static>),
 }
 
 impl MainWindow {
@@ -34,6 +62,7 @@ impl MainWindow {
             drawer: MainWinDrawer::new(rect),
             centering_tile: None,
             hover_tile: None,
+            mode: MainWindowMode::Normal,
         }
     }
 
@@ -57,22 +86,52 @@ impl MainWindow {
             Command::MouseButtonDown { .. } => ConvertMouseEventResult::None,
             Command::MouseButtonUp { x, y, button, .. } => {
                 if !self.rect.contains_point((x, y)) {
+                    if self.mode.input_target() {
+                        self.mode = MainWindowMode::Normal;
+                    }
                     return ConvertMouseEventResult::None;
                 }
                 let tile = self.cursor_pos_to_tile(x, y);
+
                 if button == MouseButton::Right {
-                    return ConvertMouseEventResult::OpenWindow(super::tile_menu::create_menu(
-                        game,
-                        tile,
-                        x,
-                        y,
-                        self.centering_tile.is_some(),
-                    ));
+                    if self.mode.input_target() {
+                        self.mode = MainWindowMode::Normal;
+                        return ConvertMouseEventResult::None;
+                    } else {
+                        return ConvertMouseEventResult::OpenWindow(super::tile_menu::create_menu(
+                            game,
+                            tile,
+                            x,
+                            y,
+                            self.centering_tile.is_some(),
+                        ));
+                    }
                 }
 
                 if button == MouseButton::Middle {
                     let tile = self.cursor_pos_to_tile(x, y);
                     self.start_centering_mode(tile);
+                }
+
+                if button == MouseButton::Left {
+                    let pos = self.cursor_pos_to_tile(x, y);
+                    if let Some(info) = self.mode.get_draw_info() {
+                        let map = game.gd.get_current_map();
+                        if info.range.is_inside(pos)
+                            && map.is_inside(pos)
+                            && game.view_map.get_tile_visible(pos)
+                        {
+                            let mode = std::mem::replace(&mut self.mode, MainWindowMode::Normal);
+                            match mode {
+                                MainWindowMode::Target { callback, .. } => {
+                                    let callback: Box<dyn Fn(&mut DoPlayerAction) + 'static> =
+                                        Box::new(move |pa| callback(pa, Target::Tile(pos)));
+                                    return ConvertMouseEventResult::DoAction(callback);
+                                }
+                                _ => (),
+                            }
+                        }
+                    }
                 }
 
                 ConvertMouseEventResult::None
@@ -95,6 +154,10 @@ impl MainWindow {
                 let tile = self.cursor_pos_to_tile(x, y);
                 self.hover_tile = Some(tile);
 
+                if self.mode.input_target() {
+                    return ConvertMouseEventResult::None;
+                }
+
                 if left_button {
                     if key_state.ctrl {
                         return ConvertMouseEventResult::Command(Command::Shoot { target: tile });
@@ -109,6 +172,21 @@ impl MainWindow {
             }
             _ => ConvertMouseEventResult::Command(command),
         }
+    }
+
+    pub fn start_targeting_mode(
+        &mut self,
+        game: &Game,
+        effect: Effect,
+        callback: Box<dyn Fn(&mut DoPlayerAction, Target) + 'static>,
+    ) {
+        let center = game.gd.player_pos();
+        let range = crate::game::effect::effect_to_range(&effect, center);
+        let draw_info = TargetModeDrawInfo { range };
+        self.mode = MainWindowMode::Target {
+            callback,
+            draw_info,
+        };
     }
 
     fn cursor_pos_to_tile(&self, x: i32, y: i32) -> Vec2d {
@@ -132,7 +210,13 @@ impl Window for MainWindow {
             *centering_stop_req = false;
         }
 
-        self.drawer
-            .draw(context, game, anim, self.centering_tile, self.hover_tile);
+        self.drawer.draw(
+            context,
+            game,
+            anim,
+            self.centering_tile,
+            self.hover_tile,
+            self.mode.get_draw_info().map(|i| &*i),
+        );
     }
 }

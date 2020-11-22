@@ -2,7 +2,7 @@ use common::gamedata::{
     self, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect, TargetMode,
 };
 use common::sitegen;
-use geom::{shape::ShapeKind, Vec2d};
+use geom::{ShapeKind, Vec2d};
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]

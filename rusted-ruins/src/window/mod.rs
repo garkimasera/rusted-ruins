@@ -379,6 +379,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.push_dialog_window(window);
                         return true;
                     }
+                    main_window::ConvertMouseEventResult::DoAction(callback) => {
+                        let mut pa = DoPlayerAction::new(&mut self.game);
+                        callback(&mut pa);
+                        self.game.finish_player_turn();
+                        return true;
+                    }
                     main_window::ConvertMouseEventResult::None => {
                         return true;
                     }
@@ -571,6 +577,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 UiRequest::StopCentering => match self.mode {
                     WindowManageMode::OnGame(ref mut windows) => {
                         windows.main_window.stop_centering_mode();
+                    }
+                    _ => (),
+                },
+                UiRequest::StartTargeting { effect, callback } => match self.mode {
+                    WindowManageMode::OnGame(ref mut windows) => {
+                        windows
+                            .main_window
+                            .start_targeting_mode(&self.game, effect, callback);
                     }
                     _ => (),
                 },

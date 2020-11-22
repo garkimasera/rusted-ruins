@@ -2,7 +2,7 @@ mod moving;
 mod restart;
 mod use_tool;
 
-use super::Game;
+use super::{Game, UiRequest};
 use crate::game::target::auto_target_for_player;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
@@ -117,7 +117,13 @@ impl<'a> DoPlayerAction<'a> {
         let target = if let Ok(Some(target)) = auto_target_for_player(self.0, effect) {
             target
         } else {
-            todo!();
+            self.0.ui_request.push_back(UiRequest::StartTargeting {
+                effect: effect.clone(),
+                callback: Box::new(move |pa, target| {
+                    super::action::release_item(pa.0, il, CharaId::Player, target);
+                }),
+            });
+            return;
         };
         super::action::release_item(self.0, il, CharaId::Player, target);
         self.0.finish_player_turn();

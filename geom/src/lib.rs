@@ -4,7 +4,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-pub mod shape;
+mod shape;
+pub use shape::*;
 
 use std::fmt;
 use std::ops::{Add, Index, IndexMut, Mul, Range, Sub};

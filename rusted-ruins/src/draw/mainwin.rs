@@ -17,6 +17,11 @@ use sdl2::render::WindowCanvas;
 
 const CHARA_DRAW_OFFSET: i32 = 16;
 
+#[derive(Clone, Debug)]
+pub struct TargetModeDrawInfo {
+    pub range: Shape,
+}
+
 pub struct MainWinDrawer {
     rect: Rect,
     w: u32,
@@ -45,6 +50,7 @@ impl MainWinDrawer {
         anim: Option<(&Animation, u32)>,
         centering_tile: Option<Vec2d>,
         hover_tile: Option<Vec2d>,
+        target_mode: Option<&TargetModeDrawInfo>,
     ) {
         super::frame::next_frame();
         let mut player_move_dir = None;
@@ -85,8 +91,13 @@ impl MainWinDrawer {
             self.draw_anim(canvas, game, sv, anim.0, anim.1);
         }
 
+        // Draw target mode UI
+        if let Some(target_mode) = target_mode {
+            self.draw_target_mode(context, game, target_mode);
+        }
+
         if let Some(t) = hover_tile {
-            self.draw_tile_cursor(canvas, sv, t);
+            self.draw_tile_cursor(context, t);
         }
 
         // Draw character infomation UI
@@ -414,13 +425,13 @@ impl MainWinDrawer {
         }
     }
 
-    fn draw_tile_cursor(&self, canvas: &mut WindowCanvas, sv: &SdlValues, ct: Vec2d) {
+    fn draw_tile_cursor(&self, context: &mut Context, ct: Vec2d) {
         let idx: UIImgIdx = gobj::id_to_idx_checked("!tile-cursor")
             .expect("UIImg object \"!tile-cursor\" not found");
 
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let dest = self.centering_at_tile(src, ct, 0, 0);
-        try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
+        context.render_tex(idx, dest);
     }
 
     fn update_draw_params(

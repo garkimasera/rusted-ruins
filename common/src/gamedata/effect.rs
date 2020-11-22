@@ -1,6 +1,6 @@
 use super::defs::Element;
 use super::skill::SkillKind;
-use geom::shape::ShapeKind;
+use geom::ShapeKind;
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 pub struct Effect {

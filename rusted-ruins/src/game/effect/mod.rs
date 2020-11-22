@@ -1,8 +1,10 @@
 mod attack;
 mod deed;
+mod range;
 mod skill_learn;
 
 pub use attack::weapon_to_effect;
+pub use range::*;
 
 use crate::game::extrait::CharaStatusOperation;
 use crate::game::target::Target;
