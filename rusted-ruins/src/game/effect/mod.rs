@@ -39,9 +39,7 @@ pub fn do_effect<T: Into<Target>>(
                 }
                 let tile = game.gd.chara_pos(cids[0]).unwrap();
                 game.anim_queue.push_effect(effect, tile, None);
-                if !effect.sound.is_empty() {
-                    audio::play_sound(&effect.sound);
-                }
+                audio::play_sound(&effect.sound);
                 return;
             }
             EffectKind::Ranged { element } => {
@@ -66,9 +64,7 @@ pub fn do_effect<T: Into<Target>>(
                     .chara_pos(cids[0])
                     .expect("chara position search error");
                 game.anim_queue.push_effect(effect, tile, start);
-                if !effect.sound.is_empty() {
-                    audio::play_sound(&effect.sound);
-                }
+                audio::play_sound(&effect.sound);
                 return;
             }
             EffectKind::Status { status } => {
@@ -78,6 +74,7 @@ pub fn do_effect<T: Into<Target>>(
                     game.anim_queue
                         .push_effect(effect, game.gd.chara_pos(*cid).unwrap(), None);
                 }
+                audio::play_sound(&effect.sound);
                 return;
             }
             EffectKind::WallDamage => {

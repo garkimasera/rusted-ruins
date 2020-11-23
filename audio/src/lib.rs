@@ -44,6 +44,9 @@ pub fn with_audio_player<F: FnOnce(&AudioPlayer)>(f: F) {
 
 /// Play an sound (wav file)
 pub fn play_sound(name: &str) {
+    if name.is_empty() {
+        return;
+    }
     with_audio_player(|a| {
         a.play_sound(name);
     });
