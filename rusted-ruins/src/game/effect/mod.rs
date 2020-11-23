@@ -75,6 +75,8 @@ pub fn do_effect<T: Into<Target>>(
                 let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     cause_status(game, *cid, power, *status);
+                    game.anim_queue
+                        .push_effect(effect, game.gd.chara_pos(*cid).unwrap(), None);
                 }
                 return;
             }

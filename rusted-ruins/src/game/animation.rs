@@ -48,8 +48,14 @@ impl Animation {
     }
 
     pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
+        let img = &gobj::get_obj(idx).img;
+        let n_frame = if img.duration != 0 {
+            img.duration
+        } else {
+            img.n_frame
+        };
         Animation::Img {
-            n_frame: gobj::get_obj(idx).img.n_frame,
+            n_frame,
             idx,
             range: RectIter::one(p),
         }

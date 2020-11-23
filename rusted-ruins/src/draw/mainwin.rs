@@ -83,12 +83,10 @@ impl MainWinDrawer {
             centering_tile.is_some(),
         );
         self.draw_except_anim(context, game, player_move_adjust, player_move_dir);
-        let canvas = &mut context.canvas;
-        let sv = &mut context.sv;
-        self.draw_overlay_all(canvas, game, sv);
+        self.draw_overlay_all(context, game);
 
         if let Some(anim) = anim {
-            self.draw_anim(canvas, game, sv, anim.0, anim.1);
+            self.draw_anim(context, game, anim.0, anim.1);
         }
 
         // Draw target mode UI
@@ -320,38 +318,37 @@ impl MainWinDrawer {
     }
 
     /// Draw overlay for all tiles
-    fn draw_overlay_all(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues) {
+    fn draw_overlay_all(&self, context: &mut Context, game: &Game) {
         let idx = if let Some(idx) = overlay::all(game) {
             idx
         } else {
             return;
         };
-        let texture = sv.tex().get(idx);
+        let texture = context.sv.tex().get(idx);
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
         let (nx, ny) = self.calc_tile_num();
 
         for iy in 0..ny {
             for ix in 0..nx {
                 let dest = Rect::new(ix * TILE_SIZE_I, iy * TILE_SIZE_I, TILE_SIZE, TILE_SIZE);
-                try_sdl!(canvas.copy(&texture, src, dest));
+                try_sdl!(context.canvas.copy(&texture, src, dest));
             }
         }
     }
 
-    fn draw_anim(
-        &mut self,
-        canvas: &mut WindowCanvas,
-        _game: &Game,
-        sv: &SdlValues,
-        anim: &Animation,
-        i_frame: u32,
-    ) {
+    fn draw_anim(&mut self, context: &mut Context, _game: &Game, anim: &Animation, i_frame: u32) {
         match anim {
-            &Animation::Img { idx, range, .. } => {
+            &Animation::Img {
+                idx,
+                range,
+                n_frame,
+                ..
+            } => {
                 for p in range {
-                    let src = Rect::from(gobj::get_obj(idx).img_rect_nth(i_frame));
-                    let dest = self.centering_at_tile(src, p, 0, 0);
-                    try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
+                    let img = &gobj::get_obj(idx).img;
+                    let i = i_frame / (n_frame / img.n_frame);
+                    let dest = self.centering_at_tile(Rect::from((0, 0, img.w, img.h)), p, 0, 0);
+                    context.render_tex_n(idx, dest, i);
                 }
             }
             &Animation::Shot {
@@ -371,13 +368,13 @@ impl MainWinDrawer {
                 } else {
                     self.centering_at_tile(src, target, 0, 0)
                 };
-                try_sdl!(canvas.copy(sv.tex().get(idx), src, dest));
+                try_sdl!(context.canvas.copy(context.sv.tex().get(idx), src, dest));
             }
             Animation::Destroy { idx, tiles, .. } => {
                 for p in tiles {
                     let src = Rect::from(gobj::get_obj(*idx).img_rect_nth(i_frame));
                     let dest = self.centering_at_tile(src, *p, 0, 0);
-                    try_sdl!(canvas.copy(sv.tex().get(*idx), src, dest));
+                    try_sdl!(context.canvas.copy(context.sv.tex().get(*idx), src, dest));
                 }
             }
             _ => (),
