@@ -84,7 +84,6 @@ impl CharaEx for Chara {
     fn add_sp(&mut self, v: f32, cid: CharaId) -> Option<i32> {
         let r = &RULES.chara;
         let mut damage = None;
-        let old_sp = self.sp;
         let new_sp = if self.sp + v < r.sp_starving {
             let d = r.sp_starving - (self.sp + v);
             damage = Some(4 * (self.attr.max_hp as f32 * d / r.sp_max) as i32);
@@ -99,20 +98,19 @@ impl CharaEx for Chara {
         match cid {
             CharaId::Player => {
                 if v < 0.0 {
-                    if new_sp <= r.sp_hungry && old_sp > r.sp_hungry {
+                    if new_sp <= r.sp_starving {
+                        self.add_status(CharaStatus::Starving);
+                    } else if new_sp <= r.sp_weak {
+                        self.add_status(CharaStatus::Weak);
+                    } else if new_sp <= r.sp_hungry {
                         self.add_status(CharaStatus::Hungry);
                     }
-                    if new_sp <= r.sp_weak && old_sp > r.sp_weak {
-                        self.add_status(CharaStatus::Weak);
-                    }
-                    if new_sp <= r.sp_starving && old_sp > r.sp_starving {
-                        self.add_status(CharaStatus::Starving);
-                    }
                 } else if v > 0.0 {
-                    if new_sp > r.sp_hungry && old_sp <= r.sp_hungry {
+                    if new_sp > r.sp_hungry {
                         self.remove_sp_status();
-                    }
-                    if new_sp > r.sp_weak && old_sp <= r.sp_weak {
+                    } else if new_sp > r.sp_weak {
+                        self.add_status(CharaStatus::Hungry);
+                    } else if new_sp > r.sp_starving {
                         self.add_status(CharaStatus::Weak);
                     }
                 }
