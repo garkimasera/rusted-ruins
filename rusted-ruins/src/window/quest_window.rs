@@ -16,6 +16,7 @@ pub struct QuestWindow {
     list: TextListWidget,
     description: LabelWidget,
     dialog: Option<MsgDialog>,
+    escape_click: bool,
 }
 
 impl QuestWindow {
@@ -42,6 +43,7 @@ impl QuestWindow {
                 FontKind::M,
                 rect.width(),
             ),
+            escape_click: false,
         };
         w.update(game);
         w
@@ -81,6 +83,8 @@ impl Window for QuestWindow {
 
 impl DialogWindow for QuestWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        check_escape_click!(self, command, false);
+
         if let Some(dialog) = self.dialog.as_mut() {
             match dialog.process_command(command, pa) {
                 DialogResult::Close => {
@@ -100,6 +104,7 @@ impl DialogWindow for QuestWindow {
             return DialogResult::Continue;
         }
 
+        let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(_) => {
@@ -115,7 +120,7 @@ impl DialogWindow for QuestWindow {
             return DialogResult::Continue;
         }
 
-        match *command {
+        match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
