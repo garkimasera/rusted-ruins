@@ -50,6 +50,7 @@ impl MapEx for Map {
 
 pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
     game.ui_request.push_back(super::UiRequest::StopCentering);
+    game.clear_target();
 
     let save_dir = game.save_dir.as_ref().unwrap();
     let gd = &mut game.gd;

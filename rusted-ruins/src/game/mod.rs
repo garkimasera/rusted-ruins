@@ -215,6 +215,10 @@ impl Game {
         self.target_chara
     }
 
+    pub fn clear_target(&mut self) {
+        self.target_chara = None;
+    }
+
     /// Start new generated game
     pub fn start_new_game(&mut self) {
         const START_SCRIPT_ID: &str = "!start";
