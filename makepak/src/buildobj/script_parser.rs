@@ -127,6 +127,12 @@ fn special_instruction_test() {
     );
 }
 
+fn print_instruction(input: &str) -> IResult<&str, Instruction> {
+    let (input, _) = ws(tag("print"))(input)?;
+    let (input, expr) = delimited(char('('), ws(expr), char(')'))(input)?;
+    Ok((input, Instruction::Print(expr)))
+}
+
 fn talk_instruction(input: &str) -> IResult<&str, Instruction> {
     let (input, _) = ws(tag("talk"))(input)?;
     let (input, text_id) = delimited(char('('), ws(id), char(')'))(input)?;
@@ -211,6 +217,7 @@ fn instruction(input: &str) -> IResult<&str, Instruction> {
         receive_money_instruction,
         remove_item_instruction,
         special_instruction,
+        print_instruction,
     ))(input)
 }
 

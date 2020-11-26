@@ -27,7 +27,7 @@ impl EvalExpr for Expr {
                     Value::RefUnknownVar
                 }
             }
-            Expr::IsGVarEmpty(var_name) => Value::Bool(gd.vars.global_var(var_name).is_some()),
+            Expr::IsGVarEmpty(var_name) => Value::Bool(gd.vars.global_var(var_name).is_none()),
             Expr::CurrentTime => Value::Time(gd.time.current_time()),
             Expr::DurationHour(a, b) => match (a.eval(gd), b.eval(gd)) {
                 (Value::Time(a), Value::Time(b)) => Value::Int(a.duration_from(b).as_hours()),

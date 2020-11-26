@@ -172,6 +172,10 @@ impl ScriptEngine {
                     let result = super::quest::receive_rewards(gd);
                     gd.vars.set_last_result(Value::Bool(result))
                 }
+                Instruction::Print(v) => {
+                    let v = v.eval(gd);
+                    eprintln!("script print: {:?}", v);
+                }
             }
             self.pos.advance();
         };

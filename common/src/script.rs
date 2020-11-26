@@ -22,6 +22,8 @@ pub enum Instruction {
     RemoveItem(String),
     /// Special Instruction
     Special(SpecialInstruction),
+    /// Debug print
+    Print(Expr),
 }
 
 /// Special Instructions
