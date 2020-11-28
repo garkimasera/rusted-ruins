@@ -76,6 +76,10 @@ impl MainWindow {
         self.centering_tile = None;
     }
 
+    pub fn reset_tile_cursor(&mut self) {
+        self.hover_tile = None;
+    }
+
     /// Convert mouse event on main window to Command
     pub fn convert_mouse_event(
         &mut self,

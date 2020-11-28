@@ -14,6 +14,7 @@ pub struct ChooseWindow {
     answer_list: TextListWidget,
     default_behavior: DefaultBehavior,
     callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>>,
+    mainwin_cursor: bool,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -34,6 +35,7 @@ impl ChooseWindow {
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
             default_behavior,
             callbacks: Vec::new(),
+            mainwin_cursor: false,
         }
     }
 
@@ -57,6 +59,7 @@ impl ChooseWindow {
             answer_list: TextListWidget::text_choices((0, 0, 0, 0), choices),
             default_behavior: DefaultBehavior::Close,
             callbacks,
+            mainwin_cursor: true,
         }
     }
 
@@ -134,4 +137,8 @@ impl DialogWindow for ChooseWindow {
     }
 
     fn sound(&self, _: bool) {}
+
+    fn mainwin_cursor(&self) -> bool {
+        self.mainwin_cursor
+    }
 }

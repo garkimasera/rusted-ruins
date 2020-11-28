@@ -105,6 +105,10 @@ pub trait DialogWindow: Window {
             audio::play_sound("window-close");
         }
     }
+
+    fn mainwin_cursor(&self) -> bool {
+        false
+    }
 }
 
 /// The current main mode
@@ -567,6 +571,14 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
     fn push_dialog_window(&mut self, w: Box<dyn DialogWindow>) {
         w.sound(true);
+        if !w.mainwin_cursor() {
+            match &mut self.mode {
+                WindowManageMode::OnGame(windows) => {
+                    windows.main_window.reset_tile_cursor();
+                }
+                _ => (),
+            }
+        }
         crate::eventhandler::open_dialog();
         self.window_stack.push(w);
     }
