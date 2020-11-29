@@ -13,6 +13,11 @@
             ["soil-01", "soil-wall-01"]
         ],
         "item_gen_probability": 0.02,
+        "item_gen_weight_for_kind": {
+            "potion": 0.3, "food": 0.2, "magic_device": 0.05, "weapon": 0.05,
+            "armor": 0.05, "tool": 0.02, "container": 0.02, "special": 0.01,
+            "readable": 0.05, "material": 0.2, "object": 0.05
+        },
         "floor_range": [2, 3],
         "music": "dungeon-03"
     },
@@ -28,6 +33,11 @@
             ["concrete-rust-01", "concrete-rust-wall-01"]
         ],
         "item_gen_probability": 0.02,
+        "item_gen_weight_for_kind": {
+            "potion": 0.3, "food": 0.2, "magic_device": 0.05, "weapon": 0.05,
+            "armor": 0.05, "tool": 0.02, "container": 0.02, "special": 0.01,
+            "readable": 0.05, "material": 0.2, "object": 0.05
+        },
         "floor_range": [3, 11],
         "music": "dungeon-01"
     }

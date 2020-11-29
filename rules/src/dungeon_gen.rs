@@ -14,8 +14,10 @@ pub struct DungeonGenParams {
     pub default_faction_id: FactionId,
     /// Tile and wall ids
     pub terrain: Vec<[String; 2]>,
-    /// Items generatation probability on each tile
+    /// Item generatation probability on each tile
     pub item_gen_probability: f64,
+    /// Item generation weight for each ItemKind
+    pub item_gen_weight_for_kind: HashMap<ItemKindRough, f32>,
     /// The range of number of floor of auto generated dungeons
     pub floor_range: [u32; 2],
     /// Default map music

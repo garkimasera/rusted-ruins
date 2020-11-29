@@ -2,27 +2,42 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
 use rng::SliceRandom;
+use rules::RULES;
 
 /// Generate new item on dungeon floor
-pub fn gen_dungeon_item(floor_level: u32) -> Item {
-    gen_item_by_level(floor_level, |_| 1.0, false)
+pub fn gen_dungeon_item(floor_level: u32, dungeon_kind: DungeonKind) -> Option<Item> {
+    let weight = move |item_obj: &ItemObject| {
+        let gen_rule = if let Some(gen_rule) = RULES.dungeon_gen.get(&dungeon_kind) {
+            gen_rule
+        } else {
+            return 0.0;
+        };
+        gen_rule
+            .item_gen_weight_for_kind
+            .get(&item_obj.kind.rough())
+            .copied()
+            .unwrap_or(0.0)
+    };
+    gen_item_by_level(floor_level, weight, false)
 }
 
 /// Generate new item by level.
 /// f is weight adjustment function.
-pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f64>(level: u32, f: F, is_shop: bool) -> Item {
-    let idx = choose_item_by_floor_level(level, f, is_shop);
-
-    gen_item_from_idx(idx)
+pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f32>(
+    level: u32,
+    f: F,
+    is_shop: bool,
+) -> Option<Item> {
+    choose_item_by_floor_level(level, f, is_shop).map(|idx| gen_item_from_idx(idx))
 }
 
 /// Choose item by floor level.
 /// f is weight adjustment function.
-fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
+fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f32>(
     floor_level: u32,
     mut f: F,
     is_shop: bool,
-) -> ItemIdx {
+) -> Option<ItemIdx> {
     let items = &gobj::get_objholder().item;
 
     // Sum up gen_weight * weight_dist * dungeon_adjustment
@@ -36,13 +51,15 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
         } else {
             item.gen_weight
         };
-        sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
+        sum += weight_dist.calc(item.gen_level) * gen_weight as f32 * f(item);
         if first_available_item_idx.is_none() {
             first_available_item_idx = Some(i);
         }
     }
 
-    assert!(sum > 0.0);
+    if sum == 0.0 {
+        return None;
+    }
 
     // Choose one item
     let r = rng::gen_range(0.0, sum);
@@ -53,28 +70,28 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f64>(
         } else {
             item.gen_weight
         };
-        sum += weight_dist.calc(item.gen_level) * gen_weight as f64 * f(item);
+        sum += weight_dist.calc(item.gen_level) * gen_weight as f32 * f(item);
         if r < sum {
-            return ItemIdx::from_usize(i);
+            return Some(ItemIdx::from_usize(i));
         }
     }
 
-    ItemIdx::from_usize(first_available_item_idx.unwrap())
+    Some(ItemIdx::from_usize(first_available_item_idx.unwrap()))
 }
 
 struct CalcLevelWeightDist {
-    floor_level: f64,
+    floor_level: f32,
 }
 
 impl CalcLevelWeightDist {
     fn new(floor_level: u32) -> CalcLevelWeightDist {
         CalcLevelWeightDist {
-            floor_level: floor_level as f64,
+            floor_level: floor_level as f32,
         }
     }
 
-    fn calc(&self, l: u32) -> f64 {
-        let l = l as f64;
+    fn calc(&self, l: u32) -> f32 {
+        let l = l as f32;
         if l > self.floor_level {
             0.0
         } else {

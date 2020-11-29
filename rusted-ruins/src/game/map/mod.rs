@@ -165,17 +165,16 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
 /// Locate some items for a new map
 pub fn gen_items(gd: &mut GameData, mid: MapId) {
     use rng::*;
-    let item_gen_probability = {
+    let dungeon_kind = {
         let site = gd.region.get_site(mid.sid());
         match site.content {
-            SiteContent::AutoGenDungeon { dungeon_kind } => {
-                RULES.dungeon_gen[&dungeon_kind].item_gen_probability
-            }
+            SiteContent::AutoGenDungeon { dungeon_kind } => dungeon_kind,
             _ => {
                 return;
             } // No item generation
         }
     };
+    let item_gen_probability = RULES.dungeon_gen[&dungeon_kind].item_gen_probability;
     let item_gen_probability = if 0.0 <= item_gen_probability && item_gen_probability <= 1.0 {
         item_gen_probability
     } else {
@@ -194,7 +193,9 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
         }
 
         if get_rng().gen_bool(item_gen_probability) {
-            map.locate_item(gen_dungeon_item(mid.floor()), p, 1);
+            if let Some(item) = gen_dungeon_item(mid.floor(), dungeon_kind) {
+                map.locate_item(item, p, 1);
+            }
         }
     }
 }
