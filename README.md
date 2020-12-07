@@ -13,7 +13,7 @@ Town (Example of created map by map-editor)
 
 ## Video
 
-https://www.youtube.com/watch?v=A8feGXnssuM
+https://www.youtube.com/watch?v=CUMPWX-teaY
 
 ## Game Objective
 
