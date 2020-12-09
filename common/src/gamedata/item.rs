@@ -216,11 +216,15 @@ pub enum ItemAttribute {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },
+    /// Material of this item.
+    Material(MaterialName),
     /// For skill learning items.
     SkillLearning(super::skill::SkillKind),
     /// Title for readable item.
     Title(String),
 }
+
+type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
