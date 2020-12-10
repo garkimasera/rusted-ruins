@@ -55,6 +55,8 @@ pub struct ItemObject {
     pub harvest: Option<Harvest>,
     /// Facility type for creation and additional quality.
     pub facility: Option<(String, i8)>,
+    /// Possible material for this item
+    pub material: MaterialName,
     /// Available titles for readable items.
     pub titles: Vec<String>,
 }
@@ -224,7 +226,7 @@ pub enum ItemAttribute {
     Title(String),
 }
 
-type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;
+pub type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
