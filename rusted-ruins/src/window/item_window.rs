@@ -40,7 +40,8 @@ pub struct ItemWindow {
     mode: ItemWindowMode,
     item_locations: Vec<ItemLocation>,
     escape_click: bool,
-    info_label: LabelWidget,
+    info_label0: LabelWidget,
+    info_label1: LabelWidget,
 }
 
 const ITEM_WINDOW_GROUP_SIZE: u32 = 7;
@@ -114,7 +115,9 @@ impl ItemWindow {
             mode,
             item_locations: Vec::new(),
             escape_click: false,
-            info_label: LabelWidget::new(UI_CFG.item_window.info_label_rect, "", FontKind::M),
+            info_label0: LabelWidget::new(UI_CFG.item_window.info_label_rect0, "", FontKind::M),
+            info_label1: LabelWidget::new(UI_CFG.item_window.info_label_rect1, "", FontKind::M)
+                .right(),
         };
         item_window.update_by_mode(&game.gd);
         item_window
@@ -277,11 +280,19 @@ impl ItemWindow {
         let chara = gd.chara.get(CharaId::Player);
         let (weight, capacity) = chara.item_weight();
 
-        self.info_label.set_text(&format!(
+        self.info_label0.set_text(&format!(
             "{:0.1}/{:0.1} kg",
             weight / 1000.0,
             capacity / 1000.0
         ));
+
+        match self.mode {
+            ItemWindowMode::ShopBuy { .. } | ItemWindowMode::ShopSell { .. } => {
+                self.info_label1
+                    .set_text(&format!("{} G", gd.player.money()));
+            }
+            _ => (),
+        }
     }
 
     fn do_action_for_item(&mut self, pa: &mut DoPlayerAction, il: ItemLocation) -> DialogResult {
@@ -346,7 +357,8 @@ impl Window for ItemWindow {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
-        self.info_label.draw(context);
+        self.info_label0.draw(context);
+        self.info_label1.draw(context);
     }
 }
 
