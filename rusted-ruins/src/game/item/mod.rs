@@ -6,9 +6,12 @@ pub mod merged;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ItemIdx;
+use rules::material::Material;
+use rules::RULES;
 
 /// Additional Item methods
 pub trait ItemEx {
+    fn material(&self) -> Option<(MaterialName, &Material)>;
     /// Calculate item price
     fn price(&self) -> i64;
     /// Calculate item selling price
@@ -20,6 +23,18 @@ pub trait ItemEx {
 }
 
 impl ItemEx for Item {
+    fn material(&self) -> Option<(MaterialName, &Material)> {
+        for attr in &self.attributes {
+            match attr {
+                ItemAttribute::Material(material_name) => {
+                    return Some((*material_name, RULES.material.get(material_name)))
+                }
+                _ => (),
+            }
+        }
+        None
+    }
+
     fn price(&self) -> i64 {
         let item_obj = gobj::get_obj(self.idx);
 
@@ -33,7 +48,11 @@ impl ItemEx for Item {
     fn w(&self) -> u32 {
         let item_obj = gobj::get_obj(self.idx);
 
-        item_obj.w
+        if let Some((_, material)) = self.material() {
+            (item_obj.w as f32 * material.w) as u32
+        } else {
+            item_obj.w
+        }
     }
 
     fn charge(&self) -> Option<u32> {

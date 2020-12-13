@@ -43,4 +43,6 @@ pub struct Material {
     pub gen_weight: f32,
     /// Minimum level for generation
     pub level: u32,
+    /// Weight factor
+    pub w: f32,
 }

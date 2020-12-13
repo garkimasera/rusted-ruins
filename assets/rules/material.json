@@ -2,21 +2,25 @@
     "copper": {
         "group": "metal",
         "gen_weight": 0.2,
-        "level": 0
+        "level": 0,
+        "w": 1.1
     },
     "iron": {
         "group": "metal",
         "gen_weight": 1.0,
-        "level": 0
+        "level": 0,
+        "w": 1.0
     },
     "steel": {
         "group": "metal",
         "gen_weight": 0.2,
-        "level": 4
+        "level": 4,
+        "w": 1.0
     },
     "wood": {
         "group": "wood",
         "gen_weight": 1.0,
-        "level": 0
+        "level": 0,
+        "w": 1.0
     }
 }
