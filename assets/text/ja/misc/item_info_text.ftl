@@ -1,4 +1,5 @@
 item_info_text-item_kind = アイテムの種別: {$item_kind}
+item_info_text-material = 素材: {$material}
 item_info_text-medical_effect = {$medical_effect}
 item_info_text-nutrition = 栄養価: {$nutrition}
 item_info_text-melee_weapon = 近接攻撃力: {$dice_x}d{$dice_n}

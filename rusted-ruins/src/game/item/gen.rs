@@ -28,7 +28,7 @@ pub fn gen_item_by_level<F: FnMut(&ItemObject) -> f32>(
     f: F,
     is_shop: bool,
 ) -> Option<Item> {
-    choose_item_by_floor_level(level, f, is_shop).map(|idx| gen_item_from_idx(idx))
+    choose_item_by_floor_level(level, f, is_shop).map(|idx| gen_item_from_idx(idx, level))
 }
 
 /// Choose item by floor level.
@@ -103,17 +103,17 @@ impl CalcLevelWeightDist {
 /// Generate an item from ItemGen.
 pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
     if let Some(idx) = gobj::id_to_idx_checked::<ItemIdx>(&item_gen.id) {
-        Some(gen_item_from_idx(idx))
+        Some(gen_item_from_idx(idx, 1))
     } else {
         None
     }
 }
 
-pub fn gen_item_from_id(id: &str) -> Item {
-    gen_item_from_idx(gobj::id_to_idx(id))
+pub fn gen_item_from_id(id: &str, level: u32) -> Item {
+    gen_item_from_idx(gobj::id_to_idx(id), level)
 }
 
-pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
+pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
     let item_obj = gobj::get_obj(idx);
 
     let mut item = Item {
@@ -141,6 +141,8 @@ pub fn gen_item_from_idx(idx: ItemIdx) -> Item {
             }
         }
     }
+
+    set_material(&mut item, item_obj, level);
 
     item
 }
@@ -171,4 +173,21 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
     };
     item.attributes
         .push(ItemAttribute::SkillLearning(skill_kind));
+}
+
+fn set_material(item: &mut Item, item_obj: &ItemObject, level: u32) {
+    if item_obj.material_group.is_empty() {
+        return;
+    }
+    let rule = &RULES.material;
+    let materials = rule.get_by_group(&item_obj.material_group, Some(level));
+    let material_names: Vec<MaterialName> = materials.iter().map(|(name, _)| *name).collect();
+    let chosen_materials =
+        rng::choose(&material_names, |name| RULES.material.get(&name).gen_weight);
+    let material_name = if let Some(chosen) = chosen_materials {
+        chosen
+    } else {
+        return;
+    };
+    item.attributes.push(ItemAttribute::Material(material_name));
 }

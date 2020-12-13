@@ -56,7 +56,7 @@ pub struct ItemObject {
     /// Facility type for creation and additional quality.
     pub facility: Option<(String, i8)>,
     /// Possible material for this item
-    pub material: MaterialName,
+    pub material_group: String,
     /// Available titles for readable items.
     pub titles: Vec<String>,
 }

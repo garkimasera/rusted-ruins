@@ -47,7 +47,7 @@ impl ItemInfoText {
                 let d4 = format!("{:+}", obj.def[Element::Poison]);
                 let d5 = format!("{:+}", obj.def[Element::Spirit]);
                 let t = misc_txt_format!(
-                    "item_info_text_defence";
+                    "item_info_text-defence";
                     physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);
                 desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }
@@ -57,6 +57,20 @@ impl ItemInfoText {
             ItemKind::Readable => {}
             ItemKind::Material => {}
             ItemKind::Object => {}
+        }
+
+        for attr in &item.attributes {
+            match attr {
+                ItemAttribute::Material(material) => {
+                    let txt_id = format!("material-{}", material);
+                    let material_name = crate::text::misc_txt(&txt_id);
+                    let t = misc_txt_format!(
+                        "item_info_text-material";
+                    material=material_name);
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                }
+                _ => (),
+            }
         }
 
         ItemInfoText {

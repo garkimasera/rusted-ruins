@@ -121,7 +121,7 @@ pub struct ItemDepInput {
     pub harvest: Option<Harvest>,
     pub facility: Option<(String, i8)>,
     #[serde(default)]
-    pub material: gamedata::MaterialName,
+    pub material_group: String,
     #[serde(default)]
     pub titles: Vec<String>,
 }

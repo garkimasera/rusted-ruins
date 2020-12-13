@@ -16,6 +16,7 @@ pub mod exp;
 pub mod faction;
 pub mod floor_gen;
 pub mod magic;
+pub mod material;
 pub mod newgame;
 pub mod npc_ai;
 pub mod params;
@@ -45,6 +46,7 @@ pub struct Rules {
     pub faction: faction::Faction,
     pub floor_gen: floor_gen::FloorGen,
     pub magic: magic::Magic,
+    pub material: material::Materials,
     pub newgame: newgame::NewGame,
     pub npc_ai: npc_ai::NpcAIs,
     pub params: params::Params,
@@ -118,6 +120,7 @@ impl Rules {
             faction: read_from_json(&rules_dir.join("faction.json")),
             floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
             magic: read_from_json(&rules_dir.join("magic.json")),
+            material: read_from_json(&rules_dir.join("material.json")),
             newgame: read_from_json(&rules_dir.join("newgame.json")),
             npc_ai: read_from_json(&rules_dir.join("npc_ai.json")),
             params: read_from_json(&rules_dir.join("params.json")),

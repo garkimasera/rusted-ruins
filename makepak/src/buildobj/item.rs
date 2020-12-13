@@ -53,7 +53,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         charge: item.charge,
         harvest: item.harvest,
         facility: item.facility,
-        material: item.material,
+        material_group: item.material_group,
         titles: item.titles,
     })
 }

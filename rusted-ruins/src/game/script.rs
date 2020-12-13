@@ -137,7 +137,7 @@ impl ScriptEngine {
                     gd.vars.set_global_var(name, v);
                 }
                 Instruction::ReceiveItem(id, n) => {
-                    let item = crate::game::item::gen::gen_item_from_id(&id);
+                    let item = crate::game::item::gen::gen_item_from_id(&id, 1);
                     let n = as_int!(n.eval(gd));
                     let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
                     il.append(item.clone(), n as u32);

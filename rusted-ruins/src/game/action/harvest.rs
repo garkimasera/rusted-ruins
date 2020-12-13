@@ -93,7 +93,7 @@ pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, i
     let harvest = item_obj.harvest.as_ref().unwrap();
 
     let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.target_item);
-    let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx);
+    let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 1);
     let n_yield = harvest.n_yield;
 
     match harvest.harvest_type {
