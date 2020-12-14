@@ -3,24 +3,28 @@
         "group": "metal",
         "gen_weight": 0.2,
         "level": 0,
-        "w": 1.1
+        "w": 1.1,
+        "dice": 0.5
     },
     "iron": {
         "group": "metal",
         "gen_weight": 1.0,
         "level": 0,
-        "w": 1.0
+        "w": 1.0,
+        "dice": 1.0
     },
     "steel": {
         "group": "metal",
         "gen_weight": 0.2,
         "level": 4,
-        "w": 1.0
+        "w": 1.0,
+        "dice": 1.8
     },
     "wood": {
         "group": "wood",
         "gen_weight": 1.0,
         "level": 0,
-        "w": 1.0
+        "w": 1.0,
+        "dice": 1.0
     }
 }

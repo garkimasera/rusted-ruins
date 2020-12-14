@@ -1,3 +1,4 @@
+use crate::game::extrait::ItemEx;
 use crate::text::ToText;
 use common::gamedata::*;
 
@@ -29,13 +30,14 @@ impl ItemInfoText {
             }
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
+                let (dice_n, dice_x) = item.dice();
                 if weapon_kind.is_melee() {
                     let t = misc_txt_format!(
-                        "item_info_text-melee_weapon"; dice_x=obj.dice_x, dice_n=obj.dice_n);
+                        "item_info_text-melee_weapon"; dice_x=dice_x, dice_n=dice_n);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 } else {
                     let t = misc_txt_format!(
-                        "item_info_text-ranged_weapon"; dice_x=obj.dice_x, dice_n=obj.dice_n);
+                        "item_info_text-ranged_weapon"; dice_x=dice_x, dice_n=dice_n);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }

@@ -64,7 +64,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     let (effect, skill_kind, dice) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            let dice = weapon.obj().roll_dice();
+            let dice = weapon.dice().roll_dice();
             (weapon_to_effect(weapon), skill_kind, dice)
         } else {
             // Attack by bare hands
@@ -102,7 +102,7 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     let (effect, skill_kind, dice) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            let dice = weapon.obj().roll_dice();
+            let dice = weapon.dice().roll_dice();
             (weapon_to_effect(weapon), skill_kind, dice)
         } else {
             return false;

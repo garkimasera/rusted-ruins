@@ -45,4 +45,6 @@ pub struct Material {
     pub level: u32,
     /// Weight factor
     pub w: f32,
+    /// Dice factor
+    pub dice: f32,
 }

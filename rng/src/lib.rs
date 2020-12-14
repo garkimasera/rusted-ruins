@@ -95,6 +95,12 @@ pub trait Dice {
     }
 }
 
+impl Dice for (u16, u16) {
+    fn dice_param(&self) -> (i32, i32) {
+        (self.0.into(), self.1.into())
+    }
+}
+
 /// Return bool from given probability
 pub fn gen_bool(p: f32) -> bool {
     let mut rng = GameRng;

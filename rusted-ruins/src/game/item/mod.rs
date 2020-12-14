@@ -12,6 +12,7 @@ use rules::RULES;
 /// Additional Item methods
 pub trait ItemEx {
     fn material(&self) -> Option<(MaterialName, &Material)>;
+    fn dice(&self) -> (u16, u16);
     /// Calculate item price
     fn price(&self) -> i64;
     /// Calculate item selling price
@@ -33,6 +34,16 @@ impl ItemEx for Item {
             }
         }
         None
+    }
+
+    fn dice(&self) -> (u16, u16) {
+        let item_obj = gobj::get_obj(self.idx);
+        if let Some((_, material)) = self.material() {
+            let x = item_obj.dice_x as f32 * material.dice;
+            (item_obj.dice_n, x as u16)
+        } else {
+            (item_obj.dice_n, item_obj.dice_x)
+        }
     }
 
     fn price(&self) -> i64 {
