@@ -6,6 +6,7 @@ use super::{Game, UiRequest};
 use crate::game::target::auto_target_for_player;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
+use common::objholder::ItemIdx;
 use geom::*;
 
 /// Player actions are processed through this.
@@ -201,8 +202,16 @@ impl<'a> DoPlayerAction<'a> {
         recipe: &Recipe,
         ill: ItemListLocation,
         prior_high_quality: bool,
+        material_to_use: Option<ItemIdx>,
     ) {
-        super::creation::start_creation(self.0, kind, recipe, ill, prior_high_quality);
+        super::creation::start_creation(
+            self.0,
+            kind,
+            recipe,
+            ill,
+            prior_high_quality,
+            material_to_use,
+        );
         self.0.finish_player_turn();
     }
 

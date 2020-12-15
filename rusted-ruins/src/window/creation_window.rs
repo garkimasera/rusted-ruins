@@ -3,6 +3,7 @@ use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_window_border;
+use crate::game::creation;
 use crate::text::{misc_txt, obj_txt, ui_txt, ToText};
 use common::gamedata::*;
 use common::gobj;
@@ -94,7 +95,7 @@ impl CreationWindow {
 
     pub fn update(&mut self, gd: &GameData, kind: CreationKind) {
         self.kind = kind;
-        self.recipes = crate::game::creation::available_recipes(gd, kind);
+        self.recipes = creation::available_recipes(gd, kind);
 
         let items: Vec<(IconIdx, TextCache)> = self
             .recipes
@@ -167,6 +168,9 @@ pub struct CreationDetailDialog {
     rect: Rect,
     kind: CreationKind,
     recipe: &'static Recipe,
+    available_material: Vec<(ItemIdx, u32)>,
+    selected_material: usize,
+    available_skill_facility: bool,
     product_name: LabelWidget,
     start_button: Option<ButtonWidget>,
     cancel_button: ButtonWidget,
@@ -182,17 +186,17 @@ pub struct CreationDetailDialog {
 
 impl CreationDetailDialog {
     fn new(gd: &GameData, recipe: &'static Recipe, kind: CreationKind) -> CreationDetailDialog {
+        let available_material = creation::available_material(gd, recipe, ItemListLocation::PLAYER);
         let c = &UI_CFG.creation_detail_dialog;
         let rect: Rect = c.rect.into();
 
-        let mut list = ListWidget::new(
+        let list = ListWidget::new(
             (0i32, c.list_margin, rect.w as u32, rect.h as u32),
             c.column_pos.clone(),
             c.n_row,
             false,
         );
 
-        let item_list = gd.get_item_list(ItemListLocation::PLAYER);
         let mut possible = true;
         let facility_item = if let Some(facility_type) = recipe.facility.as_ref() {
             let facility_item = crate::game::map::search::search_facility(gd, &facility_type);
@@ -204,46 +208,11 @@ impl CreationDetailDialog {
             None
         };
 
-        let mut enough_ingredients = true;
         let required_skill =
             crate::game::creation::enough_skill(gd.chara.get(CharaId::Player), recipe, kind);
         if !required_skill {
             possible = false;
         }
-
-        let list_items: Vec<(IconIdx, TextCache, TextCache)> = recipe
-            .ingredients
-            .iter()
-            .map(|(item_id, n)| {
-                let idx: ItemIdx = gobj::id_to_idx(item_id);
-                let total = item_list.count(idx);
-                if total < *n {
-                    possible = false;
-                    enough_ingredients = false;
-                }
-                let item_name = TextCache::one(
-                    obj_txt(item_id),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                );
-                let item_n = TextCache::one(
-                    format!("{}/{}", total, n),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                );
-                (IconIdx::Item(idx), item_name, item_n)
-            })
-            .collect();
-        list.set_items(list_items);
-        let start_button = if possible {
-            Some(ButtonWidget::new(
-                c.start_button_rect,
-                &ui_txt("button_text-creation-start"),
-                FontKind::M,
-            ))
-        } else {
-            None
-        };
         let cancel_button = ButtonWidget::new(
             c.cancel_button_rect,
             &ui_txt("button_text-creation-cancel"),
@@ -274,11 +243,8 @@ impl CreationDetailDialog {
         };
         let facility_label = LabelWidget::new(c.facility_label_rect, &label, FontKind::M);
 
-        let (enough_ingredients_icon, enough_ingredients_label) = if enough_ingredients {
-            ("!icon-ok", "label_text-creation-enough-ingredients")
-        } else {
-            ("!icon-ng", "label_text-creation-not-enough-ingredients")
-        };
+        let (enough_ingredients_icon, enough_ingredients_label) =
+            ("!icon-ng", "label_text-creation-not-enough-ingredients");
         let enough_ingredients_icon =
             ImageWidget::ui_img(c.enough_ingredients_icon_rect, enough_ingredients_icon);
         let enough_ingredients_label = LabelWidget::new(
@@ -305,13 +271,16 @@ impl CreationDetailDialog {
             FontKind::M,
         );
 
-        CreationDetailDialog {
+        let mut dialog = CreationDetailDialog {
             rect,
             kind,
             recipe,
+            available_material,
+            selected_material: 0,
+            available_skill_facility: possible,
             product_name: LabelWidget::new(c.product_name, &obj_txt(&recipe.product), FontKind::M),
             list,
-            start_button,
+            start_button: None,
             cancel_button,
             escape_click: false,
             facility_ok_icon,
@@ -320,7 +289,89 @@ impl CreationDetailDialog {
             enough_ingredients_label,
             required_skill_icon,
             required_skill_label,
-        }
+        };
+        dialog.update(gd);
+        dialog
+    }
+
+    fn update(&mut self, gd: &GameData) {
+        let c = &UI_CFG.creation_detail_dialog;
+        let mut enough_ingredients = true;
+        let item_list = gd.get_item_list(ItemListLocation::PLAYER);
+
+        let list_items: Vec<(IconIdx, TextCache, TextCache)> = self
+            .recipe
+            .ingredients
+            .iter()
+            .map(|(ingredient, n)| {
+                let item_id = if let Some(group) = creation::material_group(ingredient) {
+                    if let Some((idx, _)) = self.available_material.get(self.selected_material) {
+                        gobj::idx_to_id(*idx)
+                    } else {
+                        // No available item for this ingredient material group
+                        enough_ingredients = false;
+                        let icon_idx = gobj::id_to_idx("!icon-question");
+                        let material_group_name = misc_txt(&format!("material-group-{}", group));
+                        let msg = ui_txt_format!(
+                            "list_item_text-creation-no_ingredient"; group=material_group_name);
+                        let item_name =
+                            TextCache::one(msg, FontKind::M, UI_CFG.color.normal_font.into());
+                        let item_n = TextCache::one(
+                            format!("0/{}", n),
+                            FontKind::M,
+                            UI_CFG.color.normal_font.into(),
+                        );
+                        return (IconIdx::UIImg(icon_idx), item_name, item_n);
+                    }
+                } else {
+                    ingredient
+                };
+                let idx: ItemIdx = gobj::id_to_idx(item_id);
+                let total = item_list.count(idx);
+                if total < *n {
+                    enough_ingredients = false;
+                }
+                let group = if let Some(group) = creation::material_group(ingredient) {
+                    format!("({}) ", misc_txt(&format!("material-group-{}", group)))
+                } else {
+                    "".into()
+                };
+                let item_name = TextCache::one(
+                    format!("{}{}", group, obj_txt(item_id)),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                let item_n = TextCache::one(
+                    format!("{}/{}", total, n),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                );
+                (IconIdx::Item(idx), item_name, item_n)
+            })
+            .collect();
+        self.list.set_items(list_items);
+
+        let (enough_ingredients_icon, enough_ingredients_label) = if enough_ingredients {
+            ("!icon-ok", "label_text-creation-enough-ingredients")
+        } else {
+            ("!icon-ng", "label_text-creation-not-enough-ingredients")
+        };
+        self.enough_ingredients_icon =
+            ImageWidget::ui_img(c.enough_ingredients_icon_rect, enough_ingredients_icon);
+        self.enough_ingredients_label = LabelWidget::new(
+            c.enough_ingredients_label_rect,
+            &ui_txt(enough_ingredients_label),
+            FontKind::M,
+        );
+        self.start_button = if enough_ingredients && self.available_skill_facility {
+            Some(ButtonWidget::new(
+                c.start_button_rect,
+                &ui_txt("button_text-creation-start"),
+                FontKind::M,
+            ))
+        } else {
+            None
+        };
     }
 }
 
@@ -347,15 +398,34 @@ impl DialogWindow for CreationDetailDialog {
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);
-        if let Some(ListWidgetResponse::Select(_)) = self.list.process_command(&command) {
+        if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
+            if creation::material_group(&self.recipe.ingredients[i as usize].0).is_none() {
+                return DialogResult::Continue;
+            }
+            // Update by selected material
+            self.selected_material += 1;
+            if self.selected_material >= self.available_material.len() {
+                self.selected_material = 0;
+            }
+            self.update(pa.gd());
             return DialogResult::Continue;
         }
 
         if let Some(start_button) = self.start_button.as_mut() {
             if let Some(_) = start_button.process_command(&command) {
+                let material_to_use = self
+                    .available_material
+                    .get(self.selected_material)
+                    .map(|(idx, _)| *idx);
                 // If start button is pressed, start creation.
-                pa.start_creation(self.kind, self.recipe, ItemListLocation::PLAYER, false);
+                pa.start_creation(
+                    self.kind,
+                    self.recipe,
+                    ItemListLocation::PLAYER,
+                    false,
+                    material_to_use,
+                );
                 return DialogResult::CloseAll;
             }
         }

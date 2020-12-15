@@ -54,6 +54,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         harvest: item.harvest,
         facility: item.facility,
         material_group: item.material_group,
+        material: item.material,
         titles: item.titles,
     })
 }

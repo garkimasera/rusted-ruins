@@ -12,18 +12,26 @@ pub fn start_creation(
     recipe: &Recipe,
     ill: ItemListLocation,
     prior_high_quality: bool,
+    material_to_use: Option<ItemIdx>,
 ) {
     let gd = &mut game.gd;
     let mut ingredients = Vec::new();
+    let mut material = None;
 
     let il = gd.get_item_list_mut(ill);
 
     for (ingredient, n) in &recipe.ingredients {
-        let idx: ItemIdx = if let Some(idx) = gobj::id_to_idx_checked(ingredient) {
+        let idx = if material_group(ingredient).is_some() {
+            let idx = material_to_use.expect("empty material_to_use");
+            material = Some(gobj::get_obj(idx).material);
             idx
         } else {
-            warn!("creation failed: unknown ingredient {}", ingredient);
-            return;
+            if let Some(idx) = gobj::id_to_idx_checked(ingredient) {
+                idx
+            } else {
+                warn!("creation failed: unknown ingredient {}", ingredient);
+                return;
+            }
         };
         il.consume(
             idx,
@@ -38,6 +46,7 @@ pub fn start_creation(
         kind,
         recipe: recipe.clone(),
         ingredients,
+        material,
     };
     let needed_turn = RULES.creation.required_time[&recipe.required_time];
     player.add_status(CharaStatus::Work {
@@ -57,16 +66,20 @@ pub fn finish_creation(
     kind: CreationKind,
     recipe: &Recipe,
     _ingredients: Vec<(Item, u32)>,
+    material: Option<MaterialName>,
 ) {
     let idx: ItemIdx = gobj::id_to_idx(&recipe.product);
     let item_obj = gobj::get_obj(idx);
-    let item = Item {
+    let mut item = Item {
         idx,
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
         attributes: vec![],
     };
+    if let Some(material) = material {
+        item.attributes.push(ItemAttribute::Material(material));
+    }
 
     let ill = if recipe.put_on_ground {
         ItemListLocation::OnMap {
@@ -170,4 +183,44 @@ pub fn enough_skill(chara: &Chara, recipe: &Recipe, kind: CreationKind) -> bool 
     let skill_level = chara.skills.get(SkillKind::Creation(kind));
 
     skill_level >= recipe.difficulty
+}
+
+/// Returns available material items for given recipe
+pub fn available_material(
+    gd: &GameData,
+    recipe: &Recipe,
+    ill: ItemListLocation,
+) -> Vec<(ItemIdx, u32)> {
+    let group = if let Some(group) = recipe.ingredients.iter().find_map(|ingredient| {
+        if let Some(group) = material_group(&ingredient.0) {
+            Some(group)
+        } else {
+            None
+        }
+    }) {
+        group
+    } else {
+        return vec![];
+    };
+
+    let il = gd.get_item_list(ill);
+    let mut items = Vec::new();
+
+    for (item, n) in il.iter() {
+        if item.obj().group == group {
+            if let Some(a) = items.iter_mut().find(|(idx, _)| *idx == item.idx) {
+                a.1 += n;
+            } else {
+                items.push((item.idx, *n))
+            }
+        } else {
+            continue;
+        }
+    }
+
+    items
+}
+
+pub fn material_group(ingredient: &str) -> Option<&str> {
+    ingredient.strip_prefix("group/")
 }

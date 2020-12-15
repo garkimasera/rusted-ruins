@@ -123,6 +123,8 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub material_group: String,
     #[serde(default)]
+    pub material: gamedata::MaterialName,
+    #[serde(default)]
     pub titles: Vec<String>,
 }
 

@@ -1,7 +1,7 @@
 use super::defs::Recipe;
 use super::defs::{CreationKind, SkillBonus};
 use super::faction::FactionId;
-use super::item::{EquipItemList, Item, ItemList, ItemLocation};
+use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::{SkillKind, SkillList};
@@ -173,6 +173,7 @@ pub enum Work {
         kind: CreationKind,
         recipe: Recipe,
         ingredients: Vec<(Item, u32)>,
+        material: Option<MaterialName>,
     },
     Harvest {
         item_idx: ItemIdx,

@@ -5,7 +5,7 @@ pub struct LearnedRecipes(Vec<Vec<String>>);
 
 impl LearnedRecipes {
     pub fn new() -> LearnedRecipes {
-        LearnedRecipes(vec![vec![]; CreationKind::Smith as usize])
+        LearnedRecipes(vec![vec![]; CreationKind::Smith as usize + 1])
     }
 
     pub fn learned(&self, kind: CreationKind, recipe_name: &str) -> bool {
