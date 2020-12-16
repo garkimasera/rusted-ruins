@@ -1,5 +1,5 @@
 use crate::game::extrait::*;
-use crate::game::{Game, InfoGetter};
+use crate::game::Game;
 use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;

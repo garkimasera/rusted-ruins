@@ -3,6 +3,7 @@ mod restart;
 mod use_tool;
 
 use super::{Game, UiRequest};
+use crate::game::extrait::*;
 use crate::game::target::auto_target_for_player;
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
@@ -65,6 +66,7 @@ impl<'a> DoPlayerAction<'a> {
         };
         game_log_i!("item-drop"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
         gd.move_item(il, tile_list_location, n);
+        gd.chara.get_mut(CharaId::Player).update();
         true
     }
 
@@ -89,7 +91,6 @@ impl<'a> DoPlayerAction<'a> {
     /// Read item, returns continue dialog or not.
     pub fn read_item(&mut self, il: ItemLocation) -> bool {
         use crate::game::creation::LearnRecipeResult;
-        use crate::game::item::ItemEx;
 
         let title = self.gd().get_item(il).0.title().unwrap().to_owned();
         match crate::game::creation::learn_recipe(self.gd_mut(), il) {

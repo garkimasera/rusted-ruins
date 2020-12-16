@@ -15,6 +15,7 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
             },
             1,
         );
+        gd.chara.get_mut(CharaId::Player).update();
     } else {
         game_log_i!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player));
     }
@@ -24,6 +25,7 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
     let price = gd.get_item(il).0.selling_price();
     gd.player.add_money(price);
     gd.remove_item(il, 1);
+    gd.chara.get_mut(CharaId::Player).update();
 }
 
 /// Update items on a shop

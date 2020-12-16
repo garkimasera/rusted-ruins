@@ -1,9 +1,10 @@
+use crate::game::extrait::*;
 use common::gamedata::*;
 
 pub fn get_item<T: Into<ItemMoveNum>>(
     gd: &mut GameData,
     item_location: ItemLocation,
-    dest: CharaId,
+    cid: CharaId,
     n: T,
 ) {
     let item = gd.get_item(item_location);
@@ -17,14 +18,13 @@ pub fn get_item<T: Into<ItemMoveNum>>(
     // If item is gold and dest is player, increases player money.
     if obj.id == "!gold" {
         gd.remove_item(item_location, n);
-        if dest == CharaId::Player {
+        if cid == CharaId::Player {
             gd.player.add_money(n.into());
         }
         return;
     }
 
-    let dest = ItemListLocation::Chara {
-        cid: CharaId::Player,
-    };
+    let dest = ItemListLocation::Chara { cid };
     gd.move_item(item_location, dest, n);
+    gd.chara.get_mut(cid).update();
 }

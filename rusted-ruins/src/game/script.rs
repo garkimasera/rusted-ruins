@@ -5,7 +5,7 @@ use common::gobj;
 use common::script::*;
 
 use crate::game::eval_expr::EvalExpr;
-use crate::game::InfoGetter;
+use crate::game::extrait::*;
 
 pub struct ScriptEngine {
     script: &'static Script,
@@ -141,8 +141,9 @@ impl ScriptEngine {
                     let n = as_int!(n.eval(gd));
                     let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
                     il.append(item.clone(), n as u32);
-                    let player = gd.chara.get(CharaId::Player);
+                    let player = gd.chara.get_mut(CharaId::Player);
                     game_log_i!("player-receive-item"; chara=player, item=item, n=n);
+                    player.update();
                 }
                 Instruction::ReceiveMoney(v) => {
                     let amount = as_int!(v.eval(gd));
@@ -153,6 +154,7 @@ impl ScriptEngine {
                 Instruction::RemoveItem(item_id) => {
                     let il = ur!(gd.player_item_location(item_id), "cannot find item");
                     gd.remove_item(il, 1);
+                    gd.chara.get_mut(CharaId::Player).update();
                 }
                 Instruction::Special(SpecialInstruction::ShopBuy) => {
                     break ExecResult::ShopBuy(ur!(self.cid, "cid is needed"));

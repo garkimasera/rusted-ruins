@@ -277,6 +277,7 @@ pub enum AdvanceScriptResult {
 pub mod extrait {
     pub use super::chara::status::{CharaStatusEx, CharaStatusOperation};
     pub use super::chara::CharaEx;
+    pub use super::infogetter::InfoGetter;
     pub use super::item::ItemEx;
     pub use super::item::ItemListEx;
     pub use super::map::MapEx;
