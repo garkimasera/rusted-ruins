@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 pub struct InputConfig {
+    pub wasd_mode: bool,
     pub normal: HashMap<String, Command>,
     pub dialog: HashMap<String, Command>,
 }

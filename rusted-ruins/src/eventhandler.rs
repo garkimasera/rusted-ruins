@@ -128,6 +128,31 @@ impl EventHandler {
             } => {
                 self.set_waiting_dir_release();
             }
+            // WASD Direction
+            Event::KeyUp {
+                keycode: Some(Keycode::W),
+                ..
+            } if INPUT_CFG.wasd_mode => {
+                self.set_waiting_dir_release();
+            }
+            Event::KeyUp {
+                keycode: Some(Keycode::A),
+                ..
+            } if INPUT_CFG.wasd_mode => {
+                self.set_waiting_dir_release();
+            }
+            Event::KeyUp {
+                keycode: Some(Keycode::S),
+                ..
+            } if INPUT_CFG.wasd_mode => {
+                self.set_waiting_dir_release();
+            }
+            Event::KeyUp {
+                keycode: Some(Keycode::D),
+                ..
+            } if INPUT_CFG.wasd_mode => {
+                self.set_waiting_dir_release();
+            }
             // Ctrl & Shift keys
             Event::KeyDown {
                 keycode: Some(Keycode::LCtrl),
@@ -289,18 +314,30 @@ impl EventHandler {
         let mut vdir = VDirection::None;
 
         for scancode in keyboard.pressed_scancodes() {
-            use sdl2::keyboard::Scancode::*;
+            use sdl2::keyboard::Scancode;
             match scancode {
-                Up => {
+                Scancode::Up => {
                     vdir = VDirection::Up;
                 }
-                Down => {
+                Scancode::Down => {
                     vdir = VDirection::Down;
                 }
-                Left => {
+                Scancode::Left => {
                     hdir = HDirection::Left;
                 }
-                Right => {
+                Scancode::Right => {
+                    hdir = HDirection::Right;
+                }
+                Scancode::W if INPUT_CFG.wasd_mode => {
+                    vdir = VDirection::Up;
+                }
+                Scancode::A if INPUT_CFG.wasd_mode => {
+                    hdir = HDirection::Left;
+                }
+                Scancode::S if INPUT_CFG.wasd_mode => {
+                    vdir = VDirection::Down;
+                }
+                Scancode::D if INPUT_CFG.wasd_mode => {
                     hdir = HDirection::Right;
                 }
                 _ => (),
