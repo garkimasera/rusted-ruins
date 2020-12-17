@@ -201,6 +201,15 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         true
     }
 
+    pub fn update_cursor(&mut self, pos: (i32, i32)) {
+        match self.mode {
+            WindowManageMode::OnGame(ref mut game_windows) => {
+                game_windows.main_window.update_tile_cursor(pos);
+            }
+            _ => (),
+        }
+    }
+
     pub fn draw(&mut self, canvas: &mut WindowCanvas) {
         let mut is_animation_over = false;
         if let Some(anim) = self.anim.as_mut() {

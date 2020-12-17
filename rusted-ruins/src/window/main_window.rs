@@ -76,6 +76,13 @@ impl MainWindow {
         self.centering_tile = None;
     }
 
+    pub fn update_tile_cursor(&mut self, pos: (i32, i32)) {
+        if self.rect.contains_point(pos) {
+            let tile = self.cursor_pos_to_tile(pos.0, pos.1);
+            self.hover_tile = Some(tile);
+        }
+    }
+
     pub fn reset_tile_cursor(&mut self) {
         self.hover_tile = None;
     }
