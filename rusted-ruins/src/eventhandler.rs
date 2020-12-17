@@ -187,7 +187,7 @@ impl EventHandler {
             }
             // Joystick events
             Event::JoyButtonDown { button_idx, .. } => {
-                println!("ButtonDown: {}", button_idx);
+                trace!("ButtonDown: {}", button_idx);
             }
             Event::JoyAxisMotion { .. } => {
                 self.set_waiting_dir_release();
@@ -196,6 +196,7 @@ impl EventHandler {
             Event::TextInput { text, .. } => {
                 self.command_queue.push_back(RawCommand::TextInput(text));
             }
+            // Mouse events
             Event::MouseButtonDown {
                 mouse_btn, x, y, ..
             } => {
@@ -243,64 +244,63 @@ impl EventHandler {
         }
         self.prev_input_mode = mode;
 
-        if self.command_queue.is_empty() {
-            if mode == InputMode::Dialog {
-                match self.waiting_dir_release {
-                    WaitingDirRelease::No => (),
-                    WaitingDirRelease::Waiting => {
-                        if self.hdir == HDirection::None && self.vdir == VDirection::None {
-                            self.waiting_dir_release = WaitingDirRelease::No;
-                        }
-                        return None;
-                    }
-                    WaitingDirRelease::Skip => {
-                        self.waiting_dir_release = WaitingDirRelease::No;
-                        return None;
-                    }
-                }
+        while let Some(rawc) = self.command_queue.pop_front() {
+            if let Some(command) = self.conv_table.conv(rawc, mode) {
+                return Some(command);
             }
-            if self.hdir != HDirection::None || self.vdir != VDirection::None {
-                let c = Command::Move {
-                    dir: Direction::new(self.hdir, self.vdir),
-                };
-
-                // Slow down cursor moving speed in dialog mode
-                if mode != InputMode::Normal {
-                    let now = Instant::now();
-                    let d = now.duration_since(self.last_dir_changed.unwrap());
-                    let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1_000_000; // to milli secs
-
-                    if !self.is_instant && d < UI_CFG.cursor_move_duration {
-                        return None;
-                    }
-
-                    if !self.is_instant {
-                        self.last_dir_changed = Some(now);
-                    }
-                    self.is_instant = false;
-                }
-
-                return Some(c);
-            }
-
-            // returns mouse state
-            return if let Some(mouse_state) = self.mouse_state {
-                Some(Command::MouseState {
-                    x: mouse_state.x(),
-                    y: mouse_state.y(),
-                    left_button: mouse_state.left(),
-                    right_button: mouse_state.right(),
-                    key_state: self.key_state,
-                    ui_only: false,
-                })
-            } else {
-                None
-            };
         }
 
-        let rawc = self.command_queue.pop_front().unwrap();
+        if mode == InputMode::Dialog {
+            match self.waiting_dir_release {
+                WaitingDirRelease::No => (),
+                WaitingDirRelease::Waiting => {
+                    if self.hdir == HDirection::None && self.vdir == VDirection::None {
+                        self.waiting_dir_release = WaitingDirRelease::No;
+                    }
+                    return None;
+                }
+                WaitingDirRelease::Skip => {
+                    self.waiting_dir_release = WaitingDirRelease::No;
+                    return None;
+                }
+            }
+        }
+        if self.hdir != HDirection::None || self.vdir != VDirection::None {
+            let c = Command::Move {
+                dir: Direction::new(self.hdir, self.vdir),
+            };
 
-        self.conv_table.conv(rawc, mode)
+            // Slow down cursor moving speed in dialog mode
+            if mode != InputMode::Normal {
+                let now = Instant::now();
+                let d = now.duration_since(self.last_dir_changed.unwrap());
+                let d = d.as_secs() * 1000 + d.subsec_nanos() as u64 / 1_000_000; // to milli secs
+
+                if !self.is_instant && d < UI_CFG.cursor_move_duration {
+                    return None;
+                }
+
+                if !self.is_instant {
+                    self.last_dir_changed = Some(now);
+                }
+                self.is_instant = false;
+            }
+            return Some(c);
+        }
+
+        // returns mouse state
+        if let Some(mouse_state) = self.mouse_state {
+            return Some(Command::MouseState {
+                x: mouse_state.x(),
+                y: mouse_state.y(),
+                left_button: mouse_state.left(),
+                right_button: mouse_state.right(),
+                key_state: self.key_state,
+                ui_only: false,
+            });
+        }
+
+        None
     }
 
     /// Update event handler at each frame. Handles direction input and mouse cursor.
