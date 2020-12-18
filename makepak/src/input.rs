@@ -97,6 +97,8 @@ pub struct ItemDepInput {
     pub group: String,
     pub basic_price: u32,
     pub w: u32,
+    #[serde(default)]
+    pub quality_kind: gamedata::QualityKind,
     pub gen_weight: f32,
     pub shop_weight: Option<f32>,
     pub gen_level: u32,

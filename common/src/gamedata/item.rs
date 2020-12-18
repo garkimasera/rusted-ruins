@@ -29,6 +29,8 @@ pub struct ItemObject {
     pub basic_price: u32,
     /// Item weight (gram)
     pub w: u32,
+    /// Quality kind
+    pub quality_kind: QualityKind,
     /// The frequency of item generation in random map
     pub gen_weight: f32,
     /// The frequency of item generation in shops
@@ -209,6 +211,22 @@ impl ItemQuality {
     /// Return the summation of quality values
     pub fn as_int(&self) -> i32 {
         self.base + self.enchant as i32 + self.damage as i32
+    }
+}
+
+/// Quality kind for item.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum QualityKind {
+    /// Item's quality is always zero including enchant and damage.
+    None,
+    /// Mutable quality and additional base quality will be added when generated.
+    Mutable,
+}
+
+impl Default for QualityKind {
+    fn default() -> Self {
+        QualityKind::None
     }
 }
 

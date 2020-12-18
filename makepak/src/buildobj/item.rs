@@ -38,6 +38,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         group: item.group,
         basic_price: item.basic_price,
         w: item.w,
+        quality_kind: item.quality_kind,
         gen_weight: item.gen_weight,
         shop_weight: item.shop_weight.unwrap_or(item.gen_weight),
         gen_level: item.gen_level,

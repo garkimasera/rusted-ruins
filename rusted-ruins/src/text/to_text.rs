@@ -45,6 +45,13 @@ impl ToText for Item {
             }
         }
 
+        let quality = self.quality.as_int();
+        if quality > 0 {
+            text.push_str(&format!(" +{}", quality));
+        } else if quality < 0 {
+            text.push_str(&format!(" -{}", -quality));
+        }
+
         for attr in &self.attributes {
             match attr {
                 ItemAttribute::SkillLearning(kind) => {

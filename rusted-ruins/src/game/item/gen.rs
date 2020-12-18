@@ -142,6 +142,7 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         }
     }
 
+    set_quality(&mut item, item_obj, level);
     set_material(&mut item, item_obj, level);
 
     item
@@ -173,6 +174,23 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
     };
     item.attributes
         .push(ItemAttribute::SkillLearning(skill_kind));
+}
+
+fn set_quality(item: &mut Item, item_obj: &ItemObject, level: u32) {
+    match item_obj.quality_kind {
+        QualityKind::None => {
+            return;
+        }
+        QualityKind::Mutable => {
+            let level_diff = if level > item_obj.gen_level {
+                level - item_obj.gen_level
+            } else {
+                0
+            };
+            item.quality.base =
+                rng::gen_range_inclusive(0, level_diff / RULES.item.quality_level_factor) as i32;
+        }
+    }
 }
 
 fn set_material(item: &mut Item, item_obj: &ItemObject, level: u32) {
