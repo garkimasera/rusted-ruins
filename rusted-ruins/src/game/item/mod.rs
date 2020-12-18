@@ -48,8 +48,13 @@ impl ItemEx for Item {
 
     fn price(&self) -> i64 {
         let item_obj = gobj::get_obj(self.idx);
+        let mut factor = 1.0;
 
-        item_obj.basic_price as i64
+        if let Some((_, material)) = self.material() {
+            factor = material.price;
+        }
+
+        (item_obj.basic_price as f32 * factor) as i64
     }
 
     fn selling_price(&self) -> i64 {

@@ -47,4 +47,6 @@ pub struct Material {
     pub w: f32,
     /// Dice factor
     pub dice: f32,
+    /// Price factor
+    pub price: f32,
 }
