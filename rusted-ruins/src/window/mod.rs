@@ -114,6 +114,8 @@ pub trait DialogWindow: Window {
     fn mainwin_cursor(&self) -> bool {
         false
     }
+
+    fn tab_switched(&mut self) {}
 }
 
 /// The current main mode

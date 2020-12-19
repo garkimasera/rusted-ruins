@@ -454,4 +454,8 @@ impl DialogWindow for ItemWindow {
     fn update(&mut self, gd: &GameData) {
         self.update_by_mode(gd);
     }
+
+    fn tab_switched(&mut self) {
+        self.menu = None;
+    }
 }

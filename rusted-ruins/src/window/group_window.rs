@@ -52,7 +52,12 @@ impl GroupWindow {
         if self.current_window != i_win {
             audio::play_sound("page-switch");
         }
+        // Reset current window
+        if let Some(window) = self.members[self.current_window as usize].as_mut() {
+            window.tab_switched();
+        }
 
+        // Change window
         self.current_window = i_win;
         if self.members[i_win as usize].is_none() {
             self.members[i_win as usize] = Some((self.mem_info[i_win as usize].creator)(game));

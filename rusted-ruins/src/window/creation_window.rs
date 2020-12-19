@@ -162,6 +162,10 @@ impl DialogWindow for CreationWindow {
     fn mode(&self) -> InputMode {
         InputMode::Dialog
     }
+
+    fn tab_switched(&mut self) {
+        self.detail_dialog = None;
+    }
 }
 
 pub struct CreationDetailDialog {
