@@ -311,7 +311,7 @@ impl CreationDetailDialog {
                         // No available item for this ingredient material group
                         enough_ingredients = false;
                         let icon_idx = gobj::id_to_idx("!icon-question");
-                        let material_group_name = misc_txt(&format!("material-group-{}", group));
+                        let material_group_name = crate::text::prefix::material_group(group);
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
                         let item_name =
@@ -332,7 +332,7 @@ impl CreationDetailDialog {
                     enough_ingredients = false;
                 }
                 let group = if let Some(group) = creation::material_group(ingredient) {
-                    format!("({}) ", misc_txt(&format!("material-group-{}", group)))
+                    format!("({}) ", crate::text::prefix::material_group(group))
                 } else {
                     "".into()
                 };

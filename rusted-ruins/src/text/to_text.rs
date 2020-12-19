@@ -45,6 +45,10 @@ impl ToText for Item {
             }
         }
 
+        if let Some((material_name, _)) = self.material() {
+            text.push_str(&format!(" ({})", super::prefix::material(material_name)))
+        }
+
         let quality = self.quality.as_int();
         if quality > 0 {
             text.push_str(&format!(" +{}", quality));
