@@ -55,4 +55,9 @@ impl WindowPos {
         };
         (x, y)
     }
+
+    pub const CENTER: WindowPos = WindowPos {
+        h: WindowHPos::Center,
+        v: WindowVPos::Center,
+    };
 }

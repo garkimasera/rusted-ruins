@@ -10,6 +10,7 @@ mod group_window;
 mod help_window;
 mod indicator;
 mod item_info_window;
+mod item_menu;
 mod item_window;
 mod log_window;
 mod main_window;
@@ -51,7 +52,10 @@ mod commonuse {
     pub use crate::eventhandler::InputMode;
     pub use crate::game::{Animation, Command, DoPlayerAction, Game};
     pub use crate::window::widget::WidgetTrait;
-    pub use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
+    pub use crate::window::winpos::WindowPos;
+    pub use crate::window::{
+        DialogResult, DialogWindow, SpecialDialogResult, Window, WindowDrawMode,
+    };
     pub use sdl2::rect::Rect;
     pub use sdl2::render::WindowCanvas;
 }
@@ -76,6 +80,7 @@ pub enum SpecialDialogResult {
     StartDialogLoadGame,
     NewGameStart(Box<GameData>),
     ReturnToStartScreen,
+    ItemListUpdate,
 }
 
 pub trait Window {

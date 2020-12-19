@@ -28,6 +28,7 @@ pub struct ListWidget<T> {
 #[derive(Clone, Copy, Debug)]
 pub enum ListWidgetResponse {
     Select(u32),
+    SelectForMenu(u32),
     SelectionChanged,
     Scrolled,
 }
@@ -264,14 +265,18 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 None
             }
             Command::MouseButtonUp { x, y, button, .. } => {
-                if button == MouseButton::Left {
+                if button == MouseButton::Left || button == MouseButton::Right {
                     if let Some(idx) = self.get_idx_from_pos(x, y) {
                         let i = if let Some(scroll) = self.scroll.as_ref() {
                             idx + scroll.value()
                         } else {
                             idx
                         };
-                        Some(ListWidgetResponse::Select(i))
+                        if button == MouseButton::Left {
+                            Some(ListWidgetResponse::Select(i))
+                        } else {
+                            Some(ListWidgetResponse::SelectForMenu(i))
+                        }
                     } else {
                         None
                     }

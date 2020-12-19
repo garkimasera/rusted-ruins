@@ -1,14 +1,14 @@
+use super::commonuse::*;
 use super::group_window::*;
+use super::item_menu::ItemMenu;
 use super::widget::*;
 use crate::config::UI_CFG;
-use crate::context::*;
 use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
 use crate::game::extrait::*;
 use crate::game::item::filter::*;
-use crate::game::{Animation, Command, DialogOpenRequest, DoPlayerAction, Game, InfoGetter};
+use crate::game::{DialogOpenRequest, Game, InfoGetter};
 use crate::text::ToText;
-use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
 use common::gamedata::*;
 use common::gobj;
 use sdl2::rect::Rect;
@@ -34,6 +34,16 @@ pub enum ItemWindowMode {
     },
 }
 
+impl ItemWindowMode {
+    pub fn is_main_mode(&self) -> bool {
+        use ItemWindowMode::*;
+        match self {
+            List | Drop | Drink | Eat | Use | Release | Read => true,
+            _ => false,
+        }
+    }
+}
+
 pub struct ItemWindow {
     rect: Rect,
     list: ListWidget<(IconIdx, TextCache, LabelWidget)>,
@@ -42,6 +52,7 @@ pub struct ItemWindow {
     escape_click: bool,
     info_label0: LabelWidget,
     info_label1: LabelWidget,
+    menu: Option<super::item_menu::ItemMenu>,
 }
 
 const ITEM_WINDOW_GROUP_SIZE: u32 = 7;
@@ -118,6 +129,7 @@ impl ItemWindow {
             info_label0: LabelWidget::new(UI_CFG.item_window.info_label_rect0, "", FontKind::M),
             info_label1: LabelWidget::new(UI_CFG.item_window.info_label_rect1, "", FontKind::M)
                 .right(),
+            menu: None,
         };
         item_window.update_by_mode(&game.gd);
         item_window
@@ -354,16 +366,45 @@ impl ItemWindow {
 }
 
 impl Window for ItemWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
         self.info_label0.draw(context);
         self.info_label1.draw(context);
+        if let Some(menu) = self.menu.as_mut() {
+            menu.draw(context, game, anim);
+        }
     }
 }
 
 impl DialogWindow for ItemWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        if let Some(menu) = self.menu.as_mut() {
+            match menu.process_command(command, pa) {
+                DialogResult::Special(SpecialDialogResult::ItemListUpdate) => {
+                    self.menu = None;
+                    self.update_by_mode(pa.gd());
+                    return DialogResult::Continue;
+                }
+                DialogResult::Close => {
+                    self.menu = None;
+                    return DialogResult::Continue;
+                }
+                DialogResult::CloseAll => {
+                    self.menu = None;
+                    return DialogResult::CloseAll;
+                }
+                _ => {
+                    return DialogResult::Continue;
+                }
+            }
+        }
+
+        let cursor_pos = if let Command::MouseButtonUp { x, y, .. } = command {
+            Some((*x, *y))
+        } else {
+            None
+        };
         check_escape_click!(self, command);
 
         match command {
@@ -382,6 +423,11 @@ impl DialogWindow for ItemWindow {
                     // Any item is selected
                     let il = self.item_locations[i as usize];
                     return self.do_action_for_item(pa, il);
+                }
+                ListWidgetResponse::SelectForMenu(i) => {
+                    // Item selected to open menu
+                    let il = self.item_locations[i as usize];
+                    self.menu = Some(ItemMenu::new(&self.mode, il, cursor_pos));
                 }
                 ListWidgetResponse::Scrolled => {
                     self.update_by_mode(pa.gd());
