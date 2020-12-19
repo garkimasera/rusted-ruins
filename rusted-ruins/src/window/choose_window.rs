@@ -106,7 +106,7 @@ impl DialogWindow for ChooseWindow {
             match response {
                 ListWidgetResponse::Select(n) => {
                     if self.callbacks.is_empty() {
-                        return DialogResult::CloseWithValue(Box::new(n));
+                        return DialogResult::CloseWithValue(DialogCloseValue::Index(n));
                     } else {
                         self.callbacks.get_mut(n as usize).unwrap()(pa);
                         return DialogResult::Close;

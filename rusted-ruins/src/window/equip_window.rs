@@ -1,15 +1,12 @@
+use super::commonuse::*;
 use super::widget::*;
-use crate::config::UI_CFG;
-use crate::context::*;
 use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
-use crate::game::{Animation, Command, DoPlayerAction, Game};
 use crate::text;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::*;
 use common::gobj;
 use sdl2::rect::Rect;
-use std::any::Any;
 
 pub struct EquipWindow {
     rect: Rect,
@@ -112,7 +109,7 @@ impl DialogWindow for EquipWindow {
 
     fn callback_child_closed(
         &mut self,
-        _result: Option<Box<dyn Any>>,
+        _result: Option<DialogCloseValue>,
         pa: &mut DoPlayerAction,
     ) -> DialogResult {
         self.update_list(pa);

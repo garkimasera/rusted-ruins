@@ -9,7 +9,6 @@ use crate::game::{AdvanceScriptResult, TalkText};
 use crate::text;
 use common::basic::TILE_SIZE;
 use common::objholder::CharaTemplateIdx;
-use std::any::Any;
 
 pub struct TalkWindow {
     rect: Rect,
@@ -97,9 +96,9 @@ impl DialogWindow for TalkWindow {
         if let Some(ref mut choose_win) = self.choose_win {
             match choose_win.process_command(command, pa) {
                 // When one answer is choosed
-                DialogResult::CloseWithValue(choosed_answer) => {
-                    if let Ok(choosed_answer) = choosed_answer.downcast::<u32>() {
-                        match pa.advance_talk(Some(*choosed_answer)) {
+                DialogResult::CloseWithValue(v) => {
+                    if let DialogCloseValue::Index(choosed_answer) = v {
+                        match pa.advance_talk(Some(choosed_answer)) {
                             AdvanceScriptResult::UpdateTalkText(talk_text) => {
                                 self.update_page(Some(talk_text));
                                 return DialogResult::Continue;
@@ -148,7 +147,7 @@ impl DialogWindow for TalkWindow {
     /// When child window is closed, call advance_script(), and update text.
     fn callback_child_closed(
         &mut self,
-        _result: Option<Box<dyn Any>>,
+        _result: Option<DialogCloseValue>,
         pa: &mut DoPlayerAction,
     ) -> DialogResult {
         match pa.advance_script() {

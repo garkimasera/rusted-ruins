@@ -72,8 +72,9 @@ impl DialogWindow for MsgDialog {
         match self.choose_win.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 // An choice is choosed
-                let n = *v.downcast::<u32>().unwrap();
-                return (self.action_callback)(pa, n);
+                if let DialogCloseValue::Index(n) = v {
+                    return (self.action_callback)(pa, n);
+                }
             }
             _ => (),
         }

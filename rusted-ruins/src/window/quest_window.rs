@@ -1,15 +1,11 @@
+use super::commonuse::*;
 use super::msg_dialog::MsgDialog;
 use super::widget::*;
-use crate::config::UI_CFG;
-use crate::context::*;
 use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
 use crate::game::quest::available_quests;
-use crate::game::{Animation, Command, DoPlayerAction, Game};
 use crate::text::ToText;
-use crate::window::{DialogResult, DialogWindow, Window, WindowDrawMode};
 use common::gamedata::Quest;
-use sdl2::rect::Rect;
 
 pub struct QuestWindow {
     rect: Rect,
@@ -91,7 +87,11 @@ impl DialogWindow for QuestWindow {
                     self.dialog = None;
                 }
                 DialogResult::CloseWithValue(v) => {
-                    let n = *v.downcast::<u32>().unwrap();
+                    let n = if let DialogCloseValue::Index(n) = v {
+                        n
+                    } else {
+                        unreachable!()
+                    };
                     self.dialog = None;
                     if n == 0 {
                         // Undertake quest
@@ -111,7 +111,7 @@ impl DialogWindow for QuestWindow {
                     // Any item is selected
                     self.dialog = Some(MsgDialog::with_yesno(
                         &crate::text::ui_txt("dialog-undertake_quest"),
-                        |_, a| DialogResult::CloseWithValue(Box::new(a)),
+                        |_, n| DialogResult::CloseWithValue(DialogCloseValue::Index(n)),
                     ));
                 }
                 ListWidgetResponse::Scrolled => {}

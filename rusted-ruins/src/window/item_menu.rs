@@ -59,19 +59,22 @@ impl DialogWindow for ItemMenu {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match self.choose_window.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
-                let n = *v.downcast::<u32>().unwrap();
-                let item = self.menu_items[n as usize];
-                let il = self.il;
-                match item {
-                    ItemMenuItem::Infomation => {
-                        pa.request_dialog_open(DialogOpenRequest::ItemInfo { il });
-                        DialogResult::Close
+                if let DialogCloseValue::Index(n) = v {
+                    let item = self.menu_items[n as usize];
+                    let il = self.il;
+                    match item {
+                        ItemMenuItem::Infomation => {
+                            pa.request_dialog_open(DialogOpenRequest::ItemInfo { il });
+                            DialogResult::Close
+                        }
+                        ItemMenuItem::DropAll => {
+                            let n = pa.gd().get_item(il).1;
+                            pa.drop_item(il, n);
+                            DialogResult::Special(SpecialDialogResult::ItemListUpdate)
+                        }
                     }
-                    ItemMenuItem::DropAll => {
-                        let n = pa.gd().get_item(il).1;
-                        pa.drop_item(il, n);
-                        DialogResult::Special(SpecialDialogResult::ItemListUpdate)
-                    }
+                } else {
+                    unreachable!()
                 }
             }
             result => result,

@@ -43,7 +43,6 @@ use geom::*;
 use sdl2::keyboard::TextInputUtil;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
-use std::any::Any;
 
 mod commonuse {
     pub use crate::config::{SCREEN_CFG, UI_CFG};
@@ -54,7 +53,7 @@ mod commonuse {
     pub use crate::window::widget::WidgetTrait;
     pub use crate::window::winpos::WindowPos;
     pub use crate::window::{
-        DialogResult, DialogWindow, SpecialDialogResult, Window, WindowDrawMode,
+        DialogCloseValue, DialogResult, DialogWindow, SpecialDialogResult, Window, WindowDrawMode,
     };
     pub use sdl2::rect::Rect;
     pub use sdl2::render::WindowCanvas;
@@ -65,7 +64,7 @@ use self::commonuse::*;
 pub enum DialogResult {
     Continue,
     Close,
-    CloseWithValue(Box<dyn Any>),
+    CloseWithValue(DialogCloseValue),
     CloseAll,
     CloseAllAndReprocess(Command),
     Command(Option<Command>),
@@ -73,6 +72,12 @@ pub enum DialogResult {
     OpenChildDialog(Box<dyn DialogWindow>),
     Reprocess(Command),
     Special(SpecialDialogResult),
+}
+
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub enum DialogCloseValue {
+    Index(u32),
+    CharaClass(CharaClass),
 }
 
 pub enum SpecialDialogResult {
@@ -93,7 +98,7 @@ pub trait DialogWindow: Window {
     fn mode(&self) -> InputMode;
     fn callback_child_closed(
         &mut self,
-        _result: Option<Box<dyn Any>>,
+        _result: Option<DialogCloseValue>,
         _pa: &mut DoPlayerAction,
     ) -> DialogResult {
         DialogResult::Continue

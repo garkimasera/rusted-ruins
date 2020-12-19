@@ -6,7 +6,6 @@ use super::SpecialDialogResult;
 use crate::config::SCREEN_CFG;
 use crate::game::newgame::NewGameBuilder;
 use crate::text;
-use common::gamedata::*;
 use rules::RULES;
 
 /// Newgame processes with next order
@@ -101,17 +100,18 @@ impl DialogWindow for DummyNewGameDialog {
             }
             NewGameBuildStage::ChooseClass => {
                 match self.choose_class_dialog.process_command(command, pa) {
-                    DialogResult::CloseWithValue(chara_class) => {
-                        let chara_class = chara_class.downcast::<CharaClass>().unwrap();
-                        self.builder.as_mut().unwrap().set_chara_class(*chara_class);
-                        self.stage = NewGameBuildStage::OpeningText;
-                        {
-                            // Skip OP text
-                            let builder = self.builder.take().unwrap();
-                            let gd = builder.build();
-                            return DialogResult::Special(SpecialDialogResult::NewGameStart(
-                                Box::new(gd),
-                            ));
+                    DialogResult::CloseWithValue(v) => {
+                        if let DialogCloseValue::CharaClass(chara_class) = v {
+                            self.builder.as_mut().unwrap().set_chara_class(chara_class);
+                            self.stage = NewGameBuildStage::OpeningText;
+                            {
+                                // Skip OP text
+                                let builder = self.builder.take().unwrap();
+                                let gd = builder.build();
+                                return DialogResult::Special(SpecialDialogResult::NewGameStart(
+                                    Box::new(gd),
+                                ));
+                            }
                         }
                     }
                     _ => (),
@@ -182,7 +182,7 @@ impl DialogWindow for ChooseClassDialog {
                 ListWidgetResponse::Select(i) => {
                     // Any item is selected
                     let chara_class = RULES.newgame.class_choices[i as usize];
-                    return DialogResult::CloseWithValue(Box::new(chara_class));
+                    return DialogResult::CloseWithValue(DialogCloseValue::CharaClass(chara_class));
                 }
                 _ => (),
             }

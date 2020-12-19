@@ -60,15 +60,16 @@ impl DialogWindow for ExitWindow {
         match self.choose_win.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 // An choice is choosed
-                let n = *v.downcast::<u32>().unwrap();
-                match n {
-                    0 => {
-                        pa.game().save_file();
-                        return DialogResult::Close;
+                if let DialogCloseValue::Index(n) = v {
+                    match n {
+                        0 => {
+                            pa.game().save_file();
+                            return DialogResult::Close;
+                        }
+                        1 => return DialogResult::Quit,
+                        2 => return DialogResult::Close,
+                        _ => panic!(),
                     }
-                    1 => return DialogResult::Quit,
-                    2 => return DialogResult::Close,
-                    _ => panic!(),
                 }
             }
             _ => (),
@@ -137,15 +138,16 @@ impl DialogWindow for GameOverWindow {
         match self.choose_win.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 // An choice is choosed
-                let n = *v.downcast::<u32>().unwrap();
-                match n {
-                    0 => {
-                        pa.restart();
-                        return DialogResult::Close;
+                if let DialogCloseValue::Index(n) = v {
+                    match n {
+                        0 => {
+                            pa.restart();
+                            return DialogResult::Close;
+                        }
+                        1 => return DialogResult::Special(ReturnToStartScreen),
+                        2 => return DialogResult::Quit,
+                        _ => panic!(),
                     }
-                    1 => return DialogResult::Special(ReturnToStartScreen),
-                    2 => return DialogResult::Quit,
-                    _ => panic!(),
                 }
             }
             _ => (),
