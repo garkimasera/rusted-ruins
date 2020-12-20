@@ -36,6 +36,7 @@ impl ToTextId for ItemKind {
         match self {
             Potion => "item_kind-potion",
             Food => "item_kind-food",
+            Throwing => "item_kind-throwing",
             MagicDevice => "item_kind-magic_device",
             Weapon(weapon_kind) => weapon_kind.to_textid(),
             Armor(armor_kind) => armor_kind.to_textid(),

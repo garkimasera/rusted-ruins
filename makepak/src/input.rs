@@ -108,6 +108,8 @@ pub struct ItemDepInput {
     pub weapon_kind: Option<gamedata::WeaponKind>,
     pub armor_kind: Option<gamedata::ArmorKind>,
     #[serde(default)]
+    pub throw_effect: Option<EffectInput>,
+    #[serde(default)]
     pub medical_effect: Option<EffectInput>,
     #[serde(default)]
     pub magical_effect: Option<EffectInput>,

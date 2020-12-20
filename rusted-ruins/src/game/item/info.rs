@@ -28,6 +28,7 @@ impl ItemInfoText {
                     // desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }
+            ItemKind::Throwing => {}
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
                 let (dice_n, dice_x) = item.dice();

@@ -45,6 +45,7 @@ pub struct ItemObject {
     pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
+    pub throw_effect: Option<Effect>,
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
     pub use_effect: Option<Effect>,
@@ -123,6 +124,8 @@ pub enum ItemKind {
     Potion,
     /// Eatable and have nutrition.
     Food,
+    /// Throwing weapons.
+    Throwing,
     /// Can release the own magical power.
     MagicDevice,
     /// Equipment to attack enemy.
@@ -148,6 +151,7 @@ pub enum ItemKind {
 pub enum ItemKindRough {
     Potion,
     Food,
+    Throwing,
     MagicDevice,
     Weapon,
     Armor,
@@ -164,6 +168,7 @@ impl ItemKind {
         match self {
             ItemKind::Potion => ItemKindRough::Potion,
             ItemKind::Food => ItemKindRough::Food,
+            ItemKind::Throwing => ItemKindRough::Throwing,
             ItemKind::MagicDevice => ItemKindRough::MagicDevice,
             ItemKind::Weapon(_) => ItemKindRough::Weapon,
             ItemKind::Armor(_) => ItemKindRough::Armor,

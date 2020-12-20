@@ -14,6 +14,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
     let kind = match item.item_kind.as_str() {
         "object" => ItemKind::Object,
         "potion" => ItemKind::Potion,
+        "throwing" => ItemKind::Throwing,
         "food" => ItemKind::Food,
         "magic_device" => ItemKind::MagicDevice,
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
@@ -46,6 +47,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         dice_x: item.dice_x.unwrap_or(0),
         def: item.def.unwrap_or(ElementArray([0, 0, 0, 0, 0, 0])),
         eff: item.eff.unwrap_or(0),
+        throw_effect: convert_effect_input(item.throw_effect)?,
         magical_effect: convert_effect_input(item.magical_effect)?,
         medical_effect: convert_effect_input(item.medical_effect)?,
         use_effect: convert_effect_input(item.use_effect)?,
