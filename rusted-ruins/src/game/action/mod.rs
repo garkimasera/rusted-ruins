@@ -77,6 +77,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
                 range: 1,
                 shape: ShapeKind::OneTile,
                 size: 0,
+                anim_kind: EffectAnimKind::Chara,
                 anim_img: "!damage-blunt".into(),
                 anim_img_shot: String::new(),
                 sound: "punch".into(),
@@ -125,6 +126,16 @@ fn get_skill_kind_from_weapon(item: &Item) -> SkillKind {
         ItemKind::Weapon(kind) => SkillKind::Weapon(kind),
         _ => SkillKind::BareHands,
     }
+}
+
+/// Throw one item
+pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
+    let gd = &mut game.gd;
+    let effect = crate::game::item::throw::item_to_throw_effect(gd, il, cid);
+    let item = gd.remove_item_and_get(il, 1);
+    let chara = gd.chara.get(cid);
+    game_log!("throw-item"; chara=chara, item=item);
+    super::effect::do_effect(game, &effect, Some(cid), target, 1.0, 1.0);
 }
 
 /// Drink one item

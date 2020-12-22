@@ -340,14 +340,14 @@ impl MainWinDrawer {
         match anim {
             &Animation::Img {
                 idx,
-                range,
+                ref tiles,
                 n_frame,
                 ..
             } => {
-                for p in range {
+                for pos in tiles {
                     let img = &gobj::get_obj(idx).img;
                     let i = i_frame / (n_frame / img.n_frame);
-                    let dest = self.centering_at_tile(Rect::from((0, 0, img.w, img.h)), p, 0, 0);
+                    let dest = self.centering_at_tile(Rect::from((0, 0, img.w, img.h)), *pos, 0, 0);
                     context.render_tex_n(idx, dest, i);
                 }
             }

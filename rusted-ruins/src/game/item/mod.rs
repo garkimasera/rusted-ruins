@@ -2,6 +2,7 @@ pub mod filter;
 pub mod gen;
 pub mod info;
 pub mod merged;
+pub mod throw;
 
 use common::gamedata::*;
 use common::gobj;
@@ -21,6 +22,8 @@ pub trait ItemEx {
     fn charge(&self) -> Option<u32>;
     fn charge_mut(&mut self) -> Option<&mut u32>;
     fn title(&self) -> Option<&str>;
+    /// Calculate throw range by item weight and character STR.
+    fn throw_range(&self, str: u16) -> u32;
 }
 
 impl ItemEx for Item {
@@ -105,6 +108,14 @@ impl ItemEx for Item {
             }
         }
         None
+    }
+
+    fn throw_range(&self, str: u16) -> u32 {
+        let w = std::cmp::max(self.w(), 1);
+        std::cmp::min(
+            RULES.combat.throw_range_max,
+            RULES.combat.throw_range_factor * str as u32 / w,
+        )
     }
 }
 

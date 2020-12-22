@@ -1,7 +1,4 @@
 use super::animation::*;
-use common::gamedata::Effect;
-use common::gobj;
-use common::objholder::AnimImgIdx;
 use geom::*;
 use std::collections::VecDeque;
 
@@ -24,22 +21,6 @@ impl AnimQueue {
 
     pub fn push_player_move(&mut self, dir: Direction) {
         self.push(Animation::player_move(dir));
-    }
-
-    pub fn push_effect(&mut self, effect: &Effect, tile: Vec2d, start: Option<Vec2d>) {
-        if !effect.anim_img_shot.is_empty() {
-            if let Some(start) = start {
-                if let Some(idx) = gobj::id_to_idx_checked::<AnimImgIdx>(&effect.anim_img_shot) {
-                    self.push(Animation::shot(idx, start, tile));
-                } else {
-                    warn!("unknown AnimImgObject: {}", effect.anim_img_shot);
-                }
-            }
-        }
-        if !effect.anim_img.is_empty() {
-            let idx: AnimImgIdx = gobj::id_to_idx(&effect.anim_img);
-            self.push(Animation::img_onetile(idx, tile));
-        }
     }
 
     pub fn push_destroy(&mut self, tile: Vec2d) {

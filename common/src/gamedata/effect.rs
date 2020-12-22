@@ -6,19 +6,13 @@ use geom::ShapeKind;
 pub struct Effect {
     pub kind: Vec<EffectKind>,
     pub target_mode: TargetMode,
-    #[serde(default)]
     pub power_adjust: Vec<f32>,
-    #[serde(default)]
     pub range: u32,
-    #[serde(default)]
     pub shape: ShapeKind,
-    #[serde(default)]
     pub size: u32,
-    #[serde(default)]
+    pub anim_kind: EffectAnimKind,
     pub anim_img: String,
-    #[serde(default)]
     pub anim_img_shot: String,
-    #[serde(default)]
     pub sound: String,
 }
 
@@ -31,6 +25,7 @@ impl Default for Effect {
             range: 1,
             shape: ShapeKind::OneTile,
             size: 1,
+            anim_kind: EffectAnimKind::None,
             anim_img: "".into(),
             anim_img_shot: "".into(),
             sound: "".into(),
@@ -85,4 +80,20 @@ pub enum StatusEffect {
     Asleep,
     Poison,
     Scanned,
+}
+
+/// Animation kind for this effect.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EffectAnimKind {
+    None,
+    Tile,
+    Chara,
+    Shot,
+}
+
+impl Default for EffectAnimKind {
+    fn default() -> Self {
+        EffectAnimKind::None
+    }
 }

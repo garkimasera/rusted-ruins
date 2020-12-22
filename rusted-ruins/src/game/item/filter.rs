@@ -4,7 +4,7 @@ use common::gamedata::*;
 use common::gobj;
 
 /// Used for creating filtered list and saving filtering state
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct ItemFilter {
     pub all: bool,
     pub equip_slot_kind: Option<EquipSlotKind>,
@@ -14,6 +14,7 @@ pub struct ItemFilter {
     pub drinkable: bool,
     pub usable: bool,
     pub readable: bool,
+    pub throw_str: Option<u16>,
 }
 
 impl ItemFilter {
@@ -66,6 +67,12 @@ impl ItemFilter {
             return false;
         }
 
+        if let Some(throw_str) = self.throw_str {
+            if item.throw_range(throw_str) == 0 {
+                return false;
+            }
+        }
+
         true
     }
 
@@ -103,6 +110,11 @@ impl ItemFilter {
         self.readable = readable;
         self
     }
+
+    pub fn throwable(mut self, throw_str: Option<u16>) -> ItemFilter {
+        self.throw_str = throw_str;
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -116,6 +128,7 @@ impl Default for ItemFilter {
             drinkable: false,
             usable: false,
             readable: false,
+            throw_str: None,
         }
     }
 }

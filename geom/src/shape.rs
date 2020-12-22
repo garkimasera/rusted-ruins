@@ -1,7 +1,7 @@
 use crate::Vec2d;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug, Serialize, Deserialize)]
-#[serde(rename = "snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum ShapeKind {
     OneTile,
     Line,
@@ -17,7 +17,7 @@ impl Default for ShapeKind {
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug, Serialize, Deserialize)]
-#[serde(rename = "snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum Shape {
     OneTile { pos: Vec2d },
     Line { start: Vec2d, end: Vec2d },

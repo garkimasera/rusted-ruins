@@ -407,7 +407,6 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     main_window::ConvertMouseEventResult::DoAction(callback) => {
                         let mut pa = DoPlayerAction::new(&mut self.game);
                         callback(&mut pa);
-                        self.game.finish_player_turn();
                         return true;
                     }
                     main_window::ConvertMouseEventResult::None => {

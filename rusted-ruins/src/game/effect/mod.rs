@@ -8,9 +8,10 @@ pub use range::*;
 
 use crate::game::extrait::CharaStatusOperation;
 use crate::game::target::Target;
-use crate::game::Game;
 use crate::game::InfoGetter;
+use crate::game::{Animation, Game};
 use common::gamedata::*;
+use common::gobj;
 use geom::*;
 
 pub fn do_effect<T: Into<Target>>(
@@ -22,11 +23,14 @@ pub fn do_effect<T: Into<Target>>(
     hit_power: f32,
 ) {
     let target = target.into();
+    // Target characters
+    let cids = get_cids(game, effect, target);
+    // Target tiles
+    let tiles = get_tiles(game, effect, target);
 
     for effect_kind in &effect.kind {
         match effect_kind {
             EffectKind::Melee { element } => {
-                let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     self::attack::melee_attack(
                         game,
@@ -37,13 +41,11 @@ pub fn do_effect<T: Into<Target>>(
                         *element,
                     );
                 }
-                let tile = game.gd.chara_pos(cids[0]).unwrap();
-                game.anim_queue.push_effect(effect, tile, None);
-                audio::play_sound(&effect.sound);
-                return;
             }
             EffectKind::Ranged { element } => {
-                let cids = get_cids(game, effect, target);
+                if cids.is_empty() {
+                    return;
+                }
                 for cid in &cids {
                     self::attack::ranged_attack(
                         game,
@@ -54,50 +56,74 @@ pub fn do_effect<T: Into<Target>>(
                         *element,
                     );
                 }
-                let start = cause.map(|cause| {
-                    game.gd
-                        .chara_pos(cause)
-                        .expect("chara position search error")
-                });
-                let tile = game
-                    .gd
-                    .chara_pos(cids[0])
-                    .expect("chara position search error");
-                game.anim_queue.push_effect(effect, tile, start);
-                audio::play_sound(&effect.sound);
-                return;
+            }
+            EffectKind::Explosion { element } => {
+                todo!()
             }
             EffectKind::Status { status } => {
                 let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     cause_status(game, *cid, power, *status);
-                    game.anim_queue
-                        .push_effect(effect, game.gd.chara_pos(*cid).unwrap(), None);
                 }
-                audio::play_sound(&effect.sound);
-                return;
             }
             EffectKind::WallDamage => {
-                let pos_list = get_pos(game, effect, target);
-                for pos in &pos_list {
+                for pos in &tiles {
                     crate::game::map::wall_damage::wall_damage(game, *pos, power);
                 }
             }
             EffectKind::Deed => {
                 self::deed::use_deed(game);
-                return;
             }
             EffectKind::SkillLearning { skills } => {
                 let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     self::skill_learn::skill_learn(game, *cid, skills);
                 }
-                return;
             }
             other => {
                 error!("unimplemented effect: {:?}", other);
             }
         }
+    }
+    // Animation
+    match effect.anim_kind {
+        EffectAnimKind::None => (),
+        EffectAnimKind::Chara => {
+            let tiles = cids
+                .iter()
+                .map(|cid| game.gd.chara_pos(*cid).unwrap())
+                .collect();
+            if !effect.anim_img.is_empty() {
+                let idx = gobj::id_to_idx(&effect.anim_img);
+                let anim = Animation::img_tiles(idx, tiles);
+                game.anim_queue.push(anim);
+            }
+        }
+        EffectAnimKind::Tile => {
+            if !effect.anim_img.is_empty() {
+                let idx = gobj::id_to_idx(&effect.anim_img);
+                let anim = Animation::img_tiles(idx, tiles.clone());
+                game.anim_queue.push(anim);
+            }
+        }
+        EffectAnimKind::Shot => {
+            if !effect.anim_img_shot.is_empty() {
+                let start = game
+                    .gd
+                    .chara_pos(cause.unwrap())
+                    .expect("chara position search error");
+                let tile = game
+                    .gd
+                    .chara_pos(cids[0])
+                    .expect("chara position search error");
+                let idx = gobj::id_to_idx(&effect.anim_img_shot);
+                game.anim_queue.push(Animation::shot(idx, start, tile));
+            }
+        }
+    }
+    // Sound
+    if !effect.sound.is_empty() {
+        audio::play_sound(&effect.sound);
     }
 }
 
@@ -118,7 +144,7 @@ fn get_cids(game: &Game, _effect: &Effect, target: Target) -> Vec<CharaId> {
 }
 
 // Get tile positions of the effect
-fn get_pos(game: &Game, _effect: &Effect, target: Target) -> Vec<Vec2d> {
+fn get_tiles(game: &Game, _effect: &Effect, target: Target) -> Vec<Vec2d> {
     let center = match target {
         Target::None => {
             return vec![];

@@ -58,6 +58,7 @@ pub fn convert_effect_input(e: Option<EffectInput>) -> Result<Option<Effect>> {
         range: e.range,
         shape: e.shape,
         size: e.size,
+        anim_kind: e.anim_kind,
         anim_img: e.anim_img,
         anim_img_shot: e.anim_img_shot,
         sound: e.sound,

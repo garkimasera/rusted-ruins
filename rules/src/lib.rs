@@ -9,6 +9,7 @@ pub mod active_skill;
 pub mod chara;
 pub mod charagen;
 pub mod class;
+pub mod combat;
 pub mod creation;
 pub mod dungeon_gen;
 pub mod effect;
@@ -39,8 +40,9 @@ pub struct Rules {
     pub active_skills: active_skill::ActiveSkills,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
-    pub creation: creation::Creation,
     pub class: class::Classes,
+    pub combat: combat::Combat,
+    pub creation: creation::Creation,
     pub dungeon_gen: dungeon_gen::DungeonGen,
     pub exp: exp::Exp,
     pub effect: effect::Effect,
@@ -116,6 +118,7 @@ impl Rules {
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
             class: read_from_json(&rules_dir.join("class.json")),
             creation,
+            combat: read_from_json(&rules_dir.join("combat.json")),
             dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
             effect: read_from_json(&rules_dir.join("effect.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),

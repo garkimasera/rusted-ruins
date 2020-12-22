@@ -70,6 +70,25 @@ impl<'a> DoPlayerAction<'a> {
         true
     }
 
+    /// Throw one item
+    pub fn throw_item(&mut self, il: ItemLocation) {
+        let effect = crate::game::item::throw::item_to_throw_effect(self.gd(), il, CharaId::Player);
+        let target = if let Ok(Some(target)) = auto_target_for_player(self.0, &effect) {
+            target
+        } else {
+            self.0.ui_request.push_back(UiRequest::StartTargeting {
+                effect: effect.clone(),
+                callback: Box::new(move |pa, target| {
+                    super::action::throw_item(pa.0, il, CharaId::Player, target);
+                    pa.0.finish_player_turn();
+                }),
+            });
+            return;
+        };
+        super::action::throw_item(self.0, il, CharaId::Player, target);
+        self.0.finish_player_turn();
+    }
+
     /// Drink one item
     pub fn drink_item(&mut self, il: ItemLocation) {
         super::action::drink_item(self.0, il, CharaId::Player);
@@ -123,6 +142,7 @@ impl<'a> DoPlayerAction<'a> {
                 effect: effect.clone(),
                 callback: Box::new(move |pa, target| {
                     super::action::release_item(pa.0, il, CharaId::Player, target);
+                    pa.0.finish_player_turn();
                 }),
             });
             return;

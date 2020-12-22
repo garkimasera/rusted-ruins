@@ -18,6 +18,7 @@ pub enum ItemWindowMode {
     List,
     PickUp,
     Drop,
+    Throw,
     Drink,
     Eat,
     Use,
@@ -38,7 +39,7 @@ impl ItemWindowMode {
     pub fn is_main_mode(&self) -> bool {
         use ItemWindowMode::*;
         match self {
-            List | Drop | Drink | Eat | Use | Release | Read => true,
+            List | Drop | Throw | Drink | Eat | Use | Release | Read => true,
             _ => false,
         }
     }
@@ -55,7 +56,7 @@ pub struct ItemWindow {
     menu: Option<super::item_menu::ItemMenu>,
 }
 
-const ITEM_WINDOW_GROUP_SIZE: u32 = 7;
+const ITEM_WINDOW_GROUP_SIZE: u32 = 8;
 
 pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
     let mem_info = vec![
@@ -68,6 +69,11 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
             idx: gobj::id_to_idx("!tab-icon-item-drop"),
             text_id: "tab_text-item_drop",
             creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drop, game)),
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-item-throw"),
+            text_id: "tab_text-item_throw",
+            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Throw, game)),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-drink"),
@@ -187,6 +193,12 @@ impl ItemWindow {
             }
             ItemWindowMode::Drop => {
                 let filtered_list = gd.get_filtered_item_list(ill_player, ItemFilter::all());
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Throw => {
+                let player_str = gd.chara.get(CharaId::Player).attr.str;
+                let filter = ItemFilter::new().throwable(Some(player_str));
+                let filtered_list = gd.get_filtered_item_list(ill_player, filter);
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Drink => {
@@ -326,6 +338,10 @@ impl ItemWindow {
                 pa.drop_item(il, 1);
                 self.update_by_mode(pa.gd());
                 DialogResult::Continue
+            }
+            ItemWindowMode::Throw => {
+                pa.throw_item(il);
+                DialogResult::CloseAll
             }
             ItemWindowMode::Drink => {
                 pa.drink_item(il);

@@ -213,6 +213,12 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
         "arrow".to_owned()
     };
 
+    let anim_kind = if weapon_kind.is_melee() {
+        EffectAnimKind::Chara
+    } else {
+        EffectAnimKind::Shot
+    };
+
     Effect {
         kind: effect_kind,
         target_mode: TargetMode::Enemy,
@@ -220,6 +226,7 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
         range: 1,
         shape: ShapeKind::OneTile,
         size: 0,
+        anim_kind,
         anim_img,
         anim_img_shot,
         sound,

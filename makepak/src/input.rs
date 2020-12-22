@@ -1,5 +1,6 @@
 use common::gamedata::{
-    self, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect, TargetMode,
+    self, EffectAnimKind, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect,
+    TargetMode,
 };
 use common::sitegen;
 use geom::{ShapeKind, Vec2d};
@@ -178,6 +179,8 @@ pub struct EffectInput {
     pub shape: ShapeKind,
     #[serde(default)]
     pub size: u32,
+    #[serde(default)]
+    pub anim_kind: EffectAnimKind,
     #[serde(default)]
     pub anim_img: String,
     #[serde(default)]

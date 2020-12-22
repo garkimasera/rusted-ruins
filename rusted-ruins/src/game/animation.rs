@@ -11,7 +11,7 @@ pub enum Animation {
     Img {
         n_frame: u32,
         idx: AnimImgIdx,
-        range: RectIter,
+        tiles: Vec<Vec2d>,
     },
     Shot {
         n_frame: u32,
@@ -47,7 +47,7 @@ impl Animation {
         Animation::PlayerMove { n_frame: 6, dir }
     }
 
-    pub fn img_onetile(idx: AnimImgIdx, p: Vec2d) -> Animation {
+    pub fn img_tiles(idx: AnimImgIdx, tiles: Vec<Vec2d>) -> Animation {
         let img = &gobj::get_obj(idx).img;
         let n_frame = if img.duration != 0 {
             img.duration
@@ -57,8 +57,12 @@ impl Animation {
         Animation::Img {
             n_frame,
             idx,
-            range: RectIter::one(p),
+            tiles,
         }
+    }
+
+    pub fn img_onetile(idx: AnimImgIdx, pos: Vec2d) -> Animation {
+        Self::img_tiles(idx, vec![pos])
     }
 
     pub fn shot(idx: AnimImgIdx, start: Vec2d, target: Vec2d) -> Animation {
