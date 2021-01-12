@@ -8,6 +8,7 @@ tab_text-creation_pharmacy = Pharmacy
 tab_text-creation_smith = Smith
 tab_text-item_list = List
 tab_text-item_drop = Drop
+tab_text-item_throw = Throw
 tab_text-item_drink = Drink
 tab_text-item_eat = Eat
 tab_text-item_use = Use

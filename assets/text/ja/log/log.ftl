@@ -23,8 +23,10 @@ target-chara = {$chara}は{$target}をターゲットにした。
 attack-evade = {$chara}は攻撃を避けた。
 damaged-chara = {$chara}はダメージを受けた({$damage})。
 arrow-hit = 矢は{$chara}に命中した。
+throw-item = {$chara}は{$item}を投げた。
 killed-by-melee-attack = {$chara}は倒された。
 killed-by-ranged-attack = {$chara}は倒された。
+killed-by-explosion = {$chara}は爆死した。
 killed-by-poison-damage = {$chara}は毒により死んだ。
 killed-by-starve-damage = {$chara}は餓死した。
 

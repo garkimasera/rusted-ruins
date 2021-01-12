@@ -43,9 +43,6 @@ pub fn do_effect<T: Into<Target>>(
                 }
             }
             EffectKind::Ranged { element } => {
-                if cids.is_empty() {
-                    return;
-                }
                 for cid in &cids {
                     self::attack::ranged_attack(
                         game,
@@ -58,7 +55,16 @@ pub fn do_effect<T: Into<Target>>(
                 }
             }
             EffectKind::Explosion { element } => {
-                todo!()
+                for cid in &cids {
+                    self::attack::explosion_attack(
+                        game,
+                        cause.unwrap(),
+                        *cid,
+                        power,
+                        hit_power,
+                        *element,
+                    );
+                }
             }
             EffectKind::Status { status } => {
                 let cids = get_cids(game, effect, target);

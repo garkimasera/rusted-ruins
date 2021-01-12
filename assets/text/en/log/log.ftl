@@ -37,8 +37,10 @@ target-chara = {$chara} targeted {$target}.
 attack-evade = {$chara} evaded.
 damaged-chara = {$chara} was damaged ({$damage}).
 arrow-hit = The arrow hit {$chara}.
+throw-item = {$chara} threw one {$item}.
 killed-by-melee-attack = {$chara} was killed.
 killed-by-ranged-attack = {$chara} was killed.
+killed-by-explosion = {$chara} was killed.
 killed-by-poison-damage = {$chara} was killed by poison.
 killed-by-starve-damage = {$chara} starved to death.
 

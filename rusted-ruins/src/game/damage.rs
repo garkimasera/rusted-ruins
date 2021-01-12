@@ -8,6 +8,7 @@ use geom::Vec2d;
 pub enum CharaDamageKind {
     MeleeAttack,
     RangedAttack,
+    Explosion,
     Poison,
     Starve,
 }
@@ -90,6 +91,9 @@ pub fn do_damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: CharaD
             }
             CharaDamageKind::RangedAttack => {
                 game_log!("killed-by-ranged-attack"; chara=chara);
+            }
+            CharaDamageKind::Explosion => {
+                game_log!("killed-by-explosion"; chara=chara);
             }
             CharaDamageKind::Poison => {
                 game_log!("killed-by-poison-damage"; chara=chara);
