@@ -34,6 +34,13 @@ impl Vec2d {
         (self.0 - another.0).abs() + (self.1 - another.1).abs()
     }
 
+    /// Calculate square of distance between two points
+    pub fn distance2(self, another: Vec2d) -> f32 {
+        let x = (self.0 - another.0) as f32;
+        let y = (self.1 - another.1) as f32;
+        x * x + y * y
+    }
+
     /// Gien tile is adjacent or not
     pub fn is_adjacent(self, another: Vec2d) -> bool {
         if self == another {

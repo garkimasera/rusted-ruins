@@ -32,4 +32,22 @@ impl Shape {
             Shape::Circle { center, radius } => (center.mdistance(p) as u32) < radius,
         }
     }
+
+    pub fn iter(&self) -> Vec<Vec2d> {
+        match *self {
+            Shape::OneTile { pos } => vec![pos],
+            Shape::Line { .. } => unimplemented!(),
+            Shape::Circle { center, radius } => {
+                let radius = radius as i32;
+                let r = radius as f32;
+                let r2 = r * r;
+                super::RectIter::new(
+                    center - Vec2d::new(radius, radius),
+                    center + Vec2d::new(radius, radius),
+                )
+                .filter(|pos| pos.distance2(center) < r2)
+                .collect()
+            }
+        }
+    }
 }

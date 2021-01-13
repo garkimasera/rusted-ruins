@@ -23,10 +23,10 @@ pub fn do_effect<T: Into<Target>>(
     hit_power: f32,
 ) {
     let target = target.into();
-    // Target characters
-    let cids = get_cids(game, effect, target);
     // Target tiles
-    let tiles = get_tiles(game, effect, target);
+    let tiles = get_tiles(game, effect, target, cause);
+    // Target characters
+    let cids = get_cids(game, effect, &tiles);
 
     for effect_kind in &effect.kind {
         match effect_kind {
@@ -67,7 +67,6 @@ pub fn do_effect<T: Into<Target>>(
                 }
             }
             EffectKind::Status { status } => {
-                let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     cause_status(game, *cid, power, *status);
                 }
@@ -81,7 +80,6 @@ pub fn do_effect<T: Into<Target>>(
                 self::deed::use_deed(game);
             }
             EffectKind::SkillLearning { skills } => {
-                let cids = get_cids(game, effect, target);
                 for cid in &cids {
                     self::skill_learn::skill_learn(game, *cid, skills);
                 }
@@ -134,24 +132,22 @@ pub fn do_effect<T: Into<Target>>(
 }
 
 // Get characters list in range of the effect.
-fn get_cids(game: &Game, _effect: &Effect, target: Target) -> Vec<CharaId> {
-    // TODO: multiple cids will be needed for widely ranged effect.
-    match target {
-        Target::None => vec![],
-        Target::Tile(pos) => {
-            if let Some(cid) = game.gd.get_current_map().get_chara(pos) {
-                vec![cid]
-            } else {
-                vec![]
-            }
+fn get_cids(game: &Game, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
+    let map = game.gd.get_current_map();
+    let mut cids = vec![];
+
+    for pos in tiles {
+        if let Some(chara) = map.tile[*pos].chara {
+            cids.push(chara)
         }
-        Target::Chara(cid) => vec![cid],
     }
+    cids
 }
 
 // Get tile positions of the effect
-fn get_tiles(game: &Game, _effect: &Effect, target: Target) -> Vec<Vec2d> {
-    let center = match target {
+fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId>) -> Vec<Vec2d> {
+    let cause = cause.map(|cause| game.gd.chara_pos(cause)).flatten();
+    let target = match target {
         Target::None => {
             return vec![];
         }
@@ -164,7 +160,27 @@ fn get_tiles(game: &Game, _effect: &Effect, target: Target) -> Vec<Vec2d> {
             }
         }
     };
-    vec![center]
+    let map = game.gd.get_current_map();
+    if let Some(shape) = to_shape(effect, target, cause) {
+        shape
+            .iter()
+            .into_iter()
+            .filter(|pos| map.is_inside(*pos))
+            .collect()
+    } else {
+        vec![]
+    }
+}
+
+fn to_shape(effect: &Effect, target: Vec2d, _cause: Option<Vec2d>) -> Option<Shape> {
+    match effect.shape {
+        ShapeKind::OneTile => Some(Shape::OneTile { pos: target }),
+        ShapeKind::Line => unimplemented!(),
+        ShapeKind::Circle => Some(Shape::Circle {
+            center: target,
+            radius: effect.size,
+        }),
+    }
 }
 
 // Cause status effect to given chara.
