@@ -453,10 +453,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                 self.push_dialog_window(Box::new(help_window::HelpWindow::new()));
             }
             Command::OpenItemMenu => {
-                let dialog = Box::new(item_window::create_item_window_group(
-                    pa.game(),
-                    ItemWindowMode::List,
-                ));
+                let dialog = Box::new(item_window::create_item_window_group(pa.game(), None));
                 self.push_dialog_window(dialog);
             }
             Command::OpenDebugCommandWin => {
@@ -490,28 +487,28 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::DropItem => {
                 let dialog = Box::new(item_window::create_item_window_group(
                     pa.game(),
-                    ItemWindowMode::Drop,
+                    Some(ItemWindowMode::Drop),
                 ));
                 self.push_dialog_window(dialog);
             }
             Command::DrinkItem => {
                 let dialog = Box::new(item_window::create_item_window_group(
                     pa.game(),
-                    ItemWindowMode::Drink,
+                    Some(ItemWindowMode::Drink),
                 ));
                 self.push_dialog_window(dialog);
             }
             Command::EatItem => {
                 let dialog = Box::new(item_window::create_item_window_group(
                     pa.game(),
-                    ItemWindowMode::Eat,
+                    Some(ItemWindowMode::Eat),
                 ));
                 self.push_dialog_window(dialog);
             }
             Command::ReleaseItem => {
                 let dialog = Box::new(item_window::create_item_window_group(
                     pa.game(),
-                    ItemWindowMode::Release,
+                    Some(ItemWindowMode::Release),
                 ));
                 self.push_dialog_window(dialog);
             }

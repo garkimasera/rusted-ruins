@@ -46,19 +46,22 @@ pub fn create_creation_window_group(
         },
     ];
     let rect: Rect = UI_CFG.creation_window.rect.into();
-    let i = if let Some(creation_kind) = creation_kind {
-        match creation_kind {
-            CreationKind::Art => 0,
-            CreationKind::Construction => 1,
-            CreationKind::Cooking => 2,
-            CreationKind::Craft => 3,
-            CreationKind::Pharmacy => 4,
-            CreationKind::Smith => 5,
-        }
-    } else {
-        0
-    };
-    GroupWindow::new(mem_info.len() as u32, i, game, mem_info, (rect.x, rect.y))
+    let i = creation_kind.map(|creation_kind| match creation_kind {
+        CreationKind::Art => 0,
+        CreationKind::Construction => 1,
+        CreationKind::Cooking => 2,
+        CreationKind::Craft => 3,
+        CreationKind::Pharmacy => 4,
+        CreationKind::Smith => 5,
+    });
+    GroupWindow::new(
+        "creation",
+        mem_info.len() as u32,
+        i,
+        game,
+        mem_info,
+        (rect.x, rect.y),
+    )
 }
 
 pub struct CreationWindow {

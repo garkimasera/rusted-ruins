@@ -5,6 +5,12 @@ use crate::context::textrenderer::FontKind;
 use crate::game::command::MouseButton;
 use common::basic::*;
 use common::objholder::*;
+use std::collections::HashMap;
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref RECENT_PAGE: Mutex<HashMap<&'static str, u32>> = Mutex::new(HashMap::new());
+}
 
 #[derive(Clone, Copy)]
 pub struct MemberInfo {
@@ -16,6 +22,7 @@ pub struct MemberInfo {
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.
 pub struct GroupWindow {
+    group_name: &'static str,
     size: u32,
     current_window: u32,
     members: Vec<Option<Box<dyn DialogWindow>>>,
@@ -25,17 +32,30 @@ pub struct GroupWindow {
 
 impl GroupWindow {
     pub fn new(
+        group_name: &'static str,
         size: u32,
-        init_win: u32,
+        init_win: Option<u32>,
         game: &Game,
         mem_info: Vec<MemberInfo>,
         window_top_left: (i32, i32),
     ) -> GroupWindow {
-        assert!(init_win < size);
         let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).map(|_| None).collect();
+        let init_win = if let Some(init_win) = init_win {
+            init_win
+        } else {
+            RECENT_PAGE
+                .lock()
+                .unwrap()
+                .get(group_name)
+                .copied()
+                .unwrap_or(0)
+        };
+        assert!(init_win < size);
+
         let tab_navigator = TabsNavigator::new(window_top_left, mem_info.clone(), init_win);
 
         let mut group_window = GroupWindow {
+            group_name,
             size,
             current_window: init_win,
             members,
@@ -66,6 +86,10 @@ impl GroupWindow {
             item_window.update(&game.gd);
         }
         self.tab_navigator.set_current_tab(i_win);
+        RECENT_PAGE
+            .lock()
+            .unwrap()
+            .insert(self.group_name, self.current_window);
     }
 
     pub fn rotate_right(&mut self, game: &Game) {

@@ -58,7 +58,7 @@ pub struct ItemWindow {
 
 const ITEM_WINDOW_GROUP_SIZE: u32 = 8;
 
-pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindow {
+pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> GroupWindow {
     let mem_info = vec![
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-item-list"),
@@ -102,7 +102,7 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
         },
     ];
     let rect: Rect = UI_CFG.item_window.rect.into();
-    let i = match mode {
+    let i = mode.map(|mode| match mode {
         ItemWindowMode::List => 0,
         ItemWindowMode::Drop => 1,
         ItemWindowMode::Drink => 2,
@@ -110,9 +110,16 @@ pub fn create_item_window_group(game: &Game, mode: ItemWindowMode) -> GroupWindo
         ItemWindowMode::Release => 4,
         ItemWindowMode::Read => 5,
         _ => unreachable!(),
-    };
+    });
 
-    GroupWindow::new(ITEM_WINDOW_GROUP_SIZE, i, game, mem_info, (rect.x, rect.y))
+    GroupWindow::new(
+        "item",
+        ITEM_WINDOW_GROUP_SIZE,
+        i,
+        game,
+        mem_info,
+        (rect.x, rect.y),
+    )
 }
 
 impl ItemWindow {

@@ -43,8 +43,9 @@ pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();
     GroupWindow::new(
+        "status",
         STATUS_WINDOW_GROUP_SIZE,
-        0,
+        None,
         game,
         mem_info,
         (rect.x, rect.y),
