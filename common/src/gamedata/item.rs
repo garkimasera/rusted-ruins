@@ -39,12 +39,12 @@ pub struct ItemObject {
     /// If it is higher, and the item will be generated on deeper floors.
     /// This parameter will be used for shops also.
     pub gen_level: u32,
-    pub dice_n: u16,
-    pub dice_x: u16,
-    /// Defence
-    pub def: ElementArray<u16>,
     /// Effectiveness of this item
     pub eff: u16,
+    /// Variation of the effectiveness
+    pub eff_var: u16,
+    /// Defence
+    pub def: ElementArray<u16>,
     pub throw_effect: Option<Effect>,
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
@@ -64,12 +64,6 @@ pub struct ItemObject {
     pub material: MaterialName,
     /// Available titles for readable items.
     pub titles: Vec<String>,
-}
-
-impl rng::Dice for ItemObject {
-    fn dice_param(&self) -> (i32, i32) {
-        (self.dice_n.into(), self.dice_x.into())
-    }
 }
 
 impl Ord for Item {

@@ -104,8 +104,9 @@ pub struct ItemDepInput {
     pub shop_weight: Option<f32>,
     pub gen_level: u32,
     pub eff: Option<u16>,
-    pub dice_n: Option<u16>,
-    pub dice_x: Option<u16>,
+    pub eff_var: Option<u16>,
+    /// For armor items
+    pub def: Option<ElementArray<u16>>,
     pub weapon_kind: Option<gamedata::WeaponKind>,
     pub armor_kind: Option<gamedata::ArmorKind>,
     #[serde(default)]
@@ -118,8 +119,6 @@ pub struct ItemDepInput {
     pub use_effect: Option<EffectInput>,
     #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
-    /// For armor items
-    pub def: Option<ElementArray<u16>>,
     pub nutrition: Option<u16>,
     #[serde(default)]
     pub charge: [u8; 2],

@@ -13,7 +13,12 @@ use rules::RULES;
 /// Additional Item methods
 pub trait ItemEx {
     fn material(&self) -> Option<(MaterialName, &Material)>;
-    fn dice(&self) -> (u16, u16);
+    /// Calculate factor for the item effectiveness
+    fn eff_factor(&self) -> f32;
+    /// Calculate effectiveness for this item
+    fn calc_eff(&self) -> i32;
+    /// Calculate effectiveness for this item without variation
+    fn calc_eff_without_var(&self) -> i32;
     /// Calculate item price
     fn price(&self) -> i64;
     /// Calculate item selling price
@@ -39,14 +44,26 @@ impl ItemEx for Item {
         None
     }
 
-    fn dice(&self) -> (u16, u16) {
-        let item_obj = gobj::get_obj(self.idx);
+    fn eff_factor(&self) -> f32 {
+        let mut factor = 1.0;
         if let Some((_, material)) = self.material() {
-            let x = item_obj.dice_x as f32 * material.dice;
-            (item_obj.dice_n, x as u16)
-        } else {
-            (item_obj.dice_n, item_obj.dice_x)
+            factor *= material.eff;
         }
+        factor
+    }
+
+    fn calc_eff(&self) -> i32 {
+        let item_obj = gobj::get_obj(self.idx);
+        let base_eff = self.calc_eff_without_var();
+        let eff_var = (item_obj.eff_var as f32 * self.eff_factor()) as i32;
+        let eff_min = std::cmp::max(base_eff - item_obj.eff_var as i32, 0);
+        let eff_max = base_eff + eff_var;
+        rng::gen_range(eff_min, eff_max)
+    }
+
+    fn calc_eff_without_var(&self) -> i32 {
+        let item_obj = gobj::get_obj(self.idx);
+        (item_obj.eff as f32 * self.eff_factor()) as i32
     }
 
     fn price(&self) -> i64 {

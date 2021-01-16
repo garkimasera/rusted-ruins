@@ -81,26 +81,6 @@ pub fn roll_dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
     sum
 }
 
-pub trait Dice {
-    fn dice_param(&self) -> (i32, i32);
-
-    fn roll_dice(&self) -> i32 {
-        let (n, x) = self.dice_param();
-        roll_dice(n, x)
-    }
-
-    fn max(&self) -> i32 {
-        let (n, x) = self.dice_param();
-        n * x
-    }
-}
-
-impl Dice for (u16, u16) {
-    fn dice_param(&self) -> (i32, i32) {
-        (self.0.into(), self.1.into())
-    }
-}
-
 /// Return bool from given probability
 pub fn gen_bool(p: f32) -> bool {
     let mut rng = GameRng;

@@ -12,7 +12,6 @@ use crate::game::effect::{do_effect, weapon_to_effect};
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
-use rng::Dice;
 use rules::RULES;
 
 pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
@@ -61,11 +60,11 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, dice) =
+    let (effect, skill_kind, eff) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            let dice = weapon.dice().roll_dice();
-            (weapon_to_effect(weapon), skill_kind, dice)
+            let eff = weapon.calc_eff();
+            (weapon_to_effect(weapon), skill_kind, eff)
         } else {
             // Attack by bare hands
             let effect = Effect {
@@ -90,7 +89,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
         Element::Physical,
         skill_kind,
     );
-    let power = power * dice as f32;
+    let power = power * eff as f32;
 
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 }
@@ -100,11 +99,11 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, dice) =
+    let (effect, skill_kind, eff) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(&weapon);
-            let dice = weapon.dice().roll_dice();
-            (weapon_to_effect(weapon), skill_kind, dice)
+            let eff = weapon.calc_eff();
+            (weapon_to_effect(weapon), skill_kind, eff)
         } else {
             return false;
         };
@@ -114,7 +113,7 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
         Element::Physical,
         skill_kind,
     );
-    let power = power * dice as f32;
+    let power = power * eff as f32;
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
     true
@@ -171,13 +170,12 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
-    let item_dice = item_obj.roll_dice() as f32;
+    let item_eff = item.calc_eff() as f32;
 
     match item.charge() {
         Some(n) if n >= 1 => {
             let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice) as f32;
-            let power =
-                (skill_level / 10.0 + 1.0) * item_dice * RULES.magic.magic_device_base_power;
+            let power = (skill_level / 10.0 + 1.0) * item_eff * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
                 super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);
             } else {
