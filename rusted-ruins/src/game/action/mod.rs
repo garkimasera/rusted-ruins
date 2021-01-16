@@ -92,10 +92,15 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     let power = power * eff as f32;
 
     do_effect(game, &effect, Some(cid), target, power, hit_power);
+
+    // Exp processing
+    let target_level = game.gd.chara.get(target).level;
+    let attacker = game.gd.chara.get_mut(cid);
+    attacker.add_attack_exp(skill_kind, target_level);
 }
 
-/// Shot target
-pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
+/// Shoot target
+pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
@@ -115,6 +120,11 @@ pub fn shot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     );
     let power = power * eff as f32;
     do_effect(game, &effect, Some(cid), target, power, hit_power);
+
+    // Exp processing
+    let target_level = game.gd.chara.get(target).level;
+    let attacker = game.gd.chara.get_mut(cid);
+    attacker.add_attack_exp(skill_kind, target_level);
 
     true
 }
@@ -139,6 +149,14 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
         * (chara.skills.get(SkillKind::Throwing) as f32 + RULES.combat.skill_base);
     game_log!("throw-item"; chara=chara, item=item);
     super::effect::do_effect(game, &effect, Some(cid), target, power, 1.0);
+
+    // Exp processing
+    let target_level = match target {
+        Target::Chara(cid) => game.gd.chara.get(cid).level,
+        _ => 1,
+    };
+    let attacker = game.gd.chara.get_mut(cid);
+    attacker.add_attack_exp(SkillKind::Throwing, target_level);
 }
 
 /// Drink one item

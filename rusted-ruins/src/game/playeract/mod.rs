@@ -34,7 +34,7 @@ impl<'a> DoPlayerAction<'a> {
     pub fn shoot(&mut self, target: Vec2d) {
         let map = self.gd().get_current_map();
         if let Some(target_id) = map.get_chara(target) {
-            if super::action::shot_target(&mut self.0, CharaId::Player, target_id) {
+            if super::action::shoot_target(&mut self.0, CharaId::Player, target_id) {
                 self.0.finish_player_turn();
             }
         }
