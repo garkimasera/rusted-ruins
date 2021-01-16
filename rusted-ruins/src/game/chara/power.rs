@@ -1,4 +1,5 @@
 use crate::game::extrait::*;
+use crate::rules::RULES;
 use common::gamedata::*;
 
 pub enum CharaPowerKind {
@@ -20,8 +21,10 @@ pub fn calc_power(
     };
     let (attr, hit_attr) = (attr as f32, hit_attr as f32);
 
-    let power = attr * attr * (skill_lv + 8.0).powf(1.5);
-    let hit_power = hit_attr * (skill_lv + 8.0);
+    let skill_base = RULES.combat.skill_base;
+
+    let power = attr * attr * (skill_lv + skill_base).powf(1.5);
+    let hit_power = hit_attr * (skill_lv + skill_base);
 
     (power, hit_power)
 }

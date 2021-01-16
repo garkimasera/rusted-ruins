@@ -58,7 +58,11 @@ impl ItemEx for Item {
         let eff_var = (item_obj.eff_var as f32 * self.eff_factor()) as i32;
         let eff_min = std::cmp::max(base_eff - item_obj.eff_var as i32, 0);
         let eff_max = base_eff + eff_var;
-        rng::gen_range(eff_min, eff_max)
+        if eff_max > 0 {
+            rng::gen_range(eff_min, eff_max)
+        } else {
+            0
+        }
     }
 
     fn calc_eff_without_var(&self) -> i32 {

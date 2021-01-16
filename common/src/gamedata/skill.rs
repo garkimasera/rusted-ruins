@@ -13,6 +13,7 @@ pub enum SkillKind {
     Endurance,
     Evasion,
     Healing,
+    Throwing,
     MagicDevice,
     Mining,
     Weapon(WeaponKind),

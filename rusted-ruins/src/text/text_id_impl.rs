@@ -60,6 +60,7 @@ impl ToTextId for SkillKind {
             Defence => "skill_kind-defence",
             Evasion => "skill_kind-evasion",
             Carrying => "skill_kind-carrying",
+            Throwing => "skill_kind-throwing",
             MagicDevice => "skill_kind-magic_device",
             Mining => "skill_kind-mining",
             Weapon(weapon_kind) => weapon_kind.to_textid(),
