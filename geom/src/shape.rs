@@ -38,8 +38,11 @@ impl Shape {
             Shape::OneTile { pos } => vec![pos],
             Shape::Line { .. } => unimplemented!(),
             Shape::Circle { center, radius } => {
+                if radius == 0 {
+                    return vec![center];
+                }
                 let radius = radius as i32;
-                let r = radius as f32;
+                let r = radius as f32 + 0.5;
                 let r2 = r * r;
                 super::RectIter::new(
                     center - Vec2d::new(radius, radius),
