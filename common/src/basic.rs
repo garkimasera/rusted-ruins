@@ -57,3 +57,26 @@ pub const N_TILE_IMG_LAYER: usize = 4;
 
 /// Length of ArrayString id types
 pub const ARRAY_STR_ID_LEN: usize = 15;
+
+/// Bonus / penalty representation used in this game
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[repr(i8)]
+#[serde(rename_all = "snake_case")]
+pub enum BonusLevel {
+    Awful = -4,
+    VeryBad = -3,
+    Bad = -2,
+    SlightlyBad = -1,
+    None = 0,
+    SlightlyGood = 1,
+    Good = 2,
+    VeryGood = 3,
+    Excellent = 4,
+    Superb = 5,
+}
+
+impl Default for BonusLevel {
+    fn default() -> Self {
+        BonusLevel::None
+    }
+}

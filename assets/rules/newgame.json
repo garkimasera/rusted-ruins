@@ -10,6 +10,6 @@
         "warrior": "warrior-m"
     },
     "common_initial_skills": [
-        "defence", "evasion", "bare_hands", { "weapon": "sword" }
+        "defence", "evasion", "bare_hands", "throwing", { "weapon": "sword" }
     ]
 }

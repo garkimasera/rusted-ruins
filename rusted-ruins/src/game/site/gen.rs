@@ -9,8 +9,12 @@ use geom::*;
 pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
     for uc in &sg.unique_citizens {
         let faction_id = sg.default_faction_id;
-        let mut chara =
-            game::chara::gen::create_chara(gobj::id_to_idx(&uc.chara_template_id), 1, faction_id);
+        let mut chara = game::chara::gen::create_chara(
+            gobj::id_to_idx(&uc.chara_template_id),
+            1,
+            faction_id,
+            None,
+        );
         chara.ai.initial_pos = uc.pos;
         let mid = MapId::SiteMap {
             sid,

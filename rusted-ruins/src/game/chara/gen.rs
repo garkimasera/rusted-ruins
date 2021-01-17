@@ -1,5 +1,5 @@
 use crate::game::extrait::*;
-use common::basic::WAIT_TIME_NUMERATOR;
+use common::basic::{BonusLevel, WAIT_TIME_NUMERATOR};
 use common::gamedata::*;
 use common::gobj;
 use common::obj::CharaTemplateObject;
@@ -10,14 +10,20 @@ use rules::RULES;
 use std::collections::HashMap;
 
 /// Create character from chara_template
-pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32, faction: FactionId) -> Chara {
+pub fn create_chara(
+    chara_template_idx: CharaTemplateIdx,
+    lv: u32,
+    faction: FactionId,
+    class: Option<CharaClass>,
+) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
+    let class = class.unwrap_or(CharaClass::default());
 
     let mut chara = Chara {
         name: None,
         attr: CharaAttributes::default(),
         template: chara_template_idx,
-        class: CharaClass::default(),
+        class,
         faction,
         level: lv,
         item_list: ItemList::new(),
@@ -29,7 +35,7 @@ pub fn create_chara(chara_template_idx: CharaTemplateIdx, lv: u32, faction: Fact
         morale: Morale::default(),
         traits: Vec::new(),
         status: Vec::new(),
-        skills: gen_skill_list(ct, lv),
+        skills: gen_skill_list(ct, lv, class),
         rel: Relationship::NEUTRAL,
         trigger_talk: None,
     };
@@ -49,7 +55,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
     let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level);
     let ct = gobj::get_obj(idx);
     let faction_id = dungeon_gen_rule.default_faction_id;
-    let mut chara = create_chara(idx, ct.gen_level, faction_id);
+    let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
     set_skill(&mut chara);
     chara.rel = Relationship::HOSTILE;
     chara
@@ -142,12 +148,19 @@ fn set_skill(chara: &mut Chara) {
 }
 
 /// Generate skill list based on floor level and CharaTemplateObject
-fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32) -> SkillList {
+fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32, class: CharaClass) -> SkillList {
     let mut skill_list = SkillList::default();
     let common_skills = &RULES.chara_gen.common_skills;
 
     for skill_kind in common_skills {
         skill_list.set_skill_level(*skill_kind, lv)
+    }
+
+    for (skill_name, bonus) in &RULES.class.get(class).skill_bonus {
+        let skill_kind: SkillKind = skill_name.parse().expect("invalid skill name");
+        if *bonus > BonusLevel::None {
+            skill_list.set_skill_level(skill_kind, 1);
+        }
     }
 
     skill_list

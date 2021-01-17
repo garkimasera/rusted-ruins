@@ -100,7 +100,7 @@ fn gen_chara(game: &mut Game, arg1: &str) {
     let gd = &mut game.gd;
     let mid = gd.get_current_mapid();
     if let Some(p) = super::map::choose_empty_tile(gd.region.get_map(mid)) {
-        let chara = super::chara::gen::create_chara(idx, 1, FactionId::unknown());
+        let chara = super::chara::gen::create_chara(idx, 1, FactionId::unknown(), None);
         trace!("Generate new npc {}", chara.to_text());
         game_log_i!("debug-command-genchara"; chara=chara);
         let cid = gd.add_chara_to_map(chara, mid);
