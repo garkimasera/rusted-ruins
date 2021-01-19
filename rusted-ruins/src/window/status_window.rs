@@ -188,12 +188,12 @@ impl SkillWindow {
         );
 
         let chara = gd.chara.get(cid);
-        let items: Vec<_> = chara
-            .skills
-            .skills
-            .keys()
+        let mut skills: Vec<SkillKind> = chara.skills.skills.keys().copied().collect();
+        skills.sort();
+        let items: Vec<_> = skills
+            .into_iter()
             .map(|skill_kind| {
-                let (lv, adj) = chara.skill_level(*skill_kind);
+                let (lv, adj) = chara.skill_level(skill_kind);
                 let skill_name = TextCache::one(
                     skill_kind.to_text(),
                     FontKind::M,
@@ -208,7 +208,7 @@ impl SkillWindow {
                 };
                 let skill_level =
                     TextCache::one(skill_level, FontKind::M, UI_CFG.color.normal_font.into());
-                let (_, skill_exp) = chara.skills.get_level_exp(*skill_kind);
+                let (_, skill_exp) = chara.skills.get_level_exp(skill_kind);
                 let skill_exp = TextCache::one(
                     format!(
                         "({:0.1} %)",

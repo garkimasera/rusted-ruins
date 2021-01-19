@@ -3,5 +3,5 @@
     "equip_slots": [
         "melee_weapon", "ranged_weapon", "tool"
     ],
-    "common_skills": ["endurance", "healing", "bare_hands"]
+    "common_skills": ["bare_hands", "carrying", "defence", "endurance", "evasion", "healing"]
 }

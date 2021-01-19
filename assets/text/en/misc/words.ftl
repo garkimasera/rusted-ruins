@@ -39,6 +39,7 @@ item_kind-object = Object
 # SkillKind
 
 skill_kind-bare_hands = Bare Hands
+skill_kind-carrying = Carrying
 skill_kind-defence = Defence
 skill_kind-endurance = Endurance
 skill_kind-evasion = Evasion

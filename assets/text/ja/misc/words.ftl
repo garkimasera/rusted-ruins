@@ -33,6 +33,7 @@ item_kind-object = オブジェクト
 # SkillKind
 
 skill_kind-bare_hands = 格闘
+skill_kind-carrying = 運搬
 skill_kind-defence = 守備
 skill_kind-endurance = 耐久
 skill_kind-evasion = 回避
