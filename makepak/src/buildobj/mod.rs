@@ -117,15 +117,17 @@ fn build_ui_img_object(tomlinput: Input) -> Result<UIImgObject, Error> {
 fn build_wall_object(tomlinput: Input) -> Result<WallObject, Error> {
     let img = get_optional_field!(tomlinput, image);
     let (img, imgdata) = build_img(img)?;
-    let (hp, base_draw, build_skill, materials) = if let Some(wall) = tomlinput.wall {
+    let (hp, base_draw, build_skill, materials, mining_rewards) = if let Some(wall) = tomlinput.wall
+    {
         (
             wall.hp.unwrap_or(0xFFFF),
             wall.base_draw.unwrap_or(false),
             wall.build_skill,
             wall.materials,
+            wall.mining_rewards,
         )
     } else {
-        (0xFFFF, true, None, None)
+        (0xFFFF, true, None, None, vec![])
     };
 
     Ok(WallObject {
@@ -136,6 +138,7 @@ fn build_wall_object(tomlinput: Input) -> Result<WallObject, Error> {
         symbol_color: imgdata.calc_average_color(),
         build_skill,
         materials,
+        mining_rewards,
     })
 }
 

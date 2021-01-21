@@ -83,6 +83,8 @@ pub struct WallDepInput {
     pub base_draw: Option<bool>,
     pub build_skill: Option<u32>,
     pub materials: Option<Vec<(String, u32)>>,
+    #[serde(default)]
+    pub mining_rewards: Vec<(String, u32)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
