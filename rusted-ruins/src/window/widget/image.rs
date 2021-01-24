@@ -1,5 +1,7 @@
 use super::WidgetTrait;
 use crate::context::*;
+use common::gamedata::Item;
+use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
 use sdl2::rect::Rect;
@@ -13,7 +15,7 @@ pub struct ImageWidget {
 enum Idx {
     UIImg(UIImgIdx),
     Chara(CharaTemplateIdx),
-    Item(ItemIdx),
+    Item((ItemIdx, u32)),
 }
 
 impl ImageWidget {
@@ -36,11 +38,25 @@ impl ImageWidget {
         }
     }
 
-    pub fn item<R: Into<Rect>>(rect: R, item_idx: ItemIdx) -> ImageWidget {
+    pub fn item<R: Into<Rect>>(rect: R, item: &Item) -> ImageWidget {
+        let mut variation = 0;
+        for attr in &item.attributes {
+            match attr {
+                ItemAttribute::ImageVariation(n) => {
+                    variation = *n;
+                }
+                _ => (),
+            }
+        }
+
+        Self::item_idx(rect, item.idx, variation)
+    }
+
+    pub fn item_idx<R: Into<Rect>>(rect: R, item_idx: ItemIdx, n: u32) -> ImageWidget {
         let rect = rect.into();
         ImageWidget {
             rect,
-            idx: Idx::Item(item_idx),
+            idx: Idx::Item((item_idx, n)),
         }
     }
 
@@ -63,7 +79,7 @@ impl WidgetTrait for ImageWidget {
             }
             Idx::Item(idx) => {
                 // Centering to given rect
-                context.render_tex_n_center(idx, self.rect, 0);
+                context.render_tex_n_center(idx.0, self.rect, idx.1);
             }
         }
     }

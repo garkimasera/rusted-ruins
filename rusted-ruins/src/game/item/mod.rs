@@ -4,14 +4,17 @@ pub mod info;
 pub mod merged;
 pub mod throw;
 
+use crate::context::IconIdx;
 use common::gamedata::*;
 use common::gobj;
+use common::obj::ImgVariationRule;
 use common::objholder::ItemIdx;
 use rules::material::Material;
 use rules::RULES;
 
 /// Additional Item methods
 pub trait ItemEx {
+    fn icon(&self) -> IconIdx;
     fn material(&self) -> Option<(MaterialName, &Material)>;
     /// Calculate factor for the item effectiveness
     fn eff_factor(&self) -> f32;
@@ -32,6 +35,25 @@ pub trait ItemEx {
 }
 
 impl ItemEx for Item {
+    fn icon(&self) -> IconIdx {
+        let obj = self.obj();
+
+        if obj.img.variation_rule == ImgVariationRule::RandomOnGen {
+            for attr in &self.attributes {
+                match attr {
+                    ItemAttribute::ImageVariation(n) => {
+                        return IconIdx::Item {
+                            idx: self.idx,
+                            i_pattern: *n,
+                        };
+                    }
+                    _ => (),
+                }
+            }
+        }
+        IconIdx::from(self.idx)
+    }
+
     fn material(&self) -> Option<(MaterialName, &Material)> {
         for attr in &self.attributes {
             match attr {

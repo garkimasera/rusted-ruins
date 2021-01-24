@@ -26,7 +26,7 @@ impl ItemInfoWindow {
         let item = game.gd.get_item(il);
         let info = ItemInfoText::new(item.0);
 
-        let item_image = ImageWidget::item(c.item_image, game.gd.get_item(il).0.idx);
+        let item_image = ImageWidget::item(c.item_image, game.gd.get_item(il).0);
         let item_name = LabelWidget::new(c.item_name, &info.item_name, FontKind::M);
         let item_kind = LabelWidget::new(c.item_kind, &info.item_kind, FontKind::M);
 

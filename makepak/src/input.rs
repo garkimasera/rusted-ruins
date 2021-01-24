@@ -47,6 +47,8 @@ pub struct ImgInput {
     pub n_pattern: Option<u32>,
     pub n_anim_frame: Option<u32>,
     pub duration: Option<u32>,
+    #[serde(default)]
+    pub variation_rule: common::obj::ImgVariationRule,
 }
 
 // Type dependent fields

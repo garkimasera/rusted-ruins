@@ -23,10 +23,10 @@ impl ReadWindow {
         let label = LabelWidget::wrapped(cfg.text_rect, &text[0], FontKind::Talk, cfg.text_rect.w);
         let next_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-next");
         let next_button =
-            ButtonWidget::with_icon(cfg.next_button_rect, IconIdx::UIImg(next_icon_idx));
+            ButtonWidget::with_icon(cfg.next_button_rect, IconIdx::from(next_icon_idx));
         let prev_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-prev");
         let prev_button =
-            ButtonWidget::with_icon(cfg.prev_button_rect, IconIdx::UIImg(prev_icon_idx));
+            ButtonWidget::with_icon(cfg.prev_button_rect, IconIdx::from(prev_icon_idx));
         let n_page = text.len();
         let page_label = format!("{} / {}", 1, n_page);
         let page_label =

@@ -303,7 +303,7 @@ impl ItemWindow {
             )
             .right();
 
-            (IconIdx::Item(item.idx), t1, t2)
+            (item.icon(), t1, t2)
         });
     }
 

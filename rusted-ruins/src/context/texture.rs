@@ -89,7 +89,7 @@ macro_rules! impl_iconidx {
         #[derive(Clone, Copy, PartialEq, Eq, Debug)]
         pub enum IconIdx {
             $(
-                $a($idx),
+                $a { idx: $idx, i_pattern: u32 },
             )*
         }
 
@@ -97,9 +97,9 @@ macro_rules! impl_iconidx {
             pub fn get_icon(&self, idx: IconIdx) -> (&Texture<'a>, Rect) {
                 match idx {
                     $(
-                        IconIdx::$a(i) => {
-                            let t = self.get(i);
-                            let r = gobj::get_obj(i).img_rect();
+                        IconIdx::$a { idx, i_pattern } => {
+                            let t = self.get(idx);
+                            let r = gobj::get_obj(idx).img_rect_pattern(i_pattern);
                             return (t, Rect::from(r));
                         }
                     )*
@@ -109,7 +109,7 @@ macro_rules! impl_iconidx {
 
         $(
             impl From<$idx> for IconIdx {
-                fn from(i: $idx) -> IconIdx { IconIdx::$a(i) }
+                fn from(i: $idx) -> IconIdx { IconIdx::$a { idx: i, i_pattern: 0 } }
             }
         )*
     }

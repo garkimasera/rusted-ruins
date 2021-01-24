@@ -232,6 +232,8 @@ impl Default for QualityKind {
 /// Items can have zero or more attributes.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemAttribute {
+    /// Image variation
+    ImageVariation(u32),
     /// Number of charges
     Charge { n: u32 },
     /// Data to generate the contents.

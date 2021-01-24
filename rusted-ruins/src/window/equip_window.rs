@@ -6,6 +6,7 @@ use crate::text;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::*;
 use common::gobj;
+use common::objholder::*;
 use sdl2::rect::Rect;
 
 pub struct EquipWindow {
@@ -44,12 +45,12 @@ impl EquipWindow {
             if let Some(item) = item {
                 let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
                 let tc = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
-                (esk_icon, IconIdx::Item(item.idx), tc)
+                (esk_icon, IconIdx::from(item.idx), tc)
             } else {
                 let tc = TextCache::one("-", FontKind::M, UI_CFG.color.normal_font.into());
                 (
                     esk_icon,
-                    IconIdx::Item(common::objholder::ItemIdx::default()),
+                    IconIdx::from(common::objholder::ItemIdx::default()),
                     tc,
                 )
             }
@@ -125,5 +126,6 @@ fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
         EquipSlotKind::BodyArmor => "!icon-bodyarmor",
         EquipSlotKind::Shield => "!icon-shield",
     };
-    IconIdx::UIImg(gobj::id_to_idx(id))
+    let idx: UIImgIdx = gobj::id_to_idx(id);
+    IconIdx::from(idx)
 }

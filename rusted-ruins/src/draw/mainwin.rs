@@ -265,8 +265,13 @@ impl MainWinDrawer {
         }
 
         // Draw items
-        for item_idx in di.items {
-            context.render_tex_n_center_height_checked(*item_idx, tile_rect, 0);
+        for (item_idx, variation) in di.items {
+            let obj = gobj::get_obj(*item_idx);
+            let n = match obj.img.variation_rule {
+                ImgVariationRule::None => 0,
+                ImgVariationRule::RandomOnGen => *variation,
+            };
+            context.render_tex_n_center_height_checked(*item_idx, tile_rect, n);
         }
 
         // Draw character on the tile

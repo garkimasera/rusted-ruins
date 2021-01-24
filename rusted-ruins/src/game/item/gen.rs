@@ -1,5 +1,6 @@
 use common::gamedata::*;
 use common::gobj;
+use common::obj::ImgVariationRule;
 use common::objholder::ItemIdx;
 use rng::SliceRandom;
 use rules::RULES;
@@ -123,6 +124,15 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         quality: ItemQuality::default(),
         attributes: vec![],
     };
+
+    // Set image variation.
+    if item_obj.img.variation_rule == ImgVariationRule::RandomOnGen {
+        item.attributes
+            .push(ItemAttribute::ImageVariation(rng::gen_range(
+                0,
+                item_obj.img.n_pattern,
+            )));
+    }
 
     if !item_obj.titles.is_empty() {
         gen_readable_item(&mut item, item_obj)

@@ -24,6 +24,7 @@ pub fn build_img(input: ImgInput) -> Result<(Img, ImgData), Error> {
     let n_anim_frame = input.n_anim_frame.unwrap_or(1);
     let n_frame = input.n_frame.unwrap_or(n_pattern * n_anim_frame);
     let duration = input.duration.unwrap_or(0);
+    let variation_rule = input.variation_rule;
 
     ensure!(
         w * grid_nx == imgdata.dimensions.0 && h * grid_ny == imgdata.dimensions.1,
@@ -42,14 +43,15 @@ pub fn build_img(input: ImgInput) -> Result<(Img, ImgData), Error> {
     Ok((
         Img {
             data: load_as_vec(&newpath)?,
-            w: w,
-            h: h,
-            grid_nx: grid_nx,
-            grid_ny: grid_ny,
-            n_frame: n_frame,
-            n_pattern: n_pattern,
-            n_anim_frame: n_anim_frame,
-            duration: duration,
+            w,
+            h,
+            grid_nx,
+            grid_ny,
+            n_frame,
+            n_pattern,
+            n_anim_frame,
+            duration,
+            variation_rule,
         },
         imgdata,
     ))

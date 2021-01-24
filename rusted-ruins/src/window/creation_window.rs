@@ -110,7 +110,7 @@ impl CreationWindow {
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
                 );
-                (IconIdx::Item(idx), t)
+                (IconIdx::from(idx), t)
             })
             .collect();
 
@@ -317,7 +317,7 @@ impl CreationDetailDialog {
                     } else {
                         // No available item for this ingredient material group
                         enough_ingredients = false;
-                        let icon_idx = gobj::id_to_idx("!icon-question");
+                        let icon_idx: UIImgIdx = gobj::id_to_idx("!icon-question");
                         let material_group_name = crate::text::prefix::material_group(group);
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
@@ -328,7 +328,7 @@ impl CreationDetailDialog {
                             FontKind::M,
                             UI_CFG.color.normal_font.into(),
                         );
-                        return (IconIdx::UIImg(icon_idx), item_name, item_n);
+                        return (IconIdx::from(icon_idx), item_name, item_n);
                     }
                 } else {
                     ingredient
@@ -353,7 +353,7 @@ impl CreationDetailDialog {
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
                 );
-                (IconIdx::Item(idx), item_name, item_n)
+                (IconIdx::from(idx), item_name, item_n)
             })
             .collect();
         self.list.set_items(list_items);

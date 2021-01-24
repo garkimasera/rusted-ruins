@@ -174,7 +174,7 @@ pub struct ObservedTileInfo {
     pub tile: bool,
     pub wall: WallIdxPP,
     pub deco: Option<DecoIdx>,
-    pub items: ArrayVec<[ItemIdx; MAX_ITEM_FOR_DRAW]>,
+    pub items: ArrayVec<[(ItemIdx, u32); MAX_ITEM_FOR_DRAW]>,
     pub special: SpecialTileKind,
 }
 

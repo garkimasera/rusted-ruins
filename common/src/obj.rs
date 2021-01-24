@@ -101,9 +101,27 @@ pub struct Img {
     pub grid_nx: u32,
     pub grid_ny: u32,
     pub n_frame: u32,
+    /// Number of image pattern. Used for tile piece processing or image variation.
     pub n_pattern: u32,
     pub n_anim_frame: u32,
     pub duration: u32,
+    pub variation_rule: ImgVariationRule,
+}
+
+/// Image variation rule.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ImgVariationRule {
+    /// No variation.
+    None,
+    /// Random on generation this object.
+    RandomOnGen,
+}
+
+impl Default for ImgVariationRule {
+    fn default() -> Self {
+        ImgVariationRule::None
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -188,6 +206,12 @@ pub trait ImgObject {
             img.w,
             img.h,
         )
+    }
+
+    /// Returns rect for specified pattern
+    fn img_rect_pattern(&self, i_pattern: u32) -> (i32, i32, u32, u32) {
+        let img = self.get_img();
+        self.img_rect_nth(img.n_anim_frame * i_pattern)
     }
 }
 

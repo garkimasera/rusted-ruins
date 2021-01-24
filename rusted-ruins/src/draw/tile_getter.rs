@@ -57,7 +57,7 @@ pub struct ForegroundDrawInfo<'a> {
     pub special: Option<SpecialTileIdx>,
     pub wallpp: WallIdxPP,
     pub deco: Option<DecoIdx>,
-    pub items: &'a [ItemIdx],
+    pub items: &'a [(ItemIdx, u32)],
     pub chara: Option<CharaId>,
 }
 

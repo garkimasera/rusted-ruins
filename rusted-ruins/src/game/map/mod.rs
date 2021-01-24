@@ -219,7 +219,16 @@ pub fn update_observed_map(game: &mut Game) {
         observed_tile.items.clear();
 
         for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
-            observed_tile.items.push(item.idx);
+            let mut variation = 0;
+            for attr in &item.attributes {
+                match attr {
+                    ItemAttribute::ImageVariation(n) => {
+                        variation = *n;
+                    }
+                    _ => (),
+                }
+            }
+            observed_tile.items.push((item.idx, variation));
         }
     }
 }
