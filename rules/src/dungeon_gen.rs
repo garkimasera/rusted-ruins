@@ -14,6 +14,8 @@ pub struct DungeonGenParams {
     pub default_faction_id: FactionId,
     /// Tile and wall ids
     pub terrain: Vec<[String; 2]>,
+    /// Additional walls to replace default wall.
+    pub sub_walls: Vec<(String, f32)>,
     /// Item generatation probability on each tile
     pub item_gen_probability: f64,
     /// Item generation weight for each ItemKind

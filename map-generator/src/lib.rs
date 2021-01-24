@@ -5,6 +5,8 @@ extern crate rusted_ruins_rng as rng;
 
 use geom::*;
 
+pub mod binary;
+
 mod fractal;
 mod lattice;
 mod rooms;

@@ -7,6 +7,7 @@ use common::gobj;
 use common::objholder::*;
 use geom::*;
 use rng::{self, GameRng, SliceRandom};
+use rules::dungeon_gen::DungeonGenParams;
 use rules::RULES;
 
 /// Add a new dungeon
@@ -25,22 +26,25 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
     let is_deepest_floor = floor >= gd.region.get_site(sid).max_floor() - 1;
     let map = match gd.region.get_site(sid).content {
         SiteContent::AutoGenDungeon { dungeon_kind } => {
+            let rule = &RULES.dungeon_gen[&dungeon_kind];
             let gen_params = &RULES.dungeon_gen[&dungeon_kind];
             let floor_gen_id = &gen_params
                 .floor_gen
                 .choose_weighted(&mut GameRng, |item| item.1)
                 .unwrap()
                 .0;
-            let tile_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][0]);
-            let wall_idx = gobj::id_to_idx(&RULES.dungeon_gen[&dungeon_kind].terrain[0][1]);
-            MapBuilder::new(1, 1)
+            let tile_idx = gobj::id_to_idx(&rule.terrain[0][0]);
+            let wall_idx = gobj::id_to_idx(&rule.terrain[0][1]);
+            let mut map = MapBuilder::new(1, 1)
                 .floor(floor)
                 .tile(tile_idx)
                 .wall(wall_idx)
                 .deepest_floor(is_deepest_floor)
                 .floor_gen_id(floor_gen_id)
                 .music(&gen_params.music)
-                .build()
+                .build();
+            set_sub_walls(&mut map, rule);
+            map
         }
         _ => MapBuilder::new(40, 40).floor(floor).build(),
     };
@@ -52,6 +56,26 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
 
     if is_deepest_floor {
         add_for_deepest_floor(gd, mid);
+    }
+}
+
+pub fn set_sub_walls(map: &mut Map, rule: &DungeonGenParams) {
+    for (sub_wall_id, weight) in &rule.sub_walls {
+        let wall_idx: WallIdx = if let Some(wall_idx) = gobj::id_to_idx_checked(sub_wall_id) {
+            wall_idx
+        } else {
+            error!("unknown wall id {}", sub_wall_id);
+            return;
+        };
+
+        let binary_map = map_generator::binary::create_binary_fractal(map.size().into(), *weight);
+
+        for p in binary_map.iter_idx() {
+            let tile = &mut map.tile[p];
+            if !tile.wall.is_empty() && binary_map[p] {
+                tile.wall.set_idx(wall_idx);
+            }
+        }
     }
 }
 
