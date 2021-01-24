@@ -1,6 +1,7 @@
 mod attack;
 mod deed;
 mod range;
+mod recover;
 mod skill_learn;
 
 pub use attack::weapon_to_effect;
@@ -8,8 +9,7 @@ pub use range::*;
 
 use crate::game::extrait::CharaStatusOperation;
 use crate::game::target::Target;
-use crate::game::InfoGetter;
-use crate::game::{Animation, Game};
+use crate::game::{Animation, Game, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
@@ -30,6 +30,11 @@ pub fn do_effect<T: Into<Target>>(
 
     for effect_kind in &effect.kind {
         match effect_kind {
+            EffectKind::RecoverHp => {
+                for cid in &cids {
+                    self::recover::recover_hp(game, *cid, power);
+                }
+            }
             EffectKind::Melee { element } => {
                 for cid in &cids {
                     self::attack::melee_attack(

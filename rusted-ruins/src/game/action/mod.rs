@@ -163,13 +163,12 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
 pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let gd = &mut game.gd;
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
-    let item_obj = item.obj();
 
     let chara = gd.chara.get_mut(cid);
     game_log!("drink-item"; chara=chara, item=item);
 
-    let eff: i32 = item_obj.eff.into();
-    apply_medical_effect(game, cid, &item_obj.medical_effect, eff);
+    let power = item.calc_eff() as f32 * RULES.effect.item_drink_power_factor;
+    apply_medical_effect(game, cid, &item.obj().medical_effect, power);
 }
 
 /// Eat one item
@@ -185,8 +184,8 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
         do_damage(game, cid, damage, CharaDamageKind::Starve);
     }
 
-    let eff: i32 = item_obj.eff.into();
-    apply_medical_effect(game, cid, &item_obj.medical_effect, eff);
+    let power = item.calc_eff() as f32 * RULES.effect.item_eat_power_factor;
+    apply_medical_effect(game, cid, &item.obj().medical_effect, power);
 }
 
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
@@ -211,7 +210,7 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Tar
     game.gd.get_item_list_mut(il.0).append(item, 1);
 }
 
-fn apply_medical_effect(game: &mut Game, cid: CharaId, effect: &Option<Effect>, eff: i32) {
+fn apply_medical_effect(game: &mut Game, cid: CharaId, effect: &Option<Effect>, eff: f32) {
     if effect.is_none() {
         return;
     }

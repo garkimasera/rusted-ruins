@@ -69,6 +69,7 @@ creation_kind-art = Art
 creation_kind-construction = Construction
 creation_kind-cooking = Cooking
 creation_kind-craft = Craft
+creation_kind-pharmacy = Pharmacy
 creation_kind-smith = Smith
 
 # MedicalEffect
