@@ -30,5 +30,13 @@
         "w": 1.0,
         "eff": 1.0,
         "price": 1.0
+    },
+    "granite": {
+        "group": "stone-material",
+        "gen_weight": 1.0,
+        "level": 0,
+        "w": 1.0,
+        "eff": 1.0,
+        "price": 1.0
     }
 }

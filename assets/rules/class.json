@@ -6,7 +6,7 @@
     "archaeologist": {
         "revision": { "hp": 10, "str": -2, "vit": 2, "dex": 0, "int": 2, "wil": 2, "cha": 2, "spd": 0 },
         "skill_bonus": {
-            "whip": "good"
+            "whip": "good", "art": "slightly_good"
         }
     },
     "rogue": {
