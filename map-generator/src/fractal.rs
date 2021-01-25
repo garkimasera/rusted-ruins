@@ -4,7 +4,7 @@ use rng::gen_range;
 
 pub fn write_to_map(gm: &mut GeneratedMap) {
     let (start, reach_map) = loop {
-        let fractal = create_fractal(gm.size);
+        let fractal = create_fractal(gm.size, true);
 
         let threshold = calc_threshold(&fractal, 0.6);
 
@@ -44,19 +44,21 @@ pub fn write_to_map(gm: &mut GeneratedMap) {
     }
 }
 
-pub fn create_fractal(size: Vec2d) -> Array2d<f32> {
+pub fn create_fractal(size: Vec2d, enable_edge_bias: bool) -> Array2d<f32> {
     let mut map = Array2d::new(size.0 as u32, size.1 as u32, 0.0);
 
     // Biasing for edges
-    let edge_bias = [3.0, 1.5, 1.0, 0.5];
-    for (i, b) in edge_bias.iter().enumerate() {
-        let i = i as i32;
-        write_rect(
-            &mut map,
-            *b,
-            Vec2d(i, i),
-            Vec2d(size.0 - i - 1, size.1 - i - 1),
-        );
+    if enable_edge_bias {
+        let edge_bias = [3.0, 1.5, 1.0, 0.5];
+        for (i, b) in edge_bias.iter().enumerate() {
+            let i = i as i32;
+            write_rect(
+                &mut map,
+                *b,
+                Vec2d(i, i),
+                Vec2d(size.0 - i - 1, size.1 - i - 1),
+            );
+        }
     }
 
     write_block(&mut map, 8, 1.0);
