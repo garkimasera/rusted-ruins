@@ -39,7 +39,12 @@ impl MainWinDrawer {
     fn draw_damage_to_tile(&self, context: &mut Context, damaged_chara: &CharaLogDamage) {
         let digit_w = DIGIT_DRAW_INFO.digit_w;
         let digit_h = DIGIT_DRAW_INFO.digit_h;
-        let s = format!("{}", damaged_chara.damage);
+        let (value, color) = if damaged_chara.damage >= 0 {
+            (damaged_chara.damage, 0)
+        } else {
+            (-damaged_chara.damage, 1)
+        };
+        let s = format!("{}", value);
         let string_w = s.len() as i32 * digit_w;
         let tile_rect = self.tile_rect(damaged_chara.pos, 0, 0);
         let top_left_x = tile_rect.x + (tile_rect.w - string_w) / 2;
@@ -54,7 +59,7 @@ impl MainWinDrawer {
                 digit_w as u32,
                 digit_h as u32,
             );
-            context.render_tex_n(DIGIT_DRAW_INFO.idx, rect, i_img);
+            context.render_tex_n(DIGIT_DRAW_INFO.idx, rect, i_img + 10 * color);
         }
     }
 }
