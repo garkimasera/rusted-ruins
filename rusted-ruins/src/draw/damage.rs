@@ -1,8 +1,7 @@
 use super::mainwin::MainWinDrawer;
+use crate::chara_log::CharaLogDamage;
 use crate::config::UI_CFG;
 use crate::context::*;
-use crate::game::damage::DamagedChara;
-use crate::game::Game;
 use common::gobj;
 use common::objholder::UIImgIdx;
 use sdl2::rect::Rect;
@@ -30,13 +29,14 @@ lazy_static! {
 }
 
 impl MainWinDrawer {
-    pub fn draw_damage(&self, context: &mut Context, game: &Game) {
-        for damaged_chara in game.damage_view.iter() {
+    pub fn draw_damage(&self, context: &mut Context) {
+        let combat_log = &*crate::chara_log::get_log();
+        for damaged_chara in &combat_log.damage_list {
             self.draw_damage_to_tile(context, damaged_chara);
         }
     }
 
-    fn draw_damage_to_tile(&self, context: &mut Context, damaged_chara: &DamagedChara) {
+    fn draw_damage_to_tile(&self, context: &mut Context, damaged_chara: &CharaLogDamage) {
         let digit_w = DIGIT_DRAW_INFO.digit_w;
         let digit_h = DIGIT_DRAW_INFO.digit_h;
         let s = format!("{}", damaged_chara.damage);

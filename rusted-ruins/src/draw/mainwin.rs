@@ -101,7 +101,7 @@ impl MainWinDrawer {
         // Draw character infomation UI
         self.draw_chara_info(context, game);
         // Draw damage digits
-        self.draw_damage(context, game);
+        self.draw_damage(context);
     }
 
     fn draw_except_anim(

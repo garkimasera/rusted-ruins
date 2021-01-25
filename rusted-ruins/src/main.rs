@@ -17,6 +17,7 @@ mod error;
 mod log;
 #[macro_use]
 mod text;
+mod chara_log;
 mod config;
 mod context;
 mod draw;
