@@ -223,6 +223,10 @@ impl<'a> DoPlayerAction<'a> {
             }
         }
     }
+
+    pub fn enter_wilderness(&mut self, pos: Vec2d) {
+        crate::game::map::wilderness::generate_wilderness(self.0, pos);
+    }
 }
 
 fn msg_switch_map(next_mid: MapId) -> String {

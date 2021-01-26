@@ -6,6 +6,7 @@ extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
 
 pub mod active_skill;
+pub mod biome;
 pub mod chara;
 pub mod charagen;
 pub mod class;
@@ -38,6 +39,7 @@ const RECIPE_DIR_NAME: &'static str = "recipe";
 /// Contain game rules
 pub struct Rules {
     pub active_skills: active_skill::ActiveSkills,
+    pub biome: biome::Biome,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
     pub class: class::Classes,
@@ -114,6 +116,7 @@ impl Rules {
 
         Rules {
             active_skills,
+            biome: read_from_json(&rules_dir.join("biome.json")),
             chara: read_from_json(&rules_dir.join("chara.json")),
             chara_gen: read_from_json(&rules_dir.join("charagen.json")),
             class: read_from_json(&rules_dir.join("class.json")),

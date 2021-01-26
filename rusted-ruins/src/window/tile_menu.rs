@@ -23,6 +23,7 @@ pub fn create_menu(
     let t = tile_info_query(&game.gd, tile);
     let player_pos = game.gd.player_pos();
     let player_same_tile = tile == player_pos;
+    let is_region_map = game.gd.get_current_mapid().is_region_map();
 
     if player_same_tile {
         match t.move_symbol {
@@ -78,6 +79,14 @@ pub fn create_menu(
                 _ => (),
             }
         }
+    }
+
+    // In region map
+    if player_same_tile && is_region_map && t.move_symbol.is_none() {
+        text_ids.push("tile-menu-enter-wilderness");
+        callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+            pa.enter_wilderness(tile);
+        }));
     }
 
     if !player_same_tile {
