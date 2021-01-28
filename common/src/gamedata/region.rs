@@ -23,7 +23,7 @@ pub struct Region {
 pub struct SiteInfo {
     site: Site,
     /// Position on the region map
-    pos: Vec2d,
+    pos: Option<Vec2d>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -80,7 +80,7 @@ impl RegionHolder {
             .site
     }
 
-    pub fn get_site_pos(&self, sid: SiteId) -> Vec2d {
+    pub fn get_site_pos(&self, sid: SiteId) -> Option<Vec2d> {
         let region = self
             .0
             .get(&sid.rid)
@@ -282,7 +282,7 @@ impl Region {
 
     /// Add new site to region
     /// If already site is existed, this function will fail and return None
-    pub fn add_site(&mut self, site: Site, kind: SiteKind, pos: Vec2d) -> Option<SiteId> {
+    pub fn add_site(&mut self, site: Site, kind: SiteKind, pos: Option<Vec2d>) -> Option<SiteId> {
         // Calculate new number for the given site
         let n = self.search_empty_n(kind);
         let sid = SiteId {
@@ -303,7 +303,7 @@ impl Region {
     /// Get site by position on the region
     pub fn get_id_by_pos(&self, pos: Vec2d) -> Option<SiteId> {
         for (sid, sinfo) in self.sites.iter() {
-            if sinfo.pos == pos {
+            if sinfo.pos == Some(pos) {
                 return Some(*sid);
             }
         }

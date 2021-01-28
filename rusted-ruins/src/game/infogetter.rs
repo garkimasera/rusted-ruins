@@ -101,6 +101,13 @@ impl InfoGetter for GameData {
             MapId::SiteMap { sid, floor } => match sid.kind {
                 SiteKind::AutoGenDungeon => false,
                 SiteKind::Town | SiteKind::Base => floor == 0,
+                SiteKind::Temp => {
+                    let site = self.region.get_site(sid);
+                    match site.content {
+                        SiteContent::Temp { is_open_air, .. } => is_open_air,
+                        _ => unreachable!(),
+                    }
+                }
                 SiteKind::Other => false,
             },
             MapId::RegionMap { .. } => true,

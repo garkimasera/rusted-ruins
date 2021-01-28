@@ -1,4 +1,5 @@
 pub mod gen;
+pub mod temp;
 
 use common::gamedata::*;
 

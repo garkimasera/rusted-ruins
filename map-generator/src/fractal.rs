@@ -1,12 +1,12 @@
-use super::{GeneratedMap, TileKind};
+use super::{Entrance, GeneratedMap, TileKind};
 use geom::*;
 use rng::gen_range;
 
-pub fn write_to_map(gm: &mut GeneratedMap) {
+pub fn write_to_map(gm: &mut GeneratedMap, wall_weight: f32, enable_edge_bias: bool, stairs: bool) {
     let (start, reach_map) = loop {
-        let fractal = create_fractal(gm.size, true);
+        let fractal = create_fractal(gm.size, enable_edge_bias);
 
-        let threshold = calc_threshold(&fractal, 0.6);
+        let threshold = calc_threshold(&fractal, 1.0 - wall_weight);
 
         for p in gm.tile.iter_idx() {
             if fractal[p] > threshold {
@@ -27,12 +27,13 @@ pub fn write_to_map(gm: &mut GeneratedMap) {
         }
     };
 
-    loop {
-        let end = pick_passable_tile(&gm);
-        if start != end && reach_map[end] {
-            gm.entrance = start;
-            gm.exit = Some(end);
-            break;
+    if stairs {
+        loop {
+            let end = pick_passable_tile(&gm);
+            if start != end && reach_map[end] {
+                gm.entrance = Entrance::Stairs(start, Some(end));
+                break;
+            }
         }
     }
 

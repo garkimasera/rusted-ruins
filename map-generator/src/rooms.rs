@@ -1,4 +1,4 @@
-use super::{GeneratedMap, TileKind};
+use super::{Entrance, GeneratedMap, TileKind};
 use geom::*;
 use rand::seq::IteratorRandom;
 use rng::{gen_range, GameRng};
@@ -65,6 +65,9 @@ impl Rooms {
         let mut rooms_with_stairs: [usize; 2] = [0, 0];
         (0..rooms.len()).choose_multiple_fill(&mut GameRng, &mut rooms_with_stairs);
 
+        let mut e0 = Vec2d(0, 0);
+        let mut e1 = None;
+
         for (i, room) in rooms.iter().enumerate() {
             let rectiter = RectIter::new(
                 (room.x, room.y),
@@ -78,12 +81,14 @@ impl Rooms {
                 let dy = gen_range(1, room.h - 1) as i32;
                 let stair_tile = Vec2d(room.x + dx, room.y + dy);
                 if i == rooms_with_stairs[0] {
-                    gm.entrance = stair_tile;
+                    e0 = stair_tile;
                 } else {
-                    gm.exit = Some(stair_tile);
+                    e1 = Some(stair_tile);
                 }
             }
         }
+
+        gm.entrance = Entrance::Stairs(e0, e1);
 
         for p in doors {
             gm.tile[p] = TileKind::Door;

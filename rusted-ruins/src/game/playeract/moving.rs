@@ -225,7 +225,25 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     pub fn enter_wilderness(&mut self, pos: Vec2d) {
-        crate::game::map::wilderness::generate_wilderness(self.0, pos);
+        if let Some(map) = crate::game::map::wilderness::generate_wilderness(self.gd(), pos) {
+            let mid = self.gd().get_current_mapid();
+            let rid = mid.rid();
+            let site_content = SiteContent::Temp {
+                return_map: mid,
+                return_pos: pos,
+                is_open_air: true,
+            };
+            let wilderness_mid = crate::game::site::temp::gen_temp_site_from_map(
+                self.gd_mut(),
+                rid,
+                map,
+                "wilderness",
+                site_content,
+            );
+            crate::game::map::switch_map(self.0, wilderness_mid);
+        } else {
+            warn!("cannot generate wilderness map for given position");
+        }
     }
 }
 

@@ -12,6 +12,7 @@ crate-type = ["rlib"]
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
+serde_with = "1"
 log = "0.4"
 lazy_static = "1"
 
@@ -20,3 +21,6 @@ path = "../geom"
 
 [dependencies.rusted-ruins-common]
 path = "../common"
+
+[dependencies.rusted-ruins-map-generator]
+path = "../map-generator"

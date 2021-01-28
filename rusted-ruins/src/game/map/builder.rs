@@ -1,9 +1,8 @@
-use crate::map_generator::{GeneratedMap, MapGenerator, TileKind};
+use crate::map_generator::*;
 use common::gamedata::map::*;
 use common::gobj;
 use common::objholder::*;
 use geom::*;
-use rules::floor_gen::*;
 use rules::RULES;
 
 #[derive(Default)]
@@ -12,7 +11,7 @@ pub struct MapBuilder {
     h: u32,
     floor: u32,
     is_deepest_floor: bool,
-    floor_gen_params: Option<&'static FloorGenParams>,
+    map_gen_param: MapGenParam,
     tile: TileIdx,
     wall: WallIdx,
     music: String,
@@ -23,29 +22,22 @@ impl MapBuilder {
         let mut map_builder = MapBuilder::default();
         map_builder.w = w;
         map_builder.h = h;
+        map_builder.map_gen_param = MapGenParam::Flat { w, h };
         map_builder
     }
 
-    pub fn floor_gen_id(mut self, id: &str) -> Self {
-        self.floor_gen_params = Some(&RULES.floor_gen.floor_gen_params[id]);
-        self.w = self.floor_gen_params.unwrap().map_size.0 as u32;
-        self.h = self.floor_gen_params.unwrap().map_size.1 as u32;
-        self
+    pub fn from_map_gen_id(id: &str) -> Self {
+        let map_gen_param = &RULES.map_gen.map_gen_params[id];
+        let (w, h) = map_gen_param.size();
+        let mut builder = Self::new(w, h);
+        builder.w = w;
+        builder.h = h;
+        builder.map_gen_param = map_gen_param.clone();
+        builder
     }
 
     pub fn build(self) -> Map {
-        let generated_map = if let Some(floor_gen_params) = self.floor_gen_params {
-            let map_generator = MapGenerator::new((self.w, self.h));
-            match floor_gen_params.map_gen_kind {
-                MapGenKind::Flat => map_generator.flat(),
-                MapGenKind::Fractal => map_generator.fractal(),
-                MapGenKind::Lattice => map_generator.lattice(5, 4, 3, 7, 0.5),
-                MapGenKind::Rooms => map_generator.rooms(5, 8, 7),
-            }
-            .generate()
-        } else {
-            MapGenerator::new((self.w, self.h)).flat().generate()
-        };
+        let generated_map = self.map_gen_param.generate();
         let mut map = generated_map_to_map(
             generated_map,
             self.tile,
@@ -122,23 +114,28 @@ pub fn generated_map_to_map(
         }
     }
 
-    // Set stairs
-    let entrance_stairs = StairsKind::UpStairs;
-    let exit_stairs = StairsKind::DownStairs;
+    match gm.entrance {
+        Entrance::Pos(_) => {}
+        Entrance::Stairs(e0, e1) => {
+            // Set stairs
+            let entrance_stairs = StairsKind::UpStairs;
+            let exit_stairs = StairsKind::DownStairs;
 
-    let dest_floor = if floor == 0 { FLOOR_OUTSIDE } else { floor - 1 };
-    map.entrance.push(gm.entrance);
-    map.tile[gm.entrance].special = SpecialTileKind::Stairs {
-        dest_floor,
-        kind: entrance_stairs,
-    };
+            let dest_floor = if floor == 0 { FLOOR_OUTSIDE } else { floor - 1 };
+            map.entrance.push(e0);
+            map.tile[e0].special = SpecialTileKind::Stairs {
+                dest_floor,
+                kind: entrance_stairs,
+            };
 
-    if !is_deepest_floor && gm.exit.is_some() {
-        let dest_floor = floor + 1;
-        map.tile[gm.exit.unwrap()].special = SpecialTileKind::Stairs {
-            dest_floor,
-            kind: exit_stairs,
-        };
+            if !is_deepest_floor && e1.is_some() {
+                let dest_floor = floor + 1;
+                map.tile[e1.unwrap()].special = SpecialTileKind::Stairs {
+                    dest_floor,
+                    kind: exit_stairs,
+                };
+            }
+        }
     }
 
     map

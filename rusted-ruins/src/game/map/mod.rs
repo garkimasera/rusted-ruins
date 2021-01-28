@@ -71,7 +71,9 @@ pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
     } else {
         if mid.is_region_map() && !prev_mid.is_region_map() && mid.rid() == prev_mid.rid() {
             // Exit from a site to region map
-            gd.region.get_site_pos(prev_mid.sid())
+            gd.region
+                .get_site_pos(prev_mid.sid())
+                .expect("tried to exit from site that don't have pos")
         } else {
             // Move to another floor of the same site
             let current_map = gd.get_current_map();

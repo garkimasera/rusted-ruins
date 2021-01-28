@@ -1,7 +1,7 @@
 use geom::*;
 use rng::*;
 
-use super::{GeneratedMap, TileKind};
+use super::{Entrance, GeneratedMap, TileKind};
 
 pub struct Lattice {
     nx: u32,
@@ -24,19 +24,20 @@ impl Lattice {
         }
     }
 
-    pub fn write_to_map(&self, gm: &mut GeneratedMap, door_weight: f64) {
+    pub fn write_to_map(&self, gm: &mut GeneratedMap, door_weight: f32) {
         let ew_wall_len = (gm.size.0 - self.nx as i32 + 1) / self.nx as i32;
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
 
         // Set entrance/exit
-        gm.entrance = Vec2d(
+        let e0 = Vec2d(
             self.start.0 * (ew_wall_len + 1) + ew_wall_len / 2,
             self.start.1 * (ns_wall_len + 1) + ns_wall_len / 2,
         );
-        gm.exit = Some(Vec2d(
+        let e1 = Vec2d(
             self.end.0 * (ew_wall_len + 1) + ew_wall_len / 2,
             self.end.1 * (ns_wall_len + 1) + ns_wall_len / 2,
-        ));
+        );
+        gm.entrance = Entrance::Stairs(e0, Some(e1));
 
         // Write horizontal walls
         for b in 0..(self.ny as i32 - 1) {

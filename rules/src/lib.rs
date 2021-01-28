@@ -4,6 +4,7 @@ extern crate serde_derive;
 extern crate log;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
+extern crate rusted_ruins_map_generator as map_generator;
 
 pub mod active_skill;
 pub mod biome;
@@ -16,9 +17,9 @@ pub mod dungeon_gen;
 pub mod effect;
 pub mod exp;
 pub mod faction;
-pub mod floor_gen;
 pub mod item;
 pub mod magic;
+pub mod map_gen;
 pub mod material;
 pub mod newgame;
 pub mod npc_ai;
@@ -49,7 +50,7 @@ pub struct Rules {
     pub exp: exp::Exp,
     pub effect: effect::Effect,
     pub faction: faction::Faction,
-    pub floor_gen: floor_gen::FloorGen,
+    pub map_gen: map_gen::MapGen,
     pub item: item::Item,
     pub magic: magic::Magic,
     pub material: material::Materials,
@@ -126,7 +127,7 @@ impl Rules {
             effect: read_from_json(&rules_dir.join("effect.json")),
             exp: read_from_json(&rules_dir.join("exp.json")),
             faction: read_from_json(&rules_dir.join("faction.json")),
-            floor_gen: read_from_json(&rules_dir.join("floor_gen.json")),
+            map_gen: read_from_json(&rules_dir.join("map_gen.json")),
             item: read_from_json(&rules_dir.join("item.json")),
             magic: read_from_json(&rules_dir.join("magic.json")),
             material: read_from_json(&rules_dir.join("material.json")),

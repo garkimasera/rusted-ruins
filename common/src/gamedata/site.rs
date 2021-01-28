@@ -1,7 +1,8 @@
-use super::map::Map;
+use super::map::{Map, MapId};
 use super::region::RegionId;
 use super::town::Town;
 use filebox::FileBox;
+use geom::Vec2d;
 
 pub type BoxedMap = FileBox<Map>;
 
@@ -35,6 +36,12 @@ pub enum SiteContent {
     },
     /// Player's base
     Base { kind: BaseKind },
+    /// Temporary map
+    Temp {
+        return_map: MapId,
+        return_pos: Vec2d,
+        is_open_air: bool,
+    },
     /// This does not include specific data, but character and other elements can be placed its map
     Other,
 }
@@ -115,6 +122,7 @@ impl SiteContent {
             &SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
             &SiteContent::Town { .. } => SiteKind::Town,
             &SiteContent::Base { .. } => SiteKind::Base,
+            &SiteContent::Temp { .. } => SiteKind::Temp,
             &SiteContent::Other { .. } => SiteKind::Other,
         }
     }
@@ -126,6 +134,7 @@ pub enum SiteKind {
     AutoGenDungeon,
     Town,
     Base,
+    Temp,
     Other,
 }
 

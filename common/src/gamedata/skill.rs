@@ -35,6 +35,7 @@ impl FromStr for SkillKind {
             "endurance" => SkillKind::Endurance,
             "evasion" => SkillKind::Evasion,
             "healing" => SkillKind::Healing,
+            "throwing" => SkillKind::Throwing,
             "magic_device" => SkillKind::MagicDevice,
             "mining" => SkillKind::Mining,
             "sword" => SkillKind::Weapon(WeaponKind::Sword),

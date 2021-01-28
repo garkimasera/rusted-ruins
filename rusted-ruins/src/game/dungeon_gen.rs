@@ -16,8 +16,13 @@ pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d
     let n_floor = rng::gen_range(floor_range[0], floor_range[1]);
     let mut site = Site::new(n_floor, None);
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
-    gd.add_site(site, SiteKind::AutoGenDungeon, RegionId::default(), pos)
-        .unwrap()
+    gd.add_site(
+        site,
+        SiteKind::AutoGenDungeon,
+        RegionId::default(),
+        Some(pos),
+    )
+    .unwrap()
 }
 
 /// Extend dungion site by one floor
@@ -35,12 +40,11 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
                 .0;
             let tile_idx = gobj::id_to_idx(&rule.terrain[0][0]);
             let wall_idx = gobj::id_to_idx(&rule.terrain[0][1]);
-            let mut map = MapBuilder::new(1, 1)
+            let mut map = MapBuilder::from_map_gen_id(floor_gen_id)
                 .floor(floor)
                 .tile(tile_idx)
                 .wall(wall_idx)
                 .deepest_floor(is_deepest_floor)
-                .floor_gen_id(floor_gen_id)
                 .music(&gen_params.music)
                 .build();
             set_sub_walls(&mut map, rule);

@@ -43,7 +43,7 @@ pub fn add_site_from_obj(
     let mut site = Site::new(sg.map_template_id.len() as u32, Some(site_id.to_owned()));
     let site_content = SiteContent::Other;
     site.content = site_content;
-    let sid = if let Some(sid) = gd.add_site(site, sg.kind, rid, pos) {
+    let sid = if let Some(sid) = gd.add_site(site, sg.kind, rid, Some(pos)) {
         sid
     } else {
         warn!(

@@ -1,8 +1,8 @@
 {
     "biomes": {
         "red-desert": {
-            "main_tile": "red-sand-01",
-            "main_wall": "rock-01"
+            "tile": "red-sand-01",
+            "wall": "rock-01"
         }
     },
     "sub_biomes": {

@@ -175,7 +175,7 @@ impl GameData {
         site: Site,
         kind: SiteKind,
         rid: RegionId,
-        pos: Vec2d,
+        pos: Option<Vec2d>,
     ) -> Option<SiteId> {
         let region = self.region.get_mut(rid);
         region.add_site(site, kind, pos)

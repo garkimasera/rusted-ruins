@@ -21,7 +21,7 @@ pub fn use_deed(game: &mut Game) {
         kind: BaseKind::Home,
     };
     let rid = mapid.rid();
-    let sid = gd.add_site(site, SiteKind::Base, rid, pos).unwrap();
+    let sid = gd.add_site(site, SiteKind::Base, rid, Some(pos)).unwrap();
 
     let map_random_id = crate::game::saveload::gen_box_id(gd);
     let map = crate::game::map::from_template::from_template_id("home-default", false).unwrap();

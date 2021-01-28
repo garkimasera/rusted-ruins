@@ -3,7 +3,9 @@
 extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_rng as rng;
 
+use arrayvec::ArrayVec;
 use geom::*;
+use serde::{Deserialize, Serialize};
 
 pub mod binary;
 
@@ -27,126 +29,146 @@ impl TileKind {
     }
 }
 
+#[derive(Clone)]
+pub enum Entrance {
+    /// Tile position
+    Pos(ArrayVec<[Vec2d; 4]>),
+    /// the later is for deeper floor
+    Stairs(Vec2d, Option<Vec2d>),
+}
+
 pub struct GeneratedMap {
     pub size: Vec2d,
     pub tile: Array2d<TileKind>,
-    pub entrance: Vec2d,
+    pub entrance: Entrance,
     pub exit: Option<Vec2d>,
 }
 
-#[derive(Clone, PartialEq, Debug)]
-enum MapGenParam {
-    Flat,
+impl GeneratedMap {
+    pub fn new<S: Into<Vec2d>>(size: S) -> GeneratedMap {
+        let size = size.into();
+        let mut v = ArrayVec::new();
+        v.push(Vec2d(0, 0));
+        GeneratedMap {
+            size,
+            tile: Array2d::new(size.0 as u32, size.1 as u32, TileKind::Floor),
+            entrance: Entrance::Pos(v),
+            exit: None,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+#[serde(rename_all = "snake_case")]
+pub enum MapGenParam {
+    Flat {
+        w: u32,
+        h: u32,
+    },
     Lattice {
+        w: u32,
+        h: u32,
         nx: u32,
         ny: u32,
         step_min: u32,
         step_max: u32,
-        door_weight: f64,
+        door_weight: f32,
     },
-    Fractal,
+    Fractal {
+        w: u32,
+        h: u32,
+        stairs: bool,
+        edge: bool,
+        wall_weight: f32,
+    },
     Rooms {
+        w: u32,
+        h: u32,
         max_room_size: u32,
         min_room_size: u32,
         n_room: u32,
     },
 }
 
-pub struct MapGenerator {
-    map: GeneratedMap,
-    genparam: Option<MapGenParam>,
-}
-
-impl MapGenerator {
-    pub fn new<S: Into<Vec2d>>(size: S) -> MapGenerator {
-        let size = size.into();
-        let map = GeneratedMap {
-            size,
-            tile: Array2d::new(size.0 as u32, size.1 as u32, TileKind::Floor),
-            entrance: Vec2d(0, 0),
-            exit: None,
-        };
-        MapGenerator {
-            map,
-            genparam: None,
+impl MapGenParam {
+    pub fn size(&self) -> (u32, u32) {
+        match self {
+            &MapGenParam::Flat { w, h } => (w, h),
+            &MapGenParam::Lattice { w, h, .. } => (w, h),
+            &MapGenParam::Fractal { w, h, .. } => (w, h),
+            &MapGenParam::Rooms { w, h, .. } => (w, h),
         }
     }
 
-    /// Create flat map. Flat map is consisted of floor tile only.
-    pub fn flat(self) -> MapGenerator {
-        let mut mg = self;
-        mg.genparam = Some(MapGenParam::Flat);
-        mg
-    }
-
-    /// Create lattice map. There are separated rooms in lattice
-    pub fn lattice(
-        self,
-        nx: u32,
-        ny: u32,
-        step_min: u32,
-        step_max: u32,
-        door_weight: f64,
-    ) -> MapGenerator {
-        let mut mg = self;
-        mg.genparam = Some(MapGenParam::Lattice {
-            nx,
-            ny,
-            step_min,
-            step_max,
-            door_weight,
-        });
-        mg
-    }
-
-    /// Create fractal map
-    pub fn fractal(self) -> MapGenerator {
-        let mut mg = self;
-        mg.genparam = Some(MapGenParam::Fractal);
-        mg
-    }
-
-    pub fn rooms(mut self, min_room_size: u32, max_room_size: u32, n_room: u32) -> MapGenerator {
-        self.genparam = Some(MapGenParam::Rooms {
-            max_room_size,
-            min_room_size,
-            n_room,
-        });
-        self
-    }
-
-    /// Generate one map
-    pub fn generate(mut self) -> GeneratedMap {
-        match self
-            .genparam
-            .expect("Map generate before giving parameters")
-        {
-            MapGenParam::Flat => {
-                return self.map;
-            }
-            MapGenParam::Lattice {
+    pub fn generate(&self) -> GeneratedMap {
+        match self {
+            &MapGenParam::Flat { w, h } => GeneratedMap::new((w, h)),
+            &MapGenParam::Lattice {
+                w,
+                h,
                 nx,
                 ny,
                 step_min,
                 step_max,
                 door_weight,
             } => {
+                let mut map = GeneratedMap::new((w, h));
                 let lattice = lattice::create_lattice(nx, ny, step_min, step_max);
-                lattice.write_to_map(&mut self.map, door_weight);
-                return self.map;
+                lattice.write_to_map(&mut map, door_weight);
+                map
             }
-            MapGenParam::Fractal => {
-                fractal::write_to_map(&mut self.map);
-                return self.map;
+            &MapGenParam::Fractal {
+                w,
+                h,
+                stairs,
+                edge,
+                wall_weight,
+            } => {
+                let mut map = GeneratedMap::new((w, h));
+                fractal::write_to_map(&mut map, wall_weight, edge, stairs);
+                map
             }
-            MapGenParam::Rooms {
+            &MapGenParam::Rooms {
+                w,
+                h,
                 max_room_size,
                 min_room_size,
                 n_room,
             } => {
+                let mut map = GeneratedMap::new((w, h));
                 let rooms = rooms::Rooms::new(max_room_size, min_room_size, n_room);
-                rooms.write_to_map(&mut self.map);
-                return self.map;
+                rooms.write_to_map(&mut map);
+                map
+            }
+        }
+    }
+}
+
+impl Default for MapGenParam {
+    fn default() -> Self {
+        MapGenParam::Flat { w: 1, h: 1 }
+    }
+}
+
+impl Entrance {
+    fn entrance_char(&self, pos: Vec2d) -> Option<char> {
+        match self {
+            &Entrance::Pos(ref v) => {
+                if v.iter().any(|p| pos == *p) {
+                    Some('e')
+                } else {
+                    None
+                }
+            }
+            &Entrance::Stairs(e0, e1) => {
+                if e0 == pos {
+                    Some('<')
+                } else if e1 == Some(pos) {
+                    Some('>')
+                } else {
+                    None
+                }
             }
         }
     }
@@ -156,10 +178,8 @@ impl std::fmt::Display for GeneratedMap {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         for ny in 0..self.size.1 {
             for nx in 0..self.size.0 {
-                let c = if self.entrance == (nx, ny) {
-                    '<'
-                } else if self.exit == Some(Vec2d(nx, ny)) {
-                    '>'
+                let c = if let Some(c) = self.entrance.entrance_char(Vec2d(nx, ny)) {
+                    c
                 } else {
                     match self.tile[(nx, ny)] {
                         TileKind::Floor => '.',
