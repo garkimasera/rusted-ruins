@@ -52,35 +52,13 @@ impl ToTextId for ItemKind {
 
 impl ToTextId for SkillKind {
     fn to_textid(&self) -> &'static str {
-        use SkillKind::*;
-        match self {
-            Endurance => "skill_kind-endurance",
-            Healing => "skill_kind-healing",
-            BareHands => "skill_kind-bare_hands",
-            Defence => "skill_kind-defence",
-            Evasion => "skill_kind-evasion",
-            Carrying => "skill_kind-carrying",
-            Throwing => "skill_kind-throwing",
-            MagicDevice => "skill_kind-magic_device",
-            Mining => "skill_kind-mining",
-            Weapon(weapon_kind) => weapon_kind.to_textid(),
-            Creation(creation_kind) => creation_kind.to_textid(),
-        }
+        self.textid()
     }
 }
 
 impl ToTextId for WeaponKind {
     fn to_textid(&self) -> &'static str {
-        use WeaponKind::*;
-        match self {
-            Axe => "weapon_kind-axe",
-            Bow => "weapon_kind-bow",
-            Crossbow => "weapon_kind-cross_bow",
-            Firearm => "weapon_kind-firearm",
-            Spear => "weapon_kind-spear",
-            Sword => "weapon_kind-sword",
-            Whip => "weapon_kind-whip",
-        }
+        self.textid()
     }
 }
 
@@ -96,14 +74,6 @@ impl ToTextId for ArmorKind {
 
 impl ToTextId for CreationKind {
     fn to_textid(&self) -> &'static str {
-        use CreationKind::*;
-        match self {
-            Art => "creation_kind-art",
-            Construction => "creation_kind-construction",
-            Cooking => "creation_kind-cooking",
-            Craft => "creation_kind-craft",
-            Pharmacy => "creation_kind-pharmacy",
-            Smith => "creation_kind-smith",
-        }
+        self.textid()
     }
 }

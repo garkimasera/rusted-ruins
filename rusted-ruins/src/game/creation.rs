@@ -98,7 +98,7 @@ pub fn finish_creation(
     let player = gd.chara.get_mut(CharaId::Player);
 
     // Exp
-    let skill_kind = SkillKind::Creation(kind);
+    let skill_kind = kind.into();
     let skill_level = player.skills.get(skill_kind);
     if skill_level > 0 {
         let exp = RULES.exp.creation_base_exp;
@@ -180,7 +180,7 @@ pub fn available_recipes(gd: &GameData, kind: CreationKind) -> Vec<&'static Reci
 
 /// Determine a character has enough skill for given creation or not.
 pub fn enough_skill(chara: &Chara, recipe: &Recipe, kind: CreationKind) -> bool {
-    let skill_level = chara.skills.get(SkillKind::Creation(kind));
+    let skill_level = chara.skills.get(kind.into());
 
     skill_level >= recipe.difficulty
 }

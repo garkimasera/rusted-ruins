@@ -1,10 +1,9 @@
-use super::defs::Recipe;
-use super::defs::{CreationKind, SkillBonus};
+use super::defs::{Recipe, SkillBonus};
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
 use super::site::SiteId;
-use super::skill::{SkillKind, SkillList};
+use super::skill::{CreationKind, SkillKind, SkillList};
 use super::traits::*;
 use super::unknown_id_err;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};

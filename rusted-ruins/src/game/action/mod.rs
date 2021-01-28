@@ -132,7 +132,7 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
 fn get_skill_kind_from_weapon(item: &Item) -> SkillKind {
     let weapon_obj = gobj::get_obj(item.idx);
     match weapon_obj.kind {
-        ItemKind::Weapon(kind) => SkillKind::Weapon(kind),
+        ItemKind::Weapon(kind) => kind.into(),
         _ => SkillKind::BareHands,
     }
 }

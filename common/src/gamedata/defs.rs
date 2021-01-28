@@ -66,27 +66,6 @@ impl Default for SkillBonus {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Serialize, Deserialize)]
-pub enum CreationKind {
-    Art,
-    Construction,
-    Cooking,
-    Craft,
-    Pharmacy,
-    Smith,
-}
-
-impl CreationKind {
-    pub const ALL: &'static [CreationKind] = &[
-        CreationKind::Art,
-        CreationKind::Construction,
-        CreationKind::Cooking,
-        CreationKind::Craft,
-        CreationKind::Pharmacy,
-        CreationKind::Smith,
-    ];
-}
-
 /// A recipe for creation
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Recipe {

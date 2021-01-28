@@ -171,15 +171,18 @@ fn gen_readable_item(item: &mut Item, item_obj: &ItemObject) {
 
 /// Generate a skill learning item
 fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
-    let skill_kind = if rng::gen_range(0..3) == 0 {
-        SkillKind::Creation(
-            CreationKind::ALL
-                .choose(&mut rng::GameRng)
-                .copied()
-                .unwrap(),
-        )
+    let skill_kind: SkillKind = if rng::gen_range(0..3) == 0 {
+        CreationKind::ALL
+            .choose(&mut rng::GameRng)
+            .copied()
+            .unwrap()
+            .into()
     } else {
-        SkillKind::Weapon(WeaponKind::ALL.choose(&mut rng::GameRng).copied().unwrap())
+        WeaponKind::ALL
+            .choose(&mut rng::GameRng)
+            .copied()
+            .unwrap()
+            .into()
     };
     item.attributes
         .push(ItemAttribute::SkillLearning(skill_kind));

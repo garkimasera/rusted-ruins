@@ -5,6 +5,8 @@ use bitflags::bitflags;
 use geom::Vec2d;
 use std::cmp::{Ord, Ordering, PartialOrd};
 
+use super::skill::WeaponKind;
+
 /// Game item
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct Item {
@@ -248,38 +250,6 @@ pub enum ItemAttribute {
 }
 
 pub type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;
-
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum WeaponKind {
-    Sword = 0,
-    Spear,
-    Axe,
-    Whip,
-    Bow = 100,
-    Crossbow,
-    Firearm,
-}
-
-impl WeaponKind {
-    pub fn is_melee(self) -> bool {
-        self < WeaponKind::Bow
-    }
-
-    pub fn is_ranged(self) -> bool {
-        !self.is_melee()
-    }
-
-    pub const ALL: &'static [WeaponKind] = &[
-        WeaponKind::Sword,
-        WeaponKind::Spear,
-        WeaponKind::Axe,
-        WeaponKind::Whip,
-        WeaponKind::Bow,
-        WeaponKind::Crossbow,
-        WeaponKind::Firearm,
-    ];
-}
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

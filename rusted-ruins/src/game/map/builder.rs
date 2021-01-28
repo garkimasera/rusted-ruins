@@ -115,7 +115,9 @@ pub fn generated_map_to_map(
     }
 
     match gm.entrance {
-        Entrance::Pos(_) => {}
+        Entrance::Pos(pos) => {
+            map.entrance = pos;
+        }
         Entrance::Stairs(e0, e1) => {
             // Set stairs
             let entrance_stairs = StairsKind::UpStairs;

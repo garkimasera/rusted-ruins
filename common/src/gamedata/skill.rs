@@ -1,62 +1,10 @@
-use super::defs::CreationKind;
-use super::item::WeaponKind;
 use fnv::FnvHashMap;
 use std::str::FromStr;
 use thiserror::Error;
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum SkillKind {
-    BareHands,
-    Carrying,
-    Defence,
-    Endurance,
-    Evasion,
-    Healing,
-    Throwing,
-    MagicDevice,
-    Mining,
-    Weapon(WeaponKind),
-    Creation(CreationKind),
-}
-
 #[derive(Clone, PartialEq, Eq, Debug, Error)]
 #[error("invalid string {0}")]
 pub struct SkillKindParseError(String);
-
-impl FromStr for SkillKind {
-    type Err = SkillKindParseError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(match s {
-            "bare_hands" => SkillKind::BareHands,
-            "carrying" => SkillKind::Carrying,
-            "defence" => SkillKind::Defence,
-            "endurance" => SkillKind::Endurance,
-            "evasion" => SkillKind::Evasion,
-            "healing" => SkillKind::Healing,
-            "throwing" => SkillKind::Throwing,
-            "magic_device" => SkillKind::MagicDevice,
-            "mining" => SkillKind::Mining,
-            "sword" => SkillKind::Weapon(WeaponKind::Sword),
-            "spear" => SkillKind::Weapon(WeaponKind::Spear),
-            "axe" => SkillKind::Weapon(WeaponKind::Axe),
-            "whip" => SkillKind::Weapon(WeaponKind::Whip),
-            "bow" => SkillKind::Weapon(WeaponKind::Bow),
-            "cross_bow" => SkillKind::Weapon(WeaponKind::Crossbow),
-            "fire_arm" => SkillKind::Weapon(WeaponKind::Firearm),
-            "art" => SkillKind::Creation(CreationKind::Art),
-            "construction" => SkillKind::Creation(CreationKind::Construction),
-            "cooking" => SkillKind::Creation(CreationKind::Cooking),
-            "craft" => SkillKind::Creation(CreationKind::Craft),
-            "pharmacy" => SkillKind::Creation(CreationKind::Pharmacy),
-            "smith" => SkillKind::Creation(CreationKind::Smith),
-            _ => {
-                return Err(SkillKindParseError(s.to_owned()));
-            }
-        })
-    }
-}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SkillList {
@@ -80,5 +28,242 @@ impl SkillList {
         } else {
             0
         }
+    }
+}
+
+macro_rules! define_skill_kind {
+    {
+        basic_skills = $basic_skill_start_value:expr;
+        {
+            $($basic_skill:ident, $basic_skill_as_str:expr,)*
+        }
+        melee_weapon_kind = $melee_weapon_start_value:expr;
+        {
+            $($melee_weapon:ident, $melee_weapon_as_str:expr,)*
+        }
+        ranged_weapon_kind = $ranged_weapon_start_value:expr;
+        {
+            $($ranged_weapon:ident, $ranged_weapon_as_str:expr,)*
+        }
+        creation_kind = $creation_start_value:expr;
+        {
+            $($creation:ident, $creation_as_str:expr,)*
+        }
+    } => {
+        #[repr(u16)]
+        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+        #[serde(rename_all = "snake_case")]
+        pub enum SkillKind {
+            #[doc(hidden)]
+            _DummyBasicSkill = $basic_skill_start_value,
+            $(
+                $basic_skill,
+            )*
+            #[doc(hidden)]
+            _DummyMeleeWeaponSkill = $melee_weapon_start_value,
+            $(
+                $melee_weapon,
+            )*
+            #[doc(hidden)]
+            _DummyRangedWeaponSkill = $ranged_weapon_start_value,
+            $(
+                $ranged_weapon,
+            )*
+            #[doc(hidden)]
+            _DummyCreationSkill = $creation_start_value,
+            $(
+                $creation,
+            )*
+        }
+
+        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+        #[serde(rename_all = "snake_case")]
+        pub enum WeaponKind {
+            $(
+                $melee_weapon,
+            )*
+            #[doc(hidden)]
+            _DummyWeapon = 0x7F,
+            $(
+                $ranged_weapon,
+            )*
+        }
+
+        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+        #[serde(rename_all = "snake_case")]
+        pub enum CreationKind {
+            $(
+                $creation,
+            )*
+        }
+
+        impl SkillKind {
+            pub fn weapon(self) -> Option<WeaponKind> {
+                match self {
+                    $(
+                        SkillKind::$melee_weapon => Some(WeaponKind::$melee_weapon),
+                    )*
+                    $(
+                        SkillKind::$ranged_weapon => Some(WeaponKind::$ranged_weapon),
+                    )*
+                    _ => None,
+                }
+            }
+
+            pub fn creation(self) -> Option<CreationKind> {
+                match self {
+                    $(
+                        SkillKind::$creation => Some(CreationKind::$creation),
+                    )*
+                    _ => None,
+                }
+            }
+
+            pub fn textid(self) -> &'static str {
+                if let Some(weapon_kind) = self.weapon() {
+                    return weapon_kind.textid();
+                }
+                if let Some(creation_kind) = self.creation() {
+                    return creation_kind.textid();
+                }
+                match self {
+                    $(
+                        SkillKind::$basic_skill => concat!("skill_kind-", $basic_skill_as_str),
+                    )*
+                    _ => unreachable!(),
+                }
+            }
+        }
+
+        impl FromStr for SkillKind {
+            type Err = SkillKindParseError;
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                Ok(match s {
+                    $(
+                        $basic_skill_as_str => SkillKind::$basic_skill,
+                    )*
+                    $(
+                        $melee_weapon_as_str => SkillKind::$melee_weapon,
+                    )*
+                    $(
+                        $ranged_weapon_as_str => SkillKind::$ranged_weapon,
+                    )*
+                    $(
+                        $creation_as_str => SkillKind::$creation,
+                    )*
+                    _ => {
+                        return Err(SkillKindParseError(s.to_owned()));
+                    }
+                })
+            }
+        }
+
+        impl Into<SkillKind> for WeaponKind {
+            fn into(self) -> SkillKind {
+                match self {
+                    $(
+                        WeaponKind::$melee_weapon => SkillKind::$melee_weapon,
+                    )*
+                    $(
+                        WeaponKind::$ranged_weapon => SkillKind::$ranged_weapon,
+                    )*
+                    _ => unreachable!(),
+                }
+            }
+        }
+
+        impl Into<SkillKind> for CreationKind {
+            fn into(self) -> SkillKind {
+                match self {
+                    $(
+                        CreationKind::$creation => SkillKind::$creation,
+                    )*
+                }
+            }
+        }
+
+        impl WeaponKind {
+            pub fn is_melee(self) -> bool {
+                self < WeaponKind::_DummyWeapon
+            }
+
+            pub fn is_ranged(self) -> bool {
+                !self.is_melee()
+            }
+
+            pub fn textid(self) -> &'static str {
+                match self {
+                    $(
+                        WeaponKind::$melee_weapon => concat!("weapon_kind-", $melee_weapon_as_str),
+                    )*
+                    $(
+                        WeaponKind::$ranged_weapon => concat!("weapon_kind-", $ranged_weapon_as_str),
+                    )*
+                    WeaponKind::_DummyWeapon => unreachable!(),
+                }
+            }
+
+            pub const ALL: &'static [WeaponKind] = &[
+                $(
+                    WeaponKind::$melee_weapon,
+                )*
+                $(
+                    WeaponKind::$ranged_weapon,
+                )*
+            ];
+        }
+
+        impl CreationKind {
+            pub fn textid(self) -> &'static str {
+                match self {
+                    $(
+                        CreationKind::$creation => concat!("creation_kind-", $creation_as_str),
+                    )*
+                }
+            }
+
+            pub const ALL: &'static [CreationKind] = &[
+                $(
+                    CreationKind::$creation,
+                )*
+            ];
+        }
+    }
+}
+
+define_skill_kind! {
+    basic_skills = 0;
+    {
+        BareHands, "bare_hands",
+        Carrying, "carrying",
+        Defence, "defence",
+        Endurance, "endurance",
+        Evasion, "evasion",
+        Healing, "healing",
+        Throwing, "throwing",
+        MagicDevice, "magic_device",
+        Mining, "mining",
+    }
+    melee_weapon_kind = 0x0400;
+    {
+        Sword, "sword",
+        Spear, "spear",
+        Axe, "axe",
+        Whip, "whip",
+    }
+    ranged_weapon_kind = 0x0800;
+    {
+        Bow, "bow",
+        Crossbow, "crossbow",
+        Firearm, "firearm",
+    }
+    creation_kind = 0x1000;
+    {
+        Art, "art",
+        Construction, "construction",
+        Cooking, "cooking",
+        Craft, "craft",
+        Pharmacy, "pharmacy",
+        Smith, "smith",
     }
 }
