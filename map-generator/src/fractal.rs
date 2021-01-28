@@ -97,7 +97,7 @@ fn write_block(map: &mut Array2d<f32>, block_size: u32, weight: f32) {
     let mut rand_map = Array2d::new(nx_block, ny_block, 0.0f32);
 
     for p in rand_map.iter_idx() {
-        rand_map[p] = gen_range(0.0, weight);
+        rand_map[p] = gen_range(0.0..weight);
     }
 
     for p in map.iter_idx() {
@@ -177,7 +177,7 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
 /// Pick one passable tile at random
 fn pick_passable_tile(map: &GeneratedMap) -> Vec2d {
     loop {
-        let p = Vec2d(gen_range(0, map.size.0), gen_range(0, map.size.1));
+        let p = Vec2d(gen_range(0..map.size.0), gen_range(0..map.size.1));
 
         if map.tile[p].is_passable() {
             return p;

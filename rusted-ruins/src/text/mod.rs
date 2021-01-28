@@ -82,7 +82,7 @@ fn new_bundle(lang: &str, resource: Vec<FluentResource>) -> FluentBundle<FluentR
     let langid: LanguageIdentifier = lang
         .parse()
         .expect("Parsing to language identifier failed.");
-    let mut bundle = FluentBundle::new(&[langid]);
+    let mut bundle = FluentBundle::new(vec![langid]);
 
     for res in resource.into_iter() {
         if let Err(e) = bundle.add_resource(res) {

@@ -85,7 +85,7 @@ pub fn choose_npc_chara_template(nrp: &HashMap<String, f32>, floor_level: u32) -
             first_available_ct_idx.expect("Any appropriate chara_template not found"),
         );
     }
-    let r = gen_range(0.0, sum);
+    let r = gen_range(0.0..sum);
     let mut sum = 0.0;
     for (i, ct) in chara_templates.iter().enumerate() {
         if let Some(da) = nrp.get(&ct.race) {

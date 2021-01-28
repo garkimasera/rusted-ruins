@@ -45,7 +45,7 @@ impl Lattice {
 
             for a in 0..(self.nx as i32) {
                 if self.ns_open[(a, b)] {
-                    if door_weight > gen_range(0.0, 1.0) {
+                    if door_weight > gen_range(0.0..1.0) {
                         let middle = ew_wall_len / 2;
                         for c in 0..ew_wall_len {
                             if c == middle {
@@ -70,7 +70,7 @@ impl Lattice {
             for b in 0..(self.ny as i32) {
                 if self.ew_open[(a, b)] {
                     // Determine door or fully opened
-                    if door_weight > gen_range(0.0, 1.0) {
+                    if door_weight > gen_range(0.0..1.0) {
                         let middle = ns_wall_len / 2;
                         for c in 0..ns_wall_len {
                             if c == middle {
@@ -111,10 +111,10 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
     let mut lattice = Lattice::new(nx, ny);
     let mut is_reach = Array2d::new(nx, ny, false);
 
-    let start_room = Vec2d(gen_range(0, nx) as i32, gen_range(0, ny) as i32);
+    let start_room = Vec2d(gen_range(0..nx) as i32, gen_range(0..ny) as i32);
     lattice.start = start_room;
 
-    let max_step = gen_range(min_step, max_step);
+    let max_step = gen_range(min_step..max_step);
 
     // Determine start and goal, and the route
     random_walk(start_room, &mut lattice, &mut is_reach, 0, max_step);

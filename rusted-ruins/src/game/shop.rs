@@ -32,7 +32,7 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
 pub fn update_items_on_shop(shop: &mut Shop, shop_gen: &ShopGenData) {
     shop.items.clear();
 
-    let n_gen_item = rng::gen_range(RULES.town.min_shop_items, RULES.town.max_shop_items);
+    let n_gen_item = rng::gen_range(RULES.town.min_shop_items..RULES.town.max_shop_items);
 
     for _ in 0..n_gen_item {
         if let Some(item) = gen_shop_item(shop.level, &shop.kind, shop_gen) {

@@ -17,7 +17,7 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
     match ai_rule.move_kind {
         MoveKind::NoMove => (),
         MoveKind::Melee => {
-            if gen_range(0, 3) == 0 {
+            if gen_range(0..3) == 0 {
                 move_to_nearest_enemy(game, cid);
                 return;
             }
@@ -32,7 +32,7 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
             let initial_pos = chara.ai.initial_pos;
             let pos = game.gd.chara_pos(cid).unwrap();
             if initial_pos != pos {
-                if gen_range(0, 1) == 0 {
+                if gen_range(0..1) == 0 {
                     let dir = geom::dir_by_2pos(pos, initial_pos);
                     action::try_move(game, cid, dir);
                     return;

@@ -63,7 +63,7 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f32>(
     }
 
     // Choose one item
-    let r = rng::gen_range(0.0, sum);
+    let r = rng::gen_range(0.0..sum);
     let mut sum = 0.0;
     for (i, item) in items.iter().enumerate() {
         let gen_weight = if is_shop {
@@ -129,8 +129,7 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
     if item_obj.img.variation_rule == ImgVariationRule::RandomOnGen {
         item.attributes
             .push(ItemAttribute::ImageVariation(rng::gen_range(
-                0,
-                item_obj.img.n_pattern,
+                0..item_obj.img.n_pattern,
             )));
     }
 
@@ -160,7 +159,7 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 
 /// Generate a magic device item
 fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
-    let charge_n: u32 = rng::gen_range_inclusive(item_obj.charge[0], item_obj.charge[1]).into();
+    let charge_n: u32 = rng::gen_range(item_obj.charge[0]..=item_obj.charge[1]).into();
     item.attributes.push(ItemAttribute::Charge { n: charge_n });
 }
 
@@ -172,7 +171,7 @@ fn gen_readable_item(item: &mut Item, item_obj: &ItemObject) {
 
 /// Generate a skill learning item
 fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
-    let skill_kind = if rng::gen_range(0, 3) == 0 {
+    let skill_kind = if rng::gen_range(0..3) == 0 {
         SkillKind::Creation(
             CreationKind::ALL
                 .choose(&mut rng::GameRng)
@@ -198,7 +197,7 @@ fn set_quality(item: &mut Item, item_obj: &ItemObject, level: u32) {
                 0
             };
             item.quality.base =
-                rng::gen_range_inclusive(0, level_diff / RULES.item.quality_level_factor) as i32;
+                rng::gen_range(0..=(level_diff / RULES.item.quality_level_factor)) as i32;
         }
     }
 }

@@ -13,7 +13,7 @@ use rules::RULES;
 /// Add a new dungeon
 pub fn add_dungeon_site(gd: &mut GameData, dungeon_kind: DungeonKind, pos: Vec2d) -> SiteId {
     let floor_range = &RULES.dungeon_gen[&dungeon_kind].floor_range;
-    let n_floor = rng::gen_range(floor_range[0], floor_range[1]);
+    let n_floor = rng::gen_range(floor_range[0]..floor_range[1]);
     let mut site = Site::new(n_floor, None);
     site.content = SiteContent::AutoGenDungeon { dungeon_kind };
     gd.add_site(

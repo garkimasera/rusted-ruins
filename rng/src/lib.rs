@@ -1,6 +1,6 @@
 //! Helper crate for using thread local and fast random number generator
 
-use rand::distributions::uniform::{SampleBorrow, SampleUniform, Uniform};
+use rand::distributions::uniform::{SampleRange, SampleUniform};
 pub use rand::seq::SliceRandom;
 pub use rand::thread_rng;
 pub use rand::Rng;
@@ -58,15 +58,9 @@ pub fn next_u32() -> u32 {
     rng.next_u32()
 }
 
-pub fn gen_range<T: SampleUniform, B: SampleBorrow<T> + Sized>(low: B, high: B) -> T {
+pub fn gen_range<T: SampleUniform, R: SampleRange<T>>(range: R) -> T {
     let mut rng = GameRng;
-    rng.gen_range(low, high)
-}
-
-pub fn gen_range_inclusive<T: SampleUniform, B: SampleBorrow<T> + Sized>(low: B, high: B) -> T {
-    let d = Uniform::new_inclusive(low, high);
-    let mut rng = GameRng;
-    rng.sample(d)
+    rng.gen_range(range)
 }
 
 /// Calculate the sum of dices
@@ -76,7 +70,7 @@ pub fn roll_dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
     let x = x.into();
     let mut sum = 0;
     for _ in 0..n {
-        sum += gen_range(1, x + 1);
+        sum += gen_range(1..(x + 1));
     }
     sum
 }
@@ -99,7 +93,7 @@ where
     }
 
     let mut rng = GameRng;
-    let r = rng.gen_range(0.0, sum);
+    let r = rng.gen_range(0.0..sum);
     let mut a = 0.0;
 
     let mut first_enable_value = None;

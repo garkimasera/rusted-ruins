@@ -77,8 +77,8 @@ impl Rooms {
                 gm.tile[p] = TileKind::Floor;
             }
             if i == rooms_with_stairs[0] || i == rooms_with_stairs[1] {
-                let dx = gen_range(1, room.w - 1) as i32;
-                let dy = gen_range(1, room.h - 1) as i32;
+                let dx = gen_range(1..(room.w - 1)) as i32;
+                let dy = gen_range(1..(room.h - 1)) as i32;
                 let stair_tile = Vec2d(room.x + dx, room.y + dy);
                 if i == rooms_with_stairs[0] {
                     e0 = stair_tile;
@@ -111,7 +111,7 @@ impl Rooms {
         'try_loop: for _ in 0..MAX_TRY {
             // Choose wall to dig
 
-            let i_roomwall = gen_range(0, n_empty_wall);
+            let i_roomwall = gen_range(0..n_empty_wall);
             let mut a = i_roomwall;
             let (i_room, i_wall) = 'room_loop: loop {
                 for (i_room, room) in rooms.iter().enumerate() {
@@ -139,41 +139,41 @@ impl Rooms {
 
             // Make new door
             let new_door_pos = Vec2d::from(match dir {
-                Direction::N => (parent.x + gen_range(0, parent.w as i32), parent.y - 1),
+                Direction::N => (parent.x + gen_range(0..(parent.w as i32)), parent.y - 1),
                 Direction::E => (
                     parent.x + parent.w as i32,
-                    parent.y + gen_range(0, parent.h as i32),
+                    parent.y + gen_range(0..(parent.h as i32)),
                 ),
                 Direction::S => (
-                    parent.x + gen_range(0, parent.w as i32),
+                    parent.x + gen_range(0..(parent.w as i32)),
                     parent.y + parent.h as i32,
                 ),
-                Direction::W => (parent.x - 1, parent.y + gen_range(0, parent.h as i32)),
+                Direction::W => (parent.x - 1, parent.y + gen_range(0..(parent.h as i32))),
                 _ => unreachable!(),
             });
 
             // Make new room
-            let new_room_w = gen_range(self.min_room_size, self.max_room_size + 1);
-            let new_room_h = gen_range(self.min_room_size, self.max_room_size + 1);
+            let new_room_w = gen_range(self.min_room_size..=self.max_room_size);
+            let new_room_h = gen_range(self.min_room_size..=self.max_room_size);
             let new_room_top_left_door = match dir {
                 Direction::N => (
-                    new_door_pos.0 - gen_range(0, new_room_w as i32),
+                    new_door_pos.0 - gen_range(0..(new_room_w as i32)),
                     new_door_pos.1 - new_room_h as i32 - 1,
                     [false, false, true, false],
                 ),
                 Direction::E => (
                     new_door_pos.0 + 1,
-                    new_door_pos.1 - gen_range(0, new_room_h as i32),
+                    new_door_pos.1 - gen_range(0..(new_room_h as i32)),
                     [false, false, false, true],
                 ),
                 Direction::S => (
-                    new_door_pos.0 - gen_range(0, new_room_w as i32),
+                    new_door_pos.0 - gen_range(0..(new_room_w as i32)),
                     new_door_pos.1 + 1,
                     [true, false, false, false],
                 ),
                 Direction::W => (
                     new_door_pos.0 - new_room_w as i32 - 1,
-                    new_door_pos.1 - gen_range(0, new_room_h as i32),
+                    new_door_pos.1 - gen_range(0..(new_room_h as i32)),
                     [false, true, false, false],
                 ),
                 _ => unreachable!(),
@@ -217,8 +217,8 @@ impl Rooms {
         let room_size = self.gen_room_size();
 
         Room {
-            x: center_tile.0 - gen_range(0, room_size.0 / 2),
-            y: center_tile.1 - gen_range(0, room_size.1 / 2),
+            x: center_tile.0 - gen_range(0..(room_size.0 / 2)),
+            y: center_tile.1 - gen_range(0..(room_size.1 / 2)),
             w: room_size.0 as u32,
             h: room_size.1 as u32,
             has_door: [false; 4],
@@ -227,8 +227,8 @@ impl Rooms {
 
     fn gen_room_size(&self) -> Vec2d {
         Vec2d(
-            gen_range(self.min_room_size, self.max_room_size + 1) as i32,
-            gen_range(self.min_room_size, self.max_room_size + 1) as i32,
+            gen_range(self.min_room_size..=self.max_room_size) as i32,
+            gen_range(self.min_room_size..=self.max_room_size) as i32,
         )
     }
 }

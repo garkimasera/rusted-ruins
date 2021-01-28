@@ -81,7 +81,7 @@ impl ItemEx for Item {
         let eff_min = std::cmp::max(base_eff - item_obj.eff_var as i32, 0);
         let eff_max = base_eff + eff_var;
         if eff_max > eff_min {
-            rng::gen_range(eff_min, eff_max)
+            rng::gen_range(eff_min..eff_max)
         } else {
             eff_min
         }
