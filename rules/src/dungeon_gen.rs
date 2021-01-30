@@ -6,8 +6,8 @@ pub type DungeonGen = HashMap<DungeonKind, DungeonGenParams>;
 
 #[derive(Serialize, Deserialize)]
 pub struct DungeonGenParams {
-    /// Specify floor generation type that is described in floor_gen and its weight.
-    pub floor_gen: Vec<(String, f32)>,
+    /// Specify map generation type that is described in map_gen and its weight.
+    pub map_gen: Vec<(String, f32)>,
     /// The probability of npc generation for each race
     pub npc_race_probability: HashMap<String, f32>,
     /// Default npc faction

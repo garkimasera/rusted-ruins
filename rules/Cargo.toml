@@ -21,6 +21,7 @@ path = "../geom"
 
 [dependencies.rusted-ruins-common]
 path = "../common"
+features = ["global_state_obj"]
 
 [dependencies.rusted-ruins-map-generator]
 path = "../map-generator"

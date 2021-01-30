@@ -156,10 +156,9 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32, class: CharaClass) -> Skil
         skill_list.set_skill_level(*skill_kind, lv)
     }
 
-    for (skill_name, bonus) in &RULES.class.get(class).skill_bonus {
-        let skill_kind: SkillKind = skill_name.parse().expect("invalid skill name");
+    for (skill_kind, bonus) in &RULES.class.get(class).skill_bonus {
         if *bonus > BonusLevel::None {
-            skill_list.set_skill_level(skill_kind, 1);
+            skill_list.set_skill_level(*skill_kind, 1);
         }
     }
 

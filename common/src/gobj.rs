@@ -57,3 +57,43 @@ pub fn get_by_id<T: FromId>(id: &str) -> &'static T {
 pub fn get_by_id_checked<T: FromId>(id: &str) -> Option<&'static T> {
     T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER)
 }
+
+// serde_with implementaion
+mod serde_with_impl {
+    use super::*;
+    use serde_with::{DeserializeAs, SerializeAs};
+
+    /// serialize/deserialize object index as id string.
+    /// gobj::init() must be called before using this.
+    #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+    pub struct ObjIdxAsId;
+
+    impl<T> SerializeAs<T> for ObjIdxAsId
+    where
+        T: ObjectIndex + Copy,
+    {
+        fn serialize_as<S>(source: &T, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer,
+        {
+            let id = idx_to_id(*source);
+            serializer.serialize_str(id)
+        }
+    }
+
+    impl<'de, T> DeserializeAs<'de, T> for ObjIdxAsId
+    where
+        T: ObjectIndex + Default + Sized,
+    {
+        fn deserialize_as<D>(deserializer: D) -> Result<T, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            use serde::Deserialize;
+            let id = String::deserialize(deserializer)?;
+            Ok(id_to_idx(&id))
+        }
+    }
+}
+
+pub use serde_with_impl::ObjIdxAsId;

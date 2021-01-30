@@ -33,14 +33,14 @@ pub fn extend_site_floor(gd: &mut GameData, sid: SiteId) {
         SiteContent::AutoGenDungeon { dungeon_kind } => {
             let rule = &RULES.dungeon_gen[&dungeon_kind];
             let gen_params = &RULES.dungeon_gen[&dungeon_kind];
-            let floor_gen_id = &gen_params
-                .floor_gen
+            let map_gen_id = &gen_params
+                .map_gen
                 .choose_weighted(&mut GameRng, |item| item.1)
                 .unwrap()
                 .0;
             let tile_idx = gobj::id_to_idx(&rule.terrain[0][0]);
             let wall_idx = gobj::id_to_idx(&rule.terrain[0][1]);
-            let mut map = MapBuilder::from_map_gen_id(floor_gen_id)
+            let mut map = MapBuilder::from_map_gen_id(map_gen_id)
                 .floor(floor)
                 .tile(tile_idx)
                 .wall(wall_idx)

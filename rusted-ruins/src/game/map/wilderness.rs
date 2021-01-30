@@ -1,7 +1,6 @@
 use crate::game::map::builder::MapBuilder;
 use common::gamedata::*;
 use common::gobj;
-use common::objholder::*;
 use geom::*;
 use regex::Regex;
 use rules::biome::{BiomeDetail, SubBiomeDetail};
@@ -13,12 +12,10 @@ pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
     } else {
         return None;
     };
-    let tile_idx: TileIdx = gobj::id_to_idx(&biome.tile);
-    let wall_idx: WallIdx = gobj::id_to_idx(&biome.wall);
 
     let map = MapBuilder::from_map_gen_id("wilderness")
-        .tile(tile_idx)
-        .wall(wall_idx)
+        .tile(biome.tile)
+        .wall(biome.wall)
         .build();
 
     Some(map)

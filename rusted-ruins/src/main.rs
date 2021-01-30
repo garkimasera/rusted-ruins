@@ -31,6 +31,7 @@ fn main() {
     setup_logger();
     init_lazy_statics();
     init_obj();
+    // Must be after init_obj()
     init_rules();
 
     let sdl_context = SdlContext::init();

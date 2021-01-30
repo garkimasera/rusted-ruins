@@ -1,7 +1,7 @@
 
 {
     "cave": {
-        "floor_gen": [["fractal", 1.0]],
+        "map_gen": [["fractal", 1.0]],
         "npc_race_probability": {
             "bug": 0.4,
             "slime": 0.4,
@@ -25,7 +25,7 @@
         "music": "dungeon-03"
     },
     "ruin": {
-        "floor_gen": [["rooms", 1.0]],
+        "map_gen": [["rooms", 1.0]],
         "npc_race_probability": {
             "bug": 0.5,
             "slime": 0.5,

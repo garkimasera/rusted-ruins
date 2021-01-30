@@ -1,3 +1,7 @@
+use common::gobj::ObjIdxAsId;
+use common::objholder::*;
+use serde_with::serde_as;
+
 /// Rules for wilderness map generation
 use std::collections::HashMap;
 
@@ -7,10 +11,13 @@ pub struct Biome {
     pub sub_biomes: HashMap<String, SubBiomeDetail>,
 }
 
+#[serde_as]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BiomeDetail {
-    pub tile: String,
-    pub wall: String,
+    #[serde_as(as = "ObjIdxAsId")]
+    pub tile: TileIdx,
+    #[serde_as(as = "ObjIdxAsId")]
+    pub wall: WallIdx,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
