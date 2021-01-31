@@ -105,10 +105,12 @@ pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> Gr
     let i = mode.map(|mode| match mode {
         ItemWindowMode::List => 0,
         ItemWindowMode::Drop => 1,
-        ItemWindowMode::Drink => 2,
-        ItemWindowMode::Eat => 3,
-        ItemWindowMode::Release => 4,
-        ItemWindowMode::Read => 5,
+        ItemWindowMode::Throw => 2,
+        ItemWindowMode::Drink => 3,
+        ItemWindowMode::Eat => 4,
+        ItemWindowMode::Use => 5,
+        ItemWindowMode::Release => 6,
+        ItemWindowMode::Read => 7,
         _ => unreachable!(),
     });
 

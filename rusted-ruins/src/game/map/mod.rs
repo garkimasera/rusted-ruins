@@ -61,6 +61,8 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
         assert!(!new_mid.is_region_map());
         info!("{:?} is not exist, so try to create new floor", new_mid);
         super::dungeon_gen::extend_site_floor(&mut game.gd, new_mid.sid());
+    } else {
+        game.gd.region.preload_map(new_mid, save_dir.join("maps"));
     }
     let new_player_pos = destination_to_pos(&game.gd, destination);
 
@@ -68,7 +70,6 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
 
     trace!("Switch map to {:?}", new_mid);
 
-    gd.region.preload_map(new_mid, save_dir.join("maps"));
     gd.set_current_mapid(new_mid);
 
     gd.get_current_map_mut()
