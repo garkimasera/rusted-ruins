@@ -215,7 +215,7 @@ lazy_static! {
 
 /// Initialize Rules
 pub fn init<P: AsRef<Path>>(app_dirs: P, addon_dir: Option<P>) {
-    *RULES_DIR.lock().unwrap() = Some(app_dirs.as_ref().into());
+    *RULES_DIR.lock().unwrap() = Some(app_dirs.as_ref().join("rules"));
 
     if let Some(addon_dir) = addon_dir {
         *ADDON_RULES_DIR.lock().unwrap() = Some(addon_dir.as_ref().into());

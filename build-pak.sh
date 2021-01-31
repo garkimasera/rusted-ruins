@@ -8,6 +8,7 @@ pushd rusted-ruins-pak
 popd
 
 mkdir -p ./assets/paks
+mkdir -p ./assets/rules
 mkdir -p ./assets/sound
 cp -r rusted-ruins-pak/paks/* -t ./assets/paks
 cp -r rusted-ruins-pak/rules/* -t ./assets/rules
