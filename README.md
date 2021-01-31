@@ -92,29 +92,31 @@ Icon list
 
 ### Shortcut keys
 
-c - Open creation window
+wasd or arrow key - Move
 
 d - Drop items
 
 e - Eat an item
 
-f - Shot
-
 g - Pick up items
 
 h - Help
 
-i - View inventory
-
-o - Open game information window
-
 q - Drink an item
 
-s - Open status window
+r - Release an magical device item
 
-w - Open equipment window
+f1 - open item window
 
-escape - Open exit window
+f2 - open equipment window
+
+f3 - open status window
+
+f4 - open creation window
+
+f5 - open game info window
+
+f6 / escape - Open exit window
 
 f12 - Debug command
 
