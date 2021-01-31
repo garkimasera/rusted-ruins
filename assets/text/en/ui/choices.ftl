@@ -12,6 +12,7 @@ item_menu-drop_all = Drop all
 tile-menu-chop = Chop a tree
 tile-menu-down-stairs = Go down the stairs
 tile-menu-enter-site = Enter this site
+tile-menu-enter-wilderness = Enter wilderness
 tile-menu-exit-to-region-map = Exit to region map
 tile-menu-infomation = Infomation
 tile-menu-target = Target
