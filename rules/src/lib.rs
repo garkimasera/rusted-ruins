@@ -64,49 +64,51 @@ pub struct Rules {
 
 impl Rules {
     fn load_from_dir(rules_dir: &Path, addon_dir: Option<&Path>) -> Rules {
-        let mut active_skills = active_skill::ActiveSkills::default();
-        let active_skill_dir = rules_dir.join(ACTIVE_SKILL_DIR_NAME);
-        if active_skill_dir.exists() {
-            if let Err(e) = active_skills.join_from_dir(&active_skill_dir) {
-                warn!(
-                    "active skill loading error at {}\n{}",
-                    active_skill_dir.to_string_lossy(),
-                    e
-                );
-            }
-        }
+        let mut dirs: Vec<PathBuf> = vec![rules_dir.into()];
 
-        let mut creation: creation::Creation = read_from_json(&rules_dir.join("creation.json"));
-        let recipe_dir = rules_dir.join(RECIPE_DIR_NAME);
-        if recipe_dir.exists() {
-            if let Err(e) = creation.join_from_dir(&recipe_dir) {
-                warn!(
-                    "recipe loading error at {}\n{}",
-                    recipe_dir.to_string_lossy(),
-                    e
-                );
-            }
-        }
-
-        // Load active skill / creation(recipe) rule files in addon dir
+        // Reading addon dirs
         if let Some(addon_dir) = addon_dir {
-            let addon_active_skill_dir = addon_dir.join(ACTIVE_SKILL_DIR_NAME);
-            if addon_active_skill_dir.exists() {
-                if let Err(e) = active_skills.join_from_dir(&addon_active_skill_dir) {
+            fn read_addon_dir(dirs: &mut Vec<PathBuf>, addon_dir: &Path) -> std::io::Result<()> {
+                let addon_dir = std::fs::read_dir(addon_dir)?;
+                for d in addon_dir {
+                    let d = d?;
+                    if !d.file_type()?.is_dir() {
+                        continue;
+                    }
+                    let mut rule_dir = d.path();
+                    rule_dir.push("rules");
+                    if rule_dir.exists() && rule_dir.is_dir() {
+                        dirs.push(rule_dir);
+                    }
+                }
+                Ok(())
+            }
+            if let Some(e) = read_addon_dir(&mut dirs, addon_dir).err() {
+                error!("error occurred during reading rule dir: \"{}\"", e);
+                exit_err();
+            }
+        }
+
+        let mut active_skills = active_skill::ActiveSkills::default();
+        let mut creation: creation::Creation = read_from_dirs(&dirs, "creation.json");
+
+        for dir in dirs.iter() {
+            let active_skill_dir = dir.join(ACTIVE_SKILL_DIR_NAME);
+            if active_skill_dir.exists() {
+                if let Err(e) = active_skills.join_from_dir(&active_skill_dir) {
                     warn!(
                         "active skill loading error at {}\n{}",
-                        addon_active_skill_dir.to_string_lossy(),
+                        active_skill_dir.to_string_lossy(),
                         e
                     );
                 }
             }
-
-            let addon_recipe_dir = addon_dir.join(RECIPE_DIR_NAME);
-            if addon_recipe_dir.exists() {
-                if let Err(e) = creation.join_from_dir(&addon_recipe_dir) {
+            let recipe_dir = dir.join(RECIPE_DIR_NAME);
+            if recipe_dir.exists() {
+                if let Err(e) = creation.join_from_dir(&recipe_dir) {
                     warn!(
                         "recipe loading error at {}\n{}",
-                        addon_recipe_dir.to_string_lossy(),
+                        recipe_dir.to_string_lossy(),
                         e
                     );
                 }
@@ -117,37 +119,76 @@ impl Rules {
 
         Rules {
             active_skills,
-            biome: read_from_json(&rules_dir.join("biome.json")),
-            chara: read_from_json(&rules_dir.join("chara.json")),
-            chara_gen: read_from_json(&rules_dir.join("charagen.json")),
-            class: read_from_json(&rules_dir.join("class.json")),
+            biome: read_from_dirs(&dirs, "biome.json"),
+            chara: read_from_dirs(&dirs, "chara.json"),
+            chara_gen: read_from_dirs(&dirs, "charagen.json"),
+            class: read_from_dirs(&dirs, "class.json"),
             creation,
-            combat: read_from_json(&rules_dir.join("combat.json")),
-            dungeon_gen: read_from_json(&rules_dir.join("dungeon_gen.json")),
-            effect: read_from_json(&rules_dir.join("effect.json")),
-            exp: read_from_json(&rules_dir.join("exp.json")),
-            faction: read_from_json(&rules_dir.join("faction.json")),
-            map_gen: read_from_json(&rules_dir.join("map_gen.json")),
-            item: read_from_json(&rules_dir.join("item.json")),
-            magic: read_from_json(&rules_dir.join("magic.json")),
-            material: read_from_json(&rules_dir.join("material.json")),
-            newgame: read_from_json(&rules_dir.join("newgame.json")),
-            npc_ai: read_from_json(&rules_dir.join("npc_ai.json")),
-            params: read_from_json(&rules_dir.join("params.json")),
-            quest: read_from_json(&rules_dir.join("quest.json")),
-            race: read_from_json(&rules_dir.join("race.json")),
-            town: read_from_json(&rules_dir.join("town.json")),
+            combat: read_from_dirs(&dirs, "combat.json"),
+            dungeon_gen: read_from_dirs(&dirs, "dungeon_gen.json"),
+            effect: read_from_dirs(&dirs, "effect.json"),
+            exp: read_from_dirs(&dirs, "exp.json"),
+            faction: read_from_dirs(&dirs, "faction.json"),
+            map_gen: read_from_dirs(&dirs, "map_gen.json"),
+            item: read_from_dirs(&dirs, "item.json"),
+            magic: read_from_dirs(&dirs, "magic.json"),
+            material: read_from_dirs(&dirs, "material.json"),
+            newgame: read_from_dirs(&dirs, "newgame.json"),
+            npc_ai: read_from_dirs(&dirs, "npc_ai.json"),
+            params: read_from_dirs(&dirs, "params.json"),
+            quest: read_from_dirs(&dirs, "quest.json"),
+            race: read_from_dirs(&dirs, "race.json"),
+            town: read_from_dirs(&dirs, "town.json"),
         }
     }
 }
 
-fn read_from_json<T: for<'de> Deserialize<'de>>(file_path: &Path) -> T {
-    info!("Rule file loading: \"{}\"", file_path.to_string_lossy());
-    let file = match fs::File::open(file_path) {
+fn read_from_dirs<T, P>(dirs: &[P], name: &str) -> T
+where
+    T: for<'de> Deserialize<'de>,
+    P: AsRef<Path>,
+{
+    let mut rule: Option<T> = None;
+
+    for dir in dirs.iter() {
+        let dir = dir.as_ref();
+        let file_path = dir.join(name);
+        let file = match fs::File::open(&file_path) {
+            Ok(o) => o,
+            Err(_) => {
+                continue;
+            }
+        };
+        info!("Rule file loading: \"{}\"", file_path.to_string_lossy());
+        match serde_json::from_reader(file) {
+            Ok(o) => {
+                rule = Some(o);
+            }
+            Err(e) => {
+                error!("{}", e);
+                exit_err();
+            }
+        }
+    }
+    if let Some(rule) = rule {
+        rule
+    } else {
+        error!("rule file \"{}\" not found", name);
+        exit_err()
+    }
+}
+
+fn read_from_file<T, P>(path: P) -> T
+where
+    T: for<'de> Deserialize<'de>,
+    P: AsRef<Path>,
+{
+    info!("Rule file loading: \"{}\"", path.as_ref().to_string_lossy());
+    let file = match fs::File::open(path) {
         Ok(o) => o,
         Err(e) => {
             error!("{}", e);
-            exit_err()
+            exit_err();
         }
     };
     match serde_json::from_reader(file) {
@@ -174,12 +215,10 @@ lazy_static! {
 
 /// Initialize Rules
 pub fn init<P: AsRef<Path>>(app_dirs: P, addon_dir: Option<P>) {
-    let rules_dir = app_dirs.as_ref().join("rules");
-    *RULES_DIR.lock().unwrap() = Some(rules_dir);
+    *RULES_DIR.lock().unwrap() = Some(app_dirs.as_ref().into());
 
     if let Some(addon_dir) = addon_dir {
-        let addon_rules_dir = addon_dir.as_ref().join("rules");
-        *ADDON_RULES_DIR.lock().unwrap() = Some(addon_rules_dir);
+        *ADDON_RULES_DIR.lock().unwrap() = Some(addon_dir.as_ref().into());
     }
 
     lazy_static::initialize(&RULES);

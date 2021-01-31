@@ -42,7 +42,8 @@ impl ActiveSkills {
                 continue;
             }
 
-            let active_skills: ActiveSkills = super::read_from_json(&path);
+            let active_skills = super::read_from_file(path);
+
             self.join(active_skills);
         }
         Ok(())

@@ -81,7 +81,7 @@ impl Creation {
                 continue;
             }
 
-            let recipes: Recipes = super::read_from_json(&path);
+            let recipes: Recipes = super::read_from_file(&path);
             self.join(recipes);
         }
         Ok(())
