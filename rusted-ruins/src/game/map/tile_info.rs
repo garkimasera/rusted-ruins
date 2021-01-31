@@ -9,7 +9,7 @@ pub fn print_tile_info(_game: &Game, _pos: Vec2d) {
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct TileInfoQuery {
     pub move_symbol: Option<SpecialTileKind>,
-    pub boundary: Option<(Direction, BoundaryBehavior)>,
+    pub boundary: Option<(Direction, Option<Destination>)>,
     pub chara: Option<CharaId>,
 }
 

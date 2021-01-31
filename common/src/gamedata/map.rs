@@ -186,25 +186,31 @@ pub struct OutsideTileInfo {
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct MapBoundary {
-    pub n: BoundaryBehavior,
-    pub s: BoundaryBehavior,
-    pub e: BoundaryBehavior,
-    pub w: BoundaryBehavior,
+    pub n: Option<Destination>,
+    pub s: Option<Destination>,
+    pub e: Option<Destination>,
+    pub w: Option<Destination>,
+}
+
+impl MapBoundary {
+    pub fn from_same_destination(d: Destination) -> Self {
+        Self {
+            n: Some(d),
+            s: Some(d),
+            e: Some(d),
+            w: Some(d),
+        }
+    }
 }
 
 /// Reperesents the floor that boundary connect to
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum BoundaryBehavior {
-    None,
+pub enum Destination {
     Floor(u32),
-    RegionMap,
-    MapId(MapId, u32),
-}
-
-impl Default for BoundaryBehavior {
-    fn default() -> BoundaryBehavior {
-        BoundaryBehavior::None
-    }
+    Exit,
+    MapIdWithPos(MapId, Vec2d),
+    MapIdWithEntrance(MapId, u32),
+    MapId(MapId),
 }
 
 impl Default for TileInfo {
@@ -473,20 +479,16 @@ impl Map {
 
     /// Returns boundart when player move from 'pos' to 'dir' direction
     /// If its destination tile is inside map, return None
-    pub fn get_boundary_by_tile_and_dir(
-        &self,
-        pos: Vec2d,
-        dir: Direction,
-    ) -> Option<BoundaryBehavior> {
+    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<Destination> {
         let dest_pos = pos + dir.as_vec();
         if dest_pos.1 < 0 {
-            Some(self.boundary.n)
+            self.boundary.n
         } else if dest_pos.1 >= self.h as i32 {
-            Some(self.boundary.s)
+            self.boundary.s
         } else if dest_pos.0 < 0 {
-            Some(self.boundary.w)
+            self.boundary.w
         } else if dest_pos.0 >= self.w as i32 {
-            Some(self.boundary.e)
+            self.boundary.e
         } else {
             None
         }

@@ -12,6 +12,6 @@ impl<'a> DoPlayerAction<'a> {
             .region
             .path_to_map_id_and_pos(&RULES.params.restart_path)
             .unwrap();
-        crate::game::map::switch_map_with_pos(self.0, mid, Some(pos));
+        crate::game::map::switch_map(self.0, Destination::MapIdWithPos(mid, pos));
     }
 }

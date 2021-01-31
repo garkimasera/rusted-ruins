@@ -2,7 +2,7 @@ use super::commonuse::*;
 use crate::config::CONTROL_CFG;
 use crate::game::map::tile_info::*;
 use crate::game::{DialogOpenRequest, InfoGetter};
-use common::gamedata::{BoundaryBehavior, SpecialTileKind, StairsKind};
+use common::gamedata::{Destination, SpecialTileKind, StairsKind};
 use common::gobj;
 use geom::*;
 
@@ -45,8 +45,8 @@ pub fn create_menu(
             _ => (),
         }
         match t.boundary {
-            None | Some((_, BoundaryBehavior::None)) => (),
-            Some((dir, BoundaryBehavior::RegionMap)) => {
+            None | Some((_, None)) => (),
+            Some((dir, Some(Destination::Exit))) => {
                 text_ids.push("tile-menu-exit-to-region-map");
                 callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
                     pa.goto_next_floor(dir, false);

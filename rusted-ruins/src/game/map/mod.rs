@@ -49,45 +49,27 @@ impl MapEx for Map {
     }
 }
 
-pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
+pub fn switch_map(game: &mut Game, destination: Destination) {
     game.ui_request.push_back(super::UiRequest::StopCentering);
     game.clear_target();
 
     let save_dir = game.save_dir.as_ref().unwrap();
+
+    let new_mid = destination_to_mid(&game.gd, destination);
+
+    if !game.gd.region.map_exist(new_mid) {
+        assert!(!new_mid.is_region_map());
+        info!("{:?} is not exist, so try to create new floor", new_mid);
+        super::dungeon_gen::extend_site_floor(&mut game.gd, new_mid.sid());
+    }
+    let new_player_pos = destination_to_pos(&game.gd, destination);
+
     let gd = &mut game.gd;
 
-    trace!("Switch map to {:?}", mid);
-    // If next_mid floor doesn't exist, create new floor
-    if !mid.is_region_map() && !gd.region.map_exist(mid) {
-        info!("{:?} is not exist, so try to create new floor", mid);
-        super::dungeon_gen::extend_site_floor(gd, mid.sid());
-    }
-    let prev_mid = gd.get_current_mapid();
-    gd.region.preload_map(mid, save_dir.join("maps"));
-    gd.set_current_mapid(mid);
+    trace!("Switch map to {:?}", new_mid);
 
-    let new_player_pos = if let Some(pos) = pos {
-        pos
-    } else {
-        if mid.is_region_map() && !prev_mid.is_region_map() && mid.rid() == prev_mid.rid() {
-            // Exit from a site to region map
-            gd.region
-                .get_site_pos(prev_mid.sid())
-                .expect("tried to exit from site that don't have pos")
-        } else {
-            // Move to another floor of the same site
-            let current_map = gd.get_current_map();
-            if let Some(p) = current_map.search_stairs(prev_mid.floor()) {
-                p
-            } else {
-                current_map
-                    .entrance
-                    .get(0)
-                    .map(|pos| *pos)
-                    .unwrap_or(Vec2d(0, 0))
-            }
-        }
-    };
+    gd.region.preload_map(new_mid, save_dir.join("maps"));
+    gd.set_current_mapid(new_mid);
 
     gd.get_current_map_mut()
         .locate_chara(CharaId::Player, new_player_pos);
@@ -97,9 +79,68 @@ pub fn switch_map_with_pos(game: &mut Game, mid: MapId, pos: Option<Vec2d>) {
     super::view::update_view_map(game);
 }
 
-/// Switch current map to the specified map
-pub fn switch_map(game: &mut Game, mid: MapId) {
-    switch_map_with_pos(game, mid, None);
+/// Convert Destination to map id.
+pub fn destination_to_mid(gd: &GameData, dest: Destination) -> MapId {
+    let prev_mid = gd.get_current_mapid();
+    match dest {
+        Destination::Floor(n) => MapId::SiteMap {
+            sid: prev_mid.sid(),
+            floor: n,
+        },
+        Destination::Exit => MapId::RegionMap {
+            rid: prev_mid.rid(),
+        },
+        Destination::MapId(mid) => mid,
+        Destination::MapIdWithPos(mid, _) => mid,
+        Destination::MapIdWithEntrance(mid, _) => mid,
+    }
+}
+
+/// Get destination position.
+pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Vec2d {
+    let prev_mid = gd.get_current_mapid();
+    let new_mid = destination_to_mid(gd, dest);
+    let pos = match dest {
+        Destination::Floor(_) => None,
+        Destination::Exit => {
+            let pos = gd
+                .region
+                .get_site_pos(prev_mid.sid())
+                .expect("tried to exit from site that don't have pos");
+            Some(pos)
+        }
+        Destination::MapId(mid) => {
+            assert_eq!(new_mid, mid);
+            None
+        }
+        Destination::MapIdWithPos(mid, pos) => {
+            assert_eq!(new_mid, mid);
+            Some(pos)
+        }
+        Destination::MapIdWithEntrance(mid, entrance) => {
+            assert_eq!(new_mid, mid);
+            let map = gd.region.get_map(new_mid);
+            Some(map.entrance[entrance as usize])
+        }
+    };
+    if let Some(pos) = pos {
+        return pos;
+    }
+
+    assert!(gd.region.map_exist(new_mid));
+
+    // Search position automatically
+    let dest_map = gd.region.get_map(new_mid);
+    let pos = if let Some(p) = dest_map.search_stairs(prev_mid.floor()) {
+        p
+    } else {
+        dest_map
+            .entrance
+            .get(0)
+            .map(|pos| *pos)
+            .unwrap_or(Vec2d(0, 0))
+    };
+    pos
 }
 
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {

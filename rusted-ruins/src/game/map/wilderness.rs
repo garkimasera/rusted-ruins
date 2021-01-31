@@ -1,4 +1,5 @@
 use crate::game::map::builder::MapBuilder;
+use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
@@ -13,9 +14,16 @@ pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
         return None;
     };
 
+    let destination = Destination::MapIdWithPos(
+        gd.get_current_mapid(),
+        gd.chara_pos(CharaId::Player).unwrap(),
+    );
+    let boundary = MapBoundary::from_same_destination(destination);
+
     let map = MapBuilder::from_map_gen_id("wilderness")
         .tile(biome.tile)
         .wall(biome.wall)
+        .map_boundary(boundary)
         .build();
 
     Some(map)

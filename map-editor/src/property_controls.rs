@@ -82,7 +82,7 @@ impl PropertyControls {
             MapTemplateBoundaryBehavior::PrevFloor => {
                 self.boundary_n_prev.set_active(true);
             }
-            MapTemplateBoundaryBehavior::RegionMap => {
+            MapTemplateBoundaryBehavior::Exit => {
                 self.boundary_n_region.set_active(true);
             }
         }
@@ -96,7 +96,7 @@ impl PropertyControls {
             MapTemplateBoundaryBehavior::PrevFloor => {
                 self.boundary_s_prev.set_active(true);
             }
-            MapTemplateBoundaryBehavior::RegionMap => {
+            MapTemplateBoundaryBehavior::Exit => {
                 self.boundary_s_region.set_active(true);
             }
         }
@@ -110,7 +110,7 @@ impl PropertyControls {
             MapTemplateBoundaryBehavior::PrevFloor => {
                 self.boundary_e_prev.set_active(true);
             }
-            MapTemplateBoundaryBehavior::RegionMap => {
+            MapTemplateBoundaryBehavior::Exit => {
                 self.boundary_e_region.set_active(true);
             }
         }
@@ -124,7 +124,7 @@ impl PropertyControls {
             MapTemplateBoundaryBehavior::PrevFloor => {
                 self.boundary_w_prev.set_active(true);
             }
-            MapTemplateBoundaryBehavior::RegionMap => {
+            MapTemplateBoundaryBehavior::Exit => {
                 self.boundary_w_region.set_active(true);
             }
         }
@@ -215,7 +215,7 @@ fn connect_for_boundary_radio_bottons(ui: &Ui) {
         .boundary_n_region
         .connect_toggled(move |_| {
             if uic.get_signal_mode() {
-                uic.map.borrow_mut().property.boundary.n = MapTemplateBoundaryBehavior::RegionMap
+                uic.map.borrow_mut().property.boundary.n = MapTemplateBoundaryBehavior::Exit
             }
         });
     let uic = ui.clone();
@@ -248,7 +248,7 @@ fn connect_for_boundary_radio_bottons(ui: &Ui) {
         .boundary_s_region
         .connect_toggled(move |_| {
             if uic.get_signal_mode() {
-                uic.map.borrow_mut().property.boundary.s = MapTemplateBoundaryBehavior::RegionMap
+                uic.map.borrow_mut().property.boundary.s = MapTemplateBoundaryBehavior::Exit
             }
         });
     let uic = ui.clone();
@@ -281,7 +281,7 @@ fn connect_for_boundary_radio_bottons(ui: &Ui) {
         .boundary_e_region
         .connect_toggled(move |_| {
             if uic.get_signal_mode() {
-                uic.map.borrow_mut().property.boundary.e = MapTemplateBoundaryBehavior::RegionMap
+                uic.map.borrow_mut().property.boundary.e = MapTemplateBoundaryBehavior::Exit
             }
         });
     let uic = ui.clone();
@@ -314,7 +314,7 @@ fn connect_for_boundary_radio_bottons(ui: &Ui) {
         .boundary_w_region
         .connect_toggled(move |_| {
             if uic.get_signal_mode() {
-                uic.map.borrow_mut().property.boundary.w = MapTemplateBoundaryBehavior::RegionMap
+                uic.map.borrow_mut().property.boundary.w = MapTemplateBoundaryBehavior::Exit
             }
         });
 }

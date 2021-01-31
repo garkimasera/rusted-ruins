@@ -52,7 +52,7 @@ pub enum MapTemplateBoundaryBehavior {
     None,
     NextFloor,
     PrevFloor,
-    RegionMap,
+    Exit,
 }
 
 impl Default for MapTemplateBoundaryBehavior {

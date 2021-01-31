@@ -14,6 +14,7 @@ pub struct MapBuilder {
     map_gen_param: MapGenParam,
     tile: TileIdx,
     wall: WallIdx,
+    map_boundary: Option<MapBoundary>,
     music: String,
 }
 
@@ -45,6 +46,9 @@ impl MapBuilder {
             self.floor,
             self.is_deepest_floor,
         );
+        if let Some(map_boundary) = self.map_boundary {
+            map.boundary = map_boundary;
+        }
         map.music = self.music;
         map
     }
@@ -66,6 +70,11 @@ impl MapBuilder {
 
     pub fn deepest_floor(mut self, is_deepest_floor: bool) -> MapBuilder {
         self.is_deepest_floor = is_deepest_floor;
+        self
+    }
+
+    pub fn map_boundary(mut self, map_boundary: MapBoundary) -> MapBuilder {
+        self.map_boundary = Some(map_boundary);
         self
     }
 

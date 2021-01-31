@@ -106,21 +106,22 @@ impl<'a> DoPlayerAction<'a> {
 
         // Use stairs
         if dir.is_none() {
-            let (next_mid, msg) = {
+            let (dest, msg) = {
                 let gd = self.gd_mut();
                 let mid = gd.get_current_mapid();
                 let special_tile_kind = &gd.get_current_map().tile[gd.player_pos()].special;
                 match *special_tile_kind {
                     SpecialTileKind::Stairs { dest_floor, .. } => {
                         // Use stairs on map
-                        let mid = if dest_floor == FLOOR_OUTSIDE {
+                        let dest = if dest_floor == FLOOR_OUTSIDE {
                             log_msg = LogMessage::ExitToOutside;
-                            MapId::from(mid.rid())
+                            Destination::MapId(mid)
                         } else {
                             log_msg = LogMessage::ChangeFloor;
-                            mid.set_floor(dest_floor)
+                            Destination::Floor(dest_floor)
                         };
-                        (mid, msg_switch_map(mid))
+                        let next_mid = crate::game::map::destination_to_mid(self.gd(), dest);
+                        (dest, msg_switch_map(next_mid))
                     }
                     SpecialTileKind::SiteSymbol { .. } => {
                         // Enter other site from region map
@@ -131,7 +132,7 @@ impl<'a> DoPlayerAction<'a> {
                             let site = gd.region.get_site(sid);
                             let msg = ui_txt_format!("dialog-enter_site"; site_name=site);
                             log_msg = LogMessage::EnterSite(site.to_text().to_string());
-                            (mid, msg)
+                            (Destination::MapIdWithEntrance(mid, 0), msg)
                         } else {
                             warn!("No site existed at {:?}", pos);
                             return;
@@ -159,7 +160,7 @@ impl<'a> DoPlayerAction<'a> {
                         game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
                     }
                 }
-                crate::game::map::switch_map(pa.0, next_mid);
+                crate::game::map::switch_map(pa.0, dest);
             });
             if dialog {
                 self.0
@@ -171,30 +172,19 @@ impl<'a> DoPlayerAction<'a> {
             return;
         } else {
             // Crossing boundary
-            let log_msg: LogMessage;
-            let boundary = {
+            let boundary_dest = {
                 let player_pos = self.gd().player_pos();
                 let map = self.gd().get_current_map();
-                let b = map.get_boundary_by_tile_and_dir(player_pos, dir);
-                if let Some(b) = b {
-                    b
-                } else {
-                    return;
-                }
+                map.get_boundary_by_tile_and_dir(player_pos, dir)
             };
-            let next_mid = match boundary {
-                BoundaryBehavior::None => {
-                    return;
-                }
-                BoundaryBehavior::RegionMap => {
-                    log_msg = LogMessage::ExitToOutside;
-                    MapId::from(self.gd().get_current_mapid().rid())
-                }
-                BoundaryBehavior::Floor(floor) => {
-                    log_msg = LogMessage::ChangeFloor;
-                    self.gd().get_current_mapid().set_floor(floor)
-                }
-                BoundaryBehavior::MapId(_, _) => unimplemented!(),
+            let dest = if let Some(dest) = boundary_dest {
+                dest
+            } else {
+                return;
+            };
+            let log_msg = match dest {
+                Destination::Exit => LogMessage::ExitToOutside,
+                _ => LogMessage::ChangeFloor,
             };
             let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
                 if !result {
@@ -211,8 +201,9 @@ impl<'a> DoPlayerAction<'a> {
                         game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
                     }
                 }
-                crate::game::map::switch_map(pa.0, next_mid);
+                crate::game::map::switch_map(pa.0, dest);
             });
+            let next_mid = crate::game::map::destination_to_mid(self.gd(), dest);
             if dialog {
                 self.0.request_dialog_open(DialogOpenRequest::YesNo {
                     callback: cb,
@@ -240,7 +231,7 @@ impl<'a> DoPlayerAction<'a> {
                 "wilderness",
                 site_content,
             );
-            crate::game::map::switch_map(self.0, wilderness_mid);
+            crate::game::map::switch_map(self.0, Destination::MapId(wilderness_mid));
         } else {
             warn!("cannot generate wilderness map for given position");
         }

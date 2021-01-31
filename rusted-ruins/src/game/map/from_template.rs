@@ -49,19 +49,19 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
 
 /// Setting Boundaries
 pub fn set_boundary(map: &mut Map, t: &MapTemplateObject, floor: u32) {
-    let next_floor = BoundaryBehavior::Floor(floor + 1);
+    let next_floor = Destination::Floor(floor + 1);
     let prev_floor = if floor == 0 {
-        BoundaryBehavior::RegionMap
+        Destination::Exit
     } else {
-        BoundaryBehavior::Floor(floor - 1)
+        Destination::Floor(floor - 1)
     };
 
-    let f = |bb: &mut BoundaryBehavior, mtbb: MapTemplateBoundaryBehavior| {
+    let f = |bb: &mut Option<Destination>, mtbb: MapTemplateBoundaryBehavior| {
         *bb = match mtbb {
-            MapTemplateBoundaryBehavior::None => BoundaryBehavior::None,
-            MapTemplateBoundaryBehavior::NextFloor => next_floor,
-            MapTemplateBoundaryBehavior::PrevFloor => prev_floor,
-            MapTemplateBoundaryBehavior::RegionMap => BoundaryBehavior::RegionMap,
+            MapTemplateBoundaryBehavior::None => None,
+            MapTemplateBoundaryBehavior::NextFloor => Some(next_floor),
+            MapTemplateBoundaryBehavior::PrevFloor => Some(prev_floor),
+            MapTemplateBoundaryBehavior::Exit => Some(Destination::Exit),
         };
     };
 
