@@ -1,4 +1,5 @@
 use super::{Entrance, GeneratedMap, TileKind};
+use arrayvec::ArrayVec;
 use geom::*;
 use rng::gen_range;
 
@@ -41,6 +42,20 @@ pub fn write_to_map(gm: &mut GeneratedMap, wall_weight: f32, enable_edge_bias: b
     for p in gm.tile.iter_idx() {
         if !reach_map[p] && gm.tile[p] != TileKind::Wall {
             gm.tile[p] = TileKind::Wall;
+        }
+    }
+
+    if !stairs {
+        for p in SpiralIter::new((gm.size.0 / 2, gm.size.1 / 2)) {
+            if !gm.tile.in_range(p) {
+                break;
+            }
+            if gm.tile[p] == TileKind::Floor {
+                let mut entrance = ArrayVec::new();
+                entrance.push(p);
+                gm.entrance = Entrance::Pos(entrance);
+                break;
+            }
         }
     }
 }
