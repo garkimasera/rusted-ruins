@@ -583,6 +583,72 @@ impl Iterator for MDistRangeIter {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub struct SpiralIter {
+    len_twice: i32,
+    i: i32,
+    dir: i32,
+    value: Vec2d,
+}
+
+impl SpiralIter {
+    pub fn new<V: Into<Vec2d>>(center: V) -> Self {
+        Self {
+            len_twice: 0,
+            i: 0,
+            dir: 0,
+            value: center.into(),
+        }
+    }
+}
+
+impl Iterator for SpiralIter {
+    type Item = Vec2d;
+    fn next(&mut self) -> Option<Vec2d> {
+        const DIRS: &[Vec2d] = &[Vec2d(0, 1), Vec2d(1, 0), Vec2d(0, -1), Vec2d(-1, 0)];
+        let value = self.value;
+        let len = self.len_twice / 2 + 1;
+
+        self.i += 1;
+        self.value = self.value + DIRS[self.dir as usize];
+
+        if self.i >= len {
+            if self.dir == DIRS.len() as i32 - 1 {
+                self.dir = 0;
+            } else {
+                self.dir += 1;
+            }
+            self.len_twice += 1;
+            self.i = 0;
+        }
+
+        Some(value)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test() {
+        let v: Vec<_> = SpiralIter::new((0, 0)).take(9).collect();
+        assert_eq!(
+            v,
+            &[
+                Vec2d(0, 0),
+                Vec2d(0, 1),
+                Vec2d(1, 1),
+                Vec2d(1, 0),
+                Vec2d(1, -1),
+                Vec2d(0, -1),
+                Vec2d(-1, -1),
+                Vec2d(-1, 0),
+                Vec2d(-1, 1),
+            ],
+        );
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum HDirection {
