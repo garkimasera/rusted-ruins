@@ -3,6 +3,7 @@ use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
+use once_cell::sync::Lazy;
 use regex::Regex;
 use rules::biome::{BiomeDetail, SubBiomeDetail};
 use rules::RULES;
@@ -63,9 +64,7 @@ fn get_biome(
 }
 
 fn to_biome_name(name: &str) -> Option<&str> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new("rm.([a-zA-Z-_]+)-[0-9]+").unwrap();
-    }
+    static RE: Lazy<Regex> = Lazy::new(|| Regex::new("rm.([a-zA-Z-_]+)-[0-9]+").unwrap());
     RE.captures(name)
         .map(|cap| cap.get(1).map(|m| m.as_str()))
         .flatten()

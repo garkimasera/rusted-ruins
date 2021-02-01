@@ -1,14 +1,13 @@
+use once_cell::sync::Lazy;
 use std::collections::VecDeque;
 use std::sync::Mutex;
 
 pub fn init() {
-    ::lazy_static::initialize(&GAME_LOG);
+    Lazy::force(&GAME_LOG);
 }
 
-lazy_static! {
-    static ref GAME_LOG: Mutex<GameLog> = Mutex::new(GameLog::new());
-    static ref LOG_MAX_LINE: usize = 30;
-}
+static GAME_LOG: Lazy<Mutex<GameLog>> = Lazy::new(|| Mutex::new(GameLog::new()));
+static LOG_MAX_LINE: usize = 30;
 
 pub struct GameLog {
     lines: VecDeque<Vec<String>>,
@@ -42,7 +41,7 @@ impl GameLog {
 
         let b = std::mem::replace(&mut self.buf, Vec::new());
         self.lines.push_back(b);
-        if self.lines.len() > *LOG_MAX_LINE {
+        if self.lines.len() > LOG_MAX_LINE {
             let _ = self.lines.pop_front();
         }
         self.line_count += 1;

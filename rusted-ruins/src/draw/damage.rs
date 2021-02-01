@@ -4,6 +4,7 @@ use crate::config::UI_CFG;
 use crate::context::*;
 use common::gobj;
 use common::objholder::UIImgIdx;
+use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 
 struct DigitDrawInfo {
@@ -24,9 +25,7 @@ impl DigitDrawInfo {
     }
 }
 
-lazy_static! {
-    static ref DIGIT_DRAW_INFO: DigitDrawInfo = DigitDrawInfo::init();
-}
+static DIGIT_DRAW_INFO: Lazy<DigitDrawInfo> = Lazy::new(|| DigitDrawInfo::init());
 
 impl MainWinDrawer {
     pub fn draw_damage(&self, context: &mut Context) {

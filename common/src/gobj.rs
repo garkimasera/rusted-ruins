@@ -1,29 +1,27 @@
 //! This module provides global state objholder
 
 use crate::objholder::*;
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::path::PathBuf;
 use std::sync::Mutex;
 
 /// Initialize lazy static
 pub fn init(pak_dirs: Vec<PathBuf>) {
     *PAK_DIRS.lock().unwrap() = Some(pak_dirs);
-    ::lazy_static::initialize(&OBJ_HOLDER);
+    Lazy::force(&OBJ_HOLDER);
 }
 
-lazy_static! {
-    static ref PAK_DIRS: Mutex<Option<Vec<PathBuf>>> = Mutex::new(None);
-    static ref OBJ_HOLDER: ObjectHolder = {
-        let pak_dirs = PAK_DIRS.lock().unwrap();
-        ObjectHolder::load(pak_dirs.as_ref().unwrap())
-    };
-    pub static ref OBJ_HOLDER_HASH: u64 = {
-        use std::hash::{Hash, Hasher};
-        let mut hasher = fnv::FnvHasher::default();
-        get_objholder().hash(&mut hasher);
-        hasher.finish()
-    };
-}
+static PAK_DIRS: Lazy<Mutex<Option<Vec<PathBuf>>>> = Lazy::new(|| Mutex::new(None));
+static OBJ_HOLDER: Lazy<ObjectHolder> = Lazy::new(|| {
+    let pak_dirs = PAK_DIRS.lock().unwrap();
+    ObjectHolder::load(pak_dirs.as_ref().unwrap())
+});
+pub static OBJ_HOLDER_HASH: Lazy<u64> = Lazy::new(|| {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = fnv::FnvHasher::default();
+    get_objholder().hash(&mut hasher);
+    hasher.finish()
+});
 
 pub fn get_objholder() -> &'static ObjectHolder {
     &*OBJ_HOLDER

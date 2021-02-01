@@ -7,6 +7,7 @@ use crate::config;
 use common::basic;
 use fluent::concurrent::FluentBundle;
 use fluent::{FluentArgs, FluentResource};
+use once_cell::sync::Lazy;
 use std::fs::read_to_string;
 use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;
@@ -14,23 +15,20 @@ use walkdir::WalkDir;
 
 /// Initialize lazy static
 pub fn init() {
-    use lazy_static::initialize;
-    initialize(&OBJ_BUNDLE);
-    initialize(&LOG_BUNDLE);
-    initialize(&UI_BUNDLE);
-    initialize(&TALK_BUNDLE);
-    initialize(&MISC_BUNDLE);
-    initialize(&READABLE_BUNDLE);
+    Lazy::force(&OBJ_BUNDLE);
+    Lazy::force(&LOG_BUNDLE);
+    Lazy::force(&UI_BUNDLE);
+    Lazy::force(&TALK_BUNDLE);
+    Lazy::force(&MISC_BUNDLE);
+    Lazy::force(&READABLE_BUNDLE);
 }
 
-lazy_static! {
-    static ref OBJ_BUNDLE: Bundle = Bundle::load(basic::OBJ_TXT_DIR);
-    static ref LOG_BUNDLE: Bundle = Bundle::load(basic::LOG_TXT_DIR);
-    static ref UI_BUNDLE: Bundle = Bundle::load(basic::UI_TXT_DIR);
-    static ref TALK_BUNDLE: Bundle = Bundle::load(basic::TALK_TXT_DIR);
-    static ref MISC_BUNDLE: Bundle = Bundle::load(basic::MISC_TXT_DIR);
-    static ref READABLE_BUNDLE: Bundle = Bundle::load(basic::READABLE_TXT_DIR);
-}
+static OBJ_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::OBJ_TXT_DIR));
+static LOG_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::LOG_TXT_DIR));
+static UI_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::UI_TXT_DIR));
+static TALK_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::TALK_TXT_DIR));
+static MISC_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::MISC_TXT_DIR));
+static READABLE_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::READABLE_TXT_DIR));
 
 struct Bundle {
     first: FluentBundle<FluentResource>,
@@ -156,9 +154,7 @@ pub fn obj_txt(id: &str) -> String {
         s
     } else {
         use regex::Regex;
-        lazy_static! {
-            static ref RE: Regex = Regex::new("(.+)-[0-9]+").unwrap();
-        };
+        static RE: Lazy<Regex> = Lazy::new(|| Regex::new("(.+)-[0-9]+").unwrap());
         if let Some(cap) = RE.captures(id) {
             let id_without_suffix_number = cap.get(1).unwrap().as_str();
             if let Some(s) = OBJ_BUNDLE.format(id_without_suffix_number, None) {

@@ -28,7 +28,7 @@ pub mod quest;
 pub mod race;
 pub mod town;
 
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use serde::de::Deserialize;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -204,14 +204,19 @@ fn exit_err() -> ! {
     std::process::exit(1)
 }
 
-lazy_static! {
-    static ref RULES_DIR: Mutex<Option<PathBuf>> = Mutex::new(None);
-    static ref ADDON_RULES_DIR: Mutex<Option<PathBuf>> = Mutex::new(None);
-    /// Global state rules holder
-    pub static ref RULES: Rules = Rules::load_from_dir(
+static RULES_DIR: Lazy<Mutex<Option<PathBuf>>> = Lazy::new(|| Mutex::new(None));
+static ADDON_RULES_DIR: Lazy<Mutex<Option<PathBuf>>> = Lazy::new(|| Mutex::new(None));
+/// Global state rules holder
+pub static RULES: Lazy<Rules> = Lazy::new(|| {
+    Rules::load_from_dir(
         &RULES_DIR.lock().unwrap().as_ref().unwrap(),
-        ADDON_RULES_DIR.lock().unwrap().as_ref().map(|path| path.as_ref()));
-}
+        ADDON_RULES_DIR
+            .lock()
+            .unwrap()
+            .as_ref()
+            .map(|path| path.as_ref()),
+    )
+});
 
 /// Initialize Rules
 pub fn init<P: AsRef<Path>>(app_dirs: P, addon_dir: Option<P>) {
@@ -221,5 +226,5 @@ pub fn init<P: AsRef<Path>>(app_dirs: P, addon_dir: Option<P>) {
         *ADDON_RULES_DIR.lock().unwrap() = Some(addon_dir.as_ref().into());
     }
 
-    lazy_static::initialize(&RULES);
+    Lazy::force(&RULES);
 }

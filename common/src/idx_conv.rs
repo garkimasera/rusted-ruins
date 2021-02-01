@@ -1,10 +1,9 @@
 pub use crate::objholder::IdxConvTable;
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::sync::RwLock;
 
-lazy_static! {
-    pub(crate) static ref IDX_CONV_TABLE: RwLock<Option<IdxConvTable>> = RwLock::new(None);
-}
+pub(crate) static IDX_CONV_TABLE: Lazy<RwLock<Option<IdxConvTable>>> =
+    Lazy::new(|| RwLock::new(None));
 
 pub fn set_idx_conv_table(idx_conv_table: Option<IdxConvTable>) {
     *IDX_CONV_TABLE.write().expect("IDX_CONV_TABLE lock error") = idx_conv_table;

@@ -8,15 +8,14 @@ use crate::text::ToText;
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
+use once_cell::sync::Lazy;
 
 const STATUS_WINDOW_GROUP_SIZE: u32 = 2;
 
 pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
     // Workaround to specify cid for window creation
     use std::sync::Mutex;
-    lazy_static! {
-        static ref TARGET_CID: Mutex<Option<CharaId>> = Mutex::new(None);
-    }
+    static TARGET_CID: Lazy<Mutex<Option<CharaId>>> = Lazy::new(|| Mutex::new(None));
     *TARGET_CID.lock().unwrap() = Some(cid);
 
     let mem_info = vec![

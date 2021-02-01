@@ -5,8 +5,6 @@ extern crate rusted_ruins_map_generator as map_generator;
 extern crate rusted_ruins_rng as rng;
 extern crate rusted_ruins_rules as rules;
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate log as applog;
@@ -29,7 +27,7 @@ mod window;
 
 fn main() {
     setup_logger();
-    init_lazy_statics();
+    init_lazy();
     init_obj();
     // Must be after init_obj()
     init_rules();
@@ -61,8 +59,8 @@ impl SdlContext {
     }
 }
 
-/// Initialize lazy_static values
-fn init_lazy_statics() {
+/// Initialize lazy values
+fn init_lazy() {
     config::init();
     text::init();
     log::init();

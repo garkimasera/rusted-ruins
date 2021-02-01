@@ -6,6 +6,7 @@ pub mod input;
 pub mod visual;
 
 use common::basic;
+use once_cell::sync::Lazy;
 use std::env;
 use std::fs::read_to_string;
 use std::path::PathBuf;
@@ -44,37 +45,37 @@ macro_rules! load_config_file {
 
 /// Initialize lazy static
 pub fn init() {
-    use lazy_static::initialize;
-    initialize(&ASSETS_DIR);
-    initialize(&USER_DIR);
-    initialize(&CONFIG);
-    initialize(&SCREEN_CFG);
-    initialize(&UI_CFG);
-    initialize(&INPUT_CFG);
-    initialize(&CONTROL_CFG);
-    initialize(&PAK_DIRS);
+    Lazy::force(&ASSETS_DIR);
+    Lazy::force(&USER_DIR);
+    Lazy::force(&CONFIG);
+    Lazy::force(&SCREEN_CFG);
+    Lazy::force(&UI_CFG);
+    Lazy::force(&INPUT_CFG);
+    Lazy::force(&CONTROL_CFG);
+    Lazy::force(&PAK_DIRS);
     changeable::initialize();
 }
 
-lazy_static! {
-    pub static ref ASSETS_DIR: PathBuf = get_assets_dir().expect("Cannot get data directory path");
-    pub static ref USER_DIR: PathBuf = get_user_dir();
-    pub static ref ADDON_DIR: Option<PathBuf> = get_addon_dir();
-    pub static ref CONFIG: Config = {
-        let config: Config = load_config_file!("config.toml");
-        args::modify_config_by_args(config)
-    };
-    pub static ref SCREEN_CFG: visual::ScreenConfig = load_config_file!(&CONFIG.screen_config);
-    pub static ref UI_CFG: visual::UIConfig = load_config_file!("ui.toml");
-    pub static ref INPUT_CFG: input::InputConfig = load_config_file!("input.toml");
-    pub static ref CONTROL_CFG: control::ControlConfig = load_config_file!("control.toml");
-    pub static ref FONT_CFG: font::FontConfig = load_config_file!("font.toml");
-    pub static ref PAK_DIRS: Vec<PathBuf> = {
-        let mut v = Vec::new();
-        v.push(abs_path("paks"));
-        v
-    };
-}
+pub static ASSETS_DIR: Lazy<PathBuf> =
+    Lazy::new(|| get_assets_dir().expect("Cannot get data directory path"));
+pub static USER_DIR: Lazy<PathBuf> = Lazy::new(get_user_dir);
+pub static ADDON_DIR: Lazy<Option<PathBuf>> = Lazy::new(get_addon_dir);
+pub static CONFIG: Lazy<Config> = Lazy::new(|| {
+    let config: Config = load_config_file!("config.toml");
+    args::modify_config_by_args(config)
+});
+pub static SCREEN_CFG: Lazy<visual::ScreenConfig> =
+    Lazy::new(|| load_config_file!(&CONFIG.screen_config));
+pub static UI_CFG: Lazy<visual::UIConfig> = Lazy::new(|| load_config_file!("ui.toml"));
+pub static INPUT_CFG: Lazy<input::InputConfig> = Lazy::new(|| load_config_file!("input.toml"));
+pub static CONTROL_CFG: Lazy<control::ControlConfig> =
+    Lazy::new(|| load_config_file!("control.toml"));
+pub static FONT_CFG: Lazy<font::FontConfig> = Lazy::new(|| load_config_file!("font.toml"));
+pub static PAK_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
+    let mut v = Vec::new();
+    v.push(abs_path("paks"));
+    v
+});
 
 /// Get application directory
 fn get_assets_dir() -> Option<PathBuf> {

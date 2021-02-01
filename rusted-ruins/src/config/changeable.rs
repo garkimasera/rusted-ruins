@@ -1,4 +1,5 @@
 use super::ASSETS_DIR;
+use once_cell::sync::Lazy;
 use std::fs::read_to_string;
 use std::process::exit;
 use std::sync::{RwLock, RwLockReadGuard};
@@ -31,12 +32,11 @@ impl CombatLog {
     }
 }
 
-lazy_static! {
-    static ref CHANGEABLE_CFG: RwLock<ChangeableConfig> = RwLock::new(load_changeable_cfg());
-}
+static CHANGEABLE_CFG: Lazy<RwLock<ChangeableConfig>> =
+    Lazy::new(|| RwLock::new(load_changeable_cfg()));
 
 pub fn initialize() {
-    lazy_static::initialize(&CHANGEABLE_CFG);
+    Lazy::force(&CHANGEABLE_CFG);
 }
 
 pub fn read() -> RwLockReadGuard<'static, ChangeableConfig> {

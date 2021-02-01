@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
@@ -8,9 +9,7 @@ use super::textrenderer::{ERR_MSG_FONT_REND, ERR_MSG_FONT_TEX};
 
 use std::sync::Mutex;
 
-lazy_static! {
-    static ref CACHE_DROP_STACK: Mutex<Vec<usize>> = Mutex::new(Vec::new());
-}
+static CACHE_DROP_STACK: Lazy<Mutex<Vec<usize>>> = Lazy::new(|| Mutex::new(Vec::new()));
 
 const CACHE_DROP_STACK_LOCK_ERR_MSG: &str = "Cache drop stack lock error";
 fn push_drop_stack(i: usize) {

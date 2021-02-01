@@ -5,12 +5,12 @@ use crate::context::textrenderer::FontKind;
 use crate::game::command::MouseButton;
 use common::basic::*;
 use common::objholder::*;
+use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-lazy_static! {
-    static ref RECENT_PAGE: Mutex<HashMap<&'static str, u32>> = Mutex::new(HashMap::new());
-}
+static RECENT_PAGE: Lazy<Mutex<HashMap<&'static str, u32>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[derive(Clone, Copy)]
 pub struct MemberInfo {
@@ -212,9 +212,7 @@ impl TabsNavigator {
 
 impl Window for TabsNavigator {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        lazy_static! {
-            static ref MAKE_DARK_IDX: UIImgIdx = common::gobj::id_to_idx("!make-dark");
-        };
+        static MAKE_DARK_IDX: Lazy<UIImgIdx> = Lazy::new(|| common::gobj::id_to_idx("!make-dark"));
         crate::draw::border::draw_window_border(context, self.rect);
 
         use sdl2::pixels::Color;

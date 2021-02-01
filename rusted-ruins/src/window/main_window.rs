@@ -6,13 +6,12 @@ use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter, Target};
 use crate::window::{DialogWindow, Window};
 use common::gamedata::Effect;
 use geom::*;
+use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 use std::sync::Mutex;
 
-lazy_static! {
-    pub(super) static ref CENTERING_START_REQ: Mutex<Option<Vec2d>> = Mutex::new(None);
-    pub(super) static ref CENTERING_STOP_REQ: Mutex<bool> = Mutex::new(false);
-}
+pub(super) static CENTERING_START_REQ: Lazy<Mutex<Option<Vec2d>>> = Lazy::new(|| Mutex::new(None));
+pub(super) static CENTERING_STOP_REQ: Lazy<Mutex<bool>> = Lazy::new(|| Mutex::new(false));
 
 enum MainWindowMode {
     Normal,

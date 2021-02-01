@@ -6,12 +6,11 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::AnimImgIdx;
 use geom::*;
+use once_cell::sync::Lazy;
 use rules::RULES;
 use CharaId::Player;
 
-lazy_static! {
-    static ref MINING_ANIM_IDX: AnimImgIdx = gobj::id_to_idx("mining");
-}
+static MINING_ANIM_IDX: Lazy<AnimImgIdx> = Lazy::new(|| gobj::id_to_idx("mining"));
 
 impl<'a> DoPlayerAction<'a> {
     pub fn use_tool(&mut self, pos: Vec2d) {

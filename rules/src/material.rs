@@ -1,4 +1,5 @@
 use common::gamedata::*;
+use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
@@ -9,11 +10,8 @@ impl Materials {
         if let Some(material) = self.0.get(material_name) {
             material
         } else {
-            panic!("unknown material {}", material_name);
-            // lazy_static! {
-            //     static ref MATERIAL: Material = Matedial::default();
-            // }
-            // &*MATERIAL
+            static MATERIAL: Lazy<Material> = Lazy::new(Material::default);
+            &*MATERIAL
         }
     }
 

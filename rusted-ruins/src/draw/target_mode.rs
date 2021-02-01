@@ -4,10 +4,10 @@ use crate::game::Game;
 use common::gobj;
 use common::objholder::UIImgIdx;
 use geom::*;
+use once_cell::sync::Lazy;
 
-lazy_static! {
-    static ref TILE_RANGE_HIGHLIBHT: UIImgIdx = gobj::id_to_idx("!tile-range-highlight");
-}
+static TILE_RANGE_HIGHLIBHT: Lazy<UIImgIdx> =
+    Lazy::new(|| gobj::id_to_idx("!tile-range-highlight"));
 
 impl MainWinDrawer {
     pub fn draw_target_mode(

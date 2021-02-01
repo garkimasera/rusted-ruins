@@ -6,6 +6,7 @@ use nom::combinator::complete;
 use nom::multi::fold_many0;
 use nom::regexp::str::re_find;
 use nom::sequence::{delimited, pair};
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 type IResult<I, O> = nom::IResult<I, O, nom::error::VerboseError<I>>;
@@ -29,17 +30,13 @@ impl Join for Expr {
 // Id as String in script.
 // The first character must be alphabetic or numeric, and can include '_', '-', and '.'.
 pub fn id(input: &str) -> IResult<&str, String> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new("[a-zA-Z0-9][a-zA-Z0-9_.-]*").unwrap();
-    }
+    static RE: Lazy<Regex> = Lazy::new(|| Regex::new("[a-zA-Z0-9][a-zA-Z0-9_.-]*").unwrap());
     let (input, s) = re_find(RE.clone())(input)?;
     Ok((input, s.into()))
 }
 
 pub fn symbol(input: &str) -> IResult<&str, &str> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new("[a-zA-Z][a-zA-Z0-9_]*").unwrap();
-    }
+    static RE: Lazy<Regex> = Lazy::new(|| Regex::new("[a-zA-Z][a-zA-Z0-9_]*").unwrap());
     let (input, s) = re_find(RE.clone())(input)?;
     Ok((input, s))
 }

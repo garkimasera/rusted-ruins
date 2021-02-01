@@ -4,6 +4,7 @@ use crate::context::*;
 use crate::game::Game;
 use common::gobj;
 use common::objholder::UIImgIdx;
+use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 
 struct DrawInfo {
@@ -28,9 +29,7 @@ impl DrawInfo {
     }
 }
 
-lazy_static! {
-    static ref DRAW_INFO: DrawInfo = DrawInfo::init();
-}
+static DRAW_INFO: Lazy<DrawInfo> = Lazy::new(|| DrawInfo::init());
 
 impl MainWinDrawer {
     pub fn draw_chara_info(&self, context: &mut Context, game: &Game) {

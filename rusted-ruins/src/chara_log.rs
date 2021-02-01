@@ -1,11 +1,10 @@
 use crate::config::UI_CFG;
 use common::gamedata::*;
 use geom::Vec2d;
+use once_cell::sync::Lazy;
 use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-lazy_static! {
-    static ref CHARA_LOG: RwLock<CharaLog> = RwLock::new(CharaLog::new());
-}
+static CHARA_LOG: Lazy<RwLock<CharaLog>> = Lazy::new(|| RwLock::new(CharaLog::new()));
 
 pub struct CharaLog {
     pub damage_list: Vec<CharaLogDamage>,
