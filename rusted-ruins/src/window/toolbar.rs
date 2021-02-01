@@ -1,5 +1,6 @@
 use super::commonuse::*;
 use crate::game::command::MouseButton;
+use common::basic::MAX_ACTION_SHORTCUTS;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::UIImgIdx;
@@ -141,6 +142,7 @@ impl DialogWindow for Toolbar {
 pub struct ShortcutList {
     rect: Rect,
     mouseover: Option<u32>,
+    availability: Vec<Option<(bool, Option<u32>)>>,
 }
 
 impl ShortcutList {
@@ -148,12 +150,20 @@ impl ShortcutList {
         Self {
             rect: SCREEN_CFG.shortcut_list.into(),
             mouseover: None,
+            availability: vec![None; MAX_ACTION_SHORTCUTS],
+        }
+    }
+
+    pub fn update(&mut self, gd: &GameData) {
+        for (i, a) in self.availability.iter_mut().enumerate() {
+            *a = gd.shortcut_available(i);
         }
     }
 }
 
 impl Window for ShortcutList {
     fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+        self.update(&game.gd);
         let cfg = &UI_CFG.toolbar;
 
         context.fill_rect(self.rect, UI_CFG.color.toolbar_bg);
@@ -170,38 +180,31 @@ impl Window for ShortcutList {
 
             if let Some(action_shortcut) = game.gd.settings.action_shortcuts[i as usize] {
                 match action_shortcut {
-                    ActionShortcut::Throw(idx) => {
-                        context.render_tex_n_center(idx, rect, 0);
-                    }
-                    ActionShortcut::Drink(idx) => {
-                        context.render_tex_n_center(idx, rect, 0);
-                    }
-                    ActionShortcut::Eat(idx) => {
-                        context.render_tex_n_center(idx, rect, 0);
-                    }
-                    ActionShortcut::Use(idx) => {
-                        context.render_tex_n_center(idx, rect, 0);
-                    }
-                    ActionShortcut::Release(idx) => {
-                        context.render_tex_n_center(idx, rect, 0);
-                    }
-                    ActionShortcut::Read(idx) => {
+                    ActionShortcut::Throw(idx)
+                    | ActionShortcut::Drink(idx)
+                    | ActionShortcut::Eat(idx)
+                    | ActionShortcut::Use(idx)
+                    | ActionShortcut::Release(idx)
+                    | ActionShortcut::Read(idx) => {
                         context.render_tex_n_center(idx, rect, 0);
                     }
                 }
             }
 
-            // Draw icon frame
-            let mouseover = if let Some(mouseover) = self.mouseover.as_ref() {
-                if *mouseover == i {
-                    1
-                } else {
-                    0
+            let mut icon_frame = 0;
+            if let Some((available, _remaining)) = self.availability[i as usize] {
+                if !available {
+                    icon_frame += 2;
                 }
-            } else {
-                0
-            };
-            context.render_tex_n(*ICON_FRAME, rect, mouseover);
+            }
+
+            // Draw icon frame
+            if let Some(mouseover) = self.mouseover.as_ref() {
+                if *mouseover == i {
+                    icon_frame += 1;
+                }
+            }
+            context.render_tex_n(*ICON_FRAME, rect, icon_frame);
         }
     }
 }

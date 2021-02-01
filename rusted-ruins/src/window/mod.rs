@@ -50,7 +50,7 @@ mod commonuse {
     pub use crate::context::*;
     pub use crate::draw::border::draw_window_border;
     pub use crate::eventhandler::InputMode;
-    pub use crate::game::{Animation, Command, DoPlayerAction, Game};
+    pub use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
     pub use crate::window::widget::WidgetTrait;
     pub use crate::window::winpos::WindowPos;
     pub use crate::window::{

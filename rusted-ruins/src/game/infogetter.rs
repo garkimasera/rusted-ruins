@@ -35,6 +35,8 @@ pub trait InfoGetter {
     fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)>;
     /// Get relationship between two characters
     fn chara_relation(&self, chara: CharaId, other: CharaId) -> Relationship;
+    /// Get shortcut availability (available, remaining)
+    fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)>;
 }
 
 impl InfoGetter for GameData {
@@ -179,6 +181,32 @@ impl InfoGetter for GameData {
             Relationship::NEUTRAL
         } else {
             Relationship::HOSTILE
+        }
+    }
+
+    fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)> {
+        let shortcut = if let Some(shortcut) = self.settings.action_shortcuts[n] {
+            shortcut
+        } else {
+            return None;
+        };
+
+        match shortcut {
+            ActionShortcut::Throw(idx)
+            | ActionShortcut::Drink(idx)
+            | ActionShortcut::Eat(idx)
+            | ActionShortcut::Use(idx)
+            | ActionShortcut::Read(idx) => {
+                let sum = self
+                    .search_item(idx)
+                    .iter()
+                    .map(|il| self.get_item(*il).1)
+                    .sum();
+                Some((sum > 0, Some(sum)))
+            }
+            ActionShortcut::Release(_) => {
+                todo!()
+            }
         }
     }
 }
