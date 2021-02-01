@@ -11,6 +11,7 @@ pub struct ScreenConfig {
     pub minimap_window: CfgRect,
     pub sidebar: CfgRect,
     pub toolbar: CfgRect,
+    pub shortcut_list: CfgRect,
     pub hp_indicator: CfgRect,
     pub sp_indicator: CfgRect,
     pub floor_info: CfgRect,
@@ -322,6 +323,7 @@ pub struct SidebarConfig {
 pub struct ToolbarConfig {
     pub icon_w: u32,
     pub icon_h: u32,
+    pub n_shortcut: u32,
 }
 
 #[derive(Debug, Deserialize)]

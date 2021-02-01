@@ -452,7 +452,7 @@ impl DialogWindow for ItemWindow {
                 ListWidgetResponse::SelectForMenu(i) => {
                     // Item selected to open menu
                     let il = self.item_locations[i as usize];
-                    self.menu = Some(ItemMenu::new(&self.mode, il, cursor_pos));
+                    self.menu = Some(ItemMenu::new(pa.gd(), &self.mode, il, cursor_pos));
                 }
                 ListWidgetResponse::Scrolled => {
                     self.update_by_mode(pa.gd());

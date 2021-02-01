@@ -1,5 +1,6 @@
 mod moving;
 mod restart;
+mod shortcut;
 mod use_tool;
 
 use super::{Game, UiRequest};

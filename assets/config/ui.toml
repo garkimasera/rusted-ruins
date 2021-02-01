@@ -184,6 +184,7 @@ space = 4
 [toolbar]
 icon_w = 34
 icon_h = 34
+n_shortcut = 10
 
 [chara_info]
 target_icon_x = 32

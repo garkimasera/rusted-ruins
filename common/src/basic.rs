@@ -30,6 +30,9 @@ pub const WAIT_TIME_NUMERATOR: u32 = 100000;
 /// Needed exp value to level up
 pub const SKILL_EXP_LVUP: u16 = 10000;
 
+/// Maximum number of registered action shortcuts
+pub const MAX_ACTION_SHORTCUTS: usize = 32;
+
 // Path settings
 pub const APP_DIR_NAME: &'static str = "rusted-ruins";
 pub const CFG_FILES_DIR: &'static str = "config";

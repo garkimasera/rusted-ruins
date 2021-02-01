@@ -21,6 +21,7 @@ mod newgame_window;
 mod progress_bar;
 mod quest_window;
 mod read_window;
+mod register_shortcut_dialog;
 mod sidebar;
 mod start_window;
 mod status_window;
@@ -395,6 +396,20 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     _ => command,
                 };
 
+                let command = match game_windows
+                    .shortcut_list
+                    .process_command(&command, &mut DoPlayerAction::new(&mut self.game))
+                {
+                    DialogResult::Command(command) => {
+                        if let Some(command) = command {
+                            command
+                        } else {
+                            return true;
+                        }
+                    }
+                    _ => command,
+                };
+
                 match game_windows
                     .main_window
                     .convert_mouse_event(command, &self.game)
@@ -511,6 +526,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     Some(ItemWindowMode::Release),
                 ));
                 self.push_dialog_window(dialog);
+            }
+            Command::ActionShortcut(n) => {
+                pa.exec_shortcut(n);
             }
             Command::ChangeEquip { kind } => {
                 let dialog = Box::new(item_window::ItemWindow::new_select_and_equip(
@@ -662,6 +680,7 @@ struct GameWindows {
     minimap_window: minimap::MiniMapWindow,
     sidebar: sidebar::Sidebar,
     toolbar: toolbar::Toolbar,
+    shortcut_list: toolbar::ShortcutList,
     indicator_hp: indicator::BarIndicator,
     indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
@@ -691,6 +710,7 @@ impl GameWindows {
             minimap_window: minimap::MiniMapWindow::new(),
             sidebar: sidebar::Sidebar::new(),
             toolbar: toolbar::Toolbar::new(),
+            shortcut_list: toolbar::ShortcutList::new(),
             indicator_hp: BarIndicator::new(BarIndicatorKind::Hp),
             indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
             floor_info: FloorInfo::new(),
@@ -714,6 +734,7 @@ impl GameWindows {
         self.minimap_window.draw(context, game, anim);
         self.sidebar.draw(context, game, anim);
         self.toolbar.draw(context, game, anim);
+        self.shortcut_list.draw(context, game, anim);
         self.indicator_hp.draw(context, game, anim);
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);

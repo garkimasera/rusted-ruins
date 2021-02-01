@@ -29,6 +29,12 @@ h = 577
 [toolbar]
 x = 203
 y = 623
+w = 102
+h = 34
+
+[shortcut_list]
+x = 308
+y = 623
 w = 600
 h = 34
 
@@ -84,4 +90,9 @@ len = 620
 x = 200
 y = 622
 len = 177
+
+[[vborders]]
+x = 305
+y = 623
+len = 34
 

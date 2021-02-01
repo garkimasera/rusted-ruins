@@ -21,3 +21,4 @@ tile-menu-pick-up-items = Pick up items
 tile-menu-start-centering = Centering
 tile-menu-stop-centering = Stop centering
 tile-menu-up-stairs = Go up the stairs
+register_shortcut = Register shortcut ({$i})

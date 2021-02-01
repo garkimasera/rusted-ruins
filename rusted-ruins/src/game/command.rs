@@ -36,6 +36,7 @@ pub enum Command {
     DrinkItem,
     EatItem,
     ReleaseItem,
+    ActionShortcut(usize),
     ChangeEquip {
         kind: EquipSlotKind,
     },

@@ -251,6 +251,9 @@ pub enum DialogOpenRequest {
         cid: CharaId,
     },
     ShopSell,
+    RegisterAsShortcut {
+        shortcut: ActionShortcut,
+    },
     PickUpItem,
     Quest,
     GameOver,

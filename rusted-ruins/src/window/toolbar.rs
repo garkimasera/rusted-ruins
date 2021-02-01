@@ -20,7 +20,7 @@ lazy_static! {
 
 impl Toolbar {
     pub fn new() -> Toolbar {
-        Toolbar {
+        Self {
             rect: SCREEN_CFG.toolbar.into(),
             mouseover: None,
         }
@@ -127,6 +127,117 @@ impl DialogWindow for Toolbar {
                     }
                     _ => (),
                 }
+            }
+            _ => (),
+        }
+
+        DialogResult::Continue
+    }
+
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
+    }
+}
+
+pub struct ShortcutList {
+    rect: Rect,
+    mouseover: Option<u32>,
+}
+
+impl ShortcutList {
+    pub fn new() -> ShortcutList {
+        Self {
+            rect: SCREEN_CFG.shortcut_list.into(),
+            mouseover: None,
+        }
+    }
+}
+
+impl Window for ShortcutList {
+    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+        let cfg = &UI_CFG.toolbar;
+
+        context.fill_rect(self.rect, UI_CFG.color.toolbar_bg);
+
+        for i in 0..cfg.n_shortcut {
+            let rect = Rect::new(
+                self.rect.x + cfg.icon_w as i32 * i as i32,
+                self.rect.y,
+                cfg.icon_w,
+                cfg.icon_h,
+            );
+            context.set_viewport(rect);
+            let rect = Rect::new(0, 0, cfg.icon_w, cfg.icon_h);
+
+            if let Some(action_shortcut) = game.gd.settings.action_shortcuts[i as usize] {
+                match action_shortcut {
+                    ActionShortcut::Throw(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                    ActionShortcut::Drink(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                    ActionShortcut::Eat(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                    ActionShortcut::Use(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                    ActionShortcut::Release(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                    ActionShortcut::Read(idx) => {
+                        context.render_tex_n_center(idx, rect, 0);
+                    }
+                }
+            }
+
+            // Draw icon frame
+            let mouseover = if let Some(mouseover) = self.mouseover.as_ref() {
+                if *mouseover == i {
+                    1
+                } else {
+                    0
+                }
+            } else {
+                0
+            };
+            context.render_tex_n(*ICON_FRAME, rect, mouseover);
+        }
+    }
+}
+
+impl DialogWindow for ShortcutList {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+        let cfg = &UI_CFG.toolbar;
+
+        match command {
+            Command::MouseState { x, y, .. } => {
+                self.mouseover = None;
+                if self.rect.contains_point((*x, *y)) {
+                    let i = (*x - self.rect.x) as u32 / cfg.icon_w;
+
+                    if i < cfg.n_shortcut {
+                        self.mouseover = Some(i);
+                    }
+                    return DialogResult::Command(None);
+                }
+            }
+            Command::MouseButtonDown { x, y, .. } => {
+                if !self.rect.contains_point((*x, *y)) {
+                    return DialogResult::Continue;
+                }
+                return DialogResult::Command(None);
+            }
+            Command::MouseButtonUp { x, y, button, .. } => {
+                if !self.rect.contains_point((*x, *y)) {
+                    return DialogResult::Continue;
+                }
+                if *button != MouseButton::Left {
+                    return DialogResult::Command(None);
+                }
+                let i = (*x - self.rect.x) as u32 / cfg.icon_w;
+                return DialogResult::Command(Some(Command::ActionShortcut(i as usize)));
             }
             _ => (),
         }
