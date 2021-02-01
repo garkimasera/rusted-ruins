@@ -45,6 +45,9 @@ impl DialogWindow for RegisterShortcutDialog {
                 }
                 return DialogResult::Close;
             }
+            DialogResult::Close => {
+                return DialogResult::Close;
+            }
             _ => (),
         }
         DialogResult::Continue

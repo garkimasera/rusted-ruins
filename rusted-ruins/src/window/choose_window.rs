@@ -15,6 +15,7 @@ pub struct ChooseWindow {
     default_behavior: DefaultBehavior,
     callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>>,
     mainwin_cursor: bool,
+    escape_click: bool,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -36,6 +37,7 @@ impl ChooseWindow {
             default_behavior,
             callbacks: Vec::new(),
             mainwin_cursor: false,
+            escape_click: false,
         }
     }
 
@@ -60,6 +62,7 @@ impl ChooseWindow {
             default_behavior: DefaultBehavior::Close,
             callbacks,
             mainwin_cursor: true,
+            escape_click: false,
         }
     }
 
@@ -124,9 +127,21 @@ impl DialogWindow for ChooseWindow {
             },
             Command::MouseButtonUp { x, y, .. } if x < 0 || x >= rect.w || y < 0 || y >= rect.h => {
                 match self.default_behavior {
-                    DefaultBehavior::Close => DialogResult::Close,
+                    DefaultBehavior::Close => {
+                        if self.escape_click {
+                            DialogResult::Close
+                        } else {
+                            DialogResult::Continue
+                        }
+                    }
                     DefaultBehavior::Ignore => DialogResult::Continue,
                 }
+            }
+            Command::MouseButtonDown { x, y, .. }
+                if x < 0 || x >= rect.w || y < 0 || y >= rect.h =>
+            {
+                self.escape_click = true;
+                DialogResult::Continue
             }
             _ => DialogResult::Continue,
         }

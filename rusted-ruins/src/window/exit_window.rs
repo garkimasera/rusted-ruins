@@ -72,6 +72,9 @@ impl DialogWindow for ExitWindow {
                     }
                 }
             }
+            DialogResult::Close => {
+                return DialogResult::Close;
+            }
             _ => (),
         }
         DialogResult::Continue
