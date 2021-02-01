@@ -5,7 +5,7 @@ extern crate rusted_ruins_rng as rng;
 
 use arrayvec::ArrayVec;
 use geom::*;
-use serde::{Deserialize, Serialize};
+use serde_derive::{Deserialize, Serialize};
 
 pub mod binary;
 
@@ -202,29 +202,51 @@ mod tests {
     use super::*;
     #[test]
     fn flat_map() {
-        let map = MapGenerator::new((10, 10)).flat().generate();
+        let gen_param = MapGenParam::Flat { w: 10, h: 10 };
+        let map = gen_param.generate();
 
         println!("Flat map:\n{}", map);
     }
 
     #[test]
     fn lattice_map() {
-        let map = MapGenerator::new((19, 15))
-            .lattice(5, 4, 3, 7, 0.5)
-            .generate();
+        let gen_param = MapGenParam::Lattice {
+            w: 19,
+            h: 15,
+            nx: 5,
+            ny: 4,
+            step_min: 3,
+            step_max: 7,
+            door_weight: 0.5,
+        };
+        let map = gen_param.generate();
 
         println!("Lattice map:\n{}", map);
     }
 
     #[test]
     fn fractal_map() {
-        let map = MapGenerator::new((30, 30)).fractal().generate();
+        let gen_param = MapGenParam::Fractal {
+            w: 30,
+            h: 30,
+            stairs: true,
+            edge: true,
+            wall_weight: 0.5,
+        };
+        let map = gen_param.generate();
         println!("Fractal map:\n{}", map);
     }
 
     #[test]
     fn rooms_map() {
-        let map = MapGenerator::new((35, 35)).rooms(5, 8, 7).generate();
+        let gen_param = MapGenParam::Rooms {
+            w: 35,
+            h: 35,
+            min_room_size: 5,
+            max_room_size: 8,
+            n_room: 7,
+        };
+        let map = gen_param.generate();
         println!("Rooms map:\n{}", map);
     }
 }

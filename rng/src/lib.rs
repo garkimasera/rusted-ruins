@@ -120,7 +120,7 @@ mod tests {
         const N: usize = 100000;
 
         for _ in 0..N {
-            sum += gen_range(0.0, 1.0);
+            sum += gen_range(0.0..1.0);
         }
 
         let average = sum / N as f64;
