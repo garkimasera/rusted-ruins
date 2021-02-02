@@ -4,6 +4,10 @@ version = "0.8.0"
 edition = "2018"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
+[features]
+default = []
+deb = []
+
 [dependencies]
 anyhow = "1"
 clap = "2"
@@ -45,3 +49,19 @@ path = "../map-generator"
 version = "0.34"
 default-features = false
 features = ["ttf", "image"]
+
+# for cargo-deb
+# build after "./build-pak.sh", and with command "cargo deb -p rusted-ruins -- --features deb"
+[package.metadata.deb]
+copyright = "2017, T. Okubo <t.okubo.rx78+devel@gmail.com>"
+license-file = ["../LICENSE", "0"]
+extended-description = """\
+Extensible open world rogue like game with pixel art."""
+depends = "$auto"
+section = "games"
+priority = "optional"
+assets = [
+    ["../target/release/rusted-ruins", "usr/games/", "755"],
+    ["../README.md", "usr/share/doc/rusted-ruins/README", "644"],
+    ["../assets/**/*", "usr/share/games/rusted-ruins/assets/", "644"],
+]

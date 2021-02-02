@@ -83,6 +83,15 @@ fn get_assets_dir() -> Option<PathBuf> {
         return Some(PathBuf::from(e));
     }
 
+    if cfg!(feature = "deb") {
+        let path: PathBuf = "/usr/share/games/rusted-ruins/assets".into();
+        if path.exists() {
+            return Some(path);
+        } else {
+            warn!("not found assets directory \"{}\"", path.to_string_lossy());
+        }
+    }
+
     if let Ok(mut exe_file) = env::current_exe() {
         exe_file.pop();
         exe_file.push("assets");
