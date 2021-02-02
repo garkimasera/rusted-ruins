@@ -54,7 +54,6 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
     game.clear_target();
 
     let save_dir = game.save_dir.as_ref().unwrap();
-
     let new_mid = destination_to_mid(&game.gd, destination);
 
     if !game.gd.region.map_exist(new_mid) {
@@ -83,11 +82,20 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
 /// Convert Destination to map id.
 pub fn destination_to_mid(gd: &GameData, dest: Destination) -> MapId {
     let prev_mid = gd.get_current_mapid();
+
     match dest {
-        Destination::Floor(n) => MapId::SiteMap {
-            sid: prev_mid.sid(),
-            floor: n,
-        },
+        Destination::Floor(n) => {
+            if n != FLOOR_OUTSIDE {
+                MapId::SiteMap {
+                    sid: prev_mid.sid(),
+                    floor: n,
+                }
+            } else {
+                MapId::RegionMap {
+                    rid: prev_mid.rid(),
+                }
+            }
+        }
         Destination::Exit => MapId::RegionMap {
             rid: prev_mid.rid(),
         },

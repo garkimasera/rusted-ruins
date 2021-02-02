@@ -192,6 +192,9 @@ impl GameData {
     }
 
     pub fn set_current_mapid(&mut self, mid: MapId) {
+        if mid == self.current_mapid {
+            return;
+        }
         // OnMap characters on the next map
         let next_charas = self
             .region

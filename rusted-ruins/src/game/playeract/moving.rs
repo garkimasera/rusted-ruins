@@ -115,7 +115,7 @@ impl<'a> DoPlayerAction<'a> {
                         // Use stairs on map
                         let dest = if dest_floor == FLOOR_OUTSIDE {
                             log_msg = LogMessage::ExitToOutside;
-                            Destination::MapId(mid)
+                            Destination::Exit
                         } else {
                             log_msg = LogMessage::ChangeFloor;
                             Destination::Floor(dest_floor)
