@@ -121,12 +121,8 @@ pub fn do_effect<T: Into<Target>>(
                     .gd
                     .chara_pos(cause.unwrap())
                     .expect("chara position search error");
-                let tile = game
-                    .gd
-                    .chara_pos(cids[0])
-                    .expect("chara position search error");
                 let idx = gobj::id_to_idx(&effect.anim_img_shot);
-                game.anim_queue.push(Animation::shot(idx, start, tile));
+                game.anim_queue.push(Animation::shot(idx, start, tiles[0]));
             }
         }
     }

@@ -204,8 +204,13 @@ impl InfoGetter for GameData {
                     .sum();
                 Some((sum > 0, Some(sum)))
             }
-            ActionShortcut::Release(_) => {
-                todo!()
+            ActionShortcut::Release(idx) => {
+                let sum = self
+                    .search_item(idx)
+                    .iter()
+                    .map(|il| self.get_item(*il).0.charge().unwrap_or(0))
+                    .sum();
+                Some((sum > 0, Some(sum)))
             }
         }
     }

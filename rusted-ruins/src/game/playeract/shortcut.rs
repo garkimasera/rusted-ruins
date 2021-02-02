@@ -1,4 +1,5 @@
 use super::DoPlayerAction;
+use crate::game::extrait::ItemEx;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 
@@ -36,8 +37,14 @@ impl<'a> DoPlayerAction<'a> {
                 }
             }
             ActionShortcut::Release(idx) => {
-                if let Some(il) = self.gd().search_item(idx).get(0) {
-                    self.release_item(*il);
+                for il in &self.gd().search_item(idx) {
+                    let (item, _) = self.gd().get_item(*il);
+                    if let Some(n) = item.charge() {
+                        if n > 0 {
+                            self.release_item(*il);
+                            break;
+                        }
+                    }
                 }
             }
             ActionShortcut::Read(idx) => {
