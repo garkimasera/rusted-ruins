@@ -1,6 +1,5 @@
-use crate::config::{CONFIG, SCREEN_CFG};
+use crate::config::{CONFIG, SCREEN_CFG, UI_CFG};
 use sdl2;
-use sdl2::pixels::Color;
 use sdl2::render::WindowCanvas;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
@@ -92,8 +91,19 @@ impl Screen {
 
     fn redraw(&mut self, window_manager: &mut WindowManager) {
         self.canvas.set_viewport(None);
-        self.canvas.set_draw_color(Color::RGB(0, 0, 0));
-        self.canvas.clear();
+        self.canvas.set_clip_rect(None);
+        self.canvas.set_draw_color(UI_CFG.color.window_bg);
+        if cfg!(target_os = "windows") {
+            // Workaround for clear() in windows
+            try_sdl!(self.canvas.fill_rect(sdl2::rect::Rect::new(
+                0,
+                0,
+                SCREEN_CFG.screen_w,
+                SCREEN_CFG.screen_h
+            )));
+        } else {
+            self.canvas.clear();
+        }
         window_manager.draw(&mut self.canvas);
         self.canvas.present();
     }
