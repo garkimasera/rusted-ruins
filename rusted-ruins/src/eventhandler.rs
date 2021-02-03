@@ -468,6 +468,37 @@ impl CommandConvTable {
             RawCommand::MouseWheel { x, y } => {
                 return Some(Command::MouseWheel { x, y });
             }
+            // Shortcuts by number key
+            RawCommand::KeyPress(Keycode::Num1) => {
+                return Some(Command::ActionShortcut(0));
+            }
+            RawCommand::KeyPress(Keycode::Num2) => {
+                return Some(Command::ActionShortcut(1));
+            }
+            RawCommand::KeyPress(Keycode::Num3) => {
+                return Some(Command::ActionShortcut(2));
+            }
+            RawCommand::KeyPress(Keycode::Num4) => {
+                return Some(Command::ActionShortcut(3));
+            }
+            RawCommand::KeyPress(Keycode::Num5) => {
+                return Some(Command::ActionShortcut(4));
+            }
+            RawCommand::KeyPress(Keycode::Num6) => {
+                return Some(Command::ActionShortcut(5));
+            }
+            RawCommand::KeyPress(Keycode::Num7) => {
+                return Some(Command::ActionShortcut(6));
+            }
+            RawCommand::KeyPress(Keycode::Num8) => {
+                return Some(Command::ActionShortcut(7));
+            }
+            RawCommand::KeyPress(Keycode::Num9) => {
+                return Some(Command::ActionShortcut(8));
+            }
+            RawCommand::KeyPress(Keycode::Num0) => {
+                return Some(Command::ActionShortcut(9));
+            }
             _ => (),
         }
 
