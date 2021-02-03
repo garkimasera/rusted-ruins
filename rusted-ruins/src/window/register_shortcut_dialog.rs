@@ -13,7 +13,10 @@ impl RegisterShortcutDialog {
     pub fn new(shortcut: ActionShortcut) -> Self {
         let n_shortcut = UI_CFG.toolbar.n_shortcut;
         let choices = (0..n_shortcut)
-            .map(|i| ui_txt_format!("register_shortcut"; i=i))
+            .map(|i| {
+                let i = if i != 9 { i + 1 } else { 0 };
+                ui_txt_format!("register_shortcut"; i=i)
+            })
             .collect();
         let choose_win = ChooseWindow::new(WindowPos::CENTER, choices, DefaultBehavior::Close);
         Self {

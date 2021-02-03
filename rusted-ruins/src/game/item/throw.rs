@@ -8,7 +8,14 @@ pub fn item_to_throw_effect(gd: &GameData, il: ItemLocation, cid: CharaId) -> Ef
     let mut effect = if let Some(effect) = item_obj.throw_effect.clone() {
         effect
     } else {
-        todo!()
+        Effect {
+            kind: vec![EffectKind::Ranged {
+                element: Element::Physical,
+            }],
+            anim_kind: EffectAnimKind::Tile,
+            anim_img: "!damage-blunt".into(),
+            ..Effect::default()
+        }
     };
     effect.range = range;
     effect

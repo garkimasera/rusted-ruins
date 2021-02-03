@@ -268,6 +268,17 @@ impl RegionHolder {
         }
         None
     }
+
+    pub fn remove_site(&mut self, sid: SiteId) {
+        let region = self
+            .0
+            .get_mut(&sid.rid)
+            .unwrap_or_else(|| unknown_id_err(sid.rid));
+        region
+            .sites
+            .remove(&sid)
+            .unwrap_or_else(|| unknown_id_err(sid));
+    }
 }
 
 impl Region {

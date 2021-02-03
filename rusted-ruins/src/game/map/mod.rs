@@ -54,6 +54,7 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
     game.clear_target();
 
     let save_dir = game.save_dir.as_ref().unwrap();
+    let old_mid = game.gd.get_current_mapid();
     let new_mid = destination_to_mid(&game.gd, destination);
 
     if !game.gd.region.map_exist(new_mid) {
@@ -73,6 +74,17 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
 
     gd.get_current_map_mut()
         .locate_chara(CharaId::Player, new_player_pos);
+
+    // Remove temp site
+    if !old_mid.is_region_map() {
+        let sid = old_mid.sid();
+        if sid.kind == SiteKind::Temp {
+            // If new site is not the same as old site.
+            if new_mid.is_region_map() || new_mid.sid() != sid {
+                gd.region.remove_site(sid);
+            }
+        }
+    }
 
     crate::audio::play_sound("floor-change");
     crate::audio::play_music(&gd.get_current_map().music);

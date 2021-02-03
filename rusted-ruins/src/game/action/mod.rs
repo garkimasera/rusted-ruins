@@ -143,10 +143,14 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
     let effect = crate::game::item::throw::item_to_throw_effect(gd, il, cid);
     let item = gd.remove_item_and_get(il, 1);
     let chara = gd.chara.get(cid);
-    let power = item.calc_eff() as f32
-        * chara.attr.str as f32
-        * chara.attr.dex as f32
-        * (chara.skills.get(SkillKind::Throwing) as f32 + RULES.combat.skill_base);
+    let power = if item.obj().throw_effect.is_some() {
+        item.calc_eff() as f32
+            * chara.attr.str as f32
+            * chara.attr.dex as f32
+            * (chara.skills.get(SkillKind::Throwing) as f32 + RULES.combat.skill_base)
+    } else {
+        item.w() as f32 * RULES.effect.throw_weight_to_eff_factor * chara.attr.str as f32
+    };
     game_log!("throw-item"; chara=chara, item=item);
     super::effect::do_effect(game, &effect, Some(cid), target, power, 1.0);
 
