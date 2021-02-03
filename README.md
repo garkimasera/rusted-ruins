@@ -41,7 +41,12 @@ In this game, most of image data and many assets are handled as *XXObject*.
 XXObject is packaged to pak files. Their file extension is "pak".
 Pak files and the sources are under [rusted-ruins-pak](https://github.com/garkimasera/rusted-ruins-pak).
 
-## How to try
+## Precompiled packages
+
+For Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
+Deb package is also available.
+
+## How to build and try
 Please install SDL2 libraries at first.
 For Ubuntu users:
 ```shell
@@ -73,7 +78,7 @@ Left click + Shift - Use the equipped tool.
 
 Right click - Open action menu. Actions for specified tile are available through the menu. For example, you can use stairs and enter/exit the map by opening menu at the tile that player is on.
 
-Arrow keys - Move
+WASD or Arrow key - Move
 
 Enter key - Enter towns or dungeons, walk up/down stairs, and select an answer when talking.
 
@@ -92,8 +97,6 @@ Icon list
 
 ### Shortcut keys
 
-wasd or arrow key - Move
-
 d - Drop items
 
 e - Eat an item
@@ -105,6 +108,8 @@ h - Help
 q - Drink an item
 
 r - Release an magical device item
+
+0..9 - Call shortcut registered by player
 
 f1 - open item window
 
