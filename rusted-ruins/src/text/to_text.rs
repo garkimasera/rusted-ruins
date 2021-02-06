@@ -19,7 +19,9 @@ impl ToText for Site {
         }
 
         match self.content {
-            SiteContent::AutoGenDungeon { dungeon_kind } => text::to_txt(&dungeon_kind).into(),
+            SiteContent::AutoGenDungeon { dungeon_kind } => {
+                misc_txt(&format!("dungeon_kind-{}", dungeon_kind.as_str())).into()
+            }
             SiteContent::Town { ref town } => text::obj_txt(town.id()).into(),
             SiteContent::Base { .. } => "base".into(),
             SiteContent::Temp { .. } => "temp".into(),

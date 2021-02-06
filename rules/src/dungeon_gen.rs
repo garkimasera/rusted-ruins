@@ -6,6 +6,8 @@ pub type DungeonGen = HashMap<DungeonKind, DungeonGenParams>;
 
 #[derive(Serialize, Deserialize)]
 pub struct DungeonGenParams {
+    /// map symbol
+    pub symbol: SiteSymbolKind,
     /// Specify map generation type that is described in map_gen and its weight.
     pub map_gen: Vec<(String, f32)>,
     /// The probability of npc generation for each race
@@ -24,4 +26,8 @@ pub struct DungeonGenParams {
     pub floor_range: [u32; 2],
     /// Default map music
     pub music: String,
+    /// Underground or not.
+    /// If underground, use downstairs tiles to the deeper floor, and the exit is upstairs tile.
+    /// If not, upstairs tile is used to go to the deeper floor like towers.
+    pub underground: bool,
 }

@@ -86,13 +86,6 @@ impl Site {
         floor
     }
 
-    pub fn is_underground(&self) -> bool {
-        match self.content {
-            SiteContent::AutoGenDungeon { dungeon_kind, .. } => dungeon_kind.is_underground(),
-            _ => false,
-        }
-    }
-
     pub fn id(&self) -> Option<&str> {
         self.id.as_ref().map(|s| s.as_ref())
     }
@@ -156,22 +149,11 @@ impl Default for SiteId {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum DungeonKind {
-    None,
-    Cave,
-    Ruin,
-}
+pub struct DungeonKind(pub(crate) arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl DungeonKind {
-    /// If the dungeon is in underground, it returns true.
-    /// Player can go to deeper floors using downstairs tiles, and the exit is upstairs tile.
-    /// If not, upstairs tile is used to go to deeper floor lile towers.
-    pub fn is_underground(&self) -> bool {
-        match *self {
-            DungeonKind::Cave => true,
-            _ => false,
-        }
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
     }
 }
 

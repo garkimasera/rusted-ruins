@@ -2,7 +2,7 @@ use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
 use crate::gamedata::chara::{Chara, CharaId};
 use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
-use crate::gamedata::site::SiteId;
+use crate::gamedata::site::{DungeonKind, SiteId};
 use crate::objholder::*;
 use arrayvec::{ArrayString, ArrayVec};
 use geom::*;
@@ -126,7 +126,7 @@ pub enum StairsKind {
 pub struct SiteSymbolKind(ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl From<&str> for SiteSymbolKind {
-    fn from(kind: &str) -> SiteSymbolKind {
+    fn from(kind: &str) -> Self {
         SiteSymbolKind(ArrayString::from(kind).expect("too long site symbol kind name"))
     }
 }

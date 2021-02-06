@@ -5,6 +5,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::regiongen::*;
 use rng::*;
+use rules::RULES;
 
 pub fn add_region(gd: &mut GameData, id: &str) {
     let rg: &RegionGenObject = gobj::get_by_id(id);
@@ -53,17 +54,19 @@ pub fn gen_dungeon(gd: &mut GameData, rid: RegionId) {
             }
         }
     };
-    let dungeon_kind = *[DungeonKind::Cave, DungeonKind::Ruin]
+    let dungeon_kind = RULES
+        .dungeon_gen
+        .keys()
+        .collect::<Vec<_>>()
         .choose(&mut get_rng())
+        .copied()
+        .copied()
         .unwrap();
 
     super::dungeon_gen::add_dungeon_site(gd, dungeon_kind, pos);
 
     let region_map = gd.region.get_map_mut(mid);
-    let site_symbol_kind = match dungeon_kind {
-        DungeonKind::Cave => SiteSymbolKind::from("!rm-cave"),
-        _ => SiteSymbolKind::from("!rm-ruin"),
-    };
+    let site_symbol_kind = RULES.dungeon_gen[&dungeon_kind].symbol;
     region_map.tile[pos].special = SpecialTileKind::SiteSymbol {
         kind: site_symbol_kind,
     };

@@ -167,7 +167,9 @@ pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Vec2d {
 pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
     let dungeon_kind = match gd.region.get_site(mid.sid()).content {
         SiteContent::AutoGenDungeon { dungeon_kind } => dungeon_kind,
-        _ => DungeonKind::Ruin,
+        _ => {
+            return;
+        }
     };
 
     for _ in 0..n {
