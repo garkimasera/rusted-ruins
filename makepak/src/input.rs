@@ -122,6 +122,8 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub use_effect: Option<EffectInput>,
     #[serde(default)]
+    pub use_effect_special: Option<gamedata::UseEffect>,
+    #[serde(default)]
     pub tool_effect: gamedata::ToolEffect,
     pub nutrition: Option<u16>,
     #[serde(default)]

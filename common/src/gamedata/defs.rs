@@ -1,5 +1,6 @@
 //! Miscellaneous type definitions
 
+use crate::gamedata::effect::Effect;
 use crate::objholder::ItemIdx;
 use std::ops::{Index, IndexMut};
 
@@ -95,6 +96,13 @@ pub enum ToolEffect {
     Build,
     Chop,
     Mine,
+}
+
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UseEffect {
+    Effect(Effect),
+    Deed,
 }
 
 impl Default for ToolEffect {

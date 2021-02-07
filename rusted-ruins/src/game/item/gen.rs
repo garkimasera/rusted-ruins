@@ -142,8 +142,8 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         _ => (),
     };
 
-    if let Some(use_effect) = item_obj.use_effect.as_ref() {
-        for kind in &use_effect.kind {
+    if let Some(UseEffect::Effect(effect)) = item_obj.use_effect.as_ref() {
+        for kind in &effect.kind {
             match kind {
                 EffectKind::SkillLearning { .. } => gen_skill_lerning_item(&mut item, item_obj),
                 _ => (),

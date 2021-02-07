@@ -50,7 +50,7 @@ pub struct ItemObject {
     pub throw_effect: Option<Effect>,
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
-    pub use_effect: Option<Effect>,
+    pub use_effect: Option<UseEffect>,
     pub tool_effect: ToolEffect,
     /// (additional sp) = (nutriton) * (sp_nutrition_factor)
     pub nutrition: u16,

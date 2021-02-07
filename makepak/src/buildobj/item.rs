@@ -3,8 +3,7 @@ use super::img::build_img;
 use crate::error::*;
 use crate::input::*;
 use anyhow::*;
-use common::gamedata::defs::ElementArray;
-use common::gamedata::item::*;
+use common::gamedata::*;
 
 pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
     let img = get_optional_field!(tomlinput, image);
@@ -31,6 +30,14 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         }
     };
 
+    let use_effect = if let Some(effect) = convert_effect_input(item.use_effect)? {
+        Some(UseEffect::Effect(effect))
+    } else if let Some(effect) = item.use_effect_special {
+        Some(effect)
+    } else {
+        None
+    };
+
     Ok(ItemObject {
         id: tomlinput.id,
         img: build_img(img)?.0,
@@ -49,7 +56,7 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         throw_effect: convert_effect_input(item.throw_effect)?,
         magical_effect: convert_effect_input(item.magical_effect)?,
         medical_effect: convert_effect_input(item.medical_effect)?,
-        use_effect: convert_effect_input(item.use_effect)?,
+        use_effect,
         tool_effect: item.tool_effect,
         nutrition: item.nutrition.unwrap_or(0),
         charge: item.charge,
