@@ -75,10 +75,10 @@ pub fn finish_creation(
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
-        attributes: vec![],
+        attrs: vec![],
     };
     if let Some(material) = material {
-        item.attributes.push(ItemAttribute::Material(material));
+        item.attrs.push(ItemAttr::Material(material));
     }
 
     let ill = if recipe.put_on_ground {

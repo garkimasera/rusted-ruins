@@ -59,9 +59,9 @@ impl ToText for Item {
             text.push_str(&format!(" -{}", -quality));
         }
 
-        for attr in &self.attributes {
+        for attr in &self.attrs {
             match attr {
-                ItemAttribute::SkillLearning(kind) => {
+                ItemAttr::SkillLearning(kind) => {
                     text.push_str(&format!(" <{}>", kind.to_text()));
                 }
                 _ => (),

@@ -122,13 +122,13 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
-        attributes: vec![],
+        attrs: vec![],
     };
 
     // Set image variation.
     if item_obj.img.variation_rule == ImgVariationRule::RandomOnGen {
-        item.attributes
-            .push(ItemAttribute::ImageVariation(rng::gen_range(
+        item.attrs
+            .push(ItemAttr::ImageVariation(rng::gen_range(
                 0..item_obj.img.n_pattern,
             )));
     }
@@ -160,13 +160,13 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 /// Generate a magic device item
 fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
     let charge_n: u32 = rng::gen_range(item_obj.charge[0]..=item_obj.charge[1]).into();
-    item.attributes.push(ItemAttribute::Charge { n: charge_n });
+    item.attrs.push(ItemAttr::Charge { n: charge_n });
 }
 
 /// Generate a readable item
 fn gen_readable_item(item: &mut Item, item_obj: &ItemObject) {
     let title = item_obj.titles.choose(&mut rng::GameRng).cloned().unwrap();
-    item.attributes.push(ItemAttribute::Title(title));
+    item.attrs.push(ItemAttr::Title(title));
 }
 
 /// Generate a skill learning item
@@ -184,8 +184,7 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
             .unwrap()
             .into()
     };
-    item.attributes
-        .push(ItemAttribute::SkillLearning(skill_kind));
+    item.attrs.push(ItemAttr::SkillLearning(skill_kind));
 }
 
 fn set_quality(item: &mut Item, item_obj: &ItemObject, level: u32) {
@@ -219,5 +218,5 @@ fn set_material(item: &mut Item, item_obj: &ItemObject, level: u32) {
     } else {
         return;
     };
-    item.attributes.push(ItemAttribute::Material(material_name));
+    item.attrs.push(ItemAttr::Material(material_name));
 }

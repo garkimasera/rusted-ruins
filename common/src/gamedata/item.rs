@@ -1,5 +1,6 @@
 use super::defs::*;
 use super::effect::Effect;
+use super::item_attr::*;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
@@ -14,7 +15,7 @@ pub struct Item {
     pub kind: ItemKind,
     pub flags: ItemFlags,
     pub quality: ItemQuality,
-    pub attributes: Vec<ItemAttribute>,
+    pub attrs: Vec<ItemAttr>,
 }
 
 /// ItemObject has detail data for one item
@@ -52,6 +53,7 @@ pub struct ItemObject {
     pub medical_effect: Option<Effect>,
     pub use_effect: Option<UseEffect>,
     pub tool_effect: ToolEffect,
+    pub attrs: Vec<ItemObjAttr>,
     /// (additional sp) = (nutriton) * (sp_nutrition_factor)
     pub nutrition: u16,
     /// Range of charges
@@ -86,7 +88,7 @@ impl Ord for Item {
         if order != Ordering::Equal {
             return order;
         }
-        self.attributes.cmp(&other.attributes)
+        self.attrs.cmp(&other.attrs)
     }
 }
 
@@ -229,24 +231,6 @@ impl Default for QualityKind {
     fn default() -> Self {
         QualityKind::None
     }
-}
-
-/// Items can have zero or more attributes.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum ItemAttribute {
-    /// Image variation
-    ImageVariation(u32),
-    /// Number of charges
-    Charge { n: u32 },
-    /// Data to generate the contents.
-    /// Used to fix generated contents when this item is opened.
-    ContentGen { level: u32, seed: u32 },
-    /// Material of this item.
-    Material(MaterialName),
-    /// For skill learning items.
-    SkillLearning(super::skill::SkillKind),
-    /// Title for readable item.
-    Title(String),
 }
 
 pub type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;

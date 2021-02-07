@@ -100,7 +100,7 @@ pub fn add_for_deepest_floor(gd: &mut GameData, mid: MapId) {
         flags: item_obj.default_flags,
         kind: item_obj.kind,
         quality: ItemQuality::default(),
-        attributes: vec![],
+        attrs: vec![],
     };
 
     let mut item_list = ItemList::new();

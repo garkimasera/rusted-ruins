@@ -66,9 +66,9 @@ impl MapEx for Map {
 
             for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
                 let mut variation = 0;
-                for attr in &item.attributes {
+                for attr in &item.attrs {
                     match attr {
-                        ItemAttribute::ImageVariation(n) => {
+                        ItemAttr::ImageVariation(n) => {
                             variation = *n;
                         }
                         _ => (),

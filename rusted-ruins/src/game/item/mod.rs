@@ -39,9 +39,9 @@ impl ItemEx for Item {
         let obj = self.obj();
 
         if obj.img.variation_rule == ImgVariationRule::RandomOnGen {
-            for attr in &self.attributes {
+            for attr in &self.attrs {
                 match attr {
-                    ItemAttribute::ImageVariation(n) => {
+                    ItemAttr::ImageVariation(n) => {
                         return IconIdx::Item {
                             idx: self.idx,
                             i_pattern: *n,
@@ -55,9 +55,9 @@ impl ItemEx for Item {
     }
 
     fn material(&self) -> Option<(MaterialName, &Material)> {
-        for attr in &self.attributes {
+        for attr in &self.attrs {
             match attr {
-                ItemAttribute::Material(material_name) => {
+                ItemAttr::Material(material_name) => {
                     return Some((*material_name, RULES.material.get(material_name)))
                 }
                 _ => (),
@@ -118,9 +118,9 @@ impl ItemEx for Item {
     }
 
     fn charge(&self) -> Option<u32> {
-        for attr in &self.attributes {
+        for attr in &self.attrs {
             match attr {
-                ItemAttribute::Charge { n } => {
+                ItemAttr::Charge { n } => {
                     return Some(*n);
                 }
                 _ => (),
@@ -130,9 +130,9 @@ impl ItemEx for Item {
     }
 
     fn charge_mut(&mut self) -> Option<&mut u32> {
-        for attr in &mut self.attributes {
+        for attr in &mut self.attrs {
             match attr {
-                ItemAttribute::Charge { n } => {
+                ItemAttr::Charge { n } => {
                     return Some(n);
                 }
                 _ => (),
@@ -142,9 +142,9 @@ impl ItemEx for Item {
     }
 
     fn title(&self) -> Option<&str> {
-        for attr in &self.attributes {
+        for attr in &self.attrs {
             match attr {
-                ItemAttribute::Title(title) => {
+                ItemAttr::Title(title) => {
                     return Some(title);
                 }
                 _ => (),

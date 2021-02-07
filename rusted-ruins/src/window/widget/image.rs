@@ -40,9 +40,9 @@ impl ImageWidget {
 
     pub fn item<R: Into<Rect>>(rect: R, item: &Item) -> ImageWidget {
         let mut variation = 0;
-        for attr in &item.attributes {
+        for attr in &item.attrs {
             match attr {
-                ItemAttribute::ImageVariation(n) => {
+                ItemAttr::ImageVariation(n) => {
                     variation = *n;
                 }
                 _ => (),

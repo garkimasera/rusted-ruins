@@ -62,9 +62,9 @@ impl ItemInfoText {
             ItemKind::Object => {}
         }
 
-        for attr in &item.attributes {
+        for attr in &item.attrs {
             match attr {
-                ItemAttribute::Material(material) => {
+                ItemAttr::Material(material) => {
                     let material_name = crate::text::prefix::material(*material);
                     let t = misc_txt_format!(
                         "item_info_text-material"; material=material_name);
