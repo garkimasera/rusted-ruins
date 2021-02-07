@@ -20,6 +20,8 @@ pub trait MapEx {
     /// The tile is passable for given character or not.
     fn is_passable(&self, chara: &Chara, pos: Vec2d) -> bool;
     fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool;
+    /// Reveal map
+    fn reveal<F: FnMut(Vec2d) -> bool>(&mut self, visible: F);
 }
 
 impl MapEx for Map {
@@ -45,6 +47,35 @@ impl MapEx for Map {
             self.swap_chara(p, new_p)
         } else {
             false
+        }
+    }
+
+    fn reveal<F: FnMut(Vec2d) -> bool>(&mut self, mut visible: F) {
+        for p in self.tile.iter_idx() {
+            if !visible(p) {
+                continue;
+            }
+
+            let tile = &self.tile[p];
+            let observed_tile = &mut self.observed_tile[p];
+            observed_tile.tile = true;
+            observed_tile.wall = tile.wall;
+            observed_tile.deco = tile.deco;
+            observed_tile.special = tile.special;
+            observed_tile.items.clear();
+
+            for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
+                let mut variation = 0;
+                for attr in &item.attributes {
+                    match attr {
+                        ItemAttribute::ImageVariation(n) => {
+                            variation = *n;
+                        }
+                        _ => (),
+                    }
+                }
+                observed_tile.items.push((item.idx, variation));
+            }
         }
     }
 }
@@ -270,32 +301,5 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
 pub fn update_observed_map(game: &mut Game) {
     let view_map = &game.view_map;
     let map = game.gd.get_current_map_mut();
-
-    for p in map.tile.iter_idx() {
-        if !view_map.get_tile_visible(p) {
-            continue;
-        }
-
-        let tile = &map.tile[p];
-        let observed_tile = &mut map.observed_tile[p];
-
-        observed_tile.tile = true;
-        observed_tile.wall = tile.wall;
-        observed_tile.deco = tile.deco;
-        observed_tile.special = tile.special;
-        observed_tile.items.clear();
-
-        for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
-            let mut variation = 0;
-            for attr in &item.attributes {
-                match attr {
-                    ItemAttribute::ImageVariation(n) => {
-                        variation = *n;
-                    }
-                    _ => (),
-                }
-            }
-            observed_tile.items.push((item.idx, variation));
-        }
-    }
+    map.reveal(|pos| view_map.get_tile_visible(pos));
 }
