@@ -5,6 +5,7 @@ use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 
 pub struct TextInputDialog {
+    child: Option<Box<dyn Window>>,
     label: LabelWidget,
     rect: Rect,
     text: String,
@@ -12,13 +13,17 @@ pub struct TextInputDialog {
 }
 
 impl TextInputDialog {
-    pub fn new() -> TextInputDialog {
-        text_input::start();
+    pub fn new() -> Self {
+        Self::with_child(None)
+    }
 
+    pub fn with_child(child: Option<Box<dyn Window>>) -> Self {
+        text_input::start();
         let rect: Rect = UI_CFG.text_input_dialog.rect.into();
         let label_rect = Rect::new(0, 0, rect.width(), rect.height());
 
         TextInputDialog {
+            child,
             label: LabelWidget::new(label_rect, "", FontKind::M),
             rect,
             text: String::new(),
@@ -42,7 +47,10 @@ impl TextInputDialog {
 }
 
 impl Window for TextInputDialog {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+        if let Some(child) = self.child.as_mut() {
+            child.draw(context, game, anim);
+        }
         draw_window_border(context, self.rect);
         self.label.draw(context);
     }
