@@ -102,7 +102,7 @@ impl InfoGetter for GameData {
         match mid {
             MapId::SiteMap { sid, floor } => match sid.kind {
                 SiteKind::AutoGenDungeon => false,
-                SiteKind::Town | SiteKind::Base => floor == 0,
+                SiteKind::Town | SiteKind::Player => floor == 0,
                 SiteKind::Temp => {
                     let site = self.region.get_site(sid);
                     match site.content {

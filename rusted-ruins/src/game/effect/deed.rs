@@ -17,11 +17,11 @@ pub fn use_deed(game: &mut Game) {
     }
 
     let mut site = Site::new(1, None);
-    site.content = SiteContent::Base {
-        kind: BaseKind::Home,
+    site.content = SiteContent::Player {
+        kind: PlayerBaseKind::Normal,
     };
     let rid = mapid.rid();
-    let sid = gd.add_site(site, SiteKind::Base, rid, Some(pos)).unwrap();
+    let sid = gd.add_site(site, SiteKind::Player, rid, Some(pos)).unwrap();
 
     let map_random_id = crate::game::saveload::gen_box_id(gd);
     let map = if let Some(map) = crate::game::map::wilderness::generate_wilderness(gd, pos) {

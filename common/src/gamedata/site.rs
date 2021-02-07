@@ -35,7 +35,7 @@ pub enum SiteContent {
         town: Box<Town>,
     },
     /// Player's base
-    Base { kind: BaseKind },
+    Player { kind: PlayerBaseKind },
     /// Temporary map
     Temp {
         return_map: MapId,
@@ -114,7 +114,7 @@ impl SiteContent {
         match self {
             &SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
             &SiteContent::Town { .. } => SiteKind::Town,
-            &SiteContent::Base { .. } => SiteKind::Base,
+            &SiteContent::Player { .. } => SiteKind::Player,
             &SiteContent::Temp { .. } => SiteKind::Temp,
             &SiteContent::Other { .. } => SiteKind::Other,
         }
@@ -126,7 +126,7 @@ impl SiteContent {
 pub enum SiteKind {
     AutoGenDungeon,
     Town,
-    Base,
+    Player,
     Temp,
     Other,
 }
@@ -158,6 +158,6 @@ impl DungeonKind {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-pub enum BaseKind {
-    Home,
+pub enum PlayerBaseKind {
+    Normal,
 }

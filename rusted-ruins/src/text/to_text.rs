@@ -23,7 +23,7 @@ impl ToText for Site {
                 misc_txt(&format!("dungeon_kind-{}", dungeon_kind.as_str())).into()
             }
             SiteContent::Town { ref town } => text::obj_txt(town.id()).into(),
-            SiteContent::Base { .. } => "base".into(),
+            SiteContent::Player { .. } => "player".into(),
             SiteContent::Temp { .. } => "temp".into(),
             SiteContent::Other => {
                 warn!("Unnamed other kind site");
