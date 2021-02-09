@@ -75,7 +75,7 @@ fn create_matches() -> clap::ArgMatches<'static> {
         )
         .arg(
             Arg::with_name("INPUT")
-                .help("Input toml files")
+                .help("Input ron files")
                 .index(1)
                 .multiple(true)
                 .required(true),

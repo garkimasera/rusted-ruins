@@ -24,11 +24,14 @@ impl<'a> DoPlayerAction<'a> {
         };
 
         let item_obj = gobj::get_obj(tool.idx);
+        let tool_effect = if let Some(tool_effect) = item_obj.tool_effect.as_ref() {
+            tool_effect
+        } else {
+            warn!("try to use item that does not have any effect.");
+            return;
+        };
 
-        match item_obj.tool_effect {
-            ToolEffect::None => {
-                warn!("try to use item that does not have any effect.");
-            }
+        match tool_effect {
             ToolEffect::Build => {
                 if !pos.is_adjacent(player_pos) {
                     game_log_i!("building-not-adjacent-tile");

@@ -67,8 +67,8 @@ fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
         );
     };
 
-    let input: Input = if ext == "toml" {
-        toml::de::from_str(&s)?
+    let input: Input = if ext == "ron" {
+        ron::de::from_str(&s)?
     } else {
         bail!("invalid input file type: {}", path.to_string_lossy());
     };

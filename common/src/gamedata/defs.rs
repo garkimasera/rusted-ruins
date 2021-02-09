@@ -92,23 +92,15 @@ pub enum CreationRequiredTime {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ToolEffect {
-    None,
     Build,
     Chop,
     Mine,
 }
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum UseEffect {
     Effect(Effect),
     Deed,
-}
-
-impl Default for ToolEffect {
-    fn default() -> ToolEffect {
-        ToolEffect::None
-    }
 }
 
 /// Reward for quests or events

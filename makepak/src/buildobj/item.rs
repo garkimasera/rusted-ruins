@@ -1,13 +1,12 @@
-use super::effect::convert_effect_input;
 use super::img::build_img;
 use crate::error::*;
 use crate::input::*;
 use anyhow::*;
 use common::gamedata::*;
 
-pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
-    let img = get_optional_field!(tomlinput, image);
-    let item = get_optional_field!(tomlinput, item);
+pub fn build_item_object(input: Input) -> Result<ItemObject, Error> {
+    let img = get_optional_field!(input, image);
+    let item = get_optional_field!(input, item);
     let flags = ItemFlags::empty();
 
     let kind = match item.item_kind.as_str() {
@@ -30,16 +29,8 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         }
     };
 
-    let use_effect = if let Some(effect) = convert_effect_input(item.use_effect)? {
-        Some(UseEffect::Effect(effect))
-    } else if let Some(effect) = item.use_effect_special {
-        Some(effect)
-    } else {
-        None
-    };
-
     Ok(ItemObject {
-        id: tomlinput.id,
+        id: input.id,
         img: build_img(img)?.0,
         default_flags: flags,
         kind,
@@ -53,14 +44,12 @@ pub fn build_item_object(tomlinput: Input) -> Result<ItemObject, Error> {
         eff: item.eff.unwrap_or(0),
         eff_var: item.eff_var.unwrap_or(0),
         def: item.def.unwrap_or(ElementArray([0, 0, 0, 0, 0, 0])),
-        throw_effect: convert_effect_input(item.throw_effect)?,
-        magical_effect: convert_effect_input(item.magical_effect)?,
-        medical_effect: convert_effect_input(item.medical_effect)?,
-        use_effect,
+        throw_effect: item.throw_effect,
+        magical_effect: item.magical_effect,
+        medical_effect: item.medical_effect,
+        use_effect: item.use_effect,
         tool_effect: item.tool_effect,
         attrs: item.attrs,
-        nutrition: item.nutrition.unwrap_or(0),
-        charge: item.charge,
         harvest: item.harvest,
         facility: item.facility,
         material_group: item.material_group,

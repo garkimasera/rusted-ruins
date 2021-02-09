@@ -10,6 +10,8 @@ extern crate serde_derive;
 extern crate log as applog;
 
 #[macro_use]
+mod util;
+#[macro_use]
 mod error;
 #[macro_use]
 mod log;

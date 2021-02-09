@@ -52,12 +52,8 @@ pub struct ItemObject {
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
     pub use_effect: Option<UseEffect>,
-    pub tool_effect: ToolEffect,
+    pub tool_effect: Option<ToolEffect>,
     pub attrs: Vec<ItemObjAttr>,
-    /// (additional sp) = (nutriton) * (sp_nutrition_factor)
-    pub nutrition: u16,
-    /// Range of charges
-    pub charge: [u8; 2],
     /// For harvestable items
     pub harvest: Option<Harvest>,
     /// Facility type for creation and additional quality.

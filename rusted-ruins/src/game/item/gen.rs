@@ -127,10 +127,9 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 
     // Set image variation.
     if item_obj.img.variation_rule == ImgVariationRule::RandomOnGen {
-        item.attrs
-            .push(ItemAttr::ImageVariation(rng::gen_range(
-                0..item_obj.img.n_pattern,
-            )));
+        item.attrs.push(ItemAttr::ImageVariation(rng::gen_range(
+            0..item_obj.img.n_pattern,
+        )));
     }
 
     if !item_obj.titles.is_empty() {
@@ -159,8 +158,12 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 
 /// Generate a magic device item
 fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
-    let charge_n: u32 = rng::gen_range(item_obj.charge[0]..=item_obj.charge[1]).into();
-    item.attrs.push(ItemAttr::Charge { n: charge_n });
+    let n = if_first! { &ItemObjAttr::Charge { min, max } = &item_obj.attrs; {
+        rng::gen_range(min..=max)
+    } else {
+        return;
+    }};
+    item.attrs.push(ItemAttr::Charge { n: n.into() });
 }
 
 /// Generate a readable item

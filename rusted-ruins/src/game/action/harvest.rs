@@ -53,7 +53,7 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
 
         match harvest.harvest_type {
             HarvestType::Chop => {
-                if tool_obj.tool_effect == ToolEffect::Chop {
+                if tool_obj.tool_effect == Some(ToolEffect::Chop) {
                     let work = Work::Harvest {
                         item_idx: *item_idx,
                         il: *il,
@@ -73,7 +73,7 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
     }
 
     match tool_obj.tool_effect {
-        ToolEffect::Chop => {
+        Some(ToolEffect::Chop) => {
             game_log_i!("chopping-no-tree");
         }
         _ => (),

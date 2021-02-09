@@ -1,5 +1,14 @@
 use super::item::*;
 
+/// Attributes for ItemObject.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ItemObjAttr {
+    /// Item nutrition
+    Nutrition(u16),
+    /// Range of charges
+    Charge { min: u8, max: u8 },
+}
+
 /// Items can have zero or more attributes.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemAttr {

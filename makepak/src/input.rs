@@ -1,30 +1,36 @@
-use common::gamedata::{
-    self, EffectAnimKind, Element, ElementArray, FactionId, Harvest, SkillKind, StatusEffect,
-    TargetMode,
-};
+use common::gamedata::{self, Effect, ElementArray, FactionId, Harvest};
 use common::sitegen;
-use geom::{ShapeKind, Vec2d};
+use geom::Vec2d;
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Input {
     pub object_type: String,
     pub id: String,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub image: Option<ImgInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub chara_template: Option<CharaTemplateDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub item: Option<ItemDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub tile: Option<TileDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub wall: Option<WallDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub special_tile: Option<SpecialTileDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub region_gen: Option<RegionGenDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub script: Option<ScriptDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub site_gen: Option<SiteGenDepInput>,
 }
 
-/// If tomlinput has specified optional field, return it. If not, return error.
+/// If input has specified optional field, return it. If not, return error.
 macro_rules! get_optional_field {
-    ($tomlinput:expr, $field:ident) => {
-        match $tomlinput.$field {
+    ($input:expr, $field:ident) => {
+        match $input.$field {
             Some(i) => i,
             None => anyhow::bail!($crate::error::PakCompileError::MissingField {
                 field_name: stringify!($field).into()
@@ -38,14 +44,23 @@ macro_rules! get_optional_field {
 pub struct ImgInput {
     pub path: String,
     /// Name of the creator and other copyright information.
-    pub copyright: Option<String>,
+    #[serde(default)]
+    pub copyright: String,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub w: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub h: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub grid_nx: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub grid_ny: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub n_frame: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub n_pattern: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub n_anim_frame: Option<u32>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub duration: Option<u32>,
     #[serde(default)]
     pub variation_rule: common::obj::ImgVariationRule,
@@ -105,32 +120,35 @@ pub struct ItemDepInput {
     #[serde(default)]
     pub quality_kind: gamedata::QualityKind,
     pub gen_weight: f32,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub shop_weight: Option<f32>,
     pub gen_level: u32,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub eff: Option<u16>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub eff_var: Option<u16>,
     /// For armor items
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub def: Option<ElementArray<u16>>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub weapon_kind: Option<gamedata::WeaponKind>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub armor_kind: Option<gamedata::ArmorKind>,
-    #[serde(default)]
-    pub throw_effect: Option<EffectInput>,
-    #[serde(default)]
-    pub medical_effect: Option<EffectInput>,
-    #[serde(default)]
-    pub magical_effect: Option<EffectInput>,
-    #[serde(default)]
-    pub use_effect: Option<EffectInput>,
-    #[serde(default)]
-    pub use_effect_special: Option<gamedata::UseEffect>,
-    #[serde(default)]
-    pub tool_effect: gamedata::ToolEffect,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub throw_effect: Option<Effect>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub medical_effect: Option<Effect>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub magical_effect: Option<Effect>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub use_effect: Option<gamedata::UseEffect>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub tool_effect: Option<gamedata::ToolEffect>,
     #[serde(default)]
     pub attrs: Vec<gamedata::ItemObjAttr>,
-    pub nutrition: Option<u16>,
-    #[serde(default)]
-    pub charge: [u8; 2],
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub harvest: Option<Harvest>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub facility: Option<(String, i8)>,
     #[serde(default)]
     pub material_group: String,
@@ -170,37 +188,4 @@ pub struct SiteGenDepInput {
 #[serde(deny_unknown_fields)]
 pub struct ScriptDepInput {
     pub script: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct EffectInput {
-    pub kind: Vec<EffectKindInput>,
-    #[serde(default)]
-    pub target_mode: TargetMode,
-    #[serde(default)]
-    pub power_adjust: Vec<f32>,
-    #[serde(default)]
-    pub range: u32,
-    #[serde(default)]
-    pub shape: ShapeKind,
-    #[serde(default)]
-    pub size: u32,
-    #[serde(default)]
-    pub anim_kind: EffectAnimKind,
-    #[serde(default)]
-    pub anim_img: String,
-    #[serde(default)]
-    pub anim_img_shot: String,
-    #[serde(default)]
-    pub sound: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct EffectKindInput {
-    pub kind: String,
-    pub element: Option<Element>,
-    pub status: Option<StatusEffect>,
-    pub skills: Option<Vec<SkillKind>>,
 }
