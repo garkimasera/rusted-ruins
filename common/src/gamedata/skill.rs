@@ -52,7 +52,6 @@ macro_rules! define_skill_kind {
     } => {
         #[repr(u16)]
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-        #[serde(rename_all = "snake_case")]
         pub enum SkillKind {
             #[doc(hidden)]
             _DummyBasicSkill = $basic_skill_start_value,
@@ -77,7 +76,6 @@ macro_rules! define_skill_kind {
         }
 
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-        #[serde(rename_all = "snake_case")]
         pub enum WeaponKind {
             $(
                 $melee_weapon,
@@ -90,7 +88,6 @@ macro_rules! define_skill_kind {
         }
 
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-        #[serde(rename_all = "snake_case")]
         pub enum CreationKind {
             $(
                 $creation,

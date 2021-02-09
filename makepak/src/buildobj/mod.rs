@@ -7,11 +7,10 @@ use self::img::*;
 use self::item::build_item_object;
 use crate::input::Input;
 use anyhow::*;
-use common::gamedata::{CharaBaseAttr, SkillBonus, SkillKind};
+use common::gamedata::CharaBaseAttr;
 use common::obj::*;
 use geom::Vec2d;
 pub use script_parser::parse as script_parse;
-use std::collections::HashMap;
 
 pub fn build_object(input: Input) -> Result<Object, Error> {
     let object_type = input.object_type.clone();
@@ -155,13 +154,6 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         spd: chara_dep_input.spd as i16,
     };
 
-    let mut skill_bonus: HashMap<SkillKind, SkillBonus> = HashMap::default();
-
-    for (skill_kind, bonus) in chara_dep_input.skill_bonus.into_iter() {
-        let skill_kind = skill_kind.parse()?;
-        skill_bonus.insert(skill_kind, bonus);
-    }
-
     Ok(CharaTemplateObject {
         id: input.id,
         img: build_img(img)?.0,
@@ -169,7 +161,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
         default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or_default(),
-        skill_bonus,
+        skill_bonus: chara_dep_input.skill_bonus,
         base_attr,
     })
 }

@@ -2,6 +2,7 @@ use common::gamedata::*;
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct NpcAIs(HashMap<NpcAIKind, NpcAI>);
 
 impl NpcAIs {
@@ -20,7 +21,6 @@ pub struct NpcAI {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum MoveKind {
     NoMove,
     Melee,

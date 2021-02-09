@@ -59,8 +59,6 @@ impl GeneratedMap {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[serde(tag = "kind")]
-#[serde(rename_all = "snake_case")]
 pub enum MapGenParam {
     Flat {
         w: u32,

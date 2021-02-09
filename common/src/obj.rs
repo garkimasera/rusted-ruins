@@ -62,7 +62,6 @@ pub struct TileObject {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum TileKind {
     Ground,
     Water,
@@ -110,7 +109,6 @@ pub struct Img {
 
 /// Image variation rule.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum ImgVariationRule {
     /// No variation.
     None,

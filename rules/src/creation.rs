@@ -77,7 +77,7 @@ impl Creation {
                 continue;
             }
             let extension = extension.unwrap();
-            if extension != "json" {
+            if extension != "ron" {
                 continue;
             }
 

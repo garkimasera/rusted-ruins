@@ -64,7 +64,6 @@ pub const ARRAY_STR_ID_LEN: usize = 15;
 /// Bonus / penalty representation used in this game
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[repr(i8)]
-#[serde(rename_all = "snake_case")]
 pub enum BonusLevel {
     Awful = -4,
     VeryBad = -3,

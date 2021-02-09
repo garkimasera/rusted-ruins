@@ -3,6 +3,7 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Materials(HashMap<MaterialName, Material>);
 
 impl Materials {

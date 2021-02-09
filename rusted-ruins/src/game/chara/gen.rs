@@ -138,7 +138,7 @@ pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
 /// Get equip slot list
 pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
     let mut slots = RULES.chara_gen.equip_slots.clone();
-    slots.extend_from_slice(&RULES.race.get(race).equip_slots);
+    slots.extend_from_slice(&RULES.race[race].equip_slots);
     slots
 }
 

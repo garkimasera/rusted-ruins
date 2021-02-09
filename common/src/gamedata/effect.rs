@@ -64,7 +64,6 @@ impl Default for EffectKind {
 
 /// Default kind for target selection, used by NPC AI.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum TargetMode {
     None,
     Enemy,
@@ -79,7 +78,6 @@ impl Default for TargetMode {
 
 /// Effect defines the game effect of items, magics, or other active skills.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum StatusEffect {
     Asleep,
     Poison,
@@ -88,7 +86,6 @@ pub enum StatusEffect {
 
 /// Animation kind for this effect.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum EffectAnimKind {
     None,
     Tile,

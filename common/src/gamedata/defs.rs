@@ -6,7 +6,6 @@ use std::ops::{Index, IndexMut};
 
 /// Elements of damage/attack
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum Element {
     None = -1,
     Physical = 0,
@@ -28,6 +27,7 @@ pub const ELEMENTS: [Element; Element::Spirit as usize + 1] = [
 
 /// This array has the same size as element types.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct ElementArray<T>(pub [T; Element::Spirit as usize + 1]);
 
 impl<T> Index<Element> for ElementArray<T> {
@@ -50,7 +50,6 @@ impl<T> IndexMut<Element> for ElementArray<T> {
 pub struct ElementProtection(i8);
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum SkillBonus {
     None,
     VeryLow,
@@ -80,7 +79,6 @@ pub struct Recipe {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum CreationRequiredTime {
     VeryShort,
     Short,
@@ -90,7 +88,6 @@ pub enum CreationRequiredTime {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum ToolEffect {
     Build,
     Chop,
@@ -119,7 +116,6 @@ pub struct Harvest {
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum HarvestType {
     Animal,
     Chop,

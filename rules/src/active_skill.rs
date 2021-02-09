@@ -4,6 +4,7 @@ use std::fs;
 use std::path::Path;
 
 #[derive(Serialize, Deserialize, Default, Debug)]
+#[serde(transparent)]
 pub struct ActiveSkills(HashMap<String, ActiveSkill>);
 
 impl ActiveSkills {
@@ -38,7 +39,7 @@ impl ActiveSkills {
                 continue;
             }
             let extension = extension.unwrap();
-            if extension != "json" {
+            if extension != "ron" {
                 continue;
             }
 

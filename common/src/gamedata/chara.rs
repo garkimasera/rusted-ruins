@@ -258,7 +258,7 @@ pub struct CharaAI {
 
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(transparent)]
 pub struct NpcAIKind(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl Default for NpcAIKind {

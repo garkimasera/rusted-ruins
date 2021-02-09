@@ -90,7 +90,7 @@ impl Rules {
         }
 
         let mut active_skills = active_skill::ActiveSkills::default();
-        let mut creation: creation::Creation = read_from_dirs(&dirs, "creation.json");
+        let mut creation: creation::Creation = read_from_dirs(&dirs, "creation.ron");
 
         for dir in dirs.iter() {
             let active_skill_dir = dir.join(ACTIVE_SKILL_DIR_NAME);
@@ -119,26 +119,26 @@ impl Rules {
 
         Rules {
             active_skills,
-            biome: read_from_dirs(&dirs, "biome.json"),
-            chara: read_from_dirs(&dirs, "chara.json"),
-            chara_gen: read_from_dirs(&dirs, "charagen.json"),
-            class: read_from_dirs(&dirs, "class.json"),
+            biome: read_from_dirs(&dirs, "biome.ron"),
+            chara: read_from_dirs(&dirs, "chara.ron"),
+            chara_gen: read_from_dirs(&dirs, "charagen.ron"),
+            class: read_from_dirs(&dirs, "class.ron"),
             creation,
-            combat: read_from_dirs(&dirs, "combat.json"),
-            dungeon_gen: read_from_dirs(&dirs, "dungeon_gen.json"),
-            effect: read_from_dirs(&dirs, "effect.json"),
-            exp: read_from_dirs(&dirs, "exp.json"),
-            faction: read_from_dirs(&dirs, "faction.json"),
-            map_gen: read_from_dirs(&dirs, "map_gen.json"),
-            item: read_from_dirs(&dirs, "item.json"),
-            magic: read_from_dirs(&dirs, "magic.json"),
-            material: read_from_dirs(&dirs, "material.json"),
-            newgame: read_from_dirs(&dirs, "newgame.json"),
-            npc_ai: read_from_dirs(&dirs, "npc_ai.json"),
-            params: read_from_dirs(&dirs, "params.json"),
-            quest: read_from_dirs(&dirs, "quest.json"),
-            race: read_from_dirs(&dirs, "race.json"),
-            town: read_from_dirs(&dirs, "town.json"),
+            combat: read_from_dirs(&dirs, "combat.ron"),
+            dungeon_gen: read_from_dirs(&dirs, "dungeon_gen.ron"),
+            effect: read_from_dirs(&dirs, "effect.ron"),
+            exp: read_from_dirs(&dirs, "exp.ron"),
+            faction: read_from_dirs(&dirs, "faction.ron"),
+            map_gen: read_from_dirs(&dirs, "map_gen.ron"),
+            item: read_from_dirs(&dirs, "item.ron"),
+            magic: read_from_dirs(&dirs, "magic.ron"),
+            material: read_from_dirs(&dirs, "material.ron"),
+            newgame: read_from_dirs(&dirs, "newgame.ron"),
+            npc_ai: read_from_dirs(&dirs, "npc_ai.ron"),
+            params: read_from_dirs(&dirs, "params.ron"),
+            quest: read_from_dirs(&dirs, "quest.ron"),
+            race: read_from_dirs(&dirs, "race.ron"),
+            town: read_from_dirs(&dirs, "town.ron"),
         }
     }
 }
@@ -160,7 +160,7 @@ where
             }
         };
         info!("Rule file loading: \"{}\"", file_path.to_string_lossy());
-        match serde_json::from_reader(file) {
+        match ron::de::from_reader(file) {
             Ok(o) => {
                 rule = Some(o);
             }
@@ -191,7 +191,7 @@ where
             exit_err();
         }
     };
-    match serde_json::from_reader(file) {
+    match ron::de::from_reader(file) {
         Ok(o) => o,
         Err(e) => {
             error!("{}", e);

@@ -650,7 +650,6 @@ mod test {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum HDirection {
     None,
     Left,
@@ -685,7 +684,6 @@ impl Default for VDirection {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum VDirection {
     None,
     Up,

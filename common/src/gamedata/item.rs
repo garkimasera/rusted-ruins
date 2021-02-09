@@ -141,7 +141,6 @@ pub enum ItemKind {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum ItemKindRough {
     Potion,
     Food,
@@ -215,7 +214,6 @@ impl ItemQuality {
 
 /// Quality kind for item.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum QualityKind {
     /// Item's quality is always zero including enchant and damage.
     None,
@@ -232,7 +230,6 @@ impl Default for QualityKind {
 pub type MaterialName = arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum ArmorKind {
     Body,
     Shield,
@@ -457,7 +454,6 @@ impl From<u32> for ItemMoveNum {
 //
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum EquipSlotKind {
     MeleeWeapon,
     RangedWeapon,

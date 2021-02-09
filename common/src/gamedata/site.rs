@@ -122,7 +122,6 @@ impl SiteContent {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum SiteKind {
     AutoGenDungeon,
     Town,
@@ -149,6 +148,7 @@ impl Default for SiteId {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct DungeonKind(pub(crate) arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl DungeonKind {

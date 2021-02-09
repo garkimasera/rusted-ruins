@@ -1,4 +1,4 @@
-use common::gamedata::{self, Effect, ElementArray, FactionId, Harvest};
+use common::gamedata::{self, Effect, ElementArray, FactionId, Harvest, SkillKind};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -76,7 +76,7 @@ pub struct CharaTemplateDepInput {
     pub gen_level: u32,
     pub default_ai_kind: Option<gamedata::NpcAIKind>,
     #[serde(default)]
-    pub skill_bonus: HashMap<String, gamedata::SkillBonus>,
+    pub skill_bonus: HashMap<SkillKind, gamedata::SkillBonus>,
     pub base_hp: i32,
     pub str: u16,
     pub vit: u16,

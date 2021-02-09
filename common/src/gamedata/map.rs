@@ -123,6 +123,7 @@ pub enum StairsKind {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct SiteSymbolKind(ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl From<&str> for SiteSymbolKind {

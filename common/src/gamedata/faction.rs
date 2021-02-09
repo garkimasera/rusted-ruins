@@ -28,6 +28,7 @@ impl Faction {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct FactionId(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
 impl Default for FactionId {
@@ -51,13 +52,14 @@ impl FactionId {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-pub struct FactionRelation(i8);
-const FACTION_RELATION_MAX: i8 = 100;
-const FACTION_RELATION_MIN: i8 = -100;
+#[serde(transparent)]
+pub struct FactionRelation(i16);
+const FACTION_RELATION_MAX: i16 = 10000;
+const FACTION_RELATION_MIN: i16 = -10000;
 
-impl std::ops::Add<i8> for FactionRelation {
+impl std::ops::Add<i16> for FactionRelation {
     type Output = Self;
-    fn add(self, other: i8) -> Self {
+    fn add(self, other: i16) -> Self {
         FactionRelation(std::cmp::min(
             self.0.wrapping_add(other),
             FACTION_RELATION_MAX,
@@ -65,9 +67,9 @@ impl std::ops::Add<i8> for FactionRelation {
     }
 }
 
-impl std::ops::Sub<i8> for FactionRelation {
+impl std::ops::Sub<i16> for FactionRelation {
     type Output = Self;
-    fn sub(self, other: i8) -> Self {
+    fn sub(self, other: i16) -> Self {
         FactionRelation(std::cmp::max(
             self.0.wrapping_sub(other),
             FACTION_RELATION_MIN,

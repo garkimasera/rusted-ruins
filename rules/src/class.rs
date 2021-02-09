@@ -3,6 +3,7 @@ use common::gamedata::*;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Classes(HashMap<CharaClass, Class>);
 
 impl Classes {
