@@ -92,7 +92,6 @@ impl DialogWindow for Toolbar {
                     if i < N_ITEM {
                         self.mouseover = Some(i);
                     }
-                    return DialogResult::Command(None);
                 }
             }
             Command::MouseButtonDown { x, y, .. } => {
@@ -222,7 +221,6 @@ impl DialogWindow for ShortcutList {
                     if i < cfg.n_shortcut {
                         self.mouseover = Some(i);
                     }
-                    return DialogResult::Command(None);
                 }
             }
             Command::MouseButtonDown { x, y, .. } => {
