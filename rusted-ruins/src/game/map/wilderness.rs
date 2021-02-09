@@ -1,4 +1,4 @@
-use crate::game::extrait::MapEx;
+use crate::game::extrait::MapExt;
 use crate::game::map::builder::MapBuilder;
 use crate::game::InfoGetter;
 use common::gamedata::*;

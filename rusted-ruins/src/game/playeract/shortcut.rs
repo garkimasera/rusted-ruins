@@ -1,5 +1,5 @@
 use super::DoPlayerAction;
-use crate::game::extrait::ItemEx;
+use crate::game::extrait::ItemExt;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 

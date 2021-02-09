@@ -1,4 +1,4 @@
-use crate::game::extrait::ItemEx;
+use crate::game::extrait::ItemExt;
 use crate::text::ToText;
 use common::gamedata::*;
 

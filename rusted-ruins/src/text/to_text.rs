@@ -35,7 +35,7 @@ impl ToText for Site {
 
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
-        use crate::game::item::ItemEx;
+        use crate::game::item::ItemExt;
         let mut text: String = obj_txt(gobj::idx_to_id(self.idx)).into();
 
         if let Some(n) = self.charge() {
@@ -80,7 +80,7 @@ impl ToText for CharaTemplateIdx {
 
 impl ToText for Chara {
     fn to_text(&self) -> Cow<str> {
-        use crate::game::chara::CharaEx;
+        use crate::game::chara::CharaExt;
         if self.is_main_character() {
             return misc_txt("you").into();
         }

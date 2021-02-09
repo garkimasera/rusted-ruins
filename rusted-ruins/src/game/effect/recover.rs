@@ -1,4 +1,4 @@
-use crate::game::extrait::CharaEx;
+use crate::game::extrait::CharaExt;
 use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
 use rules::RULES;

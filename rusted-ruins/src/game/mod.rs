@@ -275,12 +275,12 @@ pub enum AdvanceScriptResult {
 }
 
 pub mod extrait {
-    pub use super::chara::status::{CharaStatusEx, CharaStatusOperation};
-    pub use super::chara::CharaEx;
+    pub use super::chara::status::{CharaStatusExt, CharaStatusOperation};
+    pub use super::chara::CharaExt;
     pub use super::infogetter::InfoGetter;
-    pub use super::item::ItemEx;
-    pub use super::item::ItemListEx;
-    pub use super::map::MapEx;
-    pub use super::site::SiteEx;
-    pub use super::skill::SkillListEx;
+    pub use super::item::ItemExt;
+    pub use super::item::ItemListExt;
+    pub use super::map::MapExt;
+    pub use super::site::SiteExt;
+    pub use super::skill::SkillListExt;
 }

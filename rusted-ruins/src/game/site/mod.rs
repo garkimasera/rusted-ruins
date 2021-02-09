@@ -4,6 +4,5 @@ pub mod temp;
 use common::gamedata::*;
 
 /// Additional Site method
-pub trait SiteEx {}
-
-impl SiteEx for Site {}
+#[extend::ext(pub)]
+impl Site {}

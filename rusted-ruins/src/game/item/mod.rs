@@ -13,28 +13,8 @@ use rules::material::Material;
 use rules::RULES;
 
 /// Additional Item methods
-pub trait ItemEx {
-    fn icon(&self) -> IconIdx;
-    fn material(&self) -> Option<(MaterialName, &Material)>;
-    /// Calculate factor for the item effectiveness
-    fn eff_factor(&self) -> f32;
-    /// Calculate effectiveness for this item
-    fn calc_eff(&self) -> i32;
-    /// Calculate effectiveness for this item without variation
-    fn calc_eff_without_var(&self) -> i32;
-    /// Calculate item price
-    fn price(&self) -> i64;
-    /// Calculate item selling price
-    fn selling_price(&self) -> i64;
-    fn w(&self) -> u32;
-    fn charge(&self) -> Option<u32>;
-    fn charge_mut(&mut self) -> Option<&mut u32>;
-    fn title(&self) -> Option<&str>;
-    /// Calculate throw range by item weight and character STR.
-    fn throw_range(&self, str: u16) -> u32;
-}
-
-impl ItemEx for Item {
+#[extend::ext(pub)]
+impl Item {
     fn icon(&self) -> IconIdx {
         let obj = self.obj();
 
@@ -66,6 +46,7 @@ impl ItemEx for Item {
         None
     }
 
+    /// Calculate factor for the item effectiveness
     fn eff_factor(&self) -> f32 {
         let mut factor = 1.0;
         if let Some((_, material)) = self.material() {
@@ -74,6 +55,7 @@ impl ItemEx for Item {
         factor
     }
 
+    /// Calculate effectiveness for this item
     fn calc_eff(&self) -> i32 {
         let item_obj = gobj::get_obj(self.idx);
         let base_eff = self.calc_eff_without_var();
@@ -87,11 +69,13 @@ impl ItemEx for Item {
         }
     }
 
+    /// Calculate effectiveness for this item without variation
     fn calc_eff_without_var(&self) -> i32 {
         let item_obj = gobj::get_obj(self.idx);
         (item_obj.eff as f32 * self.eff_factor()) as i32
     }
 
+    /// Calculate item price
     fn price(&self) -> i64 {
         let item_obj = gobj::get_obj(self.idx);
         let mut factor = 1.0;
@@ -103,6 +87,7 @@ impl ItemEx for Item {
         (item_obj.basic_price as f32 * factor) as i64
     }
 
+    /// Calculate item selling price
     fn selling_price(&self) -> i64 {
         self.price() / 2
     }
@@ -153,6 +138,7 @@ impl ItemEx for Item {
         None
     }
 
+    /// Calculate throw range by item weight and character STR.
     fn throw_range(&self, str: u16) -> u32 {
         let w = std::cmp::max(self.w(), 1);
         std::cmp::min(
@@ -162,14 +148,9 @@ impl ItemEx for Item {
     }
 }
 
-pub trait ItemListEx {
+#[extend::ext(pub)]
+impl ItemList {
     /// Return the first item found
-    fn find(&self, idx: ItemIdx) -> Option<u32>;
-    /// Sum of item weight
-    fn sum_weight(&self) -> u32;
-}
-
-impl ItemListEx for ItemList {
     fn find(&self, idx: ItemIdx) -> Option<u32> {
         for (i, (item, _)) in self.iter().enumerate() {
             if item.idx == idx {
@@ -179,6 +160,7 @@ impl ItemListEx for ItemList {
         None
     }
 
+    /// Sum of item weight
     fn sum_weight(&self) -> u32 {
         self.iter()
             .map(|(item, n)| {

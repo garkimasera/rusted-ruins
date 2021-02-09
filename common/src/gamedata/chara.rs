@@ -166,6 +166,26 @@ pub enum CharaStatus {
     },
 }
 
+impl CharaStatus {
+    pub fn turn_left(&self) -> Option<u16> {
+        match self {
+            &CharaStatus::Asleep { turn_left } | &CharaStatus::Work { turn_left, .. } => {
+                Some(turn_left)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn turn_left_mut(&mut self) -> Option<&mut u16> {
+        match self {
+            CharaStatus::Asleep { turn_left } | CharaStatus::Work { turn_left, .. } => {
+                Some(turn_left)
+            }
+            _ => None,
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Work {
     Creation {

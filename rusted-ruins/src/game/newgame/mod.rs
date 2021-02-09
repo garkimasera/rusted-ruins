@@ -1,5 +1,5 @@
 use super::extrait::*;
-use super::skill::SkillListEx;
+use super::skill::SkillListExt;
 use common::gamedata;
 use common::gamedata::*;
 use common::gobj;

@@ -16,15 +16,9 @@ use common::obj::TileKind;
 use geom::*;
 use rules::RULES;
 
-pub trait MapEx {
+#[extend::ext(pub)]
+impl Map {
     /// The tile is passable for given character or not.
-    fn is_passable(&self, chara: &Chara, pos: Vec2d) -> bool;
-    fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool;
-    /// Reveal map
-    fn reveal<F: FnMut(Vec2d) -> bool>(&mut self, visible: F);
-}
-
-impl MapEx for Map {
     fn is_passable(&self, _chara: &Chara, pos: Vec2d) -> bool {
         if !self.is_inside(pos) {
             return false;
@@ -50,6 +44,7 @@ impl MapEx for Map {
         }
     }
 
+    /// Reveal map
     fn reveal<F: FnMut(Vec2d) -> bool>(&mut self, mut visible: F) {
         for p in self.tile.iter_idx() {
             if !visible(p) {

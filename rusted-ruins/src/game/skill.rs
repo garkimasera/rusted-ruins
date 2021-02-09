@@ -3,14 +3,8 @@ use common::gamedata::*;
 use fnv::FnvHashMap;
 use rules::RULES;
 
-pub trait SkillListEx {
-    fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32);
-    fn learn_new_skill(&mut self, kind: SkillKind) -> bool;
-    fn set_skill_level(&mut self, kind: SkillKind, lv: u32);
-    fn get_level_exp(&self, kind: SkillKind) -> (u32, u16);
-}
-
-impl SkillListEx for SkillList {
+#[extend::ext(pub)]
+impl SkillList {
     /// Add exp to specified skill
     /// Returns level up result and actual added exp value
     fn add_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) -> (bool, u32) {

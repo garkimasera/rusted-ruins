@@ -1,5 +1,5 @@
 use super::chara::preturn::preturn;
-use super::chara::CharaEx;
+use super::chara::CharaExt;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 use super::{Game, GameState, InfoGetter};

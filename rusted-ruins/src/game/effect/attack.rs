@@ -1,6 +1,6 @@
 use crate::config::changeable::game_log_cfg;
 use crate::game::damage::*;
-use crate::game::extrait::CharaEx;
+use crate::game::extrait::CharaExt;
 use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;

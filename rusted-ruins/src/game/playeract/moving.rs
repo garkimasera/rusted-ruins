@@ -1,5 +1,5 @@
 use super::DoPlayerAction;
-use crate::game::map::MapEx;
+use crate::game::map::MapExt;
 use crate::game::{action, DialogOpenRequest, InfoGetter};
 use crate::text::ToText;
 use common::gamedata::*;

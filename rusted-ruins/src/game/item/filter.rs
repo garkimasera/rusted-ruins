@@ -1,5 +1,5 @@
 use super::merged::*;
-use super::ItemEx;
+use super::ItemExt;
 use common::gamedata::*;
 use common::gobj;
 

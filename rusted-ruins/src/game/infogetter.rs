@@ -6,40 +6,9 @@ use geom::*;
 use rules::RULES;
 
 /// Helper functions to get information for event processing and drawing
-pub trait InfoGetter {
+#[extend::ext(pub, name = InfoGetter)]
+impl GameData {
     /// Get player's name
-    fn player_name(&self) -> &str;
-    /// Get player's position
-    fn player_pos(&self) -> Vec2d;
-    /// Get player's (maxhp, hp)
-    fn player_hp(&self) -> (i32, i32);
-    /// Get item location that player has
-    fn player_item_location(&self, id: &str) -> Option<ItemLocation>;
-    /// Get current map size
-    fn map_size(&self) -> (u32, u32);
-    /// Character position on the current map
-    fn chara_pos(&self, cid: CharaId) -> Option<Vec2d>;
-    /// Player's current tile is entrance/exit or not
-    fn on_map_entrance(&self) -> bool;
-    /// Return item list in the tile that player stands on
-    fn item_on_player_tile(&self) -> &ItemList;
-    /// Return any item exist or not on player tile
-    fn is_item_on_player_tile(&self) -> bool;
-    /// Judge given map is open-air or not
-    fn is_open_air(&self, mid: MapId) -> bool;
-    /// Get the number of specified item player has
-    fn has_item(&self, idx: ItemIdx) -> u32;
-    /// Get the item location of specified item
-    fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation>;
-    /// Get list of harvestable items
-    fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)>;
-    /// Get relationship between two characters
-    fn chara_relation(&self, chara: CharaId, other: CharaId) -> Relationship;
-    /// Get shortcut availability (available, remaining)
-    fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)>;
-}
-
-impl InfoGetter for GameData {
     fn player_name(&self) -> &str {
         self.chara
             .get(CharaId::Player)
@@ -48,17 +17,20 @@ impl InfoGetter for GameData {
             .expect("player's name is None")
     }
 
+    /// Get player's position
     fn player_pos(&self) -> Vec2d {
         self.get_current_map()
             .chara_pos(CharaId::Player)
             .expect("Internal Error: Player position undefined")
     }
 
+    /// Get player's (maxhp, hp)
     fn player_hp(&self) -> (i32, i32) {
         let player = self.chara.get(CharaId::Player);
         (player.attr.max_hp, player.hp)
     }
 
+    /// Get item location that player has
     fn player_item_location(&self, id: &str) -> Option<ItemLocation> {
         let idx: ItemIdx = gobj::id_to_idx_checked(id)?;
         let ill = ItemListLocation::Chara {
@@ -70,16 +42,19 @@ impl InfoGetter for GameData {
         Some((ill, i))
     }
 
+    /// Get current map size
     fn map_size(&self) -> (u32, u32) {
         let map = self.get_current_map();
         (map.w, map.h)
     }
 
+    /// Character position on the current map
     fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
         let map = self.get_current_map();
         map.chara_pos(cid)
     }
 
+    /// Player's current tile is entrance/exit or not
     fn on_map_entrance(&self) -> bool {
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
@@ -89,15 +64,18 @@ impl InfoGetter for GameData {
         }
     }
 
+    /// Return item list in the tile that player stands on
     fn item_on_player_tile(&self) -> &ItemList {
         let player_pos = self.player_pos();
         &self.get_current_map().tile[player_pos].item_list
     }
 
+    /// Return any item exist or not on player tile
     fn is_item_on_player_tile(&self) -> bool {
         !self.item_on_player_tile().is_empty()
     }
 
+    /// Judge given map is open-air or not
     fn is_open_air(&self, mid: MapId) -> bool {
         match mid {
             MapId::SiteMap { sid, floor } => match sid.kind {
@@ -116,6 +94,7 @@ impl InfoGetter for GameData {
         }
     }
 
+    /// Get the number of specified item player has
     fn has_item(&self, idx: ItemIdx) -> u32 {
         let il = self.get_item_list(ItemListLocation::Chara {
             cid: CharaId::Player,
@@ -125,6 +104,7 @@ impl InfoGetter for GameData {
             .sum()
     }
 
+    /// Get the item location of specified item
     fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation> {
         let ill = ItemListLocation::Chara {
             cid: CharaId::Player,
@@ -139,6 +119,7 @@ impl InfoGetter for GameData {
         il
     }
 
+    /// Get list of harvestable items
     fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)> {
         let item_list = self.get_item_list_on_current_map(tile);
 
@@ -159,6 +140,7 @@ impl InfoGetter for GameData {
         v
     }
 
+    /// Get relationship between two characters
     fn chara_relation(&self, chara: CharaId, other: CharaId) -> Relationship {
         let f1 = self.chara.get(chara).faction;
         let f2 = self.chara.get(other).faction;
@@ -184,6 +166,7 @@ impl InfoGetter for GameData {
         }
     }
 
+    /// Get shortcut availability (available, remaining)
     fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)> {
         let shortcut = if let Some(shortcut) = self.settings.action_shortcuts[n] {
             shortcut
