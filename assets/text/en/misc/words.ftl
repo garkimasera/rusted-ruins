@@ -47,6 +47,7 @@ skill_kind-healing = Healing
 skill_kind-throwing = Throwing
 skill_kind-magic_device = Magic Device
 skill_kind-mining = Mining
+skill_kind-plants = Plants
 
 # WeaponKind
 
