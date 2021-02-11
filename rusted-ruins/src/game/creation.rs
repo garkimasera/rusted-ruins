@@ -221,6 +221,17 @@ pub fn available_material(
     items
 }
 
+/// Recipes that difficulty is zero are available from game start.
+pub fn add_initial_recipes(gd: &mut GameData) {
+    for creation_kind in CreationKind::ALL {
+        for recipe in RULES.creation.recipes(*creation_kind) {
+            if recipe.difficulty == 0 {
+                gd.learned_recipes.add(*creation_kind, &recipe.product);
+            }
+        }
+    }
+}
+
 pub fn material_group(ingredient: &str) -> Option<&str> {
     ingredient.strip_prefix("group/")
 }

@@ -82,6 +82,9 @@ impl NewGameBuilder {
             for (faction_id, faction) in &RULES.faction.factions {
                 gd.faction.set(*faction_id, faction.default_relation);
             }
+
+            // Creation setting
+            crate::game::creation::add_initial_recipes(gd);
         }
         self.gd
     }
