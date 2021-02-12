@@ -1,4 +1,5 @@
 use super::item::*;
+use super::time::Time;
 
 /// Attributes for ItemObject.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -7,6 +8,13 @@ pub enum ItemObjAttr {
     Nutrition(u16),
     /// Range of charges
     Charge { min: u8, max: u8 },
+    /// Plant data
+    Plant {
+        /// Time to harvestable.
+        growing_time_hours: u32,
+        /// Reset time after harvesting. With None, the item is removed.
+        reset_time_hours: Option<u32>,
+    },
 }
 
 /// Items can have zero or more attributes.
@@ -14,6 +22,8 @@ pub enum ItemObjAttr {
 pub enum ItemAttr {
     /// Image variation
     ImageVariation(u32),
+    /// Time from generation or reset.
+    Time(Time),
     /// Number of charges
     Charge { n: u32 },
     /// Data to generate the contents.

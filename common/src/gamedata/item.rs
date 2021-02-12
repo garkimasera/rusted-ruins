@@ -179,8 +179,12 @@ bitflags! {
     #[derive(Serialize, Deserialize)]
     #[serde(transparent)]
     pub struct ItemFlags: u64 {
+        /// This item is fixed and never moved or destroyed.
         const FIXED = 1 << 0;
+        /// This item is owned by the other faction. Need to steal to get it.
         const OWNED = 1 << 1;
+        /// This item cannot be moved, but can be harvested.
+        const PLANT = 1 << 2;
     }
 }
 

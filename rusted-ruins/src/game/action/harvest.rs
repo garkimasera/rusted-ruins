@@ -51,8 +51,8 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
         };
         let needed_turn = 10;
 
-        match harvest.harvest_type {
-            HarvestType::Chop => {
+        match harvest.kind {
+            HarvestKind::Chop => {
                 if tool_obj.tool_effect == Some(ToolEffect::Chop) {
                     let work = Work::Harvest {
                         item_idx: *item_idx,
@@ -92,12 +92,12 @@ pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, i
     }
     let harvest = item_obj.harvest.as_ref().unwrap();
 
-    let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.target_item);
+    let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.item);
     let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 1);
     let n_yield = harvest.n_yield;
 
-    match harvest.harvest_type {
-        HarvestType::Chop => {
+    match harvest.kind {
+        HarvestKind::Chop => {
             game_log_i!("harvest-chop"; chara=gd.chara.get(chara_id), item=&target_item, n=n_yield);
             audio::play_sound("chop-tree");
         }

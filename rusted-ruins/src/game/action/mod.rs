@@ -183,7 +183,7 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
-    let nutrition = if_first! { &ItemObjAttr::Nutrition(nutrition) = &item_obj.attrs; {
+    let nutrition: f32 = if_first! { &ItemObjAttr::Nutrition(nutrition) = &item_obj.attrs; {
         nutrition as f32
     } else {
         0.0

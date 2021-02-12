@@ -160,7 +160,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         race: chara_dep_input.race,
         gen_weight: chara_dep_input.gen_weight,
         gen_level: chara_dep_input.gen_level,
-        default_ai_kind: chara_dep_input.default_ai_kind.unwrap_or_default(),
+        default_ai_kind: chara_dep_input.default_ai_kind,
         skill_bonus: chara_dep_input.skill_bonus,
         base_attr,
     })

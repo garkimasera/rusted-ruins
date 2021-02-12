@@ -1,30 +1,33 @@
+/// if let alternative for iterator
 macro_rules! if_first {
     {$p:pat = $e:expr; $b:block} => {
-        'search_loop: loop {
-            for e in $e {
-                match e {
+        let mut iter = std::iter::IntoIterator::into_iter($e);
+        loop {
+            if let Some(value) = iter.next() {
+                match value {
                     $p => {
-                        break 'search_loop $b;
+                        break $b;
                     }
                     _ => (),
                 }
+            } else {
+                break;
             }
-            break 'search_loop ();
         }
     };
     {$p:pat = $e:expr; $b:block else $elsb:block} => {{
-        let search_loop_result = 'search_loop: loop {
-            for e in $e {
-                match e {
+        let mut iter = std::iter::IntoIterator::into_iter($e);
+        let result = loop {
+            if let Some(value) = iter.next() {
+                match value {
                     $p => {
-                        break 'search_loop Some($b);
+                        break Some($b);
                     }
                     _ => (),
                 }
             }
-            break None;
         };
-        if let Some(result) = search_loop_result {
+        if let Some(result) = result {
             result
         } else {
             $elsb

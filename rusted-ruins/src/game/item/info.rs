@@ -24,7 +24,7 @@ impl ItemInfoText {
                 if_first! { &ItemObjAttr::Nutrition(nutrition) = &obj.attrs; {
                     let t = misc_txt_format!("item_info_text-nutrition"; nutrition=nutrition);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
-                }};
+                }}
 
                 if obj.medical_effect.is_some() {
                     // let t = // TODO: Add text by its medical effect

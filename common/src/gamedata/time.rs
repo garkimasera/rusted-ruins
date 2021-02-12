@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 pub const DAYS_PER_MONTH: u64 = 30;
 pub const SECS_PER_MIN: u64 = 60;
 pub const SECS_PER_HOUR: u64 = SECS_PER_MIN * 60;
@@ -13,14 +15,8 @@ pub struct GameTime {
 
 impl GameTime {
     pub fn new(years: u32, months: u32, days: u32, hours: u32) -> GameTime {
-        assert!(1 <= months && months <= 12);
-        assert!(1 <= days && days <= DAYS_PER_MONTH as u32);
+        let start = Time::new(years, months, days, hours);
 
-        let start = years as u64 * SECS_PER_YEAR
-            + (months - 1) as u64 * SECS_PER_MONTH
-            + (days - 1) as u64 * SECS_PER_DAY
-            + hours as u64 * SECS_PER_HOUR;
-        let start = Time::from_seconds(start);
         GameTime {
             start,
             current: start,
@@ -41,22 +37,36 @@ impl GameTime {
 }
 
 #[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub struct Time {
-    secs: u64,
-}
+#[serde(transparent)]
+pub struct Time(u64);
 
 impl Time {
-    pub const fn from_seconds(secs: u64) -> Time {
-        Time { secs }
+    pub fn new(years: u32, months: u32, days: u32, hours: u32) -> Time {
+        assert!(1 <= months && months <= 12);
+        assert!(1 <= days && days <= DAYS_PER_MONTH as u32);
+
+        let start = years as u64 * SECS_PER_YEAR
+            + (months - 1) as u64 * SECS_PER_MONTH
+            + (days - 1) as u64 * SECS_PER_DAY
+            + hours as u64 * SECS_PER_HOUR;
+        Time::from_secs(start)
+    }
+
+    pub const fn from_secs(secs: u64) -> Time {
+        Time(secs)
+    }
+
+    pub const fn as_secs(&self) -> u64 {
+        self.0
     }
 
     pub fn duration_from(&self, t: Time) -> Duration {
-        assert!(t.secs <= self.secs);
-        Duration::from_seconds(self.secs - t.secs)
+        assert!(t.0 <= self.0);
+        Duration::from_seconds(self.0 - t.0)
     }
 
     pub fn into_date(self) -> Date {
-        let s = self.secs;
+        let s = self.0;
         let year = s / SECS_PER_YEAR;
         let s = s % SECS_PER_YEAR;
         let month = s / SECS_PER_MONTH;
@@ -79,14 +89,21 @@ impl Time {
     }
 
     pub fn advance(&mut self, secs: u64) {
-        self.secs += secs;
+        self.0 += secs;
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub struct Duration {
-    secs: u64,
+impl Add<Duration> for Time {
+    type Output = Time;
+
+    fn add(self, duration: Duration) -> Self::Output {
+        Time(self.0 + duration.0)
+    }
 }
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct Duration(u64);
 
 impl Duration {
     pub const fn new(
@@ -97,40 +114,38 @@ impl Duration {
         mins: u64,
         secs: u64,
     ) -> Duration {
-        Duration {
-            secs: years * SECS_PER_YEAR
+        Duration(
+            years * SECS_PER_YEAR
                 + months * SECS_PER_MONTH
                 + days * SECS_PER_DAY
                 + hours * SECS_PER_HOUR
                 + mins * SECS_PER_MIN
                 + secs,
-        }
+        )
     }
 
     pub const fn from_seconds(secs: u64) -> Duration {
-        Duration { secs }
+        Duration(secs)
     }
 
     pub const fn from_minutes(mins: u64) -> Duration {
-        Duration {
-            secs: mins * SECS_PER_MIN,
-        }
+        Duration(mins * SECS_PER_MIN)
     }
 
     pub const fn from_hours(hours: u64) -> Duration {
-        Duration {
-            secs: hours * SECS_PER_HOUR,
-        }
+        Duration(hours * SECS_PER_HOUR)
     }
 
     pub const fn from_days(days: u64) -> Duration {
-        Duration {
-            secs: days * SECS_PER_DAY,
-        }
+        Duration(days * SECS_PER_DAY)
+    }
+
+    pub const fn as_secs(self) -> u64 {
+        self.0
     }
 
     pub const fn as_hours(self) -> i32 {
-        (self.secs / SECS_PER_HOUR) as i32
+        (self.0 / SECS_PER_HOUR) as i32
     }
 }
 

@@ -25,6 +25,7 @@ pub mod shop;
 pub mod site;
 mod skill;
 mod target;
+mod time;
 mod town;
 mod turnloop;
 pub mod view;
@@ -121,6 +122,7 @@ impl Game {
 
     /// Update some parameters before starting player's turn
     pub fn update_before_player_turn(&mut self) {
+        time::update_time(self);
         view::update_view_map(self);
     }
 

@@ -114,6 +114,8 @@ pub enum ImgVariationRule {
     None,
     /// Random on generation this object.
     RandomOnGen,
+    /// Growing plants
+    Growing,
 }
 
 impl Default for ImgVariationRule {

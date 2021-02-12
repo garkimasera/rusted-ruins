@@ -7,6 +7,7 @@ pub mod wilderness;
 
 use super::chara::gen::create_npc_chara;
 use super::item::gen::gen_dungeon_item;
+use super::item::ItemExt;
 use super::Game;
 use crate::text::ToText;
 use common::basic::MAX_ITEM_FOR_DRAW;
@@ -60,16 +61,7 @@ impl Map {
             observed_tile.items.clear();
 
             for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
-                let mut variation = 0;
-                for attr in &item.attrs {
-                    match attr {
-                        ItemAttr::ImageVariation(n) => {
-                            variation = *n;
-                        }
-                        _ => (),
-                    }
-                }
-                observed_tile.items.push((item.idx, variation));
+                observed_tile.items.push((item.idx, item.img_variation()));
             }
         }
     }

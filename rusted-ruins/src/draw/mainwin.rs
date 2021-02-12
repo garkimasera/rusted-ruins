@@ -269,7 +269,7 @@ impl MainWinDrawer {
             let obj = gobj::get_obj(*item_idx);
             let n = match obj.img.variation_rule {
                 ImgVariationRule::None => 0,
-                ImgVariationRule::RandomOnGen => *variation,
+                ImgVariationRule::RandomOnGen | ImgVariationRule::Growing => *variation,
             };
             context.render_tex_n_center_height_checked(*item_idx, tile_rect, n);
         }

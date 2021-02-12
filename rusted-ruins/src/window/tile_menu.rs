@@ -75,7 +75,7 @@ pub fn create_menu(
             let item_obj = gobj::get_obj(*item_idx);
             let harvest = item_obj.harvest.as_ref().unwrap();
 
-            match harvest.harvest_type {
+            match harvest.kind {
                 _ => (),
             }
         }

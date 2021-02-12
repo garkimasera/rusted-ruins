@@ -3,9 +3,7 @@ use super::chara::CharaExt;
 use super::npc::process_npc_turn;
 use super::DialogOpenRequest;
 use super::{Game, GameState, InfoGetter};
-use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
-use rules::RULES;
 
 /// Main game turn loop
 pub fn turn_loop(game: &mut Game) {
@@ -21,7 +19,7 @@ pub fn turn_loop(game: &mut Game) {
 
         let (cid, advanced_clock) = decrease_wait_time(game);
 
-        advance_game_time(game, advanced_clock);
+        super::time::advance_game_time(game, advanced_clock);
         if !game.anim_queue.is_empty() {
             return;
         }
@@ -106,17 +104,4 @@ fn remove_dying_charas(game: &mut Game) -> bool {
         }
     }
     false
-}
-
-fn advance_game_time(game: &mut Game, advanced_clock: u32) {
-    let mid = game.gd.get_current_mapid();
-    let minutes_per_turn = if mid.is_region_map() {
-        RULES.params.minutes_per_turn_region
-    } else {
-        RULES.params.minutes_per_turn_normal
-    };
-    const AVERAGE_CLOCK_PER_TURN: u32 = WAIT_TIME_NUMERATOR / 100;
-    let advanced_secs =
-        minutes_per_turn * 60.0 * advanced_clock as f32 / AVERAGE_CLOCK_PER_TURN as f32;
-    game.gd.time.advance(advanced_secs as u64)
 }

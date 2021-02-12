@@ -132,6 +132,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         )));
     }
 
+    if_first! { &ItemObjAttr::Plant { growing_time_hours, .. } = &item_obj.attrs; {
+        gen_plant_item(&mut item, growing_time_hours);
+    }}
+
     if !item_obj.titles.is_empty() {
         gen_readable_item(&mut item, item_obj)
     }
@@ -154,6 +158,15 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
     set_material(&mut item, item_obj, level);
 
     item
+}
+
+fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
+    let current_time = crate::game::time::current_time();
+    item.flags |= ItemFlags::PLANT;
+    let elapsed_time = rng::gen_range(0..=growing_time_hours);
+    item.attrs.push(ItemAttr::Time(
+        current_time + Duration::from_seconds(elapsed_time.into()),
+    ));
 }
 
 /// Generate a magic device item

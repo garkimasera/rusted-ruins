@@ -16,22 +16,49 @@ use rules::RULES;
 #[extend::ext(pub)]
 impl Item {
     fn icon(&self) -> IconIdx {
+        IconIdx::Item {
+            idx: self.idx,
+            i_pattern: self.img_variation(),
+        }
+    }
+
+    fn img_variation(&self) -> u32 {
+        let time = crate::game::time::current_time();
         let obj = self.obj();
 
-        if obj.img.variation_rule == ImgVariationRule::RandomOnGen {
-            for attr in &self.attrs {
-                match attr {
-                    ItemAttr::ImageVariation(n) => {
-                        return IconIdx::Item {
-                            idx: self.idx,
-                            i_pattern: *n,
-                        };
-                    }
-                    _ => (),
-                }
+        match obj.img.variation_rule {
+            ImgVariationRule::RandomOnGen => {
+                let i_pattern = if_first! { &ItemAttr::ImageVariation(n) = &self.attrs; {
+                    n
+                } else {
+                    return 0;
+                }};
+                return i_pattern;
             }
+            ImgVariationRule::Growing => {
+                let ready_time = if_first! { &ItemAttr::Time(time) = &self.attrs; {
+                    time.as_secs()
+                } else {
+                    return 0;
+                }};
+                let growing_time = if_first! { &ItemObjAttr::Plant { growing_time_hours, .. }
+                                                = &obj.attrs; {
+                    growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
+                } else {
+                    return 0;
+                }};
+
+                let current = time.as_secs();
+
+                let i_pattern = if ready_time <= current || growing_time == 0 {
+                    obj.img.n_pattern - 1
+                } else {
+                    ((obj.img.n_pattern as u64) * (ready_time - current) / growing_time) as u32
+                };
+                return i_pattern;
+            }
+            _ => 0,
         }
-        IconIdx::from(self.idx)
     }
 
     fn material(&self) -> Option<(MaterialName, &Material)> {
