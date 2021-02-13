@@ -208,6 +208,12 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
+    pub fn harvest_item(&mut self, il: ItemLocation) {
+        if crate::game::action::harvest::harvest_item(self.gd_mut(), il) {
+            self.0.finish_player_turn();
+        }
+    }
+
     /// Advance current talk. Give player's choice if the talk has choices.
     /// If returns new text, continue talk dialog.
     pub fn advance_talk(&mut self, choice: Option<u32>) -> AdvanceScriptResult {

@@ -119,7 +119,7 @@ pub struct Harvest {
 pub enum HarvestKind {
     Animal,
     Chop,
-    Crop,
     Deconstruct,
+    Plant,
     Mine,
 }

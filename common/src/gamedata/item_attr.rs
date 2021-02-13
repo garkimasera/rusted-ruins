@@ -22,7 +22,7 @@ pub enum ItemObjAttr {
 pub enum ItemAttr {
     /// Image variation
     ImageVariation(u32),
-    /// Time from generation or reset.
+    /// Represents time for harvest, change, or rotting.
     Time(Time),
     /// Number of charges
     Charge { n: u32 },

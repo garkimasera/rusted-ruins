@@ -256,6 +256,11 @@ impl GameData {
         (&a.0, a.1)
     }
 
+    pub fn get_item_mut(&mut self, item_location: ItemLocation) -> (&mut Item, u32) {
+        let a = &mut self.get_item_list_mut(item_location.0).items[item_location.1 as usize];
+        (&mut a.0, a.1)
+    }
+
     /// Remove item from list
     pub fn remove_item<T: Into<ItemMoveNum>>(&mut self, item_location: ItemLocation, n: T) {
         let item_list = self.get_item_list_mut(item_location.0);

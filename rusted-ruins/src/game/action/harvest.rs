@@ -6,24 +6,25 @@ use common::gobj;
 use common::objholder::ItemIdx;
 use geom::*;
 
-// pub fn harvest_item(gd: &mut GameData, il: ItemLocation) {
-//     let item = gd.remove_item_and_get(il, 1);
-//     let item_idx = item.idx;
-//     let item_obj = gobj::get_obj(item_idx);
+pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
+    let item = gd.get_item(il).0;
+    let item_idx = item.idx;
+    let item_obj = gobj::get_obj(item_idx);
 
-//     let harvest = item_obj
-//         .harvest
-//         .as_ref()
-//         .expect("Tried to harvest item that is not harvestable");
+    let harvest = item_obj
+        .harvest
+        .as_ref()
+        .expect("Tried to harvest item that is not harvestable");
 
-//     let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.target_item);
-//     let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx);
-//     let n_yield = harvest.n_yield;
+    let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.item);
+    let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
+    let n_yield = harvest.n_yield;
 
-//     game_log_i!("harvest-chop"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
-//     audio::play_sound("chop-tree");
-//     gd.add_item_on_tile(gd.player_pos(), target_item.clone(), n_yield);
-// }
+    game_log_i!("harvest-plant"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
+    let item_list = gd.get_item_list_mut(ItemListLocation::PLAYER);
+    item_list.append(target_item, n_yield);
+    true
+}
 
 pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
     let gd = &mut game.gd;

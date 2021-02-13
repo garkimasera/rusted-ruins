@@ -2,7 +2,7 @@ use super::commonuse::*;
 use crate::config::CONTROL_CFG;
 use crate::game::map::tile_info::*;
 use crate::game::{DialogOpenRequest, InfoGetter};
-use common::gamedata::{Destination, SpecialTileKind, StairsKind};
+use common::gamedata::*;
 use common::gobj;
 use geom::*;
 
@@ -71,11 +71,18 @@ pub fn create_menu(
     if player_same_tile || tile.is_adjacent(player_pos) {
         // Add harvest items
         let list = game.gd.search_harvestable_item(tile);
-        for (_il, item_idx) in &list {
+        for (il, item_idx) in &list {
             let item_obj = gobj::get_obj(*item_idx);
             let harvest = item_obj.harvest.as_ref().unwrap();
+            let il = *il;
 
             match harvest.kind {
+                HarvestKind::Plant => {
+                    text_ids.push("tile-menu-harvest");
+                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                        pa.harvest_item(il);
+                    }));
+                }
                 _ => (),
             }
         }
