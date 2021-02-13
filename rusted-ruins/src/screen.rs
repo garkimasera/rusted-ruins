@@ -1,6 +1,6 @@
 use crate::config::{CONFIG, SCREEN_CFG, UI_CFG};
-use sdl2;
 use sdl2::render::WindowCanvas;
+use sdl2::surface::Surface;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
@@ -24,11 +24,12 @@ impl Screen {
             (SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
         };
 
-        let window = video_subsystem
+        let mut window = video_subsystem
             .window("Rusted Ruins", screen_w, screen_h)
             .position_centered()
             .build()
             .unwrap();
+        window.set_icon(icon_surface());
 
         let canvas_builder = window.into_canvas();
         let canvas_builder = if CONFIG.hardware_acceleration {
@@ -107,4 +108,13 @@ impl Screen {
         window_manager.draw(&mut self.canvas);
         self.canvas.present();
     }
+}
+
+fn icon_surface() -> Surface<'static> {
+    use sdl2::image::ImageRWops;
+    use sdl2::rwops::RWops;
+
+    let icon_png = include_bytes!("../../images/rusted-ruins_24x24.png");
+    let rwops = RWops::from_bytes(icon_png).unwrap();
+    rwops.load_png().expect("failed to load icon")
 }
