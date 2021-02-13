@@ -5,11 +5,11 @@ This game is written in Rust.
 ## Screenshot
 Ruin (Example of auto generated map)
 
-![exploring-ruin](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/exploring-ruin.png)
+![exploring-ruin](https://raw.githubusercontent.com/wiki/garkimasera/rusted-ruins/images/screenshot-exploring-ruin.png)
 
 Town (Example of created map by map-editor)
 
-![town](https://github.com/garkimasera/rusted-ruins/blob/master/screenshots/town.png)
+![town](https://raw.githubusercontent.com/wiki/garkimasera/rusted-ruins/images/screenshot-town.png)
 
 ## Video
 
