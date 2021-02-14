@@ -1,5 +1,5 @@
 use super::item::*;
-use super::time::Time;
+use super::time::{Duration, Time};
 
 /// Attributes for ItemObject.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -22,8 +22,11 @@ pub enum ItemObjAttr {
 pub enum ItemAttr {
     /// Image variation
     ImageVariation(u32),
-    /// Represents time for harvest, change, or rotting.
-    Time(Time),
+    /// Time management data
+    Time {
+        remaining: Duration,
+        last_updated: Time,
+    },
     /// Number of charges
     Charge { n: u32 },
     /// Data to generate the contents.

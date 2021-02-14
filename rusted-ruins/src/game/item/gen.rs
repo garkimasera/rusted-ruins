@@ -161,12 +161,13 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 }
 
 fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
-    let current_time = crate::game::time::current_time();
+    let last_updated = crate::game::time::current_time();
     item.flags |= ItemFlags::PLANT;
     let elapsed_time = rng::gen_range(0..=growing_time_hours);
-    item.attrs.push(ItemAttr::Time(
-        current_time + Duration::from_seconds(elapsed_time.into()),
-    ));
+    item.attrs.push(ItemAttr::Time {
+        last_updated,
+        remaining: Duration::from_seconds(elapsed_time.into()),
+    });
 }
 
 /// Generate a magic device item

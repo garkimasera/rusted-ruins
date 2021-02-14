@@ -23,37 +23,53 @@ impl Item {
     }
 
     fn img_variation(&self) -> u32 {
-        let time = crate::game::time::current_time();
+        let current_time = crate::game::time::current_time();
         let obj = self.obj();
 
         match obj.img.variation_rule {
             ImgVariationRule::RandomOnGen => {
-                let i_pattern = if_first! { &ItemAttr::ImageVariation(n) = &self.attrs; {
-                    n
+                if let Some(i_pattern) = self.attrs.iter().find_map(|attr| {
+                    if let &ItemAttr::ImageVariation(n) = attr {
+                        Some(n)
+                    } else {
+                        None
+                    }
+                }) {
+                    i_pattern
                 } else {
-                    return 0;
-                }};
-                return i_pattern;
+                    0
+                }
             }
             ImgVariationRule::Growing => {
-                let ready_time = if_first! { &ItemAttr::Time(time) = &self.attrs; {
-                    time.as_secs()
+                let (last_updated, remaining) = if let Some(time) =
+                    self.attrs.iter().find_map(|attr| {
+                        if let &ItemAttr::Time {
+                            last_updated,
+                            remaining,
+                        } = attr
+                        {
+                            Some((last_updated, remaining))
+                        } else {
+                            None
+                        }
+                    }) {
+                    time
                 } else {
                     return 0;
-                }};
+                };
                 let growing_time = if_first! { &ItemObjAttr::Plant { growing_time_hours, .. }
                                                 = &obj.attrs; {
                     growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
                 } else {
                     return 0;
-                }};
+                                                }};
 
-                let current = time.as_secs();
-
-                let i_pattern = if ready_time <= current || growing_time == 0 {
+                let i_pattern = if current_time >= last_updated + remaining || growing_time == 0 {
                     obj.img.n_pattern - 1
                 } else {
-                    ((obj.img.n_pattern as u64) * (ready_time - current) / growing_time) as u32
+                    let new_remaining =
+                        remaining.as_secs() + last_updated.as_secs() - current_time.as_secs();
+                    ((obj.img.n_pattern as u64) * new_remaining / growing_time) as u32
                 };
                 return i_pattern;
             }
