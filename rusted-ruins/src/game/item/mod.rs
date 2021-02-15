@@ -28,41 +28,40 @@ impl Item {
 
         match obj.img.variation_rule {
             ImgVariationRule::RandomOnGen => {
-                if let Some(i_pattern) = self.attrs.iter().find_map(|attr| {
-                    if let &ItemAttr::ImageVariation(n) = attr {
-                        Some(n)
-                    } else {
-                        None
-                    }
-                }) {
-                    i_pattern
+                if let Some(&ItemAttr::ImageVariation(n)) = self
+                    .attrs
+                    .iter()
+                    .find(|attr| matches!(attr, ItemAttr::ImageVariation(..)))
+                {
+                    n
                 } else {
                     0
                 }
             }
             ImgVariationRule::Growing => {
-                let (last_updated, remaining) = if let Some(time) =
-                    self.attrs.iter().find_map(|attr| {
-                        if let &ItemAttr::Time {
-                            last_updated,
-                            remaining,
-                        } = attr
-                        {
-                            Some((last_updated, remaining))
-                        } else {
-                            None
-                        }
-                    }) {
-                    time
+                let (last_updated, remaining) = if let Some(&ItemAttr::Time {
+                    last_updated,
+                    remaining,
+                }) = self
+                    .attrs
+                    .iter()
+                    .find(|attr| matches!(attr, ItemAttr::Time { .. }))
+                {
+                    (last_updated, remaining)
                 } else {
                     return 0;
                 };
-                let growing_time = if_first! { &ItemObjAttr::Plant { growing_time_hours, .. }
-                                                = &obj.attrs; {
+                let growing_time = if let Some(&ItemObjAttr::Plant {
+                    growing_time_hours, ..
+                }) = obj
+                    .attrs
+                    .iter()
+                    .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+                {
                     growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
                 } else {
                     return 0;
-                                                }};
+                };
 
                 let i_pattern = if current_time >= last_updated + remaining || growing_time == 0 {
                     obj.img.n_pattern - 1
@@ -188,6 +187,21 @@ impl Item {
             RULES.combat.throw_range_max,
             RULES.combat.throw_range_factor * str as u32 / w,
         )
+    }
+
+    /// Compare Time attribute and current time. Returns Some(true) if current time >= Time attr.
+    fn compare_time(&self) -> Option<bool> {
+        let current_time = crate::game::time::current_time();
+        self.attrs
+            .iter()
+            .find_map(|attr| match attr {
+                &ItemAttr::Time {
+                    last_updated,
+                    remaining,
+                } => Some(last_updated + remaining),
+                _ => None,
+            })
+            .map(|t| current_time >= t)
     }
 }
 

@@ -37,6 +37,8 @@ item-pickup = {$chara}は{$item}を拾った。
 item-drop = {$chara}は{$item}を床に置いた。
 drink-item = {$chara}は{$item}を飲み干した。
 eat-item = {$chara}は{$item}を食べた。
+harvest-plant = {$chara}は{$item} x {$n}を収穫した。
+harvest-plant-not-ready = {$item}はまだ収穫できないようだ。
 
 # Messages when a character is affected
 

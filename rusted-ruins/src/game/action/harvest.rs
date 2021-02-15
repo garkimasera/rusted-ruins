@@ -16,6 +16,11 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
         .as_ref()
         .expect("Tried to harvest item that is not harvestable");
 
+    if item.compare_time() != Some(true) {
+        game_log_i!("harvest-plant-not-ready"; item=item);
+        return false;
+    }
+
     let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.item);
     let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
     let n_yield = harvest.n_yield;

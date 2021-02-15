@@ -52,6 +52,8 @@ item-drop = {$chara} dropped {$item}.
 item-owned-by-others = {$item} is owned by others.
 drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
+harvest-plant = {$chara} harvested {$item} x {$n}.
+harvest-plant-not-ready = {$item} cannot be harvested yet.
 
 # Messages about using tools
 use-tool-without-equip = No tool equiped!

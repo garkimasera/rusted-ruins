@@ -1,3 +1,4 @@
+use common::gamedata::time::SECS_PER_HOUR;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::ImgVariationRule;
@@ -132,9 +133,15 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         )));
     }
 
-    if_first! { &ItemObjAttr::Plant { growing_time_hours, .. } = &item_obj.attrs; {
+    if let Some(&ItemObjAttr::Plant {
+        growing_time_hours, ..
+    }) = &item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+    {
         gen_plant_item(&mut item, growing_time_hours);
-    }}
+    }
 
     if !item_obj.titles.is_empty() {
         gen_readable_item(&mut item, item_obj)
@@ -163,10 +170,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
 fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
     let last_updated = crate::game::time::current_time();
     item.flags |= ItemFlags::PLANT;
-    let elapsed_time = rng::gen_range(0..=growing_time_hours);
+    let elapsed_time: u64 = rng::gen_range(0..=growing_time_hours).into();
     item.attrs.push(ItemAttr::Time {
         last_updated,
-        remaining: Duration::from_seconds(elapsed_time.into()),
+        remaining: Duration::from_seconds(elapsed_time * SECS_PER_HOUR),
     });
 }
 
