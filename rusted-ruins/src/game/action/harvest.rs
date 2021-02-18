@@ -16,18 +16,20 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
         .as_ref()
         .expect("Tried to harvest item that is not harvestable");
 
-    if item.compare_time() != Some(true) {
+    if item.compare_time() == Some(false) {
         game_log_i!("harvest-plant-not-ready"; item=item);
         return false;
     }
 
-    let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.item);
-    let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
-    let n_yield = harvest.n_yield;
+    for item in &harvest.item {
+        let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
+        let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
+        let n_yield = item.1;
+        game_log_i!("harvest-plant"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
+        let item_list = gd.get_item_list_mut(ItemListLocation::PLAYER);
+        item_list.append(target_item, n_yield);
+    }
 
-    game_log_i!("harvest-plant"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
-    let item_list = gd.get_item_list_mut(ItemListLocation::PLAYER);
-    item_list.append(target_item, n_yield);
     true
 }
 
@@ -98,18 +100,21 @@ pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, i
     }
     let harvest = item_obj.harvest.as_ref().unwrap();
 
-    let target_item_idx: ItemIdx = gobj::id_to_idx(&harvest.item);
-    let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 1);
-    let n_yield = harvest.n_yield;
+    for item in &harvest.item {
+        let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
+        let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
+        let n_yield = item.1;
 
-    match harvest.kind {
-        HarvestKind::Chop => {
-            game_log_i!("harvest-chop"; chara=gd.chara.get(chara_id), item=&target_item, n=n_yield);
-            audio::play_sound("chop-tree");
+        match harvest.kind {
+            HarvestKind::Chop => {
+                game_log_i!("harvest-chop"; chara=gd.chara.get(chara_id), item=&target_item, n=n_yield);
+                audio::play_sound("chop-tree");
+            }
+            _ => (),
         }
-        _ => (),
+        gd.add_item_on_tile(gd.player_pos(), target_item.clone(), n_yield);
     }
-    gd.add_item_on_tile(gd.player_pos(), target_item.clone(), n_yield);
+
     gd.remove_item(il, 1);
     return;
 }

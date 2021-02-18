@@ -77,6 +77,12 @@ pub fn create_menu(
             let il = *il;
 
             match harvest.kind {
+                HarvestKind::Deconstruct => {
+                    text_ids.push("tile-menu-deconstruct");
+                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                        pa.harvest_item(il);
+                    }));
+                }
                 HarvestKind::Plant => {
                     text_ids.push("tile-menu-harvest");
                     callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {

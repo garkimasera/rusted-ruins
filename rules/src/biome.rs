@@ -20,6 +20,8 @@ pub struct BiomeDetail {
     pub wall: WallIdx,
     #[serde_as(as = "Vec<(ObjIdxAsId, Same)>")]
     pub plants: Vec<(ItemIdx, f32)>,
+    #[serde_as(as = "Vec<(ObjIdxAsId, Same)>")]
+    pub items: Vec<(ItemIdx, f32)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

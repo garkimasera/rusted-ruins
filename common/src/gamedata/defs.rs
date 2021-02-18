@@ -110,9 +110,9 @@ pub struct Reward {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Harvest {
     pub kind: HarvestKind,
-    pub item: String,
+    /// item id and yield
+    pub item: Vec<(String, u32)>,
     pub difficulty: u32,
-    pub n_yield: u32,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
