@@ -27,6 +27,23 @@ pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
         .wall(biome.wall)
         .map_boundary(boundary)
         .build();
+
+    // Generate plants
+    for &(item_idx, weight) in &biome.plants {
+        for pos in map.tile.iter_idx() {
+            if !rng::gen_bool(weight / 100.0) {
+                continue;
+            }
+
+            let item = crate::game::item::gen::gen_item_from_idx(item_idx, 1);
+            let tile = &mut map.tile[pos];
+
+            if tile.wall.is_empty() && tile.item_list.is_empty() {
+                map.locate_item(item, pos, 1);
+            }
+        }
+    }
+
     // Wilderness map is revealed by default.
     map.reveal(|_| true);
 
