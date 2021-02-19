@@ -11,7 +11,7 @@ use std::fmt;
 use std::ops::{Add, Index, IndexMut, Mul, Range, Sub};
 use thiserror::Error;
 
-const OUT_OF_BOUNDS_ERR_MSG: &'static str = "Array2d: index out of bounds";
+const OUT_OF_BOUNDS_ERR_MSG: &str = "Array2d: index out of bounds";
 
 /// Represents coordinates on a 2D array
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug, Serialize, Deserialize)]
@@ -193,14 +193,14 @@ impl<T> Array2d<T> {
         }
     }
 
-    pub fn iter<'a>(&'a self) -> Array2dIter<'a, T> {
+    pub fn iter(&self) -> Array2dIter<T> {
         Array2dIter {
             array: &self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
         }
     }
 
-    pub fn iter_with_idx<'a>(&'a self) -> Array2dIterWithIdx<'a, T> {
+    pub fn iter_with_idx(&self) -> Array2dIterWithIdx<T> {
         Array2dIterWithIdx {
             array: &self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
@@ -231,10 +231,10 @@ where
     pub fn swap<P: Into<Vec2d>>(&mut self, a: P, b: P) {
         let a = a.into();
         let b = b.into();
-        debug_assert!(0 <= a.0 && a.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= a.1 && a.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= b.0 && b.0 < self.w as i32, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(0 <= b.1 && b.1 < self.h as i32, OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= a.0 && a.0 < self.w as i32, "{}", OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= a.1 && a.1 < self.h as i32, "{}", OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= b.0 && b.0 < self.w as i32, "{}", OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(0 <= b.1 && b.1 < self.h as i32, "{}", OUT_OF_BOUNDS_ERR_MSG);
 
         self.v.swap(
             (a.1 * self.w as i32 + a.0) as usize,
@@ -274,8 +274,8 @@ impl<T> Index<(u32, u32)> for Array2d<T> {
     type Output = T;
     #[inline]
     fn index(&self, index: (u32, u32)) -> &T {
-        debug_assert!(index.0 < self.w, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(index.1 < self.h, OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(index.0 < self.w, "{}", OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(index.1 < self.h, "{}", OUT_OF_BOUNDS_ERR_MSG);
 
         &self.v[(index.1 * self.w + index.0) as usize]
     }
@@ -284,8 +284,8 @@ impl<T> Index<(u32, u32)> for Array2d<T> {
 impl<T> IndexMut<(u32, u32)> for Array2d<T> {
     #[inline]
     fn index_mut(&mut self, index: (u32, u32)) -> &mut T {
-        debug_assert!(index.0 < self.w, OUT_OF_BOUNDS_ERR_MSG);
-        debug_assert!(index.1 < self.h, OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(index.0 < self.w, "{}", OUT_OF_BOUNDS_ERR_MSG);
+        debug_assert!(index.1 < self.h, "{}", OUT_OF_BOUNDS_ERR_MSG);
 
         &mut self.v[(index.1 * self.w + index.0) as usize]
     }
@@ -297,10 +297,12 @@ impl<T> Index<(i32, i32)> for Array2d<T> {
     fn index(&self, index: (i32, i32)) -> &T {
         debug_assert!(
             0 <= index.0 && index.0 < self.w as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
         debug_assert!(
             0 <= index.1 && index.1 < self.h as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
 
@@ -313,10 +315,12 @@ impl<T> IndexMut<(i32, i32)> for Array2d<T> {
     fn index_mut(&mut self, index: (i32, i32)) -> &mut T {
         debug_assert!(
             0 <= index.0 && index.0 < self.w as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
         debug_assert!(
             0 <= index.1 && index.1 < self.h as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
 
@@ -330,10 +334,12 @@ impl<T> Index<Vec2d> for Array2d<T> {
     fn index(&self, index: Vec2d) -> &T {
         debug_assert!(
             0 <= index.0 && index.0 < self.w as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
         debug_assert!(
             0 <= index.1 && index.1 < self.h as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
 
@@ -346,10 +352,12 @@ impl<T> IndexMut<Vec2d> for Array2d<T> {
     fn index_mut(&mut self, index: Vec2d) -> &mut T {
         debug_assert!(
             0 <= index.0 && index.0 < self.w as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
         debug_assert!(
             0 <= index.1 && index.1 < self.h as i32,
+            "{}",
             OUT_OF_BOUNDS_ERR_MSG
         );
 
@@ -794,23 +802,21 @@ impl Direction {
 
 /// Direction from p1 to p2
 pub fn dir_by_2pos(p1: Vec2d, p2: Vec2d) -> Direction {
+    use std::cmp::Ordering;
+
     let dx = p2.0 - p1.0;
     let dy = p2.1 - p1.1;
 
     Direction::new(
-        if dx < 0 {
-            HDirection::Left
-        } else if dx > 0 {
-            HDirection::Right
-        } else {
-            HDirection::None
+        match dx.cmp(&0) {
+            Ordering::Less => HDirection::Left,
+            Ordering::Greater => HDirection::Right,
+            Ordering::Equal => HDirection::None,
         },
-        if dy < 0 {
-            VDirection::Up
-        } else if dy > 0 {
-            VDirection::Down
-        } else {
-            VDirection::None
+        match dy.cmp(&0) {
+            Ordering::Less => VDirection::Up,
+            Ordering::Greater => VDirection::Down,
+            Ordering::Equal => VDirection::None,
         },
     )
 }

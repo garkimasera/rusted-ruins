@@ -224,7 +224,7 @@ fn instruction(input: &str) -> IResult<&str, Instruction> {
 fn section(input: &str) -> IResult<&str, (String, Vec<Instruction>)> {
     let (input, section) = section_start(input)?;
     let (input, instructions) = cut(many1(instruction))(input)?;
-    Ok((input, (section.to_owned(), instructions)))
+    Ok((input, (section, instructions)))
 }
 
 fn sections(input: &str) -> IResult<&str, HashMap<String, Vec<Instruction>>> {

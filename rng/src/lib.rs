@@ -107,7 +107,7 @@ where
             return Some(*value);
         }
     }
-    return first_enable_value;
+    first_enable_value
 }
 
 #[cfg(test)]

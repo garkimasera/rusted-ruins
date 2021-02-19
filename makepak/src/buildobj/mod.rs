@@ -15,42 +15,18 @@ pub use script_parser::parse as script_parse;
 pub fn build_object(input: Input) -> Result<Object, Error> {
     let object_type = input.object_type.clone();
     match object_type.as_ref() {
-        "anim_img" => {
-            return build_anim_img_object(input).map(|o| Object::AnimImg(o));
-        }
-        "chara_template" => {
-            return build_chara_template_object(input).map(|o| Object::CharaTemplate(o));
-        }
-        "deco" => {
-            return build_deco_object(input).map(|o| Object::Deco(o));
-        }
-        "effect_img" => {
-            return build_effect_object(input).map(|o| Object::EffectImg(o));
-        }
-        "item" => {
-            return build_item_object(input).map(|o| Object::Item(o));
-        }
-        "special_tile" => {
-            return build_special_tile_object(input).map(|o| Object::SpecialTile(o));
-        }
-        "tile" => {
-            return build_tile_object(input).map(|o| Object::Tile(o));
-        }
-        "ui_img" => {
-            return build_ui_img_object(input).map(|o| Object::UIImg(o));
-        }
-        "wall" => {
-            return build_wall_object(input).map(|o| Object::Wall(o));
-        }
-        "region_gen" => {
-            return build_region_gen_object(input).map(|o| Object::RegionGen(o));
-        }
-        "script" => {
-            return build_script_object(input).map(|o| Object::Script(o));
-        }
-        "site_gen" => {
-            return build_site_gen_object(input).map(|o| Object::SiteGen(o));
-        }
+        "anim_img" => build_anim_img_object(input).map(Object::AnimImg),
+        "chara_template" => build_chara_template_object(input).map(Object::CharaTemplate),
+        "deco" => build_deco_object(input).map(Object::Deco),
+        "effect_img" => build_effect_object(input).map(Object::EffectImg),
+        "item" => build_item_object(input).map(Object::Item),
+        "special_tile" => build_special_tile_object(input).map(Object::SpecialTile),
+        "tile" => build_tile_object(input).map(Object::Tile),
+        "ui_img" => build_ui_img_object(input).map(Object::UIImg),
+        "wall" => build_wall_object(input).map(Object::Wall),
+        "region_gen" => build_region_gen_object(input).map(Object::RegionGen),
+        "script" => build_script_object(input).map(Object::Script),
+        "site_gen" => build_site_gen_object(input).map(Object::SiteGen),
         _ => {
             bail!("Unknown object_type");
         }
@@ -210,7 +186,7 @@ fn build_site_gen_object(input: Input) -> Result<SiteGenObject, Error> {
         site_symbol: sg.site_symbol,
         default_faction_id: sg.default_faction_id,
         map_template_id: sg.map_template_id,
-        unique_citizens: sg.unique_citizens.unwrap_or(vec![]),
-        shops: sg.shops.unwrap_or(vec![]),
+        unique_citizens: sg.unique_citizens.unwrap_or_default(),
+        shops: sg.shops.unwrap_or_default(),
     })
 }

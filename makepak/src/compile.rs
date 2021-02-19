@@ -8,7 +8,6 @@ use common::pakutil::write_object;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
-use tar;
 
 use crate::buildobj::build_object;
 use crate::input::Input;
