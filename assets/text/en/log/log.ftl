@@ -48,6 +48,7 @@ killed-by-starve-damage = {$chara} starved to death.
 
 item-equip = {$chara} equipped {$item}.
 item-pickup = {$chara} picked up {$item}.
+item-pick-up-plant = {$item} is a living plant and cannot be moved.
 item-drop = {$chara} dropped {$item}.
 item-owned-by-others = {$item} is owned by others.
 drink-item = {$chara} drank a {$item}.
@@ -93,7 +94,9 @@ recipe-learning-failed = {$chara} could not learn a new recipe from this item.
 
 # Messages about harvest
 
-harvest-chop = {$chara} chopped a tree, and get {$item} x {$n}.
+harvest-chop = {$chara} chopped a tree, and got {$item} x {$n}.
+harvest-deconstruct = {$chara} got {$item} x {$n} from deconstructed materials.
+harvest-plant = {$chara} harvested {$item} x {$n}.
 
 # Message about script
 

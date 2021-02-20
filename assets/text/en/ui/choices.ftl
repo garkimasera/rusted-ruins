@@ -15,6 +15,7 @@ tile-menu-down-stairs = Go down the stairs
 tile-menu-enter-site = Enter this site
 tile-menu-enter-wilderness = Enter wilderness
 tile-menu-exit-to-region-map = Exit to region map
+tile-menu-deconstruct = Deconstruct
 tile-menu-harvest = Harvest
 tile-menu-infomation = Infomation
 tile-menu-target = Target

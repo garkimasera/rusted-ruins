@@ -9,26 +9,13 @@ use geom::*;
 pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
     let item = gd.get_item(il).0;
     let item_idx = item.idx;
-    let item_obj = gobj::get_obj(item_idx);
-
-    let harvest = item_obj
-        .harvest
-        .as_ref()
-        .expect("Tried to harvest item that is not harvestable");
 
     if item.compare_time() == Some(false) {
         game_log_i!("harvest-plant-not-ready"; item=item);
         return false;
     }
 
-    for item in &harvest.item {
-        let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
-        let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
-        let n_yield = item.1;
-        game_log_i!("harvest-plant"; chara=gd.chara.get(CharaId::Player), item=&target_item, n=n_yield);
-        let item_list = gd.get_item_list_mut(ItemListLocation::PLAYER);
-        item_list.append(target_item, n_yield);
-    }
+    finish_harvest(gd, CharaId::Player, item_idx, il);
 
     true
 }
@@ -88,7 +75,7 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
     }
 }
 
-pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, il: ItemLocation) {
+pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: ItemLocation) {
     let item = gd.get_item(il);
     if item.0.idx != item_idx {
         return;
@@ -107,13 +94,36 @@ pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, i
 
         match harvest.kind {
             HarvestKind::Chop => {
-                game_log_i!("harvest-chop"; chara=gd.chara.get(chara_id), item=&target_item, n=n_yield);
+                game_log_i!("harvest-chop"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
                 audio::play_sound("chop-tree");
+            }
+            HarvestKind::Deconstruct => {
+                game_log_i!("harvest-deconstruct"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
+            }
+            HarvestKind::Plant => {
+                game_log_i!("harvest-plant"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
             }
             _ => (),
         }
-        gd.add_item_on_tile(gd.player_pos(), target_item.clone(), n_yield);
+
+        let item_list = gd.get_item_list_mut(ItemListLocation::Chara { cid });
+        item_list.append(target_item, n_yield);
     }
 
-    gd.remove_item(il, 1);
+    if let Some(&ItemObjAttr::Plant {
+        reset_time_hours, ..
+    }) = item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+    {
+        if let Some(reset_time_hours) = reset_time_hours {
+            let new_remaining = Duration::from_hours(reset_time_hours.into());
+            gd.get_item_mut(il).0.reset_time(new_remaining);
+        } else {
+            gd.remove_item(il, 1);
+        }
+    } else {
+        gd.remove_item(il, 1);
+    }
 }

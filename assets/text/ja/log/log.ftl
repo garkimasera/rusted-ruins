@@ -60,3 +60,9 @@ quest-reward-receive-money = {$money}ゴールドを報酬として受け取っ�
 
 creation-start = {$chara}は{$product}の作成を始めた。
 creation-finish = {$chara}は{$product}の作成を終了した。
+
+# Messages about harvest
+
+harvest-chop = {$chara}は伐採により{$item} x {$n}を手に入れた。
+harvest-deconstruct = {$chara}は分解した素材から{$item} x {$n}を回収した。
+harvest-plant = {$chara}は{$item} x {$n}を収穫した。

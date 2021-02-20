@@ -203,6 +203,27 @@ impl Item {
             })
             .map(|t| current_time >= t)
     }
+
+    /// Reset Time attribute.
+    fn reset_time(&mut self, new_remaining: Duration) {
+        let current_time = crate::game::time::current_time();
+        if let Some(&mut ItemAttr::Time {
+            ref mut last_updated,
+            ref mut remaining,
+        }) = self
+            .attrs
+            .iter_mut()
+            .find(|attr| matches!(attr, ItemAttr::Time { .. }))
+        {
+            *last_updated = current_time;
+            *remaining = new_remaining;
+        } else {
+            self.attrs.push(ItemAttr::Time {
+                last_updated: current_time,
+                remaining: new_remaining,
+            });
+        }
+    }
 }
 
 #[extend::ext(pub)]
