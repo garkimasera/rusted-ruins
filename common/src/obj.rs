@@ -11,6 +11,7 @@ pub enum ObjectType {
     AnimImg,
 }
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Object {
     AnimImg(AnimImgObject),
@@ -20,7 +21,7 @@ pub enum Object {
     Item(ItemObject),
     SpecialTile(SpecialTileObject),
     Tile(TileObject),
-    UIImg(UIImgObject),
+    UiImg(UiImgObject),
     Wall(WallObject),
     MapTemplate(MapTemplateObject),
     RegionGen(RegionGenObject),
@@ -68,7 +69,7 @@ pub enum TileKind {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct UIImgObject {
+pub struct UiImgObject {
     pub id: String,
     pub img: Img,
 }
@@ -157,7 +158,7 @@ impl_object!(
     ItemObject,
     SpecialTileObject,
     TileObject,
-    UIImgObject,
+    UiImgObject,
     WallObject,
     MapTemplateObject,
     RegionGenObject,
@@ -175,7 +176,7 @@ impl Object {
             Object::Item(ref o) => &o.id,
             Object::SpecialTile(ref o) => &o.id,
             Object::Tile(ref o) => &o.id,
-            Object::UIImg(ref o) => &o.id,
+            Object::UiImg(ref o) => &o.id,
             Object::Wall(ref o) => &o.id,
             Object::MapTemplate(ref o) => &o.id,
             Object::RegionGen(ref o) => &o.id,
@@ -235,6 +236,6 @@ impl_img_object!(
     ItemObject,
     SpecialTileObject,
     TileObject,
-    UIImgObject,
+    UiImgObject,
     WallObject
 );

@@ -17,10 +17,7 @@ use rules::RULES;
 impl Chara {
     /// Get this chara is main character or not.
     fn is_main_character(&self) -> bool {
-        self.traits
-            .iter()
-            .find(|t| t.1 == CharaTrait::MainCharacter)
-            .is_some()
+        self.traits.iter().any(|t| t.1 == CharaTrait::MainCharacter)
     }
 
     /// Add exp to specified skill. This method should be used in this module only.

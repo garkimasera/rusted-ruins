@@ -25,7 +25,7 @@ fn create_terrain(t: &MapTemplateObject) -> Map {
 
     for (pos, c) in t.wall.iter_with_idx() {
         // Setting walls
-        let wall_idx = WallIdxPP::conv_from(*c, &t.wall_table);
+        let wall_idx = WallIdxPp::conv_from(*c, &t.wall_table);
         map.tile[pos].wall = wall_idx;
         if let Some(idx) = wall_idx.idx() {
             let wall_obj = gobj::get_obj(idx);

@@ -116,5 +116,4 @@ pub fn finish_harvest(gd: &mut GameData, chara_id: CharaId, item_idx: ItemIdx, i
     }
 
     gd.remove_item(il, 1);
-    return;
 }

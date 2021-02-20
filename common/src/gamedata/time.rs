@@ -42,7 +42,7 @@ pub struct Time(u64);
 
 impl Time {
     pub fn new(years: u32, months: u32, days: u32, hours: u32) -> Time {
-        assert!(1 <= months && months <= 12);
+        assert!((1..=12).contains(&months));
         assert!(1 <= days && days <= DAYS_PER_MONTH as u32);
 
         let start = years as u64 * SECS_PER_YEAR

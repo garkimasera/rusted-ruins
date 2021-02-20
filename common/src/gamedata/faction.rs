@@ -8,17 +8,19 @@ pub struct Faction {
     relation_table: HashMap<FactionId, FactionRelation>,
 }
 
-impl Faction {
-    pub fn new() -> Faction {
+impl Default for Faction {
+    fn default() -> Self {
         Faction {
             relation_table: HashMap::default(),
         }
     }
+}
 
+impl Faction {
     pub fn get(&self, faction: FactionId) -> FactionRelation {
         self.relation_table
             .get(&faction)
-            .map(|f| *f)
+            .copied()
             .unwrap_or(FactionRelation(0))
     }
 
@@ -39,7 +41,7 @@ impl Default for FactionId {
 
 impl FactionId {
     pub fn new(name: &str) -> Option<FactionId> {
-        ArrayString::from(name).map(|s| FactionId(s)).ok()
+        ArrayString::from(name).map(FactionId).ok()
     }
 
     pub fn unknown() -> FactionId {

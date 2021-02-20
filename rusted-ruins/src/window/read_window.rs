@@ -1,7 +1,7 @@
 use super::commonuse::*;
 use super::widget::*;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 
 pub struct ReadWindow {
     rect: Rect,
@@ -21,10 +21,10 @@ impl ReadWindow {
         let rect: Rect = cfg.rect.into();
         let text = crate::text::readable::readable_txt(title);
         let label = LabelWidget::wrapped(cfg.text_rect, &text[0], FontKind::Talk, cfg.text_rect.w);
-        let next_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-next");
+        let next_icon_idx: UiImgIdx = gobj::id_to_idx("!icon-next");
         let next_button =
             ButtonWidget::with_icon(cfg.next_button_rect, IconIdx::from(next_icon_idx));
-        let prev_icon_idx: UIImgIdx = gobj::id_to_idx("!icon-prev");
+        let prev_icon_idx: UiImgIdx = gobj::id_to_idx("!icon-prev");
         let prev_button =
             ButtonWidget::with_icon(cfg.prev_button_rect, IconIdx::from(prev_icon_idx));
         let n_page = text.len();
@@ -78,15 +78,11 @@ impl DialogWindow for ReadWindow {
         let command = command.relative_to(self.rect);
 
         let button_available = self.button_available();
-        if button_available.0 {
-            if let Some(_) = self.next_button.process_command(&command) {
-                self.set_page(self.current_page + 1);
-            }
+        if button_available.0 && self.next_button.process_command(&command).is_some() {
+            self.set_page(self.current_page + 1);
         }
-        if button_available.1 {
-            if let Some(_) = self.prev_button.process_command(&command) {
-                self.set_page(self.current_page - 1);
-            }
+        if button_available.1 && self.prev_button.process_command(&command).is_some() {
+            self.set_page(self.current_page - 1);
         }
 
         DialogResult::Continue

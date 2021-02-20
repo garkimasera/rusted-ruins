@@ -3,7 +3,7 @@ use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::command::*;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 use std::time::{Duration, Instant};
@@ -240,7 +240,7 @@ impl WidgetTrait for VScrollWidget {
         context.draw_rect(self.knob_space_rect, color.vscroll_border_inner);
 
         // Draw arrow buttons
-        static VSCROLL_BUTTON: Lazy<UIImgIdx> = Lazy::new(|| gobj::id_to_idx("!vscroll-button"));
+        static VSCROLL_BUTTON: Lazy<UiImgIdx> = Lazy::new(|| gobj::id_to_idx("!vscroll-button"));
 
         context.render_tex_n(
             *VSCROLL_BUTTON,

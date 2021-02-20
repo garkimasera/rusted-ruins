@@ -15,7 +15,7 @@ static RECENT_PAGE: Lazy<Mutex<HashMap<&'static str, u32>>> =
 #[derive(Clone, Copy)]
 pub struct MemberInfo {
     pub creator: fn(&Game) -> Box<dyn DialogWindow>,
-    pub idx: UIImgIdx,
+    pub idx: UiImgIdx,
     pub text_id: &'static str,
 }
 
@@ -212,7 +212,7 @@ impl TabsNavigator {
 
 impl Window for TabsNavigator {
     fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
-        static MAKE_DARK_IDX: Lazy<UIImgIdx> = Lazy::new(|| common::gobj::id_to_idx("!make-dark"));
+        static MAKE_DARK_IDX: Lazy<UiImgIdx> = Lazy::new(|| common::gobj::id_to_idx("!make-dark"));
         crate::draw::border::draw_window_border(context, self.rect);
 
         use sdl2::pixels::Color;

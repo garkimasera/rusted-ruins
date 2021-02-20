@@ -194,7 +194,7 @@ impl<'a> DoPlayerAction<'a> {
                 let relation = gd.chara_relation(CharaId::Player, other_chara);
                 let other_chara = gd.chara.get(other_chara);
                 match relation {
-                    Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
+                    Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
                         if let Some(ref t) = other_chara.trigger_talk {
                             trigger_talk = Some(t.clone())
                         }

@@ -142,10 +142,7 @@ pub enum WindowDrawMode {
 
 impl WindowManageMode {
     pub fn is_on_game(&self) -> bool {
-        match self {
-            WindowManageMode::OnGame(_) => true,
-            _ => false,
-        }
+        matches!(self, WindowManageMode::OnGame(_))
     }
 }
 
@@ -201,11 +198,9 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             }
         }
 
-        if self.game.get_state() == GameState::PlayerTurn {
-            if !self.process_command(event_handler) {
-                self.game.end_game();
-                return false;
-            }
+        if self.game.get_state() == GameState::PlayerTurn && !self.process_command(event_handler) {
+            self.game.end_game();
+            return false;
         }
 
         // After advancing turn and processing command, game may start animation.
@@ -215,11 +210,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     }
 
     pub fn update_cursor(&mut self, pos: (i32, i32)) {
-        match self.mode {
-            WindowManageMode::OnGame(ref mut game_windows) => {
-                game_windows.main_window.update_tile_cursor(pos);
-            }
-            _ => (),
+        if let WindowManageMode::OnGame(ref mut game_windows) = self.mode {
+            game_windows.main_window.update_tile_cursor(pos);
         }
     }
 
@@ -607,11 +599,8 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     fn push_dialog_window(&mut self, w: Box<dyn DialogWindow>) {
         w.sound(true);
         if !w.mainwin_cursor() {
-            match &mut self.mode {
-                WindowManageMode::OnGame(windows) => {
-                    windows.main_window.reset_tile_cursor();
-                }
-                _ => (),
+            if let WindowManageMode::OnGame(windows) = &mut self.mode {
+                windows.main_window.reset_tile_cursor();
             }
         }
         crate::eventhandler::open_dialog();
@@ -621,20 +610,18 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
     fn process_ui_request(&mut self) {
         while let Some(req) = self.game.pop_ui_request() {
             match req {
-                UiRequest::StopCentering => match self.mode {
-                    WindowManageMode::OnGame(ref mut windows) => {
+                UiRequest::StopCentering => {
+                    if let WindowManageMode::OnGame(ref mut windows) = self.mode {
                         windows.main_window.stop_centering_mode();
                     }
-                    _ => (),
-                },
-                UiRequest::StartTargeting { effect, callback } => match self.mode {
-                    WindowManageMode::OnGame(ref mut windows) => {
+                }
+                UiRequest::StartTargeting { effect, callback } => {
+                    if let WindowManageMode::OnGame(ref mut windows) = self.mode {
                         windows
                             .main_window
                             .start_targeting_mode(&self.game, effect, callback);
                     }
-                    _ => (),
-                },
+                }
             }
         }
     }

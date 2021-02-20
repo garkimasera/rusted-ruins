@@ -141,7 +141,7 @@ fn write_rect(map: &mut Array2d<f32>, value: f32, top_left: Vec2d, bottom_right:
 fn calc_threshold(fractal: &Array2d<f32>, floor_ratio: f32) -> f32 {
     let n_tile = fractal.size().0 * fractal.size().1;
 
-    let mut v: Vec<f32> = fractal.iter().map(|a| *a).collect();
+    let mut v: Vec<f32> = fractal.iter().copied().collect();
     v.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
 
     v[(n_tile as f32 * floor_ratio) as usize]

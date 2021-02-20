@@ -13,7 +13,7 @@ pub struct ImageWidget {
 }
 
 enum Idx {
-    UIImg(UIImgIdx),
+    UiImg(UiImgIdx),
     Chara(CharaTemplateIdx),
     Item((ItemIdx, u32)),
 }
@@ -22,11 +22,11 @@ impl ImageWidget {
     /// Create image widget that show a UIImg
     pub fn ui_img<R: Into<Rect>>(rect: R, id: &str) -> ImageWidget {
         let rect = rect.into();
-        let idx: UIImgIdx = gobj::id_to_idx(id);
+        let idx: UiImgIdx = gobj::id_to_idx(id);
 
         ImageWidget {
             rect,
-            idx: Idx::UIImg(idx),
+            idx: Idx::UiImg(idx),
         }
     }
 
@@ -70,7 +70,7 @@ impl WidgetTrait for ImageWidget {
 
     fn draw(&mut self, context: &mut Context) {
         match self.idx {
-            Idx::UIImg(idx) => {
+            Idx::UiImg(idx) => {
                 context.render_tex(idx, self.rect);
             }
             Idx::Chara(idx) => {

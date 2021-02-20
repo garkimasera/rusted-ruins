@@ -89,10 +89,10 @@ pub trait CharaStatusExt {
 
 impl CharaStatusExt for CharaStatus {
     fn about_sp(&self) -> bool {
-        match *self {
-            CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            CharaStatus::Hungry | CharaStatus::Weak | CharaStatus::Starving
+        )
     }
 
     fn about_encumbrance(&self) -> bool {

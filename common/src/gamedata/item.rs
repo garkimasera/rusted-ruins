@@ -267,11 +267,13 @@ pub struct ItemList {
     pub items: Vec<(Item, u32)>,
 }
 
-impl ItemList {
-    pub fn new() -> ItemList {
+impl Default for ItemList {
+    fn default() -> Self {
         ItemList { items: Vec::new() }
     }
+}
 
+impl ItemList {
     /// Get the number of item
     pub fn get_number(&self, i: u32) -> u32 {
         self.items[i as usize].1
@@ -544,7 +546,7 @@ impl EquipItemList {
 
         EquipItemList {
             slots: new_slots,
-            item_list: ItemList::new(),
+            item_list: ItemList::default(),
         }
     }
 
@@ -685,7 +687,7 @@ impl<'a> Iterator for EquipSlotIter<'a> {
             (slot.esk, slot.n, None)
         };
         self.n += 1;
-        return Some(result);
+        Some(result)
     }
 }
 

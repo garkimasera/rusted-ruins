@@ -53,7 +53,7 @@ impl NewGameBuilder {
                 FactionId::player(),
                 Some(class),
             );
-            chara.rel = gamedata::chara::Relationship::ALLY;
+            chara.rel = gamedata::chara::Relationship::Ally;
             chara.name = Some(self.player_name.as_ref().unwrap().clone());
             chara
                 .traits

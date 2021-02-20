@@ -7,13 +7,15 @@ pub struct Variables {
     global: HashMap<String, Value>,
 }
 
-impl Variables {
-    pub fn new() -> Variables {
+impl Default for Variables {
+    fn default() -> Self {
         Variables {
             global: HashMap::default(),
         }
     }
+}
 
+impl Variables {
     /// Get globally named variable
     pub fn global_var(&self, name: &str) -> Option<&Value> {
         self.global.get(name)

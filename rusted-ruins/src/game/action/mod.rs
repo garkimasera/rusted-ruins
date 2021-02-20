@@ -38,7 +38,7 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
         let relation = game.gd.chara_relation(chara_id, other_chara.unwrap());
 
         match relation {
-            Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
+            Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
                 let current_map = game.gd.get_current_map_mut();
                 if current_map.tile[dest_tile].chara != Some(CharaId::Player) {
                     current_map.move_chara(chara_id, dir);
@@ -47,7 +47,7 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
                     game.anim_queue.push_player_move(dir);
                 }
             }
-            Relationship::HOSTILE => {
+            Relationship::Hostile => {
                 melee_attack(game, chara_id, other_chara.unwrap());
             }
         }

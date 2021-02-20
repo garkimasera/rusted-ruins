@@ -65,14 +65,14 @@ impl GameData {
         GameData {
             meta: MetaData::default(),
             chara: CharaHolder::new(),
-            region: RegionHolder::new(),
+            region: RegionHolder::default(),
             time: GameTime::default(),
             player: Player::default(),
-            quest: QuestHolder::new(),
-            vars: Variables::new(),
-            faction: Faction::new(),
+            quest: QuestHolder::default(),
+            vars: Variables::default(),
+            faction: Faction::default(),
             settings: Settings::new(),
-            learned_recipes: LearnedRecipes::new(),
+            learned_recipes: LearnedRecipes::default(),
             current_mapid: MapId::default(),
         }
     }
@@ -104,7 +104,7 @@ impl GameData {
 
     pub fn get_charas_on_map(&self) -> Vec<CharaId> {
         let map = self.get_current_map();
-        map.iter_charaid().map(|&cid| cid).collect()
+        map.iter_charaid().copied().collect()
     }
 
     pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {

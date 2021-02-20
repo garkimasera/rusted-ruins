@@ -3,12 +3,12 @@ use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::Game;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 
 struct DrawInfo {
-    target_icon_idx: UIImgIdx,
+    target_icon_idx: UiImgIdx,
     target_icon_x: i32,
     target_icon_y: i32,
     target_icon_w: u32,
@@ -17,7 +17,7 @@ struct DrawInfo {
 
 impl DrawInfo {
     fn init() -> DrawInfo {
-        let target_icon_idx: UIImgIdx = gobj::id_to_idx("!target-icon");
+        let target_icon_idx: UiImgIdx = gobj::id_to_idx("!target-icon");
         let obj = gobj::get_obj(target_icon_idx);
         DrawInfo {
             target_icon_idx,
@@ -29,7 +29,7 @@ impl DrawInfo {
     }
 }
 
-static DRAW_INFO: Lazy<DrawInfo> = Lazy::new(|| DrawInfo::init());
+static DRAW_INFO: Lazy<DrawInfo> = Lazy::new(DrawInfo::init);
 
 impl MainWinDrawer {
     pub fn draw_chara_info(&self, context: &mut Context, game: &Game) {

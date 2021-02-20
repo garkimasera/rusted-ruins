@@ -1,3 +1,5 @@
+#![allow(clippy::manual_non_exhaustive)]
+
 use fnv::FnvHashMap;
 use std::str::FromStr;
 use thiserror::Error;
@@ -155,9 +157,9 @@ macro_rules! define_skill_kind {
             }
         }
 
-        impl Into<SkillKind> for WeaponKind {
-            fn into(self) -> SkillKind {
-                match self {
+        impl From<WeaponKind> for SkillKind {
+            fn from(weapon_kind: WeaponKind) -> Self {
+                match weapon_kind {
                     $(
                         WeaponKind::$melee_weapon => SkillKind::$melee_weapon,
                     )*
@@ -169,9 +171,9 @@ macro_rules! define_skill_kind {
             }
         }
 
-        impl Into<SkillKind> for CreationKind {
-            fn into(self) -> SkillKind {
-                match self {
+        impl From<CreationKind> for SkillKind {
+            fn from(creation_kind: CreationKind) -> Self {
+                match creation_kind {
                     $(
                         CreationKind::$creation => SkillKind::$creation,
                     )*

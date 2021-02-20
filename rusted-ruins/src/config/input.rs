@@ -18,7 +18,7 @@ impl InputConfig {
             }
 
             if !s.is_empty() {
-                s.push_str(",");
+                s.push(',');
             }
             s.push_str(k);
         }

@@ -119,17 +119,15 @@ fn calc_arrow_dir(dir: (f32, f32)) -> u32 {
         } else {
             4
         }
+    } else if degree < PI8 {
+        0
+    } else if degree < PI8 * 3.0 {
+        7
+    } else if degree < PI8 * 5.0 {
+        6
+    } else if degree < PI8 * 7.0 {
+        5
     } else {
-        if degree < PI8 {
-            0
-        } else if degree < PI8 * 3.0 {
-            7
-        } else if degree < PI8 * 5.0 {
-            6
-        } else if degree < PI8 * 7.0 {
-            5
-        } else {
-            4
-        }
+        4
     }
 }

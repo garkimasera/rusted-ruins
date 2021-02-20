@@ -31,16 +31,16 @@ pub struct Map {
     pub music: String,
 }
 
-pub type TileArray = ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]>;
+pub type TileArray = ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]>;
 
 /// Represents tile image layers
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct TileLayers(pub [TileIdxPP; N_TILE_IMG_LAYER]);
+pub struct TileLayers(pub [TileIdxPp; N_TILE_IMG_LAYER]);
 
 impl Default for TileLayers {
     fn default() -> TileLayers {
-        let mut tile_layers = [TileIdxPP::default(); N_TILE_IMG_LAYER];
-        tile_layers[0] = TileIdxPP::new(TileIdx::default());
+        let mut tile_layers = [TileIdxPp::default(); N_TILE_IMG_LAYER];
+        tile_layers[0] = TileIdxPp::new(TileIdx::default());
         TileLayers(tile_layers)
     }
 }
@@ -48,20 +48,20 @@ impl Default for TileLayers {
 impl From<TileIdx> for TileLayers {
     fn from(tile_idx: TileIdx) -> TileLayers {
         let mut overlapped_tile = TileLayers::default();
-        overlapped_tile[0] = TileIdxPP::new(tile_idx);
+        overlapped_tile[0] = TileIdxPp::new(tile_idx);
         overlapped_tile
     }
 }
 
 impl Index<usize> for TileLayers {
-    type Output = TileIdxPP;
-    fn index(&self, index: usize) -> &TileIdxPP {
+    type Output = TileIdxPp;
+    fn index(&self, index: usize) -> &TileIdxPp {
         &self.0[index]
     }
 }
 
 impl IndexMut<usize> for TileLayers {
-    fn index_mut(&mut self, index: usize) -> &mut TileIdxPP {
+    fn index_mut(&mut self, index: usize) -> &mut TileIdxPp {
         &mut self.0[index]
     }
 }
@@ -69,15 +69,15 @@ impl IndexMut<usize> for TileLayers {
 impl From<TileIdx> for TileArray {
     fn from(idx: TileIdx) -> TileArray {
         let mut v = ArrayVec::new();
-        v.push(TileIdxPP::new(idx));
+        v.push(TileIdxPp::new(idx));
         v
     }
 }
 
-impl Into<TileArray> for TileLayers {
-    fn into(self) -> TileArray {
+impl From<TileLayers> for TileArray {
+    fn from(tile_layers: TileLayers) -> Self {
         let mut v = ArrayVec::new();
-        for idxpp in &self.0 {
+        for idxpp in &tile_layers.0 {
             if !idxpp.is_empty() {
                 v.push(*idxpp);
             }
@@ -103,10 +103,7 @@ pub enum SpecialTileKind {
 
 impl SpecialTileKind {
     pub fn is_none(&self) -> bool {
-        match *self {
-            SpecialTileKind::None => true,
-            _ => false,
-        }
+        matches!(*self, SpecialTileKind::None)
     }
 }
 
@@ -156,7 +153,7 @@ pub struct TileInfo {
     /// Base tile
     pub tile: TileArray,
     /// If wall is presented, the tile is no walkable
-    pub wall: WallIdxPP,
+    pub wall: WallIdxPp,
     /// Wall HP
     pub wall_hp: u16,
     /// Decoration for this tile
@@ -173,7 +170,7 @@ pub struct TileInfo {
 pub struct ObservedTileInfo {
     /// Tile is observed or not
     pub tile: bool,
-    pub wall: WallIdxPP,
+    pub wall: WallIdxPp,
     pub deco: Option<DecoIdx>,
     pub items: ArrayVec<[(ItemIdx, u32); MAX_ITEM_FOR_DRAW]>,
     pub special: SpecialTileKind,
@@ -181,7 +178,7 @@ pub struct ObservedTileInfo {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
-    pub tile: ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]>,
+    pub tile: ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]>,
     pub wall: Option<WallIdx>,
 }
 
@@ -218,10 +215,10 @@ impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
             tile: ArrayVec::new(),
-            wall: WallIdxPP::default(),
+            wall: WallIdxPp::default(),
             wall_hp: 0,
             deco: None,
-            item_list: ItemList::new(),
+            item_list: ItemList::default(),
             chara: None,
             special: SpecialTileKind::None,
         }
@@ -273,7 +270,7 @@ impl Map {
         if !self.is_inside(pos) {
             return None;
         }
-        self.tile[pos].chara.clone()
+        self.tile[pos].chara
     }
 
     pub fn iter_charaid(&self) -> std::slice::Iter<CharaId> {
@@ -283,11 +280,7 @@ impl Map {
     /// Return given pos is inside map or not
     #[inline]
     pub fn is_inside(&self, pos: Vec2d) -> bool {
-        if pos.0 >= 0 && pos.1 >= 0 && (pos.0 as u32) < self.w && (pos.1 as u32) < self.h {
-            true
-        } else {
-            false
-        }
+        pos.0 >= 0 && pos.1 >= 0 && (pos.0 as u32) < self.w && (pos.1 as u32) < self.h
     }
 
     /// Get character position
@@ -370,7 +363,7 @@ impl Map {
     #[cfg(feature = "global_state_obj")]
     pub fn set_wall(&mut self, pos: Vec2d, wall_idx: WallIdx) {
         let wall_obj = crate::gobj::get_obj(wall_idx);
-        self.tile[pos].wall = WallIdxPP::new(wall_idx);
+        self.tile[pos].wall = WallIdxPp::new(wall_idx);
         self.tile[pos].wall_hp = wall_obj.hp;
         self.reset_wall_pp(pos, pos);
     }
@@ -378,7 +371,7 @@ impl Map {
     /// Erase wall
     #[cfg(feature = "global_state_obj")]
     pub fn erase_wall(&mut self, pos: Vec2d) {
-        self.tile[pos].wall = WallIdxPP::empty();
+        self.tile[pos].wall = WallIdxPp::empty();
         self.tile[pos].wall_hp = 0;
         self.reset_wall_pp(pos, pos);
     }
@@ -406,7 +399,7 @@ impl Map {
                 }
             });
             let wall_obj = crate::gobj::get_obj(wall_idx);
-            let wallpp = WallIdxPP::with_piece_pattern(
+            let wallpp = WallIdxPp::with_piece_pattern(
                 wall_idx,
                 ppf.to_piece_pattern(wall_obj.img.n_pattern),
             );
@@ -417,7 +410,7 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &ArrayVec<[TileIdxPP; N_TILE_IMG_LAYER]> {
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]> {
         if self.is_inside(pos) {
             return &self.tile[pos].tile;
         }
@@ -428,15 +421,15 @@ impl Map {
         }
     }
 
-    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> WallIdxPP {
+    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> WallIdxPp {
         if self.is_inside(pos) {
             return self.tile[pos].wall;
         }
         if let Some(outside_tile) = self.outside_tile.as_ref() {
             if let Some(idx) = outside_tile.wall {
-                WallIdxPP::new(idx)
+                WallIdxPp::new(idx)
             } else {
-                WallIdxPP::default()
+                WallIdxPp::default()
             }
         } else {
             self.tile[self.nearest_existent_tile(pos)].wall
@@ -541,10 +534,7 @@ impl MapId {
     }
 
     pub fn is_region_map(self) -> bool {
-        match self {
-            MapId::RegionMap { .. } => true,
-            _ => false,
-        }
+        matches!(self, MapId::RegionMap { .. })
     }
 }
 

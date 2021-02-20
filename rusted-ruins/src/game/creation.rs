@@ -25,13 +25,11 @@ pub fn start_creation(
             let idx = material_to_use.expect("empty material_to_use");
             material = Some(gobj::get_obj(idx).material);
             idx
+        } else if let Some(idx) = gobj::id_to_idx_checked(ingredient) {
+            idx
         } else {
-            if let Some(idx) = gobj::id_to_idx_checked(ingredient) {
-                idx
-            } else {
-                warn!("creation failed: unknown ingredient {}", ingredient);
-                return;
-            }
+            warn!("creation failed: unknown ingredient {}", ingredient);
+            return;
         };
         il.consume(
             idx,

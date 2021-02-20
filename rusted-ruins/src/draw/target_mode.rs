@@ -2,11 +2,11 @@ use super::mainwin::{MainWinDrawer, TargetModeDrawInfo};
 use crate::context::*;
 use crate::game::Game;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use geom::*;
 use once_cell::sync::Lazy;
 
-static TILE_RANGE_HIGHLIBHT: Lazy<UIImgIdx> =
+static TILE_RANGE_HIGHLIBHT: Lazy<UiImgIdx> =
     Lazy::new(|| gobj::id_to_idx("!tile-range-highlight"));
 
 impl MainWinDrawer {

@@ -102,13 +102,11 @@ pub fn create_menu(
         }));
     }
 
-    if !player_same_tile {
-        if t.chara.is_some() {
-            text_ids.push("tile-menu-target");
-            callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
-                pa.set_target(tile);
-            }));
-        }
+    if !player_same_tile && t.chara.is_some() {
+        text_ids.push("tile-menu-target");
+        callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+            pa.set_target(tile);
+        }));
     }
 
     if CONTROL_CFG.menu_centering {
@@ -121,7 +119,7 @@ pub fn create_menu(
     if centering_mode {
         text_ids.push("tile-menu-stop-centering");
         callbacks.push(Box::new(move |_| {
-            *CENTERING_STOP_REQ.lock().unwrap() = true;
+            CENTERING_STOP_REQ.store(true, std::sync::atomic::Ordering::Relaxed)
         }));
     }
 

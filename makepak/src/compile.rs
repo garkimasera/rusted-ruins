@@ -12,7 +12,7 @@ use std::path::Path;
 use crate::buildobj::build_object;
 use crate::input::Input;
 
-pub fn compile(files: &[&str], output_file: &String) {
+pub fn compile(files: &[&str], output_file: &str) {
     let out = File::create(output_file).unwrap();
     let mut builder = tar::Builder::new(out);
 

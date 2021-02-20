@@ -213,9 +213,7 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
 
 fn set_quality(item: &mut Item, item_obj: &ItemObject, level: u32) {
     match item_obj.quality_kind {
-        QualityKind::None => {
-            return;
-        }
+        QualityKind::None => {}
         QualityKind::Mutable => {
             let level_diff = if level > item_obj.gen_level {
                 level - item_obj.gen_level

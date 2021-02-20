@@ -8,10 +8,11 @@ use common::gamedata::Effect;
 use geom::*;
 use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 
 pub(super) static CENTERING_START_REQ: Lazy<Mutex<Option<Vec2d>>> = Lazy::new(|| Mutex::new(None));
-pub(super) static CENTERING_STOP_REQ: Lazy<Mutex<bool>> = Lazy::new(|| Mutex::new(false));
+pub(super) static CENTERING_STOP_REQ: Lazy<AtomicBool> = Lazy::new(|| AtomicBool::new(false));
 
 enum MainWindowMode {
     Normal,
@@ -24,10 +25,7 @@ enum MainWindowMode {
 
 impl MainWindowMode {
     fn input_target(&self) -> bool {
-        match self {
-            MainWindowMode::Target { .. } => true,
-            _ => false,
-        }
+        matches!(self, MainWindowMode::Target { .. })
     }
 
     fn get_draw_info(&mut self) -> Option<&mut TargetModeDrawInfo> {
@@ -132,13 +130,10 @@ impl MainWindow {
                             && game.view_map.get_tile_visible(pos)
                         {
                             let mode = std::mem::replace(&mut self.mode, MainWindowMode::Normal);
-                            match mode {
-                                MainWindowMode::Target { callback, .. } => {
-                                    let callback: Box<dyn Fn(&mut DoPlayerAction) + 'static> =
-                                        Box::new(move |pa| callback(pa, Target::Tile(pos)));
-                                    return ConvertMouseEventResult::DoAction(callback);
-                                }
-                                _ => (),
+                            if let MainWindowMode::Target { callback, .. } = mode {
+                                let callback: Box<dyn Fn(&mut DoPlayerAction) + 'static> =
+                                    Box::new(move |pa| callback(pa, Target::Tile(pos)));
+                                return ConvertMouseEventResult::DoAction(callback);
                             }
                         }
                     }
@@ -214,10 +209,9 @@ impl Window for MainWindow {
             *centering_start_req = None;
         }
 
-        let mut centering_stop_req = CENTERING_STOP_REQ.lock().unwrap();
-        if *centering_stop_req {
+        if CENTERING_STOP_REQ.load(Ordering::Relaxed) {
             self.centering_tile = None;
-            *centering_stop_req = false;
+            CENTERING_STOP_REQ.store(false, Ordering::Relaxed);
         }
 
         self.drawer.draw(

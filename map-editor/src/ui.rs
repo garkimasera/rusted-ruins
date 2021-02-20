@@ -221,7 +221,7 @@ pub fn build_ui(application: &gtk::Application) {
                 let height = uic.adjustment_map_height.get_value() as u32;
                 uic.reset_map_size(width, height);
                 let new_map_id: String = uic.new_map_id.get_text().into();
-                let new_map_id = if new_map_id == "" {
+                let new_map_id = if new_map_id.is_empty() {
                     "newmap".to_owned()
                 } else {
                     new_map_id
@@ -265,12 +265,10 @@ pub fn build_ui(application: &gtk::Application) {
         menu_save.connect_activate(move |_| {
             let path = if let Some(path) = (*uic.filepath).clone().into_inner() {
                 path
+            } else if let Some(path) = file_save_as(&uic) {
+                path
             } else {
-                if let Some(path) = file_save_as(&uic) {
-                    path
-                } else {
-                    return;
-                }
+                return;
             };
             match save_to(&uic, path.clone()) {
                 Ok(_) => {
@@ -502,8 +500,8 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
         gtk::FileChooserAction::Open,
     );
     file_chooser.add_buttons(&[
-        ("Open", gtk::ResponseType::Ok.into()),
-        ("Cancel", gtk::ResponseType::Cancel.into()),
+        ("Open", gtk::ResponseType::Ok),
+        ("Cancel", gtk::ResponseType::Cancel),
     ]);
     file_chooser.add_filter(&create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {
@@ -523,8 +521,8 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
         gtk::FileChooserAction::Save,
     );
     file_chooser.add_buttons(&[
-        ("Save", gtk::ResponseType::Ok.into()),
-        ("Cancel", gtk::ResponseType::Cancel.into()),
+        ("Save", gtk::ResponseType::Ok),
+        ("Cancel", gtk::ResponseType::Cancel),
     ]);
     file_chooser.add_filter(&create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {

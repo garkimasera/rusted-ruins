@@ -111,7 +111,7 @@ pub fn do_effect<T: Into<Target>>(
         EffectAnimKind::Tile => {
             if !effect.anim_img.is_empty() {
                 let idx = gobj::id_to_idx(&effect.anim_img);
-                let anim = Animation::img_tiles(idx, tiles.clone());
+                let anim = Animation::img_tiles(idx, tiles);
                 game.anim_queue.push(anim);
             }
         }

@@ -55,7 +55,7 @@ impl Rooms {
         let mut doors = Vec::new();
 
         for _ in 0..self.n_room {
-            if let Err(_) = self.locate_new_room(&mut rooms, &mut doors, size) {
+            if self.locate_new_room(&mut rooms, &mut doors, size).is_err() {
                 break;
             }
         }

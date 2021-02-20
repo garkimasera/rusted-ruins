@@ -27,18 +27,18 @@ impl Into<Rect> for CfgRect {
     }
 }
 
-impl Into<(i32, i32)> for CfgPos {
-    fn into(self) -> (i32, i32) {
-        (self.x, self.y)
+impl From<CfgPos> for (i32, i32) {
+    fn from(c: CfgPos) -> Self {
+        (c.x, c.y)
     }
 }
 
-impl Into<Color> for CfgColor {
-    fn into(self) -> Color {
-        if let Some(a) = self.a {
-            Color::RGBA(self.r, self.g, self.b, a)
+impl From<CfgColor> for Color {
+    fn from(c: CfgColor) -> Self {
+        if let Some(a) = c.a {
+            Color::RGBA(c.r, c.g, c.b, a)
         } else {
-            Color::RGB(self.r, self.g, self.b)
+            Color::RGB(c.r, c.g, c.b)
         }
     }
 }

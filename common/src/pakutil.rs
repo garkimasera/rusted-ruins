@@ -19,7 +19,6 @@ pub fn write_object<W: Write>(w: &mut W, obj: &Object) -> Result<(), String> {
 */
 use std::fs;
 use std::path::Path;
-use tar;
 
 #[derive(Debug)]
 pub enum PakLoadingError {

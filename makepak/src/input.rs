@@ -75,7 +75,7 @@ pub struct CharaTemplateDepInput {
     pub gen_weight: f32,
     pub gen_level: u32,
     #[serde(default)]
-    pub default_ai_kind: gamedata::NpcAIKind,
+    pub default_ai_kind: gamedata::NpcAiKind,
     #[serde(default)]
     pub skill_bonus: HashMap<SkillKind, gamedata::SkillBonus>,
     pub base_hp: i32,

@@ -86,7 +86,7 @@ impl DialogWindow for DummyNewGameDialog {
                 match name_input_dialog.process_command(command, pa) {
                     DialogResult::Close => {
                         let player_name = name_input_dialog.get_text();
-                        if player_name != "" {
+                        if !player_name.is_empty() {
                             // If input text is invalid for character name
                             self.builder.as_mut().unwrap().set_player_name(player_name);
                             self.explanation_text = explanation_text_window("newgame-chooseclass");
@@ -96,27 +96,24 @@ impl DialogWindow for DummyNewGameDialog {
                     }
                     _ => (),
                 }
-                return DialogResult::Continue;
+                DialogResult::Continue
             }
             NewGameBuildStage::ChooseClass => {
-                match self.choose_class_dialog.process_command(command, pa) {
-                    DialogResult::CloseWithValue(v) => {
-                        if let DialogCloseValue::CharaClass(chara_class) = v {
-                            self.builder.as_mut().unwrap().set_chara_class(chara_class);
-                            self.stage = NewGameBuildStage::OpeningText;
-                            {
-                                // Skip OP text
-                                let builder = self.builder.take().unwrap();
-                                let gd = builder.build();
-                                return DialogResult::Special(SpecialDialogResult::NewGameStart(
-                                    Box::new(gd),
-                                ));
-                            }
-                        }
+                if let DialogResult::CloseWithValue(DialogCloseValue::CharaClass(chara_class)) =
+                    self.choose_class_dialog.process_command(command, pa)
+                {
+                    self.builder.as_mut().unwrap().set_chara_class(chara_class);
+                    self.stage = NewGameBuildStage::OpeningText;
+                    {
+                        // Skip OP text
+                        let builder = self.builder.take().unwrap();
+                        let gd = builder.build();
+                        return DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(
+                            gd,
+                        )));
                     }
-                    _ => (),
                 }
-                return DialogResult::Continue;
+                DialogResult::Continue
             }
             NewGameBuildStage::OpeningText => {
                 match command {
@@ -132,7 +129,7 @@ impl DialogWindow for DummyNewGameDialog {
                 }
                 let builder = self.builder.take().unwrap();
                 let gd = builder.build();
-                return DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(gd)));
+                DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(gd)))
             }
         }
     }

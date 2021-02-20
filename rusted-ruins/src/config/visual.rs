@@ -31,11 +31,11 @@ pub struct BorderConfig {
 
 /// UI colors, fonts, and other widget settings
 #[derive(Debug, Deserialize)]
-pub struct UIConfig {
+pub struct UiConfig {
     pub cursor_move_duration: u64,
     pub gap_len_between_dialogs: i32,
 
-    pub color: UIColorConfig,
+    pub color: UiColorConfig,
     pub font: Font,
     pub log_window: LogWindowConfig,
     pub exit_window: ExitWindowConfig,
@@ -71,7 +71,7 @@ pub struct UIConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct UIColorConfig {
+pub struct UiColorConfig {
     pub border_dark: CfgColor,
     pub border_highlight_dark: CfgColor,
     pub border_highlight_light: CfgColor,

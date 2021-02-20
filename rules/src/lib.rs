@@ -34,8 +34,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-const ACTIVE_SKILL_DIR_NAME: &'static str = "active_skill";
-const RECIPE_DIR_NAME: &'static str = "recipe";
+const ACTIVE_SKILL_DIR_NAME: &str = "active_skill";
+const RECIPE_DIR_NAME: &str = "recipe";
 
 /// Contain game rules
 pub struct Rules {

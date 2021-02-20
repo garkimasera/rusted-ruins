@@ -22,9 +22,9 @@ impl ExitWindow {
         let choose_win = ChooseWindow::new(
             winpos,
             vec![
-                text::ui_txt("dialog-choice-save_game").to_owned(),
-                text::ui_txt("dialog-choice-exit_game").to_owned(),
-                text::ui_txt("dialog-choice-close").to_owned(),
+                text::ui_txt("dialog-choice-save_game"),
+                text::ui_txt("dialog-choice-exit_game"),
+                text::ui_txt("dialog-choice-close"),
             ],
             DefaultBehavior::Close,
         );

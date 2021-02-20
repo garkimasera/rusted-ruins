@@ -3,18 +3,18 @@ use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct NpcAIs(HashMap<NpcAIKind, NpcAI>);
+pub struct NpcAIs(HashMap<NpcAiKind, NpcAi>);
 
 impl NpcAIs {
-    pub fn get(&self, kind: NpcAIKind) -> &NpcAI {
+    pub fn get(&self, kind: NpcAiKind) -> &NpcAi {
         self.0
             .get(&kind)
-            .unwrap_or_else(|| &self.0[&NpcAIKind::default()])
+            .unwrap_or_else(|| &self.0[&NpcAiKind::default()])
     }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct NpcAI {
+pub struct NpcAi {
     pub move_kind: MoveKind,
     #[serde(default)]
     pub walk_prob: f32,

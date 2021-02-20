@@ -22,7 +22,7 @@ pub struct CharaTemplateObject {
     /// If it is higher, and the character will be generated on deeper floors
     pub gen_level: u32,
     /// Default AI kind for this character
-    pub default_ai_kind: NpcAIKind,
+    pub default_ai_kind: NpcAiKind,
     pub base_attr: CharaBaseAttr,
     pub skill_bonus: HashMap<SkillKind, SkillBonus>,
 }
@@ -41,10 +41,10 @@ impl CharaClass {
 /// Relationship between one chara to another.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Relationship {
-    ALLY = 0,
-    FRIENDLY,
-    NEUTRAL,
-    HOSTILE,
+    Ally = 0,
+    Friendly,
+    Neutral,
+    Hostile,
 }
 
 /// All data for one character
@@ -59,7 +59,7 @@ pub struct Chara {
     pub item_list: ItemList,
     pub equip: EquipItemList,
     pub wait_time: u32,
-    pub ai: CharaAI,
+    pub ai: CharaAi,
     pub hp: i32,
     pub sp: f32,
     pub morale: Morale,
@@ -209,17 +209,17 @@ impl Default for Chara {
             class: CharaClass::default(),
             faction: FactionId::default(),
             level: 0,
-            item_list: ItemList::new(),
+            item_list: ItemList::default(),
             equip: EquipItemList::new(&[]),
             wait_time: crate::basic::WAIT_TIME_NUMERATOR,
-            ai: CharaAI::default(),
+            ai: CharaAi::default(),
             hp: 100,
             sp: 0.0,
             morale: Morale::default(),
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),
-            rel: Relationship::NEUTRAL,
+            rel: Relationship::Neutral,
             trigger_talk: None,
         }
     }
@@ -251,26 +251,26 @@ pub enum CharaId {
 
 /// Data to determine NPC character's actions
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct CharaAI {
-    pub kind: NpcAIKind,
+pub struct CharaAi {
+    pub kind: NpcAiKind,
     pub initial_pos: Vec2d,
 }
 
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct NpcAIKind(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
+pub struct NpcAiKind(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
 
-impl Default for NpcAIKind {
-    fn default() -> NpcAIKind {
-        NpcAIKind(arrayvec::ArrayString::from("default").unwrap())
+impl Default for NpcAiKind {
+    fn default() -> NpcAiKind {
+        NpcAiKind(arrayvec::ArrayString::from("default").unwrap())
     }
 }
 
-impl Default for CharaAI {
-    fn default() -> CharaAI {
-        CharaAI {
-            kind: NpcAIKind::default(),
+impl Default for CharaAi {
+    fn default() -> CharaAi {
+        CharaAi {
+            kind: NpcAiKind::default(),
             initial_pos: Vec2d::new(0, 0),
         }
     }

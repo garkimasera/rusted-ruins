@@ -38,10 +38,10 @@ pub enum ItemWindowMode {
 impl ItemWindowMode {
     pub fn is_main_mode(&self) -> bool {
         use ItemWindowMode::*;
-        match self {
-            List | Drop | Throw | Drink | Eat | Use | Release | Read => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            List | Drop | Throw | Drink | Eat | Use | Release | Read
+        )
     }
 }
 

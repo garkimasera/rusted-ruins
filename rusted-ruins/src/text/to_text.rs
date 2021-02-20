@@ -36,7 +36,7 @@ impl ToText for Site {
 impl ToText for Item {
     fn to_text(&self) -> Cow<str> {
         use crate::game::item::ItemExt;
-        let mut text: String = obj_txt(gobj::idx_to_id(self.idx)).into();
+        let mut text: String = obj_txt(gobj::idx_to_id(self.idx));
 
         if let Some(n) = self.charge() {
             text.push_str(&format!(" ({} : {})", ui_txt("item-charges"), n));
@@ -53,6 +53,7 @@ impl ToText for Item {
         }
 
         let quality = self.quality.as_int();
+
         if quality > 0 {
             text.push_str(&format!(" +{}", quality));
         } else if quality < 0 {

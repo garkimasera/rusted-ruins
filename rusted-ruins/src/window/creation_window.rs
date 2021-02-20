@@ -317,7 +317,7 @@ impl CreationDetailDialog {
                     } else {
                         // No available item for this ingredient material group
                         enough_ingredients = false;
-                        let icon_idx: UIImgIdx = gobj::id_to_idx("!icon-question");
+                        let icon_idx: UiImgIdx = gobj::id_to_idx("!icon-question");
                         let material_group_name = crate::text::prefix::material_group(group);
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
@@ -420,7 +420,7 @@ impl DialogWindow for CreationDetailDialog {
         }
 
         if let Some(start_button) = self.start_button.as_mut() {
-            if let Some(_) = start_button.process_command(&command) {
+            if start_button.process_command(&command).is_some() {
                 let material_to_use = self
                     .available_material
                     .get(self.selected_material)
@@ -437,7 +437,7 @@ impl DialogWindow for CreationDetailDialog {
             }
         }
 
-        if let Some(_) = self.cancel_button.process_command(&command) {
+        if self.cancel_button.process_command(&command).is_some() {
             return DialogResult::Close;
         }
 

@@ -22,7 +22,7 @@ pub fn build_object(input: Input) -> Result<Object, Error> {
         "item" => build_item_object(input).map(Object::Item),
         "special_tile" => build_special_tile_object(input).map(Object::SpecialTile),
         "tile" => build_tile_object(input).map(Object::Tile),
-        "ui_img" => build_ui_img_object(input).map(Object::UIImg),
+        "ui_img" => build_ui_img_object(input).map(Object::UiImg),
         "wall" => build_wall_object(input).map(Object::Wall),
         "region_gen" => build_region_gen_object(input).map(Object::RegionGen),
         "script" => build_script_object(input).map(Object::Script),
@@ -79,10 +79,10 @@ fn build_tile_object(input: Input) -> Result<TileObject, Error> {
     })
 }
 
-fn build_ui_img_object(input: Input) -> Result<UIImgObject, Error> {
+fn build_ui_img_object(input: Input) -> Result<UiImgObject, Error> {
     let img = get_optional_field!(input, image);
 
-    Ok(UIImgObject {
+    Ok(UiImgObject {
         id: input.id,
         img: build_img(img)?.0,
     })

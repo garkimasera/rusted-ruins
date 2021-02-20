@@ -14,7 +14,7 @@ pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
     let view_map = &game.view_map;
 
     if view_map.get_tile_visible(p) {
-        let mut piece_pattern_flags = PiecePatternFlags::new();
+        let mut piece_pattern_flags = PiecePatternFlags::default();
         for dir in &Direction::EIGHT_DIRS {
             piece_pattern_flags.set(*dir, view_map.get_tile_visible(p + dir.as_vec()));
         }

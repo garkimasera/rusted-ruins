@@ -10,11 +10,7 @@ use rules::biome::{BiomeDetail, SubBiomeDetail};
 use rules::RULES;
 
 pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
-    let (biome, _sub_biomes) = if let Some(b) = get_biome(gd, pos) {
-        b
-    } else {
-        return None;
-    };
+    let (biome, _sub_biomes) = get_biome(gd, pos)?;
 
     let destination = Destination::MapIdWithPos(
         gd.get_current_mapid(),

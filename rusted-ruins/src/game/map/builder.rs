@@ -7,8 +7,6 @@ use rules::RULES;
 
 #[derive(Default)]
 pub struct MapBuilder {
-    w: u32,
-    h: u32,
     floor: u32,
     is_deepest_floor: bool,
     map_gen_param: MapGenParam,
@@ -21,8 +19,6 @@ pub struct MapBuilder {
 impl MapBuilder {
     pub fn new(w: u32, h: u32) -> MapBuilder {
         let mut map_builder = MapBuilder::default();
-        map_builder.w = w;
-        map_builder.h = h;
         map_builder.map_gen_param = MapGenParam::Flat { w, h };
         map_builder
     }
@@ -31,8 +27,6 @@ impl MapBuilder {
         let map_gen_param = &RULES.map_gen.map_gen_params[id];
         let (w, h) = map_gen_param.size();
         let mut builder = Self::new(w, h);
-        builder.w = w;
-        builder.h = h;
         builder.map_gen_param = map_gen_param.clone();
         builder
     }
@@ -109,14 +103,14 @@ pub fn generated_map_to_map(
                             true
                         }
                     };
-                    let mut piece_pattern_flags = PiecePatternFlags::new();
+                    let mut piece_pattern_flags = PiecePatternFlags::default();
                     for dir in &Direction::EIGHT_DIRS {
                         piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
                     }
                     let wall_obj = gobj::get_obj(wall);
                     piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
-                map.tile[p].wall = WallIdxPP::with_piece_pattern(wall, piece_pattern);
+                map.tile[p].wall = WallIdxPp::with_piece_pattern(wall, piece_pattern);
                 map.tile[p].wall_hp = wall_obj.hp;
             }
             _ => (),

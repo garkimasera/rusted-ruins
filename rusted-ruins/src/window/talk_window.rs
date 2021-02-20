@@ -66,10 +66,7 @@ impl TalkWindow {
                     WindowHPos::RightX(self.rect.right()),
                     WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs),
                 );
-                let choices: Vec<String> = choices
-                    .iter()
-                    .map(|a| text::talk_txt(&*a.0).to_owned())
-                    .collect();
+                let choices: Vec<String> = choices.iter().map(|a| text::talk_txt(&*a.0)).collect();
                 self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
             }
         }

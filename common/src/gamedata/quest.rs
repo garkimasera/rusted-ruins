@@ -14,11 +14,13 @@ pub struct QuestHolder {
     quests: Vec<(QuestState, Quest)>,
 }
 
-impl QuestHolder {
-    pub fn new() -> QuestHolder {
+impl Default for QuestHolder {
+    fn default() -> Self {
         QuestHolder { quests: Vec::new() }
     }
+}
 
+impl QuestHolder {
     pub fn iter(&self) -> Iter<(QuestState, Quest)> {
         self.quests.iter()
     }

@@ -7,8 +7,8 @@ use crate::objholder::{ObjectIndex, TileIdx, WallIdx};
 use geom::*;
 use std::marker::PhantomData;
 
-const INDEX_BIT: u32 = 0b11111111_11111111_11110000_00000000;
-const PIECE_PATTERN_BIT: u32 = 0b00000000_00000000_00001111_11111111;
+const INDEX_BIT: u32 = 0b1111_1111_1111_1111_1111_0000_0000_0000;
+const PIECE_PATTERN_BIT: u32 = 0b0000_0000_0000_0000_0000_1111_1111_1111;
 
 /// Represents 4 pieces pattern of tile images
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -144,9 +144,9 @@ where
     }
 }
 
-pub type TileIdxPP = IdxWithPiecePattern<TileIdx>;
-pub type WallIdxPP = IdxWithPiecePattern<WallIdx>;
-pub type ConvertedIdxPP = IdxWithPiecePattern<u32>;
+pub type TileIdxPp = IdxWithPiecePattern<TileIdx>;
+pub type WallIdxPp = IdxWithPiecePattern<WallIdx>;
+pub type ConvertedIdxPp = IdxWithPiecePattern<u32>;
 
 macro_rules! impl_deserialize_for_idxpp {
     ($idxpp:ident, $idx:ident, $mem:ident) => {
@@ -178,11 +178,11 @@ macro_rules! impl_deserialize_for_idxpp {
     };
 }
 
-impl_deserialize_for_idxpp!(TileIdxPP, TileIdx, tile);
-impl_deserialize_for_idxpp!(WallIdxPP, WallIdx, wall);
+impl_deserialize_for_idxpp!(TileIdxPp, TileIdx, tile);
+impl_deserialize_for_idxpp!(WallIdxPp, WallIdx, wall);
 
-impl<'de> serde::Deserialize<'de> for ConvertedIdxPP {
-    fn deserialize<D>(deserializer: D) -> Result<ConvertedIdxPP, D::Error>
+impl<'de> serde::Deserialize<'de> for ConvertedIdxPp {
+    fn deserialize<D>(deserializer: D) -> Result<ConvertedIdxPp, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -194,11 +194,13 @@ impl<'de> serde::Deserialize<'de> for ConvertedIdxPP {
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct PiecePatternFlags(pub u8);
 
-impl PiecePatternFlags {
-    pub fn new() -> PiecePatternFlags {
+impl Default for PiecePatternFlags {
+    fn default() -> Self {
         PiecePatternFlags(0)
     }
+}
 
+impl PiecePatternFlags {
     pub fn set(&mut self, dir: Direction, is_same_tile: bool) {
         let flag = match dir {
             Direction::N => Self::N,
@@ -253,7 +255,7 @@ impl PiecePatternFlags {
     where
         F: FnMut(Vec2d) -> bool,
     {
-        let mut piece_pattern_flags = PiecePatternFlags::new();
+        let mut piece_pattern_flags = PiecePatternFlags::default();
         for dir in &Direction::EIGHT_DIRS {
             piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
         }

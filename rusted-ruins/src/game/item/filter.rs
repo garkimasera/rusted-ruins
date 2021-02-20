@@ -23,9 +23,10 @@ impl ItemFilter {
     }
 
     pub fn all() -> ItemFilter {
-        let mut filter = ItemFilter::default();
-        filter.all = true;
-        filter
+        ItemFilter {
+            all: true,
+            ..ItemFilter::default()
+        }
     }
 
     /// Given item will be filtered (false) or not (true)

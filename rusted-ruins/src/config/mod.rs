@@ -11,7 +11,6 @@ use std::env;
 use std::fs::read_to_string;
 use std::path::PathBuf;
 use std::process::exit;
-use toml;
 
 macro_rules! load_config_file {
     ($path:expr) => {{
@@ -66,16 +65,12 @@ pub static CONFIG: Lazy<Config> = Lazy::new(|| {
 });
 pub static SCREEN_CFG: Lazy<visual::ScreenConfig> =
     Lazy::new(|| load_config_file!(&CONFIG.screen_config));
-pub static UI_CFG: Lazy<visual::UIConfig> = Lazy::new(|| load_config_file!("ui.toml"));
+pub static UI_CFG: Lazy<visual::UiConfig> = Lazy::new(|| load_config_file!("ui.toml"));
 pub static INPUT_CFG: Lazy<input::InputConfig> = Lazy::new(|| load_config_file!("input.toml"));
 pub static CONTROL_CFG: Lazy<control::ControlConfig> =
     Lazy::new(|| load_config_file!("control.toml"));
 pub static FONT_CFG: Lazy<font::FontConfig> = Lazy::new(|| load_config_file!("font.toml"));
-pub static PAK_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
-    let mut v = Vec::new();
-    v.push(abs_path("paks"));
-    v
-});
+pub static PAK_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| vec![abs_path("paks")]);
 
 /// Get application directory
 fn get_assets_dir() -> Option<PathBuf> {
@@ -122,8 +117,7 @@ fn get_addon_dir() -> Option<PathBuf> {
 /// Get application and each addon's directories
 /// They will be the root path for searching pak or text, and other data files.
 pub fn get_data_dirs() -> Vec<PathBuf> {
-    let mut v = Vec::new();
-    v.push(ASSETS_DIR.clone());
+    let mut v = vec![ASSETS_DIR.clone()];
 
     if ADDON_DIR.is_some() {
         v.push(ADDON_DIR.clone().unwrap());

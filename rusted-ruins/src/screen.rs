@@ -67,10 +67,10 @@ impl Screen {
 
             let mouse_state = event_pump.mouse_state();
             window_manager.update_cursor((mouse_state.x(), mouse_state.y()));
-            if !window_manager.animation_now() {
-                if !window_manager.advance_turn(&mut self.event_handler) {
-                    break 'mainloop;
-                }
+            if !window_manager.animation_now()
+                && !window_manager.advance_turn(&mut self.event_handler)
+            {
+                break 'mainloop;
             }
 
             if !is_skip_next_frame {

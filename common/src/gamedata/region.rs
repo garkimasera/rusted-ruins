@@ -35,11 +35,13 @@ impl Default for RegionId {
     }
 }
 
-impl RegionHolder {
-    pub fn new() -> RegionHolder {
+impl Default for RegionHolder {
+    fn default() -> RegionHolder {
         RegionHolder(HashMap::new())
     }
+}
 
+impl RegionHolder {
     pub fn get(&self, rid: RegionId) -> &Region {
         self.0.get(&rid).unwrap_or_else(|| unknown_id_err(rid))
     }
@@ -236,11 +238,7 @@ impl RegionHolder {
 
         if path_elements.len() == 2 {
             let region_name = path_elements[0];
-            let (floor, pos) = if let Some(a) = floor_and_pos(path_elements[1]) {
-                a
-            } else {
-                return None;
-            };
+            let (floor, pos) = floor_and_pos(path_elements[1])?;
             for (&rid, region) in self.0.iter() {
                 if region.name == region_name {
                     return Some((MapId::RegionMap { rid }, pos));
@@ -249,11 +247,7 @@ impl RegionHolder {
         } else if path_elements.len() == 3 {
             let region_name = path_elements[0];
             let site_name = path_elements[1];
-            let (floor, pos) = if let Some(a) = floor_and_pos(path_elements[2]) {
-                a
-            } else {
-                return None;
-            };
+            let (floor, pos) = floor_and_pos(path_elements[2])?;
 
             for (_, region) in self.0.iter() {
                 if region.name != region_name {

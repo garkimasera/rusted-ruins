@@ -63,12 +63,10 @@ impl LabelWidget {
     pub fn set_text(&mut self, text: &str) {
         let cache = if let Some(w) = self.wrap_w {
             TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
+        } else if self.is_bordered {
+            TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
         } else {
-            if self.is_bordered {
-                TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
-            } else {
-                TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
-            }
+            TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
         };
         self.cache = cache;
     }

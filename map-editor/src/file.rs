@@ -5,7 +5,6 @@ use std::error::Error;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use tar;
 
 pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<dyn Error>> {
     let mut mapobj: Option<MapTemplateObject> = None;

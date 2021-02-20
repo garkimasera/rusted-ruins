@@ -211,9 +211,5 @@ fn item_filter(m: &gtk::TreeModel, i: &gtk::TreeIter) -> bool {
 }
 
 fn judge_rm_item(id: &str) -> bool {
-    if id.starts_with("!rm.") || id.starts_with("rm.") {
-        true
-    } else {
-        false
-    }
+    id.starts_with("!rm.") || id.starts_with("rm.")
 }

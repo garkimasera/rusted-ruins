@@ -70,7 +70,7 @@ impl Item {
                         remaining.as_secs() + last_updated.as_secs() - current_time.as_secs();
                     ((obj.img.n_pattern as u64) * new_remaining / growing_time) as u32
                 };
-                return i_pattern;
+                i_pattern
             }
             _ => 0,
         }
@@ -194,8 +194,8 @@ impl Item {
         let current_time = crate::game::time::current_time();
         self.attrs
             .iter()
-            .find_map(|attr| match attr {
-                &ItemAttr::Time {
+            .find_map(|attr| match *attr {
+                ItemAttr::Time {
                     last_updated,
                     remaining,
                 } => Some(last_updated + remaining),

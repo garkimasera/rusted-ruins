@@ -8,7 +8,7 @@ use common::basic::{PIECE_SIZE_I, TILE_SIZE, TILE_SIZE_I};
 use common::gamedata::*;
 use common::gobj;
 use common::obj::*;
-use common::objholder::{Holder, UIImgIdx};
+use common::objholder::{Holder, UiImgIdx};
 use geom::*;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
@@ -62,8 +62,8 @@ impl MainWinDrawer {
         };
 
         let player_move_adjust = if let Some(anim) = anim {
-            match anim.0 {
-                &Animation::PlayerMove { n_frame, dir } => {
+            match *anim.0 {
+                Animation::PlayerMove { n_frame, dir } => {
                     let v =
                         dir.as_vec() * (TILE_SIZE_I * (n_frame - anim.1) as i32 / n_frame as i32);
                     player_move_dir = Some(dir);
@@ -428,7 +428,7 @@ impl MainWinDrawer {
     }
 
     fn draw_tile_cursor(&self, context: &mut Context, ct: Vec2d) {
-        let idx: UIImgIdx = gobj::id_to_idx_checked("!tile-cursor")
+        let idx: UiImgIdx = gobj::id_to_idx_checked("!tile-cursor")
             .expect("UIImg object \"!tile-cursor\" not found");
 
         let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);

@@ -65,9 +65,7 @@ impl SkillList {
             self.exp = Some(FnvHashMap::default());
         }
         let exp = self.exp.as_mut().unwrap();
-        if !exp.contains_key(&kind) {
-            exp.insert(kind, 0);
-        }
+        exp.entry(kind).or_insert(0);
 
         true
     }

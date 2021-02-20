@@ -3,11 +3,13 @@ use crate::gamedata::CreationKind;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct LearnedRecipes(Vec<Vec<String>>);
 
-impl LearnedRecipes {
-    pub fn new() -> LearnedRecipes {
+impl Default for LearnedRecipes {
+    fn default() -> Self {
         LearnedRecipes(vec![vec![]; CreationKind::Smith as usize + 1])
     }
+}
 
+impl LearnedRecipes {
     pub fn learned(&self, kind: CreationKind, recipe_name: &str) -> bool {
         let recipes = &self.0[kind as usize];
         recipes.iter().any(|r| r == recipe_name)

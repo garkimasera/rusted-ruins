@@ -146,7 +146,7 @@ impl GameData {
         let f2 = self.chara.get(other).faction;
 
         if f1 == f2 {
-            return Relationship::ALLY;
+            return Relationship::Ally;
         }
 
         let faction_relation = if f1 == FactionId::player() {
@@ -158,21 +158,17 @@ impl GameData {
         };
 
         if faction_relation >= RULES.faction.relation_friend {
-            Relationship::FRIENDLY
+            Relationship::Friendly
         } else if faction_relation >= RULES.faction.relation_neutral {
-            Relationship::NEUTRAL
+            Relationship::Neutral
         } else {
-            Relationship::HOSTILE
+            Relationship::Hostile
         }
     }
 
     /// Get shortcut availability (available, remaining)
     fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)> {
-        let shortcut = if let Some(shortcut) = self.settings.action_shortcuts[n] {
-            shortcut
-        } else {
-            return None;
-        };
+        let shortcut = self.settings.action_shortcuts[n]?;
 
         match shortcut {
             ActionShortcut::Throw(idx)

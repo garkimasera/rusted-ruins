@@ -21,7 +21,7 @@ impl<'a> DoPlayerAction<'a> {
                     let relation = gd.chara_relation(CharaId::Player, other_chara);
                     let other_chara = gd.chara.get(other_chara);
                     match relation {
-                        Relationship::ALLY | Relationship::FRIENDLY | Relationship::NEUTRAL => {
+                        Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
                             other_chara.trigger_talk.is_some()
                         }
                         _ => false,
@@ -168,8 +168,6 @@ impl<'a> DoPlayerAction<'a> {
             } else {
                 cb(self, true);
             }
-
-            return;
         } else {
             // Crossing boundary
             let boundary_dest = {

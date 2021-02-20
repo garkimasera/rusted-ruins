@@ -40,7 +40,7 @@ macro_rules! impl_idx {
                 id: &str,
                 objholder: &'a ObjectHolder,
             ) -> Option<&'a $obj> {
-                for ref o in (&objholder.$mem).into_iter() {
+                for ref o in (&objholder.$mem).iter() {
                     if o.id == id {
                         return Some(o);
                     }
@@ -90,15 +90,18 @@ macro_rules! impl_objholder {
             $(pub $mem: Vec<$obj>),*
         }
 
-        impl ObjectHolder {
-            pub fn new() -> ObjectHolder {
+        impl Default for ObjectHolder {
+            fn default() -> ObjectHolder {
                 ObjectHolder {
                     $($mem: Vec::new()),*
                 }
             }
+        }
+
+        impl ObjectHolder {
 
             pub fn load<P: AsRef<Path>>(dirs: &[P]) -> ObjectHolder {
-                let mut objholder = ObjectHolder::new();
+                let mut objholder = ObjectHolder::default();
 
                 for dir in dirs {
                     let err_stack = load_objs_dir(dir.as_ref(), |object| {
@@ -184,7 +187,7 @@ impl_objholder! {
     {Item, ItemObject, item, ItemIdx},
     {SpecialTile, SpecialTileObject, special_tile, SpecialTileIdx},
     {Tile, TileObject, tile, TileIdx},
-    {UIImg, UIImgObject, ui_img, UIImgIdx},
+    {UiImg, UiImgObject, ui_img, UiImgIdx},
     {Wall, WallObject, wall, WallIdx},
     {MapTemplate, MapTemplateObject, map_template, MapTemplateIdx},
     {RegionGen, RegionGenObject, region_gen, RegionGenIdx},

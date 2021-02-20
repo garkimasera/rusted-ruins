@@ -55,7 +55,7 @@ impl<'a> BackgroundDrawInfo<'a> {
 #[derive(Default)]
 pub struct ForegroundDrawInfo<'a> {
     pub special: Option<SpecialTileIdx>,
-    pub wallpp: WallIdxPP,
+    pub wallpp: WallIdxPp,
     pub deco: Option<DecoIdx>,
     pub items: &'a [(ItemIdx, u32)],
     pub chara: Option<CharaId>,
@@ -80,9 +80,9 @@ impl<'a> ForegroundDrawInfo<'a> {
             map.observed_tile[pos].wall
         } else if let Some(ref outside_tile) = map.outside_tile {
             if let Some(wall_idx) = outside_tile.wall {
-                WallIdxPP::new(wall_idx)
+                WallIdxPp::new(wall_idx)
             } else {
-                WallIdxPP::default()
+                WallIdxPp::default()
             }
         } else {
             let nearest_pos = map.nearest_existent_tile(pos);

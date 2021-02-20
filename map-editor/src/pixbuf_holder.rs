@@ -57,7 +57,7 @@ impl_pixbuf_holder! {
 }
 
 fn load_png(img: &Img) -> PixbufSet {
-    const ERR_MSG: &'static str = "Error occured while loading image";
+    const ERR_MSG: &str = "Error occured while loading image";
     let loader = PixbufLoader::with_type("png").expect(ERR_MSG);
     loader.write(&img.data).expect(ERR_MSG);
     loader.close().expect(ERR_MSG);

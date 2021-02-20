@@ -129,8 +129,8 @@ impl Script {
     }
 }
 
-pub const QUIT_SECTION: &'static str = "quit";
-pub const CONTINUE_SECTION: &'static str = "continue";
+pub const QUIT_SECTION: &str = "quit";
+pub const CONTINUE_SECTION: &str = "continue";
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ScriptPos {

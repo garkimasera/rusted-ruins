@@ -43,7 +43,7 @@ impl EquipWindow {
             let (esk, _, item) = equips.slot_iter().nth(i as usize).unwrap();
             let esk_icon = slotkind_to_icon_idx(esk);
             if let Some(item) = item {
-                let item_text = text::obj_txt(&gobj::get_obj(item.idx).id).to_owned();
+                let item_text = text::obj_txt(&gobj::get_obj(item.idx).id);
                 let tc = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
                 (esk_icon, IconIdx::from(item.idx), tc)
             } else {
@@ -126,6 +126,6 @@ fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
         EquipSlotKind::BodyArmor => "!icon-bodyarmor",
         EquipSlotKind::Shield => "!icon-shield",
     };
-    let idx: UIImgIdx = gobj::id_to_idx(id);
+    let idx: UiImgIdx = gobj::id_to_idx(id);
     IconIdx::from(idx)
 }

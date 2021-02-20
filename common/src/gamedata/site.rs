@@ -80,7 +80,7 @@ impl Site {
     }
 
     pub(crate) fn add_map(&mut self, map: Map, map_random_id: u64) -> u32 {
-        assert!(self.map.len() as u32 + 1 <= self.max_floor);
+        assert!((self.map.len() as u32) < self.max_floor);
         let floor = self.map.len() as u32;
         self.map.push(FileBox::new(map_random_id, map));
         floor
@@ -112,11 +112,11 @@ impl Site {
 impl SiteContent {
     pub fn kind(&self) -> SiteKind {
         match self {
-            &SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
-            &SiteContent::Town { .. } => SiteKind::Town,
-            &SiteContent::Player { .. } => SiteKind::Player,
-            &SiteContent::Temp { .. } => SiteKind::Temp,
-            &SiteContent::Other { .. } => SiteKind::Other,
+            SiteContent::AutoGenDungeon { .. } => SiteKind::AutoGenDungeon,
+            SiteContent::Town { .. } => SiteKind::Town,
+            SiteContent::Player { .. } => SiteKind::Player,
+            SiteContent::Temp { .. } => SiteKind::Temp,
+            SiteContent::Other { .. } => SiteKind::Other,
         }
     }
 }

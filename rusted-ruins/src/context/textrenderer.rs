@@ -63,7 +63,7 @@ impl<'sdl> TextRenderer<'sdl> {
         wrap: Option<u32>,
         is_bordered: bool,
     ) -> Result<Surface<'static>, FontError> {
-        let text = if text != "" { text } else { " " };
+        let text = if !text.is_empty() { text } else { " " };
 
         let font = self.select_font(font_usage);
 

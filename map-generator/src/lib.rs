@@ -91,18 +91,18 @@ pub enum MapGenParam {
 
 impl MapGenParam {
     pub fn size(&self) -> (u32, u32) {
-        match self {
-            &MapGenParam::Flat { w, h } => (w, h),
-            &MapGenParam::Lattice { w, h, .. } => (w, h),
-            &MapGenParam::Fractal { w, h, .. } => (w, h),
-            &MapGenParam::Rooms { w, h, .. } => (w, h),
+        match *self {
+            MapGenParam::Flat { w, h } => (w, h),
+            MapGenParam::Lattice { w, h, .. } => (w, h),
+            MapGenParam::Fractal { w, h, .. } => (w, h),
+            MapGenParam::Rooms { w, h, .. } => (w, h),
         }
     }
 
     pub fn generate(&self) -> GeneratedMap {
-        match self {
-            &MapGenParam::Flat { w, h } => GeneratedMap::new((w, h)),
-            &MapGenParam::Lattice {
+        match *self {
+            MapGenParam::Flat { w, h } => GeneratedMap::new((w, h)),
+            MapGenParam::Lattice {
                 w,
                 h,
                 nx,
@@ -116,7 +116,7 @@ impl MapGenParam {
                 lattice.write_to_map(&mut map, door_weight);
                 map
             }
-            &MapGenParam::Fractal {
+            MapGenParam::Fractal {
                 w,
                 h,
                 stairs,
@@ -127,7 +127,7 @@ impl MapGenParam {
                 fractal::write_to_map(&mut map, wall_weight, edge, stairs);
                 map
             }
-            &MapGenParam::Rooms {
+            MapGenParam::Rooms {
                 w,
                 h,
                 max_room_size,
@@ -151,15 +151,15 @@ impl Default for MapGenParam {
 
 impl Entrance {
     fn entrance_char(&self, pos: Vec2d) -> Option<char> {
-        match self {
-            &Entrance::Pos(ref v) => {
+        match *self {
+            Entrance::Pos(ref v) => {
                 if v.iter().any(|p| pos == *p) {
                     Some('e')
                 } else {
                     None
                 }
             }
-            &Entrance::Stairs(e0, e1) => {
+            Entrance::Stairs(e0, e1) => {
                 if e0 == pos {
                     Some('<')
                 } else if e1 == Some(pos) {
@@ -188,7 +188,7 @@ impl std::fmt::Display for GeneratedMap {
 
                 write!(f, "{}", c)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
 
         Ok(())

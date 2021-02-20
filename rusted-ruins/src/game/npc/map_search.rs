@@ -35,7 +35,7 @@ where
 /// Search the nearest hostile character
 pub fn search_nearest_enemy(gd: &GameData, cid: CharaId) -> Option<CharaId> {
     search_nearest_chara(gd, cid, |gd, c0, c1| {
-        gd.chara_relation(c0, c1) == Relationship::HOSTILE
+        gd.chara_relation(c0, c1) == Relationship::Hostile
     })
 }
 

@@ -34,19 +34,19 @@ pub const SKILL_EXP_LVUP: u16 = 10000;
 pub const MAX_ACTION_SHORTCUTS: usize = 32;
 
 // Path settings
-pub const APP_DIR_NAME: &'static str = "rusted-ruins";
-pub const CFG_FILES_DIR: &'static str = "config";
-pub const OBJ_TXT_DIR: &'static str = "obj";
-pub const LOG_TXT_DIR: &'static str = "log";
-pub const UI_TXT_DIR: &'static str = "ui";
-pub const TALK_TXT_DIR: &'static str = "talk";
-pub const MISC_TXT_DIR: &'static str = "misc";
-pub const READABLE_TXT_DIR: &'static str = "readable";
-pub const SAVE_DIR_NAME: &'static str = "save";
-pub const SAVE_EXTENSION: &'static str = "rrsve";
+pub const APP_DIR_NAME: &str = "rusted-ruins";
+pub const CFG_FILES_DIR: &str = "config";
+pub const OBJ_TXT_DIR: &str = "obj";
+pub const LOG_TXT_DIR: &str = "log";
+pub const UI_TXT_DIR: &str = "ui";
+pub const TALK_TXT_DIR: &str = "talk";
+pub const MISC_TXT_DIR: &str = "misc";
+pub const READABLE_TXT_DIR: &str = "readable";
+pub const SAVE_DIR_NAME: &str = "save";
+pub const SAVE_EXTENSION: &str = "rrsve";
 
 /// Id table
-pub const ID_TABLE_SECTION_TAG: &'static str = "§";
+pub const ID_TABLE_SECTION_TAG: &str = "§";
 
 /// The number of auto generated dungeons per region
 pub const MAX_AUTO_GEN_DUNGEONS: u32 = 20;

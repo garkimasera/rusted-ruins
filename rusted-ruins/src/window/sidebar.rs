@@ -3,7 +3,7 @@ use crate::config::SCREEN_CFG;
 use crate::config::UI_CFG;
 use crate::game::command::MouseButton;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use once_cell::sync::Lazy;
 
 pub struct Sidebar {
@@ -11,7 +11,7 @@ pub struct Sidebar {
     mouseover: Option<u32>,
 }
 
-static ICON_IDX: Lazy<UIImgIdx> = Lazy::new(|| gobj::id_to_idx("sidebar-icon"));
+static ICON_IDX: Lazy<UiImgIdx> = Lazy::new(|| gobj::id_to_idx("sidebar-icon"));
 
 const ITEM_INVENTORY: u32 = 0;
 const ITEM_EQUIPMENT: u32 = 1;

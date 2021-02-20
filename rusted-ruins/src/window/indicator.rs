@@ -6,7 +6,7 @@ use crate::game::InfoGetter;
 use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
-use common::obj::UIImgObject;
+use common::obj::UiImgObject;
 use rules::RULES;
 
 #[derive(Clone, Copy, Debug)]
@@ -50,7 +50,7 @@ impl BarIndicator {
         let rect: Rect = kind.rect();
 
         // Label is drawed over the guage
-        let label_img: &'static UIImgObject = gobj::get_by_id(kind.label_id());
+        let label_img: &'static UiImgObject = gobj::get_by_id(kind.label_id());
         let (label_w, label_h) = (label_img.img.w, label_img.img.h);
         // Centering of the guage
         let label_rect = Rect::from_center((rect.w / 2, rect.h / 2), label_w, label_h);
@@ -125,7 +125,7 @@ impl Window for FloorInfo {
                 }
                 MapId::RegionMap { rid } => {
                     let region = game.gd.region.get(rid);
-                    self.label.set_text(&format!("{}", region.name))
+                    self.label.set_text(&region.name.to_string())
                 }
             }
         }

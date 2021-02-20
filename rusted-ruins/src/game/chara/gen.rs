@@ -17,7 +17,7 @@ pub fn create_chara(
     class: Option<CharaClass>,
 ) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
-    let class = class.unwrap_or(CharaClass::default());
+    let class = class.unwrap_or_default();
 
     let mut chara = Chara {
         name: None,
@@ -26,7 +26,7 @@ pub fn create_chara(
         class,
         faction,
         level: lv,
-        item_list: ItemList::new(),
+        item_list: ItemList::default(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_NUMERATOR,
         ai: create_ai(ct.default_ai_kind),
@@ -36,7 +36,7 @@ pub fn create_chara(
         traits: Vec::new(),
         status: Vec::new(),
         skills: gen_skill_list(ct, lv, class),
-        rel: Relationship::NEUTRAL,
+        rel: Relationship::Neutral,
         trigger_talk: None,
     };
 
@@ -57,7 +57,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
     let faction_id = dungeon_gen_rule.default_faction_id;
     let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
     set_skill(&mut chara);
-    chara.rel = Relationship::HOSTILE;
+    chara.rel = Relationship::Hostile;
     chara
 }
 
@@ -128,8 +128,8 @@ impl CalcLevelWeightDist {
 }
 
 /// Create AI parameters
-pub fn create_ai(ai_kind: NpcAIKind) -> CharaAI {
-    CharaAI {
+pub fn create_ai(ai_kind: NpcAiKind) -> CharaAi {
+    CharaAi {
         kind: ai_kind,
         initial_pos: Vec2d::new(0, 0),
     }

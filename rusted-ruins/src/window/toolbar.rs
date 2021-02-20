@@ -3,7 +3,7 @@ use crate::game::command::MouseButton;
 use common::basic::MAX_ACTION_SHORTCUTS;
 use common::gamedata::*;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use once_cell::sync::Lazy;
 
 pub struct Toolbar {
@@ -16,7 +16,7 @@ const ITEM_SHOOT: u32 = 1;
 const ITEM_TOOL: u32 = 2;
 const N_ITEM: u32 = 3;
 
-static ICON_FRAME: Lazy<UIImgIdx> = Lazy::new(|| gobj::id_to_idx("!toolbar-icon-frame"));
+static ICON_FRAME: Lazy<UiImgIdx> = Lazy::new(|| gobj::id_to_idx("!toolbar-icon-frame"));
 
 impl Toolbar {
     pub fn new() -> Toolbar {

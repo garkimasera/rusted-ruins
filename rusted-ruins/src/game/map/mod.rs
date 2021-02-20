@@ -173,11 +173,7 @@ pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Vec2d {
     let pos = if let Some(p) = dest_map.search_stairs(prev_mid.floor()) {
         p
     } else {
-        dest_map
-            .entrance
-            .get(0)
-            .map(|pos| *pos)
-            .unwrap_or(Vec2d(0, 0))
+        dest_map.entrance.get(0).copied().unwrap_or(Vec2d(0, 0))
     };
     pos
 }
@@ -260,7 +256,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
         }
     };
     let item_gen_probability = RULES.dungeon_gen[&dungeon_kind].item_gen_probability;
-    let item_gen_probability = if 0.0 <= item_gen_probability && item_gen_probability <= 1.0 {
+    let item_gen_probability = if (0.0..=1.0).contains(&item_gen_probability) {
         item_gen_probability
     } else {
         warn!(

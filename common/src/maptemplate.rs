@@ -20,7 +20,7 @@ pub struct MapTemplateObject {
     pub tile: Array2d<TileLayersConverted>,
     /// Wall Id (String) <-> integer value conversion table
     pub wall_table: Vec<String>,
-    pub wall: Array2d<ConvertedIdxPP>,
+    pub wall: Array2d<ConvertedIdxPp>,
     /// Deco Id (String) <-> integer value conversion table
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
@@ -32,17 +32,17 @@ pub struct MapTemplateObject {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
-pub struct TileLayersConverted([ConvertedIdxPP; N_TILE_IMG_LAYER]);
+pub struct TileLayersConverted([ConvertedIdxPp; N_TILE_IMG_LAYER]);
 
 impl Index<usize> for TileLayersConverted {
-    type Output = ConvertedIdxPP;
-    fn index(&self, index: usize) -> &ConvertedIdxPP {
+    type Output = ConvertedIdxPp;
+    fn index(&self, index: usize) -> &ConvertedIdxPp {
         &self.0[index]
     }
 }
 
 impl IndexMut<usize> for TileLayersConverted {
-    fn index_mut(&mut self, index: usize) -> &mut ConvertedIdxPP {
+    fn index_mut(&mut self, index: usize) -> &mut ConvertedIdxPp {
         &mut self.0[index]
     }
 }
@@ -71,8 +71,8 @@ pub struct MapTemplateBoundary {
 
 /// Helper trait to convert between object index and u32 in maptemplate
 pub trait ConvertableIndex {
-    fn conv_into(self, table: &Vec<String>) -> u32;
-    fn conv_from(value: u32, table: &Vec<String>) -> Self;
+    fn conv_into(self, table: &[String]) -> u32;
+    fn conv_from(value: u32, table: &[String]) -> Self;
 }
 
 #[cfg(feature = "global_state_obj")]
@@ -80,7 +80,7 @@ impl<T> ConvertableIndex for T
 where
     T: ObjectIndex + Default,
 {
-    fn conv_into(self, table: &Vec<String>) -> u32 {
+    fn conv_into(self, table: &[String]) -> u32 {
         use crate::gobj;
         let id = gobj::idx_to_id(self);
         table
@@ -89,7 +89,7 @@ where
             .expect("error while object index converting") as u32
     }
 
-    fn conv_from(value: u32, table: &Vec<String>) -> T {
+    fn conv_from(value: u32, table: &[String]) -> T {
         use crate::gobj;
         let id = &table[value as usize];
         gobj::id_to_idx(id)
@@ -101,18 +101,18 @@ impl<T> IdxWithPiecePattern<T>
 where
     T: ObjectIndex + Default,
 {
-    pub fn conv_into(self, table: &Vec<String>) -> ConvertedIdxPP {
+    pub fn conv_into(self, table: &[String]) -> ConvertedIdxPp {
         if let Some((idx, pp)) = self.get() {
             let cidx = idx.conv_into(table);
-            let mut c = ConvertedIdxPP::from_raw_int(cidx + 1);
+            let mut c = ConvertedIdxPp::from_raw_int(cidx + 1);
             c.set_piece_pattern(pp);
             c
         } else {
-            ConvertedIdxPP::default()
+            ConvertedIdxPp::default()
         }
     }
 
-    pub fn conv_from(c: ConvertedIdxPP, table: &Vec<String>) -> IdxWithPiecePattern<T> {
+    pub fn conv_from(c: ConvertedIdxPp, table: &[String]) -> IdxWithPiecePattern<T> {
         if !c.is_empty() {
             let idx = T::conv_from(c.as_raw_int() - 1, table);
             IdxWithPiecePattern::with_piece_pattern(idx, c.piece_pattern())
@@ -124,18 +124,18 @@ where
 
 #[cfg(feature = "global_state_obj")]
 impl TileLayers {
-    pub fn conv_into(self, table: &Vec<String>) -> TileLayersConverted {
-        let mut c = [ConvertedIdxPP::default(); N_TILE_IMG_LAYER];
+    pub fn conv_into(self, table: &[String]) -> TileLayersConverted {
+        let mut c = [ConvertedIdxPp::default(); N_TILE_IMG_LAYER];
         for i in 0..N_TILE_IMG_LAYER {
             c[i] = self[i].conv_into(table);
         }
         TileLayersConverted(c)
     }
 
-    pub fn conv_from(c: TileLayersConverted, table: &Vec<String>) -> TileLayers {
-        let mut o = [TileIdxPP::default(); N_TILE_IMG_LAYER];
+    pub fn conv_from(c: TileLayersConverted, table: &[String]) -> TileLayers {
+        let mut o = [TileIdxPp::default(); N_TILE_IMG_LAYER];
         for i in 0..N_TILE_IMG_LAYER {
-            o[i] = TileIdxPP::conv_from(c[i], table);
+            o[i] = TileIdxPp::conv_from(c[i], table);
         }
         TileLayers(o)
     }

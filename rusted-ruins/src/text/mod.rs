@@ -39,7 +39,7 @@ impl Bundle {
     fn load(kind: &str) -> Bundle {
         let first = load_resource(kind, &config::CONFIG.lang);
         let second_lang = &config::CONFIG.second_lang;
-        let second = if second_lang == "" {
+        let second = if second_lang.is_empty() {
             Vec::new()
         } else {
             load_resource(kind, second_lang)

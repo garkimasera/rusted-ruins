@@ -60,7 +60,7 @@ impl_texture_holder! {
     {item, ItemIdx},
     {special_tile, SpecialTileIdx},
     {tile, TileIdx},
-    {ui_img, UIImgIdx},
+    {ui_img, UiImgIdx},
     {wall, WallIdx}
 }
 
@@ -76,10 +76,9 @@ impl<'a> TextureCreatorW<'a> {
         let rwops = RWops::from_bytes(data)?;
         let surface = rwops.load_png()?;
 
-        Ok(self
-            .0
+        self.0
             .create_texture_from_surface(surface)
-            .map_err(|e| e.to_string())?)
+            .map_err(|e| e.to_string())
     }
 }
 
@@ -117,5 +116,5 @@ macro_rules! impl_iconidx {
 
 impl_iconidx! {
     {Item, ItemIdx},
-    {UIImg, UIImgIdx}
+    {UiImg, UiImgIdx}
 }

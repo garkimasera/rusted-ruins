@@ -12,7 +12,7 @@ pub struct EditingMap {
     pub width: u32,
     pub height: u32,
     pub tile: Array2d<TileLayers>,
-    pub wall: Array2d<WallIdxPP>,
+    pub wall: Array2d<WallIdxPp>,
     pub deco: Array2d<Option<DecoIdx>>,
     pub items: Array2d<Vec<ItemGen>>,
 }
@@ -20,7 +20,7 @@ pub struct EditingMap {
 impl EditingMap {
     pub fn new(id: &str, width: u32, height: u32) -> EditingMap {
         let tile = Array2d::new(width, height, TileLayers::from(TileIdx::default()));
-        let wall = Array2d::new(width, height, WallIdxPP::default());
+        let wall = Array2d::new(width, height, WallIdxPp::default());
         let deco = Array2d::new(width, height, None);
         let property = MapProperty::new(id);
         let items = Array2d::new(width, height, vec![]);
@@ -36,14 +36,14 @@ impl EditingMap {
     }
 
     pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
-        self.tile[pos][layer] = TileIdxPP::new(idx);
+        self.tile[pos][layer] = TileIdxPp::new(idx);
     }
 
     pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
         if let Some(idx) = wall {
-            self.wall[pos] = WallIdxPP::new(idx);
+            self.wall[pos] = WallIdxPp::new(idx);
         } else {
-            self.wall[pos] = WallIdxPP::default();
+            self.wall[pos] = WallIdxPp::default();
         }
 
         for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
@@ -66,7 +66,7 @@ impl EditingMap {
                 }
             });
 
-            let wallpp = WallIdxPP::with_piece_pattern(
+            let wallpp = WallIdxPp::with_piece_pattern(
                 wall_idx,
                 ppf.to_piece_pattern(wall_obj.img.n_pattern),
             );
@@ -96,7 +96,7 @@ impl EditingMap {
     }
 
     pub fn erase_layer(&mut self, pos: Vec2d, layer: usize) {
-        self.tile[pos][layer] = TileIdxPP::default();
+        self.tile[pos][layer] = TileIdxPp::default();
     }
 
     pub fn tile_layer_draw(&mut self, pos: Vec2d, new_tile_idx: TileIdx, layer: usize) {
@@ -108,7 +108,7 @@ impl EditingMap {
                     true
                 }
             };
-            let mut piece_pattern_flags = PiecePatternFlags::new();
+            let mut piece_pattern_flags = PiecePatternFlags::default();
             for dir in &Direction::EIGHT_DIRS {
                 piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
             }
@@ -116,7 +116,7 @@ impl EditingMap {
             piece_pattern_flags.to_piece_pattern(tile_obj.img.n_pattern)
         };
 
-        self.tile[pos][layer] = TileIdxPP::with_piece_pattern(new_tile_idx, piece_pattern);
+        self.tile[pos][layer] = TileIdxPp::with_piece_pattern(new_tile_idx, piece_pattern);
     }
 
     pub fn resize(&mut self, new_w: u32, new_h: u32, offset_x: i32, offset_y: i32) {
@@ -130,7 +130,7 @@ impl EditingMap {
         self.tile = tile;
         let wall = self
             .wall
-            .clip_with_default(top_left, bottom_right, WallIdxPP::default());
+            .clip_with_default(top_left, bottom_right, WallIdxPp::default());
         self.wall = wall;
         let deco = self.deco.clip_with_default(top_left, bottom_right, None);
         self.deco = deco;
@@ -179,7 +179,7 @@ impl EditingMap {
             }
         }
         // Create converted wall map
-        let mut wall_map = Array2d::new(self.width, self.height, ConvertedIdxPP::default());
+        let mut wall_map = Array2d::new(self.width, self.height, ConvertedIdxPp::default());
         for (pos, wall) in self.wall.iter_with_idx() {
             wall_map[pos] = wall.conv_into(&wall_table);
         }
@@ -264,7 +264,7 @@ impl From<MapTemplateObject> for EditingMap {
         }
 
         for (pos, c) in obj.wall.iter_with_idx() {
-            map.wall[pos] = WallIdxPP::conv_from(*c, &obj.wall_table);
+            map.wall[pos] = WallIdxPp::conv_from(*c, &obj.wall_table);
         }
 
         for (pos, i) in obj.deco.iter_with_idx() {

@@ -2,7 +2,7 @@ use crate::config::{INPUT_CFG, UI_CFG};
 use crate::game::command::KeyState;
 use crate::game::Command;
 use geom::*;
-use sdl2;
+
 use sdl2::event::Event;
 use sdl2::joystick::Joystick;
 use sdl2::keyboard::Keycode;

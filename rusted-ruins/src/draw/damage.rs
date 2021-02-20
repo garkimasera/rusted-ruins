@@ -3,19 +3,19 @@ use crate::chara_log::CharaLogDamage;
 use crate::config::UI_CFG;
 use crate::context::*;
 use common::gobj;
-use common::objholder::UIImgIdx;
+use common::objholder::UiImgIdx;
 use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 
 struct DigitDrawInfo {
-    idx: UIImgIdx,
+    idx: UiImgIdx,
     digit_w: i32,
     digit_h: i32,
 }
 
 impl DigitDrawInfo {
     fn init() -> DigitDrawInfo {
-        let idx: UIImgIdx = gobj::id_to_idx("!numbers-damage");
+        let idx: UiImgIdx = gobj::id_to_idx("!numbers-damage");
         let obj = gobj::get_obj(idx);
         DigitDrawInfo {
             idx,
@@ -25,7 +25,7 @@ impl DigitDrawInfo {
     }
 }
 
-static DIGIT_DRAW_INFO: Lazy<DigitDrawInfo> = Lazy::new(|| DigitDrawInfo::init());
+static DIGIT_DRAW_INFO: Lazy<DigitDrawInfo> = Lazy::new(DigitDrawInfo::init);
 
 impl MainWinDrawer {
     pub fn draw_damage(&self, context: &mut Context) {

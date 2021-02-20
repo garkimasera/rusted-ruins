@@ -229,7 +229,6 @@ fn random_walk(
         }
     } else {
         lattice.end = room;
-        return;
     }
 }
 
@@ -253,7 +252,7 @@ impl std::fmt::Display for Lattice {
                     }
                 }
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
             if j != self.ny - 1 {
                 for i in 0..self.nx {
                     if self.ns_open[(i, j)] {
@@ -265,7 +264,7 @@ impl std::fmt::Display for Lattice {
                         write!(f, "#")?;
                     }
                 }
-                write!(f, "\n")?;
+                writeln!(f)?;
             }
         }
 
