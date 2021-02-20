@@ -1,5 +1,4 @@
 mod attack;
-mod deed;
 mod range;
 mod recover;
 mod skill_learn;
@@ -80,9 +79,6 @@ pub fn do_effect<T: Into<Target>>(
                 for pos in &tiles {
                     crate::game::map::wall_damage::wall_damage(game, *pos, power);
                 }
-            }
-            EffectKind::Deed => {
-                self::deed::use_deed(game);
             }
             EffectKind::SkillLearning { skills } => {
                 for cid in &cids {

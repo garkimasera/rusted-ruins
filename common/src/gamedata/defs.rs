@@ -98,6 +98,7 @@ pub enum ToolEffect {
 pub enum UseEffect {
     Effect(Effect),
     Deed,
+    Seed { plant: String },
 }
 
 /// Reward for quests or events

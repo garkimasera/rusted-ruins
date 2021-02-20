@@ -53,7 +53,6 @@ pub enum EffectKind {
     WallDamage,
     CharaScan,
     SkillLearning { skills: Vec<SkillKind> },
-    Deed,
 }
 
 impl Default for EffectKind {
