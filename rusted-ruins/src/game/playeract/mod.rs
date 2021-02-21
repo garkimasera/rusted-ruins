@@ -5,7 +5,7 @@ mod use_tool;
 
 use super::{Game, UiRequest};
 use crate::game::extrait::*;
-use crate::game::target::auto_target_for_player;
+use crate::game::target::{auto_target_for_player, Target};
 use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
 use common::objholder::ItemIdx;
@@ -114,7 +114,24 @@ impl<'a> DoPlayerAction<'a> {
 
     /// Use one item
     pub fn use_item(&mut self, il: ItemLocation) {
-        super::action::use_item::use_item(self.0, il, CharaId::Player);
+        let item_obj = self.gd().get_item(il).0.obj();
+        let target = if let Some(UseEffect::Effect(effect)) = item_obj.use_effect.as_ref() {
+            if let Ok(Some(target)) = auto_target_for_player(self.0, effect) {
+                target
+            } else {
+                self.0.ui_request.push_back(UiRequest::StartTargeting {
+                    effect: effect.clone(),
+                    callback: Box::new(move |pa, target| {
+                        super::action::use_item::use_item(pa.0, il, CharaId::Player, target);
+                        pa.0.finish_player_turn();
+                    }),
+                });
+                return;
+            }
+        } else {
+            Target::None
+        };
+        super::action::use_item::use_item(self.0, il, CharaId::Player, target);
         self.0.finish_player_turn();
     }
 

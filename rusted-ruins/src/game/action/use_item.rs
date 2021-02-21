@@ -4,7 +4,7 @@ use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
 
-pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
+pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let item = game.gd.get_item(il);
     let item_obj = gobj::get_obj(item.0.idx);
 
@@ -12,23 +12,17 @@ pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 
     match use_effect {
         UseEffect::Effect(effect) => {
-            /* let mut effect = effect.clone();
+            let mut effect = effect.clone();
             for effect_kind in &mut effect.kind {
-                match effect_kind {
-                    EffectKind::SkillLearning { skills } => {
-                        for attr in &item.0.attributes {
-                            match attr {
-                                ItemAttribute::SkillLearning(skill_kind) => {
-                                    skills.push(*skill_kind);
-                                }
-                                _ => (),
-                            }
+                if let EffectKind::SkillLearning { skills } = effect_kind {
+                    for attr in &item.0.attrs {
+                        if let ItemAttr::SkillLearning(skill_kind) = attr {
+                            skills.push(*skill_kind);
                         }
                     }
-                    _ => (),
                 }
-            }*/
-            do_effect(game, &effect, Some(cid), Target::None, 1.0, 1.0);
+            }
+            do_effect(game, &effect, Some(cid), target, 1.0, 1.0);
         }
         UseEffect::Deed => {
             if use_deed(game) {

@@ -4,6 +4,7 @@ use common::gamedata::*;
 
 pub fn skill_learn(game: &mut Game, cid: CharaId, skills: &[SkillKind]) {
     let gd = &mut game.gd;
+
     for skill_kind in skills {
         let skill_kind = *skill_kind;
         let chara = gd.chara.get_mut(cid);
