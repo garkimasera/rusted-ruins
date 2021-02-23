@@ -2,7 +2,7 @@ use super::DoPlayerAction;
 use common::gamedata::*;
 use rules::RULES;
 
-impl<'a> DoPlayerAction<'a> {
+impl<'a, 's> DoPlayerAction<'a, 's> {
     pub fn restart(&mut self) {
         let gd = self.gd_mut();
         let player = gd.chara.get_mut(CharaId::Player);

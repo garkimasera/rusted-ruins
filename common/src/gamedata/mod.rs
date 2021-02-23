@@ -60,6 +60,12 @@ pub struct GameData {
     current_mapid: MapId,
 }
 
+impl Default for GameData {
+    fn default() -> Self {
+        GameData::empty()
+    }
+}
+
 impl GameData {
     pub fn empty() -> GameData {
         GameData {

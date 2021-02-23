@@ -46,6 +46,9 @@ path = "../rules"
 [dependencies.rusted-ruins-map-generator]
 path = "../map-generator"
 
+[dependencies.rusted-ruins-script]
+path = "../script"
+
 [dependencies.sdl2]
 version = "0.34"
 default-features = false

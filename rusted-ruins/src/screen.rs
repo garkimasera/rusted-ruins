@@ -48,14 +48,18 @@ impl Screen {
         }
     }
 
-    pub fn main_loop(&mut self, sdl_context: &crate::SdlContext) {
+    pub fn main_loop(
+        &mut self,
+        sdl_context: &crate::SdlContext,
+        se: rusted_ruins_script::ScriptEngine,
+    ) {
         let fps_duration = Duration::from_millis(1000 / 30);
         let mut event_pump = sdl_context.sdl_context.event_pump().unwrap();
         let mut prev_instant = Instant::now();
         let mut after_redraw_instant;
         let mut is_skip_next_frame = false;
         let texture_creator = self.canvas.texture_creator();
-        let mut window_manager = WindowManager::new(sdl_context, &texture_creator);
+        let mut window_manager = WindowManager::new(sdl_context, &texture_creator, se);
 
         'mainloop: loop {
             self.event_handler.update(&event_pump);

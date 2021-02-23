@@ -5,7 +5,7 @@ use crate::text::ToText;
 use common::gamedata::*;
 use geom::*;
 
-impl<'a> DoPlayerAction<'a> {
+impl<'a, 's> DoPlayerAction<'a, 's> {
     pub fn try_move(&mut self, dir: Direction) {
         let dest_tile = self
             .gd()

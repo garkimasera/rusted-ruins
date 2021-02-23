@@ -11,4 +11,5 @@ members = [
     "rng",
     "rules",
     "rusted-ruins",
+    "script",
 ]

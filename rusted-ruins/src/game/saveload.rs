@@ -5,7 +5,7 @@ use common::gamedata::GameData;
 use std::fs;
 use std::path::PathBuf;
 
-impl Game {
+impl<'s> Game<'s> {
     pub fn save_file(&self) {
         let save_dir = get_save_dir();
 

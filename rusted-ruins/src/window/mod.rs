@@ -147,8 +147,9 @@ impl WindowManageMode {
 }
 
 /// Manage all windows
-pub struct WindowManager<'sdl, 't> {
-    game: Game,
+pub struct WindowManager<'sdl, 't, 's> {
+    game: Game<'s>,
+    se: rusted_ruins_script::ScriptEngine<'s>,
     mode: WindowManageMode,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
@@ -157,18 +158,20 @@ pub struct WindowManager<'sdl, 't> {
     window_stack: Vec<Box<dyn DialogWindow>>,
 }
 
-impl<'sdl, 't> WindowManager<'sdl, 't> {
+impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
     pub fn new(
         sdl_context: &'sdl SdlContext,
         texture_creator: &'t TextureCreator<WindowContext>,
-    ) -> WindowManager<'sdl, 't> {
-        let game = Game::empty();
+        se: rusted_ruins_script::ScriptEngine<'s>,
+    ) -> WindowManager<'sdl, 't, 's> {
+        let game = Game::empty(se.clone());
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let mut window_stack: Vec<Box<dyn DialogWindow>> = Vec::new();
         window_stack.push(Box::new(start_window::StartDialog::new()));
 
         WindowManager {
             game,
+            se,
             mode: WindowManageMode::Start(start_window::StartWindow::new()),
             sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
@@ -560,7 +563,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                        let game = Game::new(*gd);
+                        let game = Game::new(*gd, self.se.clone());
                         self.game = game;
                         self.game.update_before_player_turn();
                         game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
@@ -575,7 +578,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     self.window_stack.clear();
                     self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                    let game = Game::new(*gd);
+                    let game = Game::new(*gd, self.se.clone());
                     self.game = game;
                     self.game.update_before_player_turn();
                     self.game.start_new_game();

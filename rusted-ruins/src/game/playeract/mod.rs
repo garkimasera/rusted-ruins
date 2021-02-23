@@ -13,10 +13,10 @@ use geom::*;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
-pub struct DoPlayerAction<'a>(pub(super) &'a mut Game);
+pub struct DoPlayerAction<'a, 's>(pub(super) &'a mut Game<'s>);
 
-impl<'a> DoPlayerAction<'a> {
-    pub fn new(game: &'a mut Game) -> DoPlayerAction<'a> {
+impl<'a, 's> DoPlayerAction<'a, 's> {
+    pub fn new(game: &'a mut Game<'s>) -> DoPlayerAction<'a, 's> {
         DoPlayerAction(game)
     }
 

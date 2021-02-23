@@ -53,7 +53,7 @@ pub enum GameState {
 
 /// Holds all game state.
 /// The difference to GameData is that Game includes temporary data in this process.
-pub struct Game {
+pub struct Game<'s> {
     pub gd: GameData,
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
@@ -61,6 +61,7 @@ pub struct Game {
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,
     script: Option<ScriptEngine>,
+    se: rusted_ruins_script::ScriptEngine<'s>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
     save_dir: Option<PathBuf>,
@@ -68,8 +69,8 @@ pub struct Game {
     pub frequent_tex: self::frequent_tex::FrequentTextures,
 }
 
-impl Game {
-    pub fn new(gd: GameData) -> Game {
+impl<'s> Game<'s> {
+    pub fn new(gd: GameData, se: rusted_ruins_script::ScriptEngine<'s>) -> Game<'s> {
         let save_dir = self::saveload::get_each_save_dir(&gd);
 
         rng::reseed(crate::config::CONFIG.fix_rand);
@@ -82,6 +83,7 @@ impl Game {
             dialog_open_request: None,
             ui_request: VecDeque::new(),
             script: None,
+            se,
             target_chara: None,
             save_dir: Some(save_dir),
             view_map: view::ViewMap::new(),
@@ -90,7 +92,7 @@ impl Game {
     }
 
     /// Create empty Game. This is used before starting actual gameplay.
-    pub fn empty() -> Game {
+    pub fn empty(se: rusted_ruins_script::ScriptEngine<'s>) -> Game<'s> {
         Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
@@ -99,6 +101,7 @@ impl Game {
             dialog_open_request: None,
             ui_request: VecDeque::new(),
             script: None,
+            se,
             target_chara: None,
             save_dir: None,
             view_map: view::ViewMap::new(),
