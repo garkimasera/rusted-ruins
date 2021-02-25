@@ -9,7 +9,7 @@ use std::path::Path;
 
 static FIRST_LINE: Lazy<Regex> = Lazy::new(|| Regex::new("# rusted-ruins-script").unwrap());
 static ID_LINE: Lazy<Regex> =
-    Lazy::new(|| Regex::new("# id = \"([a-zA-Z][a-zA-Z0-9_.-]*)\"").unwrap());
+    Lazy::new(|| Regex::new("# id = \"([a-zA-Z!][a-zA-Z0-9_.-]*)\"").unwrap());
 
 /// Read python script file
 pub fn read_pyscript<P: AsRef<Path>>(path: P) -> Result<Object> {

@@ -104,6 +104,16 @@ impl GameData {
             .sum()
     }
 
+    /// Get the number of specified item player has by id
+    fn has_item_by_id(&self, id: &str) -> Option<u32> {
+        let idx: ItemIdx = if let Some(idx) = gobj::id_to_idx_checked(id) {
+            idx
+        } else {
+            return None;
+        };
+        Some(self.has_item(idx))
+    }
+
     /// Get the item location of specified item
     fn search_item(&self, idx: ItemIdx) -> Vec<ItemLocation> {
         let ill = ItemListLocation::Chara {

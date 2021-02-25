@@ -91,6 +91,11 @@ mod _rr {
     }
 
     #[pyfunction]
+    fn has_item(id: PyStrRef) -> u32 {
+        with_gd(|gd| call_game_method!(has_item)(gd, id.as_ref()).unwrap_or(0))
+    }
+
+    #[pyfunction]
     fn gen_dungeons() {
         with_gd_mut(|gd| call_game_method!(gen_dungeons)(gd))
     }
@@ -108,5 +113,14 @@ mod _rr {
     #[pyfunction]
     fn receive_money(amount: u32) {
         with_gd_mut(|gd| call_game_method!(receive_money)(gd, amount))
+    }
+
+    #[pyfunction]
+    fn remove_item(id: PyStrRef, n: u32, vm: &VirtualMachine) -> PyResult<()> {
+        with_gd_mut(|gd| {
+            call_game_method!(remove_item)(gd, id.as_ref(), n)
+                .map_err(|_| vm.new_value_error("remove item failed".into()))?;
+            Ok(())
+        })
     }
 }
