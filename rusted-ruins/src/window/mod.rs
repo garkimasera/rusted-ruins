@@ -41,6 +41,7 @@ use crate::game::{Command, DoPlayerAction, GameState, InfoGetter, UiRequest};
 use crate::SdlContext;
 use common::gamedata::*;
 use geom::*;
+use script::ScriptEngine;
 use sdl2::keyboard::TextInputUtil;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
@@ -149,7 +150,7 @@ impl WindowManageMode {
 /// Manage all windows
 pub struct WindowManager<'sdl, 't, 's> {
     game: Game<'s>,
-    se: rusted_ruins_script::ScriptEngine<'s>,
+    se: ScriptEngine<'s>,
     mode: WindowManageMode,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
@@ -162,7 +163,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
     pub fn new(
         sdl_context: &'sdl SdlContext,
         texture_creator: &'t TextureCreator<WindowContext>,
-        se: rusted_ruins_script::ScriptEngine<'s>,
+        se: ScriptEngine<'s>,
     ) -> WindowManager<'sdl, 't, 's> {
         let game = Game::empty(se.clone());
         let sdl_values = SdlValues::new(sdl_context, texture_creator);

@@ -9,7 +9,6 @@ pub mod damage;
 mod debug_command;
 mod dungeon_gen;
 pub mod effect;
-mod eval_expr;
 pub mod frequent_tex;
 mod infogetter;
 pub mod item;
@@ -20,7 +19,8 @@ pub mod playeract;
 pub mod quest;
 mod region;
 pub mod saveload;
-mod script;
+pub mod script_exec;
+pub mod script_methods;
 pub mod shop;
 pub mod site;
 mod skill;
@@ -34,13 +34,14 @@ pub use self::animation::Animation;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::playeract::DoPlayerAction;
-pub use self::script::TalkText;
-use self::script::*;
+// pub use self::script::TalkText;
+// use self::script::*;
 pub use self::target::Target;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ScriptIdx;
 use geom::Vec2d;
+use script::{ScriptEngine, TalkText};
 use std::collections::VecDeque;
 use std::path::PathBuf;
 
@@ -60,8 +61,7 @@ pub struct Game<'s> {
     destroy_anim_queued: bool,
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,
-    script: Option<ScriptEngine>,
-    se: rusted_ruins_script::ScriptEngine<'s>,
+    se: ScriptEngine<'s>,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
     save_dir: Option<PathBuf>,
@@ -70,7 +70,7 @@ pub struct Game<'s> {
 }
 
 impl<'s> Game<'s> {
-    pub fn new(gd: GameData, se: rusted_ruins_script::ScriptEngine<'s>) -> Game<'s> {
+    pub fn new(gd: GameData, se: ScriptEngine<'s>) -> Game<'s> {
         let save_dir = self::saveload::get_each_save_dir(&gd);
 
         rng::reseed(crate::config::CONFIG.fix_rand);
@@ -82,7 +82,6 @@ impl<'s> Game<'s> {
             destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
-            script: None,
             se,
             target_chara: None,
             save_dir: Some(save_dir),
@@ -92,7 +91,7 @@ impl<'s> Game<'s> {
     }
 
     /// Create empty Game. This is used before starting actual gameplay.
-    pub fn empty(se: rusted_ruins_script::ScriptEngine<'s>) -> Game<'s> {
+    pub fn empty(se: ScriptEngine<'s>) -> Game<'s> {
         Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
@@ -100,7 +99,6 @@ impl<'s> Game<'s> {
             destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
-            script: None,
             se,
             target_chara: None,
             save_dir: None,
@@ -151,50 +149,6 @@ impl<'s> Game<'s> {
             std::mem::replace(&mut self.dialog_open_request, None)
         } else {
             None
-        }
-    }
-
-    pub fn start_script(&mut self, id: &str, cid: Option<CharaId>) {
-        self.script = Some(ScriptEngine::new(id, cid));
-        self.advance_script(None);
-    }
-
-    /// Advance current script.
-    /// When called by advance_talk, give player's choice.
-    pub fn advance_script(&mut self, choice: Option<Option<u32>>) -> AdvanceScriptResult {
-        let script = self
-            .script
-            .as_mut()
-            .expect("advance_script() when script is None");
-        let result = if let Some(choice) = choice {
-            script.continue_talk(&mut self.gd, choice)
-        } else {
-            script.exec(&mut self.gd)
-        };
-
-        match result {
-            ExecResult::Quit => {
-                self.script = None;
-                AdvanceScriptResult::Quit
-            }
-            ExecResult::Talk(cid, talk_text, need_open_talk_dialog) => {
-                if need_open_talk_dialog {
-                    self.request_dialog_open(DialogOpenRequest::Talk { cid, talk_text });
-                }
-                AdvanceScriptResult::UpdateTalkText(talk_text)
-            }
-            ExecResult::ShopBuy(cid) => {
-                self.request_dialog_open(DialogOpenRequest::ShopBuy { cid });
-                AdvanceScriptResult::Continue
-            }
-            ExecResult::ShopSell => {
-                self.request_dialog_open(DialogOpenRequest::ShopSell);
-                AdvanceScriptResult::Continue
-            }
-            ExecResult::Quest => {
-                self.request_dialog_open(DialogOpenRequest::Quest);
-                AdvanceScriptResult::Continue
-            }
         }
     }
 
@@ -271,12 +225,6 @@ pub enum UiRequest {
         effect: Effect,
         callback: Box<dyn Fn(&mut DoPlayerAction, self::target::Target) + 'static>,
     },
-}
-
-pub enum AdvanceScriptResult {
-    Continue,
-    UpdateTalkText(TalkText),
-    Quit,
 }
 
 pub mod extrait {

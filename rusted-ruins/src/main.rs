@@ -38,6 +38,8 @@ fn main() {
     let sdl_context = SdlContext::init();
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
 
+    // Script engine initialization
+    crate::game::script_methods::init();
     script::enter(|se| {
         screen.main_loop(&sdl_context, se);
     });

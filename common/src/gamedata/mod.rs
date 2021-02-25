@@ -10,6 +10,7 @@ pub mod meta;
 pub mod player;
 pub mod quest;
 pub mod region;
+pub mod script_exec;
 pub mod settings;
 pub mod shop;
 pub mod site;
@@ -33,6 +34,7 @@ pub use self::meta::*;
 pub use self::player::*;
 pub use self::quest::*;
 pub use self::region::*;
+pub use self::script_exec::*;
 pub use self::settings::*;
 pub use self::shop::*;
 pub use self::site::*;
@@ -56,6 +58,7 @@ pub struct GameData {
     pub vars: Variables,
     pub faction: Faction,
     pub learned_recipes: LearnedRecipes,
+    pub script_exec: ScriptExec,
     pub settings: Settings,
     current_mapid: MapId,
 }
@@ -77,6 +80,7 @@ impl GameData {
             quest: QuestHolder::default(),
             vars: Variables::default(),
             faction: Faction::default(),
+            script_exec: ScriptExec::default(),
             settings: Settings::new(),
             learned_recipes: LearnedRecipes::default(),
             current_mapid: MapId::default(),

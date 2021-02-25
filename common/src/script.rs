@@ -162,13 +162,6 @@ impl<'a> Index<&'a ScriptPos> for Script {
     }
 }
 
-/// Object that include script data.
-#[derive(Serialize, Deserialize)]
-pub struct ScriptObject {
-    pub id: String,
-    pub script: Script,
-}
-
 #[derive(Clone, Debug)]
 pub struct ScriptParseError {
     description: String,

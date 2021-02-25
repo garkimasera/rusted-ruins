@@ -5,8 +5,9 @@ use super::read_window;
 use super::status_window;
 use super::talk_window;
 use super::DialogWindow;
-use crate::game::{DialogOpenRequest, Game, TalkText};
+use crate::game::{DialogOpenRequest, Game};
 use common::gamedata::CharaId;
+use script::TalkText;
 
 pub fn create_dialog_from_request(
     req: DialogOpenRequest,

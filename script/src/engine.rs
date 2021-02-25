@@ -1,6 +1,8 @@
 use crate::{Error, ScriptYield};
 use common::gamedata::GameData;
+use common::obj::ScriptObject;
 use rustpython_vm as vm;
+use vm::{InitParameter, PySettings};
 
 #[derive(Clone)]
 pub struct ScriptEngine<'a> {
@@ -9,18 +11,25 @@ pub struct ScriptEngine<'a> {
 }
 
 pub fn enter<F: FnOnce(ScriptEngine) -> R, R>(f: F) -> R {
-    vm::Interpreter::default().enter(|vm| {
+    vm::Interpreter::new_with_init(PySettings::default(), |vm| {
+        vm.add_native_module("rr".into(), Box::new(crate::rr::make_module));
+        InitParameter::Internal
+    })
+    .enter(|vm| {
         let script_engine = ScriptEngine { vm, scope: None };
         f(script_engine)
     })
 }
 
 impl<'a> ScriptEngine<'a> {
-    pub fn start(&mut self, input: &str, name: &str) -> Result<(), Error> {
-        let scope = self.vm.new_scope_with_builtins();
+    pub fn start(&mut self, script_obj: &ScriptObject, name: &str) -> Result<(), Error> {
+        self.start_with_input(&script_obj.script, name)
+    }
 
-        // Add gamedata functions
-        crate::gamedata::add_fns(self.vm, &scope).map_err(|e| Error::from_py(self.vm, e))?;
+    pub fn start_with_input(&mut self, input: &str, name: &str) -> Result<(), Error> {
+        info!("start script {}", name);
+        assert!(!self.during_exec());
+        let scope = self.vm.new_scope_with_builtins();
 
         // Add codes to execute script
         let script_yield_defs = vm::py_compile!(file = "python/script_yield.py");
@@ -37,7 +46,7 @@ impl<'a> ScriptEngine<'a> {
             .map_err(|e| Error::from_py(self.vm, e))?;
 
         let start = self.vm.compile(
-            "_rrscript_gen = rrscript_main()",
+            "_rrscript_gen = rr_main()",
             vm::compile::Mode::Single,
             "<rrscript_gen>".into(),
         )?;
@@ -52,7 +61,12 @@ impl<'a> ScriptEngine<'a> {
 
     pub fn next(&mut self, gd: &mut GameData) -> Result<Option<ScriptYield>, Error> {
         let scope = self.scope.as_ref().expect("called run() before start()");
-        let result = crate::gamedata::enter(gd, || crate::run::run(self.vm, scope))?;
+        let result = crate::gamedata::enter(gd, || crate::run::run(self.vm, scope));
+
+        if result.is_err() {
+            self.scope = None;
+        }
+        let result = result?;
 
         if result.is_none() {
             self.scope = None;
@@ -60,30 +74,8 @@ impl<'a> ScriptEngine<'a> {
 
         Ok(result)
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use common::gamedata::GameData;
-    use common::script::Value;
-
-    #[test]
-    fn start_test() {
-        enter(|mut se| {
-            let input = r#"
-def rrscript_main():
-    a = get_gvar("test0")
-    set_gvar("test1", a + 12)
-    yield ScriptYield.quest()
-    return
-"#;
-            let mut gd = common::gamedata::GameData::default();
-            gd.vars.set_global_var("test0", Value::Int(30));
-            se.start(input, "test1").unwrap();
-            assert_eq!(Some(ScriptYield::Quest), se.next(&mut gd).unwrap());
-            assert_eq!(None, se.next(&mut gd).unwrap());
-            assert_eq!(Some(&Value::Int(42)), gd.vars.global_var("test1"));
-        });
+    pub fn during_exec(&self) -> bool {
+        self.scope.is_some()
     }
 }

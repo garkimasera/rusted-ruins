@@ -430,7 +430,8 @@ impl DialogWindow for ItemWindow {
         } else {
             None
         };
-        check_escape_click!(self, command);
+
+        check_escape_click!(self, command, self.mode.is_main_mode());
 
         match command {
             Command::ItemInfomation => {

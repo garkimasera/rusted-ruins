@@ -1,6 +1,6 @@
 use crate::dir;
 use crate::error::*;
-use crate::rrscript::read_rrscript;
+use crate::pyscript::read_pyscript;
 use crate::verbose::print_verbose;
 use anyhow::*;
 use common::obj::Object;
@@ -24,8 +24,8 @@ pub fn compile(files: &[&str], output_file: &str) {
             dir::set_src_dir(None);
         }
 
-        let read_result = if Some(true) == f.extension().map(|e| e == "rrscript") {
-            read_rrscript(f)
+        let read_result = if Some(true) == f.extension().map(|e| e == "py") {
+            read_pyscript(f)
         } else {
             read_input_file(f)
         };

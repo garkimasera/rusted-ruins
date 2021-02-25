@@ -13,5 +13,5 @@ pub enum ScriptYield {
 pub struct TalkText {
     pub text_id: String,
     #[serde(default)]
-    pub choices: Vec<(String, String)>,
+    pub choices: Vec<String>,
 }

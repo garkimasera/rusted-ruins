@@ -11,7 +11,7 @@ mod buildobj;
 mod compile;
 mod dir;
 mod error;
-mod rrscript;
+mod pyscript;
 
 fn main() {
     let matches = create_matches();

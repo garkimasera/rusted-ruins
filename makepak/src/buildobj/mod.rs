@@ -1,7 +1,5 @@
-mod expr_parser;
 mod img;
 mod item;
-mod script_parser;
 
 use self::img::*;
 use self::item::build_item_object;
@@ -10,7 +8,6 @@ use anyhow::*;
 use common::gamedata::CharaBaseAttr;
 use common::obj::*;
 use geom::Vec2d;
-pub use script_parser::parse as script_parse;
 
 pub fn build_object(input: Input) -> Result<Object, Error> {
     let object_type = input.object_type.clone();
@@ -169,11 +166,10 @@ fn build_region_gen_object(input: Input) -> Result<RegionGenObject, Error> {
 
 fn build_script_object(input: Input) -> Result<ScriptObject, Error> {
     let s = get_optional_field!(input, script);
-    let script = script_parse(&s.script)?;
 
     Ok(ScriptObject {
         id: input.id,
-        script,
+        script: s.script,
     })
 }
 

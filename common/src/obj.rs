@@ -47,6 +47,14 @@ pub struct EffectImgObject {
     pub img: Img,
 }
 
+/// Object that include script data.
+#[derive(Serialize, Deserialize)]
+pub struct ScriptObject {
+    pub id: String,
+    pub script: String,
+    // pub byte_code: Option<Vec<u8>>,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct SpecialTileObject {
     pub id: String,
@@ -135,7 +143,6 @@ pub struct Icon {
 
 pub use crate::maptemplate::MapTemplateObject;
 pub use crate::regiongen::RegionGenObject;
-pub use crate::script::ScriptObject;
 pub use crate::sitegen::SiteGenObject;
 
 macro_rules! impl_object {

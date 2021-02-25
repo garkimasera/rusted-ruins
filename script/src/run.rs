@@ -10,7 +10,7 @@ pub fn run(vm: &vm::VirtualMachine, scope: &Scope) -> Result<Option<ScriptYield>
         "<get_next>".into(),
     )?;
 
-    match vm.run_code_obj(code_obj.clone(), scope.clone()) {
+    match vm.run_code_obj(code_obj, scope.clone()) {
         Ok(output) => {
             if vm.is_none(&output) {
                 return Ok(None);

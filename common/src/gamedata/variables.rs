@@ -1,16 +1,24 @@
 use crate::hashmap::HashMap;
-use crate::script::Value;
 
-/// Holds variables which are referenced in scripts
+/// Value is used to be stored in Variable.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum Value {
+    Bool(bool),
+    Int(i64),
+}
+
+/// Stores variables which are referenced in scripts
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Variables {
     global: HashMap<String, Value>,
+    local: HashMap<(String, String), Value>,
 }
 
 impl Default for Variables {
     fn default() -> Self {
         Variables {
             global: HashMap::default(),
+            local: HashMap::default(),
         }
     }
 }
@@ -31,9 +39,19 @@ impl Variables {
         self.global.insert(name.to_string(), v);
     }
 
-    /// Set special named variable "$?".
-    /// This special variable is used for the result of the last instruction.
-    pub fn set_last_result(&mut self, v: Value) {
-        self.global.insert("?".to_owned(), v);
+    /// Get local named variable
+    pub fn local_var(&self, script_id: &str, name: &str) -> Option<&Value> {
+        self.local.get(&(script_id.to_owned(), name.to_owned()))
+    }
+
+    /// Get local named variable (mutable)
+    pub fn local_mut(&mut self, script_id: &str, name: &str) -> Option<&mut Value> {
+        self.local.get_mut(&(script_id.to_owned(), name.to_owned()))
+    }
+
+    /// Get local named variable
+    pub fn set_local_var<S1: ToString, S2: ToString>(&mut self, script_id: S1, name: S2, v: Value) {
+        self.local
+            .insert((script_id.to_string(), name.to_string()), v);
     }
 }

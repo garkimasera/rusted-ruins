@@ -1,15 +1,19 @@
-use common::gamedata::GameData;
-use common::script::Value;
-use once_cell::unsync::Lazy;
+//! Management codes for GameData
+
+use common::gamedata::{GameData, Value};
+use once_cell::sync::Lazy;
+use once_cell::unsync::Lazy as UnsyncLazy;
 use rustpython_vm as vm;
 use std::cell::RefCell;
-use vm::builtins::{PyInt, PyNone, PyStrRef};
-use vm::pyobject::{ItemProtocol, PyObjectRef, PyValue};
-use vm::scope::Scope;
+use std::convert::TryInto;
+use std::sync::RwLock;
+use vm::builtins::PyInt;
+use vm::pyobject::{BorrowValue, IntoPyObject, PyObjectRef, PyResult};
 use vm::VirtualMachine;
 
 thread_local!(
-    static GAME_DATA: Lazy<RefCell<Option<GameData>>> = Lazy::new(|| RefCell::new(None));
+    static GAME_DATA: UnsyncLazy<RefCell<Option<GameData>>> =
+        UnsyncLazy::new(|| RefCell::new(None));
 );
 
 pub fn enter<F, R>(gd: &mut GameData, f: F) -> R
@@ -28,52 +32,14 @@ where
     result.unwrap()
 }
 
-macro_rules! add_fn {
-    ($vm:expr, $scope:expr, $f:ident) => {
-        $scope.globals.set_item(
-            stringify!($f),
-            $vm.ctx.new_function(stringify!($f), $f),
-            $vm,
-        )
-    };
-}
-
-pub fn add_fns(vm: &VirtualMachine, scope: &Scope) -> vm::pyobject::PyResult<()> {
-    let game_data_defs = vm::py_compile!(file = "python/gamedata.py");
-    let game_data_defs = vm.new_code_object(game_data_defs);
-    vm.run_code_obj(game_data_defs, scope.clone())?;
-
-    add_fn!(vm, scope, get_gvar)?;
-    add_fn!(vm, scope, set_gvar_int)?;
-    Ok(())
-}
-
-fn set_gvar_int(name: PyStrRef, value: i32) {
-    with_gd_mut(|gd| gd.vars.set_global_var(name, Value::Int(value)));
-}
-
-fn get_gvar(name: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
-    if let Some(value) = with_gd(|gd| gd.vars.global_var(name.as_ref()).cloned()) {
-        match value {
-            Value::Int(value) => {
-                let value: PyInt = value.into();
-                value.into_object(vm)
-            }
-            _ => todo!(),
-        }
-    } else {
-        PyNone.into_object(vm)
-    }
-}
-
-fn with_gd<F, R>(f: F) -> R
+pub fn with_gd<F, R>(f: F) -> R
 where
     F: FnOnce(&GameData) -> R,
 {
     GAME_DATA.with(|static_gd| f(static_gd.borrow().as_ref().expect("GAME_DATA is not set")))
 }
 
-fn with_gd_mut<F, R>(f: F) -> R
+pub fn with_gd_mut<F, R>(f: F) -> R
 where
     F: FnOnce(&mut GameData) -> R,
 {
@@ -83,4 +49,46 @@ where
             .as_mut()
             .expect("GAME_DATA is not set"))
     })
+}
+
+pub fn value_to_py(vm: &VirtualMachine, value: Value) -> PyObjectRef {
+    match value {
+        Value::Bool(value) => value.into_pyobject(vm),
+        Value::Int(value) => value.into_pyobject(vm),
+    }
+}
+
+pub fn py_to_value(vm: &VirtualMachine, pyvalue: PyObjectRef) -> PyResult<Value> {
+    let value = if let Some(i) = pyvalue.payload::<PyInt>() {
+        let i: i64 = i.borrow_value().try_into().unwrap();
+        Value::Int(i)
+    } else {
+        return Err(vm.new_type_error(format!("invalid type value \"{}\" for set_gvar", pyvalue)));
+    };
+    Ok(value)
+}
+
+pub(crate) static GAME_METHODS: Lazy<RwLock<Option<GameMethods>>> = Lazy::new(|| RwLock::new(None));
+
+pub fn set_game_methods(game_methods: GameMethods) {
+    *GAME_METHODS.write().unwrap() = Some(game_methods);
+}
+
+/// Game methods usable from scripts.
+pub struct GameMethods {
+    pub gen_dungeons: fn(&mut GameData),
+    pub receive_quest_rewards: fn(&mut GameData) -> bool,
+    pub receive_item: fn(&mut GameData, &str, u32),
+    pub receive_money: fn(&mut GameData, u32),
+}
+
+macro_rules! call_game_method {
+    ($name:ident) => {
+        ($crate::gamedata::GAME_METHODS
+            .read()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .$name)
+    };
 }

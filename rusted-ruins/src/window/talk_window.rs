@@ -5,10 +5,11 @@ use super::widget::*;
 use super::winpos::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
-use crate::game::{AdvanceScriptResult, TalkText};
+use crate::game::script_exec::AdvanceScriptResult;
 use crate::text;
 use common::basic::TILE_SIZE;
 use common::objholder::CharaTemplateIdx;
+use script::TalkText;
 
 pub struct TalkWindow {
     rect: Rect,
@@ -42,7 +43,7 @@ impl TalkWindow {
         };
         let mut talk_window = TalkWindow {
             rect,
-            talk_text,
+            talk_text: talk_text.clone(),
             label,
             image_window,
             msg_text: MsgText::default(),
@@ -54,19 +55,24 @@ impl TalkWindow {
 
     fn update_page(&mut self, talk_text: Option<TalkText>) {
         if let Some(talk_text) = talk_text {
-            self.talk_text = talk_text;
             self.msg_text = MsgText::new(&*talk_text.text_id);
             self.choose_win = None;
+            self.talk_text = talk_text;
         }
 
         // Create answers
         if self.msg_text.is_final_page() {
-            if let Some(choices) = self.talk_text.choices {
+            if !self.talk_text.choices.is_empty() {
                 let winpos = WindowPos::new(
                     WindowHPos::RightX(self.rect.right()),
                     WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs),
                 );
-                let choices: Vec<String> = choices.iter().map(|a| text::talk_txt(&*a.0)).collect();
+                let choices: Vec<String> = self
+                    .talk_text
+                    .choices
+                    .iter()
+                    .map(|a| text::talk_txt(&*a))
+                    .collect();
                 self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
             }
         }

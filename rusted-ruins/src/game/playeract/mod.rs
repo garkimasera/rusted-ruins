@@ -5,8 +5,9 @@ mod use_tool;
 
 use super::{Game, UiRequest};
 use crate::game::extrait::*;
+use crate::game::script_exec::AdvanceScriptResult;
 use crate::game::target::{auto_target_for_player, Target};
-use crate::game::{AdvanceScriptResult, DialogOpenRequest, InfoGetter};
+use crate::game::{DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
 use common::objholder::ItemIdx;
 use geom::*;
@@ -234,7 +235,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     /// Advance current talk. Give player's choice if the talk has choices.
     /// If returns new text, continue talk dialog.
     pub fn advance_talk(&mut self, choice: Option<u32>) -> AdvanceScriptResult {
-        self.0.advance_script(Some(choice))
+        self.0.advance_script(choice)
     }
 
     /// Shotcut to Game::advance_talk
