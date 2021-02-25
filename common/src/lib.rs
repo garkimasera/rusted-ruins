@@ -26,5 +26,4 @@ pub mod pakutil;
 pub mod piece_pattern;
 pub mod regiongen;
 pub mod saveload;
-pub mod script;
 pub mod sitegen;
