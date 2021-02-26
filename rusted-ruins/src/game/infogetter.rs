@@ -106,11 +106,7 @@ impl GameData {
 
     /// Get the number of specified item player has by id
     fn has_item_by_id(&self, id: &str) -> Option<u32> {
-        let idx: ItemIdx = if let Some(idx) = gobj::id_to_idx_checked(id) {
-            idx
-        } else {
-            return None;
-        };
+        let idx: ItemIdx = gobj::id_to_idx_checked(id)?;
         Some(self.has_item(idx))
     }
 

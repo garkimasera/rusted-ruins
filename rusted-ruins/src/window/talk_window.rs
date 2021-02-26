@@ -61,20 +61,18 @@ impl TalkWindow {
         }
 
         // Create answers
-        if self.msg_text.is_final_page() {
-            if !self.talk_text.choices.is_empty() {
-                let winpos = WindowPos::new(
-                    WindowHPos::RightX(self.rect.right()),
-                    WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs),
-                );
-                let choices: Vec<String> = self
-                    .talk_text
-                    .choices
-                    .iter()
-                    .map(|a| text::talk_txt(&*a))
-                    .collect();
-                self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
-            }
+        if self.msg_text.is_final_page() && !self.talk_text.choices.is_empty() {
+            let winpos = WindowPos::new(
+                WindowHPos::RightX(self.rect.right()),
+                WindowVPos::TopMargin(self.rect.bottom() + UI_CFG.gap_len_between_dialogs),
+            );
+            let choices: Vec<String> = self
+                .talk_text
+                .choices
+                .iter()
+                .map(|a| text::talk_txt(&*a))
+                .collect();
+            self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
         }
 
         self.label.set_text(self.msg_text.text());

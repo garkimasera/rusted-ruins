@@ -111,18 +111,15 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
     }
 
     if let Some(&ItemObjAttr::Plant {
-        reset_time_hours, ..
+        reset_time_hours: Some(reset_time_hours),
+        ..
     }) = item_obj
         .attrs
         .iter()
         .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
     {
-        if let Some(reset_time_hours) = reset_time_hours {
-            let new_remaining = Duration::from_hours(reset_time_hours.into());
-            gd.get_item_mut(il).0.reset_time(new_remaining);
-        } else {
-            gd.remove_item(il, 1);
-        }
+        let new_remaining = Duration::from_hours(reset_time_hours.into());
+        gd.get_item_mut(il).0.reset_time(new_remaining);
     } else {
         gd.remove_item(il, 1);
     }
