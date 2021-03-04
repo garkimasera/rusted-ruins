@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 thiserror = "1"
-rustpython-vm = { git = "https://github.com/RustPython/RustPython.git" }
+rustpython-vm = { git = "https://github.com/RustPython/RustPython.git", rev = "bc3cc3679c9a53b8a6aa40243d18c604ead47d98" }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
