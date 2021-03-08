@@ -68,6 +68,7 @@ pub struct TileObject {
     pub img: Img,
     pub kind: TileKind,
     pub symbol_color: (u8, u8, u8),
+    pub fertility: u8,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]

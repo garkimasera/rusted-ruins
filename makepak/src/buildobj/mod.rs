@@ -73,6 +73,7 @@ fn build_tile_object(input: Input) -> Result<TileObject, Error> {
         img,
         kind: tile_dep_input.kind,
         symbol_color: imgdata.calc_average_color(),
+        fertility: tile_dep_input.fertility,
     })
 }
 

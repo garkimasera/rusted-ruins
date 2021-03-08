@@ -92,6 +92,8 @@ pub struct CharaTemplateDepInput {
 #[serde(deny_unknown_fields)]
 pub struct TileDepInput {
     pub kind: ::common::obj::TileKind,
+    #[serde(default)]
+    pub fertility: u8,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
