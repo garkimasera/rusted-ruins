@@ -243,6 +243,7 @@ define_skill_kind! {
         MagicDevice, "magic_device",
         Mining, "mining",
         Plants, "plants",
+        Animal, "animal",
     }
     melee_weapon_kind = 0x0400;
     {

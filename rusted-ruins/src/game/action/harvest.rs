@@ -86,11 +86,16 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
         return;
     }
     let harvest = item_obj.harvest.as_ref().unwrap();
+    let skill_level = gd.chara.get(cid).skills.get(harvest.kind.related_skill());
 
     for item in &harvest.item {
         let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
         let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
-        let n_yield = item.1;
+        let n_yield = if harvest.difficulty < skill_level {
+            item.1
+        } else {
+            std::cmp::min(item.2, item.1 + skill_level - harvest.difficulty)
+        };
 
         match harvest.kind {
             HarvestKind::Chop => {

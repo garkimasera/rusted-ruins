@@ -1,6 +1,7 @@
 //! Miscellaneous type definitions
 
 use crate::gamedata::effect::Effect;
+use crate::gamedata::skill::SkillKind;
 use crate::objholder::ItemIdx;
 use std::ops::{Index, IndexMut};
 
@@ -112,15 +113,27 @@ pub struct Reward {
 pub struct Harvest {
     pub kind: HarvestKind,
     /// item id and yield
-    pub item: Vec<(String, u32)>,
+    pub item: Vec<(String, u32, u32)>,
     pub difficulty: u32,
 }
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum HarvestKind {
     Animal,
     Chop,
     Deconstruct,
     Plant,
     Mine,
+}
+
+impl HarvestKind {
+    pub fn related_skill(self) -> SkillKind {
+        match self {
+            HarvestKind::Animal => SkillKind::Animal,
+            HarvestKind::Chop => SkillKind::Plants,
+            HarvestKind::Deconstruct => SkillKind::Construction,
+            HarvestKind::Plant => SkillKind::Plants,
+            HarvestKind::Mine => SkillKind::Mining,
+        }
+    }
 }
