@@ -10,7 +10,7 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
     let item = gd.get_item(il).0;
     let item_idx = item.idx;
 
-    if item.compare_time() == Some(false) {
+    if item.remaining().map(|remaining| remaining.is_zero()) == Some(false) {
         game_log_i!("harvest-plant-not-ready"; item=item);
         return false;
     }

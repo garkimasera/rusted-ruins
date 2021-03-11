@@ -147,6 +147,10 @@ impl Duration {
     pub const fn as_hours(self) -> i32 {
         (self.0 / SECS_PER_HOUR) as i32
     }
+
+    pub fn is_zero(self) -> bool {
+        self.0 == 0
+    }
 }
 
 #[derive(Debug)]

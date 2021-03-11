@@ -23,7 +23,6 @@ impl Item {
     }
 
     fn img_variation(&self) -> u32 {
-        let current_time = crate::game::time::current_time();
         let obj = self.obj();
 
         match obj.img.variation_rule {
@@ -39,15 +38,12 @@ impl Item {
                 }
             }
             ImgVariationRule::Growing => {
-                let (last_updated, remaining) = if let Some(&ItemAttr::Time {
-                    last_updated,
-                    remaining,
-                }) = self
+                let remaining = if let Some(&ItemAttr::Time { remaining, .. }) = self
                     .attrs
                     .iter()
                     .find(|attr| matches!(attr, ItemAttr::Time { .. }))
                 {
-                    (last_updated, remaining)
+                    remaining
                 } else {
                     return 0;
                 };
@@ -63,12 +59,10 @@ impl Item {
                     return 0;
                 };
 
-                let i_pattern = if current_time >= last_updated + remaining || growing_time == 0 {
+                let i_pattern = if remaining.is_zero() || growing_time == 0 {
                     obj.img.n_pattern - 1
                 } else {
-                    let new_remaining =
-                        remaining.as_secs() + last_updated.as_secs() - current_time.as_secs();
-                    ((obj.img.n_pattern as u64) * new_remaining / growing_time) as u32
+                    ((obj.img.n_pattern as u64) * remaining.as_secs() / growing_time) as u32
                 };
                 i_pattern
             }
@@ -190,18 +184,11 @@ impl Item {
     }
 
     /// Compare Time attribute and current time. Returns Some(true) if current time >= Time attr.
-    fn compare_time(&self) -> Option<bool> {
-        let current_time = crate::game::time::current_time();
-        self.attrs
-            .iter()
-            .find_map(|attr| match *attr {
-                ItemAttr::Time {
-                    last_updated,
-                    remaining,
-                } => Some(last_updated + remaining),
-                _ => None,
-            })
-            .map(|t| current_time >= t)
+    fn remaining(&self) -> Option<Duration> {
+        self.attrs.iter().find_map(|attr| match *attr {
+            ItemAttr::Time { remaining, .. } => Some(remaining),
+            _ => None,
+        })
     }
 
     /// Reset Time attribute.
