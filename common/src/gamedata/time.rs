@@ -151,6 +151,18 @@ impl Duration {
     pub fn is_zero(self) -> bool {
         self.0 == 0
     }
+
+    pub fn days(self) -> u64 {
+        self.0 / SECS_PER_DAY
+    }
+
+    pub fn hours(self) -> u64 {
+        self.0 / SECS_PER_HOUR
+    }
+
+    pub fn minutes(self) -> u64 {
+        self.0 / SECS_PER_MIN
+    }
 }
 
 #[derive(Debug)]

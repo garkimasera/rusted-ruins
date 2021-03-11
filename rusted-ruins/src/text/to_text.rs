@@ -52,6 +52,21 @@ impl ToText for Item {
             text.push_str(&format!(" ({})", super::prefix::material(material_name)))
         }
 
+        if let Some(remaining) = self.remaining() {
+            let days = remaining.days();
+            let hours = remaining.hours();
+            let s = if days > 0 {
+                format!("{} days", days)
+            } else if hours > 0 {
+                format!("{} hours", hours)
+            } else {
+                let minutes = (remaining.minutes() / 10 + 1) * 10;
+                format!("{} minutes", minutes)
+            };
+
+            text.push_str(&format!(" (remaining: {})", &s));
+        }
+
         let quality = self.quality.as_int();
 
         if quality > 0 {
