@@ -3,6 +3,7 @@ pub mod gen;
 pub mod info;
 pub mod merged;
 pub mod throw;
+pub mod time;
 
 use crate::context::IconIdx;
 use common::gamedata::*;
@@ -189,6 +190,27 @@ impl Item {
             ItemAttr::Time { remaining, .. } => Some(remaining),
             _ => None,
         })
+    }
+
+    /// Update Time attribute
+    fn update_time(&mut self) {
+        crate::game::time::current_time();
+        if let Some(&mut ItemAttr::Time {
+            ref mut last_updated,
+            ref mut remaining,
+        }) = self
+            .attrs
+            .iter_mut()
+            .find(|attr| matches!(attr, ItemAttr::Time { .. }))
+        {
+            let current_time = crate::game::time::current_time();
+            let since_last_updated = current_time.duration_from(*last_updated);
+            *last_updated = current_time;
+            let new_remaining = remaining
+                .as_secs()
+                .saturating_sub(since_last_updated.as_secs());
+            *remaining = Duration::from_seconds(new_remaining);
+        }
     }
 
     /// Reset Time attribute.

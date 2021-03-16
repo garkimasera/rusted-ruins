@@ -28,8 +28,25 @@ pub fn advance_game_time(game: &mut Game, advanced_clock: u32) {
     const AVERAGE_CLOCK_PER_TURN: u32 = WAIT_TIME_NUMERATOR / 100;
     let advanced_secs =
         minutes_per_turn * 60.0 * advanced_clock as f32 / AVERAGE_CLOCK_PER_TURN as f32;
+    let before = game.gd.time.current_time();
     game.gd.time.advance(advanced_secs as u64);
-    *CURRENT_TIME.lock().unwrap() = game.gd.time.current_time();
+    let now = game.gd.time.current_time();
+    *CURRENT_TIME.lock().unwrap() = now;
+
+    // Update checks
+    let before = before.into_date();
+    let now = now.into_date();
+
+    // 10 minutes
+    if before.minute / 10 != now.minute / 10 {
+        info!("time update process (10 minutes)");
+        crate::game::item::time::update_item_time(&mut game.gd);
+    }
+
+    // day
+    if before.day != now.day {
+        info!("time update process (day)");
+    }
 }
 
 pub fn update_time(game: &mut Game) {
