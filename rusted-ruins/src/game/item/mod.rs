@@ -39,12 +39,8 @@ impl Item {
                 }
             }
             ImgVariationRule::Growing => {
-                let remaining = if let Some(&ItemAttr::Time { remaining, .. }) = self
-                    .attrs
-                    .iter()
-                    .find(|attr| matches!(attr, ItemAttr::Time { .. }))
-                {
-                    remaining
+                let remaining = if let Some(time) = self.time.as_ref() {
+                    time.remaining
                 } else {
                     return 0;
                 };
@@ -189,22 +185,16 @@ impl Item {
 
     /// Compare Time attribute and current time. Returns Some(true) if current time >= Time attr.
     fn remaining(&self) -> Option<Duration> {
-        self.attrs.iter().find_map(|attr| match *attr {
-            ItemAttr::Time { remaining, .. } => Some(remaining),
-            _ => None,
-        })
+        self.time.map(|time| time.remaining)
     }
 
     /// Update Time attribute
     fn update_time(&mut self) {
         crate::game::time::current_time();
-        if let Some(&mut ItemAttr::Time {
+        if let Some(&mut ItemTime {
             ref mut last_updated,
             ref mut remaining,
-        }) = self
-            .attrs
-            .iter_mut()
-            .find(|attr| matches!(attr, ItemAttr::Time { .. }))
+        }) = self.time.as_mut()
         {
             let current_time = crate::game::time::current_time();
             let since_last_updated = current_time.duration_from(*last_updated);
@@ -219,18 +209,15 @@ impl Item {
     /// Reset Time attribute.
     fn reset_time(&mut self, new_remaining: Duration) {
         let current_time = crate::game::time::current_time();
-        if let Some(&mut ItemAttr::Time {
+        if let Some(&mut ItemTime {
             ref mut last_updated,
             ref mut remaining,
-        }) = self
-            .attrs
-            .iter_mut()
-            .find(|attr| matches!(attr, ItemAttr::Time { .. }))
+        }) = self.time.as_mut()
         {
             *last_updated = current_time;
             *remaining = new_remaining;
         } else {
-            self.attrs.push(ItemAttr::Time {
+            self.time = Some(ItemTime {
                 last_updated: current_time,
                 remaining: new_remaining,
             });

@@ -1,12 +1,12 @@
 use super::defs::*;
 use super::effect::Effect;
 use super::item_attr::*;
+use super::skill::WeaponKind;
+use super::time::{Duration, Time};
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
 use std::cmp::{Ord, Ordering, PartialOrd};
-
-use super::skill::WeaponKind;
 
 /// Game item
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -16,6 +16,14 @@ pub struct Item {
     pub flags: ItemFlags,
     pub quality: ItemQuality,
     pub attrs: Vec<ItemAttr>,
+    pub time: Option<ItemTime>,
+}
+
+/// Time management data for item.
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct ItemTime {
+    pub remaining: Duration,
+    pub last_updated: Time,
 }
 
 /// ItemObject has detail data for one item

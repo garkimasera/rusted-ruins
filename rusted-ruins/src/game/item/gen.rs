@@ -124,6 +124,7 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         kind: item_obj.kind,
         quality: ItemQuality::default(),
         attrs: vec![],
+        time: None,
     };
 
     // Set image variation.
@@ -171,7 +172,7 @@ fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
     let last_updated = crate::game::time::current_time();
     item.flags |= ItemFlags::PLANT;
     let elapsed_time: u64 = rng::gen_range(0..=growing_time_hours).into();
-    item.attrs.push(ItemAttr::Time {
+    item.time = Some(ItemTime {
         last_updated,
         remaining: Duration::from_seconds(elapsed_time * SECS_PER_HOUR),
     });

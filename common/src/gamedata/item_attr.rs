@@ -22,11 +22,6 @@ pub enum ItemObjAttr {
 pub enum ItemAttr {
     /// Image variation
     ImageVariation(u32),
-    /// Time management data
-    Time {
-        remaining: Duration,
-        last_updated: Time,
-    },
     /// Number of charges
     Charge { n: u32 },
     /// Data to generate the contents.

@@ -74,6 +74,7 @@ pub fn finish_creation(
         kind: item_obj.kind,
         quality: ItemQuality::default(),
         attrs: vec![],
+        time: None,
     };
     if let Some(material) = material {
         item.attrs.push(ItemAttr::Material(material));
