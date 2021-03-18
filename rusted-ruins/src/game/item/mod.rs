@@ -62,8 +62,11 @@ impl Item {
 
                 let i_pattern = if remaining.is_zero() || growing_time == 0 {
                     obj.img.n_pattern - 1
+                } else if remaining.as_secs() >= growing_time {
+                    0
                 } else {
-                    ((obj.img.n_pattern as u64) * remaining.as_secs() / growing_time) as u32
+                    let passed_time = growing_time - remaining.as_secs();
+                    ((obj.img.n_pattern as u64 - 1) * passed_time / growing_time) as u32
                 };
                 i_pattern
             }
