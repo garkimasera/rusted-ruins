@@ -36,7 +36,12 @@ pub fn id_to_idx<T: ObjectIndex + Default>(id: &str) -> T {
 }
 
 pub fn id_to_idx_checked<T: ObjectIndex>(id: &str) -> Option<T> {
-    T::search_idx(id, &OBJ_HOLDER)
+    if let Some(idx) = T::search_idx(id, &OBJ_HOLDER) {
+        Some(idx)
+    } else {
+        warn!("unknown id \"{}\" for {}", id, std::any::type_name::<T>());
+        None
+    }
 }
 
 pub fn idx_to_id<T: ObjectIndex>(idx: T) -> &'static str {
@@ -53,7 +58,12 @@ pub fn get_by_id<T: FromId>(id: &str) -> &'static T {
 }
 
 pub fn get_by_id_checked<T: FromId>(id: &str) -> Option<&'static T> {
-    T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER)
+    if let Some(obj) = T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER) {
+        Some(obj)
+    } else {
+        warn!("unknown id \"{}\" for {}", id, std::any::type_name::<T>());
+        None
+    }
 }
 
 // serde_with implementaion
