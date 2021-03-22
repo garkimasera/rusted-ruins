@@ -359,6 +359,12 @@ impl Map {
         debug_assert!(removed_cid == cid);
     }
 
+    /// Set tile. If layer is None, set to the last element of layers default.
+    #[cfg(feature = "global_state_obj")]
+    pub fn set_tile(&mut self, pos: Vec2d, tile_idx: TileIdx, layer: Option<usize>) {
+        self.tile[pos].tile[layer.unwrap_or(N_TILE_IMG_LAYER - 1)] = TileIdxPp::new(tile_idx);
+    }
+
     /// Set wall and wall hp to given pos
     #[cfg(feature = "global_state_obj")]
     pub fn set_wall(&mut self, pos: Vec2d, wall_idx: WallIdx) {

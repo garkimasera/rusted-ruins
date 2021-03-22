@@ -11,6 +11,7 @@ use crate::game::target::Target;
 use crate::game::{Animation, Game, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
+use common::objholder::TileIdx;
 use geom::*;
 
 pub fn do_effect<T: Into<Target>>(
@@ -83,6 +84,15 @@ pub fn do_effect<T: Into<Target>>(
             EffectKind::SkillLearning { skills } => {
                 for cid in &cids {
                     self::skill_learn::skill_learn(game, *cid, skills);
+                }
+            }
+            EffectKind::PlaceTile { tile } => {
+                if let Some(tile_idx) = gobj::id_to_idx_checked::<TileIdx>(&tile) {
+                    let map = game.gd.get_current_map_mut();
+
+                    for &pos in &tiles {
+                        map.set_tile(pos, tile_idx, None);
+                    }
                 }
             }
             other => {
