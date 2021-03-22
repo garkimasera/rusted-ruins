@@ -85,7 +85,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     /// Throw one item
     pub fn throw_item(&mut self, il: ItemLocation) {
         let effect = crate::game::item::throw::item_to_throw_effect(self.gd(), il, CharaId::Player);
-        let target = if let Ok(Some(target)) = auto_target_for_player(self.0, &effect) {
+        let target = if let Some(target) = auto_target_for_player(self.0, &effect) {
             target
         } else {
             self.0.ui_request.push_back(UiRequest::StartTargeting {
@@ -117,7 +117,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     pub fn use_item(&mut self, il: ItemLocation) {
         let item_obj = self.gd().get_item(il).0.obj();
         let target = if let Some(UseEffect::Effect(effect)) = item_obj.use_effect.as_ref() {
-            if let Ok(Some(target)) = auto_target_for_player(self.0, effect) {
+            if let Some(target) = auto_target_for_player(self.0, effect) {
                 target
             } else {
                 self.0.ui_request.push_back(UiRequest::StartTargeting {
@@ -164,7 +164,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
             error!("release item that doesn't have effect");
             return;
         };
-        let target = if let Ok(Some(target)) = auto_target_for_player(self.0, effect) {
+        let target = if let Some(target) = auto_target_for_player(self.0, effect) {
             target
         } else {
             self.0.ui_request.push_back(UiRequest::StartTargeting {

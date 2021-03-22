@@ -66,6 +66,7 @@ impl Default for EffectKind {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum TargetMode {
     None,
+    Player,
     Enemy,
     Ally,
 }

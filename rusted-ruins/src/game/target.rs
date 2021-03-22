@@ -34,16 +34,17 @@ impl From<CharaId> for Target {
 //     todo!();
 // }
 
-pub fn auto_target_for_player(game: &Game, effect: &Effect) -> Result<Option<Target>, ()> {
+pub fn auto_target_for_player(game: &Game, effect: &Effect) -> Option<Target> {
     match effect.target_mode {
-        TargetMode::Ally => Err(()),
+        TargetMode::None => Some(Target::None),
+        TargetMode::Player => Some(Target::Chara(CharaId::Player)),
+        TargetMode::Ally => None,
         TargetMode::Enemy => {
             if let Some(target) = game.target_chara() {
-                Ok(Some(target.into()))
+                Some(target.into())
             } else {
-                Err(())
+                None
             }
         }
-        TargetMode::None => Ok(Some(Target::None)),
     }
 }
