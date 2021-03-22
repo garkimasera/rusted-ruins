@@ -221,8 +221,12 @@ impl MainWinDrawer {
 
         if let Some(t) = di.tile {
             // Draw tile
-            for tile_idxpp in t.iter() {
-                let idx = tile_idxpp.idx().unwrap();
+            for tile_idxpp in t.0.iter() {
+                let idx = if let Some(idx) = tile_idxpp.idx() {
+                    idx
+                } else {
+                    continue;
+                };
                 let obj = gobj::get_obj(idx);
                 let tex = context.sv.tex().get(idx);
                 self.draw_pieces(context.canvas, tex, obj, p, tile_idxpp.piece_pattern());

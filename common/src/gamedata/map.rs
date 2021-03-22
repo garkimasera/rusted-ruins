@@ -31,8 +31,6 @@ pub struct Map {
     pub music: String,
 }
 
-pub type TileArray = ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]>;
-
 /// Represents tile image layers
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct TileLayers(pub [TileIdxPp; N_TILE_IMG_LAYER]);
@@ -63,26 +61,6 @@ impl Index<usize> for TileLayers {
 impl IndexMut<usize> for TileLayers {
     fn index_mut(&mut self, index: usize) -> &mut TileIdxPp {
         &mut self.0[index]
-    }
-}
-
-impl From<TileIdx> for TileArray {
-    fn from(idx: TileIdx) -> TileArray {
-        let mut v = ArrayVec::new();
-        v.push(TileIdxPp::new(idx));
-        v
-    }
-}
-
-impl From<TileLayers> for TileArray {
-    fn from(tile_layers: TileLayers) -> Self {
-        let mut v = ArrayVec::new();
-        for idxpp in &tile_layers.0 {
-            if !idxpp.is_empty() {
-                v.push(*idxpp);
-            }
-        }
-        v
     }
 }
 
@@ -151,7 +129,7 @@ pub const FLOOR_OUTSIDE: u32 = 0xFFFFFFFF;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TileInfo {
     /// Base tile
-    pub tile: TileArray,
+    pub tile: TileLayers,
     /// If wall is presented, the tile is no walkable
     pub wall: WallIdxPp,
     /// Wall HP
@@ -178,7 +156,7 @@ pub struct ObservedTileInfo {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct OutsideTileInfo {
-    pub tile: ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]>,
+    pub tile: TileLayers,
     pub wall: Option<WallIdx>,
 }
 
@@ -214,7 +192,7 @@ pub enum Destination {
 impl Default for TileInfo {
     fn default() -> TileInfo {
         TileInfo {
-            tile: ArrayVec::new(),
+            tile: TileLayers::default(),
             wall: WallIdxPp::default(),
             wall_hp: 0,
             deco: None,
@@ -227,8 +205,8 @@ impl Default for TileInfo {
 
 impl TileInfo {
     pub fn main_tile(&self) -> TileIdx {
-        if let Some(idxpp) = self.tile.iter().last() {
-            idxpp.idx().expect("TileInfo::tile has empty tile")
+        if let Some(idx) = self.tile.0.iter().filter_map(|idxpp| idxpp.idx()).last() {
+            idx
         } else {
             warn!("Every tile layer is empty. Use default index.");
             TileIdx::default()
@@ -416,7 +394,7 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &ArrayVec<[TileIdxPp; N_TILE_IMG_LAYER]> {
+    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &TileLayers {
         if self.is_inside(pos) {
             return &self.tile[pos].tile;
         }

@@ -73,7 +73,7 @@ fn get_biome(
     let mut biome = None;
     let mut sub_biome = vec![];
 
-    for tile_idx in tile_info.tile.iter().filter_map(|tile| tile.idx()) {
+    for tile_idx in tile_info.tile.0.iter().filter_map(|tile| tile.idx()) {
         let tile_id = gobj::idx_to_id(tile_idx);
         let biome_name = if let Some(biome_name) = to_biome_name(tile_id) {
             biome_name

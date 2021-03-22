@@ -9,7 +9,7 @@ use geom::*;
 /// "Background" means that they are drawed behind any characters
 #[derive(Default)]
 pub struct BackgroundDrawInfo<'a> {
-    pub tile: Option<&'a TileArray>,
+    pub tile: Option<&'a TileLayers>,
     pub special: Option<SpecialTileIdx>,
 }
 
