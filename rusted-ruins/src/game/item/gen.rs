@@ -1,4 +1,3 @@
-use common::gamedata::time::SECS_PER_HOUR;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::ImgVariationRule;
@@ -172,10 +171,9 @@ fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
     let last_updated = crate::game::time::current_time();
     item.flags |= ItemFlags::PLANT;
     if growing_time_hours > 0 {
-        let elapsed_time: u64 = rng::gen_range(0..=growing_time_hours).into();
         item.time = Some(ItemTime {
             last_updated,
-            remaining: Duration::from_seconds(elapsed_time * SECS_PER_HOUR),
+            remaining: Duration::from_hours(growing_time_hours.into()).into(),
         });
     }
 }

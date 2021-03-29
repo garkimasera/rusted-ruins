@@ -6,7 +6,7 @@ mod skill_learn;
 pub use attack::weapon_to_effect;
 pub use range::*;
 
-use crate::game::extrait::CharaStatusOperation;
+use crate::game::extrait::*;
 use crate::game::target::Target;
 use crate::game::{Animation, Game, InfoGetter};
 use common::gamedata::*;
@@ -93,6 +93,12 @@ pub fn do_effect<T: Into<Target>>(
                     for &pos in &tiles {
                         map.set_tile(pos, tile_idx, None);
                     }
+                }
+            }
+            EffectKind::GenItem { id } => {
+                for pos in &tiles {
+                    let item = crate::game::item::gen::gen_item_from_id(id, 1);
+                    game.gd.add_item_on_tile(*pos, item, 1);
                 }
             }
             other => {

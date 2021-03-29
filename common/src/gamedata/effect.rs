@@ -54,6 +54,7 @@ pub enum EffectKind {
     CharaScan,
     SkillLearning { skills: Vec<SkillKind> },
     PlaceTile { tile: String },
+    GenItem { id: String },
 }
 
 impl Default for EffectKind {

@@ -1,4 +1,4 @@
-use crate::game::extrait::MapExt;
+use crate::game::extrait::*;
 use crate::game::map::builder::MapBuilder;
 use crate::game::InfoGetter;
 use common::gamedata::*;
@@ -31,7 +31,8 @@ pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
                 continue;
             }
 
-            let item = crate::game::item::gen::gen_item_from_idx(item_idx, 1);
+            let mut item = crate::game::item::gen::gen_item_from_idx(item_idx, 1);
+            item.randomize_time();
             let tile = &mut map.tile[pos];
 
             if tile.wall.is_empty() && tile.item_list.is_empty() {

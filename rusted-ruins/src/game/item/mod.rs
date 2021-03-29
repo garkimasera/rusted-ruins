@@ -206,6 +206,17 @@ impl Item {
         }
     }
 
+    /// Randomize remaining time
+    fn randomize_time(&mut self) {
+        if let Some(&mut ItemTime {
+            ref mut remaining, ..
+        }) = self.time.as_mut()
+        {
+            let new_remaining = rng::gen_range(0..=remaining.as_secs());
+            *remaining = Duration::from_seconds(new_remaining);
+        }
+    }
+
     /// Reset Time attribute.
     fn reset_time(&mut self, new_remaining: Duration) {
         let current_time = crate::game::time::current_time();
