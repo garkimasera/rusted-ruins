@@ -32,7 +32,7 @@ impl TileKind {
 #[derive(Clone)]
 pub enum Entrance {
     /// Tile position
-    Pos(ArrayVec<[Vec2d; 4]>),
+    Pos(ArrayVec<Vec2d, 4>),
     /// the later is for deeper floor
     Stairs(Vec2d, Option<Vec2d>),
 }

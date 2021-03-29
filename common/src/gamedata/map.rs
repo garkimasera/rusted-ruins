@@ -1,3 +1,4 @@
+use crate::basic::ARRAY_STR_ID_LEN;
 use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
 use crate::gamedata::chara::{Chara, CharaId};
 use crate::gamedata::item::{Item, ItemList};
@@ -18,7 +19,7 @@ pub struct Map {
     pub tile: Array2d<TileInfo>,
     pub observed_tile: Array2d<ObservedTileInfo>,
     pub player_pos: Vec2d,
-    pub entrance: ArrayVec<[Vec2d; 4]>,
+    pub entrance: ArrayVec<Vec2d, 4>,
     /// Characters on this map
     charaid: Vec<CharaId>,
     /// Character data on this map. The current map's charas are moved to CharaHolder temporary.
@@ -99,7 +100,7 @@ pub enum StairsKind {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct SiteSymbolKind(ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
+pub struct SiteSymbolKind(ArrayString<ARRAY_STR_ID_LEN>);
 
 impl From<&str> for SiteSymbolKind {
     fn from(kind: &str) -> Self {
@@ -150,7 +151,7 @@ pub struct ObservedTileInfo {
     pub tile: bool,
     pub wall: WallIdxPp,
     pub deco: Option<DecoIdx>,
-    pub items: ArrayVec<[(ItemIdx, u32); MAX_ITEM_FOR_DRAW]>,
+    pub items: ArrayVec<(ItemIdx, u32), MAX_ITEM_FOR_DRAW>,
     pub special: SpecialTileKind,
 }
 

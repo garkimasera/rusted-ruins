@@ -239,7 +239,7 @@ pub struct MapProperty {
     pub id: String,
     pub is_region_map: bool,
     pub boundary: MapTemplateBoundary,
-    pub entrance: ArrayVec<[Vec2d; 4]>,
+    pub entrance: ArrayVec<Vec2d, 4>,
     pub music: String,
 }
 

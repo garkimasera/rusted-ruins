@@ -6,6 +6,7 @@ use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::traits::*;
 use super::unknown_id_err;
+use crate::basic::ARRAY_STR_ID_LEN;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -30,7 +31,7 @@ pub struct CharaTemplateObject {
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct CharaClass(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
+pub struct CharaClass(arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
 
 impl CharaClass {
     pub fn as_str(&self) -> &str {
@@ -259,7 +260,7 @@ pub struct CharaAi {
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct NpcAiKind(arrayvec::ArrayString<[u8; crate::basic::ARRAY_STR_ID_LEN]>);
+pub struct NpcAiKind(arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
 
 impl Default for NpcAiKind {
     fn default() -> NpcAiKind {

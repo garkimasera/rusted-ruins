@@ -25,7 +25,7 @@ pub struct MapTemplateObject {
     pub deco_table: Vec<String>,
     pub deco: Array2d<Option<u32>>,
     pub boundary: MapTemplateBoundary,
-    pub entrance: ArrayVec<[Vec2d; 4]>,
+    pub entrance: ArrayVec<Vec2d, 4>,
     pub items: Vec<(Vec2d, ItemGen)>,
     #[serde(default)]
     pub music: String,
