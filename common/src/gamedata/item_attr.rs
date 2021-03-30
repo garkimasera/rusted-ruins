@@ -14,6 +14,9 @@ pub enum ItemObjAttr {
         growing_time_hours: u32,
         /// Reset time after harvesting. With None, the item is removed.
         reset_time_hours: Option<u32>,
+        /// Required tile fertility to grow.
+        #[serde(default)]
+        required_fertility: u8,
     },
 }
 

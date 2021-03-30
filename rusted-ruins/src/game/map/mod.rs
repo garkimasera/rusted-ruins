@@ -65,6 +65,19 @@ impl Map {
             }
         }
     }
+
+    fn tile_fertility(&self, pos: Vec2d) -> u8 {
+        if let Some(tile) = self.tile.get(pos) {
+            let mut fertility = 0u8;
+            for t in tile.tile.iter_idx() {
+                let tile_obj = gobj::get_obj(t);
+                fertility = fertility.saturating_add(tile_obj.fertility);
+            }
+            fertility
+        } else {
+            0
+        }
+    }
 }
 
 pub fn switch_map(game: &mut Game, destination: Destination) {

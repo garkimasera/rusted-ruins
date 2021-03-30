@@ -1,4 +1,5 @@
 mod attack;
+mod misc;
 mod range;
 mod recover;
 mod skill_learn;
@@ -97,8 +98,7 @@ pub fn do_effect<T: Into<Target>>(
             }
             EffectKind::GenItem { id } => {
                 for pos in &tiles {
-                    let item = crate::game::item::gen::gen_item_from_id(id, 1);
-                    game.gd.add_item_on_tile(*pos, item, 1);
+                    self::misc::gen_item(game, &id, *pos);
                 }
             }
             other => {

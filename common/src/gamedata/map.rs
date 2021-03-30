@@ -36,6 +36,12 @@ pub struct Map {
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct TileLayers(pub [TileIdxPp; N_TILE_IMG_LAYER]);
 
+impl TileLayers {
+    pub fn iter_idx(&self) -> impl Iterator<Item = TileIdx> + '_ {
+        self.0.iter().filter_map(|t| t.idx())
+    }
+}
+
 impl Default for TileLayers {
     fn default() -> TileLayers {
         let mut tile_layers = [TileIdxPp::default(); N_TILE_IMG_LAYER];
