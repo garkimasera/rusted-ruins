@@ -61,7 +61,7 @@ copyright = "2017, T. Okubo <t.okubo.rx78+devel@gmail.com>"
 license-file = ["../LICENSE", "0"]
 extended-description = """\
 Extensible open world rogue like game with pixel art."""
-depends = "$auto"
+depends = "libsdl2-2.0-0,libsdl2-image-2.0-0,libsdl2-mixer-2.0-0,libsdl2-ttf-2.0-0"
 section = "games"
 priority = "optional"
 assets = [
