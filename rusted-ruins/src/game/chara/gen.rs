@@ -4,7 +4,6 @@ use common::gamedata::*;
 use common::gobj;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
-use geom::Vec2d;
 use rng::gen_range;
 use rules::RULES;
 use std::collections::HashMap;
@@ -29,7 +28,10 @@ pub fn create_chara(
         item_list: ItemList::default(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_NUMERATOR,
-        ai: create_ai(ct.default_ai_kind),
+        ai: CharaAi {
+            kind: ct.default_ai_kind,
+            ..CharaAi::default()
+        },
         hp: 1,
         sp: RULES.chara.sp_default,
         morale: Morale::default(),
@@ -124,14 +126,6 @@ impl CalcLevelWeightDist {
                 a
             }
         }
-    }
-}
-
-/// Create AI parameters
-pub fn create_ai(ai_kind: NpcAiKind) -> CharaAi {
-    CharaAi {
-        kind: ai_kind,
-        initial_pos: Vec2d::new(0, 0),
     }
 }
 

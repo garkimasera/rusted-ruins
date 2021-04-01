@@ -253,8 +253,14 @@ pub enum CharaId {
 /// Data to determine NPC character's actions
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct CharaAi {
+    /// AI kind id.
     pub kind: NpcAiKind,
+    /// Used for some kind AI that try to return to the initial position.
     pub initial_pos: Vec2d,
+    /// Current NPC AI State.
+    pub state: AiState,
+    /// Target chara when combat.
+    pub target: Option<CharaId>,
 }
 
 /// Rough kind of NPC AI
@@ -273,7 +279,21 @@ impl Default for CharaAi {
         CharaAi {
             kind: NpcAiKind::default(),
             initial_pos: Vec2d::new(0, 0),
+            state: AiState::default(),
+            target: None,
         }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub enum AiState {
+    Normal,
+    Combat,
+}
+
+impl Default for AiState {
+    fn default() -> Self {
+        AiState::Normal
     }
 }
 
