@@ -4,7 +4,9 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+mod pathfinding;
 mod shape;
+pub use pathfinding::*;
 pub use shape::*;
 
 use std::fmt;

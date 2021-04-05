@@ -16,6 +16,7 @@ impl NpcAIs {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NpcAi {
     pub move_kind: MoveKind,
+    pub pathfinding_step: u32,
     #[serde(default)]
     pub walk_prob: f32,
 }

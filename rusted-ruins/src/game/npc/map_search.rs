@@ -1,8 +1,8 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
 use crate::game::InfoGetter;
+// use crate::game::extrait::MapExt;
 use common::gamedata::*;
-use geom::*;
 
 /// Search nearest other character from cid.
 /// If f() returns false, skip the character.
@@ -37,13 +37,4 @@ pub fn search_nearest_enemy(gd: &GameData, cid: CharaId) -> Option<CharaId> {
     search_nearest_chara(gd, cid, |gd, c0, c1| {
         gd.chara_relation(c0, c1) == Relationship::Hostile
     })
-}
-
-/// Returns direction to target chara
-pub fn dir_to_chara(gd: &GameData, cid: CharaId, pos: Vec2d) -> Direction {
-    if let Some(target_pos) = gd.chara_pos(cid) {
-        geom::dir_by_2pos(pos, target_pos)
-    } else {
-        Direction::NONE
-    }
 }

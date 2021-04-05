@@ -3,6 +3,7 @@
 pub mod map_search;
 
 use super::action;
+use super::extrait::MapExt;
 use super::{Game, InfoGetter};
 use common::gamedata::*;
 use geom::*;
@@ -18,7 +19,7 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
         MoveKind::NoMove => (),
         MoveKind::Melee => {
             if gen_range(0..3) == 0 {
-                move_to_nearest_enemy(game, cid);
+                move_to_nearest_enemy(game, cid, ai_rule);
             }
         }
         MoveKind::Wander => {
@@ -55,11 +56,31 @@ fn random_walk(game: &mut Game, cid: CharaId) {
 }
 
 /// Move npc to nearest enemy
-fn move_to_nearest_enemy(game: &mut Game, cid: CharaId) {
+fn move_to_nearest_enemy(game: &mut Game, cid: CharaId, ai_rule: &NpcAi) {
     if let Some(target) = map_search::search_nearest_enemy(&game.gd, cid) {
-        if let Some(pos) = game.gd.chara_pos(cid) {
-            let dir = map_search::dir_to_chara(&game.gd, target, pos);
-            action::try_move(game, cid, dir);
-        }
+        let dir = dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step)
+            .unwrap_or(Direction::NONE);
+        action::try_move(game, cid, dir);
     }
+}
+
+/// Returns direction to target chara
+fn dir_to_chara(
+    gd: &GameData,
+    cid: CharaId,
+    target: CharaId,
+    pathfinding_step: u32,
+) -> Option<Direction> {
+    let start_pos = gd.chara_pos(cid)?;
+    let target_pos = gd.chara_pos(target)?;
+    let map = gd.get_current_map();
+    let chara = gd.chara.get(cid);
+
+    let route = geom::PathFinding::new(map.w, map.h, pathfinding_step, |pos| {
+        map.is_passable(chara, pos)
+    })
+    .route(start_pos, target_pos);
+
+    let next_pos = route.and_then(|route| route.get(1).copied())?;
+    Some(geom::dir_by_2pos(start_pos, next_pos))
 }
