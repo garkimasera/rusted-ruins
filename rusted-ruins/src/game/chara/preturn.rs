@@ -1,13 +1,17 @@
 use super::Game;
 use crate::game::damage::*;
 use crate::game::extrait::*;
+use crate::text::ToText;
 use common::gamedata::*;
+use geom::MDistRangeIter;
 use rng::{get_rng, roll_dice, Rng};
 use rules::RULES;
 
 /// This function will be called before the character's turn
 ///
 pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
+    awake_other_npc(game, cid);
+
     let chara = game.gd.chara.get_mut(cid);
     chara.update();
 
@@ -104,4 +108,47 @@ fn can_act(chara: &Chara) -> bool {
         }
     }
     true
+}
+
+/// Awake enemy NPC to combat state.
+fn awake_other_npc(game: &mut Game, cid: CharaId) {
+    let center = if let Some(center) = game.gd.chara_pos(cid) {
+        center
+    } else {
+        return;
+    };
+    let detection = game.gd.chara.get(cid).skills.get(SkillKind::Detection);
+    let detection_range = RULES.combat.detection_range;
+    let detection_factor = RULES.combat.detection_factor;
+
+    for (distance, pos) in MDistRangeIter::new(center, detection_range) {
+        let map = game.gd.get_current_map();
+        if !map.is_inside(pos) {
+            continue;
+        }
+
+        let other_cid = if let Some(other_cid) = map.tile[pos].chara {
+            other_cid
+        } else {
+            continue;
+        };
+
+        if other_cid == cid
+            || other_cid == CharaId::Player
+            || game.gd.chara.get_mut(other_cid).ai.state == AiState::Combat
+            || game.gd.chara_relation(cid, other_cid) != Relationship::Hostile
+        {
+            continue;
+        }
+
+        let conceal = game.gd.chara.get(other_cid).skills.get(SkillKind::Conceal);
+        let distance_factor = 1.0 - (distance as f32 / detection_range as f32);
+        let p = (detection as f32 / conceal as f32) * distance_factor * detection_factor;
+
+        if p >= 1.0 || rng::gen_bool(p) {
+            let other_npc = game.gd.chara.get_mut(other_cid);
+            trace!("{:?} changed ai state to combat", other_npc.to_text());
+            other_npc.ai.state = AiState::Combat;
+        }
+    }
 }

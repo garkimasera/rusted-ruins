@@ -11,17 +11,19 @@ use rng::*;
 use rules::{npc_ai::*, RULES};
 
 pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
+    match game.gd.chara.get(cid).ai.state {
+        AiState::Normal => process_npc_turn_normal(game, cid),
+        AiState::Combat => process_npc_turn_combat(game, cid),
+    }
+}
+
+fn process_npc_turn_normal(game: &mut Game, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
 
     match ai_rule.move_kind {
         MoveKind::NoMove => (),
-        MoveKind::Melee => {
-            if gen_range(0..3) == 0 {
-                move_to_nearest_enemy(game, cid, ai_rule);
-            }
-        }
         MoveKind::Wander => {
             if gen_bool(ai_rule.walk_prob) {
                 random_walk(game, cid);
@@ -39,6 +41,16 @@ pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
                 random_walk(game, cid);
             }
         }
+    }
+}
+
+fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
+    let chara = game.gd.chara.get(cid);
+    let ai = &chara.ai;
+    let ai_rule = RULES.npc_ai.get(ai.kind);
+
+    if rng::gen_bool(ai_rule.approach_enemy_prob) {
+        move_to_nearest_enemy(game, cid, ai_rule);
     }
 }
 

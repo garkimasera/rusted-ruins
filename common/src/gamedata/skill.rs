@@ -239,6 +239,8 @@ define_skill_kind! {
         Endurance, "endurance",
         Evasion, "evasion",
         Healing, "healing",
+        Conceal, "conceal",
+        Detection, "detection",
         Throwing, "throwing",
         MagicDevice, "magic_device",
         Mining, "mining",

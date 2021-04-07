@@ -17,14 +17,17 @@ impl NpcAIs {
 pub struct NpcAi {
     pub move_kind: MoveKind,
     pub pathfinding_step: u32,
+    /// Probability of random walk when normal state.
     #[serde(default)]
     pub walk_prob: f32,
+    /// Probability of approaching to enemy when combat state.
+    #[serde(default)]
+    pub approach_enemy_prob: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum MoveKind {
     NoMove,
-    Melee,
     Wander,
     Return,
 }
