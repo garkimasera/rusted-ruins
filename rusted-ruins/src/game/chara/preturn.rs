@@ -150,5 +150,11 @@ fn awake_other_npc(game: &mut Game, cid: CharaId) {
             trace!("{:?} changed ai state to combat", other_npc.to_text());
             other_npc.ai.state = AiState::Combat;
         }
+
+        // Exp for conceal
+        let chara = game.gd.chara.get_mut(cid);
+        chara
+            .skills
+            .add_exp(SkillKind::Conceal, RULES.exp.conceal, detection);
     }
 }

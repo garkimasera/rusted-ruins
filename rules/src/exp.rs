@@ -9,6 +9,8 @@ pub struct Exp {
     pub base_factor: f32,
     /// Base exp to weapon skills after attacking
     pub attack: u32,
+    /// Base exp to Conceal skill
+    pub conceal: u32,
     /// Base exp to Endurance skill when attacked
     pub endurance: u32,
     /// Base exp to Evasion skill when attacked
