@@ -22,6 +22,7 @@ pub mod magic;
 pub mod map_gen;
 pub mod material;
 pub mod newgame;
+pub mod npc;
 pub mod npc_ai;
 pub mod params;
 pub mod quest;
@@ -55,6 +56,7 @@ pub struct Rules {
     pub magic: magic::Magic,
     pub material: material::Materials,
     pub newgame: newgame::NewGame,
+    pub npc: npc::Npc,
     pub npc_ai: npc_ai::NpcAIs,
     pub params: params::Params,
     pub quest: quest::Quest,
@@ -134,6 +136,7 @@ impl Rules {
             magic: read_from_dirs(&dirs, "magic.ron"),
             material: read_from_dirs(&dirs, "material.ron"),
             newgame: read_from_dirs(&dirs, "newgame.ron"),
+            npc: read_from_dirs(&dirs, "npc.ron"),
             npc_ai: read_from_dirs(&dirs, "npc_ai.ron"),
             params: read_from_dirs(&dirs, "params.ron"),
             quest: read_from_dirs(&dirs, "quest.ron"),

@@ -4,6 +4,7 @@ use crate::gamedata::chara::{Chara, CharaId};
 use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
 use crate::gamedata::site::{DungeonKind, SiteId};
+use crate::gamedata::time::Time;
 use crate::objholder::*;
 use arrayvec::{ArrayString, ArrayVec};
 use geom::*;
@@ -19,6 +20,7 @@ pub struct Map {
     pub tile: Array2d<TileInfo>,
     pub observed_tile: Array2d<ObservedTileInfo>,
     pub player_pos: Vec2d,
+    pub last_visit: Time,
     pub entrance: ArrayVec<Vec2d, 4>,
     /// Characters on this map
     charaid: Vec<CharaId>,
@@ -229,6 +231,7 @@ impl Map {
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
             player_pos: Vec2d(0, 0),
+            last_visit: Time::default(),
             entrance: ArrayVec::new(),
             charaid: Vec::new(),
             charas: Some(HashMap::new()),

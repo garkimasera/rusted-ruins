@@ -2,6 +2,7 @@ pub mod builder;
 pub mod from_template;
 pub mod search;
 pub mod tile_info;
+mod update;
 pub mod wall_damage;
 pub mod wilderness;
 
@@ -99,7 +100,9 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
 
     let gd = &mut game.gd;
 
-    trace!("Switch map to {:?}", new_mid);
+    info!("Switch map to {:?}", new_mid);
+
+    gd.get_current_map_mut().last_visit = crate::game::time::current_time();
 
     gd.set_current_mapid(new_mid);
 
@@ -119,6 +122,7 @@ pub fn switch_map(game: &mut Game, destination: Destination) {
 
     crate::audio::play_sound("floor-change");
     crate::audio::play_music(&gd.get_current_map().music);
+    update::update_map(game);
     super::view::update_view_map(game);
 }
 
