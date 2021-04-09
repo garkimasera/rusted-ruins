@@ -1,5 +1,6 @@
 //! Miscellaneous type definitions
 
+use crate::basic::ARRAY_STR_ID_LEN;
 use crate::gamedata::effect::Effect;
 use crate::gamedata::skill::SkillKind;
 use crate::objholder::ItemIdx;
@@ -137,3 +138,6 @@ impl HarvestKind {
         }
     }
 }
+
+/// Special skill id.
+pub type SpecialSkillId = String;
