@@ -69,8 +69,6 @@ pub struct Chara {
     pub traits: Vec<(CharaTraitOrigin, CharaTrait)>,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
-    /// Relationship to player character
-    pub rel: Relationship,
     /// When talked, execute this script
     pub trigger_talk: Option<String>,
 }
@@ -222,7 +220,6 @@ impl Default for Chara {
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),
-            rel: Relationship::Neutral,
             trigger_talk: None,
         }
     }

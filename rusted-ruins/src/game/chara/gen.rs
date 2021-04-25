@@ -38,7 +38,6 @@ pub fn create_chara(
         traits: Vec::new(),
         status: Vec::new(),
         skills: gen_skill_list(ct, lv, class),
-        rel: Relationship::Neutral,
         trigger_talk: None,
     };
 
@@ -59,7 +58,6 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
     let faction_id = dungeon_gen_rule.default_faction_id;
     let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
     set_skill(&mut chara);
-    chara.rel = Relationship::Hostile;
     chara
 }
 

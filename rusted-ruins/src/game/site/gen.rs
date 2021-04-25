@@ -20,7 +20,6 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             sid,
             floor: uc.floor,
         };
-        chara.rel = common::gamedata::chara::Relationship::Friendly;
 
         if let Some(talk_script_id) = uc.talk_script_id.as_ref() {
             // Talk script setting
