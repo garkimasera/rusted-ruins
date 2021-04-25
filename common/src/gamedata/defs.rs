@@ -139,5 +139,5 @@ impl HarvestKind {
     }
 }
 
-/// Special skill id.
-pub type SpecialSkillId = String;
+/// Active skill id.
+pub type ActiveSkillId = String;

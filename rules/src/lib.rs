@@ -27,7 +27,6 @@ pub mod npc_ai;
 pub mod params;
 pub mod quest;
 pub mod race;
-pub mod special_skill;
 pub mod town;
 
 use once_cell::sync::Lazy;
@@ -62,7 +61,6 @@ pub struct Rules {
     pub params: params::Params,
     pub quest: quest::Quest,
     pub race: race::Races,
-    pub special_skill: special_skill::SpecialSkills,
     pub town: town::Town,
 }
 
@@ -143,7 +141,6 @@ impl Rules {
             params: read_from_dirs(&dirs, "params.ron"),
             quest: read_from_dirs(&dirs, "quest.ron"),
             race: read_from_dirs(&dirs, "race.ron"),
-            special_skill: read_from_dirs(&dirs, "special_skill.ron"),
             town: read_from_dirs(&dirs, "town.ron"),
         }
     }

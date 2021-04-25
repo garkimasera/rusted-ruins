@@ -1,4 +1,4 @@
-use super::defs::{Recipe, SkillBonus};
+use super::defs::{ActiveSkillId, Recipe, SkillBonus};
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
@@ -26,6 +26,8 @@ pub struct CharaTemplateObject {
     pub default_ai_kind: NpcAiKind,
     pub base_attr: CharaBaseAttr,
     pub skill_bonus: HashMap<SkillKind, SkillBonus>,
+    /// Learned active skills.
+    pub active_skills: Vec<ActiveSkillId>,
 }
 
 /// Character classes

@@ -53,5 +53,21 @@ impl ActiveSkills {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActiveSkill {
+    pub group: ActiveSkillGroup,
     pub effect: Effect,
+    pub cost: ActiveSkillCost,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ActiveSkillGroup {
+    Special,
+    Magic,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct ActiveSkillCost {
+    #[serde(default)]
+    pub sp: u32,
+    #[serde(default)]
+    pub mp: u32,
 }
