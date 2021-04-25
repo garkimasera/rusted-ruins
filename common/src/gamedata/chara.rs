@@ -259,7 +259,7 @@ pub struct CharaAi {
     pub initial_pos: Vec2d,
     /// Current NPC AI State.
     pub state: AiState,
-    /// Target chara when combat.
+
     pub target: Option<CharaId>,
 }
 
@@ -288,12 +288,21 @@ impl Default for CharaAi {
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum AiState {
     Normal,
-    Combat,
+    Combat {
+        /// Target chara when combat.
+        target: CharaId,
+    },
 }
 
 impl Default for AiState {
     fn default() -> Self {
         AiState::Normal
+    }
+}
+
+impl AiState {
+    pub fn is_combat(&self) -> bool {
+        matches!(self, AiState::Combat { .. })
     }
 }
 

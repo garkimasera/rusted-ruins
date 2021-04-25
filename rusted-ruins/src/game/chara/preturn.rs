@@ -135,7 +135,7 @@ fn awake_other_npc(game: &mut Game, cid: CharaId) {
 
         if other_cid == cid
             || other_cid == CharaId::Player
-            || game.gd.chara.get_mut(other_cid).ai.state == AiState::Combat
+            || game.gd.chara.get_mut(other_cid).ai.state.is_combat()
             || game.gd.chara_relation(cid, other_cid) != Relationship::Hostile
         {
             continue;
@@ -148,7 +148,7 @@ fn awake_other_npc(game: &mut Game, cid: CharaId) {
         if p >= 1.0 || rng::gen_bool(p) {
             let other_npc = game.gd.chara.get_mut(other_cid);
             trace!("{:?} changed ai state to combat", other_npc.to_text());
-            other_npc.ai.state = AiState::Combat;
+            other_npc.ai.state = AiState::Combat { target: cid };
         }
 
         // Exp for conceal

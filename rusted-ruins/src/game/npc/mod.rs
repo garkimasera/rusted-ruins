@@ -13,7 +13,7 @@ use rules::{npc_ai::*, RULES};
 pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
     match game.gd.chara.get(cid).ai.state {
         AiState::Normal => process_npc_turn_normal(game, cid),
-        AiState::Combat => process_npc_turn_combat(game, cid),
+        AiState::Combat { .. } => process_npc_turn_combat(game, cid),
     }
 }
 
@@ -49,8 +49,13 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
 
+    let target = match chara.ai.state {
+        AiState::Combat { target } => target,
+        _ => unreachable!(),
+    };
+
     if rng::gen_bool(ai_rule.approach_enemy_prob) {
-        move_to_nearest_enemy(game, cid, ai_rule);
+        move_to_target_enemy(game, cid, ai_rule, target);
     }
 }
 
@@ -68,12 +73,10 @@ fn random_walk(game: &mut Game, cid: CharaId) {
 }
 
 /// Move npc to nearest enemy
-fn move_to_nearest_enemy(game: &mut Game, cid: CharaId, ai_rule: &NpcAi) {
-    if let Some(target) = map_search::search_nearest_enemy(&game.gd, cid) {
-        let dir = dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step)
-            .unwrap_or(Direction::NONE);
-        action::try_move(game, cid, dir);
-    }
+fn move_to_target_enemy(game: &mut Game, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
+    let dir =
+        dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step).unwrap_or(Direction::NONE);
+    action::try_move(game, cid, dir);
 }
 
 /// Returns direction to target chara

@@ -1,7 +1,7 @@
 //! Functions to search map information needed to determine NPC's behavior.
 
+/*
 use crate::game::InfoGetter;
-// use crate::game::extrait::MapExt;
 use common::gamedata::*;
 
 /// Search nearest other character from cid.
@@ -38,3 +38,4 @@ pub fn search_nearest_enemy(gd: &GameData, cid: CharaId) -> Option<CharaId> {
         gd.chara_relation(c0, c1) == Relationship::Hostile
     })
 }
+*/
