@@ -33,7 +33,15 @@ pub fn use_active_skill(
         active_skill_id,
         power
     );
-    game_log_i!("use-active-skill"; chara=chara, active_skill=active_skill_id);
+
+    match active_skill.group {
+        ActiveSkillGroup::Magic => {
+            game_log_i!("use-active-skill-magic"; chara=chara, active_skill=active_skill_id);
+        }
+        ActiveSkillGroup::Special => {
+            game_log_i!("use-active-skill-special"; chara=chara, active_skill=active_skill_id);
+        }
+    }
 
     do_effect(game, &active_skill.effect, Some(cid), target, power, power);
     true
