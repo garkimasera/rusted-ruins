@@ -15,6 +15,7 @@ use walkdir::WalkDir;
 
 /// Initialize lazy static
 pub fn init() {
+    Lazy::force(&ACTIVE_SKILL_BUNDLE);
     Lazy::force(&OBJ_BUNDLE);
     Lazy::force(&LOG_BUNDLE);
     Lazy::force(&UI_BUNDLE);
@@ -23,6 +24,7 @@ pub fn init() {
     Lazy::force(&READABLE_BUNDLE);
 }
 
+static ACTIVE_SKILL_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::ACTIVE_SKILL_TXT_DIR));
 static OBJ_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::OBJ_TXT_DIR));
 static LOG_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::LOG_TXT_DIR));
 static UI_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::UI_TXT_DIR));
@@ -147,6 +149,18 @@ fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
     }
 
     resource
+}
+
+pub fn active_skill_txt(id: &str) -> String {
+    active_skill_txt_with_args(id, None)
+}
+
+pub fn active_skill_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+    if let Some(s) = ACTIVE_SKILL_BUNDLE.format(id, args) {
+        s
+    } else {
+        id.to_owned()
+    }
 }
 
 pub fn obj_txt(id: &str) -> String {

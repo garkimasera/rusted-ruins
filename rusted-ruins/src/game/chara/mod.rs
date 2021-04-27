@@ -137,4 +137,9 @@ impl Chara {
 
         (lv, adj)
     }
+
+    /// active skill available or not.
+    fn active_skill_available(&self, active_skill: &ActiveSkill) -> bool {
+        self.sp > active_skill.cost_sp as f32
+    }
 }

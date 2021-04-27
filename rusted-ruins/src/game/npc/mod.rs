@@ -3,9 +3,11 @@
 pub mod map_search;
 
 use super::action;
-use super::extrait::MapExt;
+use super::active_skill::use_active_skill;
+use super::extrait::*;
 use super::{Game, InfoGetter};
 use common::gamedata::*;
+use common::gobj;
 use geom::*;
 use rng::*;
 use rules::{npc_ai::*, RULES};
@@ -48,14 +50,20 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
+    let ct: &CharaTemplateObject = gobj::get_obj(chara.template);
 
     let target = match chara.ai.state {
         AiState::Combat { target } => target,
         _ => unreachable!(),
     };
-
     if rng::gen_bool(ai_rule.approach_enemy_prob) {
         move_to_target_enemy(game, cid, ai_rule, target);
+    } else if rng::gen_bool(ai_rule.active_skill_prob) {
+        if let Some(active_skill_id) = ct.active_skills.choose(&mut get_rng()) {
+            use_active_skill(game, active_skill_id, cid, target);
+        } else {
+            move_to_target_enemy(game, cid, ai_rule, target);
+        }
     }
 }
 

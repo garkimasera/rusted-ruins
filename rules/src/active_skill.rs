@@ -5,7 +5,7 @@ use std::path::Path;
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(transparent)]
-pub struct ActiveSkills(HashMap<String, ActiveSkill>);
+pub struct ActiveSkills(HashMap<ActiveSkillId, ActiveSkill>);
 
 impl ActiveSkills {
     fn join(&mut self, other: ActiveSkills) {
@@ -14,16 +14,8 @@ impl ActiveSkills {
         }
     }
 
-    pub fn get(&self, id: &str) -> Option<&ActiveSkill> {
-        self.get_opt(&Some(id))
-    }
-
-    pub fn get_opt<S: AsRef<str>>(&self, id: &Option<S>) -> Option<&ActiveSkill> {
-        if let Some(id) = id {
-            self.0.get(id.as_ref())
-        } else {
-            None
-        }
+    pub fn get(&self, id: &ActiveSkillId) -> Option<&ActiveSkill> {
+        self.0.get(id)
     }
 
     pub fn join_from_dir(&mut self, dir: &Path) -> Result<(), std::io::Error> {
@@ -49,25 +41,4 @@ impl ActiveSkills {
         }
         Ok(())
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ActiveSkill {
-    pub group: ActiveSkillGroup,
-    pub effect: Effect,
-    pub cost: ActiveSkillCost,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ActiveSkillGroup {
-    Special,
-    Magic,
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct ActiveSkillCost {
-    #[serde(default)]
-    pub sp: u32,
-    #[serde(default)]
-    pub mp: u32,
 }

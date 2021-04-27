@@ -140,4 +140,30 @@ impl HarvestKind {
 }
 
 /// Active skill id.
-pub type ActiveSkillId = String;
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ActiveSkillId(pub String);
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ActiveSkill {
+    pub group: ActiveSkillGroup,
+    pub effect: Effect,
+    pub power_calc: PowerCalcMethod,
+    #[serde(default)]
+    pub cost_sp: u32,
+    #[serde(default)]
+    pub cost_mp: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum PowerCalcMethod {
+    Num(f32),
+    Magic,
+    Custom(String),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ActiveSkillGroup {
+    Special,
+    Magic,
+}

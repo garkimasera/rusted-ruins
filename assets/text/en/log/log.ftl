@@ -55,6 +55,7 @@ drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
 harvest-plant = {$chara} harvested {$item} x {$n}.
 harvest-plant-not-ready = {$item} cannot be harvested yet.
+use-active-skill = {$chara} used {$active_skill}.
 
 # Messages about using tools
 use-tool-without-equip = No tool equiped!

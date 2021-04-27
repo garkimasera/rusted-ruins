@@ -1,5 +1,5 @@
 use crate::game::Command;
-use crate::text::{self, misc_txt, obj_txt, ui_txt, ToText, ToTextId};
+use crate::text::{self, active_skill_txt, misc_txt, obj_txt, ui_txt, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -8,6 +8,12 @@ use std::borrow::Cow;
 impl<T: ToTextId> ToText for T {
     fn to_text(&self) -> Cow<str> {
         text::to_txt(self).into()
+    }
+}
+
+impl ToText for ActiveSkillId {
+    fn to_text(&self) -> Cow<str> {
+        active_skill_txt(&self.0).into()
     }
 }
 

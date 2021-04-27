@@ -23,6 +23,9 @@ pub struct NpcAi {
     /// Probability of approaching to enemy when combat state.
     #[serde(default)]
     pub approach_enemy_prob: f32,
+    /// Probability of trying to use active skill.
+    #[serde(default)]
+    pub active_skill_prob: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
