@@ -24,14 +24,17 @@ pub fn use_active_skill(
         return false;
     }
 
-    let power = crate::game::active_skill::calc_power(&game.gd, active_skill, cid);
+    let power =
+        crate::game::active_skill::calc_power(&game.gd, active_skill, cid) * active_skill.power;
+    let hit_power = active_skill.hit_power;
 
     let chara = game.gd.chara.get(cid);
     trace!(
-        "{} uses active skill {:?}, power = {}",
+        "{} uses active skill {:?}, power = {}, hit_power = {}",
         chara.to_text(),
         active_skill_id,
-        power
+        power,
+        hit_power,
     );
 
     match active_skill.group {
@@ -43,7 +46,14 @@ pub fn use_active_skill(
         }
     }
 
-    do_effect(game, &active_skill.effect, Some(cid), target, power, power);
+    do_effect(
+        game,
+        &active_skill.effect,
+        Some(cid),
+        target,
+        power,
+        hit_power,
+    );
     true
 }
 

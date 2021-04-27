@@ -148,6 +148,10 @@ pub struct ActiveSkillId(pub String);
 pub struct ActiveSkill {
     pub group: ActiveSkillGroup,
     pub effect: Effect,
+    #[serde(default)]
+    pub power: f32,
+    #[serde(default)]
+    pub hit_power: f32,
     pub power_calc: PowerCalcMethod,
     #[serde(default)]
     pub cost_sp: u32,
