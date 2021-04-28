@@ -10,4 +10,6 @@ pub struct Race {
     pub equip_slots: Vec<EquipSlotKind>,
     /// Default element protection
     pub element_protection: ElementArray<ElementProtection>,
+    /// Race traits.
+    pub traits: Vec<CharaTrait>,
 }

@@ -41,6 +41,14 @@ pub fn create_chara(
         trigger_talk: None,
     };
 
+    if let Some(race) = RULES.race.get(&ct.race) {
+        for race_trait in &race.traits {
+            chara
+                .traits
+                .push((CharaTraitOrigin::Race, race_trait.clone()));
+        }
+    }
+
     chara.update();
     chara.hp = chara.attr.max_hp;
     chara.reset_wait_time();
