@@ -15,7 +15,7 @@ pub fn use_active_skill(
     let active_skill = if let Some(active_skill) = RULES.active_skills.get(active_skill_id) {
         active_skill
     } else {
-        warn!("unknown active_skill \"{:?}\"", active_skill_id);
+        warn!("unknown active_skill \"{}\"", active_skill_id);
         return false;
     };
 
@@ -30,7 +30,7 @@ pub fn use_active_skill(
 
     let chara = game.gd.chara.get(cid);
     trace!(
-        "{} uses active skill {:?}, power = {}, hit_power = {}",
+        "{} uses active skill \"{}\", power = {}, hit_power = {}",
         chara.to_text(),
         active_skill_id,
         power,
