@@ -123,8 +123,13 @@ fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
         EquipSlotKind::MeleeWeapon => "!icon-melee-weapon",
         EquipSlotKind::RangedWeapon => "!icon-ranged-weapon",
         EquipSlotKind::Tool => "!icon-tool",
-        EquipSlotKind::BodyArmor => "!icon-bodyarmor",
         EquipSlotKind::Shield => "!icon-shield",
+        EquipSlotKind::Head => "!icon-head",
+        EquipSlotKind::Skin => "!icon-skin",
+        EquipSlotKind::Body => "!icon-body",
+        EquipSlotKind::Arms => "!icon-arms",
+        EquipSlotKind::Legs => "!icon-legs",
+        EquipSlotKind::Accessory => "!icon-accessory",
     };
     let idx: UiImgIdx = gobj::id_to_idx(id);
     IconIdx::from(idx)

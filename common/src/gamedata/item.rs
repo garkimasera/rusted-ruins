@@ -244,8 +244,13 @@ pub type MaterialName = arrayvec::ArrayString<ARRAY_STR_ID_LEN>;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum ArmorKind {
-    Body,
     Shield,
+    Head,
+    Skin,
+    Body,
+    Arms,
+    Legs,
+    Accessory,
 }
 
 /// Data to generate an item.
@@ -468,13 +473,19 @@ impl From<u32> for ItemMoveNum {
 // Equipment handling types and routines
 //
 
+/// equipment slots
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum EquipSlotKind {
     MeleeWeapon,
     RangedWeapon,
     Tool,
-    BodyArmor,
     Shield,
+    Head,
+    Skin,
+    Body,
+    Arms,
+    Legs,
+    Accessory,
 }
 
 impl EquipSlotKind {}
@@ -503,8 +514,13 @@ impl WeaponKind {
 impl ArmorKind {
     pub fn equip_slot_kind(self) -> EquipSlotKind {
         match self {
-            ArmorKind::Body => EquipSlotKind::BodyArmor,
             ArmorKind::Shield => EquipSlotKind::Shield,
+            ArmorKind::Head => EquipSlotKind::Head,
+            ArmorKind::Skin => EquipSlotKind::Skin,
+            ArmorKind::Body => EquipSlotKind::Body,
+            ArmorKind::Arms => EquipSlotKind::Arms,
+            ArmorKind::Legs => EquipSlotKind::Legs,
+            ArmorKind::Accessory => EquipSlotKind::Accessory,
         }
     }
 }

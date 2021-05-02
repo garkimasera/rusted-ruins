@@ -63,8 +63,13 @@ weapon_kind-whip = Whip
 
 # ArmorKind
 
-armor_kind-body = Body
 armor_kind-shield = Shield
+armor_kind-head = Head
+armor_kind-skin = Skin
+armor_kind-body = Body
+armor_kind-arms = Arms
+armor_kind-legs = Legs
+armor_kind-accessory = Accessory
 
 # CreationKind
 

@@ -56,8 +56,13 @@ impl ToTextId for ArmorKind {
     fn to_textid(&self) -> &'static str {
         use ArmorKind::*;
         match self {
-            Body => "armor_kind-body",
             Shield => "armor_kind-shield",
+            Head => "armor_kind-head",
+            Skin => "armor_kind-skin",
+            Body => "armor_kind-body",
+            Arms => "armor_kind-arms",
+            Legs => "armor_kind-legs",
+            Accessory => "armor_kind-accessory",
         }
     }
 }

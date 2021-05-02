@@ -11,5 +11,6 @@ pub struct Race {
     /// Default element protection
     pub element_protection: ElementArray<ElementProtection>,
     /// Race traits.
+    #[serde(default)]
     pub traits: Vec<CharaTrait>,
 }

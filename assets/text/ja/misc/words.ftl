@@ -57,8 +57,13 @@ weapon_kind-whip = 鞭
 
 # ArmorKind
 
-armor_kind-body = 体防具
 armor_kind-shield = 盾
+armor_kind-head = 頭
+armor_kind-skin = 肌
+armor_kind-body = 体
+armor_kind-arms = 腕
+armor_kind-legs = 足
+armor_kind-accessory = アクセサリ
 
 # MedicalEffect
 
