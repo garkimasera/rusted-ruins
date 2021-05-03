@@ -1,4 +1,6 @@
-use common::gamedata::{self, ActiveSkillId, Effect, ElementArray, FactionId, Harvest, SkillKind};
+use common::gamedata::{
+    self, ActiveSkillId, CharaClass, Effect, ElementArray, FactionId, Harvest, SkillKind,
+};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -72,6 +74,8 @@ pub struct ImgInput {
 #[serde(deny_unknown_fields)]
 pub struct CharaTemplateDepInput {
     pub race: String,
+    #[serde(default)]
+    pub class: CharaClass,
     pub gen_weight: f32,
     pub gen_level: u32,
     #[serde(default)]

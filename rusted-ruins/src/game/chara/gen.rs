@@ -16,7 +16,7 @@ pub fn create_chara(
     class: Option<CharaClass>,
 ) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
-    let class = class.unwrap_or_default();
+    let class = class.unwrap_or(ct.class);
 
     let mut chara = Chara {
         name: None,

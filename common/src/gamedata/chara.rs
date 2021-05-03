@@ -17,6 +17,8 @@ pub struct CharaTemplateObject {
     pub img: crate::obj::Img,
     /// Character's race
     pub race: String,
+    /// Character's class
+    pub class: CharaClass,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
     /// Generation level
