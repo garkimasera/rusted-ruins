@@ -49,6 +49,8 @@ pub fn create_chara(
         }
     }
 
+    gen_equips(&mut chara, ct);
+
     chara.update();
     chara.hp = chara.attr.max_hp;
     chara.reset_wait_time();
@@ -163,4 +165,30 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32, class: CharaClass) -> Skil
     }
 
     skill_list
+}
+
+/// Generate equipments from rules.
+fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
+    let slots = equip_slots(&ct.race);
+    let equip = EquipItemList::new(&slots);
+    chara.equip = equip;
+
+    let equips_rule = &RULES.class.get(chara.class).equips;
+
+    for (esk, item_selector, bonus) in equips_rule {
+        use crate::game::item::gen::*;
+
+        let level = chara.level + bonus;
+        let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
+
+        let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
+            item_idx
+        } else {
+            continue;
+        };
+
+        let item = gen_item_from_idx(item_idx, level);
+
+        chara.equip.equip(*esk, 0, item);
+    }
 }

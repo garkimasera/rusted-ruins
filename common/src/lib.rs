@@ -20,6 +20,7 @@ pub mod gamedata;
 #[cfg(feature = "global_state_obj")]
 pub mod gobj;
 pub mod impl_filebox;
+pub mod item_selector;
 pub mod maptemplate;
 pub mod objholder;
 pub mod pakutil;

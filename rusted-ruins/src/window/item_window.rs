@@ -191,7 +191,7 @@ impl ItemWindow {
             pos: gd.player_pos(),
         };
 
-        match self.mode {
+        match &self.mode {
             ItemWindowMode::List => {
                 let filtered_list = gd.get_filtered_item_list(ill_player, ItemFilter::all());
                 self.update_list(filtered_list);
@@ -251,7 +251,7 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::ShopBuy { cid } => {
-                let ill = ItemListLocation::Shop { cid };
+                let ill = ItemListLocation::Shop { cid: *cid };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new());
                 self.update_list(filtered_list);
             }
@@ -263,7 +263,7 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Select { ill, filter, .. } => {
-                let filtered_list = gd.get_filtered_item_list(ill, filter);
+                let filtered_list = gd.get_filtered_item_list(*ill, filter.clone());
                 self.update_list(filtered_list);
             }
         }

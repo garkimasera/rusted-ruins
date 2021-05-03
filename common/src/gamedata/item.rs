@@ -488,8 +488,6 @@ pub enum EquipSlotKind {
     Accessory,
 }
 
-impl EquipSlotKind {}
-
 impl ItemKind {
     pub fn equip_slot_kind(self) -> Option<EquipSlotKind> {
         match self {

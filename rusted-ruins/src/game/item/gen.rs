@@ -1,5 +1,6 @@
 use common::gamedata::*;
 use common::gobj;
+use common::item_selector::ItemSelector;
 use common::obj::ImgVariationRule;
 use common::objholder::ItemIdx;
 use rng::SliceRandom;
@@ -78,6 +79,13 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f32>(
     }
 
     Some(ItemIdx::from_usize(first_available_item_idx.unwrap()))
+}
+
+pub fn choose_item_by_item_selector(item_selector: &ItemSelector) -> Option<ItemIdx> {
+    let items = &gobj::get_objholder().item;
+    let items = item_selector.select_items_from(items);
+
+    items.choose(&mut rng::get_rng()).map(|(idx, _)| *idx)
 }
 
 struct CalcLevelWeightDist {
