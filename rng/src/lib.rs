@@ -82,12 +82,11 @@ pub fn gen_bool(p: f32) -> bool {
 }
 
 /// Choose a element from weight
-pub fn choose<T, F>(values: &[T], mut weight: F) -> Option<T>
+pub fn choose<T, F>(values: &[T], mut weight: F) -> Option<(usize, &T)>
 where
-    T: Copy,
-    F: FnMut(T) -> f32,
+    F: FnMut(&T) -> f32,
 {
-    let sum: f32 = values.iter().map(|value| weight(*value)).sum();
+    let sum: f32 = values.iter().map(|value| weight(value)).sum();
     if sum <= 0.0 {
         return None;
     }
@@ -97,14 +96,14 @@ where
     let mut a = 0.0;
 
     let mut first_enable_value = None;
-    for value in values {
-        let weight = weight(*value);
+    for (i, value) in values.iter().enumerate() {
+        let weight = weight(value);
         if weight > 0.0 && first_enable_value.is_none() {
-            first_enable_value = Some(*value);
+            first_enable_value = Some((i, value));
         }
         a += weight;
         if r < a {
-            return Some(*value);
+            return Some((i, value));
         }
     }
     first_enable_value

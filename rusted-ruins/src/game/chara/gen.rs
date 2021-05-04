@@ -4,7 +4,6 @@ use common::gamedata::*;
 use common::gobj;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
-use rng::gen_range;
 use rules::RULES;
 use std::collections::HashMap;
 
@@ -58,72 +57,53 @@ pub fn create_chara(
 }
 
 /// Create npc character from the race
-pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
+pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Option<Chara> {
     let dungeon_gen_rule = &RULES
         .dungeon_gen
         .get(&dungeon)
         .expect("No rule for npc generation");
-    let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level);
+    let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level)?;
     let ct = gobj::get_obj(idx);
     let faction_id = ct.faction.unwrap_or(dungeon_gen_rule.default_faction_id);
     let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
     set_skill(&mut chara);
-    chara
+    Some(chara)
 }
 
 /// Choose one chara_template by race, gen_level and gen_weight
-pub fn choose_npc_chara_template(nrp: &HashMap<String, f32>, floor_level: u32) -> CharaTemplateIdx {
+pub fn choose_npc_chara_template(
+    nrp: &HashMap<String, f32>,
+    floor_level: u32,
+) -> Option<CharaTemplateIdx> {
     let chara_templates = &gobj::get_objholder().chara_template;
-
-    // Sum up gen_weight * weight_dist * dungeon_adjustment
     let weight_dist = CalcLevelWeightDist::new(floor_level);
-    let mut sum = 0.0;
-    let mut first_available_ct_idx = None;
 
-    for (i, ct) in chara_templates.iter().enumerate() {
+    let calc_weight = |ct: &CharaTemplateObject| {
         if let Some(da) = nrp.get(&ct.race) {
-            sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
-            if first_available_ct_idx.is_none() {
-                first_available_ct_idx = Some(i);
-            }
+            weight_dist.calc(ct.gen_level) * ct.gen_weight as f32 * *da as f32
+        } else {
+            0.0
         }
-    }
+    };
 
-    // Choose one chara
-    if !(sum > 0.0) {
-        return CharaTemplateIdx::from_usize(
-            first_available_ct_idx.expect("Any appropriate chara_template not found"),
-        );
-    }
-    let r = gen_range(0.0..sum);
-    let mut sum = 0.0;
-    for (i, ct) in chara_templates.iter().enumerate() {
-        if let Some(da) = nrp.get(&ct.race) {
-            sum += weight_dist.calc(ct.gen_level) * ct.gen_weight as f64 * *da as f64;
-            if r < sum {
-                return CharaTemplateIdx::from_usize(i);
-            }
-        }
-    }
-
-    CharaTemplateIdx::from_usize(first_available_ct_idx.unwrap())
+    rng::choose(chara_templates, calc_weight).map(|(i, _)| CharaTemplateIdx::from_usize(i))
 }
 
 struct CalcLevelWeightDist {
-    floor_level: f64,
-    upper_margin: f64,
+    floor_level: f32,
+    upper_margin: f32,
 }
 
 impl CalcLevelWeightDist {
     fn new(floor_level: u32) -> CalcLevelWeightDist {
         CalcLevelWeightDist {
-            floor_level: floor_level as f64,
+            floor_level: floor_level as f32,
             upper_margin: 5.0,
         }
     }
 
-    fn calc(&self, l: u32) -> f64 {
-        let l = l as f64;
+    fn calc(&self, l: u32) -> f32 {
+        let l = l as f32;
         if l <= self.floor_level {
             l / self.floor_level
         } else {
@@ -140,7 +120,16 @@ impl CalcLevelWeightDist {
 /// Get equip slot list
 pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
     let mut slots = RULES.chara_gen.equip_slots.clone();
-    slots.extend_from_slice(&RULES.race[race].equip_slots);
+    slots.extend_from_slice(
+        &RULES
+            .race
+            .get(race)
+            .unwrap_or_else(|| {
+                error!("unknown race \"{}\"", race);
+                panic!()
+            })
+            .equip_slots,
+    );
     slots
 }
 

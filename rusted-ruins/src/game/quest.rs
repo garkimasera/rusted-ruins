@@ -51,7 +51,7 @@ fn gen_quest() -> Quest {
 
     Quest::SlayMonsters {
         reward,
-        idx: choose_npc_chara_template(&RULES.quest.slay_race_probability, 1),
+        idx: choose_npc_chara_template(&RULES.quest.slay_race_probability, 1).unwrap(),
         goal: 10,
         killed: 0,
     }

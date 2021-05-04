@@ -205,11 +205,12 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
 
     for _ in 0..n {
         if let Some(p) = choose_empty_tile(gd.region.get_map(mid)) {
-            let chara = create_npc_chara(dungeon_kind, floor_level);
-            trace!("Generate new npc {}", chara.to_text());
-            let cid = gd.add_chara_to_map(chara, mid);
-            let map = gd.region.get_map_mut(mid);
-            map.locate_chara(cid, p);
+            if let Some(chara) = create_npc_chara(dungeon_kind, floor_level) {
+                trace!("Generate new npc {}", chara.to_text());
+                let cid = gd.add_chara_to_map(chara, mid);
+                let map = gd.region.get_map_mut(mid);
+                map.locate_chara(cid, p);
+            }
         } else {
             warn!("Failed npc generating because empty tile not found");
             return;

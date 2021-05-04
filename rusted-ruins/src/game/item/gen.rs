@@ -245,7 +245,7 @@ fn set_material(item: &mut Item, item_obj: &ItemObject, level: u32) {
     let chosen_materials =
         rng::choose(&material_names, |name| RULES.material.get(&name).gen_weight);
     let material_name = if let Some(chosen) = chosen_materials {
-        chosen
+        *chosen.1
     } else {
         return;
     };
