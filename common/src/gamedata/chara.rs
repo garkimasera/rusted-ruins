@@ -19,6 +19,8 @@ pub struct CharaTemplateObject {
     pub race: String,
     /// Character's class
     pub class: CharaClass,
+    /// Default faction
+    pub faction: Option<FactionId>,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
     /// Generation level

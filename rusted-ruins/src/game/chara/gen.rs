@@ -65,7 +65,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Chara {
         .expect("No rule for npc generation");
     let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level);
     let ct = gobj::get_obj(idx);
-    let faction_id = dungeon_gen_rule.default_faction_id;
+    let faction_id = ct.faction.unwrap_or(dungeon_gen_rule.default_faction_id);
     let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
     set_skill(&mut chara);
     chara
