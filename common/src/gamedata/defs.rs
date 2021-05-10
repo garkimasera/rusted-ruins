@@ -51,23 +51,6 @@ impl<T> IndexMut<Element> for ElementArray<T> {
 #[serde(transparent)]
 pub struct ElementProtection(i8);
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum SkillBonus {
-    None,
-    VeryLow,
-    Low,
-    Normal,
-    High,
-    VeryHigh,
-    Superb,
-}
-
-impl Default for SkillBonus {
-    fn default() -> SkillBonus {
-        SkillBonus::None
-    }
-}
-
 /// A recipe for creation
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Recipe {

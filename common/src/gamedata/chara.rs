@@ -1,4 +1,4 @@
-use super::defs::{ActiveSkillId, Recipe, SkillBonus};
+use super::defs::{ActiveSkillId, Recipe};
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
@@ -6,7 +6,7 @@ use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::traits::*;
 use super::unknown_id_err;
-use crate::basic::ARRAY_STR_ID_LEN;
+use crate::basic::{BonusLevel, ARRAY_STR_ID_LEN};
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -29,7 +29,7 @@ pub struct CharaTemplateObject {
     /// Default AI kind for this character
     pub default_ai_kind: NpcAiKind,
     pub base_attr: CharaBaseAttr,
-    pub skill_bonus: HashMap<SkillKind, SkillBonus>,
+    pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     /// Learned active skills.
     pub active_skills: Vec<ActiveSkillId>,
 }

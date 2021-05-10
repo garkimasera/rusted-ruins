@@ -1,3 +1,4 @@
+use common::basic::BonusLevel;
 use common::gamedata::{
     self, ActiveSkillId, CharaClass, Effect, ElementArray, FactionId, Harvest, SkillKind,
 };
@@ -83,7 +84,7 @@ pub struct CharaTemplateDepInput {
     #[serde(default)]
     pub default_ai_kind: gamedata::NpcAiKind,
     #[serde(default)]
-    pub skill_bonus: HashMap<SkillKind, gamedata::SkillBonus>,
+    pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     #[serde(default)]
     pub active_skills: Vec<ActiveSkillId>,
     pub base_hp: i32,
