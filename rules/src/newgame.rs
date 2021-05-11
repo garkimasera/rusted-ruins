@@ -12,4 +12,12 @@ pub struct NewGame {
     pub start_money: u32,
     pub chara_template_table: HashMap<CharaClass, String>,
     pub common_initial_skills: Vec<SkillKind>,
+    /// Initial game date (year)
+    pub initial_date_year: u32,
+    /// Initial game date (month)
+    pub initial_date_month: u32,
+    /// Initial game date (day)
+    pub initial_date_day: u32,
+    /// Initial game date (hour)
+    pub initial_date_hour: u32,
 }

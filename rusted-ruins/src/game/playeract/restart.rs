@@ -10,7 +10,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
 
         let (mid, pos) = gd
             .region
-            .path_to_map_id_and_pos(&RULES.params.restart_path)
+            .path_to_map_id_and_pos(&RULES.world.restart_path)
             .unwrap();
         crate::game::map::switch_map(self.0, Destination::MapIdWithPos(mid, pos));
     }

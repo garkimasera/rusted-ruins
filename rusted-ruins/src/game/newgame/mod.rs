@@ -66,10 +66,10 @@ impl NewGameBuilder {
 
             // Initial date setting
             gd.time = GameTime::new(
-                RULES.params.initial_date_year,
-                RULES.params.initial_date_month,
-                RULES.params.initial_date_day,
-                RULES.params.initial_date_hour,
+                RULES.newgame.initial_date_year,
+                RULES.newgame.initial_date_month,
+                RULES.newgame.initial_date_day,
+                RULES.newgame.initial_date_hour,
             );
 
             // Faction relation setting

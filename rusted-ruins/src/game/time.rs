@@ -7,10 +7,10 @@ use std::sync::Mutex;
 
 static CURRENT_TIME: Lazy<Mutex<Time>> = Lazy::new(|| {
     Mutex::new(Time::new(
-        RULES.params.initial_date_year,
-        RULES.params.initial_date_month,
-        RULES.params.initial_date_day,
-        RULES.params.initial_date_hour,
+        RULES.newgame.initial_date_year,
+        RULES.newgame.initial_date_month,
+        RULES.newgame.initial_date_day,
+        RULES.newgame.initial_date_hour,
     ))
 });
 

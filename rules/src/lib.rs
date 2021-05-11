@@ -28,6 +28,7 @@ pub mod params;
 pub mod quest;
 pub mod race;
 pub mod town;
+pub mod world;
 
 use once_cell::sync::Lazy;
 use serde::de::Deserialize;
@@ -62,6 +63,7 @@ pub struct Rules {
     pub quest: quest::Quest,
     pub race: race::Races,
     pub town: town::Town,
+    pub world: world::World,
 }
 
 impl Rules {
@@ -142,6 +144,7 @@ impl Rules {
             quest: read_from_dirs(&dirs, "quest.ron"),
             race: read_from_dirs(&dirs, "race.ron"),
             town: read_from_dirs(&dirs, "town.ron"),
+            world: read_from_dirs(&dirs, "world.ron"),
         }
     }
 }
