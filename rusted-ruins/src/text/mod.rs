@@ -168,7 +168,7 @@ pub fn obj_txt(id: &str) -> String {
         s
     } else {
         use regex::Regex;
-        static RE: Lazy<Regex> = Lazy::new(|| Regex::new("(.+)-[0-9]+").unwrap());
+        static RE: Lazy<Regex> = Lazy::new(|| Regex::new("(.+?)(-[mf])?-[0-9]+").unwrap());
         if let Some(cap) = RE.captures(id) {
             let id_without_suffix_number = cap.get(1).unwrap().as_str();
             if let Some(s) = OBJ_BUNDLE.format(id_without_suffix_number, None) {
