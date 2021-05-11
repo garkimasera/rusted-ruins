@@ -51,7 +51,7 @@ impl Chara {
 
     /// Add exp when regeneration
     fn add_healing_exp(&mut self) {
-        let lv = self.skills.get(SkillKind::Healing);
+        let lv = self.skill_level(SkillKind::Healing);
         if get_rng().gen_bool(RULES.exp.healing_probability.into()) {
             self.add_skill_exp(SkillKind::Healing, RULES.exp.healing, lv);
         }
@@ -130,10 +130,32 @@ impl Chara {
         )
     }
 
-    /// Get character's skill level, and the adjustment value.
-    fn skill_level(&self, kind: SkillKind) -> (u32, i32) {
+    /// Get character's skill level summed with its adjustment value.
+    fn skill_level(&self, kind: SkillKind) -> u32 {
+        let (lv, adj) = self.skill_level_with_adj(kind);
+
+        if adj > 0 {
+            lv + adj as u32
+        } else {
+            let adj = adj.abs() as u32;
+            lv.saturating_sub(adj)
+        }
+    }
+
+    /// Get character's base skill level and the adjustment value.
+    fn skill_level_with_adj(&self, kind: SkillKind) -> (u32, i32) {
         let lv = self.skills.skills.get(&kind).copied().unwrap_or(0);
-        let adj = 0;
+
+        let mut adj = 0;
+        let mut adj_factor = 0.0;
+
+        if let Some(bonus_level) = RULES.class.get(self.class).skill_bonus.get(&kind) {
+            let bonus = RULES.params.skill_bonus[bonus_level];
+            adj_factor += bonus.0;
+            adj += bonus.1;
+        }
+
+        let adj = adj + (lv as f32 * adj_factor) as i32;
 
         (lv, adj)
     }

@@ -14,7 +14,7 @@ pub fn calc_power(
     _element: Element,
     skill_kind: SkillKind,
 ) -> (f32, f32) {
-    let skill_lv = chara.skill_level(skill_kind).0 as f32;
+    let skill_lv = chara.skill_level(skill_kind) as f32;
     let (attr, hit_attr) = match power_kind {
         CharaPowerKind::MeleeAttack => (chara.attr.str, chara.attr.dex),
         CharaPowerKind::RangedAttack => (chara.attr.dex, chara.attr.dex),

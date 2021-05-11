@@ -71,7 +71,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
 
     if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
         // HP regeneration
-        let lv = chara.skills.get(SkillKind::Healing) as f32;
+        let lv = chara.skill_level(SkillKind::Healing) as f32;
         if get_rng().gen_bool(RULES.chara.hp_regeneration_probability.into()) {
             let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
             let v = roll_dice(1, a);
@@ -117,7 +117,7 @@ fn awake_other_npc(game: &mut Game, cid: CharaId) {
     } else {
         return;
     };
-    let detection = game.gd.chara.get(cid).skills.get(SkillKind::Detection);
+    let detection = game.gd.chara.get(cid).skill_level(SkillKind::Detection);
     let detection_range = RULES.combat.detection_range;
     let detection_factor = RULES.combat.detection_factor;
 
@@ -141,7 +141,7 @@ fn awake_other_npc(game: &mut Game, cid: CharaId) {
             continue;
         }
 
-        let conceal = game.gd.chara.get(other_cid).skills.get(SkillKind::Conceal);
+        let conceal = game.gd.chara.get(other_cid).skill_level(SkillKind::Conceal);
         let distance_factor = 1.0 - (distance as f32 / detection_range as f32);
         let p = (detection as f32 / conceal as f32) * distance_factor * detection_factor;
 

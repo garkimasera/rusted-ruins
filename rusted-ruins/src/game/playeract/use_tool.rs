@@ -60,7 +60,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                     kind: vec![EffectKind::WallDamage],
                     ..Effect::default()
                 };
-                let skill_level = player.skills.get(SkillKind::Mining);
+                let skill_level = player.skill_level(SkillKind::Mining);
                 let power = skill_level as f32 * RULES.effect.mining_power_factor
                     + RULES.effect.mining_power_base;
                 do_effect(self.0, &effect, Some(CharaId::Player), pos, power, 0.0);

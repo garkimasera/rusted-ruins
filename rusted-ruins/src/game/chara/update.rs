@@ -44,7 +44,7 @@ pub fn update_attributes(chara: &mut Chara) {
 }
 
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
-    (chara.skills.get(SkillKind::Endurance) as i32 + 8) * ct.base_attr.base_hp / 8
+    (chara.skill_level(SkillKind::Endurance) as i32 + 8) * ct.base_attr.base_hp / 8
 }
 
 pub fn update_encumbrance_status(chara: &mut Chara) {
@@ -69,7 +69,7 @@ pub fn update_encumbrance_status(chara: &mut Chara) {
 }
 
 pub fn calc_carrying_capacity(chara: &Chara) -> f32 {
-    let skill_level = chara.skills.get(SkillKind::Carrying) as f32;
+    let skill_level = chara.skill_level(SkillKind::Carrying) as f32;
 
     (chara.attr.str as f32 / 2.0 + chara.attr.vit as f32)
         * (skill_level + 10.0)

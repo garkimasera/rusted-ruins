@@ -62,7 +62,7 @@ pub fn calc_power(gd: &GameData, active_skill: &'static ActiveSkill, cid: CharaI
         PowerCalcMethod::Num(n) => n,
         PowerCalcMethod::Magic => {
             let chara = gd.chara.get(cid);
-            let skill_level = chara.skills.get(SkillKind::MagicDevice) as f32;
+            let skill_level = chara.skill_level(SkillKind::MagicDevice) as f32;
             let int = chara.attr.int as f32;
             skill_level * int
         }

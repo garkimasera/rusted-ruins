@@ -147,7 +147,7 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
         item.calc_eff() as f32
             * chara.attr.str as f32
             * chara.attr.dex as f32
-            * (chara.skills.get(SkillKind::Throwing) as f32 + RULES.combat.skill_base)
+            * (chara.skill_level(SkillKind::Throwing) as f32 + RULES.combat.skill_base)
     } else {
         item.w() as f32 * RULES.effect.throw_weight_to_eff_factor * chara.attr.str as f32
     };
@@ -203,7 +203,7 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Tar
 
     match item.charge() {
         Some(n) if n >= 1 => {
-            let skill_level = game.gd.chara.get(cid).skills.get(SkillKind::MagicDevice) as f32;
+            let skill_level = game.gd.chara.get(cid).skill_level(SkillKind::MagicDevice) as f32;
             let power = (skill_level / 10.0 + 1.0) * item_eff * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
                 super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);

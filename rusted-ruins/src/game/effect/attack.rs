@@ -111,7 +111,7 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     let equip_def = calc_equip_defence(&game.gd, target_id);
     let target = game.gd.chara.get_mut(target_id);
     let idx = target.template;
-    let defence_skill_level = target.skills.get(SkillKind::Defence);
+    let defence_skill_level = target.skill_level(SkillKind::Defence);
     let defence_power = calc_defence_power(
         equip_def[attack_params.element],
         target.attr.vit,
@@ -187,7 +187,7 @@ fn hit_judge(
         let target = gd.chara.get(target_id);
         calc_evasion_power(
             equip,
-            target.skills.get(SkillKind::Evasion),
+            target.skill_level(SkillKind::Evasion),
             target.attr.dex,
         )
     };

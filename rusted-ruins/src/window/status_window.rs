@@ -192,7 +192,7 @@ impl SkillWindow {
         let items: Vec<_> = skills
             .into_iter()
             .map(|skill_kind| {
-                let (lv, adj) = chara.skill_level(skill_kind);
+                let (lv, adj) = chara.skill_level_with_adj(skill_kind);
                 let skill_name = TextCache::one(
                     skill_kind.to_text(),
                     FontKind::M,

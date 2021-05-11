@@ -86,7 +86,7 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
         return;
     }
     let harvest = item_obj.harvest.as_ref().unwrap();
-    let skill_level = gd.chara.get(cid).skills.get(harvest.kind.related_skill());
+    let skill_level = gd.chara.get(cid).skill_level(harvest.kind.related_skill());
 
     for item in &harvest.item {
         let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
