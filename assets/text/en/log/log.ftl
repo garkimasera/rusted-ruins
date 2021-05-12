@@ -59,6 +59,7 @@ use-active-skill-magic = {$chara} used magic "{$active_skill}".
 use-active-skill-special = {$chara} used special skill "{$active_skill}".
 
 # Messages about using tools
+
 use-tool-without-equip = No tool equiped!
 building-not-adjacent-tile = Need to specify an adjacent tile to build.
 building-shortage-material = Need {$item} x {$n} more to build it.

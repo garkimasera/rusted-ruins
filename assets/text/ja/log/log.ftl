@@ -3,15 +3,23 @@
 
 start = Rusted Ruins へようこそ! (version : {$version})
 
+# Messages about debug command
+
+debug-command-invalid = Invalid debug command.
+debug-command-need-1arg = Debug command "{$command}" needs 1 argument.
+debug-command-failed = Debug command "{$command}" failed.
+debug-command-genchara = Character "{$chara}" is generated.
+debug-command-genitem = Item "{$item}" is generated.
+
+# Messages about tile information
+
+tile-information-no-info = このタイルには特に情報が無い。
+
 # Messages when moving on map
 
 exit-to-outside = {$player}は外へ出た。
-enter-site = {$player}は{$site}に足を踏み入れた。
-change-floor = {$player}は別の階へ移動した。
-
-# Messages about character status
-
-skill-level-up = {$chara}の{$skill}スキルが上昇した。
+enter-site = {$player}は{$site}へ入った。
+change-floor = {$player}は隣のフロアへ向かった。
 
 # Messages about combat
 
@@ -34,11 +42,29 @@ killed-by-starve-damage = {$chara}は餓死した。
 
 item-equip = {$chara}は{$item}を装備した。
 item-pickup = {$chara}は{$item}を拾った。
+item-pick-up-plant = {$item}は植物であり、拾うことはできない。
 item-drop = {$chara}は{$item}を床に置いた。
+item-owned-by-others = {$item}は他者の所有物である。
 drink-item = {$chara}は{$item}を飲み干した。
 eat-item = {$chara}は{$item}を食べた。
 harvest-plant = {$chara}は{$item} x {$n}を収穫した。
 harvest-plant-not-ready = {$item}はまだ収穫できないようだ。
+use-active-skill-magic = {$chara}は"{$active_skill}"を使用した。
+use-active-skill-special = {$chara}は"{$active_skill}"を使用した。
+
+# Messages about using tools
+
+use-tool-without-equip = 道具を持っていない！
+building-not-adjacent-tile = 建築には隣接タイルを指定しなければならない。
+building-shortage-material = 建築には{$item} x {$n}が必要だ。
+chopping-no-tree = 切り倒す木が無い。
+chopping-not-adjacent-tile = 木を切り倒すには隣接タイルを指定しなければならない。
+mining-not-adjacent-tile = 掘るには隣接タイルを指定しなければならない。
+
+# Messages about using items
+use_item-deed-invalid-map = ここで権利証を使うことはできない。
+use_item-deed-occupied = 権利証を使うには、占拠されていない土地が必要だ。
+use_item-deed-succeed = 新たな家を建設した！
 
 # Messages when a character is affected
 
@@ -66,3 +92,8 @@ creation-finish = {$chara}は{$product}の作成を終了した。
 harvest-chop = {$chara}は伐採により{$item} x {$n}を手に入れた。
 harvest-deconstruct = {$chara}は分解した素材から{$item} x {$n}を回収した。
 harvest-plant = {$chara}は{$item} x {$n}を収穫した。
+
+# Message about script
+
+player-receive-item = {$chara}は{$item} x {$n}を受け取った。
+player-receive-money = {$chara}は{$amount}ゴールドを受け取った。

@@ -26,8 +26,8 @@ chara_status-work = Working
 # ItemKind
 
 item_kind-potion = Potion
-item_kind-herb = Herb
 item_kind-food = Food
+item_kind-throwing = Throwing
 item_kind-magic_device = Magic Device
 item_kind-tool = Tool
 item_kind-container = Container

@@ -1,5 +1,9 @@
 # Words for specific enums
 
+# Misc
+
+you = あなた
+
 # DungeonKind
 
 dungeon_kind-cave = 洞窟
@@ -17,11 +21,13 @@ chara_status-overloaded = 潰れ中
 chara_status-scanned = 調査済
 chara_status-asleep = 睡眠
 chara_status-poisoned = 毒
+chara_status-work = 作業中
 
 # ItemKind
 
 item_kind-potion = 薬
 item_kind-food = 食物
+item_kind-throwing = 投擲
 item_kind-magic_device = 魔道具
 item_kind-tool = 道具
 item_kind-container = 入れ物
