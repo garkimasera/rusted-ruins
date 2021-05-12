@@ -15,15 +15,11 @@ use std::process::exit;
 macro_rules! load_config_file {
     ($path:expr) => {{
         let path = cfg_path($path);
-        info!("Loading config file : \"{}\"", path.to_string_lossy());
+        info!("Loading config file : \"{}\"", path.display());
         let s = match read_to_string(&path) {
             Ok(s) => s,
             Err(e) => {
-                error!(
-                    "Cannot load config file \"{}\"\n{}",
-                    path.to_string_lossy(),
-                    e
-                );
+                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
                 exit(1);
             }
         };
@@ -31,11 +27,7 @@ macro_rules! load_config_file {
         match toml::de::from_str(&s) {
             Ok(config) => config,
             Err(e) => {
-                error!(
-                    "Cannot load config file \"{}\"\n{}",
-                    path.to_string_lossy(),
-                    e
-                );
+                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
                 exit(1);
             }
         }
@@ -60,7 +52,7 @@ pub static ASSETS_DIR: Lazy<PathBuf> =
 pub static USER_DIR: Lazy<PathBuf> = Lazy::new(get_user_dir);
 pub static ADDON_DIR: Lazy<Option<PathBuf>> = Lazy::new(get_addon_dir);
 pub static CONFIG: Lazy<Config> = Lazy::new(|| {
-    let config: Config = load_config_file!("config.toml");
+    let config: Config = load_main_config_file();
     args::modify_config_by_args(config)
 });
 pub static SCREEN_CFG: Lazy<visual::ScreenConfig> =
@@ -83,7 +75,7 @@ fn get_assets_dir() -> Option<PathBuf> {
         if path.exists() {
             return Some(path);
         } else {
-            warn!("not found assets directory \"{}\"", path.to_string_lossy());
+            warn!("not found assets directory \"{}\"", path.display());
         }
     }
 
@@ -146,9 +138,82 @@ pub fn cfg_path(s: &str) -> PathBuf {
     path.push(basic::CFG_FILES_DIR);
     path.push(s);
     if !path.exists() {
-        panic!("Config file {} does not exist", path.to_string_lossy());
+        panic!("Config file {} does not exist", path.display());
     }
     path
+}
+
+/// Load main config file from user directory, or create it if not exist.
+fn load_main_config_file() -> Config {
+    let file_name = "config.toml";
+
+    let mut path = USER_DIR.clone();
+    path.push(basic::CFG_FILES_DIR);
+    path.push(file_name);
+
+    if !path.exists() {
+        info!("config.toml not exist");
+
+        let lang = crate::lang_selector::lang_selector();
+
+        let mut default_conf_path = ASSETS_DIR.clone();
+        default_conf_path.push(basic::CFG_FILES_DIR);
+        default_conf_path.push(file_name);
+
+        let s = match read_to_string(&default_conf_path) {
+            Ok(s) => s,
+            Err(e) => {
+                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
+                exit(1);
+            }
+        };
+
+        let mut default_config: Config = match toml::de::from_str(&s) {
+            Ok(config) => config,
+            Err(e) => {
+                error!(
+                    "Cannot load config file \"{}\"\n{}",
+                    path.to_string_lossy(),
+                    e
+                );
+                exit(1);
+            }
+        };
+
+        match lang {
+            "ja" => {
+                default_config.lang = "ja".into();
+                default_config.second_lang = "en".into();
+            }
+            "en" => {
+                default_config.lang = "en".into();
+                default_config.second_lang = "ja".into();
+            }
+            _ => unreachable!(),
+        }
+
+        let config_string = toml::ser::to_string_pretty(&default_config).unwrap();
+        std::fs::write(&path, &config_string).unwrap();
+        info!("create {}", path.display());
+
+        default_config
+    } else {
+        let s = match read_to_string(&path) {
+            Ok(s) => s,
+            Err(e) => {
+                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
+                exit(1);
+            }
+        };
+
+        match toml::de::from_str(&s) {
+            Ok(config) => config,
+            Err(e) => {
+                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
+                exit(1);
+            }
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
@@ -175,7 +240,7 @@ pub struct CfgColor {
     pub a: Option<u8>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub lang: String,
     pub second_lang: String,

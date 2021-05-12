@@ -24,6 +24,7 @@ mod context;
 mod draw;
 mod eventhandler;
 mod game;
+mod lang_selector;
 mod screen;
 mod sdltypeconv;
 mod window;
