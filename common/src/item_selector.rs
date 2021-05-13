@@ -38,8 +38,7 @@ impl ItemSelector {
             return true;
         }
 
-        self.ids.iter().find(|s| *s == id).is_some()
-            || self.groups.iter().find(|s| *s == group).is_some()
+        self.ids.iter().any(|s| s == id) || self.groups.iter().any(|s| s == group)
     }
 
     pub fn select_items_from<'a>(&self, list: &'a [ItemObject]) -> Vec<(ItemIdx, &'a ItemObject)> {
@@ -76,7 +75,7 @@ impl FromStr for ItemSelector {
             }
         }
 
-        if item_selector.ids.len() == 0 && item_selector.groups.len() == 0 {
+        if item_selector.ids.is_empty() && item_selector.groups.is_empty() {
             return Err(ItemSelectorFromStrErr);
         }
 

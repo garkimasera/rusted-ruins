@@ -592,11 +592,7 @@ impl EquipItemList {
     /// Get specified equipped item
     pub fn item(&self, esk: EquipSlotKind, n: usize) -> Option<&Item> {
         assert!(n < MAX_SLOT_NUM_PER_KIND);
-        if let Some(a) = self.list_idx(esk, n) {
-            Some(&self.item_list.items[a].0)
-        } else {
-            None
-        }
+        self.list_idx(esk, n).map(|a| &self.item_list.items[a].0)
     }
 
     /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
@@ -643,11 +639,7 @@ impl EquipItemList {
             .iter()
             .find(|slot| slot.esk == esk && slot.n as usize == n)
         {
-            if let Some(list_idx) = slot.list_idx {
-                Some(list_idx as usize)
-            } else {
-                None
-            }
+            slot.list_idx.map(|list_idx| list_idx as usize)
         } else {
             None
         }
