@@ -1,4 +1,4 @@
-use crate::config::{INPUT_CFG, UI_CFG};
+use crate::config::{CONFIG, INPUT_CFG, UI_CFG};
 use crate::game::command::KeyState;
 use crate::game::Command;
 use geom::*;
@@ -13,7 +13,7 @@ use std::time::Instant;
 
 /// Convert from SDL Event to Command
 pub struct EventHandler {
-    _joystick_subsystem: sdl2::JoystickSubsystem,
+    _joystick_subsystem: Option<sdl2::JoystickSubsystem>,
     joystick: Option<Joystick>,
     command_queue: VecDeque<RawCommand>,
     conv_table: CommandConvTable,
@@ -66,20 +66,26 @@ pub enum RawCommand {
 
 impl EventHandler {
     pub fn new(sdl_context: &sdl2::Sdl) -> EventHandler {
-        let joystick_subsystem = sdl_context
-            .joystick()
-            .expect("Joysticksubsystem Initialization Failed.");
-        let num_joysticks = joystick_subsystem.num_joysticks().unwrap_or(0);
-        let joystick = if num_joysticks > 0 {
-            match joystick_subsystem.open(0) {
-                Ok(joystick) => {
-                    info!("Opened Joystick \"{}\"", joystick.name());
-                    Some(joystick)
+        let (joystick_subsystem, joystick) = if CONFIG.enable_joystick {
+            let joystick_subsystem = sdl_context
+                .joystick()
+                .expect("Joysticksubsystem Initialization Failed.");
+            let num_joysticks = joystick_subsystem.num_joysticks().unwrap_or(0);
+            let joystick = if num_joysticks > 0 {
+                match joystick_subsystem.open(0) {
+                    Ok(joystick) => {
+                        info!("Opened Joystick \"{}\"", joystick.name());
+                        Some(joystick)
+                    }
+                    Err(_) => None,
                 }
-                Err(_) => None,
-            }
+            } else {
+                None
+            };
+
+            (Some(joystick_subsystem), joystick)
         } else {
-            None
+            (None, None)
         };
 
         EventHandler {

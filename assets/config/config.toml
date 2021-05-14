@@ -3,4 +3,5 @@ lang = "en"
 second_lang = "ja"
 screen_config = "screen/800x600.toml"
 hardware_acceleration = true
+enable_joystick = false
 music_volume = 80
