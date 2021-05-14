@@ -13,6 +13,7 @@ pub struct ScriptEngine<'a> {
 pub fn enter<F: FnOnce(ScriptEngine) -> R, R>(f: F) -> R {
     vm::Interpreter::new_with_init(PySettings::default(), |vm| {
         vm.add_native_module("rr".to_owned(), Box::new(crate::rr::make_module));
+        vm.add_native_module("random".to_owned(), Box::new(crate::random::make_module));
         InitParameter::Internal
     })
     .enter(|vm| {

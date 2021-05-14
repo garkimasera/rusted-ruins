@@ -6,6 +6,7 @@ mod engine;
 mod error;
 #[macro_use]
 mod gamedata;
+mod random;
 mod rr;
 mod run;
 mod script_yield;
