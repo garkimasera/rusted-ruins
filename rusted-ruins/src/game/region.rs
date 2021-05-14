@@ -77,7 +77,7 @@ fn add_sites_from_genobj(gd: &mut GameData, rg: &RegionGenObject, rid: RegionId)
     // Add towns
     for &(ref site_gen_id, pos) in &rg.towns {
         super::town::add_town(gd, rid, pos, site_gen_id);
-        debug!(
+        info!(
             "Created new a town \"{}\" at {} in {:?}",
             site_gen_id, pos, rid
         );
@@ -86,7 +86,7 @@ fn add_sites_from_genobj(gd: &mut GameData, rg: &RegionGenObject, rid: RegionId)
     // Add other sites
     for &(ref site_gen_id, pos) in &rg.others {
         super::site::gen::add_site_from_obj(gd, rid, pos, site_gen_id);
-        debug!(
+        info!(
             "Created new an other site \"{}\" at {} in {:?}",
             site_gen_id, pos, rid
         );
