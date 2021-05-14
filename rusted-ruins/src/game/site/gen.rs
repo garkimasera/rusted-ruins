@@ -21,9 +21,9 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             floor: uc.floor,
         };
 
-        if let Some(talk_script_id) = uc.talk_script_id.as_ref() {
+        if !uc.talk_script_id.is_empty() {
             // Talk script setting
-            chara.trigger_talk = Some(talk_script_id.to_owned());
+            chara.trigger_talk = Some(uc.talk_script_id.to_owned());
         }
 
         let cid = gd.add_chara_to_site(chara, sid, uc.n);

@@ -192,8 +192,10 @@ pub struct SiteGenDepInput {
     pub site_symbol: gamedata::map::SiteSymbolKind,
     pub map_template_id: Vec<String>,
     pub default_faction_id: FactionId,
-    pub unique_citizens: Option<Vec<sitegen::UniqueCitizenGenData>>,
-    pub shops: Option<Vec<sitegen::ShopGenData>>,
+    #[serde(default)]
+    pub unique_citizens: Vec<sitegen::UniqueCitizenGenData>,
+    #[serde(default)]
+    pub shops: Vec<sitegen::ShopGenData>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
