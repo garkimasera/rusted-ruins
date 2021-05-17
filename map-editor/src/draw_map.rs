@@ -77,14 +77,19 @@ pub fn draw_map(
             if item_visible {
                 for item in &map.items[p] {
                     let item_idx: ItemIdx = gobj::id_to_idx(&item.id);
+                    let item_obj = gobj::get_obj(item_idx);
                     let pixbuf = &pbh.get(item_idx).image;
-                    let height = pixbuf.get_height();
-                    cr.set_source_pixbuf(
+                    let (x, y, w, h) = item_obj.img_rect_nth(0);
+                    image_copy(
+                        cr,
                         pixbuf,
-                        (ix * TILE_SIZE_I) as f64,
-                        (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
+                        x,
+                        y,
+                        ix * TILE_SIZE_I,
+                        iy * TILE_SIZE_I - h as i32 + TILE_SIZE_I,
+                        w,
+                        h,
                     );
-                    cr.paint();
                 }
             }
         }
@@ -114,7 +119,6 @@ fn draw_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Top right piece
     if let Some(rect) = tile_obj.piece_rect(piece_pattern.top_right, 1, 0) {
@@ -128,7 +132,6 @@ fn draw_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Bottom left piece
     if let Some(rect) = tile_obj.piece_rect(piece_pattern.bottom_left, 2, 0) {
@@ -142,7 +145,6 @@ fn draw_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Bottom right piece
     if let Some(rect) = tile_obj.piece_rect(piece_pattern.bottom_right, 3, 0) {
@@ -156,7 +158,6 @@ fn draw_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
 }
 
@@ -184,7 +185,6 @@ fn draw_wall_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Top right piece
     if let Some(rect) = wall_obj.piece_rect(piece_pattern.top_right, 1, 0) {
@@ -198,7 +198,6 @@ fn draw_wall_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Bottom left piece
     if let Some(rect) = wall_obj.piece_rect(piece_pattern.bottom_left, 2, 0) {
@@ -212,7 +211,6 @@ fn draw_wall_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
     // Bottom right piece
     if let Some(rect) = wall_obj.piece_rect(piece_pattern.bottom_right, 3, 0) {
@@ -226,7 +224,6 @@ fn draw_wall_pieces(
             rect.2,
             rect.3,
         );
-        cr.fill();
     }
 }
 
