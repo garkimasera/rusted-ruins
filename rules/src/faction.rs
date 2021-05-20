@@ -25,6 +25,5 @@ impl Faction {
 /// Rules for character generation
 #[derive(Serialize, Deserialize)]
 pub struct FactionInfo {
-    pub name: String,
     pub default_relation: FactionRelation,
 }

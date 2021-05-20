@@ -52,6 +52,10 @@ impl FactionId {
     pub fn player() -> FactionId {
         FactionId::new("!player").unwrap()
     }
+
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]

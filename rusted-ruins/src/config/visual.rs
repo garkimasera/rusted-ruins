@@ -253,6 +253,7 @@ pub struct StatusWindowConfig {
     pub name_label_rect: CfgRect,
     pub hp_label_rect: CfgRect,
     pub sp_label_rect: CfgRect,
+    pub faction_label_rect: CfgRect,
     pub str_label_rect: CfgRect,
     pub vit_label_rect: CfgRect,
     pub dex_label_rect: CfgRect,

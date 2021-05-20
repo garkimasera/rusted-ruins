@@ -4,7 +4,7 @@ use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::game::extrait::*;
-use crate::text::ToText;
+use crate::text::{ui_txt, ToText};
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
@@ -58,6 +58,7 @@ pub struct StatusWindow {
     name_label: LabelWidget,
     hp_label: LabelWidget,
     sp_label: LabelWidget,
+    faction_label: LabelWidget,
     str_label: LabelWidget,
     vit_label: LabelWidget,
     dex_label: LabelWidget,
@@ -88,6 +89,15 @@ impl StatusWindow {
             cfg.sp_label_rect,
             &format!("SP  {:2.0}", chara.sp),
             FontKind::MonoM,
+        );
+        let faction_label = LabelWidget::new(
+            cfg.faction_label_rect,
+            &format!(
+                "{}: {}",
+                ui_txt("label_text-status-faction"),
+                chara.faction.to_text()
+            ),
+            FontKind::M,
         );
         let str_label = LabelWidget::new(
             cfg.str_label_rect,
@@ -125,6 +135,7 @@ impl StatusWindow {
             name_label,
             hp_label,
             sp_label,
+            faction_label,
             str_label,
             vit_label,
             dex_label,
@@ -143,6 +154,7 @@ impl Window for StatusWindow {
         self.name_label.draw(context);
         self.hp_label.draw(context);
         self.sp_label.draw(context);
+        self.faction_label.draw(context);
         self.str_label.draw(context);
         self.vit_label.draw(context);
         self.dex_label.draw(context);
