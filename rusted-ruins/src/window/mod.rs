@@ -5,6 +5,7 @@ mod creation_window;
 mod dialogreq;
 mod equip_window;
 mod exit_window;
+mod flavor_text_window;
 mod game_info_window;
 mod group_window;
 mod help_window;
@@ -74,6 +75,25 @@ pub enum DialogResult {
     OpenChildDialog(Box<dyn DialogWindow>),
     Reprocess(Command),
     Special(SpecialDialogResult),
+}
+
+impl std::fmt::Debug for DialogResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            DialogResult::Continue => f.write_str("Continue"),
+            DialogResult::Close => f.write_str("Close"),
+            DialogResult::CloseWithValue(v) => f.write_fmt(format_args!("CloseWithValue({:?})", v)),
+            DialogResult::CloseAll => f.write_str("CloseAll"),
+            DialogResult::CloseAllAndReprocess(c) => {
+                f.write_fmt(format_args!("CloseAllAndReprocess({:?})", c))
+            }
+            DialogResult::Command(c) => f.write_fmt(format_args!("Command({:?})", c)),
+            DialogResult::Quit => f.write_str("Quit"),
+            DialogResult::OpenChildDialog(_) => f.write_str("OpenChildDialog"),
+            DialogResult::Reprocess(c) => f.write_fmt(format_args!("Reprocess({:?})", c)),
+            DialogResult::Special(_) => f.write_str("Special"),
+        }
+    }
 }
 
 #[derive(PartialEq, Eq, Clone, Debug)]

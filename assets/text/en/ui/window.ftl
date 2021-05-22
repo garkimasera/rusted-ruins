@@ -14,6 +14,7 @@ tab_text-item_eat = Eat
 tab_text-item_use = Use
 tab_text-item_release = Release
 tab_text-item_read = Read
+button_text-close = Close
 button_text-creation-cancel = Cancel
 button_text-creation-start = Start
 label_text-status-faction = Faction

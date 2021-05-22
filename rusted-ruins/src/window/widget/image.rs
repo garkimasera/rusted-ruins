@@ -9,36 +9,17 @@ use sdl2::rect::Rect;
 /// Image widget.
 pub struct ImageWidget {
     rect: Rect,
-    idx: Idx,
+    idx: ImageIdx,
 }
 
-enum Idx {
+pub enum ImageIdx {
     UiImg(UiImgIdx),
     Chara(CharaTemplateIdx),
     Item((ItemIdx, u32)),
 }
 
-impl ImageWidget {
-    /// Create image widget that show a UIImg
-    pub fn ui_img<R: Into<Rect>>(rect: R, id: &str) -> ImageWidget {
-        let rect = rect.into();
-        let idx: UiImgIdx = gobj::id_to_idx(id);
-
-        ImageWidget {
-            rect,
-            idx: Idx::UiImg(idx),
-        }
-    }
-
-    pub fn chara<R: Into<Rect>>(rect: R, chara_idx: CharaTemplateIdx) -> ImageWidget {
-        let rect = rect.into();
-        ImageWidget {
-            rect,
-            idx: Idx::Chara(chara_idx),
-        }
-    }
-
-    pub fn item<R: Into<Rect>>(rect: R, item: &Item) -> ImageWidget {
+impl ImageIdx {
+    pub fn item(item: &Item) -> Self {
         let mut variation = 0;
         for attr in &item.attrs {
             match attr {
@@ -49,15 +30,29 @@ impl ImageWidget {
             }
         }
 
-        Self::item_idx(rect, item.idx, variation)
+        ImageIdx::Item((item.idx, variation))
+    }
+}
+
+impl ImageWidget {
+    pub fn new<R: Into<Rect>>(rect: R, idx: ImageIdx) -> Self {
+        let rect = rect.into();
+        ImageWidget { rect, idx }
     }
 
-    pub fn item_idx<R: Into<Rect>>(rect: R, item_idx: ItemIdx, n: u32) -> ImageWidget {
-        let rect = rect.into();
-        ImageWidget {
-            rect,
-            idx: Idx::Item((item_idx, n)),
-        }
+    /// Create image widget that show a UIImg
+    pub fn ui_img<R: Into<Rect>>(rect: R, id: &str) -> Self {
+        let idx: UiImgIdx = gobj::id_to_idx(id);
+
+        Self::new(rect, ImageIdx::UiImg(idx))
+    }
+
+    pub fn chara<R: Into<Rect>>(rect: R, chara_idx: CharaTemplateIdx) -> Self {
+        Self::new(rect, ImageIdx::Chara(chara_idx))
+    }
+
+    pub fn item<R: Into<Rect>>(rect: R, item: &Item) -> Self {
+        Self::new(rect, ImageIdx::item(item))
     }
 
     pub fn set_rect<R: Into<Rect>>(&mut self, rect: R) {
@@ -70,14 +65,14 @@ impl WidgetTrait for ImageWidget {
 
     fn draw(&mut self, context: &mut Context) {
         match self.idx {
-            Idx::UiImg(idx) => {
+            ImageIdx::UiImg(idx) => {
                 context.render_tex(idx, self.rect);
             }
-            Idx::Chara(idx) => {
+            ImageIdx::Chara(idx) => {
                 // Centering to given rect
                 context.render_tex_n_center(idx, self.rect, 0);
             }
-            Idx::Item(idx) => {
+            ImageIdx::Item(idx) => {
                 // Centering to given rect
                 context.render_tex_n_center(idx.0, self.rect, idx.1);
             }

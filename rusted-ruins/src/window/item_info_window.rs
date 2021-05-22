@@ -5,17 +5,21 @@ use crate::draw::border::draw_window_border;
 use crate::eventhandler::InputMode;
 use crate::game::item::info::ItemInfoText;
 use crate::game::{Animation, Command, DoPlayerAction, Game};
+use crate::window::flavor_text_window::FlavorTextWindow;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::ItemLocation;
+use common::gobj;
 use sdl2::rect::Rect;
 
 pub struct ItemInfoWindow {
     rect: Rect,
-    _il: ItemLocation,
+    il: ItemLocation,
     item_image: ImageWidget,
     item_name: LabelWidget,
     item_kind: LabelWidget,
     desc_text: Vec<(ImageWidget, LabelWidget)>,
+    flavor_button: Option<ButtonWidget>,
+    flavor_text: Option<FlavorTextWindow>,
     size_adjusted: bool,
     escape_click: bool,
 }
@@ -29,6 +33,9 @@ impl ItemInfoWindow {
         let item_image = ImageWidget::item(c.item_image, game.gd.get_item(il).0);
         let item_name = LabelWidget::new(c.item_name, &info.item_name, FontKind::M);
         let item_kind = LabelWidget::new(c.item_kind, &info.item_kind, FontKind::M);
+
+        let flavor_button = crate::text::flavor_txt_checked(gobj::idx_to_id(item.0.idx))
+            .map(|_| ButtonWidget::new(c.flavor_button, "i", FontKind::S));
 
         let mut desc_text = Vec::new();
         let rect = Rect::new(0, 0, 1, 1);
@@ -45,10 +52,12 @@ impl ItemInfoWindow {
 
         ItemInfoWindow {
             rect: UI_CFG.item_info_window.rect.into(),
-            _il: il,
+            il,
             item_image,
             item_name,
             item_kind,
+            flavor_button,
+            flavor_text: None,
             desc_text,
             size_adjusted: false,
             escape_click: false,
@@ -57,7 +66,7 @@ impl ItemInfoWindow {
 }
 
 impl Window for ItemInfoWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
         draw_window_border(context, self.rect);
 
         let c = &UI_CFG.item_info_window;
@@ -65,6 +74,10 @@ impl Window for ItemInfoWindow {
         let icon_rect: Rect = c.desc_text_icon.into();
         let mut label_y = label_rect.y;
         let mut icon_y = icon_rect.y;
+
+        if let Some(flavor_button) = self.flavor_button.as_mut() {
+            flavor_button.draw(context);
+        }
 
         if !self.size_adjusted {
             for (icon, label) in &mut self.desc_text {
@@ -90,12 +103,39 @@ impl Window for ItemInfoWindow {
             icon.draw(context);
             label.draw(context);
         }
+
+        if let Some(flavor_text) = self.flavor_text.as_mut() {
+            flavor_text.draw(context, game, anim);
+        }
     }
 }
 
 impl DialogWindow for ItemInfoWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+        if let Some(flavor_text) = self.flavor_text.as_mut() {
+            match flavor_text.process_command(&command, pa) {
+                DialogResult::Continue => {
+                    return DialogResult::Continue;
+                }
+                DialogResult::Close => {
+                    self.flavor_text = None;
+                    return DialogResult::Continue;
+                }
+                _ => unreachable!(),
+            }
+        }
+
         check_escape_click!(self, command, false);
+
+        let command = command.relative_to(self.rect);
+
+        if let Some(flavor_button) = self.flavor_button.as_mut() {
+            if flavor_button.process_command(&command).is_some() {
+                let item = pa.gd().get_item(self.il).0;
+                let id = gobj::idx_to_id(item.idx);
+                self.flavor_text = FlavorTextWindow::new(id, ImageIdx::item(item));
+            }
+        }
 
         match command {
             Command::Cancel => DialogResult::Close,

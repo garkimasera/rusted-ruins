@@ -53,6 +53,7 @@ pub struct UiConfig {
     pub item_window: ItemWindowConfig,
     pub item_info_window: ItemInfoWindowConfig,
     pub equip_window: EquipWindowConfig,
+    pub flavor_text_window: FlavorTextWindowConfig,
     pub scrolling_text_window: ScrollingTextWindowConfig,
     pub info_window: InfoWindowConfig,
     pub status_window: StatusWindowConfig,
@@ -231,6 +232,7 @@ pub struct ItemInfoWindowConfig {
     pub item_image: CfgRect,
     pub item_name: CfgRect,
     pub item_kind: CfgRect,
+    pub flavor_button: CfgRect,
     pub desc_text: CfgRect,
     pub desc_text_icon: CfgRect,
 }
@@ -240,6 +242,15 @@ pub struct EquipWindowConfig {
     pub rect: CfgRect,
     pub n_row: u32,
     pub column_pos: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct FlavorTextWindowConfig {
+    pub rect: CfgRect,
+    pub image_rect: CfgRect,
+    pub name_rect: CfgRect,
+    pub text_rect: CfgRect,
+    pub close_button_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

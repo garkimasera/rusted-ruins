@@ -45,6 +45,13 @@ n_display_line = 7
 rect = { x = -999, y = 120, w = 200, h = 100 }
 list_y = 52
 
+[flavor_text_window]
+rect = { x = -999, y = 50, w = 480, h = 340 }
+image_rect = { x = 5, y = 5, w = 48, h = 48 }
+name_rect = { x = 55, y = 5, w = 200, h = 30 }
+text_rect = { x = 5, y = 55, w = 470, h = 240 }
+close_button_rect = { x = 200, y = 305, w = 80, h = 30 }
+
 [help_window]
 rect = { x = -999, y = -999, w = 450, h = 300 }
 key_label_start = { x = 4, y = 4 }
@@ -114,6 +121,7 @@ rect = { x = -999, y = -999, w = 450, h = 300 }
 item_image = { x = 2, y = 0, w = 48, h = 48 }
 item_name = { x = 50, y = 2 }
 item_kind = { x = 50, y = 25 }
+flavor_button = { x = 410, y = 8, w = 32, h = 32 }
 desc_text = { x = 24, y = 48, w = 422 }
 desc_text_icon = { x = 3, y = 52, w = 16, h = 16 }
 
