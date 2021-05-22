@@ -118,16 +118,9 @@ impl MainWinDrawer {
         let map = gd.get_current_map();
         let view_map = &game.view_map;
         let player_pos = gd.player_pos();
-        let prev_player_pos: Option<Vec2d> = if let Some(dir) = player_move_dir {
-            Some(player_pos - dir.as_vec())
-        } else {
-            None
-        };
-        let prev_player_pos_one_back_side = if let Some(prev_player_pos) = prev_player_pos {
-            Some(prev_player_pos + (0, -1))
-        } else {
-            None
-        };
+        let prev_player_pos: Option<Vec2d> = player_move_dir.map(|dir| player_pos - dir.as_vec());
+        let prev_player_pos_one_back_side =
+            prev_player_pos.map(|prev_player_pos| prev_player_pos + (0, -1));
 
         let is_player_moving = player_move_adjust != (0, 0);
 

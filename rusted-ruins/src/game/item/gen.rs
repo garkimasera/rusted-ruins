@@ -111,11 +111,7 @@ impl CalcLevelWeightDist {
 
 /// Generate an item from ItemGen.
 pub fn from_item_gen(item_gen: &ItemGen) -> Option<Item> {
-    if let Some(idx) = gobj::id_to_idx_checked::<ItemIdx>(&item_gen.id) {
-        Some(gen_item_from_idx(idx, 1))
-    } else {
-        None
-    }
+    gobj::id_to_idx_checked::<ItemIdx>(&item_gen.id).map(|idx| gen_item_from_idx(idx, 1))
 }
 
 pub fn gen_item_from_id(id: &str, level: u32) -> Item {
@@ -181,7 +177,7 @@ fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
     if growing_time_hours > 0 {
         item.time = Some(ItemTime {
             last_updated,
-            remaining: Duration::from_hours(growing_time_hours.into()).into(),
+            remaining: Duration::from_hours(growing_time_hours.into()),
         });
     }
 }

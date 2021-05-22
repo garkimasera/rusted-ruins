@@ -58,18 +58,16 @@ impl DialogWindow for ExitWindow {
         }
 
         match self.choose_win.process_command(command, pa) {
-            DialogResult::CloseWithValue(v) => {
+            DialogResult::CloseWithValue(DialogCloseValue::Index(n)) => {
                 // An choice is choosed
-                if let DialogCloseValue::Index(n) = v {
-                    match n {
-                        0 => {
-                            pa.game().save_file();
-                            return DialogResult::Close;
-                        }
-                        1 => return DialogResult::Quit,
-                        2 => return DialogResult::Close,
-                        _ => panic!(),
+                match n {
+                    0 => {
+                        pa.game().save_file();
+                        return DialogResult::Close;
                     }
+                    1 => return DialogResult::Quit,
+                    2 => return DialogResult::Close,
+                    _ => panic!(),
                 }
             }
             DialogResult::Close => {
@@ -130,27 +128,22 @@ impl Window for GameOverWindow {
 
 impl DialogWindow for GameOverWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match *command {
-            Command::Cancel => {
-                return DialogResult::Continue;
-            }
-            _ => (),
+        if *command == Command::Cancel {
+            return DialogResult::Continue;
         }
 
         use super::SpecialDialogResult::ReturnToStartScreen;
         match self.choose_win.process_command(command, pa) {
-            DialogResult::CloseWithValue(v) => {
+            DialogResult::CloseWithValue(DialogCloseValue::Index(n)) => {
                 // An choice is choosed
-                if let DialogCloseValue::Index(n) = v {
-                    match n {
-                        0 => {
-                            pa.restart();
-                            return DialogResult::Close;
-                        }
-                        1 => return DialogResult::Special(ReturnToStartScreen),
-                        2 => return DialogResult::Quit,
-                        _ => panic!(),
+                match n {
+                    0 => {
+                        pa.restart();
+                        return DialogResult::Close;
                     }
+                    1 => return DialogResult::Special(ReturnToStartScreen),
+                    2 => return DialogResult::Quit,
+                    _ => panic!(),
                 }
             }
             _ => (),

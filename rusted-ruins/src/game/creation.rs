@@ -190,13 +190,11 @@ pub fn available_material(
     recipe: &Recipe,
     ill: ItemListLocation,
 ) -> Vec<(ItemIdx, u32)> {
-    let group = if let Some(group) = recipe.ingredients.iter().find_map(|ingredient| {
-        if let Some(group) = material_group(&ingredient.0) {
-            Some(group)
-        } else {
-            None
-        }
-    }) {
+    let group = if let Some(group) = recipe
+        .ingredients
+        .iter()
+        .find_map(|ingredient| material_group(&ingredient.0))
+    {
         group
     } else {
         return vec![];

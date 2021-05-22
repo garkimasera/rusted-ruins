@@ -34,11 +34,8 @@ impl Window for RegisterShortcutDialog {
 
 impl DialogWindow for RegisterShortcutDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match *command {
-            Command::Cancel => {
-                return DialogResult::Close;
-            }
-            _ => (),
+        if *command == Command::Cancel {
+            return DialogResult::Close;
         }
 
         match self.choose_win.process_command(command, pa) {

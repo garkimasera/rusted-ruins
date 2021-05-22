@@ -62,11 +62,8 @@ impl Window for MsgDialog {
 
 impl DialogWindow for MsgDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match *command {
-            Command::Cancel => {
-                return DialogResult::Close;
-            }
-            _ => (),
+        if *command == Command::Cancel {
+            return DialogResult::Close;
         }
 
         if let DialogResult::CloseWithValue(DialogCloseValue::Index(n)) =

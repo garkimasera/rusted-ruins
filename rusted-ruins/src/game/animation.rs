@@ -35,11 +35,11 @@ pub enum Animation {
 impl Animation {
     pub fn get_n_frame(&self) -> u32 {
         match self {
-            &Animation::PlayerMove { n_frame, .. } => n_frame,
-            &Animation::Img { n_frame, .. } => n_frame,
-            &Animation::Shot { n_frame, .. } => n_frame,
-            &Animation::Destroy { n_frame, .. } => n_frame,
-            &Animation::Work { n_frame, .. } => n_frame,
+            Animation::PlayerMove { n_frame, .. } => *n_frame,
+            Animation::Img { n_frame, .. } => *n_frame,
+            Animation::Shot { n_frame, .. } => *n_frame,
+            Animation::Destroy { n_frame, .. } => *n_frame,
+            Animation::Work { n_frame, .. } => *n_frame,
         }
     }
 

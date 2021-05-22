@@ -18,9 +18,10 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(w: u32, h: u32) -> MapBuilder {
-        let mut map_builder = MapBuilder::default();
-        map_builder.map_gen_param = MapGenParam::Flat { w, h };
-        map_builder
+        MapBuilder {
+            map_gen_param: MapGenParam::Flat { w, h },
+            ..MapBuilder::default()
+        }
     }
 
     pub fn from_map_gen_id(id: &str) -> Self {
