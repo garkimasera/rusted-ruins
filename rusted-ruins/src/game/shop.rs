@@ -1,6 +1,7 @@
 use crate::game::extrait::*;
 use crate::game::item::gen::gen_item_by_level;
 use common::gamedata::*;
+use common::item_selector::ItemSelector;
 use common::sitegen::ShopGenData;
 use rules::RULES;
 
@@ -35,34 +36,33 @@ pub fn update_items_on_shop(shop: &mut Shop, shop_gen: &ShopGenData) {
     let n_gen_item = rng::gen_range(RULES.town.min_shop_items..RULES.town.max_shop_items);
 
     for _ in 0..n_gen_item {
-        if let Some(item) = gen_shop_item(shop.level, &shop.kind, shop_gen) {
+        if let Some(item) = gen_shop_item(shop.level, shop_gen) {
             shop.items.append(item, 1);
         }
     }
 }
 
 /// Generate new item at shops
-fn gen_shop_item(floor_level: u32, shop_kind: &ShopKind, shop_gen: &ShopGenData) -> Option<Item> {
-    let f = |item_obj: &ItemObject| match shop_kind {
-        ShopKind::Specified => {
-            if shop_gen.id.iter().any(|id| item_obj.id == *id) {
-                1.0
-            } else {
-                0.0
-            }
+fn gen_shop_item(floor_level: u32, shop_gen: &ShopGenData) -> Option<Item> {
+    let item_selector: ItemSelector = if shop_gen.shop_kind.is_empty() {
+        shop_gen
+            .selector
+            .parse()
+            .unwrap_or_else(|e| panic!("invalid selector for shop in site_gen object\n{}", e))
+    } else {
+        RULES
+            .town
+            .shop_kinds
+            .get(&shop_gen.shop_kind)
+            .cloned()
+            .unwrap_or_else(|| panic!("unknown shop kind\n{}", shop_gen.shop_kind))
+    };
+    let f = |item_obj: &ItemObject| {
+        if item_selector.is(item_obj) {
+            1.0
+        } else {
+            0.0
         }
-        ShopKind::Equipment => match item_obj.kind {
-            ItemKind::Weapon(_) | ItemKind::Armor(_) => 1.0,
-            _ => 0.0,
-        },
-        ShopKind::Potion => match item_obj.kind {
-            ItemKind::Potion => 1.0,
-            _ => 0.0,
-        },
-        ShopKind::Food => match item_obj.kind {
-            ItemKind::Food => 1.0,
-            _ => 0.0,
-        },
     };
     gen_item_by_level(floor_level, f, true)
 }

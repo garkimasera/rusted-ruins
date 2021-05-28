@@ -1,6 +1,5 @@
 use crate::gamedata::faction::FactionId;
 use crate::gamedata::map::SiteSymbolKind;
-use crate::gamedata::shop::ShopKind;
 use crate::gamedata::site::SiteKind;
 use geom::Vec2d;
 
@@ -35,7 +34,8 @@ pub struct UniqueCitizenGenData {
 pub struct ShopGenData {
     /// Shopkeeper's id (n)
     pub chara_n: u32,
-    pub kind: ShopKind,
     #[serde(default)]
-    pub id: Vec<String>,
+    pub shop_kind: String,
+    #[serde(default)]
+    pub selector: String,
 }
