@@ -3,11 +3,13 @@ use super::effect::Effect;
 use super::item_attr::*;
 use super::skill::WeaponKind;
 use super::time::{Duration, Time};
+use super::KindParseError;
 use crate::basic::ARRAY_STR_ID_LEN;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
 use std::cmp::{Ord, Ordering, PartialOrd};
+use std::str::FromStr;
 
 /// Game item
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -184,6 +186,35 @@ impl ItemKind {
     }
 }
 
+impl FromStr for ItemKind {
+    type Err = KindParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Ok(weapon) = WeaponKind::from_str(s) {
+            return Ok(ItemKind::Weapon(weapon));
+        }
+        if let Ok(armor) = ArmorKind::from_str(s) {
+            return Ok(ItemKind::Armor(armor));
+        }
+
+        Ok(match s {
+            "potion" => ItemKind::Potion,
+            "food" => ItemKind::Food,
+            "throwing" => ItemKind::Throwing,
+            "magic_device" => ItemKind::MagicDevice,
+            "tool" => ItemKind::Tool,
+            "container" => ItemKind::Container,
+            "special" => ItemKind::Special,
+            "readable" => ItemKind::Readable,
+            "material" => ItemKind::Material,
+            "object" => ItemKind::Object,
+            _ => {
+                return Err(KindParseError(s.into()));
+            }
+        })
+    }
+}
+
 bitflags! {
     #[derive(Serialize, Deserialize)]
     #[serde(transparent)]
@@ -251,6 +282,25 @@ pub enum ArmorKind {
     Arms,
     Legs,
     Accessory,
+}
+
+impl FromStr for ArmorKind {
+    type Err = KindParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "shield" => ArmorKind::Shield,
+            "head" => ArmorKind::Head,
+            "skin" => ArmorKind::Skin,
+            "body" => ArmorKind::Body,
+            "arms" => ArmorKind::Arms,
+            "legs" => ArmorKind::Legs,
+            "accessory" => ArmorKind::Accessory,
+            _ => {
+                return Err(KindParseError(s.into()));
+            }
+        })
+    }
 }
 
 /// Data to generate an item.

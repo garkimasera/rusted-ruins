@@ -1,15 +1,16 @@
-use crate::gamedata::{EquipSlotKind, ItemKind, ItemObject};
+use crate::gamedata::{EquipSlotKind, ItemKind, ItemObject, KindParseError, WeaponKind};
 use crate::objholder::ItemIdx;
 use std::str::FromStr;
 use thiserror::Error;
 
 /// Select items by given ids and groups.
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ItemSelector {
     all: bool,
     esk: Option<EquipSlotKind>,
     level: u32,
     ids: Vec<String>,
+    kinds: Vec<ItemKind>,
     groups: Vec<String>,
 }
 
@@ -27,6 +28,7 @@ impl ItemSelector {
     pub fn is(&self, obj: &ItemObject) -> bool {
         let id = &obj.id;
         let group = &obj.group;
+        let kind = obj.kind;
 
         if let Some(esk) = self.esk {
             if Some(esk) != obj.kind.equip_slot_kind() {
@@ -38,7 +40,9 @@ impl ItemSelector {
             return true;
         }
 
-        self.ids.iter().any(|s| s == id) || self.groups.iter().any(|s| s == group)
+        self.ids.iter().any(|s| s == id)
+            || self.kinds.iter().any(|s| *s == kind)
+            || self.groups.iter().any(|s| s == group)
     }
 
     pub fn select_items_from<'a>(&self, list: &'a [ItemObject]) -> Vec<(ItemIdx, &'a ItemObject)> {
@@ -68,15 +72,24 @@ impl FromStr for ItemSelector {
         for a in s.split(',') {
             if let Some(group) = a.strip_prefix("group/") {
                 item_selector.groups.push(group.to_owned());
+            } else if let Some(kind) = a.strip_prefix("kind/") {
+                if let Ok(kind) = kind.parse() {
+                    item_selector.kinds.push(kind);
+                } else {
+                    return Err(ItemSelectorFromStrErr(s.into()));
+                }
             } else if a.len() > 1 {
                 item_selector.ids.push(a.into());
             } else {
-                return Err(ItemSelectorFromStrErr);
+                return Err(ItemSelectorFromStrErr(s.into()));
             }
         }
 
-        if item_selector.ids.is_empty() && item_selector.groups.is_empty() {
-            return Err(ItemSelectorFromStrErr);
+        if item_selector.ids.is_empty()
+            && item_selector.kinds.is_empty()
+            && item_selector.groups.is_empty()
+        {
+            return Err(ItemSelectorFromStrErr(s.into()));
         }
 
         Ok(item_selector)
@@ -102,12 +115,12 @@ impl std::fmt::Display for ItemSelector {
 }
 
 #[derive(Clone, Debug, Error)]
-#[error("invalid input for item selector")]
-pub struct ItemSelectorFromStrErr;
+#[error("invalid input for item selector \"{0}\"")]
+pub struct ItemSelectorFromStrErr(String);
 
 #[test]
 fn item_selector_test() {
-    let s = "group/food,hoge";
+    let s = "kind/food,group/food,hoge";
 
     let item_selector: ItemSelector = s.parse().unwrap();
 

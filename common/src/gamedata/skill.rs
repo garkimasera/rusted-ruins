@@ -6,7 +6,7 @@ use thiserror::Error;
 
 #[derive(Clone, PartialEq, Eq, Debug, Error)]
 #[error("invalid string {0}")]
-pub struct SkillKindParseError(String);
+pub struct KindParseError(pub(crate) String);
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SkillList {
@@ -135,7 +135,7 @@ macro_rules! define_skill_kind {
         }
 
         impl FromStr for SkillKind {
-            type Err = SkillKindParseError;
+            type Err = KindParseError;
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 Ok(match s {
                     $(
@@ -151,7 +151,24 @@ macro_rules! define_skill_kind {
                         $creation_as_str => SkillKind::$creation,
                     )*
                     _ => {
-                        return Err(SkillKindParseError(s.to_owned()));
+                        return Err(KindParseError(s.to_owned()));
+                    }
+                })
+            }
+        }
+
+        impl FromStr for WeaponKind {
+            type Err = KindParseError;
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                Ok(match s {
+                    $(
+                        $melee_weapon_as_str => WeaponKind::$melee_weapon,
+                    )*
+                    $(
+                        $ranged_weapon_as_str => WeaponKind::$ranged_weapon,
+                    )*
+                    _ => {
+                        return Err(KindParseError(s.to_owned()));
                     }
                 })
             }
