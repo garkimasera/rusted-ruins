@@ -160,3 +160,11 @@ pub enum ActiveSkillGroup {
     Special,
     Magic,
 }
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ActiveSkillOrigin {
+    Inherent,
+    Learned,
+    Race,
+    Class,
+}

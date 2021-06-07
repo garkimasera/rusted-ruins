@@ -33,11 +33,8 @@ pub fn create_chara(
         },
         hp: 1,
         sp: RULES.chara.sp_default,
-        morale: Morale::default(),
-        traits: Vec::new(),
-        status: Vec::new(),
         skills: gen_skill_list(ct, lv, class),
-        trigger_talk: None,
+        ..Chara::default()
     };
 
     if let Some(race) = RULES.race.get(&ct.race) {

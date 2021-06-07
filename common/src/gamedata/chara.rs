@@ -1,4 +1,4 @@
-use super::defs::{ActiveSkillId, Recipe};
+use super::defs::{ActiveSkillId, ActiveSkillOrigin, Recipe};
 use super::faction::FactionId;
 use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
@@ -73,6 +73,7 @@ pub struct Chara {
     pub traits: Vec<(CharaTraitOrigin, CharaTrait)>,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
+    pub active_skills: Vec<(ActiveSkillOrigin, ActiveSkillId)>,
     /// When talked, execute this script
     pub trigger_talk: Option<String>,
 }
@@ -224,6 +225,7 @@ impl Default for Chara {
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),
+            active_skills: Vec::new(),
             trigger_talk: None,
         }
     }

@@ -89,4 +89,10 @@ fn set_initial_skills(chara: &mut Chara) {
     for skill in &RULES.newgame.common_initial_skills {
         chara.skills.learn_new_skill(*skill);
     }
+
+    for active_skill in &RULES.newgame.common_initial_active_skills {
+        chara
+            .active_skills
+            .push((ActiveSkillOrigin::Learned, active_skill.clone()));
+    }
 }
