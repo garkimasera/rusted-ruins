@@ -150,6 +150,7 @@ impl DialogWindow for GroupWindow {
                     DialogResult::CloseAllAndReprocess(command)
                 }
                 DialogResult::Reprocess(command) => DialogResult::Reprocess(command),
+                DialogResult::OpenChildDialog(dialog) => DialogResult::OpenChildDialog(dialog),
                 _ => DialogResult::Continue,
             }
         } else {

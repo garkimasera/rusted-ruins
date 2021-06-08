@@ -495,7 +495,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                 self.push_dialog_window(Box::new(win));
             }
             Command::OpenEquipWin => {
-                let dialog = Box::new(equip_window::EquipWindow::new(&mut pa, CharaId::Player));
+                let dialog = Box::new(equip_window::EquipWindow::new(pa.game(), CharaId::Player));
                 self.push_dialog_window(dialog);
             }
             Command::OpenStatusWin => {

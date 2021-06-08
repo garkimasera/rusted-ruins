@@ -14,8 +14,8 @@ pub struct Sidebar {
 static ICON_IDX: Lazy<UiImgIdx> = Lazy::new(|| gobj::id_to_idx("sidebar-icon"));
 
 const ITEM_INVENTORY: u32 = 0;
-const ITEM_EQUIPMENT: u32 = 1;
-const ITEM_CHARAINFO: u32 = 2;
+const ITEM_CHARAINFO: u32 = 1;
+const ITEM_ACTIVE_SKILL: u32 = 2;
 const ITEM_CREATION: u32 = 3;
 const ITEM_GAMEINFO: u32 = 4;
 const ITEM_SAVE: u32 = 5;
@@ -92,10 +92,11 @@ impl DialogWindow for Sidebar {
                 let i = (*y - self.rect.y) as u32 / (UI_CFG.sidebar.icon_h + UI_CFG.sidebar.space);
                 if i == ITEM_INVENTORY {
                     return DialogResult::Command(Some(Command::OpenItemMenu));
-                } else if i == ITEM_EQUIPMENT {
-                    return DialogResult::Command(Some(Command::OpenEquipWin));
                 } else if i == ITEM_CHARAINFO {
                     return DialogResult::Command(Some(Command::OpenStatusWin));
+                } else if i == ITEM_ACTIVE_SKILL {
+                    todo!()
+                    // return DialogResult::Command(Some(Command::));
                 } else if i == ITEM_CREATION {
                     return DialogResult::Command(Some(Command::OpenCreationWin));
                 } else if i == ITEM_GAMEINFO {

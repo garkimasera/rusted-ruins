@@ -1,4 +1,5 @@
 use super::commonuse::*;
+use super::equip_window::EquipWindow;
 use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
@@ -10,7 +11,7 @@ use common::gamedata::*;
 use common::gobj;
 use once_cell::sync::Lazy;
 
-const STATUS_WINDOW_GROUP_SIZE: u32 = 2;
+const STATUS_WINDOW_GROUP_SIZE: u32 = 3;
 
 pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
     // Workaround to specify cid for window creation
@@ -28,6 +29,11 @@ pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
                     TARGET_CID.lock().unwrap().unwrap(),
                 ))
             },
+        },
+        MemberInfo {
+            idx: gobj::id_to_idx("!tab-icon-chara-equipments"),
+            text_id: "tab_text-chara_equipments",
+            creator: |game| Box::new(EquipWindow::new(game, TARGET_CID.lock().unwrap().unwrap())),
         },
         MemberInfo {
             idx: gobj::id_to_idx("!tab-icon-chara-skills"),
