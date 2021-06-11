@@ -95,8 +95,7 @@ impl DialogWindow for Sidebar {
                 } else if i == ITEM_CHARAINFO {
                     return DialogResult::Command(Some(Command::OpenStatusWin));
                 } else if i == ITEM_ACTIVE_SKILL {
-                    todo!()
-                    // return DialogResult::Command(Some(Command::));
+                    return DialogResult::Command(Some(Command::OpenActiveSkillWin));
                 } else if i == ITEM_CREATION {
                     return DialogResult::Command(Some(Command::OpenCreationWin));
                 } else if i == ITEM_GAMEINFO {

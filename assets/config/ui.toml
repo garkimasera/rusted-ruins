@@ -150,6 +150,12 @@ int_label_rect = { x = 5, y = 160 }
 wil_label_rect = { x = 5, y = 180 }
 cha_label_rect = { x = 5, y = 200 }
 
+[active_skill_window]
+rect = { x = -999, y = -999, w = 520, h = 286 }
+list_rect = { x = 0, y = 0, w = 520, h = 286 }
+n_row = 10
+column_pos = [1, 340, 450]
+
 [game_info_window]
 money_label_rect = { x = 5, y = 5 }
 

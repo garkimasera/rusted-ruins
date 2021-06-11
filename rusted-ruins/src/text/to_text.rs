@@ -137,6 +137,7 @@ impl ToText for Command {
             RotateWindowRight => "command-rotate_window_right",
             RotateWindowLeft => "command-rotate_window_left",
             ItemInfomation => "command-item_information",
+            OpenActiveSkillWin => "command-open_active_skill_win",
             OpenCreationWin => "command-open_creation_win",
             OpenDebugCommandWin => "command-open_debug_command_win",
             OpenEquipWin => "command-open_equip_win",

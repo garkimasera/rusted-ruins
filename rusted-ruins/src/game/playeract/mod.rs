@@ -195,6 +195,11 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)
     }
 
+    /// Use active skill. Returns false if the skill cost is not enough.
+    pub fn use_active_skill(&mut self, _active_skill_id: &ActiveSkillId) -> bool {
+        false
+    }
+
     /// Try talk to next chara
     /// If success, returns id of the talk script
     pub fn try_talk(&mut self, dir: Direction) {

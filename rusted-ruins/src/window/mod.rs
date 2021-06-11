@@ -1,5 +1,7 @@
 #[macro_use]
 mod tools;
+
+mod active_skill_window;
 mod choose_window;
 mod creation_window;
 mod dialogreq;
@@ -469,6 +471,13 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                 if pa.gd().on_map_entrance() {
                     pa.goto_next_floor(Direction::none(), true);
                 }
+            }
+            Command::OpenActiveSkillWin => {
+                let dialog = Box::new(active_skill_window::ActiveSkillWindow::new(
+                    pa.gd(),
+                    CharaId::Player,
+                ));
+                self.push_dialog_window(dialog);
             }
             Command::OpenCreationWin => {
                 let dialog = Box::new(creation_window::create_creation_window_group(
