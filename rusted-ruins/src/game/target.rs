@@ -39,12 +39,6 @@ pub fn auto_target_for_player(game: &Game, effect: &Effect) -> Option<Target> {
         TargetMode::None => Some(Target::None),
         TargetMode::Player => Some(Target::Chara(CharaId::Player)),
         TargetMode::Ally => None,
-        TargetMode::Enemy => {
-            if let Some(target) = game.target_chara() {
-                Some(target.into())
-            } else {
-                None
-            }
-        }
+        TargetMode::Enemy => game.target_chara().map(|target| target.into()),
     }
 }

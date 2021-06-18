@@ -106,16 +106,13 @@ impl DialogWindow for ChooseWindow {
         };
         let command = command.relative_to(rect);
         if let Some(response) = self.answer_list.process_command(&command) {
-            match response {
-                ListWidgetResponse::Select(n) => {
-                    if self.callbacks.is_empty() {
-                        return DialogResult::CloseWithValue(DialogCloseValue::Index(n));
-                    } else {
-                        self.callbacks.get_mut(n as usize).unwrap()(pa);
-                        return DialogResult::Close;
-                    }
+            if let ListWidgetResponse::Select(n) = response {
+                if self.callbacks.is_empty() {
+                    return DialogResult::CloseWithValue(DialogCloseValue::Index(n));
+                } else {
+                    self.callbacks.get_mut(n as usize).unwrap()(pa);
+                    return DialogResult::Close;
                 }
-                _ => (),
             }
             return DialogResult::Continue;
         }

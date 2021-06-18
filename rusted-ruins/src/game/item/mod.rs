@@ -72,11 +72,8 @@ impl Item {
 
     fn material(&self) -> Option<(MaterialName, &Material)> {
         for attr in &self.attrs {
-            match attr {
-                ItemAttr::Material(material_name) => {
-                    return Some((*material_name, RULES.material.get(material_name)))
-                }
-                _ => (),
+            if let ItemAttr::Material(material_name) = attr {
+                return Some((*material_name, RULES.material.get(material_name)));
             }
         }
         None
@@ -140,11 +137,8 @@ impl Item {
 
     fn charge(&self) -> Option<u32> {
         for attr in &self.attrs {
-            match attr {
-                ItemAttr::Charge { n } => {
-                    return Some(*n);
-                }
-                _ => (),
+            if let ItemAttr::Charge { n } = attr {
+                return Some(*n);
             }
         }
         None
@@ -152,11 +146,8 @@ impl Item {
 
     fn charge_mut(&mut self) -> Option<&mut u32> {
         for attr in &mut self.attrs {
-            match attr {
-                ItemAttr::Charge { n } => {
-                    return Some(n);
-                }
-                _ => (),
+            if let ItemAttr::Charge { n } = attr {
+                return Some(n);
             }
         }
         None
@@ -164,11 +155,8 @@ impl Item {
 
     fn title(&self) -> Option<&str> {
         for attr in &self.attrs {
-            match attr {
-                ItemAttr::Title(title) => {
-                    return Some(title);
-                }
-                _ => (),
+            if let ItemAttr::Title(title) = attr {
+                return Some(title);
             }
         }
         None

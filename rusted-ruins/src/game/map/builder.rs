@@ -94,27 +94,24 @@ pub fn generated_map_to_map(
 
     for p in size.iter_from_zero() {
         map.tile[p].tile = tile.into();
-        match gm.tile[p] {
-            TileKind::Wall => {
-                let piece_pattern = {
-                    let f = |pos: Vec2d| {
-                        if let Some(t) = gm.tile.get(pos) {
-                            *t == TileKind::Wall
-                        } else {
-                            true
-                        }
-                    };
-                    let mut piece_pattern_flags = PiecePatternFlags::default();
-                    for dir in &Direction::EIGHT_DIRS {
-                        piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
+        if gm.tile[p] == TileKind::Wall {
+            let piece_pattern = {
+                let f = |pos: Vec2d| {
+                    if let Some(t) = gm.tile.get(pos) {
+                        *t == TileKind::Wall
+                    } else {
+                        true
                     }
-                    let wall_obj = gobj::get_obj(wall);
-                    piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
                 };
-                map.tile[p].wall = WallIdxPp::with_piece_pattern(wall, piece_pattern);
-                map.tile[p].wall_hp = wall_obj.hp;
-            }
-            _ => (),
+                let mut piece_pattern_flags = PiecePatternFlags::default();
+                for dir in &Direction::EIGHT_DIRS {
+                    piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
+                }
+                let wall_obj = gobj::get_obj(wall);
+                piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
+            };
+            map.tile[p].wall = WallIdxPp::with_piece_pattern(wall, piece_pattern);
+            map.tile[p].wall_hp = wall_obj.hp;
         }
     }
 

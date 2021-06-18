@@ -12,11 +12,10 @@ pub fn load_from_file(path: &Path) -> Result<MapTemplateObject, Box<dyn Error>> 
 
     pakutil::read_tar(
         path,
-        &mut |object| match object {
-            Object::MapTemplate(o) => {
+        &mut |object| {
+            if let Object::MapTemplate(o) = object {
                 mapobj = Some(o);
             }
-            _ => (),
         },
         &mut errors,
     );

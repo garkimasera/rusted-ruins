@@ -111,7 +111,7 @@ impl GameData {
         });
 
         let n_exist_file = map_files.len();
-        map_files.retain(|p| map_file_path.iter().find(|a| *a == p).is_none());
+        map_files.retain(|p| !map_file_path.iter().any(|a| a == p));
 
         if n_exist_file == map_files.len() {
             return Ok(());

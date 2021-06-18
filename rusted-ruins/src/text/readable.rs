@@ -22,7 +22,7 @@ pub fn readable_txt(id: &str) -> Vec<String> {
             s.push_str(line);
             s.push('\n');
         } else {
-            v.push(std::mem::replace(&mut s, String::new()));
+            v.push(std::mem::take(&mut s));
         }
     }
 

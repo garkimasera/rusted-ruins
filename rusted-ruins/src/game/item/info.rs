@@ -66,14 +66,11 @@ impl ItemInfoText {
         }
 
         for attr in &item.attrs {
-            match attr {
-                ItemAttr::Material(material) => {
-                    let material_name = crate::text::prefix::material(*material);
-                    let t = misc_txt_format!(
+            if let ItemAttr::Material(material) = attr {
+                let material_name = crate::text::prefix::material(*material);
+                let t = misc_txt_format!(
                         "item_info_text-material"; material=material_name);
-                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
-                }
-                _ => (),
+                desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }
         }
 

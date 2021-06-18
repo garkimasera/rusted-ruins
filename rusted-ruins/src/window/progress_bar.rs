@@ -21,12 +21,9 @@ impl Window for ProgressBar {
         let player = game.gd.chara.get(CharaId::Player);
         let mut in_work = false;
         for status in &player.status {
-            match status {
-                CharaStatus::Work { .. } => {
-                    in_work = true;
-                    break;
-                }
-                _ => (),
+            if let CharaStatus::Work { .. } = status {
+                in_work = true;
+                break;
             }
         }
 

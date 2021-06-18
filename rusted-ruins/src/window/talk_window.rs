@@ -36,11 +36,8 @@ impl TalkWindow {
             TILE_SIZE,
             TILE_SIZE * 2,
         );
-        let image_window = if let Some(chara_template_idx) = chara_template_idx {
-            Some(ImageWindow::chara(rect_image_window, chara_template_idx))
-        } else {
-            None
-        };
+        let image_window = chara_template_idx
+            .map(|chara_template_idx| ImageWindow::chara(rect_image_window, chara_template_idx));
         let mut talk_window = TalkWindow {
             rect,
             talk_text: talk_text.clone(),
@@ -95,25 +92,21 @@ impl Window for TalkWindow {
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(ref mut choose_win) = self.choose_win {
-            match choose_win.process_command(command, pa) {
-                // When one answer is choosed
-                DialogResult::CloseWithValue(v) => {
-                    if let DialogCloseValue::Index(choosed_answer) = v {
-                        match pa.advance_talk(Some(choosed_answer)) {
-                            AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                                self.update_page(Some(talk_text));
-                                return DialogResult::Continue;
-                            }
-                            AdvanceScriptResult::Continue => {
-                                return DialogResult::Continue;
-                            }
-                            AdvanceScriptResult::Quit => {
-                                return DialogResult::Close;
-                            }
+            if let DialogResult::CloseWithValue(v) = choose_win.process_command(command, pa) {
+                if let DialogCloseValue::Index(choosed_answer) = v {
+                    match pa.advance_talk(Some(choosed_answer)) {
+                        AdvanceScriptResult::UpdateTalkText(talk_text) => {
+                            self.update_page(Some(talk_text));
+                            return DialogResult::Continue;
+                        }
+                        AdvanceScriptResult::Continue => {
+                            return DialogResult::Continue;
+                        }
+                        AdvanceScriptResult::Quit => {
+                            return DialogResult::Close;
                         }
                     }
                 }
-                _ => (),
             }
             return DialogResult::Continue;
         }

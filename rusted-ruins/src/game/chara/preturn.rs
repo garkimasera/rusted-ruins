@@ -23,7 +23,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     // If there is expired status, process expire routines.
     let mut expired_status = Vec::new();
     if chara.status.iter().any(|s| s.is_expired()) {
-        for s in std::mem::replace(&mut chara.status, Vec::new()).into_iter() {
+        for s in std::mem::take(&mut chara.status).into_iter() {
             if s.is_expired() {
                 expired_status.push(s);
             } else {

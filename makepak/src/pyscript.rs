@@ -32,18 +32,16 @@ pub fn read_pyscript<P: AsRef<Path>>(path: P) -> Result<Object> {
     f.read_line(&mut second_line)?;
     let id = if let Some(caps) = ID_LINE.captures(&second_line) {
         caps.get(1).unwrap().as_str().to_owned()
+    } else if let Some(file_stem) = path
+        .file_stem()
+        .and_then(|file_stem| file_stem.to_os_string().into_string().ok())
+    {
+        file_stem
     } else {
-        if let Some(file_stem) = path
-            .file_stem()
-            .and_then(|file_stem| file_stem.to_os_string().into_string().ok())
-        {
-            file_stem
-        } else {
-            bail!(
-                "file name of \"{}\" cannot be use for object id",
-                path.to_string_lossy()
-            );
-        }
+        bail!(
+            "file name of \"{}\" cannot be use for object id",
+            path.to_string_lossy()
+        );
     };
 
     f.seek(SeekFrom::Start(0))?;

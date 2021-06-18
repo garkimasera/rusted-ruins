@@ -22,11 +22,8 @@ impl ImageIdx {
     pub fn item(item: &Item) -> Self {
         let mut variation = 0;
         for attr in &item.attrs {
-            match attr {
-                ItemAttr::ImageVariation(n) => {
-                    variation = *n;
-                }
-                _ => (),
+            if let ItemAttr::ImageVariation(n) = attr {
+                variation = *n;
             }
         }
 

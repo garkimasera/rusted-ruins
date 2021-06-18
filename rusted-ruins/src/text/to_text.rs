@@ -95,11 +95,8 @@ impl ToText for Item {
         }
 
         for attr in &self.attrs {
-            match attr {
-                ItemAttr::SkillLearning(kind) => {
-                    text.push_str(&format!(" <{}>", kind.to_text()));
-                }
-                _ => (),
+            if let ItemAttr::SkillLearning(kind) = attr {
+                text.push_str(&format!(" <{}>", kind.to_text()));
             }
         }
 
