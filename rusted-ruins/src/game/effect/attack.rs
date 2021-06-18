@@ -99,7 +99,7 @@ pub fn explosion_attack(
 fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
     if !attack_params.always_hit
         && !hit_judge(
-            &mut game.gd,
+            &game.gd,
             attack_params.hit_power,
             target_id,
             attack_params.kind,

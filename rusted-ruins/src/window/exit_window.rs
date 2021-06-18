@@ -50,11 +50,8 @@ impl Window for ExitWindow {
 
 impl DialogWindow for ExitWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
-        match *command {
-            Command::Cancel => {
-                return DialogResult::Close;
-            }
-            _ => (),
+        if *command == Command::Cancel {
+            return DialogResult::Close;
         }
 
         match self.choose_win.process_command(command, pa) {
@@ -133,20 +130,19 @@ impl DialogWindow for GameOverWindow {
         }
 
         use super::SpecialDialogResult::ReturnToStartScreen;
-        match self.choose_win.process_command(command, pa) {
-            DialogResult::CloseWithValue(DialogCloseValue::Index(n)) => {
-                // An choice is choosed
-                match n {
-                    0 => {
-                        pa.restart();
-                        return DialogResult::Close;
-                    }
-                    1 => return DialogResult::Special(ReturnToStartScreen),
-                    2 => return DialogResult::Quit,
-                    _ => panic!(),
+        if let DialogResult::CloseWithValue(DialogCloseValue::Index(n)) =
+            self.choose_win.process_command(command, pa)
+        {
+            // An choice is choosed
+            match n {
+                0 => {
+                    pa.restart();
+                    return DialogResult::Close;
                 }
+                1 => return DialogResult::Special(ReturnToStartScreen),
+                2 => return DialogResult::Quit,
+                _ => panic!(),
             }
-            _ => (),
         }
         DialogResult::Continue
     }

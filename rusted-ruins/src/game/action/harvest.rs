@@ -46,32 +46,26 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
         };
         let needed_turn = 10;
 
-        match harvest.kind {
-            HarvestKind::Chop => {
-                if tool_obj.tool_effect == Some(ToolEffect::Chop) {
-                    let work = Work::Harvest {
-                        item_idx: *item_idx,
-                        il: *il,
-                    };
-                    let chara = gd.chara.get_mut(chara_id);
-                    chara.add_status(CharaStatus::Work {
-                        turn_left: needed_turn,
-                        needed_turn,
-                        work,
-                    });
-                    game.anim_queue.push_work(1.0);
-                    return;
-                }
+        if harvest.kind == HarvestKind::Chop {
+            if tool_obj.tool_effect == Some(ToolEffect::Chop) {
+                let work = Work::Harvest {
+                    item_idx: *item_idx,
+                    il: *il,
+                };
+                let chara = gd.chara.get_mut(chara_id);
+                chara.add_status(CharaStatus::Work {
+                    turn_left: needed_turn,
+                    needed_turn,
+                    work,
+                });
+                game.anim_queue.push_work(1.0);
+                return;
             }
-            _ => (),
         }
     }
 
-    match tool_obj.tool_effect {
-        Some(ToolEffect::Chop) => {
-            game_log_i!("chopping-no-tree");
-        }
-        _ => (),
+    if let Some(ToolEffect::Chop) = tool_obj.tool_effect {
+        game_log_i!("chopping-no-tree");
     }
 }
 

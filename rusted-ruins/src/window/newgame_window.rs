@@ -83,18 +83,15 @@ impl DialogWindow for DummyNewGameDialog {
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
                 let name_input_dialog = self.name_input_dialog.as_mut().unwrap();
-                match name_input_dialog.process_command(command, pa) {
-                    DialogResult::Close => {
-                        let player_name = name_input_dialog.get_text();
-                        if !player_name.is_empty() {
-                            // If input text is invalid for character name
-                            self.builder.as_mut().unwrap().set_player_name(player_name);
-                            self.explanation_text = explanation_text_window("newgame-chooseclass");
-                            self.stage = NewGameBuildStage::ChooseClass;
-                        }
-                        name_input_dialog.restart();
+                if let DialogResult::Close = name_input_dialog.process_command(command, pa) {
+                    let player_name = name_input_dialog.get_text();
+                    if !player_name.is_empty() {
+                        // If input text is invalid for character name
+                        self.builder.as_mut().unwrap().set_player_name(player_name);
+                        self.explanation_text = explanation_text_window("newgame-chooseclass");
+                        self.stage = NewGameBuildStage::ChooseClass;
                     }
-                    _ => (),
+                    name_input_dialog.restart();
                 }
                 DialogResult::Continue
             }
@@ -175,13 +172,10 @@ impl DialogWindow for ChooseClassDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
-            match response {
-                ListWidgetResponse::Select(i) => {
-                    // Any item is selected
-                    let chara_class = RULES.newgame.class_choices[i as usize];
-                    return DialogResult::CloseWithValue(DialogCloseValue::CharaClass(chara_class));
-                }
-                _ => (),
+            if let ListWidgetResponse::Select(i) = response {
+                // Any item is selected
+                let chara_class = RULES.newgame.class_choices[i as usize];
+                return DialogResult::CloseWithValue(DialogCloseValue::CharaClass(chara_class));
             }
             return DialogResult::Continue;
         }

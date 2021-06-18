@@ -263,7 +263,7 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Select { ill, filter, .. } => {
-                let filtered_list = gd.get_filtered_item_list(*ill, filter.clone());
+                let filtered_list = gd.get_filtered_item_list(*ill, *filter);
                 self.update_list(filtered_list);
             }
         }
@@ -433,12 +433,9 @@ impl DialogWindow for ItemWindow {
 
         check_escape_click!(self, command, self.mode.is_main_mode());
 
-        match command {
-            Command::ItemInfomation => {
-                let il = self.item_locations[self.list.get_current_choice() as usize];
-                pa.request_dialog_open(DialogOpenRequest::ItemInfo { il })
-            }
-            _ => (),
+        if command == &Command::ItemInfomation {
+            let il = self.item_locations[self.list.get_current_choice() as usize];
+            pa.request_dialog_open(DialogOpenRequest::ItemInfo { il })
         }
 
         let command = command.relative_to(self.rect);

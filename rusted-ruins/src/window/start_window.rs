@@ -125,22 +125,19 @@ impl DialogWindow for ChooseSaveFileDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
         let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
-            match response {
-                ListWidgetResponse::Select(i) => {
-                    // Any item is selected
-                    match GameData::load(&self.save_files[i as usize]) {
-                        Ok(o) => {
-                            return DialogResult::Special(SpecialDialogResult::NewGameStart(
-                                Box::new(o),
-                            ));
-                        }
-                        Err(e) => {
-                            warn!("Failed to load a save file: {}", e);
-                            return DialogResult::Continue;
-                        }
+            if let ListWidgetResponse::Select(i) = response {
+                // Any item is selected
+                match GameData::load(&self.save_files[i as usize]) {
+                    Ok(o) => {
+                        return DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(
+                            o,
+                        )));
+                    }
+                    Err(e) => {
+                        warn!("Failed to load a save file: {}", e);
+                        return DialogResult::Continue;
                     }
                 }
-                _ => (),
             }
             return DialogResult::Continue;
         }

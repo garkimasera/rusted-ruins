@@ -135,12 +135,9 @@ impl DialogWindow for CreationWindow {
 
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
             let result = detail_dialog.process_command(command, pa);
-            match result {
-                DialogResult::Close => {
-                    self.detail_dialog = None;
-                    return DialogResult::Continue;
-                }
-                _ => (),
+            if let DialogResult::Close = result {
+                self.detail_dialog = None;
+                return DialogResult::Continue;
             }
             return result;
         }

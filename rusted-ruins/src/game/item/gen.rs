@@ -151,16 +151,14 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_readable_item(&mut item, item_obj)
     }
 
-    match item_obj.kind {
-        ItemKind::MagicDevice => gen_magic_device(&mut item, item_obj),
-        _ => (),
+    if item_obj.kind == ItemKind::MagicDevice {
+        gen_magic_device(&mut item, item_obj)
     };
 
     if let Some(UseEffect::Effect(effect)) = item_obj.use_effect.as_ref() {
         for kind in &effect.kind {
-            match kind {
-                EffectKind::SkillLearning { .. } => gen_skill_lerning_item(&mut item, item_obj),
-                _ => (),
+            if let EffectKind::SkillLearning { .. } = kind {
+                gen_skill_lerning_item(&mut item, item_obj)
             }
         }
     }

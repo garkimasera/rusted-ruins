@@ -58,10 +58,10 @@ impl GameData {
     fn on_map_entrance(&self) -> bool {
         let map = self.get_current_map();
         let tile = &map.tile[self.player_pos()];
-        match tile.special {
-            SpecialTileKind::Stairs { .. } | SpecialTileKind::SiteSymbol { .. } => true,
-            _ => false,
-        }
+        matches!(
+            tile.special,
+            SpecialTileKind::Stairs { .. } | SpecialTileKind::SiteSymbol { .. }
+        )
     }
 
     /// Return item list in the tile that player stands on
