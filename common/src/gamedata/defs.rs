@@ -136,6 +136,7 @@ impl std::fmt::Display for ActiveSkillId {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActiveSkill {
     pub group: ActiveSkillGroup,
+    pub icon: String,
     pub effect: Effect,
     #[serde(default)]
     pub power: f32,
