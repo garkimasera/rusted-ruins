@@ -21,25 +21,18 @@ impl CharaStatusOperation for Chara {
                 turn_left: turn_left_new,
             } => {
                 for s in self.status.iter_mut() {
-                    match *s {
-                        // Update left sleeping turn
-                        CharaStatus::Asleep { ref mut turn_left } => {
-                            if turn_left_new > *turn_left {
-                                *turn_left = turn_left_new;
-                            }
-                            return;
+                    if let CharaStatus::Asleep { ref mut turn_left } = *s {
+                        if turn_left_new > *turn_left {
+                            *turn_left = turn_left_new;
                         }
-                        _ => (),
+                        return;
                     }
                 }
             }
             CharaStatus::Poisoned => {
                 for s in self.status.iter_mut() {
-                    match *s {
-                        CharaStatus::Poisoned => {
-                            return;
-                        }
-                        _ => (),
+                    if *s == CharaStatus::Poisoned {
+                        return;
                     }
                 }
             }
@@ -96,13 +89,13 @@ impl CharaStatusExt for CharaStatus {
     }
 
     fn about_encumbrance(&self) -> bool {
-        match *self {
+        matches!(
+            *self,
             CharaStatus::Burdened
-            | CharaStatus::Strained
-            | CharaStatus::Stressed
-            | CharaStatus::Overloaded => true,
-            _ => false,
-        }
+                | CharaStatus::Strained
+                | CharaStatus::Stressed
+                | CharaStatus::Overloaded
+        )
     }
 
     fn expire(self, gd: &mut GameData, cid: CharaId) {
