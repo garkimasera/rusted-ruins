@@ -22,7 +22,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     }
 
     pub fn game(&self) -> &Game {
-        &self.0
+        self.0
     }
 
     pub fn gd(&self) -> &GameData {

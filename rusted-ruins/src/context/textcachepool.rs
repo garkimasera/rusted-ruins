@@ -137,7 +137,7 @@ impl<'t> TextCachePool<'t> {
         if c.i.is_none() {
             // Render and add cache
             let mut v = Vec::new();
-            for ref s in c.s.iter() {
+            for s in c.s.iter() {
                 let surface = tr
                     .surface(c.font, s, c.color, c.wrap_size, c.is_bordered)
                     .expect(ERR_MSG_FONT_REND);

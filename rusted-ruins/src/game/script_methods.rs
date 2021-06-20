@@ -12,7 +12,7 @@ pub fn init() {
         },
         receive_quest_rewards: crate::game::quest::receive_rewards,
         receive_item: |gd, id, n| {
-            let item = crate::game::item::gen::gen_item_from_id(&id, 1);
+            let item = crate::game::item::gen::gen_item_from_id(id, 1);
             let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
             il.append(item.clone(), n);
             let player = gd.chara.get_mut(CharaId::Player);

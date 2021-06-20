@@ -203,7 +203,7 @@ impl CreationDetailDialog {
 
         let mut possible = true;
         let facility_item = if let Some(facility_type) = recipe.facility.as_ref() {
-            let facility_item = crate::game::map::search::search_facility(gd, &facility_type);
+            let facility_item = crate::game::map::search::search_facility(gd, facility_type);
             if facility_item.is_none() {
                 possible = false;
             }

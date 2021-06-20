@@ -18,8 +18,8 @@ pub fn write_to_map(gm: &mut GeneratedMap, wall_weight: f32, enable_edge_bias: b
         }
 
         // Determine start and end
-        let start = pick_passable_tile(&gm);
-        let (reach_map, n_reachable_tile) = create_reach_map(&gm, start);
+        let start = pick_passable_tile(gm);
+        let (reach_map, n_reachable_tile) = create_reach_map(gm, start);
         // If reachable tiles are too few, create map again
         if n_reachable_tile < (gm.size.0 * gm.size.1) as u32 / 4 {
             continue;
@@ -30,7 +30,7 @@ pub fn write_to_map(gm: &mut GeneratedMap, wall_weight: f32, enable_edge_bias: b
 
     if stairs {
         loop {
-            let end = pick_passable_tile(&gm);
+            let end = pick_passable_tile(gm);
             if start != end && reach_map[end] {
                 gm.entrance = Entrance::Stairs(start, Some(end));
                 break;

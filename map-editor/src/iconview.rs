@@ -71,7 +71,7 @@ pub fn set_iconview(ui: &Ui) {
         let uic = ui.clone();
         iconview.iconview_tile.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_tile.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_tile.get_iter(&path).unwrap();
+                let iter = uic.iconview.filter_tile.get_iter(path).unwrap();
                 let id: String = uic
                     .iconview
                     .filter_tile
@@ -90,7 +90,7 @@ pub fn set_iconview(ui: &Ui) {
         let uic = ui.clone();
         iconview.iconview_wall.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_wall.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_wall.get_iter(&path).unwrap();
+                let iter = uic.iconview.filter_wall.get_iter(path).unwrap();
                 let id: String = uic
                     .iconview
                     .filter_wall
@@ -109,7 +109,7 @@ pub fn set_iconview(ui: &Ui) {
         let uic = ui.clone();
         iconview.iconview_deco.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_deco.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_deco.get_iter(&path).unwrap();
+                let iter = uic.iconview.filter_deco.get_iter(path).unwrap();
                 let id: String = uic
                     .iconview
                     .filter_deco
@@ -128,7 +128,7 @@ pub fn set_iconview(ui: &Ui) {
         let uic = ui.clone();
         iconview.iconview_item.connect_selection_changed(move |_| {
             if let Some(path) = uic.iconview.iconview_item.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_item.get_iter(&path).unwrap();
+                let iter = uic.iconview.filter_item.get_iter(path).unwrap();
                 let id: String = uic
                     .iconview
                     .filter_item
@@ -199,7 +199,7 @@ impl Ui {
 }
 
 fn item_filter(m: &gtk::TreeModel, i: &gtk::TreeIter) -> bool {
-    let id: String = m.get_value(&i, 1).get().unwrap().unwrap();
+    let id: String = m.get_value(i, 1).get().unwrap().unwrap();
     if id == "!" {
         return true;
     }

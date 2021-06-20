@@ -78,7 +78,7 @@ impl<T: WithId> FileBox<T> {
                 BufWriter::new(File::create(s.path(p))?),
                 Compression::fast(),
             );
-            T::write(&mut file, &a)?;
+            T::write(&mut file, a)?;
             s.changed.set(false);
         }
 

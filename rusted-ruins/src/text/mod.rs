@@ -60,7 +60,7 @@ impl Bundle {
             if let Some(pattern) = msg.value {
                 let mut s = self
                     .first
-                    .format_pattern(&pattern, args, &mut errors)
+                    .format_pattern(pattern, args, &mut errors)
                     .into_owned();
                 s.retain(|c| c != '\u{2068}' && c != '\u{2069}');
                 return Some(s);
@@ -70,7 +70,7 @@ impl Bundle {
             if let Some(pattern) = msg.value {
                 let mut s = self
                     .second
-                    .format_pattern(&pattern, args, &mut errors)
+                    .format_pattern(pattern, args, &mut errors)
                     .into_owned();
                 s.retain(|c| c != '\u{2068}' && c != '\u{2069}');
                 return Some(s);

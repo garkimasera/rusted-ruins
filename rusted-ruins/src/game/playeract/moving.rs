@@ -72,7 +72,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         let player = self.gd().chara.get(CharaId::Player);
         let is_passable = |dir: Direction| {
             let dest_tile = map.chara_pos(CharaId::Player).unwrap() + dir.as_vec();
-            map.is_passable(&player, dest_tile)
+            map.is_passable(player, dest_tile)
         };
 
         let dir = if is_passable(dir) {

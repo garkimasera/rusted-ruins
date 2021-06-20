@@ -23,7 +23,7 @@ pub fn wall_damage(game: &mut Game, pos: Vec2d, power: f32) {
         let wall_obj = gobj::get_obj(tile.wall.idx().unwrap());
         map.erase_wall(pos);
         for (mining_reward, n) in &wall_obj.mining_rewards {
-            if let Some(item_idx) = gobj::id_to_idx_checked::<ItemIdx>(&mining_reward) {
+            if let Some(item_idx) = gobj::id_to_idx_checked::<ItemIdx>(mining_reward) {
                 let item = crate::game::item::gen::gen_item_from_idx(item_idx, 1);
                 game.gd.add_item_on_tile(pos, item, *n);
             } else {

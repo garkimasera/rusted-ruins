@@ -62,7 +62,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     let attacker = game.gd.chara.get(cid);
     let (effect, skill_kind, eff) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
-            let skill_kind = get_skill_kind_from_weapon(&weapon);
+            let skill_kind = get_skill_kind_from_weapon(weapon);
             let eff = weapon.calc_eff();
             (weapon_to_effect(weapon), skill_kind, eff)
         } else {
@@ -106,7 +106,7 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     let attacker = game.gd.chara.get(cid);
     let (effect, skill_kind, eff) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
-            let skill_kind = get_skill_kind_from_weapon(&weapon);
+            let skill_kind = get_skill_kind_from_weapon(weapon);
             let eff = weapon.calc_eff();
             (weapon_to_effect(weapon), skill_kind, eff)
         } else {
