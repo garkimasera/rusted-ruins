@@ -443,7 +443,7 @@ impl ItemList {
 
     /// Retains item by given number
     pub fn retain<F: FnMut(&Item, u32) -> u32>(&mut self, mut f: F, reverse_order: bool) {
-        let iter = std::mem::replace(&mut self.items, Vec::new()).into_iter();
+        let iter = std::mem::take(&mut self.items).into_iter();
         let mut items = Vec::new();
         if !reverse_order {
             for (item, n) in iter {

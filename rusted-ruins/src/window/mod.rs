@@ -189,8 +189,8 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
     ) -> WindowManager<'sdl, 't, 's> {
         let game = Game::empty(se.clone());
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
-        let mut window_stack: Vec<Box<dyn DialogWindow>> = Vec::new();
-        window_stack.push(Box::new(start_window::StartDialog::new()));
+        let window_stack: Vec<Box<dyn DialogWindow>> =
+            vec![Box::new(start_window::StartDialog::new())];
 
         WindowManager {
             game,
