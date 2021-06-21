@@ -60,7 +60,7 @@ impl DialogWindow for TextInputDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         match command {
             Command::TextInput { ref text } => {
-                self.text.push_str(&text);
+                self.text.push_str(text);
                 self.label.set_text(&self.text);
                 DialogResult::Continue
             }

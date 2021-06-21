@@ -88,7 +88,7 @@ pub fn do_effect<T: Into<Target>>(
                 }
             }
             EffectKind::PlaceTile { tile } => {
-                if let Some(tile_idx) = gobj::id_to_idx_checked::<TileIdx>(&tile) {
+                if let Some(tile_idx) = gobj::id_to_idx_checked::<TileIdx>(tile) {
                     let map = game.gd.get_current_map_mut();
 
                     for &pos in &tiles {
@@ -98,7 +98,7 @@ pub fn do_effect<T: Into<Target>>(
             }
             EffectKind::GenItem { id } => {
                 for pos in &tiles {
-                    self::misc::gen_item(game, &id, *pos);
+                    self::misc::gen_item(game, id, *pos);
                 }
             }
             other => {

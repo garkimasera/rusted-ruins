@@ -99,7 +99,7 @@ impl<'a> ForegroundDrawInfo<'a> {
 
         // Set items
         if map.is_inside(pos) {
-            di.items = &map.observed_tile[pos].items.as_slice();
+            di.items = map.observed_tile[pos].items.as_slice();
         }
 
         di

@@ -314,7 +314,7 @@ impl MainWinDrawer {
                     TILE_SIZE,
                 );
                 let tex = sv.tex().get(idx);
-                try_sdl!(canvas.copy(&tex, src, dest));
+                try_sdl!(canvas.copy(tex, src, dest));
             }
         }
     }
@@ -333,7 +333,7 @@ impl MainWinDrawer {
         for iy in 0..ny {
             for ix in 0..nx {
                 let dest = Rect::new(ix * TILE_SIZE_I, iy * TILE_SIZE_I, TILE_SIZE, TILE_SIZE);
-                try_sdl!(context.canvas.copy(&texture, src, dest));
+                try_sdl!(context.canvas.copy(texture, src, dest));
             }
         }
     }

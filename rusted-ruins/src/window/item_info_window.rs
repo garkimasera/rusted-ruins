@@ -113,7 +113,7 @@ impl Window for ItemInfoWindow {
 impl DialogWindow for ItemInfoWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(flavor_text) = self.flavor_text.as_mut() {
-            match flavor_text.process_command(&command, pa) {
+            match flavor_text.process_command(command, pa) {
                 DialogResult::Continue => {
                     return DialogResult::Continue;
                 }

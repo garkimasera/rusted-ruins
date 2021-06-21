@@ -39,7 +39,7 @@ impl<'sdl> TextRenderer<'sdl> {
         let f = |fc: &FontConfig| -> Font {
             sdl_context
                 .ttf_context
-                .load_font(&font_path(&font_name), fc.size)
+                .load_font(&font_path(font_name), fc.size)
                 .expect(ERR_MSG)
         };
 

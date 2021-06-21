@@ -215,7 +215,7 @@ static ADDON_RULES_DIR: Lazy<Mutex<Option<PathBuf>>> = Lazy::new(|| Mutex::new(N
 /// Global state rules holder
 pub static RULES: Lazy<Rules> = Lazy::new(|| {
     Rules::load_from_dir(
-        &RULES_DIR.lock().unwrap().as_ref().unwrap(),
+        RULES_DIR.lock().unwrap().as_ref().unwrap(),
         ADDON_RULES_DIR
             .lock()
             .unwrap()

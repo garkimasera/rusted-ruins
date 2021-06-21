@@ -20,7 +20,7 @@ impl ToText for ActiveSkillId {
 impl ToText for FactionId {
     fn to_text(&self) -> Cow<str> {
         let s = self.as_str();
-        let s = if let Some(s) = s.strip_prefix("!") {
+        let s = if let Some(s) = s.strip_prefix('!') {
             s
         } else {
             s

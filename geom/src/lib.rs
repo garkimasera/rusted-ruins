@@ -197,14 +197,14 @@ impl<T> Array2d<T> {
 
     pub fn iter(&self) -> Array2dIter<T> {
         Array2dIter {
-            array: &self,
+            array: self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
         }
     }
 
     pub fn iter_with_idx(&self) -> Array2dIterWithIdx<T> {
         Array2dIterWithIdx {
-            array: &self,
+            array: self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
         }
     }
@@ -583,7 +583,7 @@ impl MDistRangeIter {
 impl Iterator for MDistRangeIter {
     type Item = (i32, Vec2d);
     fn next(&mut self) -> Option<(i32, Vec2d)> {
-        while let Some(p) = self.rectiter.next() {
+        for p in &mut self.rectiter {
             let mdistance = self.center.mdistance(p);
             if self.r >= mdistance {
                 return Some((mdistance, p));

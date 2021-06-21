@@ -489,7 +489,7 @@ impl ItemList {
                     n
                 };
 
-                f(&item, consumed);
+                f(item, consumed);
                 n - consumed
             },
             prior_high_quality,
@@ -709,14 +709,14 @@ impl EquipItemList {
 
     pub fn slot_iter(&self) -> EquipSlotIter {
         EquipSlotIter {
-            equip_item_list: &self,
+            equip_item_list: self,
             n: 0,
         }
     }
 
     pub fn item_iter(&self) -> EquipItemIter {
         EquipItemIter {
-            equip_item_list: &self,
+            equip_item_list: self,
             n: 0,
         }
     }

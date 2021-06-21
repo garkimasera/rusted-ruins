@@ -283,7 +283,7 @@ impl ItemWindow {
         let window_width = self.rect.width();
 
         self.list.update_rows_by_func(move |i| {
-            let (_, ref item, n_item) = list.clone().nth(i as usize).unwrap();
+            let (_, item, n_item) = list.clone().nth(i as usize).unwrap();
 
             let item_text = format!("{} x {}", item.to_text(), n_item);
 

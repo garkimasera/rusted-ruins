@@ -41,7 +41,7 @@ pub fn compile(files: &[&str], output_file: &str) {
             }
         };
         let v = write_to_vec(&obj).unwrap();
-        write_data_to_tar(&mut builder, &v, &obj.get_id());
+        write_data_to_tar(&mut builder, &v, obj.get_id());
     }
     builder.finish().unwrap();
 }
