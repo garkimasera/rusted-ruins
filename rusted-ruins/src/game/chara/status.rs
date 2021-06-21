@@ -98,32 +98,6 @@ impl CharaStatusExt for CharaStatus {
         )
     }
 
-    fn expire(self, gd: &mut GameData, cid: CharaId) {
-        match self {
-            CharaStatus::Work { work, .. } => match work {
-                Work::Creation {
-                    kind,
-                    recipe,
-                    ingredients,
-                    material,
-                } => {
-                    assert!(cid == CharaId::Player);
-                    crate::game::creation::finish_creation(
-                        gd,
-                        kind,
-                        &recipe,
-                        ingredients,
-                        material,
-                    );
-                }
-                Work::Harvest { item_idx, il } => {
-                    crate::game::action::harvest::finish_harvest(gd, cid, item_idx, il);
-                }
-            },
-            _ => (),
-        }
-    }
-
     fn advance_turn(&mut self, n: u16) {
         if let Some(turn_left) = self.turn_left_mut() {
             if *turn_left > n {
@@ -141,6 +115,31 @@ impl CharaStatusExt for CharaStatus {
             turn_left == 0
         } else {
             false
+        }
+    }
+
+    fn expire(self, gd: &mut GameData, cid: CharaId) {
+        if let CharaStatus::Work { work, .. } = self {
+            match work {
+                Work::Creation {
+                    kind,
+                    recipe,
+                    ingredients,
+                    material,
+                } => {
+                    assert_eq!(cid, CharaId::Player);
+                    crate::game::creation::finish_creation(
+                        gd,
+                        kind,
+                        &recipe,
+                        ingredients,
+                        material,
+                    );
+                }
+                Work::Harvest { item_idx, il } => {
+                    crate::game::action::harvest::finish_harvest(gd, cid, item_idx, il);
+                }
+            }
         }
     }
 }

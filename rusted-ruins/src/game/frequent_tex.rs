@@ -9,13 +9,14 @@ pub struct FrequentTextures {
 impl FrequentTextures {
     pub fn new() -> FrequentTextures {
         // Set Effect Object indices
-        let mut effect_idx = Vec::new();
-        effect_idx.push(gobj::id_to_idx("overlay-fog")); // Fog
-        effect_idx.push(gobj::id_to_idx("overlay-fog-dark")); // Fog (dark)
-        effect_idx.push(gobj::id_to_idx("overlay-night")); // Night
-        effect_idx.push(gobj::id_to_idx("overlay-twilight0")); // Twilight (0 is darkest)
-        effect_idx.push(gobj::id_to_idx("overlay-twilight1"));
-        effect_idx.push(gobj::id_to_idx("overlay-twilight2"));
+        let effect_idx = vec![
+            gobj::id_to_idx("overlay-fog"),       // Fog
+            gobj::id_to_idx("overlay-fog-dark"),  // Fog (dark)
+            gobj::id_to_idx("overlay-night"),     // Night
+            gobj::id_to_idx("overlay-twilight0"), // Twilight (0 is darkest)
+            gobj::id_to_idx("overlay-twilight1"),
+            gobj::id_to_idx("overlay-twilight2"),
+        ];
 
         FrequentTextures { effect_idx }
     }

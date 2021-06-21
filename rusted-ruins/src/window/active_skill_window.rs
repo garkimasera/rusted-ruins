@@ -81,10 +81,8 @@ impl DialogWindow for ActiveSkillWindow {
         let command = command.relative_to(self.rect);
 
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
-            if self.cid == CharaId::Player {
-                if pa.use_active_skill(&self.active_skills[i as usize]) {
-                    return DialogResult::Close;
-                }
+            if self.cid == CharaId::Player && pa.use_active_skill(&self.active_skills[i as usize]) {
+                return DialogResult::Close;
             }
             return DialogResult::Continue;
         }
