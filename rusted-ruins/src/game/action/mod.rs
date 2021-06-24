@@ -183,11 +183,17 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
 
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
-    let nutrition: f32 = if_first! { &ItemObjAttr::Nutrition(nutrition) = &item_obj.attrs; {
+
+    let nutrition: f32 = if let Some(&ItemObjAttr::Nutrition(nutrition)) = item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Nutrition(_)))
+    {
         nutrition as f32
     } else {
         0.0
-    }};
+    };
+
     if let Some(damage) = chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid) {
         do_damage(game, cid, damage, CharaDamageKind::Starve);
     }

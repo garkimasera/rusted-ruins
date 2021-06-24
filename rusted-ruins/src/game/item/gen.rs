@@ -182,11 +182,15 @@ fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
 
 /// Generate a magic device item
 fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
-    let n = if_first! { &ItemObjAttr::Charge { min, max } = &item_obj.attrs; {
+    let n = if let Some(&ItemObjAttr::Charge { min, max }) = &item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Charge { .. }))
+    {
         rng::gen_range(min..=max)
     } else {
         return;
-    }};
+    };
     item.attrs.push(ItemAttr::Charge { n: n.into() });
 }
 
