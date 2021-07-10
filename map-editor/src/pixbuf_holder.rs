@@ -1,7 +1,7 @@
 use common::gobj;
 use common::obj::Img;
 use common::objholder::*;
-use gdk_pixbuf::{Pixbuf, PixbufLoader, PixbufLoaderExt};
+use gdk_pixbuf::{prelude::PixbufLoaderExt, Pixbuf, PixbufLoader};
 
 pub struct PixbufSet {
     /// Whole image
@@ -61,7 +61,7 @@ fn load_png(img: &Img) -> PixbufSet {
     let loader = PixbufLoader::with_type("png").expect(ERR_MSG);
     loader.write(&img.data).expect(ERR_MSG);
     loader.close().expect(ERR_MSG);
-    let pixbuf = loader.get_pixbuf().expect(ERR_MSG);
+    let pixbuf = loader.pixbuf().expect(ERR_MSG);
 
     let pixbuf_icon = if img.grid_nx == 1 && img.grid_ny == 1 {
         pixbuf.clone()

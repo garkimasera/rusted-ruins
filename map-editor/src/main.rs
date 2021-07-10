@@ -15,11 +15,12 @@ use std::env;
 use std::path::PathBuf;
 
 pub fn main() {
+    env_logger::init();
+
     let application = gtk::Application::new(
         Some("com.github.rusted-ruins-map-editor"),
         gio::ApplicationFlags::empty(),
-    )
-    .expect("Initialization failed.");
+    );
 
     let mut app_dir = get_app_dir().expect("Could not found application directory");
     app_dir.push("paks");
@@ -34,7 +35,7 @@ pub fn main() {
         ui::build_ui(app);
     });
     application.connect_activate(|_| {});
-    application.run(&env::args().collect::<Vec<_>>());
+    application.run();
 }
 
 /// Get application directory

@@ -16,7 +16,6 @@ thiserror = "1"
 tar = "0.4"
 clap = "2"
 image = "0.23"
-nom = { version = "6", features = ["regexp"] }
 
 [dependencies.rusted-ruins-geom]
 path = "../geom"

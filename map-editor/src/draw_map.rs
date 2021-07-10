@@ -10,6 +10,14 @@ use gdk::prelude::GdkContextExt;
 use gdk_pixbuf::Pixbuf;
 use geom::*;
 
+macro_rules! try_paint {
+    ($result:expr) => {
+        if let Ok(e) = $result {
+            log::warn!("{:?}", e);
+        }
+    };
+}
+
 /// Draw tiles and objects on map
 pub fn draw_map(
     cr: &Context,
@@ -28,7 +36,7 @@ pub fn draw_map(
 
     // Clear drawing area
     cr.set_source_rgb(0.5, 0.5, 0.5);
-    cr.paint();
+    try_paint!(cr.paint());
 
     for iy in 0..tile_ny {
         for ix in 0..tile_nx {
@@ -63,13 +71,13 @@ pub fn draw_map(
             if deco_visible {
                 if let Some(deco_idx) = map.deco[p] {
                     let pixbuf = &pbh.get(deco_idx).image;
-                    let height = pixbuf.get_height();
+                    let height = pixbuf.height();
                     cr.set_source_pixbuf(
                         pixbuf,
                         (ix * TILE_SIZE_I) as f64,
                         (iy * TILE_SIZE_I - height + TILE_SIZE_I) as f64,
                     );
-                    cr.paint();
+                    try_paint!(cr.paint());
                 }
             }
 
@@ -242,5 +250,5 @@ pub fn image_copy(
 
     cr.set_source_pixbuf(pixbuf, (dest_x - src_x) as f64, (dest_y - src_y) as f64);
     cr.rectangle(dest_x as f64, dest_y as f64, w as f64, h as f64);
-    cr.fill();
+    try_paint!(cr.fill());
 }

@@ -8,10 +8,12 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 rusted-ruins-geom = { path = "../geom" }
 rusted-ruins-common = { path = "../common", features = ["global_state_obj"] }
 
-gtk = "0.9"
-gdk = "0.13"
-gio = "0.9"
-gdk-pixbuf = "0.9"
-cairo-rs = "0.9"
+gtk = "0.14"
+gdk = "0.14"
+gio = "0.14"
+gdk-pixbuf = "0.14"
+cairo-rs = "0.14"
 tar = "0.4"
 arrayvec = "0.7"
+log = "0.4"
+env_logger = "0.8"

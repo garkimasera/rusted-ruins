@@ -70,15 +70,9 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_tile.set_text_column(1);
         let uic = ui.clone();
         iconview.iconview_tile.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview.iconview_tile.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_tile.get_iter(path).unwrap();
-                let id: String = uic
-                    .iconview
-                    .filter_tile
-                    .get_value(&iter, 1)
-                    .get()
-                    .unwrap()
-                    .unwrap();
+            if let Some(path) = uic.iconview.iconview_tile.selected_items().get(0) {
+                let iter = uic.iconview.filter_tile.iter(path).unwrap();
+                let id: String = uic.iconview.filter_tile.value(&iter, 1).get().unwrap();
                 uic.item_selected(SelectedItem::Tile(gobj::id_to_idx::<TileIdx>(&id)));
             }
         });
@@ -89,15 +83,9 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_wall.set_text_column(1);
         let uic = ui.clone();
         iconview.iconview_wall.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview.iconview_wall.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_wall.get_iter(path).unwrap();
-                let id: String = uic
-                    .iconview
-                    .filter_wall
-                    .get_value(&iter, 1)
-                    .get()
-                    .unwrap()
-                    .unwrap();
+            if let Some(path) = uic.iconview.iconview_wall.selected_items().get(0) {
+                let iter = uic.iconview.filter_wall.iter(path).unwrap();
+                let id: String = uic.iconview.filter_wall.value(&iter, 1).get().unwrap();
                 uic.item_selected(SelectedItem::Wall(gobj::id_to_idx::<WallIdx>(&id)));
             }
         });
@@ -108,15 +96,9 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_deco.set_text_column(1);
         let uic = ui.clone();
         iconview.iconview_deco.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview.iconview_deco.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_deco.get_iter(path).unwrap();
-                let id: String = uic
-                    .iconview
-                    .filter_deco
-                    .get_value(&iter, 1)
-                    .get()
-                    .unwrap()
-                    .unwrap();
+            if let Some(path) = uic.iconview.iconview_deco.selected_items().get(0) {
+                let iter = uic.iconview.filter_deco.iter(path).unwrap();
+                let id: String = uic.iconview.filter_deco.value(&iter, 1).get().unwrap();
                 uic.item_selected(SelectedItem::Deco(gobj::id_to_idx::<DecoIdx>(&id)));
             }
         });
@@ -127,15 +109,9 @@ pub fn set_iconview(ui: &Ui) {
         iconview.iconview_item.set_text_column(1);
         let uic = ui.clone();
         iconview.iconview_item.connect_selection_changed(move |_| {
-            if let Some(path) = uic.iconview.iconview_item.get_selected_items().get(0) {
-                let iter = uic.iconview.filter_item.get_iter(path).unwrap();
-                let id: String = uic
-                    .iconview
-                    .filter_item
-                    .get_value(&iter, 1)
-                    .get()
-                    .unwrap()
-                    .unwrap();
+            if let Some(path) = uic.iconview.iconview_item.selected_items().get(0) {
+                let iter = uic.iconview.filter_item.iter(path).unwrap();
+                let id: String = uic.iconview.filter_item.value(&iter, 1).get().unwrap();
                 uic.item_selected(SelectedItem::Item(gobj::id_to_idx::<ItemIdx>(&id)));
             }
         });
@@ -152,32 +128,28 @@ fn update_liststore(ui: &Ui) {
     for (i, tile) in objholder.tile.iter().enumerate() {
         liststore_tile.insert_with_values(
             None,
-            &[0, 1],
-            &[&pbh.get(TileIdx::from_usize(i)).icon, &tile.id],
+            &[(0, &pbh.get(TileIdx::from_usize(i)).icon), (1, &tile.id)],
         );
     }
     let liststore_wall = &ui.iconview.liststore_wall;
     for (i, wall) in objholder.wall.iter().enumerate() {
         liststore_wall.insert_with_values(
             None,
-            &[0, 1],
-            &[&pbh.get(WallIdx::from_usize(i)).icon, &wall.id],
+            &[(0, &pbh.get(WallIdx::from_usize(i)).icon), (1, &wall.id)],
         );
     }
     let liststore_deco = &ui.iconview.liststore_deco;
     for (i, deco) in objholder.deco.iter().enumerate() {
         liststore_deco.insert_with_values(
             None,
-            &[0, 1],
-            &[&pbh.get(DecoIdx::from_usize(i)).icon, &deco.id],
+            &[(0, &pbh.get(DecoIdx::from_usize(i)).icon), (1, &deco.id)],
         );
     }
     let liststore_item = &ui.iconview.liststore_item;
     for (i, item) in objholder.item.iter().enumerate() {
         liststore_item.insert_with_values(
             None,
-            &[0, 1],
-            &[&pbh.get(ItemIdx::from_usize(i)).icon, &item.id],
+            &[(0, &pbh.get(ItemIdx::from_usize(i)).icon), (1, &item.id)],
         );
     }
 }
@@ -199,7 +171,7 @@ impl Ui {
 }
 
 fn item_filter(m: &gtk::TreeModel, i: &gtk::TreeIter) -> bool {
-    let id: String = m.get_value(i, 1).get().unwrap().unwrap();
+    let id: String = m.value(i, 1).get().unwrap();
     if id == "!" {
         return true;
     }

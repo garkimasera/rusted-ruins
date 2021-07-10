@@ -141,7 +141,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
     let uic = ui.clone();
     ui.property_controls.map_id.connect_changed(move |widget| {
         if uic.get_signal_mode() {
-            let text = widget.get_text();
+            let text = widget.text();
             uic.map.borrow_mut().property.id = text.into();
         }
     });
@@ -151,7 +151,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
         .region_map
         .connect_toggled(move |widget| {
             if uic.get_signal_mode() {
-                let mode = widget.get_active();
+                let mode = widget.is_active();
                 uic.map.borrow_mut().property.is_region_map = mode;
                 uic.iconview.refilter(mode);
             }
@@ -163,7 +163,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
         .entrance_pos
         .connect_changed(move |widget| {
             if uic.get_signal_mode() {
-                let text = widget.get_text();
+                let text = widget.text();
                 uic.map.borrow_mut().property.entrance.clear();
                 if let Ok(entrance) = text.parse::<Vec2d>() {
                     uic.map.borrow_mut().property.entrance.push(entrance);
@@ -175,7 +175,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
     let uic = ui.clone();
     ui.property_controls.music.connect_changed(move |widget| {
         if uic.get_signal_mode() {
-            let text = widget.get_text();
+            let text = widget.text();
             uic.map.borrow_mut().property.music = text.into();
         }
     });
@@ -331,13 +331,13 @@ fn connect_for_tile_edit_controls(ui: &Ui) {
         .entry_item_id
         .connect_changed(move |widget| {
             if uic.get_signal_mode() {
-                let text = widget.get_text();
+                let text = widget.text();
                 let item_gen = if text == "" {
                     None
                 } else {
                     use common::gamedata::ItemGen;
                     Some(ItemGen {
-                        id: text.to_owned(),
+                        id: text.to_string(),
                     })
                 };
                 uic.map

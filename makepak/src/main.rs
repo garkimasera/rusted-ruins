@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate serde_derive;
-extern crate nom;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
 
