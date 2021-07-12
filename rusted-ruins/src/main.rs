@@ -1,3 +1,5 @@
+#![allow(clippy::comparison_chain)]
+
 extern crate rusted_ruins_audio as audio;
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;

@@ -19,6 +19,7 @@ macro_rules! try_paint {
 }
 
 /// Draw tiles and objects on map
+#[allow(clippy::needless_range_loop)]
 pub fn draw_map(
     cr: &Context,
     map: &EditingMap,

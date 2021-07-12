@@ -131,9 +131,9 @@ pub fn generated_map_to_map(
                 kind: entrance_stairs,
             };
 
-            if !is_deepest_floor && e1.is_some() {
+            if let (false, Some(e1)) = (is_deepest_floor, e1) {
                 let dest_floor = floor + 1;
-                map.tile[e1.unwrap()].special = SpecialTileKind::Stairs {
+                map.tile[e1].special = SpecialTileKind::Stairs {
                     dest_floor,
                     kind: exit_stairs,
                 };

@@ -28,14 +28,8 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
         return false;
     }
 
-    let other_chara = game.gd.get_current_map().get_chara(dest_tile);
-    if other_chara.is_none() {
-        game.gd.get_current_map_mut().move_chara(chara_id, dir);
-        if chara_id == CharaId::Player {
-            game.anim_queue.push_player_move(dir);
-        }
-    } else {
-        let relation = game.gd.chara_relation(chara_id, other_chara.unwrap());
+    if let Some(other_chara) = game.gd.get_current_map().get_chara(dest_tile) {
+        let relation = game.gd.chara_relation(chara_id, other_chara);
 
         match relation {
             Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
@@ -48,10 +42,16 @@ pub fn try_move(game: &mut Game, chara_id: CharaId, dir: Direction) -> bool {
                 }
             }
             Relationship::Hostile => {
-                melee_attack(game, chara_id, other_chara.unwrap());
+                melee_attack(game, chara_id, other_chara);
             }
         }
+    } else {
+        game.gd.get_current_map_mut().move_chara(chara_id, dir);
+        if chara_id == CharaId::Player {
+            game.anim_queue.push_player_move(dir);
+        }
     }
+
     true
 }
 

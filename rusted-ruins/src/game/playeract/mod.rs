@@ -284,24 +284,27 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     pub fn print_tile_info(&mut self, tile: Vec2d) {
         // Open StatusWindow for selected character
         let cid = self.gd().get_current_map().get_chara(tile);
-        if cid.is_some() && cid.unwrap() != CharaId::Player {
-            let cid = cid.unwrap();
-            let scanned = self
-                .gd()
-                .chara
-                .get(cid)
-                .status
-                .iter()
-                .any(|status| *status == CharaStatus::Scanned);
 
-            if scanned {
-                self.0
-                    .request_dialog_open(DialogOpenRequest::CharaStatus { cid });
-            } else {
-                let chara = self.gd().chara.get(cid);
-                game_log_i!("not-scanned"; chara=chara);
-                return;
+        match cid {
+            Some(cid) if cid != CharaId::Player => {
+                let scanned = self
+                    .gd()
+                    .chara
+                    .get(cid)
+                    .status
+                    .iter()
+                    .any(|status| *status == CharaStatus::Scanned);
+
+                if scanned {
+                    self.0
+                        .request_dialog_open(DialogOpenRequest::CharaStatus { cid });
+                } else {
+                    let chara = self.gd().chara.get(cid);
+                    game_log_i!("not-scanned"; chara=chara);
+                    return;
+                }
             }
+            _ => (),
         }
 
         super::map::tile_info::print_tile_info(self.0, tile);

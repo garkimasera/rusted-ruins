@@ -92,19 +92,19 @@ impl Window for TalkWindow {
 impl DialogWindow for TalkWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
         if let Some(ref mut choose_win) = self.choose_win {
-            if let DialogResult::CloseWithValue(v) = choose_win.process_command(command, pa) {
-                if let DialogCloseValue::Index(choosed_answer) = v {
-                    match pa.advance_talk(Some(choosed_answer)) {
-                        AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                            self.update_page(Some(talk_text));
-                            return DialogResult::Continue;
-                        }
-                        AdvanceScriptResult::Continue => {
-                            return DialogResult::Continue;
-                        }
-                        AdvanceScriptResult::Quit => {
-                            return DialogResult::Close;
-                        }
+            if let DialogResult::CloseWithValue(DialogCloseValue::Index(choosed_answer)) =
+                choose_win.process_command(command, pa)
+            {
+                match pa.advance_talk(Some(choosed_answer)) {
+                    AdvanceScriptResult::UpdateTalkText(talk_text) => {
+                        self.update_page(Some(talk_text));
+                        return DialogResult::Continue;
+                    }
+                    AdvanceScriptResult::Continue => {
+                        return DialogResult::Continue;
+                    }
+                    AdvanceScriptResult::Quit => {
+                        return DialogResult::Close;
                     }
                 }
             }

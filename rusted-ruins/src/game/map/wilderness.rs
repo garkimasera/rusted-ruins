@@ -89,11 +89,7 @@ fn get_biome(
         }
     }
 
-    if biome.is_some() {
-        Some((biome.unwrap(), sub_biome))
-    } else {
-        None
-    }
+    biome.map(|biome| (biome, sub_biome))
 }
 
 fn to_biome_name(name: &str) -> Option<&str> {

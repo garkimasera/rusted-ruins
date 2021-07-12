@@ -148,6 +148,7 @@ pub trait DialogWindow: Window {
 }
 
 /// The current main mode
+#[allow(clippy::large_enum_variant)]
 enum WindowManageMode {
     /// On start screen
     Start(self::start_window::StartWindow),
