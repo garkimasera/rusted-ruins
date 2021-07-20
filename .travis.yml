@@ -6,6 +6,7 @@ rust:
 script:
   - cargo build --all
   - cargo test --all
+  - cargo clippy -- -D warnings
 
 os:
   - linux
