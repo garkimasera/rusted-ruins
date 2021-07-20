@@ -169,3 +169,14 @@ pub enum ActiveSkillOrigin {
     Race,
     Class,
 }
+
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+pub enum PassiveEffect {
+    AttrStr(i16),
+    AttrVit(i16),
+    AttrDex(i16),
+    AttrInt(i16),
+    AttrWil(i16),
+    AttrCha(i16),
+    AttrSpd(i16),
+}
