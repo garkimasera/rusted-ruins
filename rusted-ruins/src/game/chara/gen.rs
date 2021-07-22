@@ -2,6 +2,7 @@ use crate::game::extrait::*;
 use common::basic::{BonusLevel, WAIT_TIME_NUMERATOR};
 use common::gamedata::*;
 use common::gobj;
+use common::item_selector::ItemSelector;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
 use rules::RULES;
@@ -166,6 +167,31 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
 
         let level = chara.level + bonus;
         let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
+
+        let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
+            item_idx
+        } else {
+            continue;
+        };
+
+        let item = gen_item_from_idx(item_idx, level);
+
+        chara.equip.equip(*esk, 0, item);
+    }
+
+    // Overwrite class equipment by chara template equipment settings
+    for (esk, item_selector, bonus) in &ct.equips {
+        use crate::game::item::gen::*;
+
+        let level = chara.level + bonus;
+        let item_selector: ItemSelector = match item_selector.parse() {
+            Ok(item_selector) => item_selector,
+            Err(e) => {
+                warn!("{}", e);
+                continue;
+            }
+        };
+        let item_selector = item_selector.equip_slot_kind(*esk).level(level);
 
         let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
             item_idx

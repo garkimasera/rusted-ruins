@@ -140,6 +140,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         skill_bonus: chara_dep_input.skill_bonus,
         base_attr,
         active_skills: chara_dep_input.active_skills,
+        equips: chara_dep_input.equips,
     })
 }
 

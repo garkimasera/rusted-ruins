@@ -1,6 +1,6 @@
 use super::defs::{ActiveSkillId, ActiveSkillOrigin, Recipe};
 use super::faction::FactionId;
-use super::item::{EquipItemList, Item, ItemList, ItemLocation, MaterialName};
+use super::item::{EquipItemList, EquipSlotKind, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
@@ -32,6 +32,7 @@ pub struct CharaTemplateObject {
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     /// Learned active skills.
     pub active_skills: Vec<ActiveSkillId>,
+    pub equips: Vec<(EquipSlotKind, String, u32)>,
 }
 
 /// Character classes

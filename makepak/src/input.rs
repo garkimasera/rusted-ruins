@@ -1,6 +1,7 @@
 use common::basic::BonusLevel;
 use common::gamedata::{
-    self, ActiveSkillId, CharaClass, Effect, ElementArray, FactionId, Harvest, SkillKind,
+    self, ActiveSkillId, CharaClass, Effect, ElementArray, EquipSlotKind, FactionId, Harvest,
+    SkillKind,
 };
 use common::sitegen;
 use geom::Vec2d;
@@ -87,6 +88,8 @@ pub struct CharaTemplateDepInput {
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     #[serde(default)]
     pub active_skills: Vec<ActiveSkillId>,
+    #[serde(default)]
+    pub equips: Vec<(EquipSlotKind, String, u32)>,
     pub base_hp: i32,
     pub str: u16,
     pub vit: u16,
