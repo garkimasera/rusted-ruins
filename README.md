@@ -1,4 +1,4 @@
-# Rusted Ruins [![Build Status](https://github.com/garkimasera/rusted-ruins/actions/workflows/ci.yml/badge.svg)](https://travis-ci.org/garkimasera/rusted-ruins)
+# Rusted Ruins [![Build Status](https://github.com/garkimasera/rusted-ruins/actions/workflows/ci.yml/badge.svg)](https://github.com/garkimasera/rusted-ruins/actions)
 Extensible open world rogue like game with pixel art. Players can explore the wilderness and ruins.
 This game is written in Rust.
 
