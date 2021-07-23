@@ -2,6 +2,8 @@
 
 pub mod map_search;
 
+use crate::game::action::shoot_target;
+
 use super::action;
 use super::active_skill::use_active_skill;
 use super::extrait::*;
@@ -56,14 +58,39 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
         AiState::Combat { target } => target,
         _ => unreachable!(),
     };
-    if rng::gen_bool(ai_rule.approach_enemy_prob) {
-        move_to_target_enemy(game, cid, ai_rule, target);
-    } else if rng::gen_bool(ai_rule.active_skill_prob) {
-        if let Some(active_skill_id) = ct.active_skills.choose(&mut get_rng()) {
-            use_active_skill(game, active_skill_id, cid, target);
-        } else {
-            move_to_target_enemy(game, cid, ai_rule, target);
+
+    let mut enable_active_skill = true;
+
+    for _ in 0..4 {
+        let action_kind = rng::choose(CombatActionKind::ALL, |kind| {
+            if *kind == CombatActionKind::ActiveSkill && !enable_active_skill {
+                0.0
+            } else {
+                ai_rule.combat_prob.get(kind).copied().unwrap_or(0.0)
+            }
+        })
+        .map(|a| *a.1)
+        .unwrap_or(CombatActionKind::Skip);
+
+        match action_kind {
+            CombatActionKind::Skip => (),
+            CombatActionKind::ApproachEnemy => {
+                move_to_target_enemy(game, cid, ai_rule, target);
+            }
+            CombatActionKind::RangedWeapon => {
+                shoot_target(game, cid, target);
+            }
+            CombatActionKind::ActiveSkill => {
+                if let Some(active_skill_id) = ct.active_skills.choose(&mut get_rng()) {
+                    use_active_skill(game, active_skill_id, cid, target);
+                } else {
+                    enable_active_skill = false;
+                    continue;
+                }
+            }
         }
+
+        break;
     }
 }
 
