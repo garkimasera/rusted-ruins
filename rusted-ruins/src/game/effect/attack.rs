@@ -229,11 +229,23 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
 
     let anim_img_shot = if weapon_kind.is_melee() {
         String::new()
+    } else if let Some(ItemObjAttr::AnimImgShot(anim_img_shot)) = item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::AnimImgShot(_)))
+    {
+        anim_img_shot.clone()
     } else {
         "arrow".to_owned()
     };
 
-    let sound = if weapon_kind.is_melee() {
+    let sound = if let Some(ItemObjAttr::Sound(sound)) = item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Sound(_)))
+    {
+        sound.clone()
+    } else if weapon_kind.is_melee() {
         "punch".to_owned()
     } else {
         "arrow".to_owned()

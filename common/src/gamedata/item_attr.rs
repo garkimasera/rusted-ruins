@@ -6,6 +6,10 @@ use super::time::{Duration, Time};
 pub enum ItemObjAttr {
     /// Item nutrition
     Nutrition(u16),
+    /// Ranged weapon animation
+    AnimImgShot(String),
+    /// Sound effect for weapons
+    Sound(String),
     /// Range of charges
     Charge { min: u8, max: u8 },
     /// Plant data
