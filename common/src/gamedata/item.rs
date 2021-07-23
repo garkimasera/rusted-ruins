@@ -53,10 +53,10 @@ pub struct ItemObject {
     /// If it is higher, and the item will be generated on deeper floors.
     /// This parameter will be used for shops also.
     pub gen_level: u32,
-    /// Effectiveness of this item
-    pub eff: u16,
-    /// Variation of the effectiveness
-    pub eff_var: u16,
+    /// Base power of this item
+    pub power: u16,
+    /// Variation of the power
+    pub power_var: u16,
     /// Defence
     pub def: ElementArray<u16>,
     pub throw_effect: Option<Effect>,

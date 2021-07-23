@@ -60,11 +60,10 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, eff) =
+    let (effect, skill_kind, weapon_power) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(weapon);
-            let eff = weapon.calc_eff();
-            (weapon_to_effect(weapon), skill_kind, eff)
+            (weapon_to_effect(weapon), skill_kind, weapon.calc_power())
         } else {
             // Attack by bare hands
             let effect = Effect {
@@ -81,7 +80,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
                 anim_img_shot: String::new(),
                 sound: "punch".into(),
             };
-            (effect, SkillKind::BareHands, 1)
+            (effect, SkillKind::BareHands, 1.0)
         };
     let (power, hit_power) = calc_power(
         attacker,
@@ -89,7 +88,7 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
         Element::Physical,
         skill_kind,
     );
-    let power = power * eff as f32;
+    let power = power * weapon_power;
 
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
@@ -104,11 +103,10 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, eff) =
+    let (effect, skill_kind, weapon_power) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
             let skill_kind = get_skill_kind_from_weapon(weapon);
-            let eff = weapon.calc_eff();
-            (weapon_to_effect(weapon), skill_kind, eff)
+            (weapon_to_effect(weapon), skill_kind, weapon.calc_power())
         } else {
             return false;
         };
@@ -118,7 +116,7 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
         Element::Physical,
         skill_kind,
     );
-    let power = power * eff as f32;
+    let power = power * weapon_power;
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
     // Exp processing
@@ -144,12 +142,12 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
     let item = gd.remove_item_and_get(il, 1);
     let chara = gd.chara.get(cid);
     let power = if item.obj().throw_effect.is_some() {
-        item.calc_eff() as f32
+        item.calc_power()
             * chara.attr.str as f32
             * chara.attr.dex as f32
             * (chara.skill_level(SkillKind::Throwing) as f32 + RULES.combat.skill_base)
     } else {
-        item.w() as f32 * RULES.effect.throw_weight_to_eff_factor * chara.attr.str as f32
+        item.w() as f32 * RULES.effect.throw_weight_to_power_factor * chara.attr.str as f32
     };
     game_log!("throw-item"; chara=chara, item=item);
     super::effect::do_effect(game, &effect, Some(cid), target, power, 1.0);
@@ -171,7 +169,7 @@ pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let chara = gd.chara.get_mut(cid);
     game_log!("drink-item"; chara=chara, item=item);
 
-    let power = item.calc_eff() as f32 * RULES.effect.item_drink_power_factor;
+    let power = item.calc_power() * RULES.effect.item_drink_power_factor;
     apply_medical_effect(game, cid, &item.obj().medical_effect, power);
 }
 
@@ -198,19 +196,20 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
         do_damage(game, cid, damage, CharaDamageKind::Starve);
     }
 
-    let power = item.calc_eff() as f32 * RULES.effect.item_eat_power_factor;
+    let power = item.calc_power() * RULES.effect.item_eat_power_factor;
     apply_medical_effect(game, cid, &item.obj().medical_effect, power);
 }
 
 pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
-    let item_eff = item.calc_eff() as f32;
+    let item_power = item.calc_power();
 
     match item.charge() {
         Some(n) if n >= 1 => {
             let skill_level = game.gd.chara.get(cid).skill_level(SkillKind::MagicDevice) as f32;
-            let power = (skill_level / 10.0 + 1.0) * item_eff * RULES.magic.magic_device_base_power;
+            let power =
+                (skill_level / 10.0 + 1.0) * item_power * RULES.magic.magic_device_base_power;
             if let Some(effect) = item_obj.magical_effect.as_ref() {
                 super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);
             } else {

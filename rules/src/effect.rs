@@ -6,5 +6,5 @@ pub struct Effect {
     pub mining_power_factor: f32,
     pub mining_power_base: f32,
     pub recover_hp_factor: f32,
-    pub throw_weight_to_eff_factor: f32,
+    pub throw_weight_to_power_factor: f32,
 }

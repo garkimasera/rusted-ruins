@@ -38,14 +38,14 @@ impl ItemInfoText {
             ItemKind::Throwing => {}
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
-                let eff = item.calc_eff_without_var();
+                let power = item.calc_power_without_var();
                 if weapon_kind.is_melee() {
                     let t = misc_txt_format!(
-                        "item_info_text-melee_weapon"; eff=eff);
+                        "item_info_text-melee_weapon"; power=power);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 } else {
                     let t = misc_txt_format!(
-                        "item_info_text-ranged_weapon"; eff=eff);
+                        "item_info_text-ranged_weapon"; power=power);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
             }

@@ -78,8 +78,8 @@ impl Item {
         None
     }
 
-    /// Calculate factor for the item effectiveness
-    fn eff_factor(&self) -> f32 {
+    /// Calculate factor for the item power
+    fn power_factor(&self) -> f32 {
         let mut factor = 1.0;
         if let Some((_, material)) = self.material() {
             factor *= material.eff;
@@ -87,24 +87,24 @@ impl Item {
         factor
     }
 
-    /// Calculate effectiveness for this item
-    fn calc_eff(&self) -> i32 {
+    /// Calculate power for this item
+    fn calc_power(&self) -> f32 {
         let item_obj = gobj::get_obj(self.idx);
-        let base_eff = self.calc_eff_without_var();
-        let eff_var = (item_obj.eff_var as f32 * self.eff_factor()) as i32;
-        let eff_min = std::cmp::max(base_eff - item_obj.eff_var as i32, 0);
-        let eff_max = base_eff + eff_var;
-        if eff_max > eff_min {
-            rng::gen_range(eff_min..eff_max)
+        let base_power = self.calc_power_without_var();
+        let power_var = (item_obj.power_var as f32 * self.power_factor()) as i32;
+        let power_min = std::cmp::max(base_power - item_obj.power_var as i32, 0);
+        let power_max = base_power + power_var;
+        if power_max > power_min {
+            rng::gen_range(power_min..power_max) as f32
         } else {
-            eff_min
+            power_min as f32
         }
     }
 
     /// Calculate effectiveness for this item without variation
-    fn calc_eff_without_var(&self) -> i32 {
+    fn calc_power_without_var(&self) -> i32 {
         let item_obj = gobj::get_obj(self.idx);
-        (item_obj.eff as f32 * self.eff_factor()) as i32
+        (item_obj.power as f32 * self.power_factor()) as i32
     }
 
     /// Calculate item price

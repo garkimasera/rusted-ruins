@@ -139,9 +139,9 @@ pub struct ItemDepInput {
     pub shop_weight: Option<f32>,
     pub gen_level: u32,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub eff: Option<u16>,
+    pub power: Option<u16>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub eff_var: Option<u16>,
+    pub power_var: Option<u16>,
     /// For armor items
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub def: Option<ElementArray<u16>>,
