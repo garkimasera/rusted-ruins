@@ -28,13 +28,36 @@ Binary format of pak files and save files may be changed before version 1.0.
 
 [See this wiki.](https://github.com/garkimasera/rusted-ruins/wiki/Changelog)
 
-## Design
+## Features
 
 * 2D graphics.
 * Easy to extend by the pak file system. Most of assets are packaged as pak file. Pak file can be created by makepak. Users can add new characters, items and dungeons easily by pak file system.
 * Map editor to create new map.
 * Script to describe talks and events in game.
 * Open world. Provide many playing style for players. The game objective will be different by players.
+
+### Implemented Features
+
+- Random dungeon generation
+- Item creation
+  - Crafting, Cooking
+- Agriculture
+- Mining
+- Town
+- Home building
+- Wilderness map
+
+### Planned Features
+
+- Allies
+  - Employ NPCs
+  - Livestock
+- Relationships with factions
+- Town economy
+  - Growable economic scale
+  - Effects the amount and quality of goods in shops
+- Various quests
+  - Main quest
 
 ## Pak files
 In this game, most of image data and many assets are handled as *XXObject*.
