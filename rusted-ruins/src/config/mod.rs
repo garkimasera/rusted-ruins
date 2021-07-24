@@ -193,8 +193,25 @@ fn load_main_config_file() -> Config {
         }
 
         let config_string = toml::ser::to_string_pretty(&default_config).unwrap();
-        std::fs::write(&path, &config_string).unwrap();
-        info!("create {}", path.display());
+
+        let dir_path = path.parent().expect("invalid config path");
+        if let Err(e) = std::fs::create_dir_all(dir_path) {
+            error!(
+                "cannot create config directory \"{}\"\n{}",
+                dir_path.to_string_lossy(),
+                e
+            );
+        }
+
+        info!("creating config file for {}", path.display());
+        if let Err(e) = std::fs::write(&path, &config_string) {
+            error!(
+                "cannot create config file \"{}\"\n{}",
+                path.to_string_lossy(),
+                e
+            );
+            exit(1);
+        }
 
         default_config
     } else {
