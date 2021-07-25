@@ -25,7 +25,7 @@ pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target)
             do_effect(game, &effect, Some(cid), target, 1.0, 1.0);
         }
         UseEffect::Deed => {
-            if use_deed(game) {
+            if !use_deed(game) {
                 return;
             }
         }
