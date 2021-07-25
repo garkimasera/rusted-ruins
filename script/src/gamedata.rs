@@ -8,8 +8,8 @@ use std::cell::RefCell;
 use std::convert::TryInto;
 use std::sync::RwLock;
 use vm::builtins::PyInt;
-use vm::pyobject::{BorrowValue, IntoPyObject, PyObjectRef, PyResult};
 use vm::VirtualMachine;
+use vm::{IntoPyObject, PyObjectRef, PyResult};
 
 thread_local!(
     static GAME_DATA: UnsyncLazy<RefCell<Option<GameData>>> =
@@ -60,7 +60,7 @@ pub fn value_to_py(vm: &VirtualMachine, value: Value) -> PyObjectRef {
 
 pub fn py_to_value(vm: &VirtualMachine, pyvalue: PyObjectRef) -> PyResult<Value> {
     let value = if let Some(i) = pyvalue.payload::<PyInt>() {
-        let i: i64 = i.borrow_value().try_into().unwrap();
+        let i: i64 = i.as_bigint().try_into().unwrap();
         Value::Int(i)
     } else {
         return Err(vm.new_type_error(format!("invalid type value \"{}\" for set_gvar", pyvalue)));

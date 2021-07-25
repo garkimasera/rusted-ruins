@@ -10,8 +10,7 @@ mod _rr {
     use rustpython_vm as vm;
     use std::convert::TryInto;
     use vm::builtins::{PyNone, PyStrRef};
-    use vm::pyobject::{PyObjectRef, PyResult, PyValue};
-    use vm::VirtualMachine;
+    use vm::{PyObjectRef, PyResult, PyValue, VirtualMachine};
 
     #[pyfunction]
     fn yield_result(vm: &VirtualMachine) -> Option<PyObjectRef> {

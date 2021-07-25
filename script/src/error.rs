@@ -17,9 +17,8 @@ pub enum Error {
 
 impl Error {
     pub fn from_py(vm: &VirtualMachine, e: PyBaseExceptionRef) -> Self {
-        let mut buf = Vec::new();
-        let _ = write_exception(&mut buf, vm, &e);
-        let s = String::from_utf8_lossy(&buf).into_owned();
+        let mut s = String::new();
+        let _ = write_exception(&mut s, vm, &e);
         Error::Python(s)
     }
 }
