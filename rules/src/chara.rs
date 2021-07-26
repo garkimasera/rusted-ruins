@@ -32,4 +32,9 @@ pub struct Chara {
     pub carrying_capacity_threshold_stressed: f32,
     pub carrying_capacity_threshold_strained: f32,
     pub carrying_capacity_threshold_overloaded: f32,
+    /// speed coefficent for burdened status
+    pub speed_coeff_burdened: f32,
+    pub speed_coeff_stressed: f32,
+    pub speed_coeff_strained: f32,
+    pub speed_coeff_overloaded: f32,
 }

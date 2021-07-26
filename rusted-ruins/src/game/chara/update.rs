@@ -23,16 +23,16 @@ pub fn update_attributes(chara: &mut Chara) {
     for status in &chara.status {
         match status {
             CharaStatus::Burdened => {
-                factor *= RULES.chara.carrying_capacity_threshold_burdened;
+                factor *= RULES.chara.speed_coeff_burdened;
             }
             CharaStatus::Strained => {
-                factor *= RULES.chara.carrying_capacity_threshold_strained;
+                factor *= RULES.chara.speed_coeff_strained;
             }
             CharaStatus::Stressed => {
-                factor *= RULES.chara.carrying_capacity_threshold_stressed;
+                factor *= RULES.chara.speed_coeff_stressed;
             }
             CharaStatus::Overloaded => {
-                factor *= RULES.chara.carrying_capacity_threshold_overloaded;
+                factor *= RULES.chara.speed_coeff_overloaded;
             }
             _ => (),
         }
