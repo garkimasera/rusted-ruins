@@ -1,6 +1,6 @@
 use super::effect::do_effect;
 use super::extrait::*;
-use super::Game;
+use super::{Game, InfoGetter};
 use crate::text::ToText;
 use common::gamedata::*;
 use rules::RULES;
@@ -12,6 +12,10 @@ pub fn use_active_skill(
     cid: CharaId,
     target: CharaId,
 ) -> bool {
+    if !game.gd.target_visible(cid, target) {
+        return false;
+    }
+
     let active_skill = if let Some(active_skill) = RULES.active_skills.get(active_skill_id) {
         active_skill
     } else {

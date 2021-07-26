@@ -172,6 +172,35 @@ impl GameData {
         }
     }
 
+    /// Target is visible from given cid
+    fn target_visible(&self, cid: CharaId, target: CharaId) -> bool {
+        let p0 = if let Some(p0) = self.chara_pos(cid) {
+            p0
+        } else {
+            return false;
+        };
+
+        let p1 = if let Some(p1) = self.chara_pos(target) {
+            p1
+        } else {
+            return false;
+        };
+
+        if p0.mdistance(p1) > self.chara.get(cid).attr.view_range {
+            return false;
+        }
+
+        let map = self.get_current_map();
+
+        for p in LineIter::new(p0, p1) {
+            if !map.tile[p].wall.is_empty() {
+                return false;
+            }
+        }
+
+        true
+    }
+
     /// Get shortcut availability (available, remaining)
     fn shortcut_available(&self, n: usize) -> Option<(bool, Option<u32>)> {
         let shortcut = self.settings.action_shortcuts[n]?;

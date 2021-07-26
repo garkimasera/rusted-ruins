@@ -102,6 +102,10 @@ pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
 pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
+    if !game.gd.target_visible(cid, target) {
+        return false;
+    }
+
     let attacker = game.gd.chara.get(cid);
     let (effect, skill_kind, weapon_power) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
