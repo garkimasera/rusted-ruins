@@ -17,10 +17,7 @@ pub struct SdlValues<'sdl, 't> {
 }
 
 impl<'sdl, 't> SdlValues<'sdl, 't> {
-    pub fn new(
-        sdl_context: &'sdl SdlContext,
-        tc: &'t TextureCreator<WindowContext>,
-    ) -> SdlValues<'sdl, 't> {
+    pub fn new(sdl_context: &'sdl SdlContext, tc: &'t TextureCreator<WindowContext>) -> Self {
         SdlValues {
             tc,
             texture_holder: TextureHolder::new(gobj::get_objholder(), tc),

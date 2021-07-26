@@ -42,6 +42,7 @@ fn main() {
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
 
     // Script engine initialization
+    info!("start script engine initialization");
     crate::game::script_methods::init();
     script::enter(|se| {
         screen.main_loop(&sdl_context, se);
@@ -58,9 +59,9 @@ pub struct SdlContext {
 impl SdlContext {
     fn init() -> SdlContext {
         SdlContext {
-            sdl_context: sdl2::init().expect("Init Failed : SDL Context"),
-            ttf_context: sdl2::ttf::init().expect("Init Failed : SDL_ttf Context"),
-            _image: sdl2::image::init(sdl2::image::InitFlag::PNG).expect("Init Failed : SDL_Image"),
+            sdl_context: sdl2::init().expect("init failed : SDL Context"),
+            ttf_context: sdl2::ttf::init().expect("init failed : SDL_ttf Context"),
+            _image: sdl2::image::init(sdl2::image::InitFlag::PNG).expect("init failed : SDL_Image"),
             _audio_context: audio::init(
                 &config::get_data_dirs(),
                 crate::config::CONFIG.music_volume,
@@ -79,7 +80,7 @@ fn init_lazy() {
 fn init_obj() {
     let mut data_dirs = crate::config::get_data_dirs();
     for d in data_dirs.iter_mut() {
-        info!("Loading objects from \"{}\"", d.to_string_lossy());
+        info!("loading objects from \"{}\"", d.to_string_lossy());
         d.push("paks");
     }
     common::gobj::init(data_dirs);

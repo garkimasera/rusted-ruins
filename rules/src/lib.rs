@@ -165,7 +165,7 @@ where
                 continue;
             }
         };
-        info!("Rule file loading: \"{}\"", file_path.to_string_lossy());
+        info!("rule file loading: \"{}\"", file_path.to_string_lossy());
         match ron::de::from_reader(file) {
             Ok(o) => {
                 rule = Some(o);
@@ -189,7 +189,7 @@ where
     T: for<'de> Deserialize<'de>,
     P: AsRef<Path>,
 {
-    info!("Rule file loading: \"{}\"", path.as_ref().to_string_lossy());
+    info!("rule file loading: \"{}\"", path.as_ref().to_string_lossy());
     let file = match fs::File::open(path) {
         Ok(o) => o,
         Err(e) => {

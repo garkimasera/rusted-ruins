@@ -1,6 +1,6 @@
 use super::Game;
 use common::basic::WAIT_TIME_NUMERATOR;
-use common::gamedata::time::Time;
+use common::gamedata::time::*;
 use once_cell::sync::Lazy;
 use rules::RULES;
 use std::sync::Mutex;
@@ -18,7 +18,7 @@ pub fn current_time() -> Time {
     *CURRENT_TIME.lock().unwrap()
 }
 
-pub fn advance_game_time(game: &mut Game, advanced_clock: u32) {
+pub fn advance_game_time_by_clock(game: &mut Game, advanced_clock: u32) {
     let mid = game.gd.get_current_mapid();
     let minutes_per_turn = if mid.is_region_map() {
         RULES.params.minutes_per_turn_region
@@ -28,23 +28,28 @@ pub fn advance_game_time(game: &mut Game, advanced_clock: u32) {
     const AVERAGE_CLOCK_PER_TURN: u32 = WAIT_TIME_NUMERATOR / 100;
     let advanced_secs =
         minutes_per_turn * 60.0 * advanced_clock as f32 / AVERAGE_CLOCK_PER_TURN as f32;
+    advance_game_time_by_secs(game, advanced_secs as u64);
+}
+
+pub fn advance_game_time_by_secs(game: &mut Game, advanced_secs: u64) {
     let before = game.gd.time.current_time();
-    game.gd.time.advance(advanced_secs as u64);
+    game.gd.time.advance(advanced_secs);
     let now = game.gd.time.current_time();
     *CURRENT_TIME.lock().unwrap() = now;
 
     // Update checks
+    let duration_s = now.duration_from(before).as_secs();
     let before = before.into_date();
     let now = now.into_date();
 
     // 10 minutes
-    if before.minute / 10 != now.minute / 10 {
+    if before.minute / 10 != now.minute / 10 || duration_s >= SECS_PER_MIN * 10 {
         info!("time update process (10 minutes)");
         crate::game::item::time::update_item_time(&mut game.gd);
     }
 
     // day
-    if before.day != now.day {
+    if before.day != now.day || duration_s >= SECS_PER_DAY {
         info!("time update process (day)");
     }
 }

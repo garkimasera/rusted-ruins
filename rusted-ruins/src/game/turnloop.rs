@@ -19,7 +19,7 @@ pub fn turn_loop(game: &mut Game) {
 
         let (cid, advanced_clock) = decrease_wait_time(game);
 
-        super::time::advance_game_time(game, advanced_clock);
+        super::time::advance_game_time_by_clock(game, advanced_clock);
         if !game.anim_queue.is_empty() {
             return;
         }
