@@ -14,14 +14,16 @@ pub enum ItemObjAttr {
     Charge { min: u8, max: u8 },
     /// Plant data
     Plant {
-        /// Time to harvestable.
+        /// Time to harvestable
         growing_time_hours: u32,
         /// Reset time after harvesting. With None, the item is removed.
         reset_time_hours: Option<u32>,
-        /// Required tile fertility to grow.
+        /// Required tile fertility to grow
         #[serde(default)]
         required_fertility: u8,
     },
+    /// Hours to rotting for food items
+    Rot(u32),
 }
 
 /// Items can have zero or more attributes.
@@ -34,10 +36,10 @@ pub enum ItemAttr {
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
     ContentGen { level: u32, seed: u32 },
-    /// Material of this item.
+    /// Material of this item
     Material(MaterialName),
-    /// For skill learning items.
+    /// For skill learning items
     SkillLearning(super::skill::SkillKind),
-    /// Title for readable item.
+    /// Title for readable items
     Title(String),
 }
