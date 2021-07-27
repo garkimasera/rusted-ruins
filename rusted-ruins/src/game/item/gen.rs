@@ -147,6 +147,17 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_plant_item(&mut item, growing_time_hours);
     }
 
+    if let Some(&ItemObjAttr::Rot(hours)) = &item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Rot(_)))
+    {
+        item.time = Some(ItemTime {
+            last_updated: crate::game::time::current_time(),
+            remaining: Duration::from_hours(hours.into()),
+        });
+    }
+
     if !item_obj.titles.is_empty() {
         gen_readable_item(&mut item, item_obj)
     }

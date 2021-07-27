@@ -175,8 +175,8 @@ impl Item {
         self.time.map(|time| time.remaining)
     }
 
-    /// Update Time attribute
-    fn update_time(&mut self) {
+    /// Update Time attribute. Returns true if remaining reaches zero.
+    fn update_time(&mut self) -> bool {
         crate::game::time::current_time();
         if let Some(&mut ItemTime {
             ref mut last_updated,
@@ -190,6 +190,10 @@ impl Item {
                 .as_secs()
                 .saturating_sub(since_last_updated.as_secs());
             *remaining = Duration::from_seconds(new_remaining);
+
+            new_remaining == 0
+        } else {
+            false
         }
     }
 
