@@ -31,7 +31,7 @@ fn update_item_list_time(gd: &mut GameData, ill: ItemListLocation) {
 
     for (i, (item, n)) in item_list.items.iter_mut().enumerate() {
         if item.update_time() {
-            match process_item(item, *n) {
+            match process_item(item, *n, ill) {
                 UpdateTimeResult::None => (),
                 UpdateTimeResult::Transform(item, n_gen, n_remove) => {
                     items_to_add.push((item, n_gen));
@@ -56,7 +56,7 @@ enum UpdateTimeResult {
     Transform(Item, u32, u32),
 }
 
-fn process_item(item: &mut Item, n: u32) -> UpdateTimeResult {
+fn process_item(item: &mut Item, n: u32, ill: ItemListLocation) -> UpdateTimeResult {
     let item_obj = gobj::get_obj(item.idx);
 
     if item_obj
@@ -67,9 +67,16 @@ fn process_item(item: &mut Item, n: u32) -> UpdateTimeResult {
         let total_weight = item_obj.w * n;
         let n_rot_pile = std::cmp::max(total_weight / RULES.item.rotten_item_gen_per_gram, 1);
 
-        let item = gen_item_from_id(&RULES.item.rotten_item, 1);
+        let rotten_item = gen_item_from_id(&RULES.item.rotten_item, 1);
 
-        return UpdateTimeResult::Transform(item, n_rot_pile, n);
+        if (ItemListLocation::Chara {
+            cid: CharaId::Player,
+        }) == ill
+        {
+            game_log_i!("inventory-item-rotten"; item=item, n=n);
+        }
+
+        return UpdateTimeResult::Transform(rotten_item, n_rot_pile, n);
     }
 
     UpdateTimeResult::None
