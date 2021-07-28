@@ -232,8 +232,7 @@ pub mod extrait {
     pub use super::chara::status::{CharaStatusExt, CharaStatusOperation};
     pub use super::chara::CharaExt;
     pub use super::infogetter::InfoGetter;
-    pub use super::item::ItemExt;
-    pub use super::item::ItemListExt;
+    pub use super::item::{GameDataItemExt, ItemExt, ItemListExt};
     pub use super::map::MapExt;
     pub use super::site::SiteExt;
     pub use super::skill::SkillListExt;

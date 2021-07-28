@@ -1,5 +1,6 @@
 //! This module provides functions for auto generated dungeons
 
+use crate::game::extrait::*;
 use crate::game::map::builder::MapBuilder;
 use crate::game::saveload::gen_box_id;
 use common::gamedata::*;

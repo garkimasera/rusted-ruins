@@ -1,3 +1,4 @@
+use crate::game::extrait::*;
 use crate::game::item::gen::from_item_gen;
 use common::gamedata::*;
 use common::gobj;

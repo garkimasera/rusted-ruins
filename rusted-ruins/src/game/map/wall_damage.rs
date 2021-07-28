@@ -1,3 +1,4 @@
+use crate::game::extrait::*;
 use crate::game::Game;
 use common::gobj;
 use common::objholder::ItemIdx;

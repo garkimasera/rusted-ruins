@@ -1,5 +1,5 @@
 use super::gen::gen_item_from_id;
-use crate::game::extrait::ItemExt;
+use crate::game::extrait::*;
 use common::gamedata::*;
 use common::gobj;
 use rules::RULES;

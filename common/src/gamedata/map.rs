@@ -312,12 +312,6 @@ impl Map {
         true
     }
 
-    /// Locate item at the specified tile.
-    /// Usually should use GameData functions instead of this to move and append item.
-    pub fn locate_item(&mut self, item: Item, pos: Vec2d, n: u32) {
-        self.tile[pos].item_list.append(item, n);
-    }
-
     pub(crate) fn search_empty_onmap_charaid_n(&self) -> u32 {
         'i_loop: for i in 0.. {
             for cid in self.charaid.iter() {

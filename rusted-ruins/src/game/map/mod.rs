@@ -7,8 +7,8 @@ pub mod wall_damage;
 pub mod wilderness;
 
 use super::chara::gen::create_npc_chara;
+use super::extrait::*;
 use super::item::gen::gen_dungeon_item;
-use super::item::ItemExt;
 use super::Game;
 use crate::text::ToText;
 use common::basic::MAX_ITEM_FOR_DRAW;
@@ -44,6 +44,12 @@ impl Map {
         } else {
             false
         }
+    }
+
+    /// Locate item at the specified tile.
+    /// Usually should use GameData functions instead of this to move and append item.
+    fn locate_item(&mut self, item: Item, pos: Vec2d, n: u32) {
+        self.tile[pos].item_list.append(item, n);
     }
 
     /// Reveal map

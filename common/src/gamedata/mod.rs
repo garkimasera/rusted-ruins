@@ -287,32 +287,6 @@ impl GameData {
         item_list.remove_and_get(item_location.1, n)
     }
 
-    /// Move item to dest
-    pub fn move_item<T: Into<ItemMoveNum>>(
-        &mut self,
-        item_location: ItemLocation,
-        dest: ItemListLocation,
-        n: T,
-    ) {
-        let (item, n) = {
-            let src_list = self.get_item_list_mut(item_location.0);
-            let n = match n.into() {
-                ItemMoveNum::Partial(n) => n,
-                ItemMoveNum::All => src_list.get_number(item_location.1),
-            };
-            (src_list.remove_and_get(item_location.1, n), n)
-        };
-
-        let dest_list = self.get_item_list_mut(dest);
-        dest_list.append(item, n);
-    }
-
-    /// Add item on specified tile of the current map
-    pub fn add_item_on_tile(&mut self, pos: Vec2d, item: Item, n: u32) {
-        let map = self.get_current_map_mut();
-        map.locate_item(item, pos, n);
-    }
-
     pub fn get_equip_list(&self, cid: CharaId) -> &EquipItemList {
         let chara = self.chara.get(cid);
         &chara.equip

@@ -6,10 +6,12 @@ pub mod throw;
 pub mod time;
 
 use crate::context::IconIdx;
+use crate::game::extrait::MapExt;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::ImgVariationRule;
 use common::objholder::ItemIdx;
+use geom::Vec2d;
 use rules::material::Material;
 use rules::RULES;
 
@@ -239,6 +241,27 @@ impl ItemList {
         None
     }
 
+    /// Append item with some processes
+    fn append(&mut self, item: Item, n: u32) {
+        self.append_simple(item, n);
+    }
+
+    /// Move an item to the other item list
+    fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) {
+        let n = n.into().to_u32(self.items[i].1);
+        assert!(self.items[i].1 >= n && n != 0);
+
+        self.items[i].1 -= n;
+
+        let item = if self.items[i].1 == 0 {
+            self.items.remove(i).0
+        } else {
+            self.items[i].0.clone()
+        };
+
+        dest.append(item, n);
+    }
+
     /// Sum of item weight
     fn sum_weight(&self) -> u32 {
         self.iter()
@@ -247,6 +270,35 @@ impl ItemList {
                 obj.w * n
             })
             .sum()
+    }
+}
+
+#[extend::ext(pub, name = GameDataItemExt)]
+impl GameData {
+    /// Add item on specified tile of the current map
+    fn add_item_on_tile(&mut self, pos: Vec2d, item: Item, n: u32) {
+        let map = self.get_current_map_mut();
+        map.locate_item(item, pos, n);
+    }
+
+    /// Move item to dest
+    fn move_item<T: Into<ItemMoveNum>>(
+        &mut self,
+        item_location: ItemLocation,
+        dest: ItemListLocation,
+        n: T,
+    ) {
+        let (item, n) = {
+            let src_list = self.get_item_list_mut(item_location.0);
+            let n = match n.into() {
+                ItemMoveNum::Partial(n) => n,
+                ItemMoveNum::All => src_list.get_number(item_location.1),
+            };
+            (src_list.remove_and_get(item_location.1, n), n)
+        };
+
+        let dest_list = self.get_item_list_mut(dest);
+        dest_list.append(item, n);
     }
 }
 

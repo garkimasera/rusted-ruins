@@ -23,7 +23,7 @@ pub struct Item {
 }
 
 /// Time management data for item.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct ItemTime {
     pub remaining: Duration,
     pub last_updated: Time,
@@ -79,6 +79,22 @@ pub struct ItemObject {
 
 impl Ord for Item {
     fn cmp(&self, other: &Item) -> Ordering {
+        let order = self.cmp_except_time(other);
+        if order != Ordering::Equal {
+            return order;
+        }
+        self.time.cmp(&other.time)
+    }
+}
+
+impl PartialOrd for Item {
+    fn partial_cmp(&self, other: &Item) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Item {
+    pub fn cmp_except_time(&self, other: &Item) -> Ordering {
         let order = self.kind.cmp(&other.kind);
         if order != Ordering::Equal {
             return order;
@@ -97,15 +113,7 @@ impl Ord for Item {
         }
         self.attrs.cmp(&other.attrs)
     }
-}
 
-impl PartialOrd for Item {
-    fn partial_cmp(&self, other: &Item) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Item {
     #[cfg(feature = "global_state_obj")]
     pub fn group_order(&self, other: &Item) -> Ordering {
         self.obj().group.cmp(&other.obj().group)
@@ -348,8 +356,8 @@ impl ItemList {
         self.items.is_empty()
     }
 
-    /// Append item
-    pub fn append(&mut self, item: Item, n: u32) {
+    /// Append item simply
+    pub fn append_simple(&mut self, item: Item, n: u32) {
         if self.items.is_empty() {
             self.items.push((item, n));
             return;
@@ -401,22 +409,6 @@ impl ItemList {
         } else {
             self.items[i].0.clone()
         }
-    }
-
-    /// Move an item to the other item list
-    pub fn move_to<T: Into<ItemMoveNum>>(&mut self, dest: &mut ItemList, i: usize, n: T) {
-        let n = n.into().to_u32(self.items[i].1);
-        assert!(self.items[i].1 >= n && n != 0);
-
-        self.items[i].1 -= n;
-
-        let item = if self.items[i].1 == 0 {
-            self.items.remove(i).0
-        } else {
-            self.items[i].0.clone()
-        };
-
-        dest.append(item, n);
     }
 
     /// Clear all item in list
@@ -505,7 +497,7 @@ pub enum ItemMoveNum {
 }
 
 impl ItemMoveNum {
-    fn to_u32(self, all: u32) -> u32 {
+    pub fn to_u32(self, all: u32) -> u32 {
         match self {
             ItemMoveNum::All => all,
             ItemMoveNum::Partial(n) => n,
