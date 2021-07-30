@@ -16,7 +16,7 @@ pub mod item;
 pub mod map;
 pub mod newgame;
 mod npc;
-mod play_time;
+pub mod play_time;
 pub mod playeract;
 pub mod quest;
 mod region;

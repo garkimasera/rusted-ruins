@@ -7,6 +7,7 @@ use sdl2::rect::Rect;
 pub struct LabelWidget {
     rect: Rect,
     cache: TextCache,
+    s: String,
     font: FontKind,
     wrap_w: Option<u32>,
     is_bordered: bool,
@@ -27,6 +28,7 @@ impl LabelWidget {
         LabelWidget {
             rect,
             cache,
+            s: s.into(),
             font,
             wrap_w: None,
             is_bordered: false,
@@ -40,6 +42,7 @@ impl LabelWidget {
         LabelWidget {
             rect,
             cache,
+            s: s.into(),
             font,
             wrap_w: None,
             is_bordered: true,
@@ -53,6 +56,7 @@ impl LabelWidget {
         LabelWidget {
             rect,
             cache,
+            s: s.into(),
             font,
             wrap_w: Some(w),
             is_bordered: false,
@@ -60,7 +64,12 @@ impl LabelWidget {
         }
     }
 
-    pub fn set_text(&mut self, text: &str) {
+    pub fn set_text<T: Into<String>>(&mut self, text: T) {
+        let text = text.into();
+        if self.s == text {
+            return;
+        }
+
         let cache = if let Some(w) = self.wrap_w {
             TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
         } else if self.is_bordered {

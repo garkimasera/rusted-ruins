@@ -18,6 +18,7 @@ tab_text-item_read = 読む
 button_text-creation-cancel = キャンセル
 button_text-creation-start = スタート
 label_text-status-faction = 所属
+label_text-play_time = プレイ時間
 label_text-creation-use-facility = 必要な設備
 label_text-creation-required-facility = 必要な設備
 label_text-creation-no-required-facility = 設備不要

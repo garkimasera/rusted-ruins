@@ -7,6 +7,11 @@ use std::time::{Duration, Instant};
 static LOAD_TIME: Lazy<Mutex<Instant>> = Lazy::new(|| Mutex::new(Instant::now()));
 static PLAY_TIME_ON_LOAD: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
 static COUNT_ID_GEN: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
+static CURRENT_PLAY_TIME: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
+
+pub fn play_time_as_secs() -> u64 {
+    CURRENT_PLAY_TIME.load(Ordering::Relaxed)
+}
 
 fn elapsed_since_load() -> Duration {
     let now = Instant::now();
@@ -33,11 +38,13 @@ impl PlayTime {
         let elapsed_secs_since_load = elapsed_since_load().as_secs();
         let new_play_time = PLAY_TIME_ON_LOAD.load(Ordering::Relaxed) + elapsed_secs_since_load;
         let current_play_time = self.seconds();
-        dbg!(current_play_time);
 
         if current_play_time < new_play_time {
             self.advance(new_play_time - current_play_time);
             COUNT_ID_GEN.store(0, Ordering::Relaxed);
+            CURRENT_PLAY_TIME.store(self.seconds(), Ordering::Relaxed);
         }
+
+        debug_assert_eq!(new_play_time, self.seconds());
     }
 }

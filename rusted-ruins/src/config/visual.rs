@@ -285,6 +285,7 @@ pub struct ActiveSkillWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct GameInfoWindowConfig {
     pub money_label_rect: CfgRect,
+    pub play_time_label_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]
