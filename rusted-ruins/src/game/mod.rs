@@ -16,6 +16,7 @@ pub mod item;
 pub mod map;
 pub mod newgame;
 mod npc;
+mod play_time;
 pub mod playeract;
 pub mod quest;
 mod region;
@@ -234,6 +235,7 @@ pub mod extrait {
     pub use super::infogetter::InfoGetter;
     pub use super::item::{GameDataItemExt, ItemExt, ItemListExt};
     pub use super::map::MapExt;
+    pub use super::play_time::PlayTimeExt;
     pub use super::site::SiteExt;
     pub use super::skill::SkillListExt;
 }

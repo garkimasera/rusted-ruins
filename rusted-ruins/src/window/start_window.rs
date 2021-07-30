@@ -128,9 +128,9 @@ impl DialogWindow for ChooseSaveFileDialog {
             if let ListWidgetResponse::Select(i) = response {
                 // Any item is selected
                 match GameData::load(&self.save_files[i as usize]) {
-                    Ok(o) => {
+                    Ok(gd) => {
                         return DialogResult::Special(SpecialDialogResult::NewGameStart(Box::new(
-                            o,
+                            gd,
                         )));
                     }
                     Err(e) => {

@@ -7,6 +7,7 @@ pub mod item_attr;
 pub mod learned_recipes;
 pub mod map;
 pub mod meta;
+pub mod play_time;
 pub mod player;
 pub mod quest;
 pub mod region;
@@ -31,6 +32,7 @@ pub use self::item_attr::*;
 pub use self::learned_recipes::*;
 pub use self::map::*;
 pub use self::meta::*;
+pub use self::play_time::*;
 pub use self::player::*;
 pub use self::quest::*;
 pub use self::region::*;
@@ -53,6 +55,7 @@ pub struct GameData {
     pub chara: CharaHolder,
     pub region: RegionHolder,
     pub time: GameTime,
+    pub play_time: PlayTime,
     pub player: Player,
     pub quest: QuestHolder,
     pub vars: Variables,
@@ -77,6 +80,7 @@ impl GameData {
             region: RegionHolder::default(),
             time: GameTime::default(),
             player: Player::default(),
+            play_time: PlayTime::default(),
             quest: QuestHolder::default(),
             vars: Variables::default(),
             faction: Faction::default(),

@@ -40,6 +40,7 @@ use self::log_window::LogWindow;
 use self::main_window::MainWindow;
 use self::widget::WidgetTrait;
 use crate::eventhandler::EventHandler;
+use crate::game::extrait::PlayTimeExt;
 use crate::game::{Command, DoPlayerAction, GameState, InfoGetter, UiRequest};
 use crate::SdlContext;
 use common::gamedata::*;
@@ -243,6 +244,8 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
     }
 
     pub fn draw(&mut self, canvas: &mut WindowCanvas) {
+        self.game.gd.play_time.update();
+
         let mut is_animation_over = false;
         if let Some(anim) = self.anim.as_mut() {
             if self.passed_frame >= anim.get_n_frame() {
@@ -589,8 +592,9 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                         );
                     }
                     // Load from file
-                    SpecialDialogResult::NewGameStart(gd) => {
+                    SpecialDialogResult::NewGameStart(mut gd) => {
                         info!("Load game from file");
+                        gd.play_time.start();
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 

@@ -12,8 +12,11 @@ pub struct NewGameBuilder {
 
 impl NewGameBuilder {
     pub fn new() -> NewGameBuilder {
+        let mut gd = GameData::empty();
+        gd.play_time.start();
+
         NewGameBuilder {
-            gd: GameData::empty(),
+            gd,
             player_name: None,
             chara_class: None,
         }
