@@ -356,7 +356,7 @@ impl ItemWindow {
                 let filtered_list = gd.get_merged_filtered_item_list(
                     ill_ground,
                     ill_player,
-                    ItemFilter::new().selector(selector),
+                    ItemFilter::new().deny_container().selector(selector),
                 );
                 self.update_list(filtered_list);
             }

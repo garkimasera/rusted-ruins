@@ -7,6 +7,7 @@ use common::item_selector::ItemSelector;
 /// Used for creating filtered list and saving filtering state
 #[derive(Debug, Clone)]
 pub struct ItemFilter {
+    pub deny_container: bool,
     pub all: bool,
     pub equip_slot_kind: Option<EquipSlotKind>,
     pub selector: Option<ItemSelector>,
@@ -34,10 +35,19 @@ impl ItemFilter {
 
     /// Given item will be filtered (false) or not (true)
     pub fn judge(&self, item: &Item) -> bool {
+        let o = gobj::get_obj(item.idx);
+
+        if self.deny_container
+            && o.attrs
+                .iter()
+                .any(|attr| matches!(attr, ItemObjAttr::Container { .. }))
+        {
+            return false;
+        }
+
         if self.all {
             return true;
         }
-        let o = gobj::get_obj(item.idx);
 
         if let Some(equip_slot_kind) = self.equip_slot_kind {
             if o.kind.equip_slot_kind() != Some(equip_slot_kind) {
@@ -95,6 +105,11 @@ impl ItemFilter {
         true
     }
 
+    pub fn deny_container(mut self) -> ItemFilter {
+        self.deny_container = true;
+        self
+    }
+
     pub fn equip_slot_kind(mut self, equip_slot_kind: EquipSlotKind) -> ItemFilter {
         self.equip_slot_kind = Some(equip_slot_kind);
         self
@@ -149,6 +164,7 @@ impl ItemFilter {
 impl Default for ItemFilter {
     fn default() -> ItemFilter {
         ItemFilter {
+            deny_container: false,
             all: false,
             equip_slot_kind: None,
             selector: None,
