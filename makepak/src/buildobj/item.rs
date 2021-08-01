@@ -18,6 +18,7 @@ pub fn build_item_object(input: Input) -> Result<ItemObject, Error> {
         "weapon" => ItemKind::Weapon(get_optional_field!(item, weapon_kind)),
         "armor" => ItemKind::Armor(get_optional_field!(item, armor_kind)),
         "tool" => ItemKind::Tool,
+        "container" => ItemKind::Container,
         "readable" => ItemKind::Readable,
         "material" => ItemKind::Material,
         "special" => ItemKind::Special,

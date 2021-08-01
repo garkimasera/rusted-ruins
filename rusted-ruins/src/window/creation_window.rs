@@ -13,37 +13,49 @@ pub fn create_creation_window_group(
     game: &Game,
     creation_kind: Option<CreationKind>,
 ) -> GroupWindow {
-    let mem_info = vec![
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-art"),
-            text_id: "tab_text-creation_art",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Art)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-construction"),
-            text_id: "tab_text-creation_construction",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Construction)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-cooking"),
-            text_id: "tab_text-creation_cooking",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Cooking)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-craft"),
-            text_id: "tab_text-creation_craft",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Craft)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-pharmacy"),
-            text_id: "tab_text-creation_pharmacy",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Pharmacy)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-creation-smith"),
-            text_id: "tab_text-creation_smith",
-            creator: |game| Box::new(CreationWindow::new(&game.gd, CreationKind::Smith)),
-        },
+    let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-art"),
+                text_id: "tab_text-creation_art",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Art))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-construction"),
+                text_id: "tab_text-creation_construction",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Construction))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-cooking"),
+                text_id: "tab_text-creation_cooking",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Cooking))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-craft"),
+                text_id: "tab_text-creation_craft",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Craft))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-pharmacy"),
+                text_id: "tab_text-creation_pharmacy",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Pharmacy))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-creation-smith"),
+                text_id: "tab_text-creation_smith",
+            },
+            Box::new(|game| Box::new(CreationWindow::new(&game.gd, CreationKind::Smith))),
+        ),
     ];
     let rect: Rect = UI_CFG.creation_window.rect.into();
     let i = creation_kind.map(|creation_kind| match creation_kind {

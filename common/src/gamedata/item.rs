@@ -223,6 +223,30 @@ impl FromStr for ItemKind {
     }
 }
 
+impl std::fmt::Display for ItemKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let s = match self {
+            ItemKind::Potion => "potion",
+            ItemKind::Food => "food",
+            ItemKind::Throwing => "throwing",
+            ItemKind::MagicDevice => "magic_device",
+            ItemKind::Tool => "tool",
+            ItemKind::Container => "container",
+            ItemKind::Special => "special",
+            ItemKind::Readable => "readable",
+            ItemKind::Material => "material",
+            ItemKind::Object => "object",
+            ItemKind::Weapon(weapon_kind) => {
+                return write!(f, "{}", weapon_kind);
+            }
+            ItemKind::Armor(armor_kind) => {
+                return write!(f, "{}", armor_kind);
+            }
+        };
+        write!(f, "{}", s)
+    }
+}
+
 bitflags! {
     #[derive(Serialize, Deserialize)]
     #[serde(transparent)]
@@ -292,6 +316,21 @@ pub enum ArmorKind {
     Accessory,
 }
 
+impl std::fmt::Display for ArmorKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let s = match self {
+            ArmorKind::Shield => "shield",
+            ArmorKind::Head => "head",
+            ArmorKind::Skin => "skin",
+            ArmorKind::Body => "body",
+            ArmorKind::Arms => "arms",
+            ArmorKind::Legs => "legs",
+            ArmorKind::Accessory => "accessory",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 impl FromStr for ArmorKind {
     type Err = KindParseError;
 
@@ -319,16 +358,65 @@ pub struct ItemGen {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum ItemListLocation {
+    OnMap {
+        mid: super::map::MapId,
+        pos: Vec2d,
+    },
+    Chara {
+        cid: super::chara::CharaId,
+    },
+    Equip {
+        cid: super::chara::CharaId,
+    },
+    Shop {
+        cid: super::CharaId,
+    },
+    Container {
+        ill: ItemListLocationExceptContainer,
+        i: u32,
+    },
+}
+
+impl ItemListLocation {
+    pub fn in_container(il: ItemLocation) -> Self {
+        let ill = match il.0 {
+            ItemListLocation::OnMap { mid, pos } => {
+                ItemListLocationExceptContainer::OnMap { mid, pos }
+            }
+            ItemListLocation::Chara { cid } => ItemListLocationExceptContainer::Chara { cid },
+            ItemListLocation::Equip { cid } => ItemListLocationExceptContainer::Equip { cid },
+            ItemListLocation::Shop { cid } => ItemListLocationExceptContainer::Shop { cid },
+            ItemListLocation::Container { .. } => {
+                panic!("tried to get item list in an item in container")
+            }
+        };
+        ItemListLocation::Container { ill, i: il.1 }
+    }
+
+    pub const PLAYER: ItemListLocation = ItemListLocation::Chara {
+        cid: super::chara::CharaId::Player,
+    };
+}
+
+impl From<ItemListLocationExceptContainer> for ItemListLocation {
+    fn from(ill: ItemListLocationExceptContainer) -> Self {
+        match ill {
+            ItemListLocationExceptContainer::OnMap { mid, pos } => {
+                ItemListLocation::OnMap { mid, pos }
+            }
+            ItemListLocationExceptContainer::Chara { cid } => ItemListLocation::Chara { cid },
+            ItemListLocationExceptContainer::Equip { cid } => ItemListLocation::Equip { cid },
+            ItemListLocationExceptContainer::Shop { cid } => ItemListLocation::Shop { cid },
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum ItemListLocationExceptContainer {
     OnMap { mid: super::map::MapId, pos: Vec2d },
     Chara { cid: super::chara::CharaId },
     Equip { cid: super::chara::CharaId },
     Shop { cid: super::CharaId },
-}
-
-impl ItemListLocation {
-    pub const PLAYER: ItemListLocation = ItemListLocation::Chara {
-        cid: super::chara::CharaId::Player,
-    };
 }
 
 pub type ItemLocation = (ItemListLocation, u32);

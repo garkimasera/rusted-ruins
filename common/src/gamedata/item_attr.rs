@@ -1,8 +1,12 @@
-use super::item::*;
+use crate::item_selector::ItemSelector;
+
 use super::time::{Duration, Time};
+use super::{item::*, UniqueId, UniqueIdGenerator};
+use serde_with::{serde_as, DisplayFromStr};
 use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 
-/// Attributes for ItemObject.
+/// Attributes for ItemObject
+#[serde_as]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemObjAttr {
     /// Item nutrition
@@ -23,8 +27,20 @@ pub enum ItemObjAttr {
         #[serde(default)]
         required_fertility: u8,
     },
+    Container {
+        #[serde_as(as = "DisplayFromStr")]
+        selector: ItemSelector,
+        /// Weight capacity (gram)
+        capacity: u32,
+        functions: Vec<ContainerFunction>,
+    },
     /// Hours to rotting for food items
     Rot(u32),
+}
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ContainerFunction {
+    PreventRot,
 }
 
 /// Items can have zero or more attributes.
@@ -50,9 +66,34 @@ pub enum ItemAttr {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemListContainer {
     /// Inner item list
-    item_list: ItemList,
+    pub(crate) item_list: ItemList,
     /// Id used for item ordering
     id: u64,
+}
+
+impl ItemListContainer {
+    pub fn new<T: UniqueIdGenerator>(mut generator: T) -> Self {
+        ItemListContainer {
+            item_list: ItemList::default(),
+            id: generator.generate(),
+        }
+    }
+
+    pub fn id(&self) -> UniqueId {
+        self.id
+    }
+}
+
+impl AsRef<ItemList> for ItemListContainer {
+    fn as_ref(&self) -> &ItemList {
+        &self.item_list
+    }
+}
+
+impl AsMut<ItemList> for ItemListContainer {
+    fn as_mut(&mut self) -> &mut ItemList {
+        &mut self.item_list
+    }
 }
 
 impl PartialEq for ItemListContainer {

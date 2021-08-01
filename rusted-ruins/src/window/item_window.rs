@@ -24,6 +24,15 @@ pub enum ItemWindowMode {
     Use,
     Release,
     Read,
+    Open,
+    Take {
+        ill: ItemListLocation,
+        id: UniqueId,
+    },
+    Put {
+        ill: ItemListLocation,
+        id: UniqueId,
+    },
     ShopSell,
     ShopBuy {
         cid: CharaId,
@@ -40,7 +49,7 @@ impl ItemWindowMode {
         use ItemWindowMode::*;
         matches!(
             self,
-            List | Drop | Throw | Drink | Eat | Use | Release | Read
+            List | Drop | Throw | Drink | Eat | Use | Release | Read | Open
         )
     }
 }
@@ -56,50 +65,73 @@ pub struct ItemWindow {
     menu: Option<super::item_menu::ItemMenu>,
 }
 
-const ITEM_WINDOW_GROUP_SIZE: u32 = 8;
+const ITEM_WINDOW_GROUP_SIZE: u32 = 9;
 
 pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> GroupWindow {
-    let mem_info = vec![
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-list"),
-            text_id: "tab_text-item_list",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::List, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-drop"),
-            text_id: "tab_text-item_drop",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drop, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-throw"),
-            text_id: "tab_text-item_throw",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Throw, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-drink"),
-            text_id: "tab_text-item_drink",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Drink, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-eat"),
-            text_id: "tab_text-item_eat",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-use"),
-            text_id: "tab_text-item_use",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Use, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-release"),
-            text_id: "tab_text-item_release",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Release, game)),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-item-read"),
-            text_id: "tab_text-item_read",
-            creator: |game| Box::new(ItemWindow::new(ItemWindowMode::Read, game)),
-        },
+    let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-list"),
+                text_id: "tab_text-item_list",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::List, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-drop"),
+                text_id: "tab_text-item_drop",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Drop, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-throw"),
+                text_id: "tab_text-item_throw",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Throw, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-drink"),
+                text_id: "tab_text-item_drink",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Drink, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-eat"),
+                text_id: "tab_text-item_eat",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Eat, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-use"),
+                text_id: "tab_text-item_use",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Use, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-release"),
+                text_id: "tab_text-item_release",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Release, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-read"),
+                text_id: "tab_text-item_read",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Read, game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-open"),
+                text_id: "tab_text-item_open",
+            },
+            Box::new(|game| Box::new(ItemWindow::new(ItemWindowMode::Open, game))),
+        ),
     ];
     let rect: Rect = UI_CFG.item_window.rect.into();
     let i = mode.map(|mode| match mode {
@@ -111,6 +143,7 @@ pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> Gr
         ItemWindowMode::Use => 5,
         ItemWindowMode::Release => 6,
         ItemWindowMode::Read => 7,
+        ItemWindowMode::Open => 8,
         _ => unreachable!(),
     });
 
@@ -118,6 +151,55 @@ pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> Gr
         "item",
         ITEM_WINDOW_GROUP_SIZE,
         i,
+        game,
+        mem_info,
+        (rect.x, rect.y),
+    )
+}
+
+pub fn create_take_put_window_group(game: &Game, il: ItemLocation) -> GroupWindow {
+    let id = game
+        .gd
+        .get_item(il)
+        .0
+        .attrs
+        .iter()
+        .filter_map(|attr| match attr {
+            ItemAttr::Container(container) => Some(container.id()),
+            _ => None,
+        })
+        .next()
+        .expect("tried to open an item that doesn't have inner item list");
+
+    let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-take"),
+                text_id: "tab_text-item_take",
+            },
+            Box::new(move |game| {
+                Box::new(ItemWindow::new(
+                    ItemWindowMode::Take { ill: il.0, id },
+                    game,
+                ))
+            }),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-item-put"),
+                text_id: "tab_text-item_pub",
+            },
+            Box::new(move |game| {
+                Box::new(ItemWindow::new(ItemWindowMode::Put { ill: il.0, id }, game))
+            }),
+        ),
+    ];
+    let rect: Rect = UI_CFG.item_window.rect.into();
+
+    GroupWindow::new(
+        "item-put-take",
+        ITEM_WINDOW_GROUP_SIZE,
+        Some(0),
         game,
         mem_info,
         (rect.x, rect.y),
@@ -250,6 +332,40 @@ impl ItemWindow {
                 );
                 self.update_list(filtered_list);
             }
+            ItemWindowMode::Open => {
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().container(true),
+                );
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Put { ill, id } => {
+                let il = gd.find_container_item(*ill, *id).unwrap();
+                let item_obj = gd.get_item(il).0.obj();
+                let selector = item_obj
+                    .attrs
+                    .iter()
+                    .filter_map(|attr| match attr {
+                        ItemObjAttr::Container { selector, .. } => Some(selector),
+                        _ => None,
+                    })
+                    .next()
+                    .cloned()
+                    .unwrap();
+                let filtered_list = gd.get_merged_filtered_item_list(
+                    ill_ground,
+                    ill_player,
+                    ItemFilter::new().selector(selector),
+                );
+                self.update_list(filtered_list);
+            }
+            ItemWindowMode::Take { ill, id } => {
+                let il = gd.find_container_item(*ill, *id).unwrap();
+                let ill_in_container = ItemListLocation::in_container(il);
+                let filtered_list = gd.get_filtered_item_list(ill_in_container, ItemFilter::new());
+                self.update_list(filtered_list);
+            }
             ItemWindowMode::ShopBuy { cid } => {
                 let ill = ItemListLocation::Shop { cid: *cid };
                 let filtered_list = gd.get_filtered_item_list(ill, ItemFilter::new());
@@ -263,7 +379,7 @@ impl ItemWindow {
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Select { ill, filter, .. } => {
-                let filtered_list = gd.get_filtered_item_list(*ill, *filter);
+                let filtered_list = gd.get_filtered_item_list(*ill, filter.clone());
                 self.update_list(filtered_list);
             }
         }
@@ -374,6 +490,24 @@ impl ItemWindow {
                 } else {
                     DialogResult::CloseAll
                 }
+            }
+            ItemWindowMode::Open => {
+                return DialogResult::OpenChildDialog(Box::new(create_take_put_window_group(
+                    pa.game(),
+                    il,
+                )));
+            }
+            ItemWindowMode::Take { .. } => {
+                pa.move_item(il, ItemListLocation::PLAYER, 1);
+                self.update_by_mode(pa.gd());
+                DialogResult::Continue
+            }
+            ItemWindowMode::Put { ill, id } => {
+                let container_il = pa.gd().find_container_item(ill, id).unwrap();
+                let ill_in_container = ItemListLocation::in_container(container_il);
+                pa.move_item(il, ill_in_container, 1);
+                self.update_by_mode(pa.gd());
+                DialogResult::Continue
             }
             ItemWindowMode::ShopBuy { .. } => {
                 pa.buy_item(il);

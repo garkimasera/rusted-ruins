@@ -242,6 +242,19 @@ impl GameData {
             ItemListLocation::Equip { cid } => self.chara.get(cid).equip.list(),
             ItemListLocation::OnMap { mid, pos } => &self.region.get_map(mid).tile[pos].item_list,
             ItemListLocation::Shop { cid } => &self.get_shop(cid).items,
+            ItemListLocation::Container { ill, i } => {
+                let item = self.get_item((ill.into(), i));
+
+                item.0
+                    .attrs
+                    .iter()
+                    .filter_map(|attr| match attr {
+                        ItemAttr::Container(container) => Some(container.as_ref()),
+                        _ => None,
+                    })
+                    .next()
+                    .expect("invalid ItemListLocation for container item")
+            }
         }
     }
 
@@ -256,6 +269,19 @@ impl GameData {
                 &mut self.region.get_map_mut(mid).tile[pos].item_list
             }
             ItemListLocation::Shop { cid } => &mut self.get_shop_mut(cid).items,
+            ItemListLocation::Container { ill, i } => {
+                let item = self.get_item_mut((ill.into(), i));
+
+                item.0
+                    .attrs
+                    .iter_mut()
+                    .filter_map(|attr| match attr {
+                        ItemAttr::Container(container) => Some(container.as_mut()),
+                        _ => None,
+                    })
+                    .next()
+                    .expect("invalid ItemListLocation for container item")
+            }
         }
     }
 

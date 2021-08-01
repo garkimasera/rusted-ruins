@@ -2,18 +2,21 @@ use super::merged::*;
 use super::ItemExt;
 use common::gamedata::*;
 use common::gobj;
+use common::item_selector::ItemSelector;
 
 /// Used for creating filtered list and saving filtering state
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct ItemFilter {
     pub all: bool,
     pub equip_slot_kind: Option<EquipSlotKind>,
+    pub selector: Option<ItemSelector>,
     pub flags: ItemFlags,
     pub kind_rough: Option<ItemKindRough>,
     pub eatable: bool,
     pub drinkable: bool,
     pub usable: bool,
     pub readable: bool,
+    pub container: bool,
     pub throw_str: Option<u16>,
 }
 
@@ -38,6 +41,12 @@ impl ItemFilter {
 
         if let Some(equip_slot_kind) = self.equip_slot_kind {
             if o.kind.equip_slot_kind() != Some(equip_slot_kind) {
+                return false;
+            }
+        }
+
+        if let Some(selector) = self.selector.as_ref() {
+            if !selector.is(o) {
                 return false;
             }
         }
@@ -68,6 +77,15 @@ impl ItemFilter {
             return false;
         }
 
+        if self.container
+            && !item
+                .attrs
+                .iter()
+                .any(|attr| matches!(attr, ItemAttr::Container(_)))
+        {
+            return false;
+        }
+
         if let Some(throw_str) = self.throw_str {
             if item.throw_range(throw_str) == 0 {
                 return false;
@@ -79,6 +97,11 @@ impl ItemFilter {
 
     pub fn equip_slot_kind(mut self, equip_slot_kind: EquipSlotKind) -> ItemFilter {
         self.equip_slot_kind = Some(equip_slot_kind);
+        self
+    }
+
+    pub fn selector(mut self, selector: ItemSelector) -> ItemFilter {
+        self.selector = Some(selector);
         self
     }
 
@@ -112,6 +135,11 @@ impl ItemFilter {
         self
     }
 
+    pub fn container(mut self, container: bool) -> ItemFilter {
+        self.container = container;
+        self
+    }
+
     pub fn throwable(mut self, throw_str: Option<u16>) -> ItemFilter {
         self.throw_str = throw_str;
         self
@@ -123,12 +151,14 @@ impl Default for ItemFilter {
         ItemFilter {
             all: false,
             equip_slot_kind: None,
+            selector: None,
             flags: ItemFlags::empty(),
             kind_rough: None,
             eatable: false,
             drinkable: false,
             usable: false,
             readable: false,
+            container: false,
             throw_str: None,
         }
     }

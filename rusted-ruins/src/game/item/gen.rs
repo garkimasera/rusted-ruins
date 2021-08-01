@@ -1,3 +1,4 @@
+use crate::game::play_time::UniqueIdGeneratorByTime;
 use common::gamedata::*;
 use common::gobj;
 use common::item_selector::ItemSelector;
@@ -147,6 +148,14 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_plant_item(&mut item, growing_time_hours);
     }
 
+    if let Some(&ItemObjAttr::Container { .. }) = &item_obj
+        .attrs
+        .iter()
+        .find(|attr| matches!(attr, ItemObjAttr::Container { .. }))
+    {
+        gen_container_item(&mut item);
+    }
+
     if let Some(&ItemObjAttr::Rot(hours)) = &item_obj
         .attrs
         .iter()
@@ -189,6 +198,12 @@ fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
             remaining: Duration::from_hours(growing_time_hours.into()),
         });
     }
+}
+
+fn gen_container_item(item: &mut Item) {
+    item.attrs.push(ItemAttr::Container(ItemListContainer::new(
+        UniqueIdGeneratorByTime,
+    )));
 }
 
 /// Generate a magic device item

@@ -12,12 +12,13 @@ use std::sync::Mutex;
 static RECENT_PAGE: Lazy<Mutex<HashMap<&'static str, u32>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct MemberInfo {
-    pub creator: fn(&Game) -> Box<dyn DialogWindow>,
     pub idx: UiImgIdx,
     pub text_id: &'static str,
 }
+
+pub type ChildWinCreator = Box<dyn Fn(&Game) -> Box<dyn DialogWindow>>;
 
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.
@@ -26,7 +27,7 @@ pub struct GroupWindow {
     size: u32,
     current_window: u32,
     members: Vec<Option<Box<dyn DialogWindow>>>,
-    mem_info: Vec<MemberInfo>,
+    mem_info: Vec<(MemberInfo, ChildWinCreator)>,
     tab_navigator: TabsNavigator,
 }
 
@@ -36,7 +37,7 @@ impl GroupWindow {
         size: u32,
         init_win: Option<u32>,
         game: &Game,
-        mem_info: Vec<MemberInfo>,
+        mem_info: Vec<(MemberInfo, ChildWinCreator)>,
         window_top_left: (i32, i32),
     ) -> GroupWindow {
         let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).map(|_| None).collect();
@@ -52,7 +53,11 @@ impl GroupWindow {
         };
         assert!(init_win < size);
 
-        let tab_navigator = TabsNavigator::new(window_top_left, mem_info.clone(), init_win);
+        let tab_navigator = TabsNavigator::new(
+            window_top_left,
+            mem_info.iter().map(|m| m.0.clone()).collect(),
+            init_win,
+        );
 
         let mut group_window = GroupWindow {
             group_name,
@@ -80,7 +85,7 @@ impl GroupWindow {
         // Change window
         self.current_window = i_win;
         if self.members[i_win as usize].is_none() {
-            self.members[i_win as usize] = Some((self.mem_info[i_win as usize].creator)(game));
+            self.members[i_win as usize] = Some((self.mem_info[i_win as usize].1)(game));
         } else {
             let item_window = self.members[i_win as usize].as_mut().unwrap();
             item_window.update(&game.gd);
@@ -160,6 +165,10 @@ impl DialogWindow for GroupWindow {
 
     fn mode(&self) -> InputMode {
         InputMode::Dialog
+    }
+
+    fn draw_mode(&self) -> WindowDrawMode {
+        WindowDrawMode::SkipUnderWindows
     }
 }
 

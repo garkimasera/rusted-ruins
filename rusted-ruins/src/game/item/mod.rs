@@ -300,6 +300,32 @@ impl GameData {
         let dest_list = self.get_item_list_mut(dest);
         dest_list.append(item, n);
     }
+
+    /// Find container item that have specified id
+    fn find_container_item(&self, ill: ItemListLocation, id: UniqueId) -> Option<ItemLocation> {
+        let item_list = self.get_item_list(ill);
+
+        item_list
+            .items
+            .iter()
+            .enumerate()
+            .filter_map(|(i, (item, _))| {
+                let item_id = item
+                    .attrs
+                    .iter()
+                    .filter_map(|attr| match attr {
+                        ItemAttr::Container(container) => Some(container.id()),
+                        _ => None,
+                    })
+                    .next();
+                if item_id == Some(id) {
+                    Some((ill, i as u32))
+                } else {
+                    None
+                }
+            })
+            .next()
+    }
 }
 
 /// Change specified character's equipment by given item

@@ -19,32 +19,28 @@ pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
     static TARGET_CID: Lazy<Mutex<Option<CharaId>>> = Lazy::new(|| Mutex::new(None));
     *TARGET_CID.lock().unwrap() = Some(cid);
 
-    let mem_info = vec![
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-chara-stats"),
-            text_id: "tab_text-chara_stats",
-            creator: |game| {
-                Box::new(StatusWindow::new(
-                    &game.gd,
-                    TARGET_CID.lock().unwrap().unwrap(),
-                ))
+    let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-chara-stats"),
+                text_id: "tab_text-chara_stats",
             },
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-chara-equipments"),
-            text_id: "tab_text-chara_equipments",
-            creator: |game| Box::new(EquipWindow::new(game, TARGET_CID.lock().unwrap().unwrap())),
-        },
-        MemberInfo {
-            idx: gobj::id_to_idx("!tab-icon-chara-skills"),
-            text_id: "tab_text-chara_skills",
-            creator: |game| {
-                Box::new(SkillWindow::new(
-                    &game.gd,
-                    TARGET_CID.lock().unwrap().unwrap(),
-                ))
+            Box::new(move |game| Box::new(StatusWindow::new(&game.gd, cid))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-chara-equipments"),
+                text_id: "tab_text-chara_equipments",
             },
-        },
+            Box::new(move |game| Box::new(EquipWindow::new(game, cid))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-chara-skills"),
+                text_id: "tab_text-chara_skills",
+            },
+            Box::new(move |game| Box::new(SkillWindow::new(&game.gd, cid))),
+        ),
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();
     GroupWindow::new(

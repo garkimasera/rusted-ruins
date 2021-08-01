@@ -1,4 +1,4 @@
-use common::gamedata::PlayTime;
+use common::gamedata::{PlayTime, UniqueId, UniqueIdGenerator};
 use once_cell::sync::Lazy;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
@@ -21,6 +21,18 @@ fn elapsed_since_load() -> Duration {
         Duration::from_secs(0)
     } else {
         now.duration_since(load_time)
+    }
+}
+
+#[derive(Debug)]
+pub struct UniqueIdGeneratorByTime;
+
+impl UniqueIdGenerator for UniqueIdGeneratorByTime {
+    fn generate(&mut self) -> UniqueId {
+        let count = COUNT_ID_GEN.fetch_add(1, Ordering::Relaxed);
+        let current_play_time = CURRENT_PLAY_TIME.load(Ordering::Relaxed);
+
+        current_play_time << 24 | count
     }
 }
 

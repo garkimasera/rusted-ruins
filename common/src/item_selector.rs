@@ -4,7 +4,7 @@ use std::str::FromStr;
 use thiserror::Error;
 
 /// Select items by given ids and groups.
-#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug, Serialize, Deserialize)]
 pub struct ItemSelector {
     all: bool,
     esk: Option<EquipSlotKind>,
@@ -102,12 +102,33 @@ impl std::fmt::Display for ItemSelector {
             return write!(f, "*");
         }
 
-        for id in &self.ids {
-            write!(f, "{}", id)?;
+        let mut need_comma = false;
+
+        for kind in &self.kinds {
+            if need_comma {
+                write!(f, ",")?;
+            } else {
+                need_comma = true;
+            }
+            write!(f, "kind/{}", kind)?;
         }
 
         for group in &self.groups {
-            write!(f, "{}", group)?;
+            if need_comma {
+                write!(f, ",")?;
+            } else {
+                need_comma = true;
+            }
+            write!(f, "group/{}", group)?;
+        }
+
+        for id in &self.ids {
+            if need_comma {
+                write!(f, ",")?;
+            } else {
+                need_comma = true;
+            }
+            write!(f, "{}", id)?;
         }
 
         Ok(())

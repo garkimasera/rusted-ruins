@@ -180,6 +180,15 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         self.0.finish_player_turn();
     }
 
+    pub fn move_item<T: Into<ItemMoveNum>>(
+        &mut self,
+        il: ItemLocation,
+        ill_in_container: ItemListLocation,
+        n: T,
+    ) {
+        self.0.gd.move_item(il, ill_in_container, n);
+    }
+
     /// Buy item
     pub fn buy_item(&mut self, il: ItemLocation) {
         super::shop::buy_item(self.gd_mut(), il);

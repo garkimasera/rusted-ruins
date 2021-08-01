@@ -180,3 +180,11 @@ pub enum PassiveEffect {
     AttrCha(i16),
     AttrSpd(i16),
 }
+
+/// Unique id for used in game
+pub type UniqueId = u64;
+
+/// Unique id generator
+pub trait UniqueIdGenerator {
+    fn generate(&mut self) -> UniqueId;
+}
