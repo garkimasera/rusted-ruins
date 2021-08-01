@@ -187,7 +187,7 @@ pub fn create_take_put_window_group(game: &Game, il: ItemLocation) -> GroupWindo
         (
             MemberInfo {
                 idx: gobj::id_to_idx("!tab-icon-item-put"),
-                text_id: "tab_text-item_pub",
+                text_id: "tab_text-item_put",
             },
             Box::new(move |game| {
                 Box::new(ItemWindow::new(ItemWindowMode::Put { ill: il.0, id }, game))
