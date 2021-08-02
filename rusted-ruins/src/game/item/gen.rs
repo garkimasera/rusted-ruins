@@ -167,7 +167,11 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         });
     }
 
-    if !item_obj.titles.is_empty() {
+    if item_obj
+        .attrs
+        .iter()
+        .any(|attr| matches!(attr, ItemObjAttr::Titles(_)))
+    {
         gen_readable_item(&mut item, item_obj)
     }
 
@@ -222,7 +226,16 @@ fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
 
 /// Generate a readable item
 fn gen_readable_item(item: &mut Item, item_obj: &ItemObject) {
-    let title = item_obj.titles.choose(&mut rng::GameRng).cloned().unwrap();
+    let titles = item_obj
+        .attrs
+        .iter()
+        .filter_map(|attr| match attr {
+            ItemObjAttr::Titles(titles) => Some(titles),
+            _ => None,
+        })
+        .next()
+        .unwrap();
+    let title = titles.choose(&mut rng::GameRng).cloned().unwrap();
     item.attrs.push(ItemAttr::Title(title));
 }
 

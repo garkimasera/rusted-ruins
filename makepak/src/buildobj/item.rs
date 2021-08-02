@@ -52,6 +52,5 @@ pub fn build_item_object(input: Input) -> Result<ItemObject, Error> {
         attrs: item.attrs,
         material_group: item.material_group,
         material: item.material,
-        titles: item.titles,
     })
 }

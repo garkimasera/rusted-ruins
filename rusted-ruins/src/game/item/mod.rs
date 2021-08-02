@@ -324,7 +324,7 @@ impl GameData {
 
         let src_list_location = container_location_and_id
             .map(|(ill, id)| self.find_container_item(ill.into(), id).unwrap())
-            .map(|il| ItemListLocation::in_container(il))
+            .map(ItemListLocation::in_container)
             .unwrap_or(item_location.0);
         let src_list = self.get_item_list_mut(src_list_location);
         src_list.items.retain(|(_, n)| *n > 0);

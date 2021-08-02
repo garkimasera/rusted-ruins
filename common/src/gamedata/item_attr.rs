@@ -18,7 +18,10 @@ pub enum ItemObjAttr {
     /// Sound effect for weapons
     Sound(String),
     /// Range of charges
-    Charge { min: u8, max: u8 },
+    Charge {
+        min: u8,
+        max: u8,
+    },
     /// Plant data
     Plant {
         /// Time to harvestable
@@ -39,7 +42,10 @@ pub enum ItemObjAttr {
     /// Hours to rotting for food items
     Rot(u32),
     /// Effect for throwable items
-    Throw { power: BasePower, effect: Effect },
+    Throw {
+        power: BasePower,
+        effect: Effect,
+    },
     /// For harvestable items
     Harvest(Harvest),
     /// Facility type for creation and additional quality.
@@ -48,6 +54,7 @@ pub enum ItemObjAttr {
         ty: String,
         quality: i8,
     },
+    Titles(Vec<String>),
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

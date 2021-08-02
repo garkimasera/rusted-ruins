@@ -68,8 +68,6 @@ pub struct ItemObject {
     pub material_group: String,
     /// Material name used for creation
     pub material: MaterialName,
-    /// Available titles for readable items.
-    pub titles: Vec<String>,
 }
 
 impl Ord for Item {

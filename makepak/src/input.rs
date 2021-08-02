@@ -162,8 +162,6 @@ pub struct ItemDepInput {
     pub material_group: String,
     #[serde(default)]
     pub material: gamedata::MaterialName,
-    #[serde(default)]
-    pub titles: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
