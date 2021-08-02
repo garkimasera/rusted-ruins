@@ -50,7 +50,6 @@ pub fn build_item_object(input: Input) -> Result<ItemObject, Error> {
         use_effect: item.use_effect,
         tool_effect: item.tool_effect,
         attrs: item.attrs,
-        harvest: item.harvest,
         facility: item.facility,
         material_group: item.material_group,
         material: item.material,

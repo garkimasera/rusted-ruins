@@ -139,7 +139,11 @@ impl GameData {
             let item_idx = item.0.idx;
             let item_obj = gobj::get_obj(item_idx);
 
-            if item_obj.harvest.is_some() {
+            if item_obj
+                .attrs
+                .iter()
+                .any(|attr| matches!(attr, ItemObjAttr::Harvest(_)))
+            {
                 v.push(((ill, i as u32), item_idx))
             }
         }

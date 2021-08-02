@@ -1,5 +1,6 @@
 use crate::item_selector::ItemSelector;
 
+use super::defs::*;
 use super::effect::Effect;
 use super::time::{Duration, Time};
 use super::{item::*, BasePower, UniqueId, UniqueIdGenerator};
@@ -39,6 +40,8 @@ pub enum ItemObjAttr {
     Rot(u32),
     /// Effect for throwable items
     Throw { power: BasePower, effect: Effect },
+    /// For harvestable items
+    Harvest(Harvest),
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

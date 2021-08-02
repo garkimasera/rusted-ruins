@@ -39,7 +39,15 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
     let list = gd.search_harvestable_item(pos);
     for (il, item_idx) in &list {
         let item_obj = gobj::get_obj(*item_idx);
-        let harvest = if let Some(harvest) = item_obj.harvest.as_ref() {
+        let harvest = if let Some(harvest) = item_obj
+            .attrs
+            .iter()
+            .filter_map(|attr| match attr {
+                ItemObjAttr::Harvest(harvest) => Some(harvest),
+                _ => None,
+            })
+            .next()
+        {
             harvest
         } else {
             continue;
@@ -74,19 +82,32 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
     }
 
     let item_obj = gobj::get_obj(item_idx);
-    if item_obj.harvest.is_none() {
+
+    let harvest = if let Some(harvest) = item_obj
+        .attrs
+        .iter()
+        .filter_map(|attr| match attr {
+            ItemObjAttr::Harvest(harvest) => Some(harvest),
+            _ => None,
+        })
+        .next()
+    {
+        harvest
+    } else {
         return;
-    }
-    let harvest = item_obj.harvest.as_ref().unwrap();
+    };
+
     let skill_level = gd.chara.get(cid).skill_level(harvest.kind.related_skill());
 
     for item in &harvest.item {
         let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
         let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
-        let n_yield = if harvest.difficulty < skill_level {
-            item.1
+        let min_yield = std::cmp::min(item.1, item.2);
+        let max_yield = std::cmp::max(item.1, item.2);
+        let n_yield = if harvest.difficulty > skill_level {
+            min_yield
         } else {
-            std::cmp::min(item.2, item.1 + skill_level - harvest.difficulty)
+            std::cmp::min(max_yield, item.1 + skill_level - harvest.difficulty)
         };
 
         match harvest.kind {

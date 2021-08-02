@@ -1,7 +1,6 @@
 use common::basic::BonusLevel;
 use common::gamedata::{
-    self, ActiveSkillId, CharaClass, Effect, ElementArray, EquipSlotKind, FactionId, Harvest,
-    SkillKind,
+    self, ActiveSkillId, CharaClass, Effect, ElementArray, EquipSlotKind, FactionId, SkillKind,
 };
 use common::sitegen;
 use geom::Vec2d;
@@ -159,8 +158,6 @@ pub struct ItemDepInput {
     pub tool_effect: Option<gamedata::ToolEffect>,
     #[serde(default)]
     pub attrs: Vec<gamedata::ItemObjAttr>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub harvest: Option<Harvest>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub facility: Option<(String, i8)>,
     #[serde(default)]

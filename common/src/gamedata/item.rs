@@ -64,8 +64,6 @@ pub struct ItemObject {
     pub use_effect: Option<UseEffect>,
     pub tool_effect: Option<ToolEffect>,
     pub attrs: Vec<ItemObjAttr>,
-    /// For harvestable items
-    pub harvest: Option<Harvest>,
     /// Facility type for creation and additional quality.
     pub facility: Option<(String, i8)>,
     /// Possible material for this item

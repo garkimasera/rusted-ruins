@@ -73,7 +73,17 @@ pub fn create_menu(
         let list = game.gd.search_harvestable_item(tile);
         for (il, item_idx) in &list {
             let item_obj = gobj::get_obj(*item_idx);
-            let harvest = item_obj.harvest.as_ref().unwrap();
+
+            let harvest = item_obj
+                .attrs
+                .iter()
+                .filter_map(|attr| match attr {
+                    ItemObjAttr::Harvest(harvest) => Some(harvest),
+                    _ => None,
+                })
+                .next()
+                .unwrap();
+
             let il = *il;
 
             match harvest.kind {
