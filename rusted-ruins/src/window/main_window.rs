@@ -12,7 +12,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 
 pub(super) static CENTERING_START_REQ: Lazy<Mutex<Option<Vec2d>>> = Lazy::new(|| Mutex::new(None));
-pub(super) static CENTERING_STOP_REQ: Lazy<AtomicBool> = Lazy::new(|| AtomicBool::new(false));
+pub(super) static CENTERING_STOP_REQ: AtomicBool = AtomicBool::new(false);
 
 enum MainWindowMode {
     Normal,

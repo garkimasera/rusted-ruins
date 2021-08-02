@@ -5,9 +5,9 @@ use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
 static LOAD_TIME: Lazy<Mutex<Instant>> = Lazy::new(|| Mutex::new(Instant::now()));
-static PLAY_TIME_ON_LOAD: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
-static COUNT_ID_GEN: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
-static CURRENT_PLAY_TIME: Lazy<AtomicU64> = Lazy::new(|| AtomicU64::new(0));
+static PLAY_TIME_ON_LOAD: AtomicU64 = AtomicU64::new(0);
+static COUNT_ID_GEN: AtomicU64 = AtomicU64::new(0);
+static CURRENT_PLAY_TIME: AtomicU64 = AtomicU64::new(0);
 
 pub fn play_time_as_secs() -> u64 {
     CURRENT_PLAY_TIME.load(Ordering::Relaxed)
