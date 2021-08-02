@@ -288,17 +288,46 @@ impl GameData {
         dest: ItemListLocation,
         n: T,
     ) {
-        let (item, n) = {
+        let (item, n, container_location_and_id) = {
+            let container_location_and_id = match item_location.0 {
+                ItemListLocation::Container { ill, i } => Some((
+                    ill,
+                    self.get_item((ill.into(), i))
+                        .0
+                        .attrs
+                        .iter()
+                        .filter_map(|attr| match attr {
+                            ItemAttr::Container(container) => Some(container.id()),
+                            _ => None,
+                        })
+                        .next()
+                        .unwrap(),
+                )),
+                _ => None,
+            };
+
             let src_list = self.get_item_list_mut(item_location.0);
             let n = match n.into() {
                 ItemMoveNum::Partial(n) => n,
                 ItemMoveNum::All => src_list.get_number(item_location.1),
             };
-            (src_list.remove_and_get(item_location.1, n), n)
+
+            let i = item_location.1 as usize;
+            let item = src_list.items[i].0.clone();
+            src_list.items[i].1 -= n;
+
+            (item, n, container_location_and_id)
         };
 
         let dest_list = self.get_item_list_mut(dest);
         dest_list.append(item, n);
+
+        let src_list_location = container_location_and_id
+            .map(|(ill, id)| self.find_container_item(ill.into(), id).unwrap())
+            .map(|il| ItemListLocation::in_container(il))
+            .unwrap_or(item_location.0);
+        let src_list = self.get_item_list_mut(src_list_location);
+        src_list.items.retain(|(_, n)| *n > 0);
     }
 
     /// Find container item that have specified id
