@@ -1,7 +1,8 @@
 use crate::item_selector::ItemSelector;
 
+use super::effect::Effect;
 use super::time::{Duration, Time};
-use super::{item::*, UniqueId, UniqueIdGenerator};
+use super::{item::*, BasePower, UniqueId, UniqueIdGenerator};
 use serde_with::{serde_as, DisplayFromStr};
 use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 
@@ -36,6 +37,8 @@ pub enum ItemObjAttr {
     },
     /// Hours to rotting for food items
     Rot(u32),
+    /// Effect for throwable items
+    Throw { power: BasePower, effect: Effect },
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

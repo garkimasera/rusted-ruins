@@ -3,6 +3,7 @@ use super::extrait::*;
 use super::{Game, InfoGetter};
 use crate::text::ToText;
 use common::gamedata::*;
+use ordered_float::NotNan;
 use rules::RULES;
 
 /// Return true if success.
@@ -71,5 +72,22 @@ pub fn calc_power(gd: &GameData, active_skill: &'static ActiveSkill, cid: CharaI
             skill_level * int
         }
         _ => todo!(),
+    }
+}
+
+#[extend::ext(pub)]
+impl BasePower {
+    fn calc(&self, factor: f32) -> f32 {
+        let factor = NotNan::new(factor).unwrap();
+        let base_power = self.0 * factor;
+        let power_var = self.1 * factor;
+        let power_min = std::cmp::max(base_power - power_var, NotNan::new(0.0).unwrap());
+        let power_max = base_power + power_var;
+        let power = if power_max > power_min {
+            rng::gen_range(power_min..power_max)
+        } else {
+            power_min
+        };
+        power.into_inner()
     }
 }

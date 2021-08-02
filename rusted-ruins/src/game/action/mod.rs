@@ -145,8 +145,19 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
     let effect = crate::game::item::throw::item_to_throw_effect(gd, il, cid);
     let item = gd.remove_item_and_get(il, 1);
     let chara = gd.chara.get(cid);
-    let power = if item.obj().throw_effect.is_some() {
-        item.calc_power()
+
+    let throw = item
+        .obj()
+        .attrs
+        .iter()
+        .filter_map(|attr| match attr {
+            ItemObjAttr::Throw { power, effect } => Some((power, effect)),
+            _ => None,
+        })
+        .next();
+
+    let power = if let Some((power, _)) = throw {
+        power.calc(item.power_factor())
             * chara.attr.str as f32
             * chara.attr.dex as f32
             * (chara.skill_level(SkillKind::Throwing) as f32 + RULES.combat.skill_base)

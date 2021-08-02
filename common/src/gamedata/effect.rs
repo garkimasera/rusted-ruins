@@ -1,13 +1,14 @@
 use super::defs::Element;
 use super::skill::SkillKind;
 use geom::ShapeKind;
+use ordered_float::NotNan;
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Effect {
     pub kind: Vec<EffectKind>,
     pub target_mode: TargetMode,
     #[serde(default)]
-    pub power_adjust: Vec<f32>,
+    pub power_adjust: Vec<NotNan<f32>>,
     pub range: u32,
     pub shape: ShapeKind,
     pub size: u32,

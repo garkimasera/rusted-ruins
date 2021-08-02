@@ -31,6 +31,7 @@ serde_with = "1"
 once_cell = "1"
 log = "0.4"
 bitflags = "1"
+ordered-float = { version = "2", features = ["rand", "serde"] }
 tar = "0.4"
 fnv = "1"
 thiserror = "1"

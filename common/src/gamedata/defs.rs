@@ -1,5 +1,7 @@
 //! Miscellaneous type definitions
 
+use ordered_float::NotNan;
+
 use crate::basic::ARRAY_STR_ID_LEN;
 use crate::gamedata::effect::Effect;
 use crate::gamedata::skill::SkillKind;
@@ -155,6 +157,9 @@ pub enum PowerCalcMethod {
     Magic,
     Custom(String),
 }
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub struct BasePower(pub NotNan<f32>, pub NotNan<f32>);
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ActiveSkillGroup {

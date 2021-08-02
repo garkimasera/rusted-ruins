@@ -59,7 +59,6 @@ pub struct ItemObject {
     pub power_var: u16,
     /// Defence
     pub def: ElementArray<u16>,
-    pub throw_effect: Option<Effect>,
     pub magical_effect: Option<Effect>,
     pub medical_effect: Option<Effect>,
     pub use_effect: Option<UseEffect>,

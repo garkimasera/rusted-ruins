@@ -150,8 +150,6 @@ pub struct ItemDepInput {
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub armor_kind: Option<gamedata::ArmorKind>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub throw_effect: Option<Effect>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub medical_effect: Option<Effect>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub magical_effect: Option<Effect>,
