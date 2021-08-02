@@ -64,8 +64,6 @@ pub struct ItemObject {
     pub use_effect: Option<UseEffect>,
     pub tool_effect: Option<ToolEffect>,
     pub attrs: Vec<ItemObjAttr>,
-    /// Facility type for creation and additional quality.
-    pub facility: Option<(String, i8)>,
     /// Possible material for this item
     pub material_group: String,
     /// Material name used for creation

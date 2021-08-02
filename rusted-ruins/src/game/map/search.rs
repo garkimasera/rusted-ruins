@@ -12,8 +12,17 @@ pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a 
 
     // Search player character inventory.
     for (item, _) in il.iter() {
-        if let Some((f, q)) = item.obj().facility.as_ref() {
-            if facility_type == f && *q > quality {
+        if let Some((ty, q)) = item
+            .obj()
+            .attrs
+            .iter()
+            .filter_map(|attr| match attr {
+                ItemObjAttr::Facility { ty, quality } => Some((ty, quality)),
+                _ => None,
+            })
+            .next()
+        {
+            if facility_type == ty && *q > quality {
                 facility_item = Some(item);
                 quality = *q;
             }
@@ -33,8 +42,17 @@ pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a 
         let ill = ItemListLocation::OnMap { mid, pos };
         let il = gd.get_item_list(ill);
         for (item, _) in il.iter() {
-            if let Some((f, q)) = item.obj().facility.as_ref() {
-                if facility_type == f && *q > quality {
+            if let Some((ty, q)) = item
+                .obj()
+                .attrs
+                .iter()
+                .filter_map(|attr| match attr {
+                    ItemObjAttr::Facility { ty, quality } => Some((ty, quality)),
+                    _ => None,
+                })
+                .next()
+            {
+                if facility_type == ty && *q > quality {
                     facility_item = Some(item);
                     quality = *q;
                 }

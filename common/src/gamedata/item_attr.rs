@@ -42,6 +42,12 @@ pub enum ItemObjAttr {
     Throw { power: BasePower, effect: Effect },
     /// For harvestable items
     Harvest(Harvest),
+    /// Facility type for creation and additional quality.
+    Facility {
+        #[serde(rename = "type")]
+        ty: String,
+        quality: i8,
+    },
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

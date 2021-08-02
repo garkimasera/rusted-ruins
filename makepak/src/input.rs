@@ -158,8 +158,6 @@ pub struct ItemDepInput {
     pub tool_effect: Option<gamedata::ToolEffect>,
     #[serde(default)]
     pub attrs: Vec<gamedata::ItemObjAttr>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub facility: Option<(String, i8)>,
     #[serde(default)]
     pub material_group: String,
     #[serde(default)]
