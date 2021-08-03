@@ -1,6 +1,6 @@
 use crate::config::changeable::game_log_cfg;
 use crate::game::damage::*;
-use crate::game::extrait::CharaExt;
+use crate::game::extrait::*;
 use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;
@@ -137,13 +137,12 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
 }
 
 /// Calculate character's defence for each elements
-fn calc_equip_defence(gd: &GameData, cid: CharaId) -> ElementArray<u16> {
-    let mut def: ElementArray<u16> = ElementArray::default();
+fn calc_equip_defence(gd: &GameData, cid: CharaId) -> ElementArray<u32> {
+    let mut def: ElementArray<u32> = ElementArray::default();
 
     for (_, _, item) in gd.get_equip_list(cid).item_iter() {
-        let item_obj: &ItemObject = gobj::get_obj(item.idx);
         for e in &ELEMENTS {
-            def[*e] = def[*e].saturating_add(item_obj.def[*e]);
+            def[*e] = def[*e].saturating_add(item.defence(*e));
         }
     }
 
@@ -151,7 +150,7 @@ fn calc_equip_defence(gd: &GameData, cid: CharaId) -> ElementArray<u16> {
 }
 
 /// Calculate defence power
-fn calc_defence_power(equip_def: u16, chara_param: u16, skill_level: u32) -> f32 {
+fn calc_defence_power(equip_def: u32, chara_param: u16, skill_level: u32) -> f32 {
     assert!(chara_param > 0);
     let equip_def = equip_def as f32;
     let chara_param = chara_param as f32;

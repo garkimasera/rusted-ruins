@@ -1,7 +1,5 @@
 use common::basic::BonusLevel;
-use common::gamedata::{
-    self, ActiveSkillId, CharaClass, ElementArray, EquipSlotKind, FactionId, SkillKind,
-};
+use common::gamedata::{self, ActiveSkillId, CharaClass, EquipSlotKind, FactionId, SkillKind};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -137,13 +135,6 @@ pub struct ItemDepInput {
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub shop_weight: Option<f32>,
     pub gen_level: u32,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub power: Option<u16>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub power_var: Option<u16>,
-    /// For armor items
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub def: Option<ElementArray<u16>>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub weapon_kind: Option<gamedata::WeaponKind>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]

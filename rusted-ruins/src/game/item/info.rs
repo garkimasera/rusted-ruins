@@ -1,4 +1,4 @@
-use crate::game::extrait::ItemExt;
+use crate::game::extrait::*;
 use crate::text::ToText;
 use common::gamedata::*;
 
@@ -26,9 +26,7 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
 
-                if let Some(ItemObjAttr::Medical { .. }) =
-                    find_attr!(item.obj(), ItemObjAttr::Medical)
-                {
+                if let Some(ItemObjAttr::Medical { .. }) = find_attr!(obj, ItemObjAttr::Medical) {
                     // let t = // TODO: Add text by its medical effect
                     // desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
@@ -36,7 +34,11 @@ impl ItemInfoText {
             ItemKind::Throwing => {}
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
-                let power = item.calc_power_without_var();
+                let power = if let Some(power) = find_attr!(obj, ItemObjAttr::WeaponPower(power)) {
+                    power.calc_without_var(item.power_factor())
+                } else {
+                    0.0
+                };
                 if weapon_kind.is_melee() {
                     let t = misc_txt_format!(
                         "item_info_text-melee_weapon"; power=power);
@@ -48,12 +50,12 @@ impl ItemInfoText {
                 }
             }
             ItemKind::Armor(_) => {
-                let d0 = format!("{:+}", obj.def[Element::Physical]);
-                let d1 = format!("{:+}", obj.def[Element::Fire]);
-                let d2 = format!("{:+}", obj.def[Element::Cold]);
-                let d3 = format!("{:+}", obj.def[Element::Shock]);
-                let d4 = format!("{:+}", obj.def[Element::Poison]);
-                let d5 = format!("{:+}", obj.def[Element::Spirit]);
+                let d0 = format!("{:+}", item.defence(Element::Physical));
+                let d1 = format!("{:+}", item.defence(Element::Fire));
+                let d2 = format!("{:+}", item.defence(Element::Cold));
+                let d3 = format!("{:+}", item.defence(Element::Shock));
+                let d4 = format!("{:+}", item.defence(Element::Poison));
+                let d5 = format!("{:+}", item.defence(Element::Spirit));
                 let t = misc_txt_format!(
                     "item_info_text-defence";
                     physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);

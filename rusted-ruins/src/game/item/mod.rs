@@ -76,26 +76,6 @@ impl Item {
         factor
     }
 
-    /// Calculate power for this item
-    fn calc_power(&self) -> f32 {
-        let item_obj = gobj::get_obj(self.idx);
-        let base_power = self.calc_power_without_var();
-        let power_var = (item_obj.power_var as f32 * self.power_factor()) as i32;
-        let power_min = std::cmp::max(base_power - item_obj.power_var as i32, 0);
-        let power_max = base_power + power_var;
-        if power_max > power_min {
-            rng::gen_range(power_min..power_max) as f32
-        } else {
-            power_min as f32
-        }
-    }
-
-    /// Calculate effectiveness for this item without variation
-    fn calc_power_without_var(&self) -> i32 {
-        let item_obj = gobj::get_obj(self.idx);
-        (item_obj.power as f32 * self.power_factor()) as i32
-    }
-
     /// Calculate item price
     fn price(&self) -> i64 {
         let item_obj = gobj::get_obj(self.idx);
@@ -120,6 +100,14 @@ impl Item {
             (item_obj.w as f32 * material.w) as u32
         } else {
             item_obj.w
+        }
+    }
+
+    fn defence(&self, element: Element) -> u32 {
+        if let Some(defence) = find_attr!(self.obj(), ItemObjAttr::Defence(defence)) {
+            defence[element].into()
+        } else {
+            0
         }
     }
 

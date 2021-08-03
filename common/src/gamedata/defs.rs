@@ -30,7 +30,7 @@ pub const ELEMENTS: [Element; Element::Spirit as usize + 1] = [
 ];
 
 /// This array has the same size as element types.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Default, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct ElementArray<T>(pub [T; Element::Spirit as usize + 1]);
 

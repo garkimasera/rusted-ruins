@@ -90,4 +90,8 @@ impl BasePower {
         };
         power.into_inner()
     }
+
+    fn calc_without_var(&self, factor: f32) -> f32 {
+        self.0.into_inner() * factor
+    }
 }

@@ -41,6 +41,10 @@ pub enum ItemObjAttr {
     },
     /// Hours to rotting for food items
     Rot(u32),
+    /// Power for weapon items
+    WeaponPower(BasePower),
+    /// Defence for armor items
+    Defence(ElementArray<u16>),
     /// Effect for food or potion items
     Medical {
         power: BasePower,
