@@ -1,6 +1,6 @@
 use common::basic::BonusLevel;
 use common::gamedata::{
-    self, ActiveSkillId, CharaClass, Effect, ElementArray, EquipSlotKind, FactionId, SkillKind,
+    self, ActiveSkillId, CharaClass, ElementArray, EquipSlotKind, FactionId, SkillKind,
 };
 use common::sitegen;
 use geom::Vec2d;
@@ -148,14 +148,6 @@ pub struct ItemDepInput {
     pub weapon_kind: Option<gamedata::WeaponKind>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub armor_kind: Option<gamedata::ArmorKind>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub medical_effect: Option<Effect>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub magical_effect: Option<Effect>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub use_effect: Option<gamedata::UseEffect>,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub tool_effect: Option<gamedata::ToolEffect>,
     #[serde(default)]
     pub attrs: Vec<gamedata::ItemObjAttr>,
     #[serde(default)]

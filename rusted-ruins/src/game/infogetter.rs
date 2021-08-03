@@ -142,7 +142,7 @@ impl GameData {
             if item_obj
                 .attrs
                 .iter()
-                .any(|attr| matches!(attr, ItemObjAttr::Harvest(_)))
+                .any(|attr| matches!(attr, ItemObjAttr::Harvest { .. }))
             {
                 v.push(((ill, i as u32), item_idx))
             }

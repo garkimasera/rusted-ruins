@@ -30,7 +30,12 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
 
-                if obj.medical_effect.is_some() {
+                if let Some(ItemObjAttr::Medical { .. }) = item
+                    .obj()
+                    .attrs
+                    .iter()
+                    .find(|attr| matches!(attr, ItemObjAttr::Medical { .. }))
+                {
                     // let t = // TODO: Add text by its medical effect
                     // desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }

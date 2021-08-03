@@ -81,7 +81,7 @@ pub enum ToolEffect {
     Mine,
 }
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum UseEffect {
     Effect(Effect),
     Deed,

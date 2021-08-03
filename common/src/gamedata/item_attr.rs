@@ -41,6 +41,16 @@ pub enum ItemObjAttr {
     },
     /// Hours to rotting for food items
     Rot(u32),
+    /// Effect for food or potion items
+    Medical {
+        power: BasePower,
+        effect: Effect,
+    },
+    /// Effect for releasable items
+    Release {
+        power: BasePower,
+        effect: Effect,
+    },
     /// Effect for throwable items
     Throw {
         power: BasePower,
@@ -48,6 +58,10 @@ pub enum ItemObjAttr {
     },
     /// For harvestable items
     Harvest(Harvest),
+    /// For tool items
+    Tool(ToolEffect),
+    /// For usable items
+    Use(UseEffect),
     /// Facility type for creation and additional quality.
     Facility {
         #[serde(rename = "type")]

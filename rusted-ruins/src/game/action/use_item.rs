@@ -8,7 +8,15 @@ pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target)
     let item = game.gd.get_item(il);
     let item_obj = gobj::get_obj(item.0.idx);
 
-    let use_effect = item_obj.use_effect.as_ref().unwrap();
+    let use_effect = item_obj
+        .attrs
+        .iter()
+        .filter_map(|attr| match attr {
+            ItemObjAttr::Use(use_effect) => Some(use_effect),
+            _ => None,
+        })
+        .next()
+        .unwrap();
 
     match use_effect {
         UseEffect::Effect(effect) => {

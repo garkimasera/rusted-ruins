@@ -24,7 +24,16 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         };
 
         let item_obj = gobj::get_obj(tool.idx);
-        let tool_effect = if let Some(tool_effect) = item_obj.tool_effect.as_ref() {
+        let tool_effect = item_obj
+            .attrs
+            .iter()
+            .filter_map(|attr| match attr {
+                ItemObjAttr::Tool(tool_effect) => Some(*tool_effect),
+                _ => None,
+            })
+            .next();
+
+        let tool_effect = if let Some(tool_effect) = tool_effect {
             tool_effect
         } else {
             warn!("try to use item that does not have any effect.");

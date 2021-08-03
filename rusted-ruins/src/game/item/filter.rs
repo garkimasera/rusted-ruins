@@ -79,7 +79,12 @@ impl ItemFilter {
             return false;
         }
 
-        if self.usable && o.use_effect.is_none() {
+        if self.usable
+            && !o
+                .attrs
+                .iter()
+                .any(|attr| matches!(attr, ItemObjAttr::Use(_)))
+        {
             return false;
         }
 
