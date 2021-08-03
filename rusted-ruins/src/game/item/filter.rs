@@ -37,11 +37,7 @@ impl ItemFilter {
     pub fn judge(&self, item: &Item) -> bool {
         let o = gobj::get_obj(item.idx);
 
-        if self.deny_container
-            && o.attrs
-                .iter()
-                .any(|attr| matches!(attr, ItemObjAttr::Container { .. }))
-        {
+        if self.deny_container && has_attr!(o, ItemObjAttr::Container) {
             return false;
         }
 
@@ -79,12 +75,7 @@ impl ItemFilter {
             return false;
         }
 
-        if self.usable
-            && !o
-                .attrs
-                .iter()
-                .any(|attr| matches!(attr, ItemObjAttr::Use(_)))
-        {
+        if self.usable && !has_attr!(o, ItemObjAttr::Use) {
             return false;
         }
 
@@ -92,12 +83,7 @@ impl ItemFilter {
             return false;
         }
 
-        if self.container
-            && !item
-                .attrs
-                .iter()
-                .any(|attr| matches!(attr, ItemAttr::Container(_)))
-        {
+        if self.container && !has_attr!(o, ItemObjAttr::Container) {
             return false;
         }
 

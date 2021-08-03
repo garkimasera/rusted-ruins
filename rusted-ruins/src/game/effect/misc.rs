@@ -17,10 +17,7 @@ pub fn gen_item(game: &mut Game, id: &str, pos: Vec2d) {
 
     if let Some(&ItemObjAttr::Plant {
         required_fertility, ..
-    }) = &item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+    }) = find_attr!(item_obj, ItemObjAttr::Plant)
     {
         if required_fertility > game.gd.get_current_map().tile_fertility(pos) {
             return;

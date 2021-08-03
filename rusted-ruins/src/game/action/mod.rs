@@ -146,17 +146,9 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
     let item = gd.remove_item_and_get(il, 1);
     let chara = gd.chara.get(cid);
 
-    let throw = item
-        .obj()
-        .attrs
-        .iter()
-        .filter_map(|attr| match attr {
-            ItemObjAttr::Throw { power, effect } => Some((power, effect)),
-            _ => None,
-        })
-        .next();
+    let power = find_attr!(item.obj(), ItemObjAttr::Throw { power, .. } => power);
 
-    let power = if let Some((power, _)) = throw {
+    let power = if let Some(power) = power {
         power.calc(item.power_factor())
             * chara.attr.str as f32
             * chara.attr.dex as f32
@@ -184,11 +176,8 @@ pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let chara = gd.chara.get_mut(cid);
     game_log!("drink-item"; chara=chara, item=item);
 
-    if let Some(ItemObjAttr::Medical { power, effect }) = item
-        .obj()
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Medical { .. }))
+    if let Some(ItemObjAttr::Medical { power, effect }) =
+        find_attr!(item.obj(), ItemObjAttr::Medical)
     {
         let power = power.calc(item.power_factor() * RULES.effect.item_drink_power_factor);
         super::effect::do_effect(game, effect, None, cid, power, 1.0);
@@ -204,10 +193,8 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let chara = gd.chara.get_mut(cid);
     game_log!("eat-item"; chara=chara, item=item);
 
-    let nutrition: f32 = if let Some(&ItemObjAttr::Nutrition(nutrition)) = item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Nutrition(_)))
+    let nutrition: f32 = if let Some(&ItemObjAttr::Nutrition(nutrition)) =
+        find_attr!(item_obj, ItemObjAttr::Nutrition)
     {
         nutrition as f32
     } else {
@@ -218,11 +205,8 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
         do_damage(game, cid, damage, CharaDamageKind::Starve);
     }
 
-    if let Some(ItemObjAttr::Medical { power, effect }) = item
-        .obj()
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Medical { .. }))
+    if let Some(ItemObjAttr::Medical { power, effect }) =
+        find_attr!(item.obj(), ItemObjAttr::Medical)
     {
         let power = power.calc(item.power_factor() * RULES.effect.item_drink_power_factor);
         super::effect::do_effect(game, effect, None, cid, power, 1.0);
@@ -235,10 +219,8 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Tar
 
     match item.charge() {
         Some(n) if n >= 1 => {
-            if let Some(ItemObjAttr::Release { power, effect }) = item_obj
-                .attrs
-                .iter()
-                .find(|attr| matches!(attr, ItemObjAttr::Release { .. }))
+            if let Some(ItemObjAttr::Release { power, effect }) =
+                find_attr!(item_obj, ItemObjAttr::Release)
             {
                 let skill_level = game.gd.chara.get(cid).skill_level(SkillKind::MagicDevice) as f32;
                 let item_power = power.calc(item.power_factor());

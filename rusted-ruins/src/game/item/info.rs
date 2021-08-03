@@ -21,20 +21,13 @@ impl ItemInfoText {
 
         match obj.kind {
             ItemKind::Potion | ItemKind::Food => {
-                if let Some(&ItemObjAttr::Nutrition(nutrition)) = obj
-                    .attrs
-                    .iter()
-                    .find(|attr| matches!(attr, ItemObjAttr::Nutrition(_)))
-                {
+                if let Some(nutrition) = find_attr!(obj, ItemObjAttr::Nutrition(nutrition)) {
                     let t = misc_txt_format!("item_info_text-nutrition"; nutrition=nutrition);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
 
-                if let Some(ItemObjAttr::Medical { .. }) = item
-                    .obj()
-                    .attrs
-                    .iter()
-                    .find(|attr| matches!(attr, ItemObjAttr::Medical { .. }))
+                if let Some(ItemObjAttr::Medical { .. }) =
+                    find_attr!(item.obj(), ItemObjAttr::Medical)
                 {
                     // let t = // TODO: Add text by its medical effect
                     // desc_text.push((UI_IMG_ID_ITEM_INFO, t));

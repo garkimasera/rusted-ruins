@@ -138,40 +138,24 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         )));
     }
 
-    if let Some(&ItemObjAttr::Plant {
-        growing_time_hours, ..
-    }) = &item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+    if let Some(growing_time_hours) =
+        find_attr!(item_obj, ItemObjAttr::Plant { growing_time_hours, .. } => growing_time_hours)
     {
-        gen_plant_item(&mut item, growing_time_hours);
+        gen_plant_item(&mut item, *growing_time_hours);
     }
 
-    if let Some(&ItemObjAttr::Container { .. }) = &item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Container { .. }))
-    {
+    if has_attr!(item_obj, ItemObjAttr::Container) {
         gen_container_item(&mut item);
     }
 
-    if let Some(&ItemObjAttr::Rot(hours)) = &item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Rot(_)))
-    {
+    if let Some(&hours) = find_attr!(item_obj, ItemObjAttr::Rot(hours)) {
         item.time = Some(ItemTime {
             last_updated: crate::game::time::current_time(),
             remaining: Duration::from_hours(hours.into()),
         });
     }
 
-    if item_obj
-        .attrs
-        .iter()
-        .any(|attr| matches!(attr, ItemObjAttr::Titles(_)))
-    {
+    if has_attr!(item_obj, ItemObjAttr::Titles) {
         gen_readable_item(&mut item, item_obj)
     }
 
@@ -179,10 +163,8 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_magic_device(&mut item, item_obj)
     };
 
-    if let Some(ItemObjAttr::Use(UseEffect::Effect(effect))) = item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Use(_)))
+    if let Some(ItemObjAttr::Use(UseEffect::Effect(effect))) =
+        find_attr!(item_obj, ItemObjAttr::Use)
     {
         for kind in &effect.kind {
             if let EffectKind::SkillLearning { .. } = kind {
@@ -216,10 +198,8 @@ fn gen_container_item(item: &mut Item) {
 
 /// Generate a magic device item
 fn gen_magic_device(item: &mut Item, item_obj: &ItemObject) {
-    let n = if let Some(&ItemObjAttr::Charge { min, max }) = &item_obj
-        .attrs
-        .iter()
-        .find(|attr| matches!(attr, ItemObjAttr::Charge { .. }))
+    let n = if let Some(&ItemObjAttr::Charge { min, max }) =
+        find_attr!(item_obj, ItemObjAttr::Charge)
     {
         rng::gen_range(min..=max)
     } else {

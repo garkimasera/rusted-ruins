@@ -29,31 +29,18 @@ impl Item {
         let obj = self.obj();
 
         match obj.img.variation_rule {
-            ImgVariationRule::RandomOnGen => {
-                if let Some(&ItemAttr::ImageVariation(n)) = self
-                    .attrs
-                    .iter()
-                    .find(|attr| matches!(attr, ItemAttr::ImageVariation(..)))
-                {
-                    n
-                } else {
-                    0
-                }
-            }
+            ImgVariationRule::RandomOnGen => find_attr!(self, ItemAttr::ImageVariation(n) => n)
+                .copied()
+                .unwrap_or(0),
             ImgVariationRule::Growing => {
                 let remaining = if let Some(time) = self.time.as_ref() {
                     time.remaining
                 } else {
                     return 0;
                 };
-                let growing_time = if let Some(&ItemObjAttr::Plant {
-                    growing_time_hours, ..
-                }) = obj
-                    .attrs
-                    .iter()
-                    .find(|attr| matches!(attr, ItemObjAttr::Plant { .. }))
+                let growing_time = if let Some(growing_time_hours) = find_attr!(obj, ItemObjAttr::Plant { growing_time_hours, .. } => growing_time_hours)
                 {
-                    growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
+                    *growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
                 } else {
                     return 0;
                 };

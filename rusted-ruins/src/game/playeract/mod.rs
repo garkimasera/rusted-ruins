@@ -116,10 +116,8 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     /// Use one item
     pub fn use_item(&mut self, il: ItemLocation) {
         let item_obj = self.gd().get_item(il).0.obj();
-        let target = if let Some(ItemObjAttr::Use(UseEffect::Effect(effect))) = item_obj
-            .attrs
-            .iter()
-            .find(|attr| matches!(attr, ItemObjAttr::Use(_)))
+        let target = if let Some(ItemObjAttr::Use(UseEffect::Effect(effect))) =
+            find_attr!(item_obj, ItemObjAttr::Use)
         {
             if let Some(target) = auto_target_for_player(self.0, effect) {
                 target
@@ -162,10 +160,8 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     /// Release one magic device item
     pub fn release_item(&mut self, il: ItemLocation) {
         let item_obj = self.gd().get_item(il).0.obj();
-        let effect = if let Some(ItemObjAttr::Release { effect, .. }) = item_obj
-            .attrs
-            .iter()
-            .find(|attr| matches!(attr, ItemObjAttr::Release { .. }))
+        let effect = if let Some(effect) =
+            find_attr!(item_obj, ItemObjAttr::Release { effect, .. } => effect)
         {
             effect
         } else {
