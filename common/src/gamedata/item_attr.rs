@@ -119,6 +119,10 @@ impl ItemListContainer {
     pub fn id(&self) -> UniqueId {
         self.id
     }
+
+    pub fn item_list(&self) -> &ItemList {
+        &self.item_list
+    }
 }
 
 impl AsRef<ItemList> for ItemListContainer {

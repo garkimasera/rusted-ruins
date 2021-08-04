@@ -403,11 +403,13 @@ impl ItemWindow {
 
             let item_text = format!("{} x {}", item.to_text(), n_item);
 
+            let w = item.w() as f32 * n_item as f32;
+
             // Infomation displayed in the right column
             let additional_info = match mode {
                 ItemWindowMode::ShopBuy { .. } => format!("{}G", item.price()),
                 ItemWindowMode::ShopSell => format!("{}G", item.selling_price()),
-                _ => format!("{:.2}kg", item.w() as f32 / 1000.0),
+                _ => format!("{:.1}kg", w / 1000.0),
             };
 
             let t1 = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
@@ -609,7 +611,6 @@ impl DialogWindow for ItemWindow {
         _result: Option<DialogCloseValue>,
         pa: &mut DoPlayerAction,
     ) -> DialogResult {
-        dbg!();
         self.update_by_mode(pa.gd());
         DialogResult::Continue
     }

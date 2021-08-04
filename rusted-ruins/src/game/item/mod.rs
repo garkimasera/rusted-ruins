@@ -96,11 +96,23 @@ impl Item {
     fn w(&self) -> u32 {
         let item_obj = gobj::get_obj(self.idx);
 
+        let mut w = item_obj.w as f32;
+
         if let Some((_, material)) = self.material() {
-            (item_obj.w as f32 * material.w) as u32
-        } else {
-            item_obj.w
+            w *= material.w;
         }
+
+        if let Some(container) = find_attr!(self, ItemAttr::Container(container)) {
+            let item_weight_in_container: u32 = container
+                .item_list()
+                .items
+                .iter()
+                .map(|(item, n)| item.w() * n)
+                .sum();
+            w += item_weight_in_container as f32;
+        }
+
+        w as u32
     }
 
     fn defence(&self, element: Element) -> u32 {
