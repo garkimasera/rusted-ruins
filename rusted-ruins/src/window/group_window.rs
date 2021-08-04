@@ -167,6 +167,18 @@ impl DialogWindow for GroupWindow {
         InputMode::Dialog
     }
 
+    fn callback_child_closed(
+        &mut self,
+        result: Option<DialogCloseValue>,
+        pa: &mut DoPlayerAction,
+    ) -> DialogResult {
+        if let Some(ref mut member) = self.members[self.current_window as usize] {
+            member.callback_child_closed(result, pa)
+        } else {
+            DialogResult::Continue
+        }
+    }
+
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::SkipUnderWindows
     }

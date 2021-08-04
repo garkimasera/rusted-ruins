@@ -604,6 +604,16 @@ impl DialogWindow for ItemWindow {
         InputMode::Dialog
     }
 
+    fn callback_child_closed(
+        &mut self,
+        _result: Option<DialogCloseValue>,
+        pa: &mut DoPlayerAction,
+    ) -> DialogResult {
+        dbg!();
+        self.update_by_mode(pa.gd());
+        DialogResult::Continue
+    }
+
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::SkipUnderWindows
     }
