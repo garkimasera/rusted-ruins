@@ -257,12 +257,7 @@ impl ItemList {
 
     /// Sum of item weight
     fn sum_weight(&self) -> u32 {
-        self.iter()
-            .map(|(item, n)| {
-                let obj = item.obj();
-                obj.w * n
-            })
-            .sum()
+        self.iter().map(|(item, n)| item.w() * n).sum()
     }
 }
 
@@ -281,6 +276,16 @@ impl GameData {
         dest: ItemListLocation,
         n: T,
     ) {
+        let n = match n.into() {
+            ItemMoveNum::Partial(n) => n,
+            ItemMoveNum::All => self.get_item(item_location).1,
+        };
+        let item = &self.get_item(item_location).0;
+        if !self.item_appendable(dest, item, n) {
+            game_log_i!("item-container-capacity-limit");
+            return;
+        }
+
         let (item, n, container_location_and_id) = {
             let container_location_and_id = match item_location.0 {
                 ItemListLocation::Container { ill, i } => Some((
@@ -300,10 +305,6 @@ impl GameData {
             };
 
             let src_list = self.get_item_list_mut(item_location.0);
-            let n = match n.into() {
-                ItemMoveNum::Partial(n) => n,
-                ItemMoveNum::All => src_list.get_number(item_location.1),
-            };
 
             let i = item_location.1 as usize;
             let item = src_list.items[i].0.clone();
@@ -347,6 +348,28 @@ impl GameData {
                 }
             })
             .next()
+    }
+
+    /// Weight capacity of an item list
+    fn item_list_capacity(&self, ill: ItemListLocation) -> Option<u32> {
+        match ill {
+            ItemListLocation::Container { ill, i } => {
+                let container_item = &self.get_item((ill.into(), i)).0;
+
+                find_attr!(container_item.obj(), ItemObjAttr::Container { capacity, .. } => capacity).copied()
+            }
+            _ => None,
+        }
+    }
+
+    /// Can append item to this item list or not
+    fn item_appendable(&self, ill: ItemListLocation, item: &Item, n: u32) -> bool {
+        let w = item.w() * n;
+        if let Some(capacity) = self.item_list_capacity(ill) {
+            self.get_item_list(ill).sum_weight() + w * n <= capacity
+        } else {
+            true
+        }
     }
 }
 

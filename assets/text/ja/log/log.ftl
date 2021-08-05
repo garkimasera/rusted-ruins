@@ -40,6 +40,7 @@ killed-by-starve-damage = {$chara}は餓死した。
 
 # Messages about character action
 
+item-container-capacity-limit = それを入れる容量がない。
 item-equip = {$chara}は{$item}を装備した。
 item-pickup = {$chara}は{$item}を拾った。
 item-pick-up-plant = {$item}は植物であり、拾うことはできない。

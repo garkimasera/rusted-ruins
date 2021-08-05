@@ -46,6 +46,7 @@ killed-by-starve-damage = {$chara} starved to death.
 
 # Messages about character action
 
+item-container-capacity-limit = There is no space for it.
 item-equip = {$chara} equipped {$item}.
 item-pickup = {$chara} picked up {$item}.
 item-pick-up-plant = {$item} is a living plant and cannot be moved.
