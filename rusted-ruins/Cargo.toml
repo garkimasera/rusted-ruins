@@ -7,6 +7,7 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 [features]
 default = []
 deb = []
+sdl2-static-link = ["sdl2/static-link","sdl2/use-vcpkg"]
 
 [dependencies]
 anyhow = "1"
@@ -53,7 +54,7 @@ path = "../script"
 [dependencies.sdl2]
 version = "0.34"
 default-features = false
-features = ["ttf", "image"]
+features = ["ttf", "image", "mixer"]
 
 # for cargo-deb
 # build after "./build-pak.sh", and with command "cargo deb -p rusted-ruins -- --features deb"
@@ -70,3 +71,8 @@ assets = [
     ["../README.md", "usr/share/doc/rusted-ruins/README", "644"],
     ["../assets/**/*", "usr/share/games/rusted-ruins/assets/", "644"],
 ]
+
+[package.metadata.vcpkg]
+dependencies = ["sdl2", "sdl2-image[libjpeg-turbo,tiff,libwebp]", "sdl2-ttf", "sdl2-mixer[opusfile]"]
+git = "https://github.com/microsoft/vcpkg"
+rev = "5568f110b509a9fd90711978a7cb76bae75bb092"
