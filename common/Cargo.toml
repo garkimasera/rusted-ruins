@@ -36,4 +36,5 @@ tar = "0.4"
 fnv = "1"
 thiserror = "1"
 arrayvec = { version = "0.7", features = ["serde"] }
+regex = "1"
 

@@ -40,7 +40,7 @@ pub enum ItemObjAttr {
         functions: Vec<ContainerFunction>,
     },
     /// Hours to rotting for food items
-    Rot(u32),
+    Rot(Duration),
     /// Power for weapon items
     WeaponPower(BasePower),
     /// Defence for armor items
@@ -78,6 +78,7 @@ pub enum ItemObjAttr {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
+    Transform { duration: Duration },
 }
 
 /// Items can have zero or more attributes.

@@ -43,10 +43,8 @@ fn update_item_list_time(gd: &mut GameData, ill: ItemListLocation) {
                 .expect("invalid item for container")
                 .iter()
         {
-            match container_func {
-                ContainerFunction::PreventRot => {
-                    rule.prevent_rot = true;
-                }
+            if container_func == &ContainerFunction::PreventRot {
+                rule.prevent_rot = true;
             }
         }
     }

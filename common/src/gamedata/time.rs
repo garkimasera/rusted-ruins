@@ -1,3 +1,8 @@
+use once_cell::sync::Lazy;
+use regex::Regex;
+use serde::de::{self, Deserialize, Visitor};
+use serde::Serialize;
+use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::ops::Add;
 
 pub const DAYS_PER_MONTH: u64 = 30;
@@ -101,8 +106,7 @@ impl Add<Duration> for Time {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-#[serde(transparent)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub struct Duration(u64);
 
 impl Duration {
@@ -173,4 +177,81 @@ pub struct Date {
     pub day: u16,
     pub month: u16,
     pub year: u32,
+}
+
+impl Serialize for Duration {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_u64(self.0)
+    }
+}
+
+struct DurationVisitor;
+
+impl<'de> Visitor<'de> for DurationVisitor {
+    type Value = Duration;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("an positive integer or digits string with suffix [dmhs]")
+    }
+
+    fn visit_u8<E>(self, value: u8) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(Duration(value.into()))
+    }
+
+    fn visit_u32<E>(self, value: u32) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(Duration(value.into()))
+    }
+
+    fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(Duration(value))
+    }
+
+    fn visit_str<E>(self, s: &str) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]+)([dhms])$").unwrap());
+
+        let err_msg = || de::Error::custom(format!("invalid duration string \"{}\"", s));
+
+        let caps = RE.captures(s).ok_or_else(err_msg)?;
+
+        let number = caps
+            .get(1)
+            .ok_or_else(err_msg)?
+            .as_str()
+            .parse::<u64>()
+            .map_err(|_| err_msg())?;
+
+        let factor = match caps.get(2).ok_or_else(err_msg)?.as_str() {
+            "d" => 3600 * 24,
+            "h" => 3600,
+            "m" => 60,
+            "s" => 1,
+            _ => return Err(err_msg()),
+        };
+
+        Ok(Duration(number * factor))
+    }
+}
+
+impl<'de> Deserialize<'de> for Duration {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        deserializer.deserialize_any(DurationVisitor)
+    }
 }

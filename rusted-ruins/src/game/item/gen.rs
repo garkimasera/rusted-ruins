@@ -148,10 +148,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_container_item(&mut item);
     }
 
-    if let Some(&hours) = find_attr!(item_obj, ItemObjAttr::Rot(hours)) {
+    if let Some(&duration) = find_attr!(item_obj, ItemObjAttr::Rot(duration)) {
         item.time = Some(ItemTime {
             last_updated: crate::game::time::current_time(),
-            remaining: Duration::from_hours(hours.into()),
+            remaining: duration,
         });
     }
 
