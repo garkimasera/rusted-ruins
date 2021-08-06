@@ -24,10 +24,11 @@ pub enum ItemObjAttr {
     },
     /// Plant data
     Plant {
-        /// Time to harvestable
-        growing_time_hours: u32,
-        /// Reset time after harvesting. With None, the item is removed.
-        reset_time_hours: Option<u32>,
+        /// Duration to harvestable
+        #[serde(default)]
+        growing_duration: Duration,
+        /// Reset time after harvesting used for repeated cultivation. With None, the item is removed.
+        repeat_duration: Option<Duration>,
         /// Required tile fertility to grow
         #[serde(default)]
         required_fertility: u8,

@@ -38,20 +38,21 @@ impl Item {
                 } else {
                     return 0;
                 };
-                let growing_time = if let Some(growing_time_hours) = find_attr!(obj, ItemObjAttr::Plant { growing_time_hours, .. } => growing_time_hours)
+                let growing_duration_s = if let Some(&growing_duration) =
+                    find_attr!(obj, ItemObjAttr::Plant { growing_duration, .. } => growing_duration)
                 {
-                    *growing_time_hours as u64 * common::gamedata::time::SECS_PER_HOUR
+                    growing_duration.as_secs()
                 } else {
                     return 0;
                 };
 
-                if remaining.is_zero() || growing_time == 0 {
+                if remaining.is_zero() || growing_duration_s == 0 {
                     obj.img.n_pattern - 1
-                } else if remaining.as_secs() >= growing_time {
+                } else if remaining.as_secs() >= growing_duration_s {
                     0
                 } else {
-                    let passed_time = growing_time - remaining.as_secs();
-                    ((obj.img.n_pattern as u64 - 1) * passed_time / growing_time) as u32
+                    let passed_time = growing_duration_s - remaining.as_secs();
+                    ((obj.img.n_pattern as u64 - 1) * passed_time / growing_duration_s) as u32
                 }
             }
             _ => 0,

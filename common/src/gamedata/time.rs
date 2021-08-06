@@ -106,7 +106,7 @@ impl Add<Duration> for Time {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Default, PartialOrd, Ord, Debug)]
 pub struct Duration(u64);
 
 impl Duration {

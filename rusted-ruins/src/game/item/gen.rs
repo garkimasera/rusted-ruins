@@ -138,10 +138,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         )));
     }
 
-    if let Some(growing_time_hours) =
-        find_attr!(item_obj, ItemObjAttr::Plant { growing_time_hours, .. } => growing_time_hours)
+    if let Some(&growing_duration) =
+        find_attr!(item_obj, ItemObjAttr::Plant { growing_duration, .. } => growing_duration)
     {
-        gen_plant_item(&mut item, *growing_time_hours);
+        gen_plant_item(&mut item, growing_duration);
     }
 
     if has_attr!(item_obj, ItemObjAttr::Container) {
@@ -179,13 +179,13 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
     item
 }
 
-fn gen_plant_item(item: &mut Item, growing_time_hours: u32) {
+fn gen_plant_item(item: &mut Item, growing_duration: Duration) {
     let last_updated = crate::game::time::current_time();
     item.flags |= ItemFlags::PLANT;
-    if growing_time_hours > 0 {
+    if growing_duration.as_secs() > 0 {
         item.time = Some(ItemTime {
             last_updated,
-            remaining: Duration::from_hours(growing_time_hours.into()),
+            remaining: growing_duration,
         });
     }
 }
