@@ -4,11 +4,9 @@ use super::defs::*;
 use super::effect::Effect;
 use super::time::{Duration, Time};
 use super::{item::*, BasePower, UniqueId, UniqueIdGenerator};
-use serde_with::{serde_as, DisplayFromStr};
 use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 
 /// Attributes for ItemObject
-#[serde_as]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ItemObjAttr {
     /// Item nutrition
@@ -34,7 +32,6 @@ pub enum ItemObjAttr {
         required_fertility: u8,
     },
     Container {
-        #[serde_as(as = "DisplayFromStr")]
         selector: ItemSelector,
         /// Weight capacity (gram)
         capacity: u32,
@@ -76,7 +73,6 @@ pub enum ItemObjAttr {
     Titles(Vec<String>),
 }
 
-#[serde_as]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
