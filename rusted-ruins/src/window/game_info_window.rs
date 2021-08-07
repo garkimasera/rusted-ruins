@@ -1,6 +1,6 @@
 use super::commonuse::*;
-use super::widget::*;
 use super::group_window::*;
+use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::text::ui_txt;
@@ -14,7 +14,7 @@ pub struct GameInfoWindow {
     escape_click: bool,
 }
 
-const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 1;
+const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 2;
 
 pub fn create_game_info_window_group(game: &Game) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -24,6 +24,13 @@ pub fn create_game_info_window_group(game: &Game) -> GroupWindow {
                 text_id: "tab_text-game_info",
             },
             Box::new(move |game| Box::new(GameInfoWindow::new(game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-game-info-faction"),
+                text_id: "tab_text-game_info_faction",
+            },
+            Box::new(move |game| Box::new(super::faction_window::FactionWindow::new(&game.gd))),
         ),
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();

@@ -7,6 +7,7 @@ mod creation_window;
 mod dialogreq;
 mod equip_window;
 mod exit_window;
+mod faction_window;
 mod flavor_text_window;
 mod game_info_window;
 mod group_window;
@@ -119,8 +120,12 @@ pub trait Window {
 
 pub trait DialogWindow: Window {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult;
+
     /// Return InputMode for this window
-    fn mode(&self) -> InputMode;
+    fn mode(&self) -> InputMode {
+        InputMode::Dialog
+    }
+
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
@@ -128,9 +133,11 @@ pub trait DialogWindow: Window {
     ) -> DialogResult {
         DialogResult::Continue
     }
+
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::Normal
     }
+
     fn update(&mut self, _gd: &GameData) {}
 
     fn sound(&self, open: bool) {

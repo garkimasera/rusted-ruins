@@ -28,6 +28,10 @@ impl Faction {
     pub fn set(&mut self, faction: FactionId, relation: FactionRelation) {
         self.relation_table.insert(faction, relation);
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&FactionId, &FactionRelation)> {
+        self.relation_table.iter()
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
@@ -63,6 +67,12 @@ impl FactionId {
 pub struct FactionRelation(i16);
 const FACTION_RELATION_MAX: i16 = 10000;
 const FACTION_RELATION_MIN: i16 = -10000;
+
+impl From<FactionRelation> for i16 {
+    fn from(relation: FactionRelation) -> i16 {
+        relation.0
+    }
+}
 
 impl std::ops::Add<i16> for FactionRelation {
     type Output = Self;

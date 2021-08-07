@@ -257,8 +257,4 @@ impl DialogWindow for SkillWindow {
             _ => DialogResult::Continue,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

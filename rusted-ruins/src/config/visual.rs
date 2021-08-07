@@ -50,6 +50,7 @@ pub struct UiConfig {
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub creation_window: CreationWindowConfig,
     pub creation_detail_dialog: CreationDetailDialogConfig,
+    pub faction_window: FactionWindowConfig,
     pub item_window: ItemWindowConfig,
     pub item_info_window: ItemInfoWindowConfig,
     pub equip_window: EquipWindowConfig,
@@ -216,6 +217,13 @@ pub struct CreationDetailDialogConfig {
     pub required_skill_label_rect: CfgRect,
     pub start_button_rect: CfgRect,
     pub cancel_button_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct FactionWindowConfig {
+    pub list_rect: CfgRect,
+    pub n_row: u32,
+    pub column_pos: Vec<i32>,
 }
 
 #[derive(Debug, Deserialize)]

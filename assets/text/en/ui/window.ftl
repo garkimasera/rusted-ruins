@@ -8,6 +8,7 @@ tab_text-creation_craft = Craft
 tab_text-creation_pharmacy = Pharmacy
 tab_text-creation_smith = Smith
 tab_text-game_info = Info
+tab_text-game_info_faction = Factions
 tab_text-item_list = List
 tab_text-item_drop = Drop
 tab_text-item_throw = Throw
