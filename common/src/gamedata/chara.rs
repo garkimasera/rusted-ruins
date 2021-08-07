@@ -162,6 +162,10 @@ pub enum CharaStatus {
     Overloaded,
     /// Scanned and can open StatusWindow
     Scanned,
+    /// Temporary hostile faction for this character
+    Hostile {
+        faction: FactionId,
+    },
     Asleep {
         turn_left: u16,
     },

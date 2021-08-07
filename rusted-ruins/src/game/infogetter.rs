@@ -159,6 +159,28 @@ impl GameData {
             return Relationship::Ally;
         }
 
+        for status1 in &self.chara.get(chara).status {
+            match status1 {
+                CharaStatus::Hostile { faction } => {
+                    if *faction == f2 {
+                        return Relationship::Hostile;
+                    }
+                }
+                _ => (),
+            }
+        }
+
+        for status2 in &self.chara.get(other).status {
+            match status2 {
+                CharaStatus::Hostile { faction } => {
+                    if *faction == f1 {
+                        return Relationship::Hostile;
+                    }
+                }
+                _ => (),
+            }
+        }
+
         let faction_relation = if f1 == FactionId::player() {
             self.faction.get(f2)
         } else if f2 == FactionId::player() {

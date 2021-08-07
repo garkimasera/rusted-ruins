@@ -26,6 +26,7 @@ change-floor = {$player} moved to the next floor.
 skill-level-up = {$chara}'s {$skill} level increased.
 skill-learned = {$chara} learned {$skill} skill.
 skill-already-learned = {$chara} have already learned {$skill} skill.
+status-get-hostile = {$chara} turned against you.
 
 # Messages about combat
 

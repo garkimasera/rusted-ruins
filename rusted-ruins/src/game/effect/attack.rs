@@ -44,7 +44,7 @@ pub fn melee_attack(
         always_hit: false,
     };
 
-    attack_target(game, attack_params, target_id);
+    attack_target(game, attack_params, cid, target_id);
 }
 
 // Ranged attack to a chara.
@@ -71,7 +71,7 @@ pub fn ranged_attack(
         always_hit: false,
     };
 
-    attack_target(game, attack_params, target_id);
+    attack_target(game, attack_params, cid, target_id);
 }
 
 // Explosion attack to a chara.
@@ -92,11 +92,16 @@ pub fn explosion_attack(
         always_hit: false,
     };
 
-    attack_target(game, attack_params, target_id);
+    attack_target(game, attack_params, cid, target_id);
 }
 
 /// Routines for targetted character
-fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
+fn attack_target(
+    game: &mut Game,
+    attack_params: AttackParams,
+    cid: CharaId,
+    target_id: CharaId,
+) -> i32 {
     if !attack_params.always_hit
         && !hit_judge(
             &game.gd,
@@ -120,7 +125,7 @@ fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaI
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
     // Give damage
-    let hp = do_damage(game, target_id, damage, attack_params.kind);
+    let hp = do_damage(game, target_id, damage, attack_params.kind, Some(cid));
 
     if hp > 0 {
         // Exp for targetted character

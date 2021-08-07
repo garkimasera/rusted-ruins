@@ -60,7 +60,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let chara = game.gd.chara.get_mut(cid);
         let damage = chara.attr.max_hp / 20;
         game_log!("poison-damage"; chara=chara, damage=damage);
-        do_damage(game, cid, damage, CharaDamageKind::Poison);
+        do_damage(game, cid, damage, CharaDamageKind::Poison, None);
     }
 
     if let Some(ratio) = progress_anim {
@@ -92,7 +92,7 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     } else {
         let damage = chara.sub_sp(RULES.chara.sp_consumption * sp_consumption_factor, cid);
         if let Some(damage) = damage {
-            do_damage(game, cid, damage, CharaDamageKind::Starve);
+            do_damage(game, cid, damage, CharaDamageKind::Starve, None);
         }
     }
 

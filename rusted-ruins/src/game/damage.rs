@@ -1,4 +1,5 @@
 use crate::config::changeable::game_log_cfg;
+use crate::game::extrait::*;
 use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
 
@@ -12,7 +13,13 @@ pub enum CharaDamageKind {
 }
 
 /// Give damage to a character.
-pub fn do_damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: CharaDamageKind) -> i32 {
+pub fn do_damage(
+    game: &mut Game,
+    cid: CharaId,
+    damage: i32,
+    damage_kind: CharaDamageKind,
+    origin: Option<CharaId>,
+) -> i32 {
     let pos = game.gd.chara_pos(cid);
     let chara = game.gd.chara.get_mut(cid);
 
@@ -29,7 +36,19 @@ pub fn do_damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: CharaD
         error!("damage to character that is not on map");
     }
 
-    if chara.hp < 0 {
+    let chara_hp = chara.hp;
+
+    if chara_hp > 0 {
+        // Faction process
+        if origin == Some(CharaId::Player)
+            && game.gd.chara_relation(CharaId::Player, cid) != Relationship::Hostile
+        {
+            let chara = game.gd.chara.get_mut(cid);
+            chara.add_status(CharaStatus::Hostile {
+                faction: FactionId::player(),
+            });
+        }
+    } else {
         // Logging
         match damage_kind {
             CharaDamageKind::MeleeAttack => {
@@ -49,5 +68,5 @@ pub fn do_damage(game: &mut Game, cid: CharaId, damage: i32, damage_kind: CharaD
             }
         }
     }
-    chara.hp
+    chara_hp
 }

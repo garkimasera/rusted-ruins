@@ -208,7 +208,7 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     };
 
     if let Some(damage) = chara.add_sp(nutrition * RULES.chara.sp_nutrition_factor, cid) {
-        do_damage(game, cid, damage, CharaDamageKind::Starve);
+        do_damage(game, cid, damage, CharaDamageKind::Starve, None);
     }
 
     if let Some(ItemObjAttr::Medical { power, effect }) =

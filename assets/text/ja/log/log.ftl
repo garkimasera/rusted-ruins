@@ -21,6 +21,13 @@ exit-to-outside = {$player}は外へ出た。
 enter-site = {$player}は{$site}へ入った。
 change-floor = {$player}は隣のフロアへ向かった。
 
+# Messages about character status
+
+skill-level-up = {$chara}の{$skill}レベルが上がった。
+skill-learned = {$chara}は{$skill}スキルを習得した。
+skill-already-learned = {$chara}はすでに{$skill}スキルを覚えている。
+status-get-hostile = {$chara}は敵対した。
+
 # Messages about combat
 
 attack = {$attacker}は{$target}を攻撃した。
