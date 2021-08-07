@@ -67,6 +67,13 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         game.anim_queue.push_work(ratio);
     }
 
+    let sp_consumption_factor =
+        if cid == CharaId::Player && game.gd.get_current_mapid().is_region_map() {
+            RULES.chara.sp_consumption_factor_in_region_map
+        } else {
+            1.0
+        };
+
     let chara = game.gd.chara.get_mut(cid);
 
     if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
@@ -77,10 +84,13 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
             let v = roll_dice(1, a);
             chara.heal(v);
         }
-        chara.sub_sp(RULES.chara.sp_consumption_regen, cid);
+        chara.sub_sp(
+            RULES.chara.sp_consumption_regen * sp_consumption_factor,
+            cid,
+        );
         chara.add_healing_exp();
     } else {
-        let damage = chara.sub_sp(RULES.chara.sp_consumption, cid);
+        let damage = chara.sub_sp(RULES.chara.sp_consumption * sp_consumption_factor, cid);
         if let Some(damage) = damage {
             do_damage(game, cid, damage, CharaDamageKind::Starve);
         }
