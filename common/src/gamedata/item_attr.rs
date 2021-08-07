@@ -76,10 +76,21 @@ pub enum ItemObjAttr {
     Titles(Vec<String>),
 }
 
+#[serde_as]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
-    Transform { duration: Duration },
+    ConvertMixed {
+        duration: Duration,
+        product: String,
+        #[serde(default = "product_multiplier_default")]
+        product_multiplier: u32,
+        ingredients: Vec<(ItemSelector, u32)>,
+    },
+}
+
+fn product_multiplier_default() -> u32 {
+    1
 }
 
 /// Items can have zero or more attributes.
@@ -105,7 +116,7 @@ pub enum ItemAttr {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemListContainer {
     /// Inner item list
-    pub(crate) item_list: ItemList,
+    pub item_list: ItemList,
     /// Id used for item ordering
     id: u64,
 }

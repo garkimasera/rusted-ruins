@@ -1,3 +1,4 @@
+pub mod convert_container;
 pub mod filter;
 pub mod gen;
 pub mod info;
@@ -291,16 +292,10 @@ impl GameData {
             let container_location_and_id = match item_location.0 {
                 ItemListLocation::Container { ill, i } => Some((
                     ill,
-                    self.get_item((ill.into(), i))
-                        .0
-                        .attrs
-                        .iter()
-                        .filter_map(|attr| match attr {
-                            ItemAttr::Container(container) => Some(container.id()),
-                            _ => None,
-                        })
-                        .next()
-                        .unwrap(),
+                    find_attr!(self.get_item((ill.into(), i)).0,
+                               ItemAttr::Container(container) => container)
+                    .map(|container| container.id())
+                    .unwrap(),
                 )),
                 _ => None,
             };
@@ -314,8 +309,7 @@ impl GameData {
             (item, n, container_location_and_id)
         };
 
-        let dest_list = self.get_item_list_mut(dest);
-        dest_list.append(item, n);
+        self.append_item_to(dest, item, n);
 
         let src_list_location = container_location_and_id
             .map(|(ill, id)| self.find_container_item(ill.into(), id).unwrap())
@@ -323,6 +317,26 @@ impl GameData {
             .unwrap_or(item_location.0);
         let src_list = self.get_item_list_mut(src_list_location);
         src_list.items.retain(|(_, n)| *n > 0);
+    }
+
+    fn append_item_to(&mut self, ill: ItemListLocation, item: Item, n: u32) {
+        if let Some(container_il) = ill.container_item_location() {
+            let container_item = &mut self.get_item_mut(container_il).0;
+
+            if let Some(ItemObjAttr::Container { functions, .. }) =
+                find_attr!(container_item.obj(), ItemObjAttr::Container)
+            {
+                for function in functions {
+                    if let ContainerFunction::ConvertMixed { .. } = function {
+                        self::convert_container::append_to_mixed_converter(container_item, item, n);
+                        return;
+                    }
+                }
+            }
+        }
+
+        let item_list = self.get_item_list_mut(ill);
+        item_list.append(item, n);
     }
 
     /// Find container item that have specified id

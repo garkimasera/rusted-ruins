@@ -376,6 +376,13 @@ impl ItemListLocation {
         ItemListLocation::Container { ill, i: il.1 }
     }
 
+    pub fn container_item_location(self) -> Option<ItemLocation> {
+        match self {
+            ItemListLocation::Container { ill, i } => Some((ill.into(), i)),
+            _ => None,
+        }
+    }
+
     pub const PLAYER: ItemListLocation = ItemListLocation::Chara {
         cid: super::chara::CharaId::Player,
     };

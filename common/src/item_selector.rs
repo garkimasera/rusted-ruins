@@ -1,10 +1,12 @@
 use crate::gamedata::{EquipSlotKind, ItemKind, ItemObject, KindParseError, WeaponKind};
 use crate::objholder::ItemIdx;
+use serde::de::{self, Deserialize, Visitor};
+use serde::Serialize;
 use std::str::FromStr;
 use thiserror::Error;
 
 /// Select items by given ids and groups.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug)]
 pub struct ItemSelector {
     all: bool,
     esk: Option<EquipSlotKind>,
@@ -138,6 +140,41 @@ impl std::fmt::Display for ItemSelector {
 #[derive(Clone, Debug, Error)]
 #[error("invalid input for item selector \"{0}\"")]
 pub struct ItemSelectorFromStrErr(String);
+
+impl Serialize for ItemSelector {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+struct ItemSelectorVisitor;
+
+impl<'de> Visitor<'de> for ItemSelectorVisitor {
+    type Value = ItemSelector;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("item selector string")
+    }
+
+    fn visit_str<E>(self, s: &str) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(s.parse().map_err(de::Error::custom)?)
+    }
+}
+
+impl<'de> Deserialize<'de> for ItemSelector {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        deserializer.deserialize_any(ItemSelectorVisitor)
+    }
+}
 
 #[test]
 fn item_selector_test() {

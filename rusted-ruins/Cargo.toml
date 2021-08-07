@@ -28,6 +28,7 @@ tar = "0.4"
 toml = "0.5"
 unic-langid = "0.9"
 walkdir = "2"
+num-rational = "0.4"
 
 [dependencies.rusted-ruins-geom]
 path = "../geom"

@@ -109,6 +109,38 @@ fn process_item(gd: &mut GameData, il: ItemLocation, rule: &UpdateItemRule) -> U
         }
     }
 
+    if let Some(functions) =
+        find_attr!(item_obj, ItemObjAttr::Container { functions, .. } => functions)
+    {
+        for function in functions {
+            if let ContainerFunction::ConvertMixed {
+                product,
+                product_multiplier,
+                ingredients,
+                ..
+            } = function
+            {
+                if item.update_time(true) {
+                    let container_item_list = if let Some(ItemAttr::Container(container)) =
+                        find_attr_mut!(item, ItemAttr::Container)
+                    {
+                        &mut container.item_list
+                    } else {
+                        return UpdateTimeResult::None;
+                    };
+                    super::convert_container::do_mixed_convert(
+                        container_item_list,
+                        product,
+                        *product_multiplier,
+                        ingredients,
+                    );
+                    item.time = None;
+                }
+                return UpdateTimeResult::None;
+            }
+        }
+    }
+
     item.update_time(true);
     UpdateTimeResult::None
 }
