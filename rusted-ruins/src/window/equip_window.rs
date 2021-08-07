@@ -74,6 +74,10 @@ impl DialogWindow for EquipWindow {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {
+                    if self.cid != CharaId::Player {
+                        return DialogResult::Continue;
+                    }
+
                     // Any item is selected
                     use super::item_window::ItemWindow;
 
