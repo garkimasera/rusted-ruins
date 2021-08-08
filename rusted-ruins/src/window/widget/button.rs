@@ -68,7 +68,7 @@ impl WidgetTrait for ButtonWidget {
         }
     }
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         let c = &UI_CFG.color;
 
         // Draw background and border

@@ -82,7 +82,7 @@ pub enum DialogResult {
 }
 
 impl std::fmt::Debug for DialogResult {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             DialogResult::Continue => f.write_str("Continue"),
             DialogResult::Close => f.write_str("Close"),
@@ -115,11 +115,20 @@ pub enum SpecialDialogResult {
 }
 
 pub trait Window {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>);
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    );
 }
 
 pub trait DialogWindow: Window {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult;
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult;
 
     /// Return InputMode for this window
     fn mode(&self) -> InputMode {
@@ -129,7 +138,7 @@ pub trait DialogWindow: Window {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        _pa: &mut DoPlayerAction,
+        _pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
         DialogResult::Continue
     }
@@ -754,7 +763,12 @@ impl GameWindows {
         }
     }
 
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         for hborder in self.hborders.iter_mut() {
             hborder.draw(context);
         }

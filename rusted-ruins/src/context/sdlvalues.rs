@@ -26,15 +26,15 @@ impl<'sdl, 't> SdlValues<'sdl, 't> {
         }
     }
 
-    pub fn tex(&self) -> &TextureHolder {
+    pub fn tex(&self) -> &TextureHolder<'_> {
         &self.texture_holder
     }
 
-    pub fn tt_group(&mut self, c: &mut TextCache) -> &[Texture] {
+    pub fn tt_group(&mut self, c: &mut TextCache) -> &[Texture<'_>] {
         self.tcp.group(c, &self.text_renderer, self.tc)
     }
 
-    pub fn tt_one(&mut self, c: &mut TextCache) -> &Texture {
+    pub fn tt_one(&mut self, c: &mut TextCache) -> &Texture<'_> {
         &self.tcp.group(c, &self.text_renderer, self.tc)[0]
     }
 }

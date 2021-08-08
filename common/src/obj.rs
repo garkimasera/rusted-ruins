@@ -150,7 +150,7 @@ macro_rules! impl_object {
     ( $($i:ty),* ) => {
         $(
             impl fmt::Debug for $i {
-                fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                     write!(f, "{} {{ id: \"{}\" }}", stringify!($i), self.id)
                 }
             }

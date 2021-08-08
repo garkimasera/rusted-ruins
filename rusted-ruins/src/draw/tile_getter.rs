@@ -14,7 +14,7 @@ pub struct BackgroundDrawInfo<'a> {
 }
 
 impl<'a> BackgroundDrawInfo<'a> {
-    pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo {
+    pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo<'_> {
         let mut di = BackgroundDrawInfo::default();
 
         let tile = if map.is_inside(pos) {

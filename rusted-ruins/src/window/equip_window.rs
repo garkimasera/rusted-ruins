@@ -17,7 +17,7 @@ pub struct EquipWindow {
 }
 
 impl EquipWindow {
-    pub fn new(game: &Game, cid: CharaId) -> EquipWindow {
+    pub fn new(game: &Game<'_>, cid: CharaId) -> EquipWindow {
         let rect = UI_CFG.equip_window.rect.into();
 
         let mut equip_window = EquipWindow {
@@ -35,7 +35,7 @@ impl EquipWindow {
         equip_window
     }
 
-    fn update_list(&mut self, game: &Game) {
+    fn update_list(&mut self, game: &Game<'_>) {
         let equips = game.gd.get_equip_list(self.cid);
         self.list.set_n_item(equips.n_slots());
 
@@ -59,14 +59,23 @@ impl EquipWindow {
 }
 
 impl Window for EquipWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
 }
 
 impl DialogWindow for EquipWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);
@@ -115,7 +124,7 @@ impl DialogWindow for EquipWindow {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        pa: &mut DoPlayerAction,
+        pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
         self.update_list(pa.game());
         DialogResult::Continue

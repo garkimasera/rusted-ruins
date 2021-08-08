@@ -230,7 +230,7 @@ macro_rules! define_skill_kind {
         }
 
         impl std::fmt::Display for WeaponKind {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 let s = match self {
                     $(
                         WeaponKind::$melee_weapon => $melee_weapon_as_str,

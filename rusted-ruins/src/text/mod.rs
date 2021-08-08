@@ -54,7 +54,7 @@ impl Bundle {
         }
     }
 
-    fn format(&self, id: &str, args: Option<&FluentArgs>) -> Option<String> {
+    fn format(&self, id: &str, args: Option<&FluentArgs<'_>>) -> Option<String> {
         let mut errors = vec![];
         if let Some(msg) = self.first.get_message(id) {
             if let Some(pattern) = msg.value {
@@ -157,7 +157,7 @@ pub fn active_skill_txt(id: &str) -> String {
     active_skill_txt_with_args(id, None)
 }
 
-pub fn active_skill_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+pub fn active_skill_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     if let Some(s) = ACTIVE_SKILL_BUNDLE.format(id, args) {
         s
     } else {
@@ -194,7 +194,7 @@ pub fn log_txt(id: &str) -> String {
     log_txt_with_args(id, None)
 }
 
-pub fn log_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+pub fn log_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     if let Some(s) = LOG_BUNDLE.format(id, args) {
         s
     } else {
@@ -206,7 +206,7 @@ pub fn ui_txt(id: &str) -> String {
     ui_txt_with_args(id, None)
 }
 
-pub fn ui_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+pub fn ui_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     if let Some(s) = UI_BUNDLE.format(id, args) {
         s
     } else {
@@ -223,7 +223,7 @@ pub fn talk_txt(id: &str) -> String {
     talk_txt_with_args(id, None)
 }
 
-pub fn talk_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+pub fn talk_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     if let Some(s) = TALK_BUNDLE.format(id, args) {
         s
     } else {
@@ -231,7 +231,7 @@ pub fn talk_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
     }
 }
 
-pub fn talk_txt_checked(id: &str, args: Option<&FluentArgs>) -> Option<String> {
+pub fn talk_txt_checked(id: &str, args: Option<&FluentArgs<'_>>) -> Option<String> {
     TALK_BUNDLE.format(id, args)
 }
 
@@ -239,7 +239,7 @@ pub fn misc_txt(id: &str) -> String {
     misc_txt_with_args(id, None)
 }
 
-pub fn misc_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
+pub fn misc_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     if let Some(s) = MISC_BUNDLE.format(id, args) {
         s
     } else {
@@ -250,7 +250,7 @@ pub fn misc_txt_with_args(id: &str, args: Option<&FluentArgs>) -> String {
 /// This is helper trait for some data objects that need to be printed in game.
 /// Logging macros use this.
 pub trait ToText {
-    fn to_text(&self) -> std::borrow::Cow<str>;
+    fn to_text(&self) -> std::borrow::Cow<'_, str>;
 }
 
 /// Types that have text id.

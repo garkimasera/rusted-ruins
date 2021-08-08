@@ -16,7 +16,7 @@ pub struct QuestWindow {
 }
 
 impl QuestWindow {
-    pub fn new(game: &Game) -> QuestWindow {
+    pub fn new(game: &Game<'_>) -> QuestWindow {
         let rect = UI_CFG.quest_window.rect.into();
         let mut w = QuestWindow {
             rect,
@@ -45,7 +45,7 @@ impl QuestWindow {
         w
     }
 
-    pub fn update(&mut self, game: &Game) {
+    pub fn update(&mut self, game: &Game<'_>) {
         let rows: Vec<TextCache> = available_quests(&game.gd)
             .iter()
             .map(|quest| {
@@ -67,7 +67,12 @@ impl QuestWindow {
 }
 
 impl Window for QuestWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
         self.description.draw(context);
@@ -78,7 +83,11 @@ impl Window for QuestWindow {
 }
 
 impl DialogWindow for QuestWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command, false);
 
         if let Some(dialog) = self.dialog.as_mut() {

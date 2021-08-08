@@ -36,7 +36,12 @@ impl ExitWindow {
 }
 
 impl Window for ExitWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
@@ -49,7 +54,11 @@ impl Window for ExitWindow {
 }
 
 impl DialogWindow for ExitWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         if *command == Command::Cancel {
             return DialogResult::Close;
         }
@@ -111,7 +120,12 @@ impl GameOverWindow {
 }
 
 impl Window for GameOverWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
@@ -124,7 +138,11 @@ impl Window for GameOverWindow {
 }
 
 impl DialogWindow for GameOverWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         if *command == Command::Cancel {
             return DialogResult::Continue;
         }

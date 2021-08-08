@@ -25,7 +25,7 @@ pub struct ItemInfoWindow {
 }
 
 impl ItemInfoWindow {
-    pub fn new(il: ItemLocation, game: &Game) -> ItemInfoWindow {
+    pub fn new(il: ItemLocation, game: &Game<'_>) -> ItemInfoWindow {
         let c = &UI_CFG.item_info_window;
         let item = game.gd.get_item(il);
         let info = ItemInfoText::new(item.0);
@@ -66,7 +66,12 @@ impl ItemInfoWindow {
 }
 
 impl Window for ItemInfoWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
 
         let c = &UI_CFG.item_info_window;
@@ -111,7 +116,11 @@ impl Window for ItemInfoWindow {
 }
 
 impl DialogWindow for ItemInfoWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         if let Some(flavor_text) = self.flavor_text.as_mut() {
             match flavor_text.process_command(command, pa) {
                 DialogResult::Continue => {

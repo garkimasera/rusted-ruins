@@ -21,11 +21,11 @@ impl Default for QuestHolder {
 }
 
 impl QuestHolder {
-    pub fn iter(&self) -> Iter<(QuestState, Quest)> {
+    pub fn iter(&self) -> Iter<'_, (QuestState, Quest)> {
         self.quests.iter()
     }
 
-    pub fn iter_mut(&mut self) -> IterMut<(QuestState, Quest)> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, (QuestState, Quest)> {
         self.quests.iter_mut()
     }
 

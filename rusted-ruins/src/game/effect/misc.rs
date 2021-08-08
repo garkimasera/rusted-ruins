@@ -5,7 +5,7 @@ use common::gobj;
 use common::objholder::ItemIdx;
 use geom::*;
 
-pub fn gen_item(game: &mut Game, id: &str, pos: Vec2d) {
+pub fn gen_item(game: &mut Game<'_>, id: &str, pos: Vec2d) {
     let idx: ItemIdx = if let Some(idx) = gobj::id_to_idx_checked(id) {
         idx
     } else {

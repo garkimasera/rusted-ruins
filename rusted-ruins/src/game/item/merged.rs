@@ -13,7 +13,7 @@ pub trait MergedItemListGet {
         &self,
         first: ItemListLocation,
         second: Option<ItemListLocation>,
-    ) -> MergedItemList;
+    ) -> MergedItemList<'_>;
 }
 
 impl MergedItemListGet for GameData {
@@ -21,7 +21,7 @@ impl MergedItemListGet for GameData {
         &self,
         first: ItemListLocation,
         second: Option<ItemListLocation>,
-    ) -> MergedItemList {
+    ) -> MergedItemList<'_> {
         assert_ne!(Some(first), second);
 
         MergedItemList {

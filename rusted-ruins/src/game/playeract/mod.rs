@@ -21,7 +21,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         DoPlayerAction(game)
     }
 
-    pub fn game(&self) -> &Game {
+    pub fn game(&self) -> &Game<'_> {
         self.0
     }
 

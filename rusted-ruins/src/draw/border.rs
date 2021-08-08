@@ -3,7 +3,7 @@ use crate::context::Context;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
-pub fn draw_window_border<R: Into<Rect>>(context: &mut Context, rect: R) {
+pub fn draw_window_border<R: Into<Rect>>(context: &mut Context<'_, '_, '_, '_>, rect: R) {
     let rect = rect.into();
     let light_color = UI_CFG.color.border_light;
     let dark_color = UI_CFG.color.border_dark;

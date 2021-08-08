@@ -99,7 +99,7 @@ impl FromStr for ItemSelector {
 }
 
 impl std::fmt::Display for ItemSelector {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.all {
             return write!(f, "*");
         }
@@ -155,7 +155,7 @@ struct ItemSelectorVisitor;
 impl<'de> Visitor<'de> for ItemSelectorVisitor {
     type Value = ItemSelector;
 
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str("item selector string")
     }
 

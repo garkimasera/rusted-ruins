@@ -207,7 +207,7 @@ impl FromStr for ItemKind {
 }
 
 impl std::fmt::Display for ItemKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             ItemKind::Potion => "potion",
             ItemKind::Food => "food",
@@ -300,7 +300,7 @@ pub enum ArmorKind {
 }
 
 impl std::fmt::Display for ArmorKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             ArmorKind::Shield => "shield",
             ArmorKind::Head => "head",
@@ -495,7 +495,7 @@ impl ItemList {
     }
 
     /// Return item iterator
-    pub fn iter(&self) -> std::slice::Iter<(Item, u32)> {
+    pub fn iter(&self) -> std::slice::Iter<'_, (Item, u32)> {
         self.items.iter()
     }
 
@@ -777,14 +777,14 @@ impl EquipItemList {
         }
     }
 
-    pub fn slot_iter(&self) -> EquipSlotIter {
+    pub fn slot_iter(&self) -> EquipSlotIter<'_> {
         EquipSlotIter {
             equip_item_list: self,
             n: 0,
         }
     }
 
-    pub fn item_iter(&self) -> EquipItemIter {
+    pub fn item_iter(&self) -> EquipItemIter<'_> {
         EquipItemIter {
             equip_item_list: self,
             n: 0,

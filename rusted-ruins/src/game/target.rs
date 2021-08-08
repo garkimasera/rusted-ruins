@@ -34,7 +34,7 @@ impl From<CharaId> for Target {
 //     todo!();
 // }
 
-pub fn auto_target_for_player(game: &Game, effect: &Effect) -> Option<Target> {
+pub fn auto_target_for_player(game: &Game<'_>, effect: &Effect) -> Option<Target> {
     match effect.target_mode {
         TargetMode::None => Some(Target::None),
         TargetMode::Player => Some(Target::Chara(CharaId::Player)),

@@ -1,3 +1,12 @@
+#![warn(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
 

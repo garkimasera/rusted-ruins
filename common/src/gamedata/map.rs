@@ -261,7 +261,7 @@ impl Map {
         self.tile[pos].chara
     }
 
-    pub fn iter_charaid(&self) -> std::slice::Iter<CharaId> {
+    pub fn iter_charaid(&self) -> std::slice::Iter<'_, CharaId> {
         self.charaid.iter()
     }
 

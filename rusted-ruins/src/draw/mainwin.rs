@@ -45,8 +45,8 @@ impl MainWinDrawer {
 
     pub fn draw(
         &mut self,
-        context: &mut Context,
-        game: &Game,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
         anim: Option<(&Animation, u32)>,
         centering_tile: Option<Vec2d>,
         hover_tile: Option<Vec2d>,
@@ -106,8 +106,8 @@ impl MainWinDrawer {
 
     fn draw_except_anim(
         &mut self,
-        context: &mut Context,
-        game: &Game,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
         player_move_adjust: (i32, i32),
         player_move_dir: Option<Direction>,
     ) {
@@ -209,7 +209,7 @@ impl MainWinDrawer {
     }
 
     /// Draw tile background parts
-    fn draw_background_parts(&self, context: &mut Context, map: &Map, p: Vec2d) {
+    fn draw_background_parts(&self, context: &mut Context<'_, '_, '_, '_>, map: &Map, p: Vec2d) {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile {
@@ -234,7 +234,7 @@ impl MainWinDrawer {
     /// Draw tile foreground parts
     fn draw_foreground_parts(
         &self,
-        context: &mut Context,
+        context: &mut Context<'_, '_, '_, '_>,
         map: &Map,
         view_map: &ViewMap,
         p: Vec2d,
@@ -296,7 +296,13 @@ impl MainWinDrawer {
     }
 
     /// Draw overlay for a tile
-    fn draw_overlay(&self, canvas: &mut WindowCanvas, game: &Game, sv: &SdlValues, p: Vec2d) {
+    fn draw_overlay(
+        &self,
+        canvas: &mut WindowCanvas,
+        game: &Game<'_>,
+        sv: &SdlValues<'_, '_>,
+        p: Vec2d,
+    ) {
         match overlay::view_fog(game, p) {
             overlay::FogPattern::None => (),
             overlay::FogPattern::PiecePattern(idx, pp) => {
@@ -320,7 +326,7 @@ impl MainWinDrawer {
     }
 
     /// Draw overlay for all tiles
-    fn draw_overlay_all(&self, context: &mut Context, game: &Game) {
+    fn draw_overlay_all(&self, context: &mut Context<'_, '_, '_, '_>, game: &Game<'_>) {
         let idx = if let Some(idx) = overlay::all(game) {
             idx
         } else {
@@ -338,7 +344,13 @@ impl MainWinDrawer {
         }
     }
 
-    fn draw_anim(&mut self, context: &mut Context, _game: &Game, anim: &Animation, i_frame: u32) {
+    fn draw_anim(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        anim: &Animation,
+        i_frame: u32,
+    ) {
         match anim {
             &Animation::Img {
                 idx,
@@ -386,7 +398,7 @@ impl MainWinDrawer {
     fn draw_pieces<T: PieceImgObject>(
         &self,
         canvas: &mut WindowCanvas,
-        tex: &Texture,
+        tex: &Texture<'_>,
         obj: &T,
         p: Vec2d,
         piece_pattern: PiecePattern,
@@ -424,7 +436,7 @@ impl MainWinDrawer {
         }
     }
 
-    fn draw_tile_cursor(&self, context: &mut Context, ct: Vec2d) {
+    fn draw_tile_cursor(&self, context: &mut Context<'_, '_, '_, '_>, ct: Vec2d) {
         let idx: UiImgIdx = gobj::id_to_idx_checked("!tile-cursor")
             .expect("UIImg object \"!tile-cursor\" not found");
 

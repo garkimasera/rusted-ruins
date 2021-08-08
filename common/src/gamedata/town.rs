@@ -31,11 +31,11 @@ impl Town {
         self.shops.get_mut(&n)
     }
 
-    pub fn iter_shops(&self) -> Values<u32, Shop> {
+    pub fn iter_shops(&self) -> Values<'_, u32, Shop> {
         self.shops.values()
     }
 
-    pub fn iter_shops_mut(&mut self) -> ValuesMut<u32, Shop> {
+    pub fn iter_shops_mut(&mut self) -> ValuesMut<'_, u32, Shop> {
         self.shops.values_mut()
     }
 

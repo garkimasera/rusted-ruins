@@ -1,6 +1,14 @@
 //! This crate provide functions for 2d array and vector
 
-extern crate serde;
+#![warn(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 #[macro_use]
 extern crate serde_derive;
 
@@ -116,7 +124,7 @@ impl PartialEq<(i32, i32)> for Vec2d {
 }
 
 impl fmt::Display for Vec2d {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "({}, {})", self.0, self.1)
     }
 }
@@ -195,14 +203,14 @@ impl<T> Array2d<T> {
         }
     }
 
-    pub fn iter(&self) -> Array2dIter<T> {
+    pub fn iter(&self) -> Array2dIter<'_, T> {
         Array2dIter {
             array: self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
         }
     }
 
-    pub fn iter_with_idx(&self) -> Array2dIterWithIdx<T> {
+    pub fn iter_with_idx(&self) -> Array2dIterWithIdx<'_, T> {
         Array2dIterWithIdx {
             array: self,
             rectiter: RectIter::new((0, 0), (self.w - 1, self.h - 1)),
@@ -371,7 +379,7 @@ impl<T> fmt::Debug for Array2d<T>
 where
     T: fmt::Debug,
 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[")?;
         for y in 0..self.h {
             write!(f, "[")?;
@@ -394,10 +402,7 @@ where
 }
 
 #[derive(Clone)]
-pub struct Array2dIter<'a, T>
-where
-    T: 'a,
-{
+pub struct Array2dIter<'a, T> {
     array: &'a Array2d<T>,
     rectiter: RectIter,
 }
@@ -414,10 +419,7 @@ impl<'a, T> Iterator for Array2dIter<'a, T> {
 }
 
 #[derive(Clone)]
-pub struct Array2dIterWithIdx<'a, T>
-where
-    T: 'a,
-{
+pub struct Array2dIterWithIdx<'a, T> {
     array: &'a Array2d<T>,
     rectiter: RectIter,
 }

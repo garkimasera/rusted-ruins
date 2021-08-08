@@ -48,7 +48,7 @@ impl Screen {
         }
     }
 
-    pub fn main_loop(&mut self, sdl_context: &crate::SdlContext, se: script::ScriptEngine) {
+    pub fn main_loop(&mut self, sdl_context: &crate::SdlContext, se: script::ScriptEngine<'_>) {
         let fps_duration = Duration::from_millis(1000 / 30);
         let mut event_pump = sdl_context.sdl_context.event_pump().unwrap();
         let mut prev_instant = Instant::now();
@@ -90,7 +90,7 @@ impl Screen {
         }
     }
 
-    fn redraw(&mut self, window_manager: &mut WindowManager) {
+    fn redraw(&mut self, window_manager: &mut WindowManager<'_, '_, '_>) {
         self.canvas.set_viewport(None);
         self.canvas.set_clip_rect(None);
         self.canvas.set_draw_color(UI_CFG.color.window_bg);

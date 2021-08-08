@@ -98,7 +98,7 @@ impl GaugeWidget {
 impl WidgetTrait for GaugeWidget {
     type Response = ();
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         let canvas = &mut context.canvas;
         canvas.set_draw_color(self.colors.bg);
         try_sdl!(canvas.fill_rect(self.rect));
