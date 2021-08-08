@@ -5,6 +5,9 @@ use std::collections::HashMap;
 pub struct Faction {
     pub relation_friend: FactionRelation,
     pub relation_neutral: FactionRelation,
+    /// Amount of variation of relation when attacked
+    pub relvar_attacked: i16,
+    pub relvar_killed: i16,
     pub factions: HashMap<FactionId, FactionInfo>,
 }
 
@@ -26,4 +29,6 @@ impl Faction {
 #[derive(Serialize, Deserialize)]
 pub struct FactionInfo {
     pub default_relation: FactionRelation,
+    #[serde(default)]
+    pub constant: bool,
 }

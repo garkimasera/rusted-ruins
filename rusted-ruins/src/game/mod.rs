@@ -10,6 +10,7 @@ pub mod damage;
 mod debug_command;
 mod dungeon_gen;
 pub mod effect;
+mod faction;
 pub mod frequent_tex;
 mod infogetter;
 pub mod item;
@@ -233,6 +234,7 @@ pub mod extrait {
     pub use super::active_skill::BasePowerExt;
     pub use super::chara::status::{CharaStatusExt, CharaStatusOperation};
     pub use super::chara::CharaExt;
+    pub use super::faction::FactionExt;
     pub use super::infogetter::InfoGetter;
     pub use super::item::{GameDataItemExt, ItemExt, ItemListExt};
     pub use super::map::MapExt;

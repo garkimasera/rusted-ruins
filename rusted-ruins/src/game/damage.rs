@@ -2,6 +2,7 @@ use crate::config::changeable::game_log_cfg;
 use crate::game::extrait::*;
 use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
+use rules::RULES;
 
 #[derive(Clone, Copy)]
 pub enum CharaDamageKind {
@@ -47,6 +48,11 @@ pub fn do_damage(
             chara.add_status(CharaStatus::Hostile {
                 faction: FactionId::player(),
             });
+
+            let target_faction = chara.faction;
+            game.gd
+                .faction
+                .change(target_faction, RULES.faction.relvar_attacked);
         }
     } else {
         // Logging
