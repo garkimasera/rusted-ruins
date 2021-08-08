@@ -63,8 +63,10 @@ impl Chara {
         let mut damage = None;
         let new_sp = if self.sp + v < r.sp_starving {
             let d = r.sp_starving - (self.sp + v);
-            damage = Some(4 * (self.attr.max_hp as f32 * d / r.sp_max) as i32);
-            // self.damage(damage, CharaDamageKind::Starve);
+            damage = Some(std::cmp::max(
+                4 * (self.attr.max_hp as f32 * d / r.sp_max) as i32,
+                1,
+            ));
             r.sp_starving
         } else {
             self.sp + v
