@@ -70,7 +70,12 @@ impl BarIndicator {
 }
 
 impl Window for BarIndicator {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         match self.kind {
             BarIndicatorKind::Hp => {
                 let (max_hp, hp) = game.gd.player_hp();
@@ -112,7 +117,12 @@ impl FloorInfo {
 }
 
 impl Window for FloorInfo {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         let current_mid = game.gd.get_current_mapid();
 
         if self.mid != Some(current_mid) {
@@ -164,7 +174,12 @@ impl TimeInfo {
 }
 
 impl Window for TimeInfo {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, SCREEN_CFG.time_info);
 
         let date = game.gd.time.current_date();
@@ -217,7 +232,7 @@ impl StatusInfo {
         }
     }
 
-    fn update(&mut self, game: &Game) {
+    fn update(&mut self, game: &Game<'_>) {
         let player_chara = game.gd.chara.get(CharaId::Player);
         let rect: Rect = SCREEN_CFG.status_info.into();
 
@@ -238,7 +253,12 @@ impl StatusInfo {
 }
 
 impl Window for StatusInfo {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         self.update(game);
 
         context.set_viewport(None);

@@ -60,7 +60,7 @@ impl ImageWidget {
 impl WidgetTrait for ImageWidget {
     type Response = ();
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         match self.idx {
             ImageIdx::UiImg(idx) => {
                 context.render_tex(idx, self.rect);

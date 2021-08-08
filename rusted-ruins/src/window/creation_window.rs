@@ -10,7 +10,7 @@ use common::gobj;
 use common::objholder::*;
 
 pub fn create_creation_window_group(
-    game: &Game,
+    game: &Game<'_>,
     creation_kind: Option<CreationKind>,
 ) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -131,7 +131,12 @@ impl CreationWindow {
 }
 
 impl Window for CreationWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
             detail_dialog.draw(context, game, anim);
         } else {
@@ -142,7 +147,11 @@ impl Window for CreationWindow {
 }
 
 impl DialogWindow for CreationWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
 
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
@@ -392,7 +401,12 @@ impl CreationDetailDialog {
 }
 
 impl Window for CreationDetailDialog {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.product_name.draw(context);
         self.list.draw(context);
@@ -410,7 +424,11 @@ impl Window for CreationDetailDialog {
 }
 
 impl DialogWindow for CreationDetailDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);

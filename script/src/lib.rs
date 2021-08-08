@@ -1,3 +1,12 @@
+#![warn(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_common as common;

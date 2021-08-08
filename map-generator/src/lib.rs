@@ -1,5 +1,14 @@
 //! Random Map Generator for Rusted Ruins
 
+#![warn(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_rng as rng;
 
@@ -173,7 +182,7 @@ impl Entrance {
 }
 
 impl std::fmt::Display for GeneratedMap {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for ny in 0..self.size.1 {
             for nx in 0..self.size.0 {
                 let c = if let Some(c) = self.entrance.entrance_char(Vec2d(nx, ny)) {

@@ -14,14 +14,14 @@ use geom::*;
 use rng::*;
 use rules::{npc_ai::*, RULES};
 
-pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
+pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
     match game.gd.chara.get(cid).ai.state {
         AiState::Normal => process_npc_turn_normal(game, cid),
         AiState::Combat { .. } => process_npc_turn_combat(game, cid),
     }
 }
 
-fn process_npc_turn_normal(game: &mut Game, cid: CharaId) {
+fn process_npc_turn_normal(game: &mut Game<'_>, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
@@ -48,7 +48,7 @@ fn process_npc_turn_normal(game: &mut Game, cid: CharaId) {
     }
 }
 
-fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
+fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
@@ -95,7 +95,7 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
 }
 
 /// Move npc at random
-fn random_walk(game: &mut Game, cid: CharaId) {
+fn random_walk(game: &mut Game<'_>, cid: CharaId) {
     let dir = Direction::new(
         *[HDirection::Left, HDirection::None, HDirection::Right]
             .choose(&mut get_rng())
@@ -108,7 +108,7 @@ fn random_walk(game: &mut Game, cid: CharaId) {
 }
 
 /// Move npc to nearest enemy
-fn move_to_target_enemy(game: &mut Game, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
+fn move_to_target_enemy(game: &mut Game<'_>, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
     let dir =
         dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step).unwrap_or(Direction::NONE);
     action::try_move(game, cid, dir);

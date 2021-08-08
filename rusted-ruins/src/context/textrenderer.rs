@@ -36,7 +36,7 @@ impl<'sdl> TextRenderer<'sdl> {
         const ERR_MSG: &str = "Font loading error";
         let font_name = FONT_CFG.font_name();
         let font = &UI_CFG.font;
-        let f = |fc: &FontConfig| -> Font {
+        let f = |fc: &FontConfig| -> Font<'_, '_> {
             sdl_context
                 .ttf_context
                 .load_font(&font_path(font_name), fc.size)
@@ -80,7 +80,7 @@ impl<'sdl> TextRenderer<'sdl> {
         Ok(surface)
     }
 
-    fn select_font(&self, font_usage: FontKind) -> &Font {
+    fn select_font(&self, font_usage: FontKind) -> &Font<'_, '_> {
         match font_usage {
             FontKind::Log => &self.font_log,
             FontKind::S => &self.font_s,
@@ -100,7 +100,7 @@ fn font_path(fontname: &str) -> PathBuf {
 /// If opacity is larger than this, the pixel is handled as opacity
 const OPACITY_BORDER: u8 = 64;
 
-fn border_text(surface: &mut Surface) {
+fn border_text(surface: &mut Surface<'_>) {
     use sdl2::pixels::PixelFormatEnum;
 
     let size = surface.size();

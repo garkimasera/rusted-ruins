@@ -27,13 +27,22 @@ impl RegisterShortcutDialog {
 }
 
 impl Window for RegisterShortcutDialog {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         self.choose_win.draw(context, game, anim);
     }
 }
 
 impl DialogWindow for RegisterShortcutDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         if *command == Command::Cancel {
             return DialogResult::Close;
         }

@@ -15,7 +15,7 @@ pub enum CharaDamageKind {
 
 /// Give damage to a character.
 pub fn do_damage(
-    game: &mut Game,
+    game: &mut Game<'_>,
     cid: CharaId,
     damage: i32,
     damage_kind: CharaDamageKind,

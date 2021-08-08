@@ -17,7 +17,12 @@ impl ProgressBar {
 }
 
 impl Window for ProgressBar {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         let player = game.gd.chara.get(CharaId::Player);
         let mut in_work = false;
         for status in &player.status {

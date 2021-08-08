@@ -18,7 +18,7 @@ pub struct MemberInfo {
     pub text_id: &'static str,
 }
 
-pub type ChildWinCreator = Box<dyn Fn(&Game) -> Box<dyn DialogWindow>>;
+pub type ChildWinCreator = Box<dyn Fn(&Game<'_>) -> Box<dyn DialogWindow>>;
 
 /// GroupWindow manages multiple windows.
 /// Player can switches displaying windows.
@@ -36,7 +36,7 @@ impl GroupWindow {
         group_name: &'static str,
         size: u32,
         init_win: Option<u32>,
-        game: &Game,
+        game: &Game<'_>,
         mem_info: Vec<(MemberInfo, ChildWinCreator)>,
         window_top_left: (i32, i32),
     ) -> GroupWindow {
@@ -71,7 +71,7 @@ impl GroupWindow {
         group_window
     }
 
-    pub fn switch(&mut self, i_win: u32, game: &Game) {
+    pub fn switch(&mut self, i_win: u32, game: &Game<'_>) {
         assert!(i_win < self.size);
 
         if self.current_window != i_win {
@@ -97,7 +97,7 @@ impl GroupWindow {
             .insert(self.group_name, self.current_window);
     }
 
-    pub fn rotate_right(&mut self, game: &Game) {
+    pub fn rotate_right(&mut self, game: &Game<'_>) {
         let result = if self.current_window + 1 < self.size {
             self.current_window + 1
         } else {
@@ -106,7 +106,7 @@ impl GroupWindow {
         self.switch(result, game);
     }
 
-    pub fn rotate_left(&mut self, game: &Game) {
+    pub fn rotate_left(&mut self, game: &Game<'_>) {
         let result = if self.current_window > 0 {
             self.current_window - 1
         } else {
@@ -117,7 +117,12 @@ impl GroupWindow {
 }
 
 impl Window for GroupWindow {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         if let Some(ref mut member) = self.members[self.current_window as usize] {
             member.draw(context, game, anim);
         }
@@ -127,7 +132,11 @@ impl Window for GroupWindow {
 }
 
 impl DialogWindow for GroupWindow {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         match command {
             Command::RotateWindowRight => {
                 self.rotate_right(pa.game());
@@ -170,7 +179,7 @@ impl DialogWindow for GroupWindow {
     fn callback_child_closed(
         &mut self,
         result: Option<DialogCloseValue>,
-        pa: &mut DoPlayerAction,
+        pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
         if let Some(ref mut member) = self.members[self.current_window as usize] {
             member.callback_child_closed(result, pa)
@@ -233,7 +242,12 @@ impl TabsNavigator {
 }
 
 impl Window for TabsNavigator {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         static MAKE_DARK_IDX: Lazy<UiImgIdx> = Lazy::new(|| common::gobj::id_to_idx("!make-dark"));
         crate::draw::border::draw_window_border(context, self.rect);
 

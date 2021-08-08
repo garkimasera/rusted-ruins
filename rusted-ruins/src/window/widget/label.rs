@@ -82,7 +82,7 @@ impl LabelWidget {
 
     /// Adjust widget size to fit inner contents if given rect doesn't have value
     /// Returns adjusted size
-    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues<'_, '_>) -> (u32, u32) {
         let tex = sv.tt_one(&mut self.cache);
         let w = tex.query().width;
         let h = tex.query().height;
@@ -113,7 +113,7 @@ impl LabelWidget {
 impl WidgetTrait for LabelWidget {
     type Response = ();
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         let canvas = &mut context.canvas;
         let sv = &mut context.sv;
         let tex = sv.tt_one(&mut self.cache);

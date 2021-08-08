@@ -8,7 +8,7 @@ use rules::RULES;
 
 /// Return true if success.
 pub fn use_active_skill(
-    game: &mut Game,
+    game: &mut Game<'_>,
     active_skill_id: &ActiveSkillId,
     cid: CharaId,
     target: CharaId,

@@ -193,7 +193,7 @@ impl<'s> Game<'s> {
 
 pub enum DialogOpenRequest {
     YesNo {
-        callback: Box<dyn FnMut(&mut DoPlayerAction, bool)>,
+        callback: Box<dyn FnMut(&mut DoPlayerAction<'_, '_>, bool)>,
         msg: String,
     },
     Talk {
@@ -226,7 +226,7 @@ pub enum UiRequest {
     StopCentering,
     StartTargeting {
         effect: Effect,
-        callback: Box<dyn Fn(&mut DoPlayerAction, self::target::Target) + 'static>,
+        callback: Box<dyn Fn(&mut DoPlayerAction<'_, '_>, self::target::Target) + 'static>,
     },
 }
 

@@ -32,7 +32,7 @@ impl DrawInfo {
 static DRAW_INFO: Lazy<DrawInfo> = Lazy::new(DrawInfo::init);
 
 impl MainWinDrawer {
-    pub fn draw_chara_info(&self, context: &mut Context, game: &Game) {
+    pub fn draw_chara_info(&self, context: &mut Context<'_, '_, '_, '_>, game: &Game<'_>) {
         let map = game.gd.get_current_map();
         let target_chara = game.target_chara();
 

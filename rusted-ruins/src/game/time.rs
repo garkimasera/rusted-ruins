@@ -18,7 +18,7 @@ pub fn current_time() -> Time {
     *CURRENT_TIME.lock().unwrap()
 }
 
-pub fn advance_game_time_by_clock(game: &mut Game, advanced_clock: u32) {
+pub fn advance_game_time_by_clock(game: &mut Game<'_>, advanced_clock: u32) {
     let mid = game.gd.get_current_mapid();
     let minutes_per_turn = if mid.is_region_map() {
         RULES.params.minutes_per_turn_region
@@ -31,7 +31,7 @@ pub fn advance_game_time_by_clock(game: &mut Game, advanced_clock: u32) {
     advance_game_time_by_secs(game, advanced_secs as u64);
 }
 
-pub fn advance_game_time_by_secs(game: &mut Game, advanced_secs: u64) {
+pub fn advance_game_time_by_secs(game: &mut Game<'_>, advanced_secs: u64) {
     let before = game.gd.time.current_time();
     game.gd.time.advance(advanced_secs);
     let now = game.gd.time.current_time();
@@ -54,6 +54,6 @@ pub fn advance_game_time_by_secs(game: &mut Game, advanced_secs: u64) {
     }
 }
 
-pub fn update_time(game: &mut Game) {
+pub fn update_time(game: &mut Game<'_>) {
     *CURRENT_TIME.lock().unwrap() = game.gd.time.current_time();
 }

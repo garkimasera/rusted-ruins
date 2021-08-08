@@ -6,19 +6,19 @@ use common::objholder::*;
 use std::borrow::Cow;
 
 impl<T: ToTextId> ToText for T {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         text::to_txt(self).into()
     }
 }
 
 impl ToText for ActiveSkillId {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         active_skill_txt(&self.0).into()
     }
 }
 
 impl ToText for FactionId {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         let s = self.as_str();
         let s = if let Some(s) = s.strip_prefix('!') {
             s
@@ -31,7 +31,7 @@ impl ToText for FactionId {
 }
 
 impl ToText for Site {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         if let Some(ref name) = self.name {
             let name: &str = &*name;
             return name.into();
@@ -53,7 +53,7 @@ impl ToText for Site {
 }
 
 impl ToText for Item {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         use crate::game::item::ItemExt;
         let mut text: String = obj_txt(gobj::idx_to_id(self.idx));
 
@@ -105,13 +105,13 @@ impl ToText for Item {
 }
 
 impl ToText for CharaTemplateIdx {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         obj_txt(gobj::idx_to_id(*self)).into()
     }
 }
 
 impl ToText for Chara {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         use crate::game::chara::CharaExt;
         if self.is_main_character() {
             return misc_txt("you").into();
@@ -125,7 +125,7 @@ impl ToText for Chara {
 }
 
 impl ToText for Command {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         use Command::*;
         let id = match self {
             Move { .. } => "command-move",
@@ -165,7 +165,7 @@ impl ToText for Command {
 }
 
 impl ToText for Quest {
-    fn to_text(&self) -> Cow<str> {
+    fn to_text(&self) -> Cow<'_, str> {
         match self {
             Quest::SlayMonsters { idx, .. } => {
                 let mut table = fluent::FluentArgs::new();
@@ -181,7 +181,7 @@ macro_rules! impl_to_text {
     ( $($t:ty),* ) => {
         $(
             impl ToText for $t {
-                fn to_text(&self) -> Cow<str> {
+                fn to_text(&self) -> Cow<'_, str> {
                     self.to_string().into()
                 }
             }

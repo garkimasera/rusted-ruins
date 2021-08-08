@@ -12,8 +12,8 @@ static TILE_RANGE_HIGHLIBHT: Lazy<UiImgIdx> =
 impl MainWinDrawer {
     pub fn draw_target_mode(
         &self,
-        context: &mut Context,
-        game: &Game,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
         target_mode: &TargetModeDrawInfo,
     ) {
         let map = game.gd.get_current_map();
@@ -28,9 +28,9 @@ impl MainWinDrawer {
 
     fn draw_target_mode_to_tile(
         &self,
-        context: &mut Context,
+        context: &mut Context<'_, '_, '_, '_>,
         pos: Vec2d,
-        game: &Game,
+        game: &Game<'_>,
         target_mode: &TargetModeDrawInfo,
     ) {
         if target_mode.range.is_inside(pos) {

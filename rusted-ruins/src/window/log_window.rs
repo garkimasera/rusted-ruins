@@ -22,7 +22,12 @@ impl LogWindow {
 }
 
 impl Window for LogWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         context.set_viewport(None);
         context.canvas.set_draw_color(UI_CFG.color.log_window_bg);
         try_sdl!(context.canvas.fill_rect(self.rect));

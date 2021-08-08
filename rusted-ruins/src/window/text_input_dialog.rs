@@ -9,7 +9,7 @@ pub struct TextInputDialog {
     label: LabelWidget,
     rect: Rect,
     text: String,
-    callback: Option<Box<dyn Fn(&mut DoPlayerAction, &str)>>,
+    callback: Option<Box<dyn Fn(&mut DoPlayerAction<'_, '_>, &str)>>,
 }
 
 impl TextInputDialog {
@@ -35,7 +35,10 @@ impl TextInputDialog {
         &self.text
     }
 
-    pub fn set_callback<F: Fn(&mut DoPlayerAction, &str) + 'static>(&mut self, callback: F) {
+    pub fn set_callback<F: Fn(&mut DoPlayerAction<'_, '_>, &str) + 'static>(
+        &mut self,
+        callback: F,
+    ) {
         self.callback = Some(Box::new(callback));
     }
 
@@ -47,7 +50,12 @@ impl TextInputDialog {
 }
 
 impl Window for TextInputDialog {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         if let Some(child) = self.child.as_mut() {
             child.draw(context, game, anim);
         }
@@ -57,7 +65,11 @@ impl Window for TextInputDialog {
 }
 
 impl DialogWindow for TextInputDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         match command {
             Command::TextInput { ref text } => {
                 self.text.push_str(text);

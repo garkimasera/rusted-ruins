@@ -4,7 +4,7 @@ use common::gamedata::*;
 use rules::RULES;
 
 // Melee attack to a chara.
-pub fn recover_hp(game: &mut Game, cid: CharaId, power: f32) {
+pub fn recover_hp(game: &mut Game<'_>, cid: CharaId, power: f32) {
     let value = (RULES.effect.recover_hp_factor * power) as i32;
     let pos = game.gd.chara_pos(cid).unwrap();
     let chara = game.gd.chara.get_mut(cid);

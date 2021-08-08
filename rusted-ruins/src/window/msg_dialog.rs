@@ -8,7 +8,7 @@ use crate::game::DoPlayerAction;
 pub struct MsgDialog {
     text_win: TextWindow,
     choose_win: ChooseWindow,
-    action_callback: Box<dyn FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static>,
+    action_callback: Box<dyn FnMut(&mut DoPlayerAction<'_, '_>, u32) -> DialogResult + 'static>,
 }
 
 impl MsgDialog {
@@ -31,7 +31,7 @@ impl MsgDialog {
 
     pub fn with_yesno<F>(msg: &str, f: F) -> MsgDialog
     where
-        F: FnMut(&mut DoPlayerAction, u32) -> DialogResult + 'static,
+        F: FnMut(&mut DoPlayerAction<'_, '_>, u32) -> DialogResult + 'static,
     {
         let rect = UI_CFG.msg_dialog.rect.into();
         let text_win = TextWindow::new(rect, msg);
@@ -48,7 +48,12 @@ impl MsgDialog {
 }
 
 impl Window for MsgDialog {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         self.text_win.draw(context, game, anim);
         let rect = self.text_win.get_rect();
         let winpos = WindowPos::new(
@@ -61,7 +66,11 @@ impl Window for MsgDialog {
 }
 
 impl DialogWindow for MsgDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         if *command == Command::Cancel {
             return DialogResult::Close;
         }
