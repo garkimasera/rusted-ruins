@@ -21,7 +21,7 @@ pub fn create_chara(
     let mut chara = Chara {
         name: None,
         attr: CharaAttributes::default(),
-        template: chara_template_idx,
+        idx: chara_template_idx,
         class,
         faction,
         level: lv,
@@ -133,7 +133,7 @@ pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
 
 /// Set skills to npc
 fn set_skill(chara: &mut Chara) {
-    let _ct = gobj::get_obj(chara.template);
+    let _ct = gobj::get_obj(chara.idx);
 }
 
 /// Generate skill list based on floor level and CharaTemplateObject

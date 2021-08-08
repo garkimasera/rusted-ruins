@@ -189,7 +189,7 @@ impl MainWinDrawer {
             // Draw player during moving animation
             if is_player_moving && ny == player_drawing_row {
                 let chara = gd.chara.get(CharaId::Player);
-                let ct = gobj::get_obj(chara.template);
+                let ct = gobj::get_obj(chara.idx);
                 let src = Rect::from(ct.img_rect());
                 let dest = self.centering_at_tile(
                     src,
@@ -199,7 +199,7 @@ impl MainWinDrawer {
                 );
                 try_sdl!(context
                     .canvas
-                    .copy(context.sv.tex().get(chara.template), src, dest));
+                    .copy(context.sv.tex().get(chara.idx), src, dest));
             }
         }
         // Draw overlay
@@ -274,7 +274,7 @@ impl MainWinDrawer {
         // Draw character on the tile
         if let Some(chara_id) = di.chara {
             let chara = gd.chara.get(chara_id);
-            let ct = gobj::get_obj(chara.template);
+            let ct = gobj::get_obj(chara.idx);
             let src = Rect::from(ct.img_rect());
 
             if !(chara_id == CharaId::Player && is_player_moving) {
@@ -290,7 +290,7 @@ impl MainWinDrawer {
                 };
                 try_sdl!(context
                     .canvas
-                    .copy(context.sv.tex().get(chara.template), src, dest));
+                    .copy(context.sv.tex().get(chara.idx), src, dest));
             }
         }
     }

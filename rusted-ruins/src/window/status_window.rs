@@ -69,7 +69,7 @@ impl StatusWindow {
         let cfg = &UI_CFG.status_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
         let chara = gd.chara.get(cid);
-        let image = ImageWidget::chara(cfg.image_rect, chara.template);
+        let image = ImageWidget::chara(cfg.image_rect, chara.idx);
         let chara_name = if let Some(chara_name) = chara.name.clone() {
             chara_name
         } else {

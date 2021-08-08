@@ -58,9 +58,9 @@ pub enum Relationship {
 /// All data for one character
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Chara {
+    pub idx: CharaTemplateIdx,
     pub name: Option<String>,
     pub attr: CharaAttributes,
-    pub template: CharaTemplateIdx,
     pub class: CharaClass,
     pub faction: FactionId,
     pub level: u32,
@@ -216,7 +216,7 @@ impl Default for Chara {
         Chara {
             name: None,
             attr: CharaAttributes::default(),
-            template: CharaTemplateIdx::default(),
+            idx: CharaTemplateIdx::default(),
             class: CharaClass::default(),
             faction: FactionId::default(),
             level: 0,

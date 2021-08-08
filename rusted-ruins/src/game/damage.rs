@@ -73,6 +73,17 @@ pub fn do_damage(
                 game_log!("killed-by-starve-damage"; chara=chara);
             }
         }
+
+        if origin == Some(CharaId::Player) {
+            let chara = game.gd.chara.get(cid);
+            let idx = chara.idx;
+            let target_faction = chara.faction;
+            crate::game::quest::count_slayed_monster(&mut game.gd, idx);
+
+            game.gd
+                .faction
+                .change(target_faction, RULES.faction.relvar_killed);
+        }
     }
     chara_hp
 }

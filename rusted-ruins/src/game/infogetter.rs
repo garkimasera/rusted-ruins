@@ -160,24 +160,18 @@ impl GameData {
         }
 
         for status1 in &self.chara.get(chara).status {
-            match status1 {
-                CharaStatus::Hostile { faction } => {
-                    if *faction == f2 {
-                        return Relationship::Hostile;
-                    }
+            if let CharaStatus::Hostile { faction } = status1 {
+                if *faction == f2 {
+                    return Relationship::Hostile;
                 }
-                _ => (),
             }
         }
 
         for status2 in &self.chara.get(other).status {
-            match status2 {
-                CharaStatus::Hostile { faction } => {
-                    if *faction == f1 {
-                        return Relationship::Hostile;
-                    }
+            if let CharaStatus::Hostile { faction } = status2 {
+                if *faction == f1 {
+                    return Relationship::Hostile;
                 }
-                _ => (),
             }
         }
 

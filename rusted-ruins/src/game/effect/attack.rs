@@ -115,7 +115,6 @@ fn attack_target(
 
     let equip_def = calc_equip_defence(&game.gd, target_id);
     let target = game.gd.chara.get_mut(target_id);
-    let idx = target.template;
     let defence_skill_level = target.skill_level(SkillKind::Defence);
     let defence_power = calc_defence_power(
         equip_def[attack_params.element],
@@ -134,8 +133,6 @@ fn attack_target(
             let target = game.gd.chara.get_mut(target_id);
             target.add_damage_exp(damage, attacker_level);
         }
-    } else {
-        crate::game::quest::count_slayed_monster(&mut game.gd, idx);
     }
 
     damage

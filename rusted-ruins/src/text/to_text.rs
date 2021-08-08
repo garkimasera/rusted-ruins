@@ -119,7 +119,7 @@ impl ToText for Chara {
         if let Some(ref name) = self.name {
             name.into()
         } else {
-            obj_txt(gobj::idx_to_id(self.template)).into()
+            obj_txt(gobj::idx_to_id(self.idx)).into()
         }
     }
 }

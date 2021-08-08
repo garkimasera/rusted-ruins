@@ -52,7 +52,7 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
-    let ct: &CharaTemplateObject = gobj::get_obj(chara.template);
+    let ct: &CharaTemplateObject = gobj::get_obj(chara.idx);
 
     let target = match chara.ai.state {
         AiState::Combat { target } => target,
