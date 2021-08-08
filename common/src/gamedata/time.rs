@@ -128,6 +128,10 @@ impl Duration {
         )
     }
 
+    pub const fn zero() -> Duration {
+        Duration(0)
+    }
+
     pub const fn from_seconds(secs: u64) -> Duration {
         Duration(secs)
     }

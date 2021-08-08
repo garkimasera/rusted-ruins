@@ -71,17 +71,27 @@ pub enum ItemObjAttr {
         quality: i8,
     },
     Titles(Vec<String>),
+    ConvertableByContainer {
+        kind: String,
+        products: Vec<(String, u32)>,
+        #[serde(default = "Duration::zero")]
+        duration: Duration,
+    },
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
     ConvertMixed {
+        #[serde(default = "Duration::zero")]
         duration: Duration,
         product: String,
         #[serde(default = "product_multiplier_default")]
         product_multiplier: u32,
         ingredients: Vec<(ItemSelector, u32)>,
+    },
+    Converter {
+        kind: String,
     },
 }
 
