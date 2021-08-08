@@ -1,6 +1,15 @@
 //! This crate provides functions for sound and music playing.
 //! All function must be called from main thread only.
 
+#![deny(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 #[macro_use]
 extern crate log;
 

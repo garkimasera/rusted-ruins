@@ -227,7 +227,7 @@ impl WidgetTrait for VScrollWidget {
         }
     }
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         let cfg = &UI_CFG.vscroll_widget;
         let color = &UI_CFG.color;
         let knob_space_outer_rect = Rect::new(

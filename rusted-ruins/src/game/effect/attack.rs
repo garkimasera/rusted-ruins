@@ -21,7 +21,7 @@ struct AttackParams {
 
 // Melee attack to a chara.
 pub fn melee_attack(
-    game: &mut Game,
+    game: &mut Game<'_>,
     cid: CharaId,
     target_id: CharaId,
     attack_power: f32,
@@ -49,7 +49,7 @@ pub fn melee_attack(
 
 // Ranged attack to a chara.
 pub fn ranged_attack(
-    game: &mut Game,
+    game: &mut Game<'_>,
     cid: CharaId,
     target_id: CharaId,
     attack_power: f32,
@@ -76,7 +76,7 @@ pub fn ranged_attack(
 
 // Explosion attack to a chara.
 pub fn explosion_attack(
-    game: &mut Game,
+    game: &mut Game<'_>,
     cid: CharaId,
     target_id: CharaId,
     attack_power: f32,
@@ -96,7 +96,7 @@ pub fn explosion_attack(
 }
 
 /// Routines for targetted character
-fn attack_target(game: &mut Game, attack_params: AttackParams, target_id: CharaId) -> i32 {
+fn attack_target(game: &mut Game<'_>, attack_params: AttackParams, target_id: CharaId) -> i32 {
     if !attack_params.always_hit
         && !hit_judge(
             &game.gd,

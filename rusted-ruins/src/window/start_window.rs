@@ -20,7 +20,12 @@ impl StartWindow {
         }
     }
 
-    pub fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    pub fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         self.title_screen.draw(context);
     }
 }
@@ -46,14 +51,23 @@ impl StartDialog {
 }
 
 impl Window for StartDialog {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.answer_list.draw(context);
     }
 }
 
 impl DialogWindow for StartDialog {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         let command = command.relative_to(self.rect);
         if let Some(response) = self.answer_list.process_command(&command) {
             match response {
@@ -115,14 +129,23 @@ impl ChooseSaveFileDialog {
 }
 
 impl Window for ChooseSaveFileDialog {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
 }
 
 impl DialogWindow for ChooseSaveFileDialog {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
             if let ListWidgetResponse::Select(i) = response {

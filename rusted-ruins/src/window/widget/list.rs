@@ -35,7 +35,7 @@ pub enum ListWidgetResponse {
 
 pub trait ListWidgetRow {
     const N_COLUMN: usize;
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]);
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]);
 }
 
 pub type TextListWidget = ListWidget<TextCache>;
@@ -183,7 +183,7 @@ impl ListWidget<TextCache> {
 
     /// Adjust widget size to fit inner contents
     /// Returns adjusted size
-    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+    pub fn adjust_widget_size(&mut self, sv: &mut SdlValues<'_, '_>) -> (u32, u32) {
         let (w, h) = self.get_adjusted_widget_size(sv);
         let rect = Rect::new(self.rect.x, self.rect.y, w, h);
         self.rect = rect;
@@ -192,7 +192,7 @@ impl ListWidget<TextCache> {
 
     /// Helper function to adjust widget size
     /// SdlValues is needed to calculate text size from text cache
-    fn get_adjusted_widget_size(&mut self, sv: &mut SdlValues) -> (u32, u32) {
+    fn get_adjusted_widget_size(&mut self, sv: &mut SdlValues<'_, '_>) -> (u32, u32) {
         let h = UI_CFG.list_widget.h_row_with_text as u32 * self.rows.len() as u32;
         let max_w = {
             let mut max_w = 0;
@@ -294,7 +294,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
         }
     }
 
-    fn draw(&mut self, context: &mut Context) {
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         // Draw borders between rows
         if self.draw_border {
             for i in 1..self.page_size {
@@ -359,7 +359,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
 impl ListWidgetRow for TextCache {
     const N_COLUMN: usize = 1;
 
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]) {
         let tex = context.sv.tt_one(self);
         let w = tex.query().width;
         let h = tex.query().height;
@@ -372,7 +372,7 @@ impl ListWidgetRow for TextCache {
 impl ListWidgetRow for IconIdx {
     const N_COLUMN: usize = 1;
 
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]) {
         let h_row = UI_CFG.list_widget.h_row_default as i32;
         let icon_column_w = UI_CFG.list_widget.icon_column_w as i32;
 
@@ -397,7 +397,7 @@ where
 {
     const N_COLUMN: usize = 1;
 
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]) {
         self.move_to(rect.x + column_pos[0], rect.y);
         self.draw(context);
     }
@@ -407,7 +407,7 @@ where
 impl<T1: ListWidgetRow, T2: ListWidgetRow> ListWidgetRow for (T1, T2) {
     const N_COLUMN: usize = 2;
 
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]) {
         let w = column_pos[1] - column_pos[0];
         let rect0 = Rect::new(rect.x + column_pos[0], rect.y, w as u32, rect.height());
         self.0.row_draw(context, rect0, &[0]);
@@ -421,7 +421,7 @@ impl<T1: ListWidgetRow, T2: ListWidgetRow> ListWidgetRow for (T1, T2) {
 impl<T1: ListWidgetRow, T2: ListWidgetRow, T3: ListWidgetRow> ListWidgetRow for (T1, T2, T3) {
     const N_COLUMN: usize = 3;
 
-    fn row_draw(&mut self, context: &mut Context, rect: Rect, column_pos: &[i32]) {
+    fn row_draw(&mut self, context: &mut Context<'_, '_, '_, '_>, rect: Rect, column_pos: &[i32]) {
         let w = column_pos[1] - column_pos[0];
         let rect0 = Rect::new(rect.x + column_pos[0], rect.y, w as u32, rect.height());
         self.0.row_draw(context, rect0, &[0]);

@@ -3,9 +3,9 @@
 cargo build --release -p rusted-ruins-makepak
 git clone https://github.com/garkimasera/rusted-ruins-pak
 
-pushd rusted-ruins-pak
+pushd rusted-ruins-pak || exit
 ./build.sh ../target/release/rusted-ruins-makepak
-popd
+popd || exit
 
 mkdir -p ./assets/paks
 mkdir -p ./assets/rules

@@ -13,7 +13,7 @@ pub struct GameInfoWindow {
 }
 
 impl GameInfoWindow {
-    pub fn new(game: &Game) -> GameInfoWindow {
+    pub fn new(game: &Game<'_>) -> GameInfoWindow {
         let cfg = &UI_CFG.game_info_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
 
@@ -50,7 +50,12 @@ impl GameInfoWindow {
 }
 
 impl Window for GameInfoWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         self.update();
 
         draw_window_border(context, self.rect);
@@ -60,7 +65,11 @@ impl Window for GameInfoWindow {
 }
 
 impl DialogWindow for GameInfoWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
 
         match *command {

@@ -87,7 +87,7 @@ impl Map {
     }
 }
 
-pub fn switch_map(game: &mut Game, destination: Destination) {
+pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
     game.ui_request.push_back(super::UiRequest::StopCentering);
     game.clear_target();
 
@@ -305,7 +305,7 @@ pub fn gen_items(gd: &mut GameData, mid: MapId) {
     }
 }
 
-pub fn update_observed_map(game: &mut Game) {
+pub fn update_observed_map(game: &mut Game<'_>) {
     let view_map = &game.view_map;
     let map = game.gd.get_current_map_mut();
     map.reveal(|pos| view_map.get_tile_visible(pos));

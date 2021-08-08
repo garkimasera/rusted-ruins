@@ -30,7 +30,12 @@ impl NewGameWindow {
         }
     }
 
-    pub fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    pub fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         self.back_image.draw(context);
     }
 }
@@ -58,7 +63,12 @@ impl DummyNewGameDialog {
 }
 
 impl Window for DummyNewGameDialog {
-    fn draw(&mut self, context: &mut Context, game: &Game, anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
                 self.explanation_text.draw(context, game, anim);
@@ -79,7 +89,11 @@ impl Window for DummyNewGameDialog {
 }
 
 impl DialogWindow for DummyNewGameDialog {
-    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         match self.stage {
             NewGameBuildStage::PlayerNameInput => {
                 let name_input_dialog = self.name_input_dialog.as_mut().unwrap();
@@ -162,14 +176,23 @@ impl ChooseClassDialog {
 }
 
 impl Window for ChooseClassDialog {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
 }
 
 impl DialogWindow for ChooseClassDialog {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
             if let ListWidgetResponse::Select(i) = response {

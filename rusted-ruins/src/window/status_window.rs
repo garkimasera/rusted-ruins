@@ -13,7 +13,7 @@ use once_cell::sync::Lazy;
 
 const STATUS_WINDOW_GROUP_SIZE: u32 = 3;
 
-pub fn create_status_window_group(game: &Game, cid: CharaId) -> GroupWindow {
+pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow {
     // Workaround to specify cid for window creation
     use std::sync::Mutex;
     static TARGET_CID: Lazy<Mutex<Option<CharaId>>> = Lazy::new(|| Mutex::new(None));
@@ -150,7 +150,12 @@ impl StatusWindow {
 }
 
 impl Window for StatusWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.image.draw(context);
         self.name_label.draw(context);
@@ -167,7 +172,11 @@ impl Window for StatusWindow {
 }
 
 impl DialogWindow for StatusWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
 
         match *command {
@@ -245,14 +254,23 @@ impl SkillWindow {
 }
 
 impl Window for SkillWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
 }
 
 impl DialogWindow for SkillWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command);
         let command = command.relative_to(self.rect);
 

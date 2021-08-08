@@ -145,7 +145,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 }
             };
 
-            let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
+            let cb = Box::new(move |pa: &mut DoPlayerAction<'_, '_>, result: bool| {
                 if !result {
                     return;
                 }
@@ -184,7 +184,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 Destination::Exit => LogMessage::ExitToOutside,
                 _ => LogMessage::ChangeFloor,
             };
-            let cb = Box::new(move |pa: &mut DoPlayerAction, result: bool| {
+            let cb = Box::new(move |pa: &mut DoPlayerAction<'_, '_>, result: bool| {
                 if !result {
                     return;
                 }

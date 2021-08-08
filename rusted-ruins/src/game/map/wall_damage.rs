@@ -4,7 +4,7 @@ use common::gobj;
 use common::objholder::ItemIdx;
 use geom::*;
 
-pub fn wall_damage(game: &mut Game, pos: Vec2d, power: f32) {
+pub fn wall_damage(game: &mut Game<'_>, pos: Vec2d, power: f32) {
     let map = game.gd.get_current_map_mut();
     let tile = &mut map.tile[pos];
 

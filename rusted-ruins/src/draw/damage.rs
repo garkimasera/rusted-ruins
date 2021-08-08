@@ -28,14 +28,18 @@ impl DigitDrawInfo {
 static DIGIT_DRAW_INFO: Lazy<DigitDrawInfo> = Lazy::new(DigitDrawInfo::init);
 
 impl MainWinDrawer {
-    pub fn draw_damage(&self, context: &mut Context) {
+    pub fn draw_damage(&self, context: &mut Context<'_, '_, '_, '_>) {
         let combat_log = &*crate::chara_log::get_log();
         for damaged_chara in &combat_log.damage_list {
             self.draw_damage_to_tile(context, damaged_chara);
         }
     }
 
-    fn draw_damage_to_tile(&self, context: &mut Context, damaged_chara: &CharaLogDamage) {
+    fn draw_damage_to_tile(
+        &self,
+        context: &mut Context<'_, '_, '_, '_>,
+        damaged_chara: &CharaLogDamage,
+    ) {
         let digit_w = DIGIT_DRAW_INFO.digit_w;
         let digit_h = DIGIT_DRAW_INFO.digit_h;
         let (value, color) = if damaged_chara.damage >= 0 {

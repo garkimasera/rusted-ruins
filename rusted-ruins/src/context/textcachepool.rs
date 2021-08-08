@@ -131,9 +131,9 @@ impl<'t> TextCachePool<'t> {
     pub fn group(
         &mut self,
         c: &mut TextCache,
-        tr: &TextRenderer,
+        tr: &TextRenderer<'_>,
         tc: &'t TextureCreator<WindowContext>,
-    ) -> &[Texture] {
+    ) -> &[Texture<'_>] {
         if c.i.is_none() {
             // Render and add cache
             let mut v = Vec::new();

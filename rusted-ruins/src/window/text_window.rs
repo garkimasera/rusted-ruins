@@ -23,7 +23,12 @@ impl TextWindow {
 }
 
 impl Window for TextWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         let window_size = self.label.adjust_widget_size(context.sv);
         self.rect.w = std::cmp::max(window_size.0 as i32, self.min_w);
         self.rect.h = window_size.1 as i32;
@@ -65,7 +70,12 @@ impl ScrollingTextWindow {
 }
 
 impl Window for ScrollingTextWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         if self.is_finished {
             return;
         }

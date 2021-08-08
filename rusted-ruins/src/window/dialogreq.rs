@@ -11,7 +11,7 @@ use script::TalkText;
 
 pub fn create_dialog_from_request(
     req: DialogOpenRequest,
-    game: &mut Game,
+    game: &mut Game<'_>,
 ) -> Option<Box<dyn DialogWindow>> {
     Some(match req {
         DialogOpenRequest::YesNo { mut callback, msg } => {
@@ -45,7 +45,7 @@ pub fn create_dialog_from_request(
 pub fn create_talk_dialog(
     talk_text: TalkText,
     cid: Option<CharaId>,
-    game: &mut Game,
+    game: &mut Game<'_>,
 ) -> Option<Box<dyn DialogWindow>> {
     let chara_template_idx = cid.map(|cid| game.gd.chara.get(cid).template);
 

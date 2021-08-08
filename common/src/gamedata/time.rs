@@ -193,7 +193,7 @@ struct DurationVisitor;
 impl<'de> Visitor<'de> for DurationVisitor {
     type Value = Duration;
 
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str("an positive integer or digits string with suffix [dmhs]")
     }
 

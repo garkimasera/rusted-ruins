@@ -5,7 +5,7 @@ use common::obj::*;
 use common::objholder::*;
 use geom::*;
 
-pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId) {
+pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId) {
     let wall_id = "wooden-wall-01";
     let wall_idx: WallIdx = gobj::id_to_idx(wall_id);
     let wall_obj = gobj::get_obj(wall_idx);
@@ -41,7 +41,7 @@ pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId) {
     finish_build(game, pos, wall_idx);
 }
 
-pub fn finish_build(game: &mut Game, pos: Vec2d, wall_idx: WallIdx) {
+pub fn finish_build(game: &mut Game<'_>, pos: Vec2d, wall_idx: WallIdx) {
     let map = game.gd.get_current_map_mut();
     map.set_wall(pos, wall_idx);
     audio::play_sound("finish-build");

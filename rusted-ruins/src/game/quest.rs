@@ -31,7 +31,7 @@ pub fn available_quests(gd: &GameData) -> &[Quest] {
 }
 
 /// Undertake quest in the current town
-pub fn undertake_quest(game: &mut Game, i: u32) {
+pub fn undertake_quest(game: &mut Game<'_>, i: u32) {
     let mid = game.gd.get_current_mapid();
     let town = match game.gd.region.get_site_mut(mid.sid()).content {
         SiteContent::Town { ref mut town } => town,

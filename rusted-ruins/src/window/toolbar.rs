@@ -28,7 +28,12 @@ impl Toolbar {
 }
 
 impl Window for Toolbar {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         let cfg = &UI_CFG.toolbar;
 
         context.fill_rect(self.rect, UI_CFG.color.toolbar_bg);
@@ -81,7 +86,11 @@ impl Window for Toolbar {
 }
 
 impl DialogWindow for Toolbar {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
         match command {
@@ -161,7 +170,12 @@ impl ShortcutList {
 }
 
 impl Window for ShortcutList {
-    fn draw(&mut self, context: &mut Context, game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         self.update(&game.gd);
         let cfg = &UI_CFG.toolbar;
 
@@ -209,7 +223,11 @@ impl Window for ShortcutList {
 }
 
 impl DialogWindow for ShortcutList {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
         match command {

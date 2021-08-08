@@ -37,7 +37,12 @@ impl FlavorTextWindow {
 }
 
 impl Window for FlavorTextWindow {
-    fn draw(&mut self, context: &mut Context, _game: &Game, _anim: Option<(&Animation, u32)>) {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game<'_>,
+        _anim: Option<(&Animation, u32)>,
+    ) {
         draw_window_border(context, self.rect);
         self.image.draw(context);
         self.name.draw(context);
@@ -47,7 +52,11 @@ impl Window for FlavorTextWindow {
 }
 
 impl DialogWindow for FlavorTextWindow {
-    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction) -> DialogResult {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        _pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
         check_escape_click!(self, command, false);
 
         let command = command.relative_to(self.rect);

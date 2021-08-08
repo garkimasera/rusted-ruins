@@ -31,7 +31,7 @@ Binary format of pak files and save files may be changed before version 1.0.
 ## Features
 
 * 2D graphics.
-* Easy to extend by the pak file system. Most of assets are packaged as pak file. Pak file can be created by makepak. Users can add new characters, items and dungeons easily by pak file system.
+* Easy to extend by the pak file system. Most of the assets are packaged as pak file. Pak file can be created by makepak. Users can add new characters, items and dungeons easily by pak file system.
 * Map editor to create new map.
 * Script to describe talks and events in game.
 * Open world. Provide many playing style for players. The game objective will be different by players.
@@ -60,7 +60,7 @@ Binary format of pak files and save files may be changed before version 1.0.
   - Main quest
 
 ## Pak files
-In this game, most of image data and many assets are handled as *XXObject*.
+In this game, most of the image data and many assets are handled as *XXObject*.
 XXObject is packaged to pak files. Their file extension is "pak".
 Pak files and the sources are under [rusted-ruins-pak](https://github.com/garkimasera/rusted-ruins-pak).
 
@@ -93,7 +93,7 @@ If you are a Windows user, you can download from [Releases page](https://github.
 
 Operate the player character with the keyboard and mouse.
 
-Left click on tiles - Move to the tile, melee atack, or start talking.
+Left click on tiles - Move to the tile, melee attack, or start talking.
 
 Left click + Ctrl - Shoot by the ranged weapon.
 

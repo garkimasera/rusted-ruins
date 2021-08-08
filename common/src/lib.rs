@@ -1,3 +1,11 @@
+#![deny(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
 #![cfg_attr(not(global_state_obj), allow(dead_code))]
 #![cfg_attr(not(global_state_obj), allow(unused_variables))]
 #![cfg_attr(not(global_state_obj), allow(unused_imports))]
@@ -7,7 +15,6 @@ extern crate serde_derive;
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_geom as geom;
-extern crate rusted_ruins_rng as rng;
 
 mod utils;
 

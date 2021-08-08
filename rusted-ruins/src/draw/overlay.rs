@@ -10,7 +10,7 @@ pub enum FogPattern {
     PiecePattern(EffectImgIdx, PiecePattern),
 }
 
-pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
+pub fn view_fog(game: &Game<'_>, p: Vec2d) -> FogPattern {
     let view_map = &game.view_map;
 
     if view_map.get_tile_visible(p) {
@@ -30,7 +30,7 @@ pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
     }
 }
 
-pub fn all(game: &Game) -> Option<EffectImgIdx> {
+pub fn all(game: &Game<'_>) -> Option<EffectImgIdx> {
     // If current map is indoor, don't draw night overlay
     if !game.gd.is_open_air(game.gd.get_current_mapid()) {
         return None;

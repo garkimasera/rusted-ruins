@@ -9,7 +9,7 @@ use geom::*;
 use super::main_window::{CENTERING_START_REQ, CENTERING_STOP_REQ};
 
 pub fn create_menu(
-    game: &Game,
+    game: &Game<'_>,
     tile: Vec2d,
     x: i32,
     y: i32,
@@ -18,7 +18,7 @@ pub fn create_menu(
     let winpos = super::winpos::WindowPos::from_left_top(x, y);
 
     let mut text_ids = vec![];
-    let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction) + 'static>> = vec![];
+    let mut callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction<'_, '_>) + 'static>> = vec![];
 
     let t = tile_info_query(&game.gd, tile);
     let player_pos = game.gd.player_pos();
@@ -32,13 +32,13 @@ pub fn create_menu(
                     StairsKind::UpStairs => "tile-menu-up-stairs",
                     StairsKind::DownStairs => "tile-menu-down-stairs",
                 });
-                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                     pa.goto_next_floor(Direction::NONE, false);
                 }));
             }
             Some(SpecialTileKind::SiteSymbol { .. }) => {
                 text_ids.push("tile-menu-enter-site");
-                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                     pa.goto_next_floor(Direction::NONE, false);
                 }));
             }
@@ -48,20 +48,20 @@ pub fn create_menu(
             None | Some((_, None)) => (),
             Some((dir, Some(Destination::Exit))) => {
                 text_ids.push("tile-menu-exit-to-region-map");
-                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                     pa.goto_next_floor(dir, false);
                 }));
             }
             Some((dir, _)) => {
                 text_ids.push("tile-menu-move-to-next-map");
-                callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                     pa.goto_next_floor(dir, false);
                 }));
             }
         }
         if !game.gd.item_on_player_tile().is_empty() {
             text_ids.push("tile-menu-pick-up-items");
-            callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+            callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                 pa.request_dialog_open(DialogOpenRequest::PickUpItem);
             }));
         }
@@ -89,13 +89,13 @@ pub fn create_menu(
             match harvest.kind {
                 HarvestKind::Deconstruct => {
                     text_ids.push("tile-menu-deconstruct");
-                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                         pa.harvest_item(il);
                     }));
                 }
                 HarvestKind::Plant => {
                     text_ids.push("tile-menu-harvest");
-                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+                    callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
                         pa.harvest_item(il);
                     }));
                 }
@@ -107,14 +107,14 @@ pub fn create_menu(
     // In region map
     if player_same_tile && is_region_map && t.move_symbol.is_none() {
         text_ids.push("tile-menu-enter-wilderness");
-        callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+        callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
             pa.enter_wilderness(tile);
         }));
     }
 
     if !player_same_tile && t.chara.is_some() {
         text_ids.push("tile-menu-target");
-        callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+        callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
             pa.set_target(tile);
         }));
     }
@@ -134,7 +134,7 @@ pub fn create_menu(
     }
 
     text_ids.push("tile-menu-infomation");
-    callbacks.push(Box::new(move |pa: &mut DoPlayerAction| {
+    callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
         pa.print_tile_info(tile);
     }));
 

@@ -14,7 +14,7 @@ pub trait WidgetTrait {
     fn process_command(&mut self, _command: &Command) -> Option<Self::Response> {
         None
     }
-    fn draw(&mut self, context: &mut Context);
+    fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>);
 }
 
 pub trait MovableWidget: WidgetTrait {

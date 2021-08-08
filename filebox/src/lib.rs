@@ -1,4 +1,14 @@
-/// Helper crate to save maps for each file.
+//! Helper crate to save maps for each file.
+
+#![deny(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    unused,
+    clippy::all
+)]
+
 mod ser;
 
 use flate2::bufread::GzDecoder;
@@ -46,7 +56,7 @@ impl<T: WithId> DerefMut for FileBox<T> {
 }
 
 impl<T: WithId> Debug for FileBox<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.id)
     }
 }
