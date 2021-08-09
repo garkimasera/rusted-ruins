@@ -102,6 +102,9 @@ creation-finish = {$chara} finished making {$product}.
 recipe-learned = {$chara} learned a new recipe "{$item}".
 recipe-learning-failed = {$chara} could not learn a new recipe from this item.
 
+# Messages about container
+container-convert-item = {$item} x {$n} was converted by {$container}.
+
 # Messages about harvest
 
 harvest-chop = {$chara} chopped a tree, and got {$item} x {$n}.

@@ -4,6 +4,28 @@ use common::gamedata::*;
 use common::item_selector::ItemSelector;
 use num_rational::Ratio;
 
+pub fn append_to_converter(container_item: &mut Item, item: Item, n: u32) {
+    let products =
+        find_attr!(item.obj(), ItemObjAttr::ConvertableByContainer { products, .. } => products)
+            .unwrap();
+
+    let container_item_list = if let Some(ItemAttr::Container(container)) =
+        find_attr_mut!(container_item, ItemAttr::Container)
+    {
+        &mut container.item_list
+    } else {
+        return;
+    };
+
+    for product in products {
+        let product_item = gen_item_from_id(&product.0, 1);
+
+        container_item_list.append_simple(product_item, n * product.1);
+    }
+
+    game_log_i!("container-convert-item"; item=item, n=n, container=container_item);
+}
+
 pub fn append_to_mixed_converter(container_item: &mut Item, item: Item, n: u32) {
     let functions =
         find_attr!(container_item.obj(), ItemObjAttr::Container { functions, .. } => functions)

@@ -19,6 +19,7 @@ pub struct ItemFilter {
     pub readable: bool,
     pub container: bool,
     pub throw_str: Option<u16>,
+    pub convertable_by_container: Option<String>,
 }
 
 impl ItemFilter {
@@ -93,6 +94,18 @@ impl ItemFilter {
             }
         }
 
+        if let Some(k) = self.convertable_by_container.as_ref() {
+            if let Some(kind) =
+                find_attr!(o, ItemObjAttr::ConvertableByContainer { kind, .. } => kind)
+            {
+                if kind != k {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
         true
     }
 
@@ -150,6 +163,11 @@ impl ItemFilter {
         self.throw_str = throw_str;
         self
     }
+
+    pub fn convertable_by_container(mut self, kind: &str) -> ItemFilter {
+        self.convertable_by_container = Some(kind.into());
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -167,6 +185,7 @@ impl Default for ItemFilter {
             readable: false,
             container: false,
             throw_str: None,
+            convertable_by_container: None,
         }
     }
 }

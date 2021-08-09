@@ -343,21 +343,29 @@ impl ItemWindow {
             ItemWindowMode::Put { ill, id } => {
                 let il = gd.find_container_item(*ill, *id).unwrap();
                 let item_obj = gd.get_item(il).0.obj();
-                let selector = item_obj
-                    .attrs
-                    .iter()
-                    .filter_map(|attr| match attr {
-                        ItemObjAttr::Container { selector, .. } => Some(selector),
-                        _ => None,
-                    })
-                    .next()
-                    .cloned()
-                    .unwrap();
-                let filtered_list = gd.get_merged_filtered_item_list(
-                    ill_ground,
-                    ill_player,
-                    ItemFilter::new().deny_container().selector(selector),
-                );
+                let (selector, functions) = if let Some(ItemObjAttr::Container {
+                    selector,
+                    functions,
+                    ..
+                }) = find_attr!(item_obj, ItemObjAttr::Container)
+                {
+                    (selector, functions)
+                } else {
+                    panic!();
+                };
+
+                let mut item_filter = ItemFilter::new()
+                    .deny_container()
+                    .selector(selector.clone());
+
+                for function in functions {
+                    if let ContainerFunction::Converter { kind } = function {
+                        item_filter = item_filter.convertable_by_container(kind);
+                    }
+                }
+
+                let filtered_list =
+                    gd.get_merged_filtered_item_list(ill_ground, ill_player, item_filter);
                 self.update_list(filtered_list);
             }
             ItemWindowMode::Take { ill, id } => {

@@ -67,7 +67,7 @@ impl FromStr for ItemSelector {
         let mut item_selector = ItemSelector::default();
 
         if s == "*" {
-            item_selector.all = false;
+            item_selector.all = true;
             return Ok(item_selector);
         }
 

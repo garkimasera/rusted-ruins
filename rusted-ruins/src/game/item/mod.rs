@@ -327,9 +327,20 @@ impl GameData {
                 find_attr!(container_item.obj(), ItemObjAttr::Container)
             {
                 for function in functions {
-                    if let ContainerFunction::ConvertMixed { .. } = function {
-                        self::convert_container::append_to_mixed_converter(container_item, item, n);
-                        return;
+                    match function {
+                        ContainerFunction::Converter { .. } => {
+                            self::convert_container::append_to_converter(container_item, item, n);
+                            return;
+                        }
+                        ContainerFunction::ConvertMixed { .. } => {
+                            self::convert_container::append_to_mixed_converter(
+                                container_item,
+                                item,
+                                n,
+                            );
+                            return;
+                        }
+                        _ => (),
                     }
                 }
             }

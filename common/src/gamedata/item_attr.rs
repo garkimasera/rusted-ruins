@@ -82,6 +82,9 @@ pub enum ItemObjAttr {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
+    Converter {
+        kind: String,
+    },
     ConvertMixed {
         #[serde(default = "Duration::zero")]
         duration: Duration,
@@ -89,9 +92,6 @@ pub enum ContainerFunction {
         #[serde(default = "product_multiplier_default")]
         product_multiplier: u32,
         ingredients: Vec<(ItemSelector, u32)>,
-    },
-    Converter {
-        kind: String,
     },
 }
 

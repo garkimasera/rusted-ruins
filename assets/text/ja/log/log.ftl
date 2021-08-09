@@ -100,6 +100,9 @@ faction-relation-lower = {$faction}との関係が悪化した (-{$value})。
 creation-start = {$chara}は{$product}の作成を始めた。
 creation-finish = {$chara}は{$product}の作成を終了した。
 
+# Messages about container
+container-convert-item = {$item} x {$n}は{$container}により変換された。
+
 # Messages about harvest
 
 harvest-chop = {$chara}は伐採により{$item} x {$n}を手に入れた。
