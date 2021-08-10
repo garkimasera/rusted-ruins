@@ -66,6 +66,7 @@ impl NewGameBuilder {
 
             let cid = gd.add_chara(chara, CharaKind::Player);
             gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
+            set_initial_items(&mut gd);
 
             // Initial date setting
             gd.time = GameTime::new(
@@ -84,6 +85,15 @@ impl NewGameBuilder {
             crate::game::creation::add_initial_recipes(gd);
         }
         self.gd
+    }
+}
+
+/// Set initial items from rule
+fn set_initial_items(gd: &mut GameData) {
+    for &(item_idx, n) in &RULES.newgame.common_initial_items {
+        let item = crate::game::item::gen::gen_item_from_idx(item_idx, 1);
+
+        gd.append_item_to(ItemListLocation::PLAYER, item, n);
     }
 }
 

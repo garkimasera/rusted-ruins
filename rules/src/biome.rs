@@ -1,6 +1,6 @@
 use common::gobj::ObjIdxAsId;
 use common::objholder::*;
-use serde_with::{serde_as, Same};
+use serde_with::serde_as;
 
 use std::collections::HashMap;
 
@@ -18,9 +18,9 @@ pub struct BiomeDetail {
     pub tile: TileIdx,
     #[serde_as(as = "ObjIdxAsId")]
     pub wall: WallIdx,
-    #[serde_as(as = "Vec<(ObjIdxAsId, Same)>")]
+    #[serde_as(as = "Vec<(ObjIdxAsId, _)>")]
     pub plants: Vec<(ItemIdx, f32)>,
-    #[serde_as(as = "Vec<(ObjIdxAsId, Same)>")]
+    #[serde_as(as = "Vec<(ObjIdxAsId, _)>")]
     pub items: Vec<(ItemIdx, f32)>,
 }
 
