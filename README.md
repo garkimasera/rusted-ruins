@@ -87,8 +87,6 @@ cd rusted-ruins
 RUSTED_RUINS_ASSETS_DIR=./assets cargo run --release -p rusted-ruins
 ```
 
-If you are a Windows user, you can download from [Releases page](https://github.com/garkimasera/rusted-ruins/releases).
-
 ## How to operate
 
 Operate the player character with the keyboard and mouse.
