@@ -8,7 +8,7 @@ use common::gamedata::*;
 /// Faction viewer
 pub struct FactionWindow {
     rect: Rect,
-    list: ListWidget<(TextCache, TextCache)>,
+    list: ListWidget<(TextCache, LabelWidget)>,
     escape_click: bool,
 }
 
@@ -30,11 +30,14 @@ impl FactionWindow {
 
                 let faction =
                     TextCache::one(id.to_text(), FontKind::M, UI_CFG.color.normal_font.into());
-                let relation = TextCache::one(
-                    &format!("{}", Into::<i16>::into(*relation)),
+                let relation = format!("{}", Into::<i16>::into(*relation));
+                let w = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
+                let relation = LabelWidget::new(
+                    Rect::new(0, 0, w, UI_CFG.list_widget.h_row_default),
+                    &relation,
                     FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                );
+                )
+                .right();
                 Some((faction, relation))
             })
             .collect();

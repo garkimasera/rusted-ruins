@@ -422,7 +422,7 @@ impl ItemWindow {
 
             let t1 = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
             let w = window_width
-                - UI_CFG.item_window.column_pos.clone()[2] as u32
+                - UI_CFG.item_window.column_pos[2] as u32
                 - UI_CFG.vscroll_widget.width;
             let t2 = LabelWidget::new(
                 Rect::new(0, 0, w, UI_CFG.list_widget.h_row_default),
