@@ -60,31 +60,38 @@ pub fn melee_attack(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, weapon_power) =
-        if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
-            let skill_kind = get_skill_kind_from_weapon(weapon);
-            let weapon_power = find_attr!(weapon.obj(), ItemObjAttr::WeaponPower(power))
-                .map(|power| power.calc(weapon.power_factor()))
-                .unwrap_or(0.0);
-            (weapon_to_effect(weapon), skill_kind, weapon_power)
-        } else {
-            // Attack by bare hands
-            let effect = Effect {
-                kind: vec![EffectKind::Melee {
-                    element: Element::Physical,
-                }],
-                target_mode: TargetMode::Enemy,
-                power_adjust: vec![],
-                range: 1,
-                shape: ShapeKind::OneTile,
-                size: 0,
-                anim_kind: EffectAnimKind::Chara,
-                anim_img: "!damage-blunt".into(),
-                anim_img_shot: String::new(),
-                sound: "punch".into(),
-            };
-            (effect, SkillKind::BareHands, 1.0)
+    let (effect, skill_kind, weapon_power) = if let Some(weapon) =
+        attacker.equip.item(EquipSlotKind::MeleeWeapon, 0)
+    {
+        let skill_kind = get_skill_kind_from_weapon(weapon);
+        let weapon_power = find_attr!(weapon.obj(), ItemObjAttr::WeaponPower(power))
+            .map(|power| power.calc(weapon.power_factor()))
+            .unwrap_or(0.0);
+        (weapon_to_effect(weapon), skill_kind, weapon_power)
+    } else {
+        // Attack by bare hands
+        let skill_level = game.gd.chara.get(target).skills.get(SkillKind::BareHands);
+
+        let base_power = skill_level as f32 * RULES.combat.bare_hand_power_factor
+            + RULES.combat.bare_hand_power_base;
+        let base_power = base_power + (1.0 + rng::gen_range(0.0..RULES.combat.bare_hand_power_var));
+
+        let effect = Effect {
+            kind: vec![EffectKind::Melee {
+                element: Element::Physical,
+            }],
+            target_mode: TargetMode::Enemy,
+            power_adjust: vec![],
+            range: 1,
+            shape: ShapeKind::OneTile,
+            size: 0,
+            anim_kind: EffectAnimKind::Chara,
+            anim_img: "!damage-blunt".into(),
+            anim_img_shot: String::new(),
+            sound: "punch".into(),
         };
+        (effect, SkillKind::BareHands, base_power)
+    };
     let (power, hit_power) = calc_power(
         attacker,
         CharaPowerKind::MeleeAttack,
