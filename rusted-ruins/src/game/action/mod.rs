@@ -112,7 +112,7 @@ pub fn melee_attack(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
 pub fn shoot_target(game: &mut Game<'_>, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
-    if !game.gd.target_visible(cid, target) {
+    if !game.gd.target_visible(cid, target) || cid == target {
         return false;
     }
 

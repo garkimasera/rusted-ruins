@@ -74,7 +74,7 @@ pub fn do_damage(
             }
         }
 
-        if origin == Some(CharaId::Player) {
+        if origin == Some(CharaId::Player) && Some(cid) != origin {
             let chara = game.gd.chara.get(cid);
             let idx = chara.idx;
             let target_faction = chara.faction;
