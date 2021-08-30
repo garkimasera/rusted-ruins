@@ -5,9 +5,12 @@ use common::obj::*;
 use common::objholder::*;
 use geom::*;
 
-pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId) {
-    let wall_id = "wooden-wall-01";
-    let wall_idx: WallIdx = gobj::id_to_idx(wall_id);
+pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj: BuildObj) {
+    let wall_id = match build_obj {
+        BuildObj::Wall(id) => id,
+        _ => todo!(),
+    };
+    let wall_idx: WallIdx = gobj::id_to_idx(&wall_id);
     let wall_obj = gobj::get_obj(wall_idx);
 
     if !is_buildable(&game.gd, pos) {
@@ -18,10 +21,8 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId) {
         .gd
         .get_item_list_mut(ItemListLocation::Chara { cid: builder });
 
-    let materials = wall_obj.materials.as_ref().unwrap();
-
     // Check player has needed materials
-    for &(ref item_id, n) in materials {
+    for &(ref item_id, n) in &wall_obj.materials {
         let item_idx: ItemIdx = gobj::id_to_idx(item_id);
         let has = item_list.count(item_idx);
         if has < n {
@@ -33,7 +34,7 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId) {
     }
 
     // Consume needed materials
-    for &(ref item_id, n) in materials {
+    for &(ref item_id, n) in &wall_obj.materials {
         let item_idx: ItemIdx = gobj::id_to_idx(item_id);
         item_list.consume(item_idx, n, |_, _| {}, false);
     }

@@ -86,6 +86,7 @@ pub enum UseEffect {
     Effect(Effect),
     Deed,
     Seed { plant: String },
+    SelectBuilding,
 }
 
 /// Reward for quests or events

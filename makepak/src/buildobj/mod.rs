@@ -74,6 +74,8 @@ fn build_tile_object(input: Input) -> Result<TileObject, Error> {
         kind: tile_dep_input.kind,
         symbol_color: imgdata.calc_average_color(),
         fertility: tile_dep_input.fertility,
+        build_skill: tile_dep_input.build_skill,
+        materials: tile_dep_input.materials,
     })
 }
 
@@ -98,7 +100,7 @@ fn build_wall_object(input: Input) -> Result<WallObject, Error> {
             wall.mining_rewards,
         )
     } else {
-        (0xFFFF, true, None, None, vec![])
+        (0xFFFF, true, None, vec![], vec![])
     };
 
     Ok(WallObject {

@@ -69,6 +69,10 @@ pub struct TileObject {
     pub kind: TileKind,
     pub symbol_color: (u8, u8, u8),
     pub fertility: u8,
+    /// Needed skill level to build this tile
+    pub build_skill: Option<u32>,
+    /// Needed materials to build this tile
+    pub materials: Vec<(String, u32)>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -94,7 +98,7 @@ pub struct WallObject {
     /// Needed skill level to build this wall
     pub build_skill: Option<u32>,
     /// Needed materials to build this wall
-    pub materials: Option<Vec<(String, u32)>>,
+    pub materials: Vec<(String, u32)>,
     /// Rewards after mining this wall
     pub mining_rewards: Vec<(String, u32)>,
 }

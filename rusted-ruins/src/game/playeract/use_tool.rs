@@ -46,8 +46,16 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                     game_log_i!("building-not-adjacent-tile");
                     return;
                 }
+                let build_obj = if let Some(ItemAttr::BuildObj(build_obj)) =
+                    find_attr!(tool, ItemAttr::BuildObj)
+                {
+                    build_obj.clone()
+                } else {
+                    warn!("invalid state building tool");
+                    return;
+                };
                 trace!("building at {}", &pos);
-                crate::game::building::start_build(self.0, pos, Player);
+                crate::game::building::start_build(self.0, pos, Player, build_obj);
             }
             ToolEffect::Chop => {
                 trace!("chopping at {}", &pos);

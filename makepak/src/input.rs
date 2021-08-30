@@ -103,15 +103,22 @@ pub struct TileDepInput {
     pub kind: ::common::obj::TileKind,
     #[serde(default)]
     pub fertility: u8,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub build_skill: Option<u32>,
+    #[serde(default)]
+    pub materials: Vec<(String, u32)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct WallDepInput {
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub hp: Option<u16>,
     pub base_draw: Option<bool>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub build_skill: Option<u32>,
-    pub materials: Option<Vec<(String, u32)>>,
+    #[serde(default)]
+    pub materials: Vec<(String, u32)>,
     #[serde(default)]
     pub mining_rewards: Vec<(String, u32)>,
 }

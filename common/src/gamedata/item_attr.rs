@@ -105,10 +105,15 @@ pub enum ItemAttr {
     /// Image variation
     ImageVariation(u32),
     /// Number of charges
-    Charge { n: u32 },
+    Charge {
+        n: u32,
+    },
     /// Data to generate the contents.
     /// Used to fix generated contents when this item is opened.
-    ContentGen { level: u32, seed: u32 },
+    ContentGen {
+        level: u32,
+        seed: u32,
+    },
     /// Items in the container
     Container(ItemListContainer),
     /// Material of this item
@@ -117,6 +122,13 @@ pub enum ItemAttr {
     SkillLearning(super::skill::SkillKind),
     /// Title for readable items
     Title(String),
+    BuildObj(BuildObj),
+}
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum BuildObj {
+    Tile(String),
+    Wall(String),
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

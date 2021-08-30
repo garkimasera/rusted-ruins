@@ -38,6 +38,7 @@ pub fn use_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Tar
             }
         }
         UseEffect::Seed { .. } => {}
+        UseEffect::SelectBuilding => todo!(),
     }
 
     game.gd.remove_item(il, 1);

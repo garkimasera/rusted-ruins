@@ -173,6 +173,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         }
     }
 
+    if has_attr!(item_obj, ItemObjAttr::Tool) {
+        gen_tool_item(&mut item, item_obj);
+    }
+
     set_quality(&mut item, item_obj, level);
     set_material(&mut item, item_obj, level);
 
@@ -239,6 +243,19 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
             .into()
     };
     item.attrs.push(ItemAttr::SkillLearning(skill_kind));
+}
+
+/// Generate tool item
+fn gen_tool_item(item: &mut Item, item_obj: &ItemObject) {
+    let tool_effect = find_attr!(item_obj, ItemObjAttr::Tool(tool_effect) => tool_effect).unwrap();
+
+    match tool_effect {
+        ToolEffect::Build => {
+            item.attrs
+                .push(ItemAttr::BuildObj(RULES.item.build_obj_default.clone()));
+        }
+        _ => (),
+    }
 }
 
 fn set_quality(item: &mut Item, item_obj: &ItemObject, level: u32) {

@@ -86,6 +86,14 @@ impl ToText for Item {
             text.push_str(&format!(" (remaining: {})", &s));
         }
 
+        if let Some(ItemAttr::BuildObj(build_obj)) = find_attr!(self, ItemAttr::BuildObj) {
+            let obj_name = match build_obj {
+                BuildObj::Tile(id) => obj_txt(id),
+                BuildObj::Wall(id) => obj_txt(id),
+            };
+            text.push_str(&format!(" ({})", obj_name));
+        }
+
         let quality = self.quality.as_int();
 
         if quality > 0 {
