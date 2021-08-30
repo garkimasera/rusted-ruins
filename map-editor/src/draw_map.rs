@@ -12,7 +12,7 @@ use geom::*;
 
 macro_rules! try_paint {
     ($result:expr) => {
-        if let Ok(e) = $result {
+        if let Err(e) = $result {
             log::warn!("{:?}", e);
         }
     };

@@ -249,12 +249,9 @@ fn gen_skill_lerning_item(item: &mut Item, _item_obj: &ItemObject) {
 fn gen_tool_item(item: &mut Item, item_obj: &ItemObject) {
     let tool_effect = find_attr!(item_obj, ItemObjAttr::Tool(tool_effect) => tool_effect).unwrap();
 
-    match tool_effect {
-        ToolEffect::Build => {
-            item.attrs
-                .push(ItemAttr::BuildObj(RULES.item.build_obj_default.clone()));
-        }
-        _ => (),
+    if tool_effect == &ToolEffect::Build {
+        item.attrs
+            .push(ItemAttr::BuildObj(RULES.item.build_obj_default.clone()));
     }
 }
 
