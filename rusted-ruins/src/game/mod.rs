@@ -2,7 +2,7 @@ mod action;
 pub mod active_skill;
 mod anim_queue;
 mod animation;
-mod building;
+pub mod building;
 pub mod chara;
 pub mod command;
 pub mod creation;
@@ -201,6 +201,9 @@ pub enum DialogOpenRequest {
         talk_text: TalkText,
     },
     ItemInfo {
+        il: ItemLocation,
+    },
+    BuildObj {
         il: ItemLocation,
     },
     CharaStatus {

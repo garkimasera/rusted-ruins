@@ -1,6 +1,6 @@
 use crate::game::effect::do_effect;
 use crate::game::target::Target;
-use crate::game::{Game, InfoGetter};
+use crate::game::{DialogOpenRequest, Game, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
 
@@ -38,7 +38,10 @@ pub fn use_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Tar
             }
         }
         UseEffect::Seed { .. } => {}
-        UseEffect::SelectBuilding => todo!(),
+        UseEffect::SelectBuilding => {
+            game.request_dialog_open(DialogOpenRequest::BuildObj { il });
+            return;
+        }
     }
 
     game.gd.remove_item(il, 1);

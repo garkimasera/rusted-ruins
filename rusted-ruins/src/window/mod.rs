@@ -2,6 +2,7 @@
 mod tools;
 
 mod active_skill_window;
+mod build_obj_dialog;
 mod choose_window;
 mod creation_window;
 mod dialogreq;

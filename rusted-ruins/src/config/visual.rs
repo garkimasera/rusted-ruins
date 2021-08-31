@@ -46,6 +46,7 @@ pub struct UiConfig {
     pub msg_dialog: MsgDialogConfig,
     pub text_input_dialog: TextInputDialogConfig,
     pub newgame_dialog: NewGameDialogConfig,
+    pub build_obj_dialog: BuildObjDialogConfig,
     pub choose_save_file_dialog: ChooseSaveFileDialogConfig,
     pub choose_class_dialog: ChooseClassDialogConfig,
     pub creation_window: CreationWindowConfig,
@@ -182,6 +183,13 @@ pub struct TextInputDialogConfig {
 #[derive(Debug, Deserialize)]
 pub struct NewGameDialogConfig {
     pub explanation_text_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct BuildObjDialogConfig {
+    pub rect: CfgRect,
+    pub n_row: u32,
+    pub column_pos: Vec<i32>,
 }
 
 #[derive(Debug, Deserialize)]

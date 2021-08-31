@@ -1,3 +1,4 @@
+use super::build_obj_dialog;
 use super::item_info_window;
 use super::item_window::*;
 use super::msg_dialog;
@@ -22,6 +23,7 @@ pub fn create_dialog_from_request(
             Box::new(msgdialog)
         }
         DialogOpenRequest::Talk { cid, talk_text } => create_talk_dialog(talk_text, cid, game)?,
+        DialogOpenRequest::BuildObj { il } => Box::new(build_obj_dialog::BuildObjDialog::new(il)),
         DialogOpenRequest::ItemInfo { il } => {
             Box::new(item_info_window::ItemInfoWindow::new(il, game))
         }

@@ -65,3 +65,24 @@ fn is_buildable(gd: &GameData, pos: Vec2d) -> bool {
         false
     }
 }
+
+/// Returns buildable object and its needed skill level list
+pub fn build_obj_list() -> Vec<(BuildObj, u32)> {
+    let mut list = Vec::new();
+
+    for (i, tile) in gobj::get_objholder().tile.iter().enumerate() {
+        if let Some(skill_level) = tile.build_skill {
+            let id = gobj::idx_to_id(TileIdx::from_usize(i));
+            list.push((BuildObj::Tile(id.into()), skill_level));
+        }
+    }
+
+    for (i, wall) in gobj::get_objholder().wall.iter().enumerate() {
+        if let Some(skill_level) = wall.build_skill {
+            let id = gobj::idx_to_id(WallIdx::from_usize(i));
+            list.push((BuildObj::Wall(id.into()), skill_level));
+        }
+    }
+
+    list
+}

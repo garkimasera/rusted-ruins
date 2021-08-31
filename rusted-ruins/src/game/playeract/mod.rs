@@ -323,7 +323,13 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         super::map::tile_info::print_tile_info(self.0, tile);
     }
 
-    // pub fn harvest_item(&mut self, il: ItemLocation) {
-    //     super::action::harvest::harvest_item(self.gd_mut(), il);
-    // }
+    pub fn select_build_obj(&mut self, il: ItemLocation, new_build_obj: BuildObj) {
+        let item = &mut self.gd_mut().get_item_mut(il).0;
+
+        if let Some(ItemAttr::BuildObj(ref mut build_obj)) =
+            find_attr_mut!(item, ItemAttr::BuildObj)
+        {
+            *build_obj = new_build_obj;
+        }
+    }
 }

@@ -82,6 +82,11 @@ rect = { x = -999, y = -999, w = 350, h = 28 }
 [newgame_dialog]
 explanation_text_rect = { x = -999, y = 50, w = 300 }
 
+[build_obj_dialog]
+rect = { x = -999, y = -999, w = 350, h = 130 }
+n_row = 10
+column_pos = [1]
+
 [choose_save_file_dialog]
 rect = { x = -999, y = -1000, w = 300, h = 130 }
 list_size = 5
