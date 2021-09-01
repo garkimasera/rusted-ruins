@@ -6,12 +6,18 @@ use common::objholder::*;
 use geom::*;
 
 pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj: BuildObj) {
-    let wall_id = match build_obj {
-        BuildObj::Wall(id) => id,
-        _ => todo!(),
+    let needed_materials = match &build_obj {
+        BuildObj::Tile(id) => {
+            let tile_idx: TileIdx = gobj::id_to_idx(id);
+            let tile_obj = gobj::get_obj(tile_idx);
+            &tile_obj.materials
+        }
+        BuildObj::Wall(id) => {
+            let wall_idx: WallIdx = gobj::id_to_idx(id);
+            let wall_obj = gobj::get_obj(wall_idx);
+            &wall_obj.materials
+        }
     };
-    let wall_idx: WallIdx = gobj::id_to_idx(&wall_id);
-    let wall_obj = gobj::get_obj(wall_idx);
 
     if !is_buildable(&game.gd, pos) {
         return;
@@ -22,7 +28,7 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj:
         .get_item_list_mut(ItemListLocation::Chara { cid: builder });
 
     // Check player has needed materials
-    for &(ref item_id, n) in &wall_obj.materials {
+    for &(ref item_id, n) in needed_materials {
         let item_idx: ItemIdx = gobj::id_to_idx(item_id);
         let has = item_list.count(item_idx);
         if has < n {
@@ -34,17 +40,27 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj:
     }
 
     // Consume needed materials
-    for &(ref item_id, n) in &wall_obj.materials {
+    for &(ref item_id, n) in needed_materials {
         let item_idx: ItemIdx = gobj::id_to_idx(item_id);
         item_list.consume(item_idx, n, |_, _| {}, false);
     }
 
-    finish_build(game, pos, wall_idx);
+    finish_build(game, pos, &build_obj);
 }
 
-pub fn finish_build(game: &mut Game<'_>, pos: Vec2d, wall_idx: WallIdx) {
-    let map = game.gd.get_current_map_mut();
-    map.set_wall(pos, wall_idx);
+pub fn finish_build(game: &mut Game<'_>, pos: Vec2d, build_obj: &BuildObj) {
+    match build_obj {
+        BuildObj::Tile(id) => {
+            let tile_idx: TileIdx = gobj::id_to_idx(id);
+            let map = game.gd.get_current_map_mut();
+            map.set_tile(pos, tile_idx, None);
+        }
+        BuildObj::Wall(id) => {
+            let wall_idx: WallIdx = gobj::id_to_idx(id);
+            let map = game.gd.get_current_map_mut();
+            map.set_wall(pos, wall_idx);
+        }
+    }
     audio::play_sound("finish-build");
 }
 
