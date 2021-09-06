@@ -47,12 +47,12 @@ impl ActiveSkillWindow {
             }
 
             items.push((
-                TextCache::one(
+                TextCache::new(
                     active_skill_id.to_text(),
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
                 ),
-                TextCache::one(cost, FontKind::M, UI_CFG.color.normal_font.into()),
+                TextCache::new(cost, FontKind::M, UI_CFG.color.normal_font.into()),
             ));
         }
 

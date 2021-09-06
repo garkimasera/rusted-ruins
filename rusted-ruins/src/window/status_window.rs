@@ -210,7 +210,7 @@ impl SkillWindow {
             .into_iter()
             .map(|skill_kind| {
                 let (lv, adj) = chara.skill_level_with_adj(skill_kind);
-                let skill_name = TextCache::one(
+                let skill_name = TextCache::new(
                     skill_kind.to_text(),
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
@@ -223,9 +223,9 @@ impl SkillWindow {
                     format!("Lv. {} + {}", lv, adj)
                 };
                 let skill_level =
-                    TextCache::one(skill_level, FontKind::M, UI_CFG.color.normal_font.into());
+                    TextCache::new(skill_level, FontKind::M, UI_CFG.color.normal_font.into());
                 let (_, skill_exp) = chara.skills.get_level_exp(skill_kind);
-                let skill_exp = TextCache::one(
+                let skill_exp = TextCache::new(
                     format!(
                         "({:0.1} %)",
                         skill_exp as f32 / SKILL_EXP_LVUP as f32 * 100.0

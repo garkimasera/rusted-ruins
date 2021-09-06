@@ -44,10 +44,10 @@ impl EquipWindow {
             let esk_icon = slotkind_to_icon_idx(esk);
             if let Some(item) = item {
                 let item_text = text::obj_txt(&gobj::get_obj(item.idx).id);
-                let tc = TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into());
+                let tc = TextCache::new(item_text, FontKind::M, UI_CFG.color.normal_font.into());
                 (esk_icon, IconIdx::from(item.idx), tc)
             } else {
-                let tc = TextCache::one("-", FontKind::M, UI_CFG.color.normal_font.into());
+                let tc = TextCache::new("-", FontKind::M, UI_CFG.color.normal_font.into());
                 (
                     esk_icon,
                     IconIdx::from(common::objholder::ItemIdx::default()),

@@ -117,7 +117,7 @@ impl CreationWindow {
             .iter()
             .map(|r| {
                 let idx: ItemIdx = gobj::id_to_idx(&r.product);
-                let t = TextCache::one(
+                let t = TextCache::new(
                     obj_txt(&r.product),
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
@@ -340,8 +340,8 @@ impl CreationDetailDialog {
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
                         let item_name =
-                            TextCache::one(msg, FontKind::M, UI_CFG.color.normal_font.into());
-                        let item_n = TextCache::one(
+                            TextCache::new(msg, FontKind::M, UI_CFG.color.normal_font.into());
+                        let item_n = TextCache::new(
                             format!("0/{}", n),
                             FontKind::M,
                             UI_CFG.color.normal_font.into(),
@@ -361,12 +361,12 @@ impl CreationDetailDialog {
                 } else {
                     "".into()
                 };
-                let item_name = TextCache::one(
+                let item_name = TextCache::new(
                     format!("{}{}", group, obj_txt(item_id)),
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),
                 );
-                let item_n = TextCache::one(
+                let item_n = TextCache::new(
                     format!("{}/{}", total, n),
                     FontKind::M,
                     UI_CFG.color.normal_font.into(),

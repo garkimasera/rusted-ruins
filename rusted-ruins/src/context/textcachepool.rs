@@ -36,7 +36,7 @@ pub struct TextCache {
 }
 
 impl TextCache {
-    pub fn new<S: AsRef<str>>(s: &[S], font: FontKind, color: Color) -> TextCache {
+    pub fn group<S: AsRef<str>>(s: &[S], font: FontKind, color: Color) -> TextCache {
         let s: Vec<String> = s.iter().map(|a| a.as_ref().to_string()).collect();
 
         TextCache {
@@ -49,7 +49,7 @@ impl TextCache {
         }
     }
 
-    pub fn one<S: Into<String>>(s: S, font: FontKind, color: Color) -> TextCache {
+    pub fn new<S: Into<String>>(s: S, font: FontKind, color: Color) -> TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],

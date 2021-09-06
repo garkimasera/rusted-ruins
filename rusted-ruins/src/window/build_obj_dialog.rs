@@ -32,7 +32,7 @@ impl BuildObjDialog {
                     BuildObj::Tile(id) => obj_txt(id),
                     BuildObj::Wall(id) => obj_txt(id),
                 };
-                TextCache::one(item_text, FontKind::M, UI_CFG.color.normal_font.into())
+                TextCache::new(item_text, FontKind::M, UI_CFG.color.normal_font.into())
             })
             .collect();
         list.set_items(items);

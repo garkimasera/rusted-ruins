@@ -19,8 +19,8 @@ impl FactionWindow {
 
         let column1_width = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
         let header = (
-            TextCache::one(
-                &ui_txt("list_header-faction"),
+            TextCache::new(
+                ui_txt("list_header-faction"),
                 FontKind::M,
                 UI_CFG.color.normal_font.into(),
             ),
@@ -47,7 +47,7 @@ impl FactionWindow {
                 }
 
                 let faction =
-                    TextCache::one(id.to_text(), FontKind::M, UI_CFG.color.normal_font.into());
+                    TextCache::new(id.to_text(), FontKind::M, UI_CFG.color.normal_font.into());
                 let relation = format!("{}", Into::<i16>::into(*relation));
                 let relation = LabelWidget::new(
                     Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),

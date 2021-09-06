@@ -24,7 +24,7 @@ pub enum TextAlignment {
 impl LabelWidget {
     pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
+        let cache = TextCache::new(s, font, UI_CFG.color.normal_font.into());
         LabelWidget {
             rect,
             cache,
@@ -75,7 +75,7 @@ impl LabelWidget {
         } else if self.is_bordered {
             TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
         } else {
-            TextCache::one(text, self.font, UI_CFG.color.normal_font.into())
+            TextCache::new(text, self.font, UI_CFG.color.normal_font.into())
         };
         self.cache = cache;
     }

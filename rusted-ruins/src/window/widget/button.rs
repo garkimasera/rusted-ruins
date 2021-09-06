@@ -16,7 +16,7 @@ pub struct ButtonWidget {
 impl ButtonWidget {
     pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> ButtonWidget {
         let rect = rect.into();
-        let cache = TextCache::one(s, font, UI_CFG.color.normal_font.into());
+        let cache = TextCache::new(s, font, UI_CFG.color.normal_font.into());
         ButtonWidget {
             rect,
             cache: Some(cache),

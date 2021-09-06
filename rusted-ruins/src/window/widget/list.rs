@@ -205,7 +205,7 @@ impl ListWidget<TextCache> {
         let n_item = choices.len() as u32;
         let choices: Vec<TextCache> = choices
             .into_iter()
-            .map(|s| TextCache::new(&[s], FontKind::M, UI_CFG.color.normal_font.into()))
+            .map(|s| TextCache::group(&[s], FontKind::M, UI_CFG.color.normal_font.into()))
             .collect();
 
         let mut list = ListWidget::new(rect, vec![UI_CFG.list_widget.left_margin], n_item, false);
