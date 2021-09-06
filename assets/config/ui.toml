@@ -19,6 +19,7 @@ gauge_hp = { r=237, g=47, b =37 }
 gauge_sp = { r=200, g=200, b =0 }
 gauge_work = { r = 224, g = 224, b = 20 }
 list_border = { r=59, g=69, b=103 }
+list_header_border = { r=209, g=136, b=84 }
 log_font = { r=250, g=250, b=250 }
 log_window_bg = { r=20, g=4, b=4 }
 normal_font = { r=250, g=250, b=250 }
@@ -116,7 +117,7 @@ cancel_button_rect = { x = 290, y = 265, w = 100, h = 30 }
 
 [faction_window]
 list_rect = { x = 0, y = 0, w = 500, h = 286 }
-n_row = 10
+n_row = 9
 column_pos = [1, 400]
 
 [item_window]

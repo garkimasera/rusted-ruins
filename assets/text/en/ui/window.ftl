@@ -31,4 +31,6 @@ label_text-creation-no-required-facility = No required facility
 label_text-creation-enough-ingredients = Enough ingredients
 label_text-creation-not-enough-ingredients = Not enough ingredients
 label_text-creation-required_skill = Required Skill
+list_header-faction = Faction
+list_header-relation = Relation
 list_item_text-creation-no_ingredient = No available {$group}

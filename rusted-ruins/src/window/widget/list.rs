@@ -23,6 +23,7 @@ pub struct ListWidget<T> {
     update_by_user: bool,
     draw_border: bool,
     scroll: Option<VScrollWidget>,
+    header: Option<T>,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -64,6 +65,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             update_by_user,
             draw_border: false,
             scroll: None,
+            header: None,
         }
     }
 
@@ -73,12 +75,38 @@ impl<T: ListWidgetRow> ListWidget<T> {
         page_size: u32,
         update_by_user: bool,
     ) -> ListWidget<T> {
+        Self::with_scroll_bar_inner(rect, column_pos, page_size, update_by_user, None)
+    }
+
+    pub fn with_header<R: Into<Rect>>(
+        rect: R,
+        column_pos: Vec<i32>,
+        page_size: u32,
+        update_by_user: bool,
+        header: T,
+    ) -> ListWidget<T> {
+        Self::with_scroll_bar_inner(rect, column_pos, page_size, update_by_user, Some(header))
+    }
+
+    fn with_scroll_bar_inner<R: Into<Rect>>(
+        rect: R,
+        column_pos: Vec<i32>,
+        page_size: u32,
+        update_by_user: bool,
+        header: Option<T>,
+    ) -> ListWidget<T> {
         let rect = rect.into();
         let h_row = UI_CFG.list_widget.h_row_default;
+        let y_start = if header.is_some() { h_row as i32 } else { 0 };
 
         let scroll_w = UI_CFG.vscroll_widget.width;
         let rect = Rect::new(rect.x, rect.y, rect.width() - scroll_w - 1, rect.height());
-        let vscroll_rect = Rect::new(rect.right() + 1, rect.y, scroll_w, rect.height());
+        let vscroll_rect = Rect::new(
+            rect.right() + 1,
+            rect.y + y_start,
+            scroll_w,
+            rect.height() - y_start as u32,
+        );
 
         let scroll = VScrollWidget::new(vscroll_rect, page_size);
 
@@ -94,6 +122,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             update_by_user,
             draw_border: false,
             scroll: Some(scroll),
+            header,
         }
     }
 
@@ -156,7 +185,12 @@ impl<T: ListWidgetRow> ListWidget<T> {
         if !self.rect.contains_point((x, y)) {
             return None;
         }
-        let y = (y - self.rect.y) as u32;
+        let y_start = if self.header.is_some() {
+            self.h_row as i32
+        } else {
+            0
+        };
+        let y = (y - self.rect.y - y_start) as u32;
         let idx = (y / self.h_row) as u32;
         if idx >= self.n_item {
             return None;
@@ -295,10 +329,28 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
     }
 
     fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
+        let y_start = if self.header.is_some() {
+            self.h_row as i32
+        } else {
+            0
+        };
+
+        if let Some(header) = self.header.as_mut() {
+            let rect = Rect::new(self.rect.x, self.rect.y, self.rect.width(), self.h_row);
+            header.row_draw(context, rect, &self.column_pos);
+            context
+                .canvas
+                .set_draw_color(UI_CFG.color.list_header_border);
+            let y = self.rect.y + self.h_row as i32 - 1;
+            try_sdl!(context
+                .canvas
+                .draw_line((self.rect.x + 5, y), (self.rect.right() - 5, y)));
+        }
+
         // Draw borders between rows
         if self.draw_border {
             for i in 1..self.page_size {
-                let y = (self.h_row * i) as i32;
+                let y = (self.h_row * i) as i32 + y_start;
                 context.canvas.set_draw_color(UI_CFG.color.list_border);
                 try_sdl!(context.canvas.draw_line((0, y), (self.rect.right(), y)));
             }
@@ -310,7 +362,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             // Draw highlighted row background
             let highlight_rect = Rect::new(
                 self.rect.x,
-                self.rect.y + h_row as i32 * self.current_choice as i32,
+                self.rect.y + h_row as i32 * self.current_choice as i32 + y_start,
                 self.rect.w as u32,
                 h_row as u32,
             );
@@ -326,7 +378,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 if let Some(row) = self.rows.get_mut(i as usize) {
                     let rect = Rect::new(
                         self.rect.x,
-                        self.rect.y + j as i32 * self.h_row as i32,
+                        self.rect.y + j as i32 * self.h_row as i32 + y_start,
                         self.rect.width(),
                         self.h_row,
                     );

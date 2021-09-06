@@ -91,6 +91,7 @@ pub struct UiColorConfig {
     pub gauge_sp: CfgColor,
     pub gauge_work: CfgColor,
     pub list_border: CfgColor,
+    pub list_header_border: CfgColor,
     pub log_font: CfgColor,
     pub log_window_bg: CfgColor,
     pub normal_font: CfgColor,

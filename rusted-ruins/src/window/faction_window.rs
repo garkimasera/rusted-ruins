@@ -2,7 +2,7 @@ use super::commonuse::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
-use crate::text::ToText;
+use crate::text::{ui_txt, ToText};
 use common::gamedata::*;
 
 /// Faction viewer
@@ -17,8 +17,26 @@ impl FactionWindow {
         let rect: Rect = UI_CFG.info_window.rect.into();
         let cfg = &UI_CFG.faction_window;
 
-        let mut list =
-            ListWidget::with_scroll_bar(cfg.list_rect, cfg.column_pos.clone(), cfg.n_row, false);
+        let column1_width = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
+        let header = (
+            TextCache::one(
+                &ui_txt("list_header-faction"),
+                FontKind::M,
+                UI_CFG.color.normal_font.into(),
+            ),
+            LabelWidget::new(
+                Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),
+                &ui_txt("list_header-relation"),
+                FontKind::M,
+            ),
+        );
+        let mut list = ListWidget::with_header(
+            cfg.list_rect,
+            cfg.column_pos.clone(),
+            cfg.n_row,
+            false,
+            header,
+        );
 
         let items: Vec<_> = gd
             .faction
@@ -31,9 +49,8 @@ impl FactionWindow {
                 let faction =
                     TextCache::one(id.to_text(), FontKind::M, UI_CFG.color.normal_font.into());
                 let relation = format!("{}", Into::<i16>::into(*relation));
-                let w = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
                 let relation = LabelWidget::new(
-                    Rect::new(0, 0, w, UI_CFG.list_widget.h_row_default),
+                    Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),
                     &relation,
                     FontKind::M,
                 )
