@@ -1,5 +1,8 @@
+use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
+use super::item_info_window::ItemInfoWindow;
 use crate::game::command::MouseButton;
+use crate::text::ui_txt;
 use common::basic::MAX_ACTION_SHORTCUTS;
 use common::gamedata::*;
 use common::gobj;
@@ -89,7 +92,7 @@ impl DialogWindow for Toolbar {
     fn process_command(
         &mut self,
         command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
@@ -113,37 +116,40 @@ impl DialogWindow for Toolbar {
                 if !self.rect.contains_point((*x, *y)) {
                     return DialogResult::Continue;
                 }
-                if *button != MouseButton::Left {
-                    return DialogResult::Command(None);
-                }
                 let i = (*x - self.rect.x) as u32 / cfg.icon_w;
-                match i {
-                    ITEM_MELEE => {
-                        return DialogResult::Command(Some(Command::ChangeEquip {
-                            kind: EquipSlotKind::MeleeWeapon,
-                        }));
+                if *button == MouseButton::Left {
+                    match i {
+                        ITEM_MELEE => {
+                            return DialogResult::Command(Some(Command::ChangeEquip {
+                                kind: EquipSlotKind::MeleeWeapon,
+                            }));
+                        }
+                        ITEM_SHOOT => {
+                            return DialogResult::Command(Some(Command::ChangeEquip {
+                                kind: EquipSlotKind::RangedWeapon,
+                            }));
+                        }
+                        ITEM_TOOL => {
+                            return DialogResult::Command(Some(Command::ChangeEquip {
+                                kind: EquipSlotKind::Tool,
+                            }));
+                        }
+                        _ => (),
                     }
-                    ITEM_SHOOT => {
-                        return DialogResult::Command(Some(Command::ChangeEquip {
-                            kind: EquipSlotKind::RangedWeapon,
-                        }));
+                } else if *button == MouseButton::Right {
+                    if let Some(menu) = ToolbarMenu::new(pa.gd(), i, (*x, *y)) {
+                        return DialogResult::OpenChildDialog(Box::new(menu));
+                    } else {
+                        return DialogResult::Command(None);
                     }
-                    ITEM_TOOL => {
-                        return DialogResult::Command(Some(Command::ChangeEquip {
-                            kind: EquipSlotKind::Tool,
-                        }));
-                    }
-                    _ => (),
+                } else {
+                    return DialogResult::Command(None);
                 }
             }
             _ => (),
         }
 
         DialogResult::Continue
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 }
 
@@ -265,5 +271,90 @@ impl DialogWindow for ShortcutList {
 
     fn mode(&self) -> InputMode {
         InputMode::Dialog
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum ToolbarMenuItem {
+    Infomation,
+}
+
+struct ToolbarMenu {
+    choose_window: ChooseWindow,
+    menu_items: Vec<ToolbarMenuItem>,
+    esk: EquipSlotKind,
+}
+
+impl ToolbarMenu {
+    pub fn new(gd: &GameData, i: u32, pos: (i32, i32)) -> Option<Self> {
+        let winpos = WindowPos::from_left_top(pos.0, pos.1);
+
+        let mut choices = Vec::new();
+        let mut menu_items = Vec::new();
+
+        let esk = match i {
+            ITEM_MELEE => EquipSlotKind::MeleeWeapon,
+            ITEM_SHOOT => EquipSlotKind::RangedWeapon,
+            ITEM_TOOL => EquipSlotKind::Tool,
+            _ => unreachable!(),
+        };
+
+        let _item = if let Some(item) = gd.get_equip_list(CharaId::Player).item(esk, 0) {
+            item
+        } else {
+            return None;
+        };
+
+        // Item infomation.
+        choices.push(ui_txt("item_menu-infomation"));
+        menu_items.push(ToolbarMenuItem::Infomation);
+
+        let choose_window = ChooseWindow::new(winpos, choices, DefaultBehavior::Close);
+
+        Some(ToolbarMenu {
+            choose_window,
+            menu_items,
+            esk,
+        })
+    }
+}
+
+impl Window for ToolbarMenu {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
+        self.choose_window.draw(context, game, anim);
+    }
+}
+
+impl DialogWindow for ToolbarMenu {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
+        match self.choose_window.process_command(command, pa) {
+            DialogResult::CloseWithValue(v) => {
+                if let DialogCloseValue::Index(n) = v {
+                    let item = self.menu_items[n as usize];
+                    match item {
+                        ToolbarMenuItem::Infomation => {
+                            let gd = pa.gd();
+                            let il = gd
+                                .equipment_item_location(CharaId::Player, self.esk, 0)
+                                .unwrap();
+                            let info_win = ItemInfoWindow::new(il, pa.game());
+                            DialogResult::CloseAndOpen(Box::new(info_win))
+                        }
+                    }
+                } else {
+                    unreachable!()
+                }
+            }
+            result => result,
+        }
     }
 }

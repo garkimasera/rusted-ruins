@@ -327,6 +327,20 @@ impl GameData {
         &mut chara.equip
     }
 
+    pub fn equipment_item_location(
+        &self,
+        cid: CharaId,
+        esk: EquipSlotKind,
+        n: usize,
+    ) -> Option<ItemLocation> {
+        let list = self.get_equip_list(cid);
+        if let Some(i) = list.list_idx(esk, n) {
+            Some((ItemListLocation::Equip { cid }, i as u32))
+        } else {
+            None
+        }
+    }
+
     pub fn get_shop(&self, cid: CharaId) -> &Shop {
         let (sid, n) = match cid {
             CharaId::OnSite { sid, n } => (sid, n),

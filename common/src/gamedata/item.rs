@@ -753,7 +753,7 @@ impl EquipItemList {
         None
     }
 
-    fn list_idx(&self, esk: EquipSlotKind, n: usize) -> Option<usize> {
+    pub(crate) fn list_idx(&self, esk: EquipSlotKind, n: usize) -> Option<usize> {
         if let Some(slot) = self
             .slots
             .iter()

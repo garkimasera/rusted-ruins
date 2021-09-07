@@ -75,6 +75,7 @@ pub enum DialogResult {
     CloseWithValue(DialogCloseValue),
     CloseAll,
     CloseAllAndReprocess(Command),
+    CloseAndOpen(Box<dyn DialogWindow>),
     Command(Option<Command>),
     Quit,
     OpenChildDialog(Box<dyn DialogWindow>),
@@ -92,6 +93,7 @@ impl std::fmt::Debug for DialogResult {
             DialogResult::CloseAllAndReprocess(c) => {
                 f.write_fmt(format_args!("CloseAllAndReprocess({:?})", c))
             }
+            DialogResult::CloseAndOpen(_) => f.write_str("CloseAndOpen"),
             DialogResult::Command(c) => f.write_fmt(format_args!("Command({:?})", c)),
             DialogResult::Quit => f.write_str("Quit"),
             DialogResult::OpenChildDialog(_) => f.write_str("OpenChildDialog"),
@@ -384,6 +386,10 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                         }
                         self.window_stack.clear();
                     }
+                    DialogResult::CloseAndOpen(win) => {
+                        self.window_stack.clear();
+                        self.push_dialog_window(win);
+                    }
                     DialogResult::Command(_) => (),
                     DialogResult::Quit => {
                         return false;
@@ -431,6 +437,10 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                         } else {
                             return true;
                         }
+                    }
+                    DialogResult::OpenChildDialog(child) => {
+                        self.push_dialog_window(child);
+                        return true;
                     }
                     _ => command,
                 };
