@@ -10,6 +10,7 @@ dialog-choice-restart = Restart
 item_menu-infomation = Infomation
 item_menu-drop_all = Drop all
 item_menu-register-as-shortcut = Register as shortcut
+item_menu-select-building = Select building
 tile-menu-chop = Chop a tree
 tile-menu-down-stairs = Go down the stairs
 tile-menu-enter-site = Enter this site

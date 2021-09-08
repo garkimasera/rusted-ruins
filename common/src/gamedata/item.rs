@@ -795,6 +795,10 @@ impl EquipItemList {
         &self.item_list
     }
 
+    pub(crate) fn list_mut(&mut self) -> &mut ItemList {
+        &mut self.item_list
+    }
+
     pub fn n_slots(&self) -> u32 {
         self.slots.len() as u32
     }

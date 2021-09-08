@@ -10,6 +10,7 @@ dialog-choice-restart = 再開
 item_menu-infomation = 情報
 item_menu-drop_all = 全部置く
 item_menu-register-as-shortcut = ショートカット登録
+item_menu-select-building = 建造物選択
 tile-menu-chop = 木を切る
 tile-menu-down-stairs = 階段を降りる
 tile-menu-enter-site = 入る

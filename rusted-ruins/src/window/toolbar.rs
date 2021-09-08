@@ -1,3 +1,4 @@
+use super::build_obj_dialog::BuildObjDialog;
 use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
 use super::item_info_window::ItemInfoWindow;
@@ -268,15 +269,12 @@ impl DialogWindow for ShortcutList {
 
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum ToolbarMenuItem {
     Infomation,
+    SelectBuilding,
 }
 
 struct ToolbarMenu {
@@ -299,11 +297,15 @@ impl ToolbarMenu {
             _ => unreachable!(),
         };
 
-        let _item = if let Some(item) = gd.get_equip_list(CharaId::Player).item(esk, 0) {
-            item
-        } else {
-            return None;
-        };
+        let item = gd.get_equip_list(CharaId::Player).item(esk, 0)?;
+        let item_obj = item.obj();
+
+        if let Some(use_effect) = find_attr!(item_obj, ItemObjAttr::Use(use_effect)) {
+            if *use_effect == UseEffect::SelectBuilding {
+                choices.push(ui_txt("item_menu-select-building"));
+                menu_items.push(ToolbarMenuItem::SelectBuilding);
+            }
+        }
 
         // Item infomation.
         choices.push(ui_txt("item_menu-infomation"));
@@ -340,14 +342,19 @@ impl DialogWindow for ToolbarMenu {
             DialogResult::CloseWithValue(v) => {
                 if let DialogCloseValue::Index(n) = v {
                     let item = self.menu_items[n as usize];
+                    let gd = pa.gd();
+                    let il = gd
+                        .equipment_item_location(CharaId::Player, self.esk, 0)
+                        .unwrap();
+
                     match item {
                         ToolbarMenuItem::Infomation => {
-                            let gd = pa.gd();
-                            let il = gd
-                                .equipment_item_location(CharaId::Player, self.esk, 0)
-                                .unwrap();
                             let info_win = ItemInfoWindow::new(il, pa.game());
                             DialogResult::CloseAndOpen(Box::new(info_win))
+                        }
+                        ToolbarMenuItem::SelectBuilding => {
+                            let win = BuildObjDialog::new(il);
+                            DialogResult::CloseAndOpen(Box::new(win))
                         }
                     }
                 } else {

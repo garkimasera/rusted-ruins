@@ -296,9 +296,18 @@ impl GameData {
         (&a.0, a.1)
     }
 
-    pub fn get_item_mut(&mut self, item_location: ItemLocation) -> (&mut Item, u32) {
-        let a = &mut self.get_item_list_mut(item_location.0).items[item_location.1 as usize];
-        (&mut a.0, a.1)
+    pub fn get_item_mut(&mut self, il: ItemLocation) -> (&mut Item, u32) {
+        match il.0 {
+            ItemListLocation::Equip { cid } => {
+                let list = self.get_equip_list_mut(cid);
+                let item = &mut list.list_mut().items[il.1 as usize].0;
+                (item, 1)
+            }
+            _ => {
+                let a = &mut self.get_item_list_mut(il.0).items[il.1 as usize];
+                (&mut a.0, a.1)
+            }
+        }
     }
 
     /// Remove item from list
@@ -334,11 +343,8 @@ impl GameData {
         n: usize,
     ) -> Option<ItemLocation> {
         let list = self.get_equip_list(cid);
-        if let Some(i) = list.list_idx(esk, n) {
-            Some((ItemListLocation::Equip { cid }, i as u32))
-        } else {
-            None
-        }
+        list.list_idx(esk, n)
+            .map(|i| (ItemListLocation::Equip { cid }, i as u32))
     }
 
     pub fn get_shop(&self, cid: CharaId) -> &Shop {
