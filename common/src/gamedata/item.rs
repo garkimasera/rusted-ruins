@@ -645,7 +645,7 @@ impl ArmorKind {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EquipItemList {
-    /// Slot infomation
+    /// Slot information
     slots: Vec<SlotInfo>,
     item_list: ItemList,
 }
@@ -715,7 +715,7 @@ impl EquipItemList {
         self.list_idx(esk, n).map(|a| &self.item_list.items[a].0)
     }
 
-    /// Equip an item to specified slot (the nth slot of given ItemKind), and returns removed item
+    /// Equip an item to specified slot (the nth slot of given EquipSlotKind), and returns removed item
     pub fn equip(&mut self, esk: EquipSlotKind, n: usize, item: Item) -> Option<Item> {
         assert!(self.slot_num(esk) > n);
         if let Some(i) = self.list_idx(esk, n) {
@@ -751,6 +751,25 @@ impl EquipItemList {
         }
 
         None
+    }
+
+    pub fn remove(&mut self, esk: EquipSlotKind, n: usize) -> Option<Item> {
+        assert!(self.slot_num(esk) > n);
+
+        let i_remove = self.list_idx(esk, n)?;
+        let item = self.item_list.items.remove(i_remove);
+
+        for slot_info in &mut self.slots {
+            if slot_info.esk == esk && slot_info.n as usize == n {
+                assert_eq!(slot_info.list_idx, Some(i_remove as u8));
+                slot_info.list_idx = None;
+            } else if let Some(list_idx) = slot_info.list_idx.as_mut() {
+                if *list_idx > i_remove as u8 {
+                    *list_idx -= 1;
+                }
+            }
+        }
+        Some(item.0)
     }
 
     pub(crate) fn list_idx(&self, esk: EquipSlotKind, n: usize) -> Option<usize> {

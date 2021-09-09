@@ -133,7 +133,7 @@ pub fn create_menu(
         }));
     }
 
-    text_ids.push("tile-menu-infomation");
+    text_ids.push("tile-menu-information");
     callbacks.push(Box::new(move |pa: &mut DoPlayerAction<'_, '_>| {
         pa.print_tile_info(tile);
     }));

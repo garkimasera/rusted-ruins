@@ -22,7 +22,7 @@ pub enum Command {
     Cancel,
     RotateWindowRight,
     RotateWindowLeft,
-    ItemInfomation,
+    ItemInformation,
     OpenActiveSkillWin,
     OpenCreationWin,
     OpenDebugCommandWin,

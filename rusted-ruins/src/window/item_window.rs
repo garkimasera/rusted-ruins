@@ -412,7 +412,7 @@ impl ItemWindow {
 
             let w = item.w() as f32 * n_item as f32;
 
-            // Infomation displayed in the right column
+            // Information displayed in the right column
             let additional_info = match mode {
                 ItemWindowMode::ShopBuy { .. } => format!("{}G", item.price()),
                 ItemWindowMode::ShopSell => format!("{}G", item.selling_price()),
@@ -589,7 +589,7 @@ impl DialogWindow for ItemWindow {
 
         check_escape_click!(self, command, self.mode.is_main_mode());
 
-        if command == &Command::ItemInfomation {
+        if command == &Command::ItemInformation {
             let il = self.item_locations[self.list.get_current_choice() as usize];
             pa.request_dialog_open(DialogOpenRequest::ItemInfo { il })
         }

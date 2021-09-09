@@ -8,7 +8,7 @@ use super::item_window::ItemWindowMode;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum ItemMenuItem {
-    Infomation,
+    Information,
     RegisterAsShortcut(ActionShortcut),
     DropAll,
 }
@@ -35,9 +35,9 @@ impl ItemMenu {
         let mut choices = Vec::new();
         let mut menu_items = Vec::new();
 
-        // Item infomation.
-        choices.push(ui_txt("item_menu-infomation"));
-        menu_items.push(ItemMenuItem::Infomation);
+        // Item information.
+        choices.push(ui_txt("item_menu-information"));
+        menu_items.push(ItemMenuItem::Information);
 
         // Drop
         if mode.is_main_mode() {
@@ -94,7 +94,7 @@ impl DialogWindow for ItemMenu {
                     let item = self.menu_items[n as usize];
                     let il = self.il;
                     match item {
-                        ItemMenuItem::Infomation => {
+                        ItemMenuItem::Information => {
                             pa.request_dialog_open(DialogOpenRequest::ItemInfo { il });
                             DialogResult::Close
                         }

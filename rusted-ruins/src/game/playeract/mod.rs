@@ -208,6 +208,11 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         super::item::change_equipment(self.gd_mut(), cid, slot, il)
     }
 
+    /// Remove specified character's equipment
+    pub fn remove_equipment(&mut self, cid: CharaId, slot: (EquipSlotKind, u8)) {
+        super::item::remove_equipment(self.gd_mut(), cid, slot);
+    }
+
     /// Use active skill. Returns false if the skill cost is not enough.
     pub fn use_active_skill(&mut self, _active_skill_id: &ActiveSkillId) -> bool {
         false
@@ -293,7 +298,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         super::debug_command::exec_debug_command(self.0, command);
     }
 
-    /// Print infomation of specified tile
+    /// Print information of specified tile
     pub fn print_tile_info(&mut self, tile: Vec2d) {
         // Open StatusWindow for selected character
         let cid = self.gd().get_current_map().get_chara(tile);

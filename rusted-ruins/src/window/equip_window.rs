@@ -1,7 +1,10 @@
+use super::choose_window::ChooseWindow;
 use super::commonuse::*;
+use super::item_info_window::ItemInfoWindow;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
-use crate::text;
+use crate::text::{self, ui_txt};
+use crate::window::choose_window::DefaultBehavior;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::*;
 use common::gobj;
@@ -13,6 +16,7 @@ pub struct EquipWindow {
     list: ListWidget<(IconIdx, IconIdx, TextCache)>,
     cid: CharaId,
     escape_click: bool,
+    menu: Option<EquipMenu>,
 }
 
 impl EquipWindow {
@@ -29,6 +33,7 @@ impl EquipWindow {
             ),
             cid,
             escape_click: false,
+            menu: None,
         };
         equip_window.update_list(game);
         equip_window
@@ -61,11 +66,14 @@ impl Window for EquipWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
-        _anim: Option<(&Animation, u32)>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
         self.list.draw(context);
+        if let Some(menu) = self.menu.as_mut() {
+            menu.draw(context, game, anim);
+        }
     }
 }
 
@@ -75,6 +83,37 @@ impl DialogWindow for EquipWindow {
         command: &Command,
         pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
+        if let Some(menu) = self.menu.as_mut() {
+            match menu.process_command(command, pa) {
+                DialogResult::Special(SpecialDialogResult::ItemListUpdate) => {
+                    self.update_list(pa.game());
+                    self.menu = None;
+                    return DialogResult::Continue;
+                }
+                DialogResult::Close => {
+                    self.menu = None;
+                    return DialogResult::Continue;
+                }
+                DialogResult::CloseAll => {
+                    self.menu = None;
+                    return DialogResult::CloseAll;
+                }
+                DialogResult::OpenChildDialog(child) => {
+                    self.menu = None;
+                    return DialogResult::OpenChildDialog(child);
+                }
+                result => {
+                    return result;
+                }
+            }
+        }
+
+        let cursor_pos = if let Command::MouseButtonUp { x, y, .. } = command {
+            Some((*x, *y))
+        } else {
+            None
+        };
+
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);
@@ -102,6 +141,19 @@ impl DialogWindow for EquipWindow {
                     let select_window = ItemWindow::new_select_and_equip(cid, slot, pa);
                     return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
+                ListWidgetResponse::SelectForMenu(i) => {
+                    let equip_list = pa.gd().get_equip_list(self.cid);
+                    let (esk, esk_i, _) = equip_list.slot_iter().nth(i as usize).unwrap();
+                    if !equip_list.is_slot_empty(esk, esk_i as usize) {
+                        self.menu = Some(EquipMenu::new(
+                            pa.gd(),
+                            self.cid,
+                            esk,
+                            esk_i,
+                            cursor_pos.unwrap(),
+                        ));
+                    }
+                }
                 ListWidgetResponse::Scrolled => {
                     self.update_list(pa.game());
                 }
@@ -123,6 +175,96 @@ impl DialogWindow for EquipWindow {
     ) -> DialogResult {
         self.update_list(pa.game());
         DialogResult::Continue
+    }
+
+    fn tab_switched(&mut self) {
+        self.menu = None;
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum EquipMenuItem {
+    Remove,
+    Information,
+}
+
+struct EquipMenu {
+    choose_window: ChooseWindow,
+    menu_items: Vec<EquipMenuItem>,
+    cid: CharaId,
+    esk: EquipSlotKind,
+    i: u8,
+}
+
+impl EquipMenu {
+    pub fn new(_gd: &GameData, cid: CharaId, esk: EquipSlotKind, i: u8, pos: (i32, i32)) -> Self {
+        let winpos = WindowPos::from_left_top(pos.0, pos.1);
+
+        let mut choices = Vec::new();
+        let mut menu_items = Vec::new();
+
+        if cid == CharaId::Player {
+            choices.push(ui_txt("equip_menu-remove"));
+            menu_items.push(EquipMenuItem::Remove);
+        }
+
+        choices.push(ui_txt("equip_menu-information"));
+        menu_items.push(EquipMenuItem::Information);
+
+        let choose_window = ChooseWindow::new(winpos, choices, DefaultBehavior::Close);
+
+        EquipMenu {
+            choose_window,
+            menu_items,
+            cid,
+            esk,
+            i,
+        }
+    }
+}
+
+impl Window for EquipMenu {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
+        self.choose_window.draw(context, game, anim);
+    }
+}
+
+impl DialogWindow for EquipMenu {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
+        match self.choose_window.process_command(command, pa) {
+            DialogResult::CloseWithValue(v) => {
+                if let DialogCloseValue::Index(n) = v {
+                    let item = self.menu_items[n as usize];
+                    let gd = pa.gd();
+                    let il = gd
+                        .equipment_item_location(self.cid, self.esk, self.i as usize)
+                        .unwrap();
+
+                    match item {
+                        EquipMenuItem::Remove => {
+                            pa.remove_equipment(self.cid, (self.esk, self.i as u8));
+                            DialogResult::Special(SpecialDialogResult::ItemListUpdate)
+                        }
+                        EquipMenuItem::Information => {
+                            let info_win = ItemInfoWindow::new(il, pa.game());
+                            DialogResult::OpenChildDialog(Box::new(info_win))
+                        }
+                    }
+                } else {
+                    unreachable!()
+                }
+            }
+            result => result,
+        }
     }
 }
 

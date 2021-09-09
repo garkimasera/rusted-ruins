@@ -28,7 +28,7 @@ pub struct Map {
     /// In order to reduce the size of main save file.
     pub(crate) charas: Option<HashMap<CharaId, Chara>>,
     /// This is drawed outer this map
-    /// If this is None, nearest tile's infomation will be used
+    /// If this is None, nearest tile's information will be used
     pub outside_tile: Option<OutsideTileInfo>,
     pub boundary: MapBoundary,
     pub music: String,

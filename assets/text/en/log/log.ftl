@@ -13,7 +13,7 @@ debug-command-genitem = Item "{$item}" is generated.
 
 # Messages about tile information
 
-tile-information-no-info = No infomation about this tile.
+tile-information-no-info = No information about this tile.
 
 # Messages when moving on map
 

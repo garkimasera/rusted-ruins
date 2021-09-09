@@ -100,7 +100,7 @@ fn init_rules() {
     );
 }
 
-/// Setup logger. It is not game logger. It is for debug and warning infomation.
+/// Setup logger. It is not game logger. It is for debug and warning information.
 fn setup_logger() {
     env_logger::builder().format_timestamp(None).init();
 }

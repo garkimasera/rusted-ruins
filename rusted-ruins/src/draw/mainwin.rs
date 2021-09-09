@@ -98,7 +98,7 @@ impl MainWinDrawer {
             self.draw_tile_cursor(context, t);
         }
 
-        // Draw character infomation UI
+        // Draw character information UI
         self.draw_chara_info(context, game);
         // Draw damage digits
         self.draw_damage(context);

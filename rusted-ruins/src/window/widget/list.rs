@@ -201,7 +201,10 @@ impl<T: ListWidgetRow> ListWidget<T> {
 
 impl ListWidget<TextCache> {
     /// Create simple list with text only
-    pub fn text_choices<R: Into<Rect>>(rect: R, choices: Vec<String>) -> ListWidget<TextCache> {
+    pub fn text_choices<R: Into<Rect>, S: AsRef<str>>(
+        rect: R,
+        choices: Vec<S>,
+    ) -> ListWidget<TextCache> {
         let n_item = choices.len() as u32;
         let choices: Vec<TextCache> = choices
             .into_iter()

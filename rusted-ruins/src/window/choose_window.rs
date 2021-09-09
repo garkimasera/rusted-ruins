@@ -25,9 +25,9 @@ pub enum DefaultBehavior {
 }
 
 impl ChooseWindow {
-    pub fn new(
+    pub fn new<S: AsRef<str>>(
         winpos: WindowPos,
-        choices: Vec<String>,
+        choices: Vec<S>,
         default_behavior: DefaultBehavior,
     ) -> ChooseWindow {
         ChooseWindow {

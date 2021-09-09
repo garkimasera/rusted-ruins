@@ -416,3 +416,10 @@ pub fn change_equipment(
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }
 }
+
+pub fn remove_equipment(gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8)) {
+    if let Some(removed_equipment) = gd.get_equip_list_mut(cid).remove(slot.0, slot.1 as usize) {
+        gd.get_item_list_mut(ItemListLocation::Chara { cid })
+            .append(removed_equipment, 1);
+    }
+}

@@ -273,7 +273,7 @@ impl DialogWindow for ShortcutList {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum ToolbarMenuItem {
-    Infomation,
+    Information,
     SelectBuilding,
 }
 
@@ -307,9 +307,9 @@ impl ToolbarMenu {
             }
         }
 
-        // Item infomation.
-        choices.push(ui_txt("item_menu-infomation"));
-        menu_items.push(ToolbarMenuItem::Infomation);
+        // Item information.
+        choices.push(ui_txt("item_menu-information"));
+        menu_items.push(ToolbarMenuItem::Information);
 
         let choose_window = ChooseWindow::new(winpos, choices, DefaultBehavior::Close);
 
@@ -348,7 +348,7 @@ impl DialogWindow for ToolbarMenu {
                         .unwrap();
 
                     match item {
-                        ToolbarMenuItem::Infomation => {
+                        ToolbarMenuItem::Information => {
                             let info_win = ItemInfoWindow::new(il, pa.game());
                             DialogResult::CloseAndOpen(Box::new(info_win))
                         }

@@ -34,7 +34,7 @@ fn main() {
         verbose::set_verbose(true);
     }
 
-    // Print infomation of pak files
+    // Print information of pak files
     if matches.is_present("info") {
         print_info(&files);
         return;
@@ -52,7 +52,7 @@ fn main() {
 }
 
 fn print_info(files: &[&str]) {
-    println!("Infomation of {:?} will be printed", files);
+    println!("Information of {:?} will be printed", files);
 }
 
 fn create_matches() -> clap::ArgMatches<'static> {

@@ -5,7 +5,7 @@ use common::obj::SpecialTileObject;
 use common::objholder::*;
 use geom::*;
 
-/// Needed infomation to draw background parts of an tile
+/// Needed information to draw background parts of an tile
 /// "Background" means that they are drawed behind any characters
 #[derive(Default)]
 pub struct BackgroundDrawInfo<'a> {
@@ -49,7 +49,7 @@ impl<'a> BackgroundDrawInfo<'a> {
     }
 }
 
-/// Needed infomation to draw foreground parts of an tile
+/// Needed information to draw foreground parts of an tile
 /// "Foreground" means that they are drawed infront characters
 /// whose are on the prev row
 #[derive(Default)]
