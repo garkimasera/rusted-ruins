@@ -61,8 +61,4 @@ impl DialogWindow for RegisterShortcutDialog {
         }
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

@@ -97,10 +97,6 @@ impl DialogWindow for ReadWindow {
         DialogResult::Continue
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     fn draw_mode(&self) -> WindowDrawMode {
         WindowDrawMode::SkipUnderWindows
     }

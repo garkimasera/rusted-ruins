@@ -2,7 +2,6 @@ use super::commonuse::*;
 use super::msg_dialog::MsgDialog;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
-use crate::eventhandler::InputMode;
 use crate::game::quest::available_quests;
 use crate::text::ToText;
 use common::gamedata::Quest;
@@ -133,10 +132,6 @@ impl DialogWindow for QuestWindow {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 
     fn draw_mode(&self) -> WindowDrawMode {

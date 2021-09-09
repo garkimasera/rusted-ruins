@@ -172,10 +172,6 @@ impl DialogWindow for GroupWindow {
         }
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     fn callback_child_closed(
         &mut self,
         result: Option<DialogCloseValue>,

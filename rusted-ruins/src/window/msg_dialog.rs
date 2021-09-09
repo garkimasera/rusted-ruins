@@ -83,8 +83,4 @@ impl DialogWindow for MsgDialog {
         }
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

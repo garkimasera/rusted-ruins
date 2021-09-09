@@ -4,7 +4,6 @@ use super::item_menu::ItemMenu;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::draw::border::draw_window_border;
-use crate::eventhandler::InputMode;
 use crate::game::extrait::*;
 use crate::game::item::filter::*;
 use crate::game::{DialogOpenRequest, Game, InfoGetter};
@@ -621,10 +620,6 @@ impl DialogWindow for ItemWindow {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 
     fn callback_child_closed(

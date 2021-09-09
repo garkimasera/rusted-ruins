@@ -178,10 +178,6 @@ impl DialogWindow for StatusWindow {
             _ => DialogResult::Continue,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }
 
 /// Character skill viewer

@@ -143,10 +143,6 @@ impl DialogWindow for TalkWindow {
         }
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     /// When child window is closed, call advance_script(), and update text.
     fn callback_child_closed(
         &mut self,

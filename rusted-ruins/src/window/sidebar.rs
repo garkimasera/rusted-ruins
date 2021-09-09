@@ -118,8 +118,4 @@ impl DialogWindow for Sidebar {
 
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

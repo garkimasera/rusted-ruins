@@ -83,10 +83,6 @@ impl DialogWindow for ExitWindow {
         }
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }
 
 /// Ask to return start screen or quit
@@ -163,9 +159,5 @@ impl DialogWindow for GameOverWindow {
             }
         }
         DialogResult::Continue
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 }

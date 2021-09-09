@@ -97,8 +97,4 @@ impl DialogWindow for FactionWindow {
             _ => DialogResult::Continue,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

@@ -207,10 +207,6 @@ impl DialogWindow for ChooseClassDialog {
             _ => DialogResult::Continue,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }
 
 fn explanation_text_window(s: &str) -> TextWindow {

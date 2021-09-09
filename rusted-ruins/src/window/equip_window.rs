@@ -1,7 +1,6 @@
 use super::commonuse::*;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
-use crate::eventhandler::InputMode;
 use crate::text;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::*;
@@ -115,10 +114,6 @@ impl DialogWindow for EquipWindow {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 
     fn callback_child_closed(

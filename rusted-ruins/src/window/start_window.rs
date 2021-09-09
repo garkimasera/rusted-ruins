@@ -91,10 +91,6 @@ impl DialogWindow for StartDialog {
         DialogResult::Continue
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     fn sound(&self, _: bool) {}
 }
 
@@ -168,10 +164,6 @@ impl DialogWindow for ChooseSaveFileDialog {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 
     fn sound(&self, _: bool) {}

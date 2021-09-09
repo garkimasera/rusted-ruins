@@ -180,10 +180,6 @@ impl DialogWindow for CreationWindow {
         }
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     fn tab_switched(&mut self) {
         self.detail_dialog = None;
     }
@@ -472,9 +468,5 @@ impl DialogWindow for CreationDetailDialog {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 }

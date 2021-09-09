@@ -66,8 +66,4 @@ impl DialogWindow for HelpWindow {
             _ => DialogResult::Continue,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

@@ -2,7 +2,6 @@ use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::*;
 use crate::draw::border::draw_window_border;
-use crate::eventhandler::InputMode;
 use crate::game::item::info::ItemInfoText;
 use crate::game::{Animation, Command, DoPlayerAction, Game};
 use crate::window::flavor_text_window::FlavorTextWindow;
@@ -150,9 +149,5 @@ impl DialogWindow for ItemInfoWindow {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
-    }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
     }
 }

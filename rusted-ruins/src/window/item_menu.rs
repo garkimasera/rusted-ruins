@@ -117,8 +117,4 @@ impl DialogWindow for ItemMenu {
             result => result,
         }
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }

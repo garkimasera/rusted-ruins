@@ -153,10 +153,6 @@ impl DialogWindow for ChooseWindow {
         }
     }
 
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
-
     fn sound(&self, _: bool) {}
 
     fn mainwin_cursor(&self) -> bool {

@@ -66,8 +66,4 @@ impl DialogWindow for FlavorTextWindow {
 
         DialogResult::Continue
     }
-
-    fn mode(&self) -> InputMode {
-        InputMode::Dialog
-    }
 }
