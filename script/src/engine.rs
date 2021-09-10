@@ -11,7 +11,14 @@ pub struct ScriptEngine<'a> {
 }
 
 pub fn enter<F: FnOnce(ScriptEngine<'_>) -> R, R>(f: F) -> R {
-    vm::Interpreter::new_with_init(PySettings::default(), |vm| {
+    let settings = PySettings {
+        no_site: true,
+        no_user_site: true,
+        ignore_environment: true,
+        isolated: true,
+        ..PySettings::default()
+    };
+    vm::Interpreter::new_with_init(settings, |vm| {
         vm.add_native_module("rr".to_owned(), Box::new(crate::rr::make_module));
         vm.add_native_module("random".to_owned(), Box::new(crate::random::make_module));
         InitParameter::Internal
