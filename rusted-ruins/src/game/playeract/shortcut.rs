@@ -8,6 +8,10 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         self.0.gd.settings.action_shortcuts[n as usize] = Some(shortcut);
     }
 
+    pub fn clear_shortcut(&mut self, n: u32) {
+        self.0.gd.settings.action_shortcuts[n as usize] = None;
+    }
+
     pub fn exec_shortcut(&mut self, n: usize) {
         let shortcut = if let Some(shortcut) = self.gd().settings.action_shortcuts[n] {
             shortcut

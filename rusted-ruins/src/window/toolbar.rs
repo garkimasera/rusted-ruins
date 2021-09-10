@@ -233,7 +233,7 @@ impl DialogWindow for ShortcutList {
     fn process_command(
         &mut self,
         command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
@@ -258,11 +258,17 @@ impl DialogWindow for ShortcutList {
                 if !self.rect.contains_point((*x, *y)) {
                     return DialogResult::Continue;
                 }
-                if *button != MouseButton::Left {
-                    return DialogResult::Command(None);
-                }
                 let i = (*x - self.rect.x) as u32 / cfg.icon_w;
-                return DialogResult::Command(Some(Command::ActionShortcut(i as usize)));
+                return match *button {
+                    MouseButton::Left => {
+                        DialogResult::Command(Some(Command::ActionShortcut(i as usize)))
+                    }
+                    MouseButton::Right => {
+                        pa.clear_shortcut(i);
+                        DialogResult::Command(None)
+                    }
+                    _ => DialogResult::Command(None),
+                };
             }
             _ => (),
         }
@@ -273,6 +279,7 @@ impl DialogWindow for ShortcutList {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum ToolbarMenuItem {
+    Remove,
     Information,
     SelectBuilding,
 }
@@ -307,7 +314,11 @@ impl ToolbarMenu {
             }
         }
 
-        // Item information.
+        // Remove equipment
+        choices.push(ui_txt("equip_menu-remove"));
+        menu_items.push(ToolbarMenuItem::Remove);
+
+        // Item information
         choices.push(ui_txt("item_menu-information"));
         menu_items.push(ToolbarMenuItem::Information);
 
@@ -348,6 +359,10 @@ impl DialogWindow for ToolbarMenu {
                         .unwrap();
 
                     match item {
+                        ToolbarMenuItem::Remove => {
+                            pa.remove_equipment(CharaId::Player, (self.esk, 0));
+                            DialogResult::Close
+                        }
                         ToolbarMenuItem::Information => {
                             let info_win = ItemInfoWindow::new(il, pa.game());
                             DialogResult::CloseAndOpen(Box::new(info_win))
