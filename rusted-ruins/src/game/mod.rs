@@ -121,6 +121,8 @@ impl<'s> Game<'s> {
 
     /// Update drawing data
     pub fn update_before_drawing(&mut self) {
+        use extrait::PlayTimeExt;
+        self.gd.play_time.update();
         map::update_observed_map(self);
     }
 

@@ -263,8 +263,6 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
     }
 
     pub fn draw(&mut self, canvas: &mut WindowCanvas) {
-        self.game.gd.play_time.update();
-
         let mut is_animation_over = false;
         if let Some(anim) = self.anim.as_mut() {
             if self.passed_frame >= anim.get_n_frame() {

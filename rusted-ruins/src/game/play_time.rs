@@ -14,14 +14,9 @@ pub fn play_time_as_secs() -> u64 {
 }
 
 fn elapsed_since_load() -> Duration {
-    let now = Instant::now();
     let load_time = *LOAD_TIME.lock().unwrap();
 
-    if now <= load_time {
-        Duration::from_secs(0)
-    } else {
-        now.duration_since(load_time)
-    }
+    Instant::now().duration_since(load_time)
 }
 
 #[derive(Debug)]
@@ -39,8 +34,6 @@ impl UniqueIdGenerator for UniqueIdGeneratorByTime {
 #[extend::ext(pub)]
 impl PlayTime {
     fn start(&mut self) {
-        self.advance(1);
-
         *LOAD_TIME.lock().unwrap() = Instant::now();
         PLAY_TIME_ON_LOAD.store(self.seconds(), Ordering::Relaxed);
         COUNT_ID_GEN.store(0, Ordering::Relaxed);
@@ -56,7 +49,6 @@ impl PlayTime {
             COUNT_ID_GEN.store(0, Ordering::Relaxed);
             CURRENT_PLAY_TIME.store(self.seconds(), Ordering::Relaxed);
         }
-
         debug_assert_eq!(new_play_time, self.seconds());
     }
 }
