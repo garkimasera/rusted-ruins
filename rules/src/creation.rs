@@ -6,8 +6,7 @@ use std::path::Path;
 #[derive(Serialize, Deserialize)]
 pub struct Creation {
     pub required_time: HashMap<CreationRequiredTime, u16>,
-    pub recipe_learning_item_initial: i32,
-    pub recipe_learning_item_factor: i32,
+    pub recipe_learning_level_margin: u32,
     #[serde(default)]
     art_recipes: Vec<Recipe>,
     #[serde(default)]

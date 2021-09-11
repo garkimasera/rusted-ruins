@@ -135,14 +135,18 @@ pub fn learn_recipe(gd: &mut GameData, il: ItemLocation) -> LearnRecipeResult {
                 return LearnRecipeResult::NotRecipeBook;
             }
         };
-        let quality = item.quality.as_int() * RULES.creation.recipe_learning_item_factor
-            + RULES.creation.recipe_learning_item_initial;
+        let skill_level = gd
+            .chara
+            .get(CharaId::Player)
+            .skill_level_with_adj(creation_kind.into())
+            .0;
+        let max_recipe_level = skill_level + RULES.creation.recipe_learning_level_margin;
         let available_recipes: Vec<&str> = RULES
             .creation
             .recipes(creation_kind)
             .iter()
             .filter_map(|recipe| {
-                if (recipe.difficulty as i32) < quality
+                if recipe.difficulty < max_recipe_level
                     && !gd.learned_recipes.learned(creation_kind, &recipe.product)
                 {
                     Some(recipe.product.as_ref())
