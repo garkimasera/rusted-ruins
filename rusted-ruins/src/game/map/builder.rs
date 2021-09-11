@@ -14,6 +14,19 @@ pub struct MapBuilder {
     wall: WallIdx,
     map_boundary: Option<MapBoundary>,
     music: String,
+    entrance_method: EntranceMethod,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum EntranceMethod {
+    Original,
+    South,
+}
+
+impl Default for EntranceMethod {
+    fn default() -> EntranceMethod {
+        EntranceMethod::Original
+    }
 }
 
 impl MapBuilder {
@@ -40,6 +53,7 @@ impl MapBuilder {
             self.wall,
             self.floor,
             self.is_deepest_floor,
+            self.entrance_method,
         );
         if let Some(map_boundary) = self.map_boundary {
             map.boundary = map_boundary;
@@ -73,6 +87,11 @@ impl MapBuilder {
         self
     }
 
+    pub fn entrance_method(mut self, entrance_method: EntranceMethod) -> MapBuilder {
+        self.entrance_method = entrance_method;
+        self
+    }
+
     pub fn music(mut self, music: &str) -> MapBuilder {
         self.music = music.to_owned();
         self
@@ -85,6 +104,7 @@ pub fn generated_map_to_map(
     wall: WallIdx,
     floor: u32,
     is_deepest_floor: bool,
+    entrance_method: EntranceMethod,
 ) -> Map {
     let size = gm.size;
     let mut map = Map::new(size.0 as u32, size.1 as u32);
@@ -115,11 +135,11 @@ pub fn generated_map_to_map(
         }
     }
 
-    match gm.entrance {
-        Entrance::Pos(pos) => {
+    match (entrance_method, gm.entrance.clone()) {
+        (EntranceMethod::Original, Entrance::Pos(pos)) => {
             map.entrance = pos;
         }
-        Entrance::Stairs(e0, e1) => {
+        (EntranceMethod::Original, Entrance::Stairs(e0, e1)) => {
             // Set stairs
             let entrance_stairs = StairsKind::UpStairs;
             let exit_stairs = StairsKind::DownStairs;
@@ -139,7 +159,36 @@ pub fn generated_map_to_map(
                 };
             }
         }
+        (EntranceMethod::South, _) => {
+            map.entrance.push(search_empty_tile_on_boundary(&gm));
+        }
     }
 
     map
+}
+
+fn search_empty_tile_on_boundary(gm: &GeneratedMap) -> Vec2d {
+    let d0 = Vec2d(1, 0);
+    let d1 = Vec2d(0, -1);
+
+    let start = Vec2d(gm.size.0 / 2, gm.size.1 - 1);
+    let mut a = 0i32;
+    let mut b = 0i32;
+
+    loop {
+        let p = start + d0 * a + d1 * b;
+        if gm.tile[p] == TileKind::Floor {
+            return p;
+        }
+        if a <= 0 {
+            a = -a + 1;
+        } else {
+            a = -a;
+        }
+        let x = start.0 + a;
+        if x < 0 || x >= gm.size.0 {
+            a = 0;
+            b += 1;
+        }
+    }
 }

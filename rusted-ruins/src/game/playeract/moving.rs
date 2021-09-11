@@ -1,4 +1,5 @@
 use super::DoPlayerAction;
+use crate::game::map::builder::EntranceMethod;
 use crate::game::map::MapExt;
 use crate::game::{action, DialogOpenRequest, InfoGetter};
 use crate::text::ToText;
@@ -214,7 +215,11 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     }
 
     pub fn enter_wilderness(&mut self, pos: Vec2d) {
-        if let Some(map) = crate::game::map::wilderness::generate_wilderness(self.gd(), pos) {
+        if let Some(map) = crate::game::map::wilderness::generate_wilderness(
+            self.gd(),
+            pos,
+            EntranceMethod::Original,
+        ) {
             let mid = self.gd().get_current_mapid();
             let rid = mid.rid();
             let site_content = SiteContent::Temp {

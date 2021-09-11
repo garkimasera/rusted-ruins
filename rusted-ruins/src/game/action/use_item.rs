@@ -1,4 +1,5 @@
 use crate::game::effect::do_effect;
+use crate::game::map::builder::EntranceMethod;
 use crate::game::target::Target;
 use crate::game::{DialogOpenRequest, Game, InfoGetter};
 use common::gamedata::*;
@@ -69,7 +70,9 @@ fn use_deed(game: &mut Game<'_>) -> bool {
     let sid = gd.add_site(site, SiteKind::Player, rid, Some(pos)).unwrap();
 
     let map_random_id = crate::game::saveload::gen_box_id(gd);
-    let map = if let Some(map) = crate::game::map::wilderness::generate_wilderness(gd, pos) {
+    let map = if let Some(map) =
+        crate::game::map::wilderness::generate_wilderness(gd, pos, EntranceMethod::South)
+    {
         map
     } else {
         return false;

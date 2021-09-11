@@ -9,7 +9,13 @@ use regex::Regex;
 use rules::biome::{BiomeDetail, SubBiomeDetail};
 use rules::RULES;
 
-pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
+use super::builder::EntranceMethod;
+
+pub fn generate_wilderness(
+    gd: &GameData,
+    pos: Vec2d,
+    entrance_method: EntranceMethod,
+) -> Option<Map> {
     let (biome, _sub_biomes) = get_biome(gd, pos)?;
 
     let destination = Destination::MapIdWithPos(
@@ -22,6 +28,7 @@ pub fn generate_wilderness(gd: &GameData, pos: Vec2d) -> Option<Map> {
         .tile(biome.tile)
         .wall(biome.wall)
         .map_boundary(boundary)
+        .entrance_method(entrance_method)
         .build();
 
     // Generate plants
