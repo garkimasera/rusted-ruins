@@ -621,10 +621,10 @@ impl ItemKind {
 
 impl WeaponKind {
     pub fn equip_slot_kind(self) -> EquipSlotKind {
-        use self::WeaponKind::*;
-        match self {
-            Axe | Spear | Sword => EquipSlotKind::MeleeWeapon,
-            _ => EquipSlotKind::RangedWeapon,
+        if self < WeaponKind::_DummyWeapon {
+            EquipSlotKind::MeleeWeapon
+        } else {
+            EquipSlotKind::RangedWeapon
         }
     }
 }
