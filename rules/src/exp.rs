@@ -11,14 +11,16 @@ pub struct Exp {
     pub attack: u32,
     /// Base exp to Conceal skill
     pub conceal: u32,
+    /// Base exp to Defence skill when attacked
+    pub defence: u32,
     /// Base exp to Endurance skill when attacked
     pub endurance: u32,
+    /// Base exp to Endurance skill when regeneration
+    pub endurance_regeneration: u32,
+    /// Probability to gain Endurance skill when regeneration
+    pub endurance_regeneration_probability: f32,
     /// Base exp to Evasion skill when attacked
     pub evasion: u32,
-    /// Base exp to Healing skill
-    pub healing: u32,
-    /// Probability to gain Healing skill exp
-    pub healing_probability: f32,
     /// Base exp to Mining skill
     pub mining: u32,
     /// Base exp for creation

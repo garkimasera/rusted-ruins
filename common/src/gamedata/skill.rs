@@ -270,7 +270,6 @@ define_skill_kind! {
         Defence, "defence",
         Endurance, "endurance",
         Evasion, "evasion",
-        Healing, "healing",
         Conceal, "conceal",
         Detection, "detection",
         Throwing, "throwing",

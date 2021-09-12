@@ -43,7 +43,6 @@ skill_kind-carrying = Carrying
 skill_kind-defence = Defence
 skill_kind-endurance = Endurance
 skill_kind-evasion = Evasion
-skill_kind-healing = Healing
 skill_kind-conceal = Conceal
 skill_kind-detection = Detection
 skill_kind-throwing = Throwing

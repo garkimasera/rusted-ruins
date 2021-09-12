@@ -78,7 +78,7 @@ pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
 
     if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
         // HP regeneration
-        let lv = chara.skill_level(SkillKind::Healing) as f32;
+        let lv = chara.skill_level(SkillKind::Endurance) as f32;
         if get_rng().gen_bool(RULES.chara.hp_regeneration_probability.into()) {
             let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
             let v = roll_dice(1, a);
@@ -88,7 +88,7 @@ pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
             RULES.chara.sp_consumption_regen * sp_consumption_factor,
             cid,
         );
-        chara.add_healing_exp();
+        chara.add_regeneration_exp();
     } else {
         let damage = chara.sub_sp(RULES.chara.sp_consumption * sp_consumption_factor, cid);
         if let Some(damage) = damage {

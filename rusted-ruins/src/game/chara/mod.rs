@@ -40,8 +40,8 @@ impl Chara {
     /// Add exp when damaged.
     fn add_damage_exp(&mut self, damage: i32, attacker_level: u32) {
         let rel_damage = damage as f32 / self.attr.max_hp as f32;
-        let exp = rel_damage * RULES.exp.endurance as f32;
-        self.add_skill_exp(SkillKind::Endurance, exp as u32, attacker_level);
+        let exp = rel_damage * RULES.exp.defence as f32;
+        self.add_skill_exp(SkillKind::Defence, exp as u32, attacker_level);
     }
 
     /// Add exp when attacked.
@@ -50,10 +50,10 @@ impl Chara {
     }
 
     /// Add exp when regeneration
-    fn add_healing_exp(&mut self) {
-        let lv = self.skill_level(SkillKind::Healing);
-        if get_rng().gen_bool(RULES.exp.healing_probability.into()) {
-            self.add_skill_exp(SkillKind::Healing, RULES.exp.healing, lv);
+    fn add_regeneration_exp(&mut self) {
+        let lv = self.skill_level(SkillKind::Endurance);
+        if get_rng().gen_bool(RULES.exp.endurance_regeneration_probability.into()) {
+            self.add_skill_exp(SkillKind::Endurance, RULES.exp.endurance_regeneration, lv);
         }
     }
 
