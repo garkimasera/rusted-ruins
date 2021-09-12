@@ -4,50 +4,56 @@ pub mod get_item;
 pub mod harvest;
 pub mod use_item;
 
+use super::damage::*;
+use super::effect::{do_effect, weapon_to_effect};
 use super::extrait::*;
 use super::target::Target;
 use super::{Game, InfoGetter};
-use crate::game::damage::*;
-use crate::game::effect::{do_effect, weapon_to_effect};
 use common::gamedata::*;
 use common::gobj;
 use geom::*;
 use rules::RULES;
 
-pub fn try_move(game: &mut Game<'_>, chara_id: CharaId, dir: Direction) -> bool {
+pub fn try_move(game: &mut Game<'_>, cid: CharaId, dir: Direction) -> bool {
+    // Move to current tile always success
     if dir.as_vec() == (0, 0) {
         return true;
-    } // Move to current tile always success
-    let dest_tile = game.gd.get_current_map().chara_pos(chara_id).unwrap() + dir.as_vec();
+    }
+
+    if cid == CharaId::Player {
+        super::time::set_player_moved();
+    }
+
+    let dest_tile = game.gd.get_current_map().chara_pos(cid).unwrap() + dir.as_vec();
 
     if !game
         .gd
         .get_current_map()
-        .is_passable(game.gd.chara.get(chara_id), dest_tile)
+        .is_passable(game.gd.chara.get(cid), dest_tile)
     {
         return false;
     }
 
     if let Some(other_chara) = game.gd.get_current_map().get_chara(dest_tile) {
-        let relation = game.gd.chara_relation(chara_id, other_chara);
+        let relation = game.gd.chara_relation(cid, other_chara);
 
         match relation {
             Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
                 let current_map = game.gd.get_current_map_mut();
                 if current_map.tile[dest_tile].chara != Some(CharaId::Player) {
-                    current_map.move_chara(chara_id, dir);
+                    current_map.move_chara(cid, dir);
                 }
-                if chara_id == CharaId::Player {
+                if cid == CharaId::Player {
                     game.anim_queue.push_player_move(dir);
                 }
             }
             Relationship::Hostile => {
-                melee_attack(game, chara_id, other_chara);
+                melee_attack(game, cid, other_chara);
             }
         }
     } else {
-        game.gd.get_current_map_mut().move_chara(chara_id, dir);
-        if chara_id == CharaId::Player {
+        game.gd.get_current_map_mut().move_chara(cid, dir);
+        if cid == CharaId::Player {
             game.anim_queue.push_player_move(dir);
         }
     }

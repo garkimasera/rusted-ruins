@@ -3,6 +3,7 @@ use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::time::*;
 use once_cell::sync::Lazy;
 use rules::RULES;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 
 static CURRENT_TIME: Lazy<Mutex<Time>> = Lazy::new(|| {
@@ -14,13 +15,28 @@ static CURRENT_TIME: Lazy<Mutex<Time>> = Lazy::new(|| {
     ))
 });
 
+/// Player moved at the previous turn or not
+static PLAYER_MODED: AtomicBool = AtomicBool::new(false);
+
+pub fn player_moved() -> bool {
+    PLAYER_MODED.load(Ordering::Relaxed)
+}
+
+pub fn set_player_moved() {
+    PLAYER_MODED.store(true, Ordering::Relaxed);
+}
+
+pub fn clear_player_moved() {
+    PLAYER_MODED.store(false, Ordering::Relaxed);
+}
+
 pub fn current_time() -> Time {
     *CURRENT_TIME.lock().unwrap()
 }
 
 pub fn advance_game_time_by_clock(game: &mut Game<'_>, advanced_clock: u32) {
     let mid = game.gd.get_current_mapid();
-    let minutes_per_turn = if mid.is_region_map() {
+    let minutes_per_turn = if mid.is_region_map() && player_moved() {
         RULES.params.minutes_per_turn_region
     } else {
         RULES.params.minutes_per_turn_normal
