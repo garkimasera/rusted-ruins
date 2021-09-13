@@ -4,8 +4,8 @@ use super::item::{EquipItemList, EquipSlotKind, Item, ItemList, ItemLocation, Ma
 use super::map::MapId;
 use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
-use super::traits::*;
 use super::unknown_id_err;
+use super::{traits::*, UniqueId};
 use crate::basic::{BonusLevel, ARRAY_STR_ID_LEN};
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use geom::Vec2d;
@@ -252,6 +252,10 @@ pub enum CharaKind {
 pub enum CharaId {
     /// Player is unique character in the game
     Player,
+    /// Player ally npcs
+    Ally { id: UniqueId },
+    /// Special npcs
+    Unique { id: UniqueId },
     /// Indexed for a site. This character is associated one site.
     /// Citizens on a town use this id.
     OnSite { sid: SiteId, n: u32 },

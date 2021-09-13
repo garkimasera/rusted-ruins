@@ -49,6 +49,8 @@ skill_kind-throwing = 投擲
 skill_kind-magic_device = 魔道具
 skill_kind-mining = 採掘
 skill_kind-plants = 栽培
+skill_kind-animal = 動物
+skill_kind-leadership = 統率
 
 # WeaponKind
 

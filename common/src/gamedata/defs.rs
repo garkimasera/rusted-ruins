@@ -116,7 +116,7 @@ pub enum HarvestKind {
 impl HarvestKind {
     pub fn related_skill(self) -> SkillKind {
         match self {
-            HarvestKind::Animal => SkillKind::Animal,
+            HarvestKind::Animal => SkillKind::Animals,
             HarvestKind::Chop => SkillKind::Plants,
             HarvestKind::Deconstruct => SkillKind::Construction,
             HarvestKind::Plant => SkillKind::Plants,
