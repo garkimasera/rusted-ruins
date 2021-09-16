@@ -13,8 +13,8 @@ mod _rr {
     use vm::{PyObjectRef, PyResult, PyValue, VirtualMachine};
 
     #[pyfunction]
-    fn yield_result(vm: &VirtualMachine) -> Option<PyObjectRef> {
-        with_gd(|gd| gd.script_exec.yield_result.clone()).map(|value| value_to_py(vm, value))
+    fn response(vm: &VirtualMachine) -> Option<PyObjectRef> {
+        with_gd(|gd| gd.script_exec.response.clone()).map(|value| value_to_py(vm, value))
     }
 
     #[pyfunction]

@@ -33,7 +33,7 @@ impl<'s> Game<'s> {
     /// Advance current script.
     /// When called by advance_talk, give player's choice.
     pub fn advance_script(&mut self, choice: Option<u32>) -> AdvanceScriptResult {
-        self.gd.script_exec.yield_result = choice.map(|n| Value::Int(n.into()));
+        self.gd.script_exec.response = choice.map(|n| Value::Int(n.into()));
         let result = match self.se.next(&mut self.gd) {
             Ok(result) => result,
             Err(e) => {
