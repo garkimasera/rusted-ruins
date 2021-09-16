@@ -5,11 +5,13 @@ use script::{set_game_methods, GameMethods};
 
 pub fn init() {
     set_game_methods(GameMethods {
+        has_empty_for_party: |gd| gd.has_empty_for_party(),
         has_item: |gd, id| gd.has_item_by_id(id),
         gen_dungeons: |gd| {
             let mid = gd.get_current_mapid();
             crate::game::region::gen_dungeon_max(gd, mid.rid());
         },
+        gen_party_chara: |gd, id, lv| gd.gen_party_chara(id, lv),
         receive_quest_rewards: crate::game::quest::receive_rewards,
         receive_item: |gd, id, n| {
             let item = crate::game::item::gen::gen_item_from_id(id, 1);

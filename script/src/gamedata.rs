@@ -76,8 +76,10 @@ pub fn set_game_methods(game_methods: GameMethods) {
 
 /// Game methods usable from scripts.
 pub struct GameMethods {
+    pub has_empty_for_party: fn(&GameData) -> bool,
     pub has_item: fn(&GameData, &str) -> Option<u32>,
     pub gen_dungeons: fn(&mut GameData),
+    pub gen_party_chara: fn(&mut GameData, &str, u32) -> bool,
     pub receive_quest_rewards: fn(&mut GameData) -> bool,
     pub receive_item: fn(&mut GameData, &str, u32),
     pub receive_money: fn(&mut GameData, u32),

@@ -85,6 +85,36 @@ impl Map {
             0
         }
     }
+
+    fn is_empty_tile(&self, pos: Vec2d) -> bool {
+        if self.is_inside(pos) {
+            let tile = &self.tile[pos];
+            is_empty_tile(tile)
+        } else {
+            false
+        }
+    }
+
+    fn empty_tile_around(&self, pos: Vec2d) -> Option<Vec2d> {
+        for pos in SpiralIter::new(pos).take(100) {
+            if self.is_inside(pos) && self.is_empty_tile(pos) {
+                return Some(pos);
+            }
+        }
+
+        None
+    }
+}
+
+/// Function to determine the tile is empty or not
+fn is_empty_tile(tile: &TileInfo) -> bool {
+    if tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none() {
+        let tile_idx = tile.main_tile();
+        let tile_obj = gobj::get_obj(tile_idx);
+        tile_obj.kind == TileKind::Ground
+    } else {
+        false
+    }
 }
 
 pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
@@ -229,29 +259,18 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
     use rng::gen_range;
     const MAX_TRY: usize = 10;
 
-    // Function to determine the tile is empty or not
-    let is_tile_empty = |tile: &TileInfo| {
-        if tile.wall.is_empty() && tile.chara.is_none() && tile.special.is_none() {
-            let tile_idx = tile.main_tile();
-            let tile_obj = gobj::get_obj(tile_idx);
-            tile_obj.kind == TileKind::Ground
-        } else {
-            false
-        }
-    };
-
     for _ in 0..MAX_TRY {
         let p = Vec2d(gen_range(0..map.w) as i32, gen_range(0..map.h) as i32);
         let tile = &map.tile[p];
 
         // Empty tile don't has wall, chara, and isn't special tile.
-        if is_tile_empty(tile) {
+        if is_empty_tile(tile) {
             return Some(p);
         }
     }
 
     // If random tile choosing is failed many times, count empty tiles and choose
-    let n_empty_tile = map.tile.iter().filter(|t| is_tile_empty(t)).count();
+    let n_empty_tile = map.tile.iter().filter(|t| is_empty_tile(t)).count();
     if n_empty_tile == 0 {
         None
     } else {
@@ -259,7 +278,7 @@ pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
         let p = map
             .tile
             .iter_with_idx()
-            .filter(|&(_, t)| is_tile_empty(t))
+            .filter(|&(_, t)| is_empty_tile(t))
             .nth(r)
             .unwrap()
             .0;

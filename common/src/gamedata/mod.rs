@@ -121,15 +121,12 @@ impl GameData {
         map.iter_charaid().copied().collect()
     }
 
-    pub fn add_chara(&mut self, chara: Chara, kind: CharaKind) -> CharaId {
-        match kind {
-            CharaKind::Player => {
-                self.chara.add(CharaId::Player, chara);
-                CharaId::Player
-            }
-            CharaKind::OnSite => panic!("Adding OnSite chara without id is unavailable"),
-            CharaKind::OnMap => panic!("Adding OnMap chara without mapid is unavailable"),
+    pub fn add_chara(&mut self, cid: CharaId, chara: Chara) {
+        match cid {
+            CharaId::Player | CharaId::Ally { .. } | CharaId::Unique { .. } => (),
+            _ => panic!("invalid chara id for add_chara"),
         }
+        self.chara.add(cid, chara);
     }
 
     /// Add chara as OnMap

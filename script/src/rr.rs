@@ -90,6 +90,11 @@ mod _rr {
     }
 
     #[pyfunction]
+    fn has_empty_for_party() -> bool {
+        with_gd(|gd| call_game_method!(has_empty_for_party)(gd))
+    }
+
+    #[pyfunction]
     fn has_item(id: PyStrRef) -> u32 {
         with_gd(|gd| call_game_method!(has_item)(gd, id.as_ref()).unwrap_or(0))
     }
@@ -97,6 +102,11 @@ mod _rr {
     #[pyfunction]
     fn gen_dungeons() {
         with_gd_mut(|gd| call_game_method!(gen_dungeons)(gd))
+    }
+
+    #[pyfunction]
+    fn gen_party_chara(id: PyStrRef, lv: u32) -> bool {
+        with_gd_mut(|gd| call_game_method!(gen_party_chara)(gd, id.as_ref(), lv))
     }
 
     #[pyfunction]

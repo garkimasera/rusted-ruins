@@ -236,18 +236,6 @@ impl Default for Chara {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum CharaKind {
-    /// Player is unique character in the game
-    Player,
-    /// Indexed for a site. This character is associated one site.
-    /// Citizens on a town use this id.
-    OnSite,
-    /// Indexed for a map. This character don't appear on other maps.
-    /// Randomly generated characters use this id.
-    OnMap,
-}
-
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum CharaId {
     /// Player is unique character in the game

@@ -64,8 +64,10 @@ impl NewGameBuilder {
 
             gd.player.set_money(RULES.newgame.start_money as i64);
 
-            let cid = gd.add_chara(chara, CharaKind::Player);
-            gd.region.get_map_mut(mid).locate_chara(cid, start_pos);
+            gd.add_chara(CharaId::Player, chara);
+            gd.region
+                .get_map_mut(mid)
+                .locate_chara(CharaId::Player, start_pos);
             set_initial_items(&mut gd);
 
             // Initial date setting
