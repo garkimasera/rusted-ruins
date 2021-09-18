@@ -111,7 +111,10 @@ harvest-chop = {$chara} chopped a tree, and got {$item} x {$n}.
 harvest-deconstruct = {$chara} got {$item} x {$n} from deconstructed materials.
 harvest-plant = {$chara} harvested {$item} x {$n}.
 
-# Message about script
+# Messages about party
+party-add-chara = {$chara} attended your party.
+
+# Messages about script
 
 player-receive-item = {$chara} received {$item} x {$n}.
 player-receive-money = {$chara} received {$amount} gold.

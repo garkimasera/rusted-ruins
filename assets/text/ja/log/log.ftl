@@ -109,7 +109,10 @@ harvest-chop = {$chara}は伐採により{$item} x {$n}を手に入れた。
 harvest-deconstruct = {$chara}は分解した素材から{$item} x {$n}を回収した。
 harvest-plant = {$chara}は{$item} x {$n}を収穫した。
 
-# Message about script
+# Messages about party
+party-add-chara = {$chara}があなたに付いてくことになった！
+
+# Messages about script
 
 player-receive-item = {$chara}は{$item} x {$n}を受け取った。
 player-receive-money = {$chara}は{$amount}ゴールドを受け取った。

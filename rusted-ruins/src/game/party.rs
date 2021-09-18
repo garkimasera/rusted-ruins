@@ -33,6 +33,7 @@ impl GameData {
             return false;
         }
 
+        game_log_i!("party-add-chara"; chara=chara);
         self.add_chara(cid, chara);
 
         let player_pos = self.player_pos();
