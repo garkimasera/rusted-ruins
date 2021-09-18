@@ -22,6 +22,10 @@ pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
 }
 
 fn process_npc_turn_normal(game: &mut Game<'_>, cid: CharaId) {
+    if game.gd.player.party.contains(&cid) {
+        follow_other(game, cid, CharaId::Player);
+    }
+
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
@@ -111,6 +115,25 @@ fn random_walk(game: &mut Game<'_>, cid: CharaId) {
 fn move_to_target_enemy(game: &mut Game<'_>, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
     let dir =
         dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step).unwrap_or(Direction::NONE);
+    action::try_move(game, cid, dir);
+}
+
+/// Follow other chara
+fn follow_other(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
+    let (pos, target_pos) = if let (Some(pos), Some(target_pos)) =
+        (game.gd.chara_pos(cid), game.gd.chara_pos(target))
+    {
+        (pos, target_pos)
+    } else {
+        return;
+    };
+
+    if pos.is_adjacent(target_pos) {
+        return;
+    }
+
+    let dir = dir_to_chara(&game.gd, cid, target, RULES.npc.party_pathfinding_step)
+        .unwrap_or(Direction::NONE);
     action::try_move(game, cid, dir);
 }
 
