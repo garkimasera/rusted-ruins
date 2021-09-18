@@ -140,10 +140,29 @@ pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
 
     gd.get_current_map_mut().last_visit = crate::game::time::current_time();
 
+    // Remove party members from old map
+    if !old_mid.is_region_map() {
+        for cid in gd.player.party.clone() {
+            gd.remove_chara_from_map(cid);
+        }
+    }
+
+    // Change current mapid
     gd.set_current_mapid(new_mid);
 
+    // Locate party members
     gd.get_current_map_mut()
         .locate_chara(CharaId::Player, new_player_pos);
+
+    if !new_mid.is_region_map() {
+        let cids = gd.player.party.clone();
+        let map = gd.get_current_map_mut();
+        for cid in cids {
+            if let Some(pos) = map.empty_tile_around(new_player_pos) {
+                map.locate_chara(cid, pos);
+            }
+        }
+    }
 
     // Remove temp site
     if !old_mid.is_region_map() {
