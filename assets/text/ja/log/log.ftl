@@ -26,7 +26,10 @@ change-floor = {$player}は隣のフロアへ向かった。
 skill-level-up = {$chara}の{$skill}レベルが上がった。
 skill-learned = {$chara}は{$skill}スキルを習得した。
 skill-already-learned = {$chara}はすでに{$skill}スキルを覚えている。
-status-get-hostile = {$chara}は敵対した。
+
+# Messages about npc ai
+
+npc-get-hostile = {$chara}は敵対した。
 
 # Messages about combat
 

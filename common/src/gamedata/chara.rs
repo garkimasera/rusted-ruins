@@ -162,10 +162,6 @@ pub enum CharaStatus {
     Overloaded,
     /// Scanned and can open StatusWindow
     Scanned,
-    /// Temporary hostile faction for this character
-    Hostile {
-        faction: FactionId,
-    },
     Asleep {
         turn_left: u16,
     },
@@ -261,8 +257,6 @@ pub struct CharaAi {
     pub initial_pos: Vec2d,
     /// Current NPC AI State.
     pub state: AiState,
-
-    pub target: Option<CharaId>,
 }
 
 /// Rough kind of NPC AI
@@ -282,7 +276,6 @@ impl Default for CharaAi {
             kind: NpcAiKind::default(),
             initial_pos: Vec2d::new(0, 0),
             state: AiState::default(),
-            target: None,
         }
     }
 }
@@ -294,6 +287,9 @@ pub enum AiState {
         /// Target chara when combat.
         target: CharaId,
     },
+    Search {
+        turn_count: u32,
+    },
 }
 
 impl Default for AiState {
@@ -303,6 +299,14 @@ impl Default for AiState {
 }
 
 impl AiState {
+    pub fn default_search() -> Self {
+        AiState::Search { turn_count: 0 }
+    }
+
+    pub fn is_normal(&self) -> bool {
+        matches!(self, AiState::Normal)
+    }
+
     pub fn is_combat(&self) -> bool {
         matches!(self, AiState::Combat { .. })
     }

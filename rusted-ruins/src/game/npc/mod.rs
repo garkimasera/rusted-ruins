@@ -15,41 +15,16 @@ use rng::*;
 use rules::{npc_ai::*, RULES};
 
 pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
+    dbg!(cid, game.gd.chara.get(cid).ai.state);
     match game.gd.chara.get(cid).ai.state {
         AiState::Normal => process_npc_turn_normal(game, cid),
         AiState::Combat { .. } => process_npc_turn_combat(game, cid),
+        AiState::Search { .. } => process_npc_turn_search(game, cid),
     }
 }
 
 fn process_npc_turn_normal(game: &mut Game<'_>, cid: CharaId) {
-    if game.gd.player.party.contains(&cid) {
-        follow_other(game, cid, CharaId::Player);
-    }
-
-    let chara = game.gd.chara.get(cid);
-    let ai = &chara.ai;
-    let ai_rule = RULES.npc_ai.get(ai.kind);
-
-    match ai_rule.move_kind {
-        MoveKind::NoMove => (),
-        MoveKind::Wander => {
-            if gen_bool(ai_rule.walk_prob) {
-                random_walk(game, cid);
-            }
-        }
-        MoveKind::Return => {
-            let initial_pos = chara.ai.initial_pos;
-            let pos = game.gd.chara_pos(cid).unwrap();
-            if initial_pos != pos {
-                if gen_range(0..1) == 0 {
-                    let dir = geom::dir_by_2pos(pos, initial_pos);
-                    action::try_move(game, cid, dir);
-                }
-            } else if gen_bool(ai_rule.walk_prob) {
-                random_walk(game, cid);
-            }
-        }
-    }
+    move_normal(game, cid);
 }
 
 fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
@@ -59,7 +34,7 @@ fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
     let ct: &CharaTemplateObject = gobj::get_obj(chara.idx);
 
     let target = match chara.ai.state {
-        AiState::Combat { target } => target,
+        AiState::Combat { target, .. } => target,
         _ => unreachable!(),
     };
 
@@ -98,6 +73,66 @@ fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
     }
 }
 
+fn process_npc_turn_search(game: &mut Game<'_>, cid: CharaId) {
+    let view_range = game.gd.chara.get(cid).attr.view_range;
+    if let Some(target) = crate::game::map::search::search_nearest_target(
+        &game.gd,
+        cid,
+        Relationship::Hostile,
+        view_range,
+    ) {
+        game.gd.chara.get_mut(cid).ai.state = AiState::Combat { target };
+        process_npc_turn_combat(game, cid);
+        return;
+    }
+
+    let chara = game.gd.chara.get_mut(cid);
+    let ai_rule = RULES.npc_ai.get(chara.ai.kind);
+
+    let turn_count = match &mut chara.ai.state {
+        AiState::Search { ref mut turn_count } => turn_count,
+        _ => unreachable!(),
+    };
+    *turn_count += 1;
+
+    if ai_rule.search_turn < *turn_count {
+        chara.ai.state = AiState::Normal;
+    }
+    move_normal(game, cid);
+}
+
+/// Move when normal state or missing target
+fn move_normal(game: &mut Game<'_>, cid: CharaId) {
+    if game.gd.player.party.contains(&cid) {
+        follow_other(game, cid, CharaId::Player);
+    }
+
+    let chara = game.gd.chara.get(cid);
+    let ai = &chara.ai;
+    let ai_rule = RULES.npc_ai.get(ai.kind);
+
+    match ai_rule.move_kind {
+        MoveKind::NoMove => (),
+        MoveKind::Wander => {
+            if gen_bool(ai_rule.walk_prob) {
+                random_walk(game, cid);
+            }
+        }
+        MoveKind::Return => {
+            let initial_pos = chara.ai.initial_pos;
+            let pos = game.gd.chara_pos(cid).unwrap();
+            if initial_pos != pos {
+                if gen_range(0..1) == 0 {
+                    let dir = geom::dir_by_2pos(pos, initial_pos);
+                    action::try_move(game, cid, dir);
+                }
+            } else if gen_bool(ai_rule.walk_prob) {
+                random_walk(game, cid);
+            }
+        }
+    }
+}
+
 /// Move npc at random
 fn random_walk(game: &mut Game<'_>, cid: CharaId) {
     let dir = Direction::new(
@@ -113,9 +148,12 @@ fn random_walk(game: &mut Game<'_>, cid: CharaId) {
 
 /// Move npc to nearest enemy
 fn move_to_target_enemy(game: &mut Game<'_>, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
-    let dir =
-        dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step).unwrap_or(Direction::NONE);
-    action::try_move(game, cid, dir);
+    if let Some(dir) = dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step) {
+        action::try_move(game, cid, dir);
+    } else {
+        game.gd.chara.get_mut(cid).ai.state = AiState::default_search();
+        move_normal(game, cid);
+    }
 }
 
 /// Follow other chara

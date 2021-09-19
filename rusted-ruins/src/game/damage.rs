@@ -21,6 +21,7 @@ pub fn do_damage(
     damage_kind: CharaDamageKind,
     origin: Option<CharaId>,
 ) -> i32 {
+    let origin_faction = origin.map(|origin| game.gd.chara.get(origin).faction);
     let pos = game.gd.chara_pos(cid);
     let chara = game.gd.chara.get_mut(cid);
 
@@ -41,18 +42,18 @@ pub fn do_damage(
 
     if chara_hp > 0 {
         // Faction process
-        if origin == Some(CharaId::Player)
-            && game.gd.chara_relation(CharaId::Player, cid) != Relationship::Hostile
-        {
-            let chara = game.gd.chara.get_mut(cid);
-            chara.add_status(CharaStatus::Hostile {
-                faction: FactionId::player(),
-            });
+        if let (Some(origin), Some(origin_faction)) = (origin, origin_faction) {
+            if !chara.ai.state.is_combat() {
+                chara.ai.state = AiState::Combat { target: origin };
 
-            let target_faction = chara.faction;
-            game.gd
-                .faction
-                .change(target_faction, RULES.faction.relvar_attacked);
+                if origin_faction == FactionId::player() {
+                    game_log_i!("npc-get-hostile"; chara=chara);
+                    let target_faction = chara.faction;
+                    game.gd
+                        .faction
+                        .change(target_faction, RULES.faction.relvar_attacked);
+                }
+            }
         }
     } else {
         // Logging

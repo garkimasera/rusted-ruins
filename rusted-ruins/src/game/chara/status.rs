@@ -50,11 +50,6 @@ impl CharaStatusOperation for Chara {
                     return;
                 }
             }
-            CharaStatus::Hostile { .. } => {
-                self.status.push(new_status);
-                game_log!("status-get-hostile"; chara=self);
-                return;
-            }
             CharaStatus::Scanned => {
                 if self.status.iter().all(|s| *s != CharaStatus::Scanned) {
                     self.status.push(new_status);

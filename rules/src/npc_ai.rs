@@ -32,6 +32,9 @@ pub struct NpcAi {
     /// Probability of trying to use active skill.
     #[serde(default)]
     pub active_skill_prob: f32,
+    #[serde(default = "search_turn_default")]
+    /// Required turn to change state search to normal
+    pub search_turn: u32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -55,4 +58,8 @@ impl CombatActionKind {
         CombatActionKind::RangedWeapon,
         CombatActionKind::ActiveSkill,
     ];
+}
+
+fn search_turn_default() -> u32 {
+    10
 }

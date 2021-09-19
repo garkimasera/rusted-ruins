@@ -159,19 +159,15 @@ impl GameData {
             return Relationship::Ally;
         }
 
-        for status1 in &self.chara.get(chara).status {
-            if let CharaStatus::Hostile { faction } = status1 {
-                if *faction == f2 {
-                    return Relationship::Hostile;
-                }
+        if let AiState::Combat { target, .. } = self.chara.get(chara).ai.state {
+            if target == other {
+                return Relationship::Hostile;
             }
         }
 
-        for status2 in &self.chara.get(other).status {
-            if let CharaStatus::Hostile { faction } = status2 {
-                if *faction == f1 {
-                    return Relationship::Hostile;
-                }
+        if let AiState::Combat { target, .. } = self.chara.get(other).ai.state {
+            if target == other {
+                return Relationship::Hostile;
             }
         }
 

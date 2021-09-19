@@ -140,12 +140,7 @@ pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
 
     gd.get_current_map_mut().last_visit = crate::game::time::current_time();
 
-    // Remove party members from old map
-    if !old_mid.is_region_map() {
-        for cid in gd.player.party.clone() {
-            gd.remove_chara_from_map(cid);
-        }
-    }
+    process_map_before_switch(gd, old_mid);
 
     // Change current mapid
     gd.set_current_mapid(new_mid);
@@ -179,6 +174,23 @@ pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
     crate::audio::play_music(&gd.get_current_map().music);
     update::update_map(game);
     super::view::update_view_map(game);
+}
+
+fn process_map_before_switch(gd: &mut GameData, mid: MapId) {
+    // Remove party members from old map
+    if !mid.is_region_map() {
+        for cid in gd.player.party.clone() {
+            gd.remove_chara_from_map(cid);
+        }
+    }
+
+    // Reset npc ai state
+    for cid in gd.get_charas_on_map() {
+        let chara = gd.chara.get_mut(cid);
+        if chara.ai.state.is_combat() {
+            chara.ai.state = AiState::default_search();
+        }
+    }
 }
 
 /// Convert Destination to map id.

@@ -88,8 +88,8 @@ fn check_dying(game: &mut Game<'_>) -> bool {
 /// Dying chara is removed before new turn processing.
 /// If returns true, player died.
 fn remove_dying_charas(game: &mut Game<'_>) -> bool {
-    for &cid in &game.gd.get_charas_on_map() {
-        let chara = game.gd.chara.get(cid);
+    for cid in game.gd.get_charas_on_map() {
+        let chara = game.gd.chara.get_mut(cid);
         if chara.hp <= 0 {
             if cid == CharaId::Player {
                 game.request_dialog_open(DialogOpenRequest::GameOver);
@@ -100,6 +100,13 @@ fn remove_dying_charas(game: &mut Game<'_>) -> bool {
             // If the current target is cid, remove it
             if game.target_chara == Some(cid) {
                 game.target_chara = None;
+            }
+        } else {
+            match chara.ai.state {
+                AiState::Combat { target } if target == cid => {
+                    chara.ai.state = AiState::default_search();
+                }
+                _ => (),
             }
         }
     }

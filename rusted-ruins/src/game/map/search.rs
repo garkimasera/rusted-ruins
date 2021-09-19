@@ -63,7 +63,6 @@ pub fn search_facility<'a>(gd: &'a GameData, facility_type: &str) -> Option<&'a 
     facility_item
 }
 
-/*
 use crate::game::view::calc_visual_distance;
 
 /// Search the nearest chara's position that has given Relationship on the current map.
@@ -71,28 +70,25 @@ pub fn search_nearest_target(
     gd: &GameData,
     center_cid: CharaId,
     rel: Relationship,
+    limit_distance: i32,
 ) -> Option<CharaId> {
     let map = gd.get_current_map();
     let chara = gd.chara.get(center_cid);
 
-    let center = if let Some(center) = map.chara_pos(center_cid) {
-        center
-    } else {
-        return None;
-    };
+    let center = map.chara_pos(center_cid)?;
 
     let mut target_cid = None;
-    let mut min_distance = i32::max_value();
+    let mut min_distance = limit_distance;
 
-    for cid in map.iter_charaid() {
-        if center_cid == *cid {
+    for &cid in map.iter_charaid() {
+        if center_cid == cid {
             continue;
         }
-        if gd.chara.get(*cid).rel.relative(chara.rel) != rel {
+        if gd.chara_relation(center_cid, cid) != rel {
             continue;
         }
 
-        let pos = if let Some(pos) = map.chara_pos(*cid) {
+        let pos = if let Some(pos) = map.chara_pos(cid) {
             pos
         } else {
             continue;
@@ -106,11 +102,10 @@ pub fn search_nearest_target(
         };
 
         if visual_distance <= chara.attr.view_range && visual_distance < min_distance {
-            target_cid = Some(*cid);
+            target_cid = Some(cid);
             min_distance = visual_distance;
         }
     }
 
     target_cid
 }
-*/
