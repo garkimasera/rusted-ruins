@@ -101,6 +101,11 @@ fn remove_dying_charas(game: &mut Game<'_>) -> bool {
             if game.target_chara == Some(cid) {
                 game.target_chara = None;
             }
+            // Move dead party member
+            if game.gd.player.party.contains(&cid) {
+                game.gd.player.party.remove(&cid);
+                game.gd.player.party_dead.insert(cid);
+            }
         } else {
             match chara.ai.state {
                 AiState::Combat { target } if target == cid => {

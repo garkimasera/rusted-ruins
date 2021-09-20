@@ -5,6 +5,7 @@ use super::CharaId;
 pub struct Player {
     money: i64,
     pub party: fnv::FnvHashSet<CharaId>,
+    pub party_dead: fnv::FnvHashSet<CharaId>,
 }
 
 impl Player {
