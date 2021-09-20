@@ -15,7 +15,6 @@ use rng::*;
 use rules::{npc_ai::*, RULES};
 
 pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
-    dbg!(cid, game.gd.chara.get(cid).ai.state);
     match game.gd.chara.get(cid).ai.state {
         AiState::Normal => process_npc_turn_normal(game, cid),
         AiState::Combat { .. } => process_npc_turn_combat(game, cid),

@@ -70,7 +70,8 @@ pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
     let sp_consumption_factor = if cid == CharaId::Player {
         let factor =
             if game.gd.get_current_mapid().is_region_map() && crate::game::time::player_moved() {
-                RULES.chara.sp_consumption_factor_in_region_map
+                let regionmap_speed_factor = crate::game::time::regionmap_speed(&game.gd).1;
+                RULES.chara.sp_consumption_factor_in_region_map / regionmap_speed_factor
             } else {
                 1.0
             };

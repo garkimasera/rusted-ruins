@@ -1,6 +1,7 @@
 use super::Game;
 use common::basic::WAIT_TIME_NUMERATOR;
-use common::gamedata::time::*;
+use common::gamedata::{time::*, CharaId, GameData};
+use common::gobj;
 use once_cell::sync::Lazy;
 use rules::RULES;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -37,7 +38,7 @@ pub fn current_time() -> Time {
 pub fn advance_game_time_by_clock(game: &mut Game<'_>, advanced_clock: u32) {
     let mid = game.gd.get_current_mapid();
     let minutes_per_turn = if mid.is_region_map() && player_moved() {
-        RULES.params.minutes_per_turn_region
+        minutes_per_turn_region(&game.gd)
     } else {
         RULES.params.minutes_per_turn_normal
     };
@@ -72,4 +73,32 @@ pub fn advance_game_time_by_secs(game: &mut Game<'_>, advanced_secs: u64) {
 
 pub fn update_time(game: &mut Game<'_>) {
     *CURRENT_TIME.lock().unwrap() = game.gd.time.current_time();
+}
+
+fn minutes_per_turn_region(gd: &GameData) -> f32 {
+    let speed = regionmap_speed(gd).0 as f32;
+    (RULES.params.regionmap_tile_size / speed) * 60.0
+}
+
+pub fn regionmap_speed(gd: &GameData) -> (u32, f32) {
+    let idx = gd.chara.get(CharaId::Player).idx;
+    let obj = gobj::get_obj(idx);
+    let player_speed = obj.base_attr.cruise_speed;
+
+    let party = gd.player.party.clone();
+    let cruise_speed = party
+        .into_iter()
+        .map(|cid| {
+            let idx = gd.chara.get(cid).idx;
+            let obj = gobj::get_obj(idx);
+            (obj.base_attr.carry, obj.base_attr.cruise_speed)
+        })
+        .max_by_key(|(carry, _)| *carry)
+        .map(|(_, cruise_speed)| cruise_speed)
+        .unwrap_or_else(|| {
+            let idx = gd.chara.get(CharaId::Player).idx;
+            let obj = gobj::get_obj(idx);
+            obj.base_attr.cruise_speed
+        }) as u32;
+    (cruise_speed, cruise_speed as f32 / player_speed as f32)
 }

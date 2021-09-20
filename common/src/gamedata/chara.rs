@@ -114,6 +114,10 @@ pub struct CharaBaseAttr {
     pub wil: i16,
     pub cha: i16,
     pub spd: i16,
+    /// Carrying power in region map
+    pub carry: i16,
+    /// Speed in region map
+    pub cruise_speed: i16,
 }
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
@@ -139,6 +143,8 @@ impl CharaBaseAttr {
             wil: self.wil + r.wil,
             cha: self.cha + r.cha,
             spd: self.spd + r.spd,
+            carry: self.carry,
+            cruise_speed: self.cruise_speed,
         }
     }
 }
