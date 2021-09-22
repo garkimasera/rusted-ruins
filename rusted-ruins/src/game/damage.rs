@@ -24,6 +24,7 @@ pub fn do_damage(
     let origin_faction = origin.map(|origin| game.gd.chara.get(origin).faction);
     let pos = game.gd.chara_pos(cid);
     let chara = game.gd.chara.get_mut(cid);
+    let faction = chara.faction;
 
     chara.hp -= damage;
 
@@ -46,7 +47,7 @@ pub fn do_damage(
             if !chara.ai.state.is_combat() {
                 chara.ai.state = AiState::Combat { target: origin };
 
-                if origin_faction == FactionId::player() {
+                if origin_faction == FactionId::player() && faction != FactionId::player() {
                     game_log_i!("npc-get-hostile"; chara=chara);
                     let target_faction = chara.faction;
                     game.gd
