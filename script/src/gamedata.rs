@@ -84,6 +84,7 @@ pub struct GameMethods {
     pub receive_item: fn(&mut GameData, &str, u32),
     pub receive_money: fn(&mut GameData, u32),
     pub remove_item: fn(&mut GameData, &str, u32) -> Result<(), ()>,
+    pub resurrect_party_members: fn(&mut GameData),
 }
 
 macro_rules! call_game_method {

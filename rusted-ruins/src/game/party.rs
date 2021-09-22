@@ -46,10 +46,34 @@ impl GameData {
         true
     }
 
+    fn add_cid_to_party(&mut self, cid: CharaId) {
+        match cid {
+            CharaId::Player => unreachable!(),
+            CharaId::Ally { .. } | CharaId::Unique { .. } => {
+                self.player.party.insert(cid);
+                let player_pos = self.player_pos();
+                let map = self.get_current_map_mut();
+                if let Some(pos) = map.empty_tile_around(player_pos) {
+                    map.locate_chara(cid, pos);
+                }
+            }
+            _ => todo!(),
+        }
+    }
+
     fn gen_party_chara(&mut self, id: &str, lv: u32) -> bool {
         trace!("generating party chara \"{}\" lv.{}", id, lv);
         let idx: CharaTemplateIdx = gobj::id_to_idx(id);
         let chara = crate::game::chara::gen::create_chara(idx, lv, FactionId::player(), None);
         self.add_chara_to_party(chara)
+    }
+}
+
+pub fn resurrect_party_members(gd: &mut GameData) {
+    let cids = std::mem::take(&mut gd.player.party_dead);
+
+    for cid in cids {
+        gd.chara.get_mut(cid).ressurect();
+        gd.add_cid_to_party(cid);
     }
 }

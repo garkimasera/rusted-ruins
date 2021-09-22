@@ -124,6 +124,13 @@ impl Chara {
         self.wait_time = WAIT_TIME_NUMERATOR / self.attr.spd as u32;
     }
 
+    /// Resurrect processes
+    fn ressurect(&mut self) {
+        self.hp = self.attr.max_hp;
+        self.status.clear();
+        self.update();
+    }
+
     /// Return (current item weight, capacity)
     fn item_weight(&self) -> (f32, f32) {
         (

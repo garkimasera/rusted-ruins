@@ -32,5 +32,8 @@ pub fn init() {
             gd.chara.get_mut(CharaId::Player).update();
             Ok(())
         },
+        resurrect_party_members: |gd| {
+            crate::game::party::resurrect_party_members(gd);
+        },
     });
 }

@@ -90,6 +90,11 @@ mod _rr {
     }
 
     #[pyfunction]
+    fn number_of_dead_party_members() -> usize {
+        with_gd(|gd| gd.player.party_dead.len())
+    }
+
+    #[pyfunction]
     fn has_empty_for_party() -> bool {
         with_gd(|gd| call_game_method!(has_empty_for_party)(gd))
     }
@@ -130,6 +135,13 @@ mod _rr {
             call_game_method!(remove_item)(gd, id.as_ref(), n)
                 .map_err(|_| vm.new_value_error("remove item failed".into()))?;
             Ok(())
+        })
+    }
+
+    #[pyfunction]
+    fn ressurect_party_members() {
+        with_gd_mut(|gd| {
+            call_game_method!(resurrect_party_members)(gd);
         })
     }
 }
