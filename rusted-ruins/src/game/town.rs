@@ -27,7 +27,7 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
                 items: ItemList::default(),
                 level: 1,
             };
-            town.add_shop(shop, shop_gen_data.chara_n);
+            town.add_shop(shop, shop_gen_data.chara_id);
         }
     }
     update_shops(gd, sid, sg);

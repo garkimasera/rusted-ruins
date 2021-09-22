@@ -147,7 +147,7 @@ impl GameData {
 
     /// Add chara as OnSite
     pub fn add_chara_to_site(&mut self, chara: Chara, sid: SiteId, n: u32) -> CharaId {
-        let cid = CharaId::OnSite { sid, n };
+        let cid = CharaId::OnSite { sid, id: n };
         self.chara.add(cid, chara);
         cid
     }
@@ -346,7 +346,7 @@ impl GameData {
 
     pub fn get_shop(&self, cid: CharaId) -> &Shop {
         let (sid, n) = match cid {
-            CharaId::OnSite { sid, n } => (sid, n),
+            CharaId::OnSite { sid, id: n } => (sid, n),
             _ => panic!("Tried to get shop according to no OnSite character"),
         };
         let site = self.region.get_site(sid);
@@ -360,7 +360,7 @@ impl GameData {
 
     pub fn get_shop_mut(&mut self, cid: CharaId) -> &mut Shop {
         let (sid, n) = match cid {
-            CharaId::OnSite { sid, n } => (sid, n),
+            CharaId::OnSite { sid, id: n } => (sid, n),
             _ => panic!("Tried to get shop according to no OnSite character"),
         };
         let site = self.region.get_site_mut(sid);

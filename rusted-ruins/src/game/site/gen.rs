@@ -26,7 +26,7 @@ pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             chara.trigger_talk = Some(uc.talk_script_id.to_owned());
         }
 
-        let cid = gd.add_chara_to_site(chara, sid, uc.n);
+        let cid = gd.add_chara_to_site(chara, sid, uc.id);
         gd.region.get_map_mut(mid).locate_chara(cid, uc.pos);
     }
 }

@@ -248,7 +248,7 @@ pub enum CharaId {
     Unique { id: UniqueId },
     /// Indexed for a site. This character is associated one site.
     /// Citizens on a town use this id.
-    OnSite { sid: SiteId, n: u32 },
+    OnSite { sid: SiteId, id: u32 },
     /// Indexed for a map. This character don't appear on other maps.
     /// Randomly generated characters use this id.
     OnMap { mid: MapId, n: u32 },

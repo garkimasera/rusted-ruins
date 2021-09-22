@@ -18,12 +18,12 @@ pub struct SiteGenObject {
 /// Data to generate a unique citizen
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct UniqueCitizenGenData {
+    /// Unique id in this site
+    pub id: u32,
     pub pos: Vec2d,
     pub floor: u32,
     #[serde(default)]
     pub name: String,
-    /// Unique number in this site
-    pub n: u32,
     pub chara_template_id: String,
     #[serde(default)]
     pub talk_script_id: String,
@@ -32,8 +32,8 @@ pub struct UniqueCitizenGenData {
 /// Data to generate a shop on the site
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ShopGenData {
-    /// Shopkeeper's id (n)
-    pub chara_n: u32,
+    /// Shopkeeper's id
+    pub chara_id: u32,
     #[serde(default)]
     pub shop_kind: String,
     #[serde(default)]
