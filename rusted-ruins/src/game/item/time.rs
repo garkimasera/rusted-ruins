@@ -100,7 +100,7 @@ fn process_item(gd: &mut GameData, il: ItemLocation, rule: &UpdateItemRule) -> U
                 cid: CharaId::Player,
             }) == il.0
             {
-                game_log_i!("inventory-item-rotten"; item=item, n=n);
+                game_log!("inventory-item-rotten"; item=item, n=n);
             }
 
             return UpdateTimeResult::Transform(rotten_item, n_rot_pile, n);

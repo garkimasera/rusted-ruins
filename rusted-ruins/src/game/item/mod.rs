@@ -284,7 +284,7 @@ impl GameData {
         };
         let item = &self.get_item(item_location).0;
         if !self.item_appendable(dest, item, n) {
-            game_log_i!("item-container-capacity-limit");
+            game_log!("item-container-capacity-limit");
             return;
         }
 
@@ -408,7 +408,7 @@ pub fn change_equipment(
 ) {
     let item = gd.remove_item_and_get(il, 1);
 
-    game_log_i!("item-equip"; chara=gd.chara.get(cid), item=item);
+    game_log!("item-equip"; chara=gd.chara.get(cid), item=item);
     if let Some(removed_equipment) = gd
         .get_equip_list_mut(cid)
         .equip(slot.0, slot.1 as usize, item)

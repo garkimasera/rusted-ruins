@@ -59,7 +59,7 @@ pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
     if is_poisoned {
         let chara = game.gd.chara.get_mut(cid);
         let damage = chara.attr.max_hp / 20;
-        game_log!("poison-damage"; chara=chara, damage=damage);
+        game_log_i!("poison-damage"; chara=chara, damage=damage);
         do_damage(game, cid, damage, CharaDamageKind::Poison, None);
     }
 
@@ -115,7 +115,7 @@ fn can_act(chara: &Chara) -> bool {
     for s in chara.status.iter() {
         match *s {
             CharaStatus::Asleep { .. } => {
-                game_log_i!("asleep"; chara=chara);
+                game_log!("asleep"; chara=chara);
                 return false;
             }
             CharaStatus::Work { .. } => {

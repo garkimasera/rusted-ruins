@@ -626,7 +626,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                         let game = Game::new(*gd, self.se.clone());
                         self.game = game;
                         self.game.update_before_player_turn();
-                        game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
+                        game_log!("start"; version=env!("CARGO_PKG_VERSION"));
                         audio::play_music(&self.game.gd.get_current_map().music);
                     }
                     _ => unreachable!(),
@@ -642,7 +642,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                     self.game = game;
                     self.game.update_before_player_turn();
                     self.game.start_new_game();
-                    game_log_i!("start"; version=env!("CARGO_PKG_VERSION"));
+                    game_log!("start"; version=env!("CARGO_PKG_VERSION"));
                 }
                 _ => unreachable!(),
             },

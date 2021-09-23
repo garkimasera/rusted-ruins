@@ -52,14 +52,14 @@ fn use_deed(game: &mut Game<'_>) -> bool {
     let gd = &mut game.gd;
     let mapid = gd.get_current_mapid();
     if !mapid.is_region_map() {
-        game_log_i!("use_item-deed-invalid-map");
+        game_log!("use_item-deed-invalid-map");
         return false;
     }
 
     let pos = gd.player_pos();
     let map = gd.get_current_map();
     if !map.tile[pos].special.is_none() {
-        game_log_i!("use_item-deed-occupied");
+        game_log!("use_item-deed-occupied");
     }
 
     let mut site = Site::new(1, None);
@@ -83,6 +83,6 @@ fn use_deed(game: &mut Game<'_>) -> bool {
     map.tile[pos].special = SpecialTileKind::SiteSymbol {
         kind: SiteSymbolKind::from("!rm-h0"),
     };
-    game_log_i!("use_item-deed-succeed");
+    game_log!("use_item-deed-succeed");
     true
 }

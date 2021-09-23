@@ -11,7 +11,7 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
     let arg0 = if let Some(arg0) = args.next() {
         arg0
     } else {
-        game_log_i!("debug-command-invalid");
+        game_log!("debug-command-invalid");
         return;
     };
 
@@ -20,7 +20,7 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
             if let Some(arg1) = args.next() {
                 gen_chara(game, arg1);
             } else {
-                game_log_i!("debug-command-need-1arg"; command="genchara");
+                game_log!("debug-command-need-1arg"; command="genchara");
             }
         }
         "genitem" => {
@@ -31,7 +31,7 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
                     .unwrap_or(1);
                 gen_item(game, arg1, n);
             } else {
-                game_log_i!("debug-command-need-1arg"; command="genitem");
+                game_log!("debug-command-need-1arg"; command="genitem");
             }
         }
         "anim" => {
@@ -55,14 +55,14 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
                     debug!("unknown animation id: {}", arg1);
                 }
             } else {
-                game_log_i!("debug-command-need-1arg"; command="anim");
+                game_log!("debug-command-need-1arg"; command="anim");
             }
         }
         "learn_skill" => {
             let arg1 = if let Some(arg1) = args.next() {
                 arg1
             } else {
-                game_log_i!("debug-command-need-1arg"; command="learn_skill");
+                game_log!("debug-command-need-1arg"; command="learn_skill");
                 return;
             };
             let skill_kind = match SkillKind::from_str(arg1) {
@@ -80,11 +80,11 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
                 let obj_holder = common::gobj::get_objholder();
                 obj_holder.debug_print(arg1);
             } else {
-                game_log_i!("debug-command-need-1arg"; command="print_ids");
+                game_log!("debug-command-need-1arg"; command="print_ids");
             }
         }
         _ => {
-            game_log_i!("debug-command-invalid");
+            game_log!("debug-command-invalid");
         }
     }
 }
@@ -93,7 +93,7 @@ fn gen_chara(game: &mut Game<'_>, arg1: &str) {
     let idx = if let Some(idx) = gobj::id_to_idx_checked::<CharaTemplateIdx>(arg1) {
         idx
     } else {
-        game_log_i!("debug-command-failed"; command="genchara");
+        game_log!("debug-command-failed"; command="genchara");
         return;
     };
 
@@ -102,7 +102,7 @@ fn gen_chara(game: &mut Game<'_>, arg1: &str) {
     if let Some(p) = super::map::choose_empty_tile(gd.region.get_map(mid)) {
         let chara = super::chara::gen::create_chara(idx, 1, FactionId::unknown(), None);
         trace!("Generate new npc {}", chara.to_text());
-        game_log_i!("debug-command-genchara"; chara=chara);
+        game_log!("debug-command-genchara"; chara=chara);
         let cid = gd.add_chara_to_map(chara, mid);
         let map = gd.region.get_map_mut(mid);
         map.locate_chara(cid, p);
@@ -118,11 +118,11 @@ fn gen_item(game: &mut Game<'_>, arg1: &str, n: u32) {
     let item = if let Some(item) = crate::game::item::gen::from_item_gen(&item_gen) {
         item
     } else {
-        game_log_i!("debug-command-failed"; command="genitem");
+        game_log!("debug-command-failed"; command="genitem");
         return;
     };
 
-    game_log_i!("debug-command-genitem"; item=item);
+    game_log!("debug-command-genitem"; item=item);
     let pos = game.gd.player_pos();
     game.gd.get_current_map_mut().locate_item(item, pos, n);
 }

@@ -94,7 +94,7 @@ pub fn latest_line() -> usize {
     gamelog.line_count
 }
 
-macro_rules! game_log {
+macro_rules! game_log_i {
     ($id:expr) => {
         $crate::log::push($crate::text::log_txt($id));
     };
@@ -112,7 +112,7 @@ macro_rules! game_log {
 }
 
 /// Instantly add a new line after logging
-macro_rules! game_log_i {
+macro_rules! game_log {
     ($id:expr) => {
         $crate::log::push($crate::text::log_txt($id));
         $crate::log::new_line()

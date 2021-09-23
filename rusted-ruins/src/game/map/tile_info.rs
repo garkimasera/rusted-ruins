@@ -3,7 +3,7 @@ use common::gamedata::*;
 use geom::{Direction, Vec2d};
 
 pub fn print_tile_info(_game: &Game<'_>, _pos: Vec2d) {
-    game_log_i!("tile-information-no-info");
+    game_log!("tile-information-no-info");
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]

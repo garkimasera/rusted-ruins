@@ -44,10 +44,10 @@ pub fn use_active_skill(
 
     match active_skill.group {
         ActiveSkillGroup::Magic => {
-            game_log_i!("use-active-skill-magic"; chara=chara, active_skill=active_skill_id);
+            game_log!("use-active-skill-magic"; chara=chara, active_skill=active_skill_id);
         }
         ActiveSkillGroup::Special => {
-            game_log_i!("use-active-skill-special"; chara=chara, active_skill=active_skill_id);
+            game_log!("use-active-skill-special"; chara=chara, active_skill=active_skill_id);
         }
     }
 

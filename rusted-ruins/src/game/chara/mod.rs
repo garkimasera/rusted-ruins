@@ -31,7 +31,7 @@ impl Chara {
         if result.0 {
             // If level up
             trace!("{} level up ({:?})", self.to_text(), kind);
-            game_log!("skill-level-up"; chara=self, skill=kind);
+            game_log_i!("skill-level-up"; chara=self, skill=kind);
             self.update_level();
             self.update();
         }
@@ -208,7 +208,7 @@ impl Chara {
 
         if (self.lv as f32) < expected_level {
             self.lv += 1;
-            game_log_i!("level-up"; chara=self, level=self.lv);
+            game_log!("level-up"; chara=self, level=self.lv);
         }
     }
 }

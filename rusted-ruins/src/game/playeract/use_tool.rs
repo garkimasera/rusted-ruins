@@ -19,7 +19,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         let tool = if let Some(tool) = player.equip.item(EquipSlotKind::Tool, 0) {
             tool
         } else {
-            game_log_i!("use-tool-without-equip");
+            game_log!("use-tool-without-equip");
             return;
         };
 
@@ -43,7 +43,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         match tool_effect {
             ToolEffect::Build => {
                 if !pos.is_adjacent(player_pos) {
-                    game_log_i!("building-not-adjacent-tile");
+                    game_log!("building-not-adjacent-tile");
                     return;
                 }
                 let build_obj = if let Some(ItemAttr::BuildObj(build_obj)) =
@@ -68,7 +68,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                     return;
                 }
                 if !pos.is_adjacent(player_pos) {
-                    game_log_i!("mining-not-adjacent-tile");
+                    game_log!("mining-not-adjacent-tile");
                     return;
                 }
 

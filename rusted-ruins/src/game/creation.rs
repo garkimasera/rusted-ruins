@@ -56,7 +56,7 @@ pub fn start_creation(
     let player = gd.chara.get(CharaId::Player);
     let product = obj_txt(&recipe.product);
     game.anim_queue.push_work(1.0);
-    game_log_i!("creation-start"; chara=player, product=product);
+    game_log!("creation-start"; chara=player, product=product);
 }
 
 pub fn finish_creation(
@@ -104,7 +104,7 @@ pub fn finish_creation(
         player.add_skill_exp(skill_kind, exp, recipe.difficulty);
     }
 
-    game_log_i!("creation-finish"; chara=player, product=product);
+    game_log!("creation-finish"; chara=player, product=product);
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -160,11 +160,11 @@ pub fn learn_recipe(gd: &mut GameData, il: ItemLocation) -> LearnRecipeResult {
             gd.remove_item(il, 1);
             let item_name = obj_txt(new_recipe);
             let chara = gd.chara.get(CharaId::Player);
-            game_log_i!("recipe-learned"; chara=chara, item=item_name);
+            game_log!("recipe-learned"; chara=chara, item=item_name);
             LearnRecipeResult::Success
         } else {
             let chara = gd.chara.get(CharaId::Player);
-            game_log_i!("recipe-learning-failed"; chara=chara);
+            game_log!("recipe-learning-failed"; chara=chara);
             LearnRecipeResult::NoAvailableRecipe
         }
     } else {

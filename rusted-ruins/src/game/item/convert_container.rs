@@ -23,7 +23,7 @@ pub fn append_to_converter(container_item: &mut Item, item: Item, n: u32) {
         container_item_list.append_simple(product_item, n * product.1);
     }
 
-    game_log_i!("container-convert-item"; item=item, n=n, container=container_item);
+    game_log!("container-convert-item"; item=item, n=n, container=container_item);
 }
 
 pub fn append_to_mixed_converter(container_item: &mut Item, item: Item, n: u32) {

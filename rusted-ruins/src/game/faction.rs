@@ -17,10 +17,10 @@ impl Faction {
         self.set(faction, current_value + value);
 
         if value > 0 {
-            game_log_i!("faction-relation-improve"; faction=faction, value=value);
+            game_log!("faction-relation-improve"; faction=faction, value=value);
         } else if value < 0 {
             let value = -value;
-            game_log_i!("faction-relation-lower"; faction=faction, value=value);
+            game_log!("faction-relation-lower"; faction=faction, value=value);
         }
     }
 }

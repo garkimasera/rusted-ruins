@@ -30,7 +30,7 @@ pub fn do_damage(
 
     // Damage log
     if game_log_cfg().combat_log.damage() {
-        game_log!("damaged-chara"; chara=chara, damage=damage);
+        game_log_i!("damaged-chara"; chara=chara, damage=damage);
     }
 
     if let Some(pos) = pos {
@@ -48,7 +48,7 @@ pub fn do_damage(
                 chara.ai.state = AiState::Combat { target: origin };
 
                 if origin_faction.is_player() && !faction.is_player() {
-                    game_log_i!("npc-get-hostile"; chara=chara);
+                    game_log!("npc-get-hostile"; chara=chara);
                     let target_faction = chara.faction;
                     game.gd
                         .faction
@@ -60,19 +60,19 @@ pub fn do_damage(
         // Logging
         match damage_kind {
             CharaDamageKind::MeleeAttack => {
-                game_log!("killed-by-melee-attack"; chara=chara);
+                game_log_i!("killed-by-melee-attack"; chara=chara);
             }
             CharaDamageKind::RangedAttack => {
-                game_log!("killed-by-ranged-attack"; chara=chara);
+                game_log_i!("killed-by-ranged-attack"; chara=chara);
             }
             CharaDamageKind::Explosion => {
-                game_log!("killed-by-explosion"; chara=chara);
+                game_log_i!("killed-by-explosion"; chara=chara);
             }
             CharaDamageKind::Poison => {
-                game_log!("killed-by-poison-damage"; chara=chara);
+                game_log_i!("killed-by-poison-damage"; chara=chara);
             }
             CharaDamageKind::Starve => {
-                game_log!("killed-by-starve-damage"; chara=chara);
+                game_log_i!("killed-by-starve-damage"; chara=chara);
             }
         }
 

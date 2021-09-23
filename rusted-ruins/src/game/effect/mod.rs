@@ -210,15 +210,15 @@ fn cause_status(game: &mut Game<'_>, cid: CharaId, power: f32, status: StatusEff
             chara.add_status(CharaStatus::Asleep {
                 turn_left: power as u16,
             });
-            game_log!("fall-asleep"; chara=chara);
+            game_log_i!("fall-asleep"; chara=chara);
         }
         StatusEffect::Poison => {
             chara.add_status(CharaStatus::Poisoned);
-            game_log!("poisoned"; chara=chara);
+            game_log_i!("poisoned"; chara=chara);
         }
         StatusEffect::Scanned => {
             chara.add_status(CharaStatus::Scanned);
-            game_log!("scanned"; chara=chara);
+            game_log_i!("scanned"; chara=chara);
         }
     }
 }

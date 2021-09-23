@@ -165,7 +165,7 @@ impl<'s> Game<'s> {
         if let Some(cid) = map.get_chara(pos) {
             let player = self.gd.chara.get(CharaId::Player);
             let target = self.gd.chara.get(cid);
-            game_log_i!("target-chara"; chara=player, target=target);
+            game_log!("target-chara"; chara=player, target=target);
             self.target_chara = Some(cid);
             true
         } else {

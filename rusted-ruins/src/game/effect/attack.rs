@@ -32,7 +32,7 @@ pub fn melee_attack(
     let target = game.gd.chara.get(target_id);
 
     if game_log_cfg().combat_log.attack() {
-        game_log!("attack"; attacker=attacker, target=target);
+        game_log_i!("attack"; attacker=attacker, target=target);
     }
 
     let attack_params = AttackParams {
@@ -59,7 +59,7 @@ pub fn ranged_attack(
     let target = game.gd.chara.get(target_id);
 
     if game_log_cfg().combat_log.attack() {
-        game_log!("arrow-hit"; chara=target);
+        game_log_i!("arrow-hit"; chara=target);
     }
 
     let attack_params = AttackParams {
@@ -198,7 +198,7 @@ fn hit_judge(
     let is_hit = rng::get_rng().gen_bool(p.into());
 
     if !is_hit && game_log_cfg().combat_log.attack() {
-        game_log!("attack-evade"; chara=gd.chara.get(target_id));
+        game_log_i!("attack-evade"; chara=gd.chara.get(target_id));
     }
 
     is_hit

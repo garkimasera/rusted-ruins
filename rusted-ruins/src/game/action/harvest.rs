@@ -11,7 +11,7 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
     let item_idx = item.idx;
 
     if item.remaining().map(|remaining| remaining.is_zero()) == Some(false) {
-        game_log_i!("harvest-plant-not-ready"; item=item);
+        game_log!("harvest-plant-not-ready"; item=item);
         return false;
     }
 
@@ -25,7 +25,7 @@ pub fn harvest_by_tool(game: &mut Game<'_>, chara_id: CharaId, pos: Vec2d) {
     let player_pos = gd.player_pos();
 
     if !pos.is_adjacent(player_pos) && player_pos != pos {
-        game_log_i!("chopping-not-adjacent-tile");
+        game_log!("chopping-not-adjacent-tile");
         return;
     }
 
@@ -89,7 +89,7 @@ pub fn harvest_by_tool(game: &mut Game<'_>, chara_id: CharaId, pos: Vec2d) {
         .next();
 
     if let Some(ToolEffect::Chop) = tool_effect {
-        game_log_i!("chopping-no-tree");
+        game_log!("chopping-no-tree");
     }
 }
 
@@ -130,14 +130,14 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
 
         match harvest.kind {
             HarvestKind::Chop => {
-                game_log_i!("harvest-chop"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
+                game_log!("harvest-chop"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
                 audio::play_sound("chop-tree");
             }
             HarvestKind::Deconstruct => {
-                game_log_i!("harvest-deconstruct"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
+                game_log!("harvest-deconstruct"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
             }
             HarvestKind::Plant => {
-                game_log_i!("harvest-plant"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
+                game_log!("harvest-plant"; chara=gd.chara.get(cid), item=&target_item, n=n_yield);
             }
             _ => (),
         }

@@ -68,7 +68,7 @@ pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
                     if *killed == *goal {
                         *state = QuestState::Completed;
                         // Log
-                        game_log_i!("quest-complete-slay_monsters"; monster=idx, n=goal);
+                        game_log!("quest-complete-slay_monsters"; monster=idx, n=goal);
                     }
                 }
             }
@@ -92,7 +92,7 @@ pub fn receive_rewards(gd: &mut GameData) -> bool {
     if exist_completed_quest {
         gd.quest.remove_reward_received();
         gd.player.add_money(money);
-        game_log_i!("quest-reward-receive-money"; money=money);
+        game_log!("quest-reward-receive-money"; money=money);
     }
     exist_completed_quest
 }

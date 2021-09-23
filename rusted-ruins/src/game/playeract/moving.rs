@@ -152,13 +152,13 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 }
                 match &log_msg {
                     LogMessage::ExitToOutside => {
-                        game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
+                        game_log!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
                     }
                     LogMessage::EnterSite(s) => {
-                        game_log_i!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
+                        game_log!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
                     }
                     LogMessage::ChangeFloor => {
-                        game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
+                        game_log!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
                     }
                 }
                 crate::game::map::switch_map(pa.0, dest);
@@ -191,13 +191,13 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 }
                 match &log_msg {
                     LogMessage::ExitToOutside => {
-                        game_log_i!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
+                        game_log!("exit-to-outside"; player=pa.gd().chara.get(CharaId::Player));
                     }
                     LogMessage::EnterSite(s) => {
-                        game_log_i!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
+                        game_log!("enter-site"; player=pa.gd().chara.get(CharaId::Player), site=s);
                     }
                     LogMessage::ChangeFloor => {
-                        game_log_i!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
+                        game_log!("change-floor"; player=pa.gd().chara.get(CharaId::Player));
                     }
                 }
                 crate::game::map::switch_map(pa.0, dest);

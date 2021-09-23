@@ -52,19 +52,19 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         let item = gd.get_item(il).0;
 
         if item.flags.contains(ItemFlags::FIXED) {
-            game_log_i!("item-pick-up-fixed"; item=item);
+            game_log!("item-pick-up-fixed"; item=item);
             return false;
         }
         if item.flags.contains(ItemFlags::OWNED) {
-            game_log_i!("item-owned-by-others"; item=item);
+            game_log!("item-owned-by-others"; item=item);
             return false;
         }
         if item.flags.contains(ItemFlags::PLANT) {
-            game_log_i!("item-pick-up-plant"; item=item);
+            game_log!("item-pick-up-plant"; item=item);
             return false;
         }
 
-        game_log_i!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=item);
+        game_log!("item-pickup"; chara=gd.chara.get(CharaId::Player), item=item);
         super::action::get_item::get_item(gd, il, CharaId::Player, n);
         true
     }
@@ -76,7 +76,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
             mid: gd.get_current_mapid(),
             pos: gd.player_pos(),
         };
-        game_log_i!("item-drop"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
+        game_log!("item-drop"; chara=gd.chara.get(CharaId::Player), item=gd.get_item(il).0);
         gd.move_item(il, tile_list_location, n);
         gd.chara.get_mut(CharaId::Player).update();
         true
@@ -318,7 +318,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                         .request_dialog_open(DialogOpenRequest::CharaStatus { cid });
                 } else {
                     let chara = self.gd().chara.get(cid);
-                    game_log_i!("not-scanned"; chara=chara);
+                    game_log!("not-scanned"; chara=chara);
                     return;
                 }
             }

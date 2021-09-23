@@ -34,7 +34,7 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj:
         if has < n {
             let needed = n - has;
             let item = crate::text::obj_txt(item_id);
-            game_log_i!("building-shortage-material"; item=item, n=needed);
+            game_log!("building-shortage-material"; item=item, n=needed);
             return;
         }
     }

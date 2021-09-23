@@ -175,7 +175,7 @@ pub fn throw_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: T
     } else {
         item.w() as f32 * RULES.effect.throw_weight_to_power_factor * chara.attr.str as f32
     };
-    game_log!("throw-item"; chara=chara, item=item);
+    game_log_i!("throw-item"; chara=chara, item=item);
     super::effect::do_effect(game, &effect, Some(cid), target, power, 1.0);
 
     // Exp processing
@@ -193,7 +193,7 @@ pub fn drink_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
 
     let chara = gd.chara.get_mut(cid);
-    game_log!("drink-item"; chara=chara, item=item);
+    game_log_i!("drink-item"; chara=chara, item=item);
 
     if let Some(ItemObjAttr::Medical { power, effect }) =
         find_attr!(item.obj(), ItemObjAttr::Medical)
@@ -210,7 +210,7 @@ pub fn eat_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
     let item_obj = item.obj();
 
     let chara = gd.chara.get_mut(cid);
-    game_log!("eat-item"; chara=chara, item=item);
+    game_log_i!("eat-item"; chara=chara, item=item);
 
     let nutrition: f32 = if let Some(&ItemObjAttr::Nutrition(nutrition)) =
         find_attr!(item_obj, ItemObjAttr::Nutrition)

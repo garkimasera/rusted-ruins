@@ -9,9 +9,9 @@ pub fn skill_learn(game: &mut Game<'_>, cid: CharaId, skills: &[SkillKind]) {
         let skill_kind = *skill_kind;
         let chara = gd.chara.get_mut(cid);
         if chara.skills.learn_new_skill(skill_kind) {
-            game_log_i!("skill-learned"; chara=chara, skill=skill_kind);
+            game_log!("skill-learned"; chara=chara, skill=skill_kind);
         } else {
-            game_log_i!("skill-already-learned"; chara=chara, skill=skill_kind);
+            game_log!("skill-already-learned"; chara=chara, skill=skill_kind);
         }
     }
 }

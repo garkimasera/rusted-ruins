@@ -18,7 +18,7 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
         );
         gd.chara.get_mut(CharaId::Player).update();
     } else {
-        game_log_i!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player));
+        game_log!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player));
     }
 }
 

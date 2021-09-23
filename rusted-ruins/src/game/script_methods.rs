@@ -18,13 +18,13 @@ pub fn init() {
             let il = gd.get_item_list_mut(ItemListLocation::PLAYER);
             il.append(item.clone(), n);
             let player = gd.chara.get_mut(CharaId::Player);
-            game_log_i!("player-receive-item"; chara=player, item=item, n=n);
+            game_log!("player-receive-item"; chara=player, item=item, n=n);
             player.update();
         },
         receive_money: |gd, amount| {
             gd.player.add_money(amount.into());
             let player = gd.chara.get(CharaId::Player);
-            game_log_i!("player-receive-money"; chara=player, amount=amount);
+            game_log!("player-receive-money"; chara=player, amount=amount);
         },
         remove_item: |gd, id, n| {
             let il = gd.player_item_location(id.as_ref()).ok_or(())?;
