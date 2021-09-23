@@ -129,7 +129,7 @@ fn attack_target(
     if hp > 0 {
         // Exp for targetted character
         if let Some(attacker_id) = attack_params.attacker_id {
-            let attacker_level = game.gd.chara.get(attacker_id).level;
+            let attacker_level = game.gd.chara.get(attacker_id).lv;
             let target = game.gd.chara.get_mut(target_id);
             target.add_damage_exp(damage, attacker_level);
         }

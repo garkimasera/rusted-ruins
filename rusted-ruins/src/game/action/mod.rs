@@ -109,7 +109,7 @@ pub fn melee_attack(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
     // Exp processing
-    let target_level = game.gd.chara.get(target).level;
+    let target_level = game.gd.chara.get(target).lv;
     let attacker = game.gd.chara.get_mut(cid);
     attacker.add_attack_exp(skill_kind, target_level);
 }
@@ -143,7 +143,7 @@ pub fn shoot_target(game: &mut Game<'_>, cid: CharaId, target: CharaId) -> bool 
     do_effect(game, &effect, Some(cid), target, power, hit_power);
 
     // Exp processing
-    let target_level = game.gd.chara.get(target).level;
+    let target_level = game.gd.chara.get(target).lv;
     let attacker = game.gd.chara.get_mut(cid);
     attacker.add_attack_exp(skill_kind, target_level);
 
@@ -180,7 +180,7 @@ pub fn throw_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: T
 
     // Exp processing
     let target_level = match target {
-        Target::Chara(cid) => game.gd.chara.get(cid).level,
+        Target::Chara(cid) => game.gd.chara.get(cid).lv,
         _ => 1,
     };
     let attacker = game.gd.chara.get_mut(cid);

@@ -24,7 +24,7 @@ pub fn create_chara(
         idx: chara_template_idx,
         class,
         faction,
-        level: lv,
+        lv,
         item_list: ItemList::default(),
         equip: EquipItemList::new(&[]),
         wait_time: WAIT_TIME_NUMERATOR,
@@ -165,7 +165,7 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
     for (esk, item_selector, bonus) in equips_rule {
         use crate::game::item::gen::*;
 
-        let level = chara.level + bonus;
+        let level = chara.lv + bonus;
         let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
 
         let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
@@ -183,7 +183,7 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
     for (esk, item_selector, bonus) in &ct.equips {
         use crate::game::item::gen::*;
 
-        let level = chara.level + bonus;
+        let level = chara.lv + bonus;
         let item_selector: ItemSelector = match item_selector.parse() {
             Ok(item_selector) => item_selector,
             Err(e) => {

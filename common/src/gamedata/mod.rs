@@ -345,29 +345,29 @@ impl GameData {
     }
 
     pub fn get_shop(&self, cid: CharaId) -> &Shop {
-        let (sid, n) = match cid {
-            CharaId::OnSite { sid, id: n } => (sid, n),
+        let (sid, id) = match cid {
+            CharaId::OnSite { sid, id } => (sid, id),
             _ => panic!("Tried to get shop according to no OnSite character"),
         };
         let site = self.region.get_site(sid);
         match &site.content {
             SiteContent::Town { ref town } => town
-                .get_shop(n)
-                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid)),
+                .get_shop(id)
+                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", id, sid)),
             _ => unreachable!("Tried to get shop in a site that is not town"),
         }
     }
 
     pub fn get_shop_mut(&mut self, cid: CharaId) -> &mut Shop {
-        let (sid, n) = match cid {
-            CharaId::OnSite { sid, id: n } => (sid, n),
+        let (sid, id) = match cid {
+            CharaId::OnSite { sid, id } => (sid, id),
             _ => panic!("Tried to get shop according to no OnSite character"),
         };
         let site = self.region.get_site_mut(sid);
         match &mut site.content {
             SiteContent::Town { ref mut town } => town
-                .get_shop_mut(n)
-                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", n, sid)),
+                .get_shop_mut(id)
+                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", id, sid)),
             _ => unreachable!("Tried to get shop in a site that is not town"),
         }
     }
