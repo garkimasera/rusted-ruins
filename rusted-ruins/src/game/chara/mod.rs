@@ -28,6 +28,7 @@ impl Chara {
             // If level up
             trace!("{} level up ({:?})", self.to_text(), kind);
             game_log!("skill-level-up"; chara=self, skill=kind);
+            self.update_level();
             self.update();
         }
     }
@@ -172,5 +173,38 @@ impl Chara {
     /// active skill available or not.
     fn active_skill_available(&self, active_skill: &ActiveSkill) -> bool {
         self.sp > active_skill.cost_sp as f32
+    }
+
+    /// Update character level by the current skill level
+    fn update_level(&mut self) {
+        let common_skills = &[SkillKind::Defence, SkillKind::Endurance, SkillKind::Evasion];
+        let mut common_skill_level_sum = 0.0;
+        let mut skill_levels = Vec::new();
+
+        for (&skill_kind, &skill_level) in &self.skills.skills {
+            if common_skills.contains(&skill_kind) {
+                common_skill_level_sum += skill_level as f32;
+            } else {
+                skill_levels.push(skill_level);
+            }
+        }
+
+        skill_levels.sort_by(|a, b| b.cmp(a));
+
+        let skill_level_weighted_sum = skill_levels
+            .into_iter()
+            .take(8)
+            .enumerate()
+            .map(|(i, skill_level)| skill_level as f32 / (i as f32 + 1.0).powf(1.5))
+            .sum::<f32>();
+
+        let expected_level = ((common_skill_level_sum / common_skills.len() as f32)
+            + skill_level_weighted_sum)
+            / 2.0;
+
+        if (self.lv as f32) < expected_level {
+            self.lv += 1;
+            game_log_i!("level-up"; chara=self, level=self.lv);
+        }
     }
 }

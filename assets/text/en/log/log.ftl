@@ -23,6 +23,7 @@ change-floor = {$player} moved to the next floor.
 
 # Messages about character status
 
+level-up = {$chara}'s level reached {$level}.
 skill-level-up = {$chara}'s {$skill} level increased.
 skill-learned = {$chara} learned {$skill} skill.
 skill-already-learned = {$chara} have already learned {$skill} skill.

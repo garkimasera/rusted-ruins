@@ -23,6 +23,7 @@ change-floor = {$player}は隣のフロアへ向かった。
 
 # Messages about character status
 
+level-up = {$chara}のレベルが{$level}に上がった。
 skill-level-up = {$chara}の{$skill}レベルが上がった。
 skill-learned = {$chara}は{$skill}スキルを習得した。
 skill-already-learned = {$chara}はすでに{$skill}スキルを覚えている。

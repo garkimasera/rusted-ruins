@@ -83,9 +83,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 do_effect(self.0, &effect, Some(CharaId::Player), pos, power, 0.0);
                 let floor_level = self.0.gd.get_current_mapid().floor();
                 let player = self.0.gd.chara.get_mut(CharaId::Player);
-                player
-                    .skills
-                    .add_exp(SkillKind::Mining, RULES.exp.mining, floor_level);
+                player.add_skill_exp(SkillKind::Mining, RULES.exp.mining, floor_level);
                 self.0
                     .anim_queue
                     .push(Animation::img_onetile(*MINING_ANIM_IDX, pos));

@@ -170,8 +170,6 @@ fn awake_other_npc(game: &mut Game<'_>, cid: CharaId) {
 
         // Exp for conceal
         let chara = game.gd.chara.get_mut(cid);
-        chara
-            .skills
-            .add_exp(SkillKind::Conceal, RULES.exp.conceal, detection);
+        chara.add_skill_exp(SkillKind::Conceal, RULES.exp.conceal, detection);
     }
 }
