@@ -47,7 +47,7 @@ pub fn do_damage(
             if !chara.ai.state.is_combat() {
                 chara.ai.state = AiState::Combat { target: origin };
 
-                if origin_faction == FactionId::player() && faction != FactionId::player() {
+                if origin_faction.is_player() && !faction.is_player() {
                     game_log_i!("npc-get-hostile"; chara=chara);
                     let target_faction = chara.faction;
                     game.gd

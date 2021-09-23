@@ -60,14 +60,19 @@ impl SkillList {
         }
 
         self.skills.entry(kind).or_insert(1);
+        self.enable_exp();
 
-        if self.exp.is_none() {
-            self.exp = Some(FnvHashMap::default());
-        }
         let exp = self.exp.as_mut().unwrap();
         exp.entry(kind).or_insert(0);
 
         true
+    }
+
+    /// Enable getting exp
+    fn enable_exp(&mut self) {
+        if self.exp.is_none() {
+            self.exp = Some(FnvHashMap::default());
+        }
     }
 
     /// Set skill level directly. Do not add exp.

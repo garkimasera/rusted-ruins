@@ -171,9 +171,9 @@ impl GameData {
             }
         }
 
-        let faction_relation = if f1 == FactionId::player() {
+        let faction_relation = if f1.is_player() {
             self.faction.get(f2)
-        } else if f2 == FactionId::player() {
+        } else if f2.is_player() {
             self.faction.get(f1)
         } else {
             RULES.faction.relation(f1, f2)

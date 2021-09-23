@@ -45,6 +45,8 @@ impl Default for FactionId {
 }
 
 impl FactionId {
+    const PLAYER: &'static str = "!player";
+
     pub fn new(name: &str) -> Option<FactionId> {
         ArrayString::from(name).map(FactionId).ok()
     }
@@ -54,7 +56,11 @@ impl FactionId {
     }
 
     pub fn player() -> FactionId {
-        FactionId::new("!player").unwrap()
+        FactionId::new(Self::PLAYER).unwrap()
+    }
+
+    pub fn is_player(&self) -> bool {
+        self.as_str() == Self::PLAYER
     }
 
     pub fn as_str(&self) -> &str {
