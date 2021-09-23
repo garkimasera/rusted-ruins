@@ -5,6 +5,8 @@ use common::gobj;
 use common::objholder::*;
 use std::borrow::Cow;
 
+use super::obj_txt_checked;
+
 impl<T: ToTextId> ToText for T {
     fn to_text(&self) -> Cow<'_, str> {
         text::to_txt(self).into()
@@ -32,9 +34,15 @@ impl ToText for FactionId {
 
 impl ToText for Site {
     fn to_text(&self) -> Cow<'_, str> {
-        if let Some(ref name) = self.name {
+        if let Some(name) = self.name.as_ref() {
             let name: &str = &*name;
             return name.into();
+        }
+
+        if let Some(id) = self.id.as_ref() {
+            if let Some(text) = obj_txt_checked(id) {
+                return text.into();
+            }
         }
 
         match self.content {
