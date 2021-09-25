@@ -189,6 +189,12 @@ impl GameData {
         region.add_site(site, kind, pos)
     }
 
+    pub fn remove_site(&mut self, sid_to_remove: SiteId) {
+        self.region.remove_site(sid_to_remove);
+        self.chara
+            .retain(|cid, _| !matches!(cid, &CharaId::OnSite { sid, .. } if sid == sid_to_remove));
+    }
+
     pub fn add_map(&mut self, map: Map, sid: SiteId, map_random_id: u64) -> MapId {
         let site = self.region.get_site_mut(sid);
         let floor = site.add_map(map, map_random_id);

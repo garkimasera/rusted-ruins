@@ -263,7 +263,7 @@ impl RegionHolder {
         None
     }
 
-    pub fn remove_site(&mut self, sid: SiteId) {
+    pub(crate) fn remove_site(&mut self, sid: SiteId) {
         let region = self
             .0
             .get_mut(&sid.rid)

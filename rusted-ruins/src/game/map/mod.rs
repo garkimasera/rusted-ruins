@@ -165,7 +165,7 @@ pub fn switch_map(game: &mut Game<'_>, destination: Destination) {
         if sid.kind == SiteKind::Temp {
             // If new site is not the same as old site.
             if new_mid.is_region_map() || new_mid.sid() != sid {
-                gd.region.remove_site(sid);
+                gd.remove_site(sid);
             }
         }
     }

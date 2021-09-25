@@ -384,6 +384,11 @@ impl CharaHolder {
     ) -> HashMap<CharaId, Chara> {
         std::mem::replace(&mut self.on_map, next)
     }
+
+    pub(crate) fn retain<F: FnMut(&CharaId, &Chara) -> bool>(&mut self, mut f: F) {
+        self.c.retain(|cid, chara| f(cid, chara));
+        self.on_map.retain(|cid, chara| f(cid, chara));
+    }
 }
 
 /// When a chara is talked to, talk will be start from the section of specified TalkScript
