@@ -4,7 +4,7 @@ use super::item_attr::*;
 use super::skill::WeaponKind;
 use super::time::{Duration, Time};
 use super::KindParseError;
-use crate::basic::ARRAY_STR_ID_LEN;
+use crate::basic::ArrayStringId;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
 use geom::Vec2d;
@@ -286,7 +286,7 @@ impl Default for QualityKind {
     }
 }
 
-pub type MaterialName = arrayvec::ArrayString<ARRAY_STR_ID_LEN>;
+pub type MaterialName = ArrayStringId;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum ArmorKind {

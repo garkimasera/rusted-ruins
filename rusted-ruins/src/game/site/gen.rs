@@ -7,7 +7,7 @@ use geom::*;
 
 /// Add unique citizens from SiteGenObject
 pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
-    for uc in &sg.unique_citizens {
+    for uc in &sg.npcs {
         let faction_id = sg.default_faction_id;
         let mut chara = game::chara::gen::create_chara(
             gobj::id_to_idx(&uc.chara_template_id),

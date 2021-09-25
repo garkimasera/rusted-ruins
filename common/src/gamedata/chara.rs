@@ -6,8 +6,9 @@ use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::unknown_id_err;
 use super::{traits::*, UniqueId};
-use crate::basic::{BonusLevel, ARRAY_STR_ID_LEN};
+use crate::basic::{ArrayStringId, BonusLevel};
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
+use arrayvec::ArrayString;
 use geom::Vec2d;
 use std::collections::HashMap;
 
@@ -38,7 +39,7 @@ pub struct CharaTemplateObject {
 /// Character classes
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct CharaClass(arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
+pub struct CharaClass(ArrayStringId);
 
 impl CharaClass {
     pub fn as_str(&self) -> &str {
@@ -244,8 +245,10 @@ pub enum CharaId {
     Player,
     /// Player ally npcs
     Ally { id: UniqueId },
-    /// Special npcs
-    Unique { id: UniqueId },
+    /// Npcs used globally in the game
+    Global { id: UniqueId },
+    /// Unique named npc
+    Unique { id: ArrayStringId },
     /// Indexed for a site. This character is associated one site.
     /// Citizens on a town use this id.
     OnSite { sid: SiteId, id: u32 },
@@ -268,11 +271,11 @@ pub struct CharaAi {
 /// Rough kind of NPC AI
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct NpcAiKind(arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
+pub struct NpcAiKind(ArrayStringId);
 
 impl Default for NpcAiKind {
     fn default() -> NpcAiKind {
-        NpcAiKind(arrayvec::ArrayString::from("default").unwrap())
+        NpcAiKind(ArrayStringId::from("default").unwrap())
     }
 }
 

@@ -179,7 +179,7 @@ pub struct SiteGenDepInput {
     pub map_template_id: Vec<String>,
     pub default_faction_id: FactionId,
     #[serde(default)]
-    pub unique_citizens: Vec<sitegen::UniqueCitizenGenData>,
+    pub npcs: Vec<sitegen::NpcGenData>,
     #[serde(default)]
     pub shops: Vec<sitegen::ShopGenData>,
 }

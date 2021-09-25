@@ -1,12 +1,11 @@
-use crate::basic::ARRAY_STR_ID_LEN;
-use crate::basic::{MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
+use crate::basic::{ArrayStringId, MAX_ITEM_FOR_DRAW, N_TILE_IMG_LAYER};
 use crate::gamedata::chara::{Chara, CharaId};
 use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
 use crate::gamedata::site::{DungeonKind, SiteId};
 use crate::gamedata::time::Time;
 use crate::objholder::*;
-use arrayvec::{ArrayString, ArrayVec};
+use arrayvec::ArrayVec;
 use geom::*;
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
@@ -108,11 +107,11 @@ pub enum StairsKind {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct SiteSymbolKind(ArrayString<ARRAY_STR_ID_LEN>);
+pub struct SiteSymbolKind(ArrayStringId);
 
 impl From<&str> for SiteSymbolKind {
     fn from(kind: &str) -> Self {
-        SiteSymbolKind(ArrayString::from(kind).expect("too long site symbol kind name"))
+        SiteSymbolKind(ArrayStringId::from(kind).expect("too long site symbol kind name"))
     }
 }
 

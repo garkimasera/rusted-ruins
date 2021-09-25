@@ -63,6 +63,9 @@ pub const N_TILE_IMG_LAYER: usize = 4;
 /// Length of ArrayString id types
 pub const ARRAY_STR_ID_LEN: usize = 15;
 
+/// Copyable string type for id
+pub type ArrayStringId = arrayvec::ArrayString<ARRAY_STR_ID_LEN>;
+
 /// Bonus / penalty representation used in this game
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[repr(i8)]

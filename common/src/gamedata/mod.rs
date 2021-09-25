@@ -123,7 +123,10 @@ impl GameData {
 
     pub fn add_chara(&mut self, cid: CharaId, chara: Chara) {
         match cid {
-            CharaId::Player | CharaId::Ally { .. } | CharaId::Unique { .. } => (),
+            CharaId::Player
+            | CharaId::Ally { .. }
+            | CharaId::Global { .. }
+            | CharaId::Unique { .. } => (),
             _ => panic!("invalid chara id for add_chara"),
         }
         self.chara.add(cid, chara);

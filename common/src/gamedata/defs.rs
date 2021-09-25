@@ -2,7 +2,6 @@
 
 use ordered_float::NotNan;
 
-use crate::basic::ARRAY_STR_ID_LEN;
 use crate::gamedata::effect::Effect;
 use crate::gamedata::skill::SkillKind;
 use crate::objholder::ItemIdx;

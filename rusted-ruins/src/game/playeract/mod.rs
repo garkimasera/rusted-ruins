@@ -245,7 +245,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
             }
         }
         if let Some(trigger_talk) = trigger_talk {
-            self.0.start_script(&trigger_talk, cid);
+            self.0.start_script(&trigger_talk, cid, None);
         }
     }
 

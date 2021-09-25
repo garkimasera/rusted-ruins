@@ -12,9 +12,11 @@ pub enum AdvanceScriptResult {
 
 impl<'s> Game<'s> {
     /// Start script. Give cid if talk.
-    pub fn start_script(&mut self, id: &str, cid: Option<CharaId>) {
+    pub fn start_script(&mut self, id: &str, cid: Option<CharaId>, scene: Option<String>) {
         self.gd.script_exec.current_script_id = Some(id.into());
         self.gd.script_exec.target_chara = cid;
+        self.gd.script_exec.scene = scene;
+
         let script_obj: &ScriptObject = if let Some(script_obj) = gobj::get_by_id_checked(id) {
             script_obj
         } else {

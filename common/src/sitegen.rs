@@ -11,13 +11,14 @@ pub struct SiteGenObject {
     pub site_symbol: SiteSymbolKind,
     pub default_faction_id: FactionId,
     pub map_template_id: Vec<String>,
-    pub unique_citizens: Vec<UniqueCitizenGenData>,
+    pub npcs: Vec<NpcGenData>,
+    /// pub random_npcs: Vec<>,
     pub shops: Vec<ShopGenData>,
 }
 
 /// Data to generate a unique citizen
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub struct UniqueCitizenGenData {
+pub struct NpcGenData {
     /// Unique id in this site
     pub id: u32,
     pub pos: Vec2d,

@@ -1,7 +1,7 @@
 use super::map::{Map, MapId};
 use super::region::RegionId;
 use super::town::Town;
-use crate::basic::ARRAY_STR_ID_LEN;
+use crate::basic::ArrayStringId;
 use filebox::FileBox;
 use geom::Vec2d;
 
@@ -150,7 +150,7 @@ impl Default for SiteId {
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct DungeonKind(pub(crate) arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
+pub struct DungeonKind(pub(crate) ArrayStringId);
 
 impl DungeonKind {
     pub fn as_str(&self) -> &str {

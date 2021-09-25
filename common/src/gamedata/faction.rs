@@ -1,4 +1,4 @@
-use crate::basic::ARRAY_STR_ID_LEN;
+use crate::basic::ArrayStringId;
 use crate::hashmap::HashMap;
 use arrayvec::ArrayString;
 
@@ -36,7 +36,7 @@ impl Faction {
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct FactionId(arrayvec::ArrayString<ARRAY_STR_ID_LEN>);
+pub struct FactionId(ArrayStringId);
 
 impl Default for FactionId {
     fn default() -> FactionId {

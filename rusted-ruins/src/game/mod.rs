@@ -185,7 +185,7 @@ impl<'s> Game<'s> {
     pub fn start_new_game(&mut self) {
         const START_SCRIPT_ID: &str = "!start";
         if gobj::id_to_idx_checked::<ScriptIdx>(START_SCRIPT_ID).is_some() {
-            self.start_script(START_SCRIPT_ID, None);
+            self.start_script(START_SCRIPT_ID, None, None);
         }
     }
 

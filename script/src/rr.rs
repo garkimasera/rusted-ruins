@@ -10,7 +10,7 @@ mod _rr {
     use rustpython_vm as vm;
     use std::convert::TryInto;
     use vm::builtins::{PyNone, PyStrRef};
-    use vm::{PyObjectRef, PyResult, PyValue, VirtualMachine};
+    use vm::{IntoPyObject, PyObjectRef, PyResult, PyValue, VirtualMachine};
 
     #[pyfunction]
     fn response(vm: &VirtualMachine) -> Option<PyObjectRef> {
@@ -20,6 +20,15 @@ mod _rr {
     #[pyfunction]
     fn self_id() -> String {
         with_gd(|gd| gd.script_exec.current_script_id.clone().unwrap())
+    }
+
+    #[pyfunction]
+    fn scene(vm: &VirtualMachine) -> PyObjectRef {
+        if let Some(scene) = with_gd(|gd| gd.script_exec.scene.clone()) {
+            scene.into_pyobject(vm)
+        } else {
+            PyNone.into_object(vm)
+        }
     }
 
     #[pyfunction]
