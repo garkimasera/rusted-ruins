@@ -1,3 +1,4 @@
+use crate::basic::ArrayStringId;
 use crate::gamedata::faction::FactionId;
 use crate::gamedata::map::SiteSymbolKind;
 use crate::gamedata::site::SiteKind;
@@ -20,7 +21,7 @@ pub struct SiteGenObject {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct NpcGenData {
     /// Unique id in this site
-    pub id: u32,
+    pub id: NpcGenId,
     pub pos: Vec2d,
     pub floor: u32,
     #[serde(default)]
@@ -28,6 +29,12 @@ pub struct NpcGenData {
     pub chara_template_id: String,
     #[serde(default)]
     pub talk_script_id: String,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum NpcGenId {
+    Site(u32),
+    Unique(ArrayStringId),
 }
 
 /// Data to generate a shop on the site

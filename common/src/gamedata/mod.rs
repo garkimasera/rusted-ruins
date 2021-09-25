@@ -122,13 +122,8 @@ impl GameData {
     }
 
     pub fn add_chara(&mut self, cid: CharaId, chara: Chara) {
-        match cid {
-            CharaId::Player
-            | CharaId::Ally { .. }
-            | CharaId::Global { .. }
-            | CharaId::Unique { .. } => (),
-            _ => panic!("invalid chara id for add_chara"),
-        }
+        assert!(!matches!(cid, CharaId::OnMap { .. }));
+        assert!(!self.chara.exist(cid));
         self.chara.add(cid, chara);
     }
 
@@ -145,13 +140,6 @@ impl GameData {
             let map = self.region.get_map_mut(mid);
             map.charas.as_mut().unwrap().insert(cid, chara);
         }
-        cid
-    }
-
-    /// Add chara as OnSite
-    pub fn add_chara_to_site(&mut self, chara: Chara, sid: SiteId, n: u32) -> CharaId {
-        let cid = CharaId::OnSite { sid, id: n };
-        self.chara.add(cid, chara);
         cid
     }
 

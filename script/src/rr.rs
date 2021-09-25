@@ -148,7 +148,7 @@ mod _rr {
     }
 
     #[pyfunction]
-    fn ressurect_party_members() {
+    fn resurrect_party_members() {
         with_gd_mut(|gd| {
             call_game_method!(resurrect_party_members)(gd);
         })

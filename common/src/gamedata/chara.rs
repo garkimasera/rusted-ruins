@@ -21,7 +21,7 @@ pub struct CharaTemplateObject {
     /// Character's class
     pub class: CharaClass,
     /// Default faction
-    pub faction: Option<FactionId>,
+    pub faction: FactionId,
     /// The frequency of character generation for random map
     pub gen_weight: f32,
     /// Generation level
@@ -359,6 +359,15 @@ impl CharaHolder {
         }
         .get_mut(&cid)
         .unwrap_or_else(|| unknown_id_err(cid))
+    }
+
+    pub fn exist(&mut self, cid: CharaId) -> bool {
+        match cid {
+            CharaId::OnMap { .. } => &self.on_map,
+            _ => &self.c,
+        }
+        .get(&cid)
+        .is_some()
     }
 
     pub(crate) fn remove_chara(&mut self, cid: CharaId) {

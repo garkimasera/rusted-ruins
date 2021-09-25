@@ -130,7 +130,7 @@ impl Chara {
     }
 
     /// Resurrect processes
-    fn ressurect(&mut self) {
+    fn resurrect(&mut self) {
         self.hp = self.attr.max_hp;
         self.status.clear();
         self.update();

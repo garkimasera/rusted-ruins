@@ -73,7 +73,7 @@ pub fn resurrect_party_members(gd: &mut GameData) {
     let cids = std::mem::take(&mut gd.player.party_dead);
 
     for cid in cids {
-        gd.chara.get_mut(cid).ressurect();
+        gd.chara.get_mut(cid).resurrect();
         gd.add_cid_to_party(cid);
     }
 }

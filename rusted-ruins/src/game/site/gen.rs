@@ -1,33 +1,48 @@
 use crate::game;
+use crate::game::extrait::CharaExt;
 use crate::game::saveload::gen_box_id;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
+use common::sitegen::NpcGenId;
 use geom::*;
 
-/// Add unique citizens from SiteGenObject
-pub fn add_unique_citizens(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
-    for uc in &sg.npcs {
-        let faction_id = sg.default_faction_id;
-        let mut chara = game::chara::gen::create_chara(
-            gobj::id_to_idx(&uc.chara_template_id),
-            1,
-            faction_id,
-            None,
-        );
-        chara.ai.initial_pos = uc.pos;
-        let mid = MapId::SiteMap {
-            sid,
-            floor: uc.floor,
+/// Add npcs from SiteGenObject
+pub fn add_npcs(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
+    for npc_gen in &sg.npcs {
+        let cid = match npc_gen.id {
+            NpcGenId::Site(id) => CharaId::OnSite { sid, id },
+            NpcGenId::Unique(id) => CharaId::Unique { id },
         };
 
-        if !uc.talk_script_id.is_empty() {
-            // Talk script setting
-            chara.trigger_talk = Some(uc.talk_script_id.to_owned());
+        if gd.chara.exist(cid) {
+            let chara = gd.chara.get_mut(cid);
+            chara.resurrect();
+        } else {
+            let idx = gobj::id_to_idx(&npc_gen.chara_template_id);
+            let ct: &CharaTemplateObject = gobj::get_obj(idx);
+            let faction = if !matches!(cid, CharaId::OnSite { .. }) && ct.faction.is_unknown() {
+                None
+            } else {
+                Some(sg.default_faction_id)
+            };
+
+            let mut chara = game::chara::gen::create_chara(idx, 1, faction, None);
+            chara.ai.initial_pos = npc_gen.pos;
+
+            if !npc_gen.talk_script_id.is_empty() {
+                // Talk script setting
+                chara.trigger_talk = Some(npc_gen.talk_script_id.to_owned());
+            }
+
+            gd.add_chara(cid, chara);
         }
 
-        let cid = gd.add_chara_to_site(chara, sid, uc.id);
-        gd.region.get_map_mut(mid).locate_chara(cid, uc.pos);
+        let mid = MapId::SiteMap {
+            sid,
+            floor: npc_gen.floor,
+        };
+        gd.region.get_map_mut(mid).locate_chara(cid, npc_gen.pos);
     }
 }
 
@@ -60,7 +75,7 @@ pub fn add_site_from_obj(
         gd.add_map(map, sid, map_random_id);
     }
 
-    add_unique_citizens(gd, sid, sg);
+    add_npcs(gd, sid, sg);
 
     // Add symbol to region map
     let map = gd.region.get_map_mut(MapId::from(rid));

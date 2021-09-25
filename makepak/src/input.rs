@@ -75,8 +75,8 @@ pub struct CharaTemplateDepInput {
     pub race: String,
     #[serde(default)]
     pub class: CharaClass,
-    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub faction: Option<FactionId>,
+    #[serde(default)]
+    pub faction: FactionId,
     pub gen_weight: f32,
     pub gen_level: u32,
     #[serde(default)]

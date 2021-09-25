@@ -9,10 +9,10 @@ use rules::RULES;
 use std::collections::HashMap;
 
 /// Create character from chara_template
-pub fn create_chara(
+pub fn create_chara<T: Into<Option<FactionId>>>(
     chara_template_idx: CharaTemplateIdx,
     lv: u32,
-    faction: FactionId,
+    faction: T,
     class: Option<CharaClass>,
 ) -> Chara {
     let ct = gobj::get_obj(chara_template_idx);
@@ -23,7 +23,7 @@ pub fn create_chara(
         attr: CharaAttributes::default(),
         idx: chara_template_idx,
         class,
-        faction,
+        faction: faction.into().unwrap_or(ct.faction),
         lv,
         item_list: ItemList::default(),
         equip: EquipItemList::new(&[]),
@@ -62,8 +62,7 @@ pub fn create_npc_chara(dungeon: DungeonKind, floor_level: u32) -> Option<Chara>
         .expect("No rule for npc generation");
     let idx = choose_npc_chara_template(&dungeon_gen_rule.npc_race_probability, floor_level)?;
     let ct = gobj::get_obj(idx);
-    let faction_id = ct.faction.unwrap_or(dungeon_gen_rule.default_faction_id);
-    let mut chara = create_chara(idx, ct.gen_level, faction_id, None);
+    let mut chara = create_chara(idx, ct.gen_level, ct.faction, None);
     set_skill(&mut chara);
     Some(chara)
 }
