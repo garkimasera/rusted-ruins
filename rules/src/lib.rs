@@ -26,7 +26,6 @@ pub mod effect;
 pub mod exp;
 pub mod faction;
 pub mod item;
-pub mod magic;
 pub mod map_gen;
 pub mod material;
 pub mod newgame;
@@ -62,7 +61,6 @@ pub struct Rules {
     pub faction: faction::Faction,
     pub map_gen: map_gen::MapGen,
     pub item: item::Item,
-    pub magic: magic::Magic,
     pub material: material::Materials,
     pub newgame: newgame::NewGame,
     pub npc: npc::Npc,
@@ -143,7 +141,6 @@ impl Rules {
             faction: read_from_dirs(&dirs, "faction.ron"),
             map_gen: read_from_dirs(&dirs, "map_gen.ron"),
             item: read_from_dirs(&dirs, "item.ron"),
-            magic: read_from_dirs(&dirs, "magic.ron"),
             material: read_from_dirs(&dirs, "material.ron"),
             newgame: read_from_dirs(&dirs, "newgame.ron"),
             npc: read_from_dirs(&dirs, "npc.ron"),

@@ -10,4 +10,5 @@ pub struct Params {
     pub regionmap_tile_size: f32,
     /// Skill bonus (base * value.0 + value.1).
     pub skill_bonus: HashMap<BonusLevel, (f32, i32)>,
+    pub magic_device_base_power: f32,
 }

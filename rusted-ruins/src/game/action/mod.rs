@@ -244,7 +244,7 @@ pub fn release_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target:
                 let skill_level = game.gd.chara.get(cid).skill_level(SkillKind::MagicDevice) as f32;
                 let item_power = power.calc(item.power_factor());
                 let power =
-                    (skill_level / 10.0 + 1.0) * item_power * RULES.magic.magic_device_base_power;
+                    (skill_level / 10.0 + 1.0) * item_power * RULES.params.magic_device_base_power;
                 super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);
             } else {
                 return;
