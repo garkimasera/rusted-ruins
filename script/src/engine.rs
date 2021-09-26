@@ -35,7 +35,7 @@ impl<'a> ScriptEngine<'a> {
     }
 
     pub fn start_with_input(&mut self, input: &str, name: &str) -> Result<(), Error> {
-        info!("start script {}", name);
+        info!("start script \"{}\"", name);
         assert!(!self.during_exec());
         let scope = self.vm.new_scope_with_builtins();
 

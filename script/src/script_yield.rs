@@ -14,4 +14,6 @@ pub struct TalkText {
     pub text_id: String,
     #[serde(default)]
     pub choices: Vec<String>,
+    #[serde(default)]
+    pub target_chara: Option<String>,
 }

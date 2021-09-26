@@ -7,21 +7,24 @@ use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::game::script_exec::AdvanceScriptResult;
 use crate::text;
-use common::basic::TILE_SIZE;
-use common::objholder::CharaTemplateIdx;
+use common::basic::{ArrayStringId, TILE_SIZE};
+use common::gamedata::{CharaId, GameData};
 use script::TalkText;
 
 pub struct TalkWindow {
     rect: Rect,
     talk_text: TalkText,
     label: LabelWidget,
+    rect_image_window: Rect,
     image_window: Option<ImageWindow>,
     msg_text: MsgText,
     choose_win: Option<ChooseWindow>,
+    cid: Option<CharaId>,
+    click: bool,
 }
 
 impl TalkWindow {
-    pub fn new(talk_text: TalkText, chara_template_idx: Option<CharaTemplateIdx>) -> TalkWindow {
+    pub fn new(gd: &GameData, talk_text: TalkText, cid: Option<CharaId>) -> TalkWindow {
         let c = &UI_CFG.talk_window;
         let rect: Rect = c.rect.into();
         let label = LabelWidget::wrapped(
@@ -36,25 +39,54 @@ impl TalkWindow {
             TILE_SIZE,
             TILE_SIZE * 2,
         );
-        let image_window = chara_template_idx
-            .map(|chara_template_idx| ImageWindow::chara(rect_image_window, chara_template_idx));
+        let ct_idx = cid.map(|cid| gd.chara.get(cid).idx);
+        let image_window = ct_idx.map(|ct_idx| ImageWindow::chara(rect_image_window, ct_idx));
+
         let mut talk_window = TalkWindow {
             rect,
             talk_text: talk_text.clone(),
             label,
+            rect_image_window,
             image_window,
             msg_text: MsgText::default(),
             choose_win: None,
+            cid,
+            click: false,
         };
-        talk_window.update_page(Some(talk_text));
+        talk_window.update_page(gd, Some(talk_text));
         talk_window
     }
 
-    fn update_page(&mut self, talk_text: Option<TalkText>) {
+    fn update_page(&mut self, gd: &GameData, talk_text: Option<TalkText>) {
+        trace!("talk window update {:?}", &talk_text);
+
         if let Some(talk_text) = talk_text {
             self.msg_text = MsgText::new(&*talk_text.text_id);
             self.choose_win = None;
+
+            let cid = talk_text.target_chara.as_ref().and_then(|target_chara| {
+                if let Ok(id) = ArrayStringId::from(target_chara) {
+                    let cid = CharaId::Unique { id };
+                    if gd.chara.exist(cid) {
+                        Some(cid)
+                    } else {
+                        warn!("invalid npc id in script \"{}\"", id);
+                        None
+                    }
+                } else {
+                    warn!("invalid npc id in script \"{}\"", target_chara);
+                    None
+                }
+            });
+
             self.talk_text = talk_text;
+
+            if cid.is_some() && self.cid != cid {
+                self.cid = cid;
+                let ct_idx = cid.map(|cid| gd.chara.get(cid).idx);
+                self.image_window =
+                    ct_idx.map(|ct_idx| ImageWindow::chara(self.rect_image_window, ct_idx));
+            }
         }
 
         // Create answers
@@ -106,7 +138,7 @@ impl DialogWindow for TalkWindow {
             {
                 match pa.advance_talk(Some(choosed_answer)) {
                     AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                        self.update_page(Some(talk_text));
+                        self.update_page(pa.gd(), Some(talk_text));
                         return DialogResult::Continue;
                     }
                     AdvanceScriptResult::Continue => {
@@ -121,13 +153,19 @@ impl DialogWindow for TalkWindow {
         }
 
         match *command {
-            Command::Enter | Command::MouseButtonUp { .. } => {
+            Command::MouseButtonDown { .. } => {
+                self.click = true;
+                DialogResult::Continue
+            }
+            Command::Enter | Command::MouseButtonUp { .. } if self.click => {
+                self.click = false;
+
                 // If all text of the section has been displayed,
                 // proceeds the talk to next section
                 if self.msg_text.is_final_page() {
                     match pa.advance_talk(None) {
                         AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                            self.update_page(Some(talk_text));
+                            self.update_page(pa.gd(), Some(talk_text));
                             DialogResult::Continue
                         }
                         AdvanceScriptResult::Continue => DialogResult::Continue,
@@ -135,7 +173,7 @@ impl DialogWindow for TalkWindow {
                     }
                 } else {
                     self.msg_text.next_page();
-                    self.update_page(None);
+                    self.update_page(pa.gd(), None);
                     DialogResult::Continue
                 }
             }
@@ -151,7 +189,7 @@ impl DialogWindow for TalkWindow {
     ) -> DialogResult {
         match pa.advance_script() {
             AdvanceScriptResult::UpdateTalkText(talk_text) => {
-                self.update_page(Some(talk_text));
+                self.update_page(pa.gd(), Some(talk_text));
                 DialogResult::Continue
             }
             AdvanceScriptResult::Continue => DialogResult::Continue,

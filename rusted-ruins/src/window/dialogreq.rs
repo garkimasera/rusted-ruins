@@ -49,8 +49,6 @@ pub fn create_talk_dialog(
     cid: Option<CharaId>,
     game: &mut Game<'_>,
 ) -> Option<Box<dyn DialogWindow>> {
-    let chara_template_idx = cid.map(|cid| game.gd.chara.get(cid).idx);
-
-    let talk_window = talk_window::TalkWindow::new(talk_text, chara_template_idx);
+    let talk_window = talk_window::TalkWindow::new(&game.gd, talk_text, cid);
     Some(Box::new(talk_window))
 }

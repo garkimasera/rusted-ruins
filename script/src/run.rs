@@ -20,6 +20,7 @@ pub fn run(vm: &vm::VirtualMachine, scope: &Scope) -> Result<Option<ScriptYield>
             vm::py_serde::serialize(vm, &output, &mut serializer)?;
             let s = String::from_utf8_lossy(&buf);
             let result: ScriptYield = serde_json::from_str(&s)?;
+
             Ok(Some(result))
         }
         Err(e) => Err(Error::from_py(vm, e)),

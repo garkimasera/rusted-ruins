@@ -361,7 +361,7 @@ impl CharaHolder {
         .unwrap_or_else(|| unknown_id_err(cid))
     }
 
-    pub fn exist(&mut self, cid: CharaId) -> bool {
+    pub fn exist(&self, cid: CharaId) -> bool {
         match cid {
             CharaId::OnMap { .. } => &self.on_map,
             _ => &self.c,

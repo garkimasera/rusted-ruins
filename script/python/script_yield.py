@@ -6,12 +6,13 @@ _GeneratorType = type(_g())
 
 
 class ScriptYield:
-    def talk(text_id, choices=[]):
+    def talk(text_id, choices=[], target_chara=None):
         return {
             "tag": "Talk",
             "talk": {
                 "text_id": text_id,
                 "choices": choices,
+                "target_chara": target_chara,
             },
         }
 
