@@ -157,7 +157,10 @@ impl DialogWindow for TalkWindow {
                 self.click = true;
                 DialogResult::Continue
             }
-            Command::Enter | Command::MouseButtonUp { .. } if self.click => {
+            Command::Enter | Command::MouseButtonUp { .. } => {
+                if !self.click && matches!(*command, Command::MouseButtonUp { .. }) {
+                    return DialogResult::Continue;
+                }
                 self.click = false;
 
                 // If all text of the section has been displayed,
