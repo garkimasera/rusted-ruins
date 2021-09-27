@@ -17,6 +17,7 @@ extern crate rusted_ruins_map_generator as map_generator;
 pub mod active_skill;
 pub mod biome;
 pub mod chara;
+pub mod chara_trait;
 pub mod charagen;
 pub mod class;
 pub mod combat;
@@ -52,6 +53,7 @@ pub struct Rules {
     pub biome: biome::Biome,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
+    pub chara_traits: chara_trait::CharaTraits,
     pub class: class::Classes,
     pub combat: combat::Combat,
     pub creation: creation::Creation,
@@ -132,6 +134,7 @@ impl Rules {
             biome: read_from_dirs(&dirs, "biome.ron"),
             chara: read_from_dirs(&dirs, "chara.ron"),
             chara_gen: read_from_dirs(&dirs, "charagen.ron"),
+            chara_traits: read_from_dirs(&dirs, "chara_traits.ron"),
             class: read_from_dirs(&dirs, "class.ron"),
             creation,
             combat: read_from_dirs(&dirs, "combat.ron"),
