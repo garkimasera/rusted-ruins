@@ -1,14 +1,27 @@
+use super::Rule;
 use common::gobj::ObjIdxAsId;
 use common::objholder::*;
 use serde_with::serde_as;
-
 use std::collections::HashMap;
 
 /// Rules for wilderness map generation
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Biome {
+pub struct Biomes {
     pub biomes: HashMap<String, BiomeDetail>,
     pub sub_biomes: HashMap<String, SubBiomeDetail>,
+}
+
+impl Rule for Biomes {
+    const NAME: &'static str = "biomes";
+
+    fn append(&mut self, other: Self) {
+        for (k, v) in other.biomes.into_iter() {
+            self.biomes.insert(k, v);
+        }
+        for (k, v) in other.sub_biomes.into_iter() {
+            self.sub_biomes.insert(k, v);
+        }
+    }
 }
 
 #[serde_as]

@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::gamedata::*;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
@@ -5,6 +6,16 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Materials(HashMap<MaterialName, Material>);
+
+impl Rule for Materials {
+    const NAME: &'static str = "materials";
+
+    fn append(&mut self, other: Self) {
+        for (k, v) in other.0.into_iter() {
+            self.0.insert(k, v);
+        }
+    }
+}
 
 impl Materials {
     pub fn get(&self, material_name: &MaterialName) -> &Material {

@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::basic::BonusLevel;
 use std::collections::HashMap;
 
@@ -11,4 +12,12 @@ pub struct Params {
     /// Skill bonus (base * value.0 + value.1).
     pub skill_bonus: HashMap<BonusLevel, (f32, i32)>,
     pub magic_device_base_power: f32,
+}
+
+impl Rule for Params {
+    const NAME: &'static str = "params";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

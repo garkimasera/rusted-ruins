@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::gamedata::*;
 use common::gobj::ObjIdxAsId;
 use common::objholder::ItemIdx;
@@ -27,4 +28,12 @@ pub struct NewGame {
     pub initial_date_day: u32,
     /// Initial game date (hour)
     pub initial_date_hour: u32,
+}
+
+impl Rule for NewGame {
+    const NAME: &'static str = "newgame";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

@@ -1,3 +1,4 @@
+use super::Rule;
 use common::gamedata::*;
 
 /// Rules for character generation
@@ -7,4 +8,12 @@ pub struct CharaGen {
     pub common_skills: Vec<SkillKind>,
     /// Equipment slots all character must have
     pub equip_slots: Vec<EquipSlotKind>,
+}
+
+impl Rule for CharaGen {
+    const NAME: &'static str = "chara_gen";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

@@ -38,7 +38,7 @@ pub fn create_chara<T: Into<Option<FactionId>>>(
         ..Chara::default()
     };
 
-    if let Some(race) = RULES.race.get(&ct.race) {
+    if let Some(race) = RULES.races.get(&ct.race) {
         for race_trait in &race.traits {
             chara
                 .traits
@@ -119,7 +119,7 @@ pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
     let mut slots = RULES.chara_gen.equip_slots.clone();
     slots.extend_from_slice(
         &RULES
-            .race
+            .races
             .get(race)
             .unwrap_or_else(|| {
                 error!("unknown race \"{}\"", race);
@@ -144,7 +144,7 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32, class: CharaClass) -> Skil
         skill_list.set_skill_level(*skill_kind, lv)
     }
 
-    for (skill_kind, bonus) in &RULES.class.get(class).skill_bonus {
+    for (skill_kind, bonus) in &RULES.classes.get(class).skill_bonus {
         if *bonus > BonusLevel::None {
             skill_list.set_skill_level(*skill_kind, 1);
         }
@@ -159,7 +159,7 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
     let equip = EquipItemList::new(&slots);
     chara.equip = equip;
 
-    let equips_rule = &RULES.class.get(chara.class).equips;
+    let equips_rule = &RULES.classes.get(chara.class).equips;
 
     for (esk, item_selector, bonus) in equips_rule {
         use crate::game::item::gen::*;

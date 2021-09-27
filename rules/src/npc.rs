@@ -1,3 +1,5 @@
+use crate::Rule;
+
 /// Various parameters for game playing
 #[derive(Serialize, Deserialize)]
 pub struct Npc {
@@ -6,4 +8,12 @@ pub struct Npc {
     /// The maximum size of player's party
     pub party_size_max: u32,
     pub party_pathfinding_step: u32,
+}
+
+impl Rule for Npc {
+    const NAME: &'static str = "npc";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

@@ -1,9 +1,20 @@
+use crate::Rule;
 use common::gamedata::*;
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct NpcAIs(HashMap<NpcAiKind, NpcAi>);
+
+impl Rule for NpcAIs {
+    const NAME: &'static str = "npc_ai";
+
+    fn append(&mut self, other: Self) {
+        for (k, v) in other.0.into_iter() {
+            self.0.insert(k, v);
+        }
+    }
+}
 
 impl NpcAIs {
     pub fn get(&self, kind: NpcAiKind) -> &NpcAi {

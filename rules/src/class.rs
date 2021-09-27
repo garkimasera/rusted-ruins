@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::basic::BonusLevel;
 use common::gamedata::*;
 use common::item_selector::ItemSelector;
@@ -6,6 +7,16 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Classes(HashMap<CharaClass, Class>);
+
+impl Rule for Classes {
+    const NAME: &'static str = "classes";
+
+    fn append(&mut self, other: Self) {
+        for (k, v) in other.0.into_iter() {
+            self.0.insert(k, v);
+        }
+    }
+}
 
 impl Classes {
     pub fn get(&self, chara_class: CharaClass) -> &Class {

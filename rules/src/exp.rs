@@ -1,3 +1,5 @@
+use crate::Rule;
+
 /// Rules for exp calculation
 #[derive(Serialize, Deserialize)]
 pub struct Exp {
@@ -25,4 +27,12 @@ pub struct Exp {
     pub mining: u32,
     /// Base exp for creation
     pub creation_base_exp: u32,
+}
+
+impl Rule for Exp {
+    const NAME: &'static str = "exp";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

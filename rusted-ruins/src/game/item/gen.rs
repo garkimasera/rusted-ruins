@@ -274,10 +274,11 @@ fn set_material(item: &mut Item, item_obj: &ItemObject, level: u32) {
     if item_obj.material_group.is_empty() {
         return;
     }
-    let rule = &RULES.material;
+    let rule = &RULES.materials;
     let materials = rule.get_by_group(&item_obj.material_group, Some(level));
     let material_names: Vec<MaterialName> = materials.iter().map(|(name, _)| *name).collect();
-    let chosen_materials = rng::choose(&material_names, |name| RULES.material.get(name).gen_weight);
+    let chosen_materials =
+        rng::choose(&material_names, |name| RULES.materials.get(name).gen_weight);
     let material_name = if let Some(chosen) = chosen_materials {
         *chosen.1
     } else {

@@ -163,7 +163,7 @@ impl Chara {
         let mut adj = 0;
         let mut adj_factor = 0.0;
 
-        if let Some(bonus_level) = RULES.class.get(self.class).skill_bonus.get(&kind) {
+        if let Some(bonus_level) = RULES.classes.get(self.class).skill_bonus.get(&kind) {
             let bonus = RULES.params.skill_bonus[bonus_level];
             adj_factor += bonus.0;
             adj += bonus.1;

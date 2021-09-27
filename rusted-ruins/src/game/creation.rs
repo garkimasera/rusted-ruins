@@ -142,8 +142,8 @@ pub fn learn_recipe(gd: &mut GameData, il: ItemLocation) -> LearnRecipeResult {
             .0;
         let max_recipe_level = skill_level + RULES.creation.recipe_learning_level_margin;
         let available_recipes: Vec<&str> = RULES
-            .creation
-            .recipes(creation_kind)
+            .recipes
+            .get(creation_kind)
             .iter()
             .filter_map(|recipe| {
                 if recipe.difficulty < max_recipe_level
@@ -174,8 +174,8 @@ pub fn learn_recipe(gd: &mut GameData, il: ItemLocation) -> LearnRecipeResult {
 
 pub fn available_recipes(gd: &GameData, kind: CreationKind) -> Vec<&'static Recipe> {
     RULES
-        .creation
-        .recipes(kind)
+        .recipes
+        .get(kind)
         .iter()
         .filter(|recipe| gd.learned_recipes.learned(kind, &recipe.product))
         .collect()
@@ -225,7 +225,7 @@ pub fn available_material(
 /// Recipes that difficulty is zero are available from game start.
 pub fn add_initial_recipes(gd: &mut GameData) {
     for creation_kind in CreationKind::ALL {
-        for recipe in RULES.creation.recipes(*creation_kind) {
+        for recipe in RULES.recipes.get(*creation_kind) {
             if recipe.difficulty == 0 {
                 gd.learned_recipes.add(*creation_kind, &recipe.product);
             }

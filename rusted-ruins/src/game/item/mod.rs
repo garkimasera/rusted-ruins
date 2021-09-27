@@ -63,7 +63,7 @@ impl Item {
     fn material(&self) -> Option<(MaterialName, &Material)> {
         for attr in &self.attrs {
             if let ItemAttr::Material(material_name) = attr {
-                return Some((*material_name, RULES.material.get(material_name)));
+                return Some((*material_name, RULES.materials.get(material_name)));
             }
         }
         None

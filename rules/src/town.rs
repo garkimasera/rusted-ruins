@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::item_selector::ItemSelector;
 use std::collections::HashMap;
 
@@ -10,4 +11,12 @@ pub struct Town {
     pub max_shop_items: u32,
     /// Shop kinds and its item selectors.
     pub shop_kinds: HashMap<String, ItemSelector>,
+}
+
+impl Rule for Town {
+    const NAME: &'static str = "town";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

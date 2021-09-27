@@ -1,3 +1,5 @@
+use super::Rule;
+
 /// Rules for character parameter calculation
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Chara {
@@ -39,4 +41,12 @@ pub struct Chara {
     pub speed_coeff_stressed: f32,
     pub speed_coeff_strained: f32,
     pub speed_coeff_overloaded: f32,
+}
+
+impl Rule for Chara {
+    const NAME: &'static str = "chara";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

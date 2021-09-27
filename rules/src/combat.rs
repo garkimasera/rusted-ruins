@@ -1,3 +1,5 @@
+use super::Rule;
+
 /// Rules for calculation related to combat.
 #[derive(Serialize, Deserialize)]
 pub struct Combat {
@@ -11,4 +13,12 @@ pub struct Combat {
     pub detection_range: i32,
     /// Factor for detection probability.
     pub detection_factor: f32,
+}
+
+impl Rule for Combat {
+    const NAME: &'static str = "combat";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

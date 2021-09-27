@@ -1,6 +1,8 @@
 use common::gamedata::*;
 use std::collections::HashMap;
 
+use crate::Rule;
+
 #[derive(Serialize, Deserialize)]
 pub struct Faction {
     pub relation_friend: FactionRelation,
@@ -31,4 +33,12 @@ pub struct FactionInfo {
     pub default_relation: FactionRelation,
     #[serde(default)]
     pub constant: bool,
+}
+
+impl Rule for Faction {
+    const NAME: &'static str = "faction";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }

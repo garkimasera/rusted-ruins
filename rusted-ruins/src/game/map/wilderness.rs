@@ -88,10 +88,10 @@ fn get_biome(
         } else {
             continue;
         };
-        if let Some(b) = RULES.biome.biomes.get(biome_name) {
+        if let Some(b) = RULES.biomes.biomes.get(biome_name) {
             biome = Some(b);
         }
-        if let Some(b) = RULES.biome.sub_biomes.get(biome_name) {
+        if let Some(b) = RULES.biomes.sub_biomes.get(biome_name) {
             sub_biome.push(b);
         }
     }

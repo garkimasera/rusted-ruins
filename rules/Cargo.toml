@@ -9,6 +9,7 @@ name = "rusted_ruins_rules"
 crate-type = ["rlib"]
 
 [dependencies]
+anyhow = "1"
 serde = "1"
 serde_derive = "1"
 ron = "0.6"

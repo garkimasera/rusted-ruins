@@ -1,3 +1,4 @@
+use crate::Rule;
 use common::gamedata::*;
 use std::collections::HashMap;
 
@@ -30,4 +31,14 @@ pub struct DungeonGenParams {
     /// If underground, use downstairs tiles to the deeper floor, and the exit is upstairs tile.
     /// If not, upstairs tile is used to go to the deeper floor like towers.
     pub underground: bool,
+}
+
+impl Rule for DungeonGen {
+    const NAME: &'static str = "dungeon_gen";
+
+    fn append(&mut self, other: Self) {
+        for (k, v) in other.into_iter() {
+            self.insert(k, v);
+        }
+    }
 }
