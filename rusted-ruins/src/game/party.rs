@@ -16,7 +16,8 @@ impl GameData {
     }
 
     fn has_empty_for_party(&self) -> bool {
-        (self.player.party.len() as u32 + 1) < self.available_party_size()
+        (self.player.party.len() + self.player.party_dead.len() + 1)
+            < self.available_party_size() as usize
     }
 
     fn add_chara_to_party(&mut self, mut chara: Chara) -> bool {
@@ -47,6 +48,10 @@ impl GameData {
     }
 
     fn add_cid_to_party(&mut self, cid: CharaId) {
+        if !self.has_empty_for_party() {
+            return;
+        }
+
         match cid {
             CharaId::Player => unreachable!(),
             CharaId::Ally { .. } | CharaId::Unique { .. } => {

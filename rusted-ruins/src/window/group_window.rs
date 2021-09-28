@@ -218,7 +218,7 @@ impl TabsNavigator {
                         TAB_TEXT_H,
                     ),
                     &crate::text::ui_txt(text_id),
-                    FontKind::S,
+                    FontKind::T,
                 )
                 .centering()
             })

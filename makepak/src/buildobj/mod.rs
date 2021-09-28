@@ -129,7 +129,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         cha: chara_dep_input.cha as i16,
         spd: chara_dep_input.spd as i16,
         carry: chara_dep_input.carry as i16,
-        cruise_speed: chara_dep_input.cruise_speed as i16,
+        travel_speed: chara_dep_input.travel_speed as i16,
     };
 
     Ok(CharaTemplateObject {

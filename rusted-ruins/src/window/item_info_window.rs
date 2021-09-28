@@ -34,7 +34,7 @@ impl ItemInfoWindow {
         let item_kind = LabelWidget::new(c.item_kind, &info.item_kind, FontKind::M);
 
         let flavor_button = crate::text::flavor_txt_checked(gobj::idx_to_id(item.0.idx))
-            .map(|_| ButtonWidget::new(c.flavor_button, "i", FontKind::S));
+            .map(|_| ButtonWidget::new(c.flavor_button, "i", FontKind::T));
 
         let mut desc_text = Vec::new();
         let rect = Rect::new(0, 0, 1, 1);

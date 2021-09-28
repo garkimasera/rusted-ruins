@@ -14,6 +14,8 @@ pub enum FontKind {
     M,
     /// For small UI texts
     S,
+    /// For tiny UI texts
+    T,
     /// For talk or book texts
     Talk,
     /// For monospace texts. This font may include ascii characters only
@@ -21,6 +23,7 @@ pub enum FontKind {
 }
 
 pub struct TextRenderer<'sdl> {
+    font_t: Font<'sdl, 'static>,
     font_s: Font<'sdl, 'static>,
     font_m: Font<'sdl, 'static>,
     font_log: Font<'sdl, 'static>,
@@ -44,6 +47,7 @@ impl<'sdl> TextRenderer<'sdl> {
         };
 
         TextRenderer {
+            font_t: f(&font.t),
             font_s: f(&font.s),
             font_m: f(&font.m),
             font_log: f(&font.log),
@@ -83,6 +87,7 @@ impl<'sdl> TextRenderer<'sdl> {
     fn select_font(&self, font_usage: FontKind) -> &Font<'_, '_> {
         match font_usage {
             FontKind::Log => &self.font_log,
+            FontKind::T => &self.font_t,
             FontKind::S => &self.font_s,
             FontKind::M => &self.font_m,
             FontKind::Talk => &self.font_talk,

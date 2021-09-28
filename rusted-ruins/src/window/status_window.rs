@@ -52,15 +52,19 @@ pub struct StatusWindow {
     rect: Rect,
     image: ImageWidget,
     name_label: LabelWidget,
+    faction_label: LabelWidget,
+    lv_label: LabelWidget,
     hp_label: LabelWidget,
     sp_label: LabelWidget,
-    faction_label: LabelWidget,
     str_label: LabelWidget,
     vit_label: LabelWidget,
     dex_label: LabelWidget,
     int_label: LabelWidget,
     wil_label: LabelWidget,
     cha_label: LabelWidget,
+    spd_label: LabelWidget,
+    carry_label: LabelWidget,
+    travel_speed_label: LabelWidget,
     escape_click: bool,
 }
 
@@ -69,6 +73,7 @@ impl StatusWindow {
         let cfg = &UI_CFG.status_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
         let chara = gd.chara.get(cid);
+        let ct = gobj::get_obj(chara.idx);
         let image = ImageWidget::chara(cfg.image_rect, chara.idx);
         let chara_name = if let Some(chara_name) = chara.name.clone() {
             chara_name
@@ -76,6 +81,20 @@ impl StatusWindow {
             chara.to_text().into()
         };
         let name_label = LabelWidget::new(cfg.name_label_rect, &chara_name, FontKind::M);
+        let faction_label = LabelWidget::new(
+            cfg.faction_label_rect,
+            &format!(
+                "{}  {}",
+                ui_txt("label_text-status-faction"),
+                chara.faction.to_text()
+            ),
+            FontKind::M,
+        );
+        let lv_label = LabelWidget::new(
+            cfg.lv_label_rect,
+            &format!("Lv. {}", chara.lv),
+            FontKind::MonoM,
+        );
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect,
             &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
@@ -85,15 +104,6 @@ impl StatusWindow {
             cfg.sp_label_rect,
             &format!("SP  {:2.0}", chara.sp),
             FontKind::MonoM,
-        );
-        let faction_label = LabelWidget::new(
-            cfg.faction_label_rect,
-            &format!(
-                "{}: {}",
-                ui_txt("label_text-status-faction"),
-                chara.faction.to_text()
-            ),
-            FontKind::M,
         );
         let str_label = LabelWidget::new(
             cfg.str_label_rect,
@@ -125,19 +135,46 @@ impl StatusWindow {
             &format!("CHA  {}", chara.attr.cha),
             FontKind::MonoM,
         );
+        let spd_label = LabelWidget::new(
+            cfg.spd_label_rect,
+            &format!("SPD  {}", chara.attr.spd),
+            FontKind::MonoM,
+        );
+        let carry_label = LabelWidget::new(
+            cfg.carry_label_rect,
+            &format!(
+                "{}  {}",
+                ui_txt("label_text-status-carry"),
+                ct.base_attr.carry
+            ),
+            FontKind::S,
+        );
+        let travel_speed_label = LabelWidget::new(
+            cfg.travel_speed_label_rect,
+            &format!(
+                "{}  {}",
+                ui_txt("label_text-status-travel_speed"),
+                ct.base_attr.travel_speed
+            ),
+            FontKind::S,
+        );
         StatusWindow {
             rect,
             image,
             name_label,
+            faction_label,
+            lv_label,
             hp_label,
             sp_label,
-            faction_label,
             str_label,
             vit_label,
             dex_label,
             int_label,
             wil_label,
             cha_label,
+            spd_label,
+            carry_label,
+            travel_speed_label,
             escape_click: false,
         }
     }
@@ -153,15 +190,19 @@ impl Window for StatusWindow {
         draw_window_border(context, self.rect);
         self.image.draw(context);
         self.name_label.draw(context);
+        self.faction_label.draw(context);
+        self.lv_label.draw(context);
         self.hp_label.draw(context);
         self.sp_label.draw(context);
-        self.faction_label.draw(context);
         self.str_label.draw(context);
         self.vit_label.draw(context);
         self.dex_label.draw(context);
         self.int_label.draw(context);
         self.wil_label.draw(context);
         self.cha_label.draw(context);
+        self.spd_label.draw(context);
+        self.carry_label.draw(context);
+        self.travel_speed_label.draw(context);
     }
 }
 

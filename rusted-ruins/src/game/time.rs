@@ -83,7 +83,7 @@ fn minutes_per_turn_region(gd: &GameData) -> f32 {
 pub fn regionmap_speed(gd: &GameData) -> (u32, f32) {
     let idx = gd.chara.get(CharaId::Player).idx;
     let obj = gobj::get_obj(idx);
-    let player_speed = obj.base_attr.cruise_speed;
+    let player_speed = obj.base_attr.travel_speed;
 
     let party = gd.player.party.clone();
     let cruise_speed = party
@@ -91,14 +91,14 @@ pub fn regionmap_speed(gd: &GameData) -> (u32, f32) {
         .map(|cid| {
             let idx = gd.chara.get(cid).idx;
             let obj = gobj::get_obj(idx);
-            (obj.base_attr.carry, obj.base_attr.cruise_speed)
+            (obj.base_attr.carry, obj.base_attr.travel_speed)
         })
         .max_by_key(|(carry, _)| *carry)
         .map(|(_, cruise_speed)| cruise_speed)
         .unwrap_or_else(|| {
             let idx = gd.chara.get(CharaId::Player).idx;
             let obj = gobj::get_obj(idx);
-            obj.base_attr.cruise_speed
+            obj.base_attr.travel_speed
         }) as u32;
     (cruise_speed, cruise_speed as f32 / player_speed as f32)
 }

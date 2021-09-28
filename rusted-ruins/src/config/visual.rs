@@ -115,6 +115,8 @@ pub struct FontConfig {
 pub struct Font {
     /// For logging window
     pub log: FontConfig,
+    /// Tiny size ui text
+    pub t: FontConfig,
     /// Small size ui text
     pub s: FontConfig,
     /// Mediam size text
@@ -280,15 +282,19 @@ pub struct InfoWindowConfig {
 pub struct StatusWindowConfig {
     pub image_rect: CfgRect,
     pub name_label_rect: CfgRect,
+    pub faction_label_rect: CfgRect,
+    pub lv_label_rect: CfgRect,
     pub hp_label_rect: CfgRect,
     pub sp_label_rect: CfgRect,
-    pub faction_label_rect: CfgRect,
     pub str_label_rect: CfgRect,
     pub vit_label_rect: CfgRect,
     pub dex_label_rect: CfgRect,
     pub int_label_rect: CfgRect,
     pub wil_label_rect: CfgRect,
     pub cha_label_rect: CfgRect,
+    pub spd_label_rect: CfgRect,
+    pub carry_label_rect: CfgRect,
+    pub travel_speed_label_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

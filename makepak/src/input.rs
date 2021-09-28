@@ -96,7 +96,7 @@ pub struct CharaTemplateDepInput {
     pub cha: u16,
     pub spd: u16,
     pub carry: u16,
-    pub cruise_speed: u16,
+    pub travel_speed: u16,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

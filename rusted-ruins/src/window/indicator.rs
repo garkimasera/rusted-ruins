@@ -106,7 +106,7 @@ impl FloorInfo {
         let label = LabelWidget::bordered(
             Rect::new(0, 0, rect.width(), rect.height()),
             "",
-            FontKind::S,
+            FontKind::T,
         );
         FloorInfo {
             rect,
@@ -158,7 +158,7 @@ pub struct TimeInfo {
 impl TimeInfo {
     pub fn new() -> TimeInfo {
         let rect: Rect = UI_CFG.time_info.date_label.into();
-        let date_label = LabelWidget::bordered(rect, "", FontKind::S);
+        let date_label = LabelWidget::bordered(rect, "", FontKind::T);
         let rect: Rect = UI_CFG.time_info.time_label.into();
         let time_label = LabelWidget::bordered(rect, "", FontKind::M);
         TimeInfo {
@@ -244,7 +244,7 @@ impl StatusInfo {
                 let label = LabelWidget::bordered(
                     Rect::new(rect.x, rect.y - rect.h * i as i32, 1, 1),
                     &crate::text::to_txt(status),
-                    FontKind::S,
+                    FontKind::T,
                 );
                 self.labels.push(label);
             }
