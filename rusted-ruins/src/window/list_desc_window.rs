@@ -10,7 +10,7 @@ pub struct ListWithDescWindow<T> {
 
 impl<T: ListWidgetRow> ListWithDescWindow<T> {
     pub fn new(rect: Rect, column_pos: Vec<i32>, items: Vec<T>) -> Self {
-        let w2 = rect.width() / 2 - 2;
+        let w2 = rect.width() / 2 - 1;
         let text_rect = Rect::new(0, 0, w2, rect.height());
         let list_rect = Rect::new(w2 as i32 + 2, 0, w2, rect.height());
         let list_page_size = rect.height() / UI_CFG.list_widget.h_row_default;
