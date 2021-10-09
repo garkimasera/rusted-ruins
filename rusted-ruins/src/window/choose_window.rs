@@ -3,7 +3,6 @@ use super::widget::*;
 use super::winpos::WindowPos;
 use crate::config::SCREEN_CFG;
 use crate::text::ui_txt;
-use sdl2::rect::Rect;
 
 /// Player chooses one item from list.
 /// The choices cannot be changed.

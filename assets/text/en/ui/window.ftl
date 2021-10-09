@@ -1,6 +1,7 @@
 tab_text-chara_stats = Stats
 tab_text-chara_equipments = Equip
 tab_text-chara_skills = Skills
+tab_text-chara_traits = Traits
 tab_text-creation_art = Art
 tab_text-creation_construction = Build
 tab_text-creation_cooking = Cook

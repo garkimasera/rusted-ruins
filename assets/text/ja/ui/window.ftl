@@ -1,6 +1,7 @@
 tab_text-chara_stats = ステータス
 tab_text-chara_equipments = 装備
 tab_text-chara_skills = スキル
+tab_text-chara_traits = 特性
 tab_text-creation_art = 芸術
 tab_text-creation_construction = 建築
 tab_text-creation_cooking = 料理

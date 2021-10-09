@@ -166,6 +166,9 @@ spd_label_rect = { x = 5, y = 258 }
 carry_label_rect = { x = 105, y = 136 }
 travel_speed_label_rect = { x = 105, y = 154 }
 
+[chara_trait_window]
+column_pos = [4]
+
 [active_skill_window]
 rect = { x = -999, y = -999, w = 520, h = 286 }
 list_rect = { x = 0, y = 0, w = 520, h = 286 }

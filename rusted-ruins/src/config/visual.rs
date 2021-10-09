@@ -59,6 +59,7 @@ pub struct UiConfig {
     pub scrolling_text_window: ScrollingTextWindowConfig,
     pub info_window: InfoWindowConfig,
     pub status_window: StatusWindowConfig,
+    pub chara_trait_window: CharaTraitWindowConfig,
     pub active_skill_window: ActiveSkillWindowConfig,
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
@@ -295,6 +296,11 @@ pub struct StatusWindowConfig {
     pub spd_label_rect: CfgRect,
     pub carry_label_rect: CfgRect,
     pub travel_speed_label_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CharaTraitWindowConfig {
+    pub column_pos: Vec<i32>,
 }
 
 #[derive(Debug, Deserialize)]

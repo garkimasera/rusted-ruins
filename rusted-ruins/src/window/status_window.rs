@@ -1,16 +1,17 @@
 use super::commonuse::*;
 use super::equip_window::EquipWindow;
 use super::group_window::*;
+use super::list_desc_window::ListWithDescWindow;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::game::extrait::*;
-use crate::text::{ui_txt, ToText};
+use crate::text::{misc_txt, ui_txt, CharaTraitTextId, ToText};
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
 use common::gobj;
 
-const STATUS_WINDOW_GROUP_SIZE: u32 = 3;
+const STATUS_WINDOW_GROUP_SIZE: u32 = 4;
 
 pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -34,6 +35,13 @@ pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow 
                 text_id: "tab_text-chara_skills",
             },
             Box::new(move |game| Box::new(SkillWindow::new(&game.gd, cid))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-chara-traits"),
+                text_id: "tab_text-chara_traits",
+            },
+            Box::new(move |game| Box::new(CharaTraitWindow::new(&game.gd, cid))),
         ),
     ];
     let rect: Rect = UI_CFG.info_window.rect.into();
@@ -311,5 +319,80 @@ impl DialogWindow for SkillWindow {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,
         }
+    }
+}
+
+pub struct CharaTraitWindow {
+    window: ListWithDescWindow<TextCache>,
+    cid: CharaId,
+    choice: u32,
+}
+
+impl CharaTraitWindow {
+    fn new(gd: &GameData, cid: CharaId) -> Self {
+        let rect: Rect = UI_CFG.info_window.rect.into();
+
+        let items = gd
+            .chara
+            .get(cid)
+            .traits
+            .iter()
+            .map(|(_origin, chara_trait)| {
+                TextCache::new(
+                    chara_trait.to_text(),
+                    FontKind::M,
+                    UI_CFG.color.normal_font.into(),
+                )
+            })
+            .collect();
+
+        let mut window = CharaTraitWindow {
+            window: ListWithDescWindow::new(
+                rect,
+                UI_CFG.chara_trait_window.column_pos.clone(),
+                items,
+            ),
+            cid,
+            choice: u32::max_value(),
+        };
+
+        window.update(gd, true);
+        window
+    }
+
+    fn update(&mut self, gd: &GameData, init: bool) {
+        let current_choice = self.window.list.get_current_choice();
+        if current_choice != self.choice || init {
+            self.choice = current_choice;
+
+            let t = &gd.chara.get(self.cid).traits[current_choice as usize].1;
+            let desc_text = misc_txt(&format!("chara_trait-{}-desc", t.text_id()));
+            self.window.text.set_text(desc_text);
+        }
+    }
+}
+
+impl Window for CharaTraitWindow {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        game: &Game<'_>,
+        anim: Option<(&Animation, u32)>,
+    ) {
+        self.window.draw(context, game, anim);
+    }
+}
+
+impl DialogWindow for CharaTraitWindow {
+    fn process_command(
+        &mut self,
+        command: &Command,
+        pa: &mut DoPlayerAction<'_, '_>,
+    ) -> DialogResult {
+        let result = self.window.process_command(command, pa);
+        if let DialogResult::Continue = result {
+            self.update(pa.gd(), false);
+        }
+        result
     }
 }

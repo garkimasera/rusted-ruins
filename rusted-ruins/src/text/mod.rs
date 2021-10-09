@@ -13,6 +13,8 @@ use std::path::PathBuf;
 use unic_langid::LanguageIdentifier;
 use walkdir::WalkDir;
 
+pub use to_text::CharaTraitTextId;
+
 /// Initialize lazy static
 pub fn init() {
     Lazy::force(&ACTIVE_SKILL_BUNDLE);

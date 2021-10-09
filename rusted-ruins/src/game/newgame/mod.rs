@@ -58,7 +58,7 @@ impl NewGameBuilder {
             chara.name = Some(self.player_name.as_ref().unwrap().clone());
             chara
                 .traits
-                .push((CharaTraitOrigin::Inherent, CharaTrait::MainCharacter));
+                .push((CharaTraitOrigin::Inherent, CharaTrait::Player));
             set_initial_skills(&mut chara);
             chara.update();
 

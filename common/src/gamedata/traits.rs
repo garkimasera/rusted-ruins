@@ -7,5 +7,5 @@ pub enum CharaTraitOrigin {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum CharaTrait {
     Id(String),
-    MainCharacter,
+    Player,
 }

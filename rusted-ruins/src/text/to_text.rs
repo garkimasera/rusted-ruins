@@ -140,6 +140,22 @@ impl ToText for Chara {
     }
 }
 
+impl ToText for CharaTrait {
+    fn to_text(&self) -> Cow<'_, str> {
+        misc_txt(&format!("chara_trait-{}", self.text_id())).into()
+    }
+}
+
+#[extend::ext(pub, name = CharaTraitTextId)]
+impl CharaTrait {
+    fn text_id(&self) -> &str {
+        match self {
+            CharaTrait::Player => "player",
+            CharaTrait::Id(id) => id,
+        }
+    }
+}
+
 impl ToText for Command {
     fn to_text(&self) -> Cow<'_, str> {
         use Command::*;

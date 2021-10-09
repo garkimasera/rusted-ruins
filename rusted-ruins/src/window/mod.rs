@@ -17,6 +17,7 @@ mod indicator;
 mod item_info_window;
 mod item_menu;
 mod item_window;
+mod list_desc_window;
 mod log_window;
 mod main_window;
 mod minimap;
