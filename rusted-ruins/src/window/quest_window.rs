@@ -49,7 +49,7 @@ impl QuestWindow {
             .iter()
             .map(|quest| {
                 let text = quest.to_text();
-                TextCache::new(text, FontKind::M, UI_CFG.color.normal_font.into())
+                TextCache::new(text, FontKind::M, UI_CFG.color.normal_font)
             })
             .collect();
 

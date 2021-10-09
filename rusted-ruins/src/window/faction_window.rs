@@ -22,7 +22,7 @@ impl FactionWindow {
             TextCache::new(
                 ui_txt("list_header-faction"),
                 FontKind::M,
-                UI_CFG.color.normal_font.into(),
+                UI_CFG.color.normal_font,
             ),
             LabelWidget::new(
                 Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),
@@ -46,8 +46,7 @@ impl FactionWindow {
                     return None;
                 }
 
-                let faction =
-                    TextCache::new(id.to_text(), FontKind::M, UI_CFG.color.normal_font.into());
+                let faction = TextCache::new(id.to_text(), FontKind::M, UI_CFG.color.normal_font);
                 let relation = format!("{}", Into::<i16>::into(*relation));
                 let relation = LabelWidget::new(
                     Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),

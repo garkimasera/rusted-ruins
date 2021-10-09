@@ -255,11 +255,8 @@ impl SkillWindow {
             .into_iter()
             .map(|skill_kind| {
                 let (lv, adj) = chara.skill_level_with_adj(skill_kind);
-                let skill_name = TextCache::new(
-                    skill_kind.to_text(),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                );
+                let skill_name =
+                    TextCache::new(skill_kind.to_text(), FontKind::M, UI_CFG.color.normal_font);
                 let skill_level = if adj == 0 {
                     format!("Lv. {}", lv)
                 } else if adj < 0 {
@@ -268,7 +265,7 @@ impl SkillWindow {
                     format!("Lv. {} + {}", lv, adj)
                 };
                 let skill_level =
-                    TextCache::new(skill_level, FontKind::M, UI_CFG.color.normal_font.into());
+                    TextCache::new(skill_level, FontKind::M, UI_CFG.color.normal_font);
                 let (_, skill_exp) = chara.skills.get_level_exp(skill_kind);
                 let skill_exp = TextCache::new(
                     format!(
@@ -276,7 +273,7 @@ impl SkillWindow {
                         skill_exp as f32 / SKILL_EXP_LVUP as f32 * 100.0
                     ),
                     FontKind::M,
-                    UI_CFG.color.normal_font.into(),
+                    UI_CFG.color.normal_font,
                 );
                 (skill_name, skill_level, skill_exp)
             })
@@ -338,11 +335,7 @@ impl CharaTraitWindow {
             .traits
             .iter()
             .map(|(_origin, chara_trait)| {
-                TextCache::new(
-                    chara_trait.to_text(),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                )
+                TextCache::new(chara_trait.to_text(), FontKind::M, UI_CFG.color.normal_font)
             })
             .collect();
 

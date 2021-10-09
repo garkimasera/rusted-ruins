@@ -117,11 +117,7 @@ impl CreationWindow {
             .iter()
             .map(|r| {
                 let idx: ItemIdx = gobj::id_to_idx(&r.product);
-                let t = TextCache::new(
-                    obj_txt(&r.product),
-                    FontKind::M,
-                    UI_CFG.color.normal_font.into(),
-                );
+                let t = TextCache::new(obj_txt(&r.product), FontKind::M, UI_CFG.color.normal_font);
                 (IconIdx::from(idx), t)
             })
             .collect();
@@ -335,12 +331,11 @@ impl CreationDetailDialog {
                         let material_group_name = crate::text::prefix::material_group(group);
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
-                        let item_name =
-                            TextCache::new(msg, FontKind::M, UI_CFG.color.normal_font.into());
+                        let item_name = TextCache::new(msg, FontKind::M, UI_CFG.color.normal_font);
                         let item_n = TextCache::new(
                             format!("0/{}", n),
                             FontKind::M,
-                            UI_CFG.color.normal_font.into(),
+                            UI_CFG.color.normal_font,
                         );
                         return (IconIdx::from(icon_idx), item_name, item_n);
                     }
@@ -360,12 +355,12 @@ impl CreationDetailDialog {
                 let item_name = TextCache::new(
                     format!("{}{}", group, obj_txt(item_id)),
                     FontKind::M,
-                    UI_CFG.color.normal_font.into(),
+                    UI_CFG.color.normal_font,
                 );
                 let item_n = TextCache::new(
                     format!("{}/{}", total, n),
                     FontKind::M,
-                    UI_CFG.color.normal_font.into(),
+                    UI_CFG.color.normal_font,
                 );
                 (IconIdx::from(idx), item_name, item_n)
             })

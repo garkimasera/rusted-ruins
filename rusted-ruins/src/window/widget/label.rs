@@ -24,7 +24,7 @@ pub enum TextAlignment {
 impl LabelWidget {
     pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::new(s, font, UI_CFG.color.normal_font.into());
+        let cache = TextCache::new(s, font, UI_CFG.color.normal_font);
         LabelWidget {
             rect,
             cache,
@@ -38,7 +38,7 @@ impl LabelWidget {
 
     pub fn bordered<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::one_bordered(s, font, UI_CFG.color.normal_font.into());
+        let cache = TextCache::bordered(s, font, UI_CFG.color.normal_font);
         LabelWidget {
             rect,
             cache,
@@ -52,7 +52,7 @@ impl LabelWidget {
 
     pub fn wrapped<R: Into<Rect>>(rect: R, s: &str, font: FontKind, w: u32) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::one_wrapped(s, font, UI_CFG.color.normal_font.into(), w);
+        let cache = TextCache::wrapped(s, font, UI_CFG.color.normal_font, w);
         LabelWidget {
             rect,
             cache,
@@ -71,11 +71,11 @@ impl LabelWidget {
         }
 
         let cache = if let Some(w) = self.wrap_w {
-            TextCache::one_wrapped(text, self.font, UI_CFG.color.normal_font.into(), w)
+            TextCache::wrapped(text, self.font, UI_CFG.color.normal_font, w)
         } else if self.is_bordered {
-            TextCache::one_bordered(text, self.font, UI_CFG.color.normal_font.into())
+            TextCache::bordered(text, self.font, UI_CFG.color.normal_font)
         } else {
-            TextCache::new(text, self.font, UI_CFG.color.normal_font.into())
+            TextCache::new(text, self.font, UI_CFG.color.normal_font)
         };
         self.cache = cache;
     }

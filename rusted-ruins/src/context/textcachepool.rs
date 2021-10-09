@@ -49,34 +49,39 @@ impl TextCache {
         }
     }
 
-    pub fn new<S: Into<String>>(s: S, font: FontKind, color: Color) -> TextCache {
+    pub fn new<S: Into<String>, C: Into<Color>>(s: S, font: FontKind, color: C) -> TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
             font,
-            color,
+            color: color.into(),
             wrap_size: None,
             is_bordered: false,
         }
     }
 
-    pub fn one_wrapped<S: Into<String>>(s: S, font: FontKind, color: Color, w: u32) -> TextCache {
+    pub fn wrapped<S: Into<String>, C: Into<Color>>(
+        s: S,
+        font: FontKind,
+        color: C,
+        w: u32,
+    ) -> TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
             font,
-            color,
+            color: color.into(),
             wrap_size: Some(w),
             is_bordered: false,
         }
     }
 
-    pub fn one_bordered<S: Into<String>>(s: S, font: FontKind, color: Color) -> TextCache {
+    pub fn bordered<S: Into<String>, C: Into<Color>>(s: S, font: FontKind, color: C) -> TextCache {
         TextCache {
             i: None,
             s: vec![s.into()],
             font,
-            color,
+            color: color.into(),
             wrap_size: None,
             is_bordered: true,
         }
