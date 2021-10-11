@@ -2,10 +2,10 @@ use super::defs::{ActiveSkillId, ActiveSkillOrigin, Recipe};
 use super::faction::FactionId;
 use super::item::{EquipItemList, EquipSlotKind, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
+use super::property::CharaTotalEffect;
 use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
-use super::unknown_id_err;
-use super::{traits::*, UniqueId};
+use super::{traits::*, unknown_id_err, UniqueId};
 use crate::basic::{ArrayStringId, BonusLevel};
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use arrayvec::ArrayString;
@@ -71,6 +71,7 @@ pub struct Chara {
     pub ai: CharaAi,
     pub hp: i32,
     pub sp: f32,
+    pub te: Box<CharaTotalEffect>,
     pub morale: Morale,
     pub traits: Vec<(CharaTraitOrigin, CharaTrait)>,
     pub status: Vec<CharaStatus>,
@@ -122,8 +123,8 @@ pub struct CharaBaseAttr {
 }
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
-pub struct CharaAttrRevision {
-    pub hp: i32,
+pub struct CharaAttrDiff {
+    pub base_hp: i32,
     pub str: i16,
     pub vit: i16,
     pub dex: i16,
@@ -131,23 +132,6 @@ pub struct CharaAttrRevision {
     pub wil: i16,
     pub cha: i16,
     pub spd: i16,
-}
-
-impl CharaBaseAttr {
-    pub fn revise(self, r: CharaAttrRevision) -> CharaBaseAttr {
-        CharaBaseAttr {
-            base_hp: self.base_hp + r.hp,
-            str: self.str + r.str,
-            vit: self.vit + r.vit,
-            dex: self.dex + r.dex,
-            int: self.int + r.int,
-            wil: self.wil + r.wil,
-            cha: self.cha + r.cha,
-            spd: self.spd + r.spd,
-            carry: self.carry,
-            travel_speed: self.travel_speed,
-        }
-    }
 }
 
 /// Represents chara status
@@ -230,6 +214,7 @@ impl Default for Chara {
             hp: 100,
             sp: 0.0,
             morale: Morale::default(),
+            te: Box::default(),
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),

@@ -2,6 +2,7 @@ pub mod gen;
 pub mod power;
 pub mod preturn;
 pub mod status;
+mod total_effect;
 mod update;
 
 use super::extrait::*;
@@ -9,12 +10,18 @@ use super::Game;
 use crate::text::ToText;
 use common::basic::WAIT_TIME_NUMERATOR;
 use common::gamedata::*;
+use common::gobj;
 use rng::{get_rng, Rng};
 use rules::RULES;
 
 /// Additional Chara method
 #[extend::ext(pub)]
 impl Chara {
+    /// Get CharaTemplate object of this character
+    fn obj(&self) -> &'static CharaTemplateObject {
+        gobj::get_obj(self.idx)
+    }
+
     /// Get this chara is main character or not.
     fn is_main_character(&self) -> bool {
         self.traits.iter().any(|t| t.1 == CharaTrait::Player)

@@ -6,6 +6,12 @@ use std::collections::HashMap;
 #[serde(transparent)]
 pub struct CharaTraits(HashMap<String, CharaTrait>);
 
+impl CharaTraits {
+    pub fn get(&self, id: &str) -> &CharaTrait {
+        &self.0[id]
+    }
+}
+
 impl Rule for CharaTraits {
     const NAME: &'static str = "chara_traits";
 
@@ -19,6 +25,7 @@ impl Rule for CharaTraits {
 /// Rules for character parameter calculation
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CharaTrait {
+    #[serde(default)]
     cost: i32,
-    properties: Vec<Property>,
+    pub properties: Vec<Property>,
 }
