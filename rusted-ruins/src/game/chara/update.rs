@@ -10,9 +10,8 @@ pub fn update_attributes(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.idx);
 
     // Update total effect
+    chara.te = Box::default();
     total_effect::add_class(&mut chara.te, RULES.classes.get(chara.class));
-
-    chara.attr.max_hp = calc_max_hp(chara, ct);
 
     for status in &chara.status {
         total_effect::add_status(&mut chara.te, status);
@@ -21,7 +20,6 @@ pub fn update_attributes(chara: &mut Chara) {
     for (_, chara_trait) in &chara.traits {
         total_effect::add_chara_trait(&mut chara.te, chara_trait);
     }
-    // chara.attr.spd = std::cmp::max((base_attr.spd as f32 * factor) as u16, RULES.chara.min_spd);
 
     // Update attributes
     chara.attr.max_hp = calc_max_hp(chara, ct);
@@ -31,7 +29,6 @@ pub fn update_attributes(chara: &mut Chara) {
     chara.attr.int = (ct.base_attr.int + chara.te.int).max(1) as u16;
     chara.attr.wil = (ct.base_attr.wil + chara.te.wil).max(1) as u16;
     chara.attr.cha = (ct.base_attr.cha + chara.te.cha).max(1) as u16;
-    chara.attr.spd = (ct.base_attr.spd as f32 * chara.te.spd_factor).max(1.0) as u16;
 
     // View range
     chara.attr.view_range = RULES.chara.default_view_range;
@@ -48,20 +45,26 @@ pub fn update_encumbrance_status(chara: &mut Chara) {
     let total_weight = chara.item_list.sum_weight() as f32;
     let ratio = total_weight / cap;
 
-    if ratio > RULES.chara.carrying_capacity_threshold_overloaded {
+    let spd_factor = if ratio > RULES.chara.carrying_capacity_threshold_overloaded {
         chara.add_status(CharaStatus::Overloaded);
-        return;
+        RULES.chara.speed_coeff_overloaded
     } else if ratio > RULES.chara.carrying_capacity_threshold_strained {
         chara.add_status(CharaStatus::Strained);
-        return;
+        RULES.chara.speed_coeff_strained
     } else if ratio > RULES.chara.carrying_capacity_threshold_stressed {
         chara.add_status(CharaStatus::Stressed);
-        return;
+        RULES.chara.speed_coeff_stressed
     } else if ratio > RULES.chara.carrying_capacity_threshold_burdened {
         chara.add_status(CharaStatus::Burdened);
-        return;
-    }
-    chara.remove_encumbrance_status();
+        RULES.chara.speed_coeff_burdened
+    } else {
+        chara.remove_encumbrance_status();
+        1.0
+    };
+    chara.te.spd_factor *= spd_factor;
+    chara.attr.spd = ((chara.obj().base_attr.spd as f32 + chara.te.spd as f32)
+        * chara.te.spd_factor)
+        .max(1.0) as u16;
 }
 
 pub fn calc_carrying_capacity(chara: &Chara) -> f32 {

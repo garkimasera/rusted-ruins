@@ -127,8 +127,8 @@ impl Chara {
 
     /// Update character parameters by its status
     fn update(&mut self) {
-        update::update_encumbrance_status(self);
         update::update_attributes(self);
+        update::update_encumbrance_status(self);
     }
 
     /// Reset wait time
@@ -166,18 +166,9 @@ impl Chara {
     /// Get character's base skill level and the adjustment value.
     fn skill_level_with_adj(&self, kind: SkillKind) -> (u32, i32) {
         let lv = self.skills.skills.get(&kind).copied().unwrap_or(0);
+        let (bonus_factor, bonus_lv) = self.te.skill_level.get(&kind).unwrap_or(&(0.0, 0));
 
-        let mut adj = 0;
-        let mut adj_factor = 0.0;
-
-        if let Some(bonus_level) = RULES.classes.get(self.class).skill_bonus.get(&kind) {
-            let bonus = RULES.params.skill_bonus[bonus_level];
-            adj_factor += bonus.0;
-            adj += bonus.1;
-        }
-
-        let adj = adj + (lv as f32 * adj_factor) as i32;
-
+        let adj = bonus_lv + (lv as f32 * bonus_factor) as i32;
         (lv, adj)
     }
 

@@ -29,5 +29,5 @@ pub struct CharaTotalEffect {
     pub spd: i16,
     #[derivative(Default(value = "1.0"))]
     pub spd_factor: f32,
-    pub skill_level: FnvHashMap<SkillKind, i32>,
+    pub skill_level: FnvHashMap<SkillKind, (f32, i32)>,
 }
