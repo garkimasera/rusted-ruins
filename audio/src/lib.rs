@@ -25,19 +25,34 @@ use std::path::Path;
 
 thread_local!(static AUDIO_PLAYER: RefCell<Option<AudioPlayer>> = RefCell::new(None));
 
+/// MixerContext provides a context for systems with and without
+/// audio mixer devices.
+pub enum MixerContext {
+    SDL2MixerContext(sdl2::mixer::Sdl2MixerContext),
+    NullMixerContext,
+}
+
 pub struct AudioContext {
-    _mixer_context: sdl2::mixer::Sdl2MixerContext,
+    _mixer_context: MixerContext,
 }
 
 /// Initialize AudioPlayer
 pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext {
     let mixer_context = init_device();
 
-    AUDIO_PLAYER.with(|a| {
-        assert!(a.borrow().is_none());
-        *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
-    });
-    sdl2::mixer::Music::set_volume(music_volume);
+    match mixer_context {
+	// Setup the audio player for the SDL case
+	MixerContext::SDL2MixerContext(_) => {
+	    AUDIO_PLAYER.with(|a| {
+		assert!(a.borrow().is_none());
+		*a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
+	    });
+
+	    sdl2::mixer::Music::set_volume(music_volume);
+	},
+	// Setup the audio player for other cases, including NullMixerContext
+	_ => (),
+    }
     AudioContext {
         _mixer_context: mixer_context,
     }
@@ -45,8 +60,9 @@ pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext 
 
 pub fn with_audio_player<F: FnOnce(&AudioPlayer)>(f: F) {
     AUDIO_PLAYER.with(|a| {
-        assert!(a.borrow().is_some());
-        f(a.borrow().as_ref().unwrap());
+	if a.borrow().is_some() {
+            f(a.borrow().as_ref().unwrap());
+	}
     });
 }
 
@@ -73,8 +89,9 @@ pub fn play_music(name: &str) {
 
 fn finalize() {
     AUDIO_PLAYER.with(|a| {
-        assert!(a.borrow().is_some());
-        *a.borrow_mut() = None;
+	if a.borrow().is_some() {
+            *a.borrow_mut() = None;
+	}
     });
 }
 
@@ -112,7 +129,9 @@ impl AudioPlayer {
     }
 }
 
-fn init_device() -> sdl2::mixer::Sdl2MixerContext {
+/// Initialize an audio device and return a MixerContext
+/// If no device is able to be initialized, a NullMixerContext is returned
+fn init_device() -> MixerContext {
     use sdl2::mixer::{InitFlag, AUDIO_S16LSB, DEFAULT_CHANNELS};
 
     // Initialization for sound
@@ -120,10 +139,25 @@ fn init_device() -> sdl2::mixer::Sdl2MixerContext {
     let format = AUDIO_S16LSB; // signed 16 bit samples, in little-endian byte order
     let channels = DEFAULT_CHANNELS; // Stereo
     let chunk_size = 1024;
-    sdl2::mixer::open_audio(frequency, format, channels, chunk_size).unwrap();
-    let mixer_context = sdl2::mixer::init(InitFlag::OPUS).unwrap();
 
-    sdl2::mixer::allocate_channels(1);
+    let open_audio_result = sdl2::mixer::open_audio(frequency, format, channels, chunk_size);
+    let mixer_context =
+	if let Err(e) = open_audio_result {
+	    // Return null mixer context if we can't open the audio
+	    warn!("couldn't open audio: {}", e);
+	    MixerContext::NullMixerContext
+	} else {
+	    match sdl2::mixer::init(InitFlag::OPUS) {
+		Ok(m) => {
+		    sdl2::mixer::allocate_channels(1);
+		    MixerContext::SDL2MixerContext(m)
+		},
+		Err(s) => {
+		    warn!("{}", s);
+		    MixerContext::NullMixerContext
+		}
+	    }
+	};
 
     mixer_context
 }
@@ -152,5 +186,19 @@ mod tests {
         std::thread::sleep(std::time::Duration::from_millis(3000));
         play_sound("anim.club");
         std::thread::sleep(std::time::Duration::from_millis(3000));
+    }
+
+    #[test]
+    fn play_with_no_audio() {
+	// Shouldn't panic
+        assert_eq!(play_music("test"), ());
+
+	// Setup an explicit empty AudioPlayer
+	AUDIO_PLAYER.with(|a| {
+	    *a.borrow_mut() = None;
+	});
+
+	// Shouldn't panic
+        assert_eq!(play_music("test"), ());
     }
 }
