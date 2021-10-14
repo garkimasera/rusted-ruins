@@ -41,13 +41,13 @@ pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext 
     let mixer_context = init_device();
 
     if let MixerContext::SDL2MixerContext(_) = mixer_context {
-	// Setup the audio player for the SDL case
-	AUDIO_PLAYER.with(|a| {
-	    assert!(a.borrow().is_none());
-	    *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
-	});
+        // Setup the audio player for the SDL case
+        AUDIO_PLAYER.with(|a| {
+            assert!(a.borrow().is_none());
+            *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
+        });
 
-	sdl2::mixer::Music::set_volume(music_volume);
+        sdl2::mixer::Music::set_volume(music_volume);
     }
     AudioContext {
         _mixer_context: mixer_context,
@@ -56,9 +56,9 @@ pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext 
 
 pub fn with_audio_player<F: FnOnce(&AudioPlayer)>(f: F) {
     AUDIO_PLAYER.with(|a| {
-	if a.borrow().is_some() {
+        if a.borrow().is_some() {
             f(a.borrow().as_ref().unwrap());
-	}
+        }
     });
 }
 
@@ -85,9 +85,9 @@ pub fn play_music(name: &str) {
 
 fn finalize() {
     AUDIO_PLAYER.with(|a| {
-	if a.borrow().is_some() {
+        if a.borrow().is_some() {
             *a.borrow_mut() = None;
-	}
+        }
     });
 }
 
@@ -137,23 +137,22 @@ fn init_device() -> MixerContext {
     let chunk_size = 1024;
 
     let open_audio_result = sdl2::mixer::open_audio(frequency, format, channels, chunk_size);
-    let mixer_context =
-	if let Err(e) = open_audio_result {
-	    // Return null mixer context if we can't open the audio
-	    warn!("couldn't open audio: {}", e);
-	    MixerContext::NullMixerContext
-	} else {
-	    match sdl2::mixer::init(InitFlag::OPUS) {
-		Ok(m) => {
-		    sdl2::mixer::allocate_channels(1);
-		    MixerContext::SDL2MixerContext(m)
-		},
-		Err(s) => {
-		    warn!("{}", s);
-		    MixerContext::NullMixerContext
-		}
-	    }
-	};
+    let mixer_context = if let Err(e) = open_audio_result {
+        // Return null mixer context if we can't open the audio
+        warn!("couldn't open audio: {}", e);
+        MixerContext::NullMixerContext
+    } else {
+        match sdl2::mixer::init(InitFlag::OPUS) {
+            Ok(m) => {
+                sdl2::mixer::allocate_channels(1);
+                MixerContext::SDL2MixerContext(m)
+            }
+            Err(s) => {
+                warn!("{}", s);
+                MixerContext::NullMixerContext
+            }
+        }
+    };
 
     mixer_context
 }
@@ -186,15 +185,15 @@ mod tests {
 
     #[test]
     fn play_with_no_audio() {
-	// Shouldn't panic
+        // Shouldn't panic
         assert_eq!(play_music("test"), ());
 
-	// Setup an explicit empty AudioPlayer
-	AUDIO_PLAYER.with(|a| {
-	    *a.borrow_mut() = None;
-	});
+        // Setup an explicit empty AudioPlayer
+        AUDIO_PLAYER.with(|a| {
+            *a.borrow_mut() = None;
+        });
 
-	// Shouldn't panic
+        // Shouldn't panic
         assert_eq!(play_music("test"), ());
     }
 }
