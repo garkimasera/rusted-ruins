@@ -40,18 +40,14 @@ pub struct AudioContext {
 pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext {
     let mixer_context = init_device();
 
-    match mixer_context {
+    if let MixerContext::SDL2MixerContext(_) = mixer_context {
 	// Setup the audio player for the SDL case
-	MixerContext::SDL2MixerContext(_) => {
-	    AUDIO_PLAYER.with(|a| {
-		assert!(a.borrow().is_none());
-		*a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
-	    });
+	AUDIO_PLAYER.with(|a| {
+	    assert!(a.borrow().is_none());
+	    *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
+	});
 
-	    sdl2::mixer::Music::set_volume(music_volume);
-	},
-	// Setup the audio player for other cases, including NullMixerContext
-	_ => (),
+	sdl2::mixer::Music::set_volume(music_volume);
     }
     AudioContext {
         _mixer_context: mixer_context,
