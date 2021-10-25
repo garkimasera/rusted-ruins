@@ -2,7 +2,7 @@
 name = "rusted-ruins-script"
 version = "0.1.0"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 thiserror = "1"

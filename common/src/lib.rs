@@ -2,8 +2,7 @@
     rust_2018_compatibility,
     rust_2018_idioms,
     future_incompatible,
-    nonstandard_style,
-    clippy::all
+    nonstandard_style
 )]
 #![cfg_attr(not(global_state_obj), allow(dead_code))]
 #![cfg_attr(not(global_state_obj), allow(unused_variables))]
