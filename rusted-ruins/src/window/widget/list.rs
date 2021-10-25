@@ -30,7 +30,7 @@ pub struct ListWidget<T> {
 pub enum ListWidgetResponse {
     Select(u32),
     SelectForMenu(u32),
-    SelectionChanged,
+    SelectionChanged(u32),
     Scrolled,
 }
 
@@ -144,6 +144,11 @@ impl<T: ListWidgetRow> ListWidget<T> {
         if let Some(scroll) = self.scroll.as_mut() {
             scroll.set_total_size(self.n_item);
         }
+    }
+
+    pub fn get_item_mut(&mut self, i: u32) -> Option<&mut T> {
+        assert!(!self.update_by_user);
+        self.rows.get_mut(i as usize)
     }
 
     pub fn page_item_idx(&self) -> (u32, u32) {
@@ -284,7 +289,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         } else {
                             self.current_choice -= 1;
                         }
-                        return Some(ListWidgetResponse::SelectionChanged);
+                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
                     }
                     VDirection::Down => {
                         if self.current_choice == self.n_row as u32 - 1 {
@@ -292,7 +297,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         } else {
                             self.current_choice += 1;
                         }
-                        return Some(ListWidgetResponse::SelectionChanged);
+                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
                     }
                     _ => (),
                 }
@@ -323,6 +328,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                     if self.current_choice != idx {
                         self.current_choice = idx;
                         audio::play_sound("select-item");
+                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
                     }
                 }
                 None

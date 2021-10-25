@@ -187,6 +187,12 @@ pub struct TextInputDialogConfig {
 #[derive(Debug, Deserialize)]
 pub struct NewGameDialogConfig {
     pub explanation_text_rect: CfgRect,
+    pub column_pos: Vec<i32>,
+    pub top_margin: i32,
+    pub bottom_margin: i32,
+    pub button_w: u32,
+    pub button_h: u32,
+    pub button_space: u32,
 }
 
 #[derive(Debug, Deserialize)]

@@ -10,6 +10,7 @@ pub struct TextInputDialog {
     rect: Rect,
     text: String,
     callback: Option<Box<dyn Fn(&mut DoPlayerAction<'_, '_>, &str)>>,
+    cb_text_changed: Option<Box<dyn Fn(&mut DoPlayerAction<'_, '_>, &str)>>,
 }
 
 impl TextInputDialog {
@@ -28,6 +29,7 @@ impl TextInputDialog {
             rect,
             text: String::new(),
             callback: None,
+            cb_text_changed: None,
         }
     }
 
@@ -40,6 +42,13 @@ impl TextInputDialog {
         callback: F,
     ) {
         self.callback = Some(Box::new(callback));
+    }
+
+    pub fn set_cb_text_changed<F: Fn(&mut DoPlayerAction<'_, '_>, &str) + 'static>(
+        &mut self,
+        callback: F,
+    ) {
+        self.cb_text_changed = Some(Box::new(callback));
     }
 
     /// This function is used when the result string is invalid,
@@ -74,11 +83,17 @@ impl DialogWindow for TextInputDialog {
             Command::TextInput { ref text } => {
                 self.text.push_str(text);
                 self.label.set_text(&self.text);
+                if let Some(cb) = &self.cb_text_changed {
+                    cb(pa, &self.text);
+                }
                 DialogResult::Continue
             }
             Command::TextDelete => {
                 self.text.pop();
                 self.label.set_text(&self.text);
+                if let Some(cb) = &self.cb_text_changed {
+                    cb(pa, &self.text);
+                }
                 DialogResult::Continue
             }
             Command::Enter => {

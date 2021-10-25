@@ -107,12 +107,13 @@ impl std::fmt::Debug for DialogResult {
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum DialogCloseValue {
     Index(u32),
-    CharaClass(CharaClass),
+    _Dummy,
 }
 
 pub enum SpecialDialogResult {
     StartDialogNewGame,
     StartDialogLoadGame,
+    TempGameData(Box<GameData>),
     NewGameStart(Box<GameData>),
     ReturnToStartScreen,
     ItemListUpdate,
@@ -534,7 +535,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                 self.push_dialog_window(Box::new(win));
             }
             Command::OpenEquipWin => {
-                let dialog = Box::new(equip_window::EquipWindow::new(pa.game(), CharaId::Player));
+                let dialog = Box::new(equip_window::EquipWindow::new(pa.gd(), CharaId::Player));
                 self.push_dialog_window(dialog);
             }
             Command::OpenStatusWin => {
@@ -644,6 +645,15 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                     self.game.update_before_player_turn();
                     self.game.start_new_game();
                     game_log!("start"; version=env!("CARGO_PKG_VERSION"));
+                }
+                SpecialDialogResult::TempGameData(gd) => {
+                    self.game.gd = *gd;
+                    info!("Temporary GameData");
+                }
+                SpecialDialogResult::ReturnToStartScreen => {
+                    self.window_stack.clear();
+                    self.push_dialog_window(Box::new(start_window::StartDialog::new()));
+                    self.mode = WindowManageMode::Start(start_window::StartWindow::new());
                 }
                 _ => unreachable!(),
             },

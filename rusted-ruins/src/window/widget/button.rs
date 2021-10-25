@@ -1,4 +1,4 @@
-use super::WidgetTrait;
+use super::{MovableWidget, WidgetTrait};
 use crate::config::UI_CFG;
 use crate::context::*;
 use crate::game::command::{Command, MouseButton};
@@ -34,6 +34,13 @@ impl ButtonWidget {
             covered: false,
             pressed: false,
         }
+    }
+}
+
+impl MovableWidget for ButtonWidget {
+    fn move_to(&mut self, x: i32, y: i32) {
+        self.rect.x = x;
+        self.rect.y = y;
     }
 }
 

@@ -249,6 +249,10 @@ pub fn misc_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
     }
 }
 
+pub fn misc_txt_checked(id: &str, args: Option<&FluentArgs<'_>>) -> Option<String> {
+    MISC_BUNDLE.format(id, args)
+}
+
 /// This is helper trait for some data objects that need to be printed in game.
 /// Logging macros use this.
 pub trait ToText {

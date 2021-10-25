@@ -419,15 +419,7 @@ impl CommandConvTable {
     }
 
     fn conv(&self, raw: RawCommand, mode: InputMode) -> Option<Command> {
-        let table = match mode {
-            InputMode::Normal => &self.normal,
-            InputMode::Dialog => &self.dialog,
-            InputMode::TextInput => {
-                return text_input_conv(raw);
-            }
-        };
-
-        // For mouse event, don't use table
+        // Process mouse event first
         match raw {
             RawCommand::MouseButtonDown {
                 x,
@@ -474,7 +466,19 @@ impl CommandConvTable {
             RawCommand::MouseWheel { x, y } => {
                 return Some(Command::MouseWheel { x, y });
             }
-            // Shortcuts by number key
+            _ => (),
+        }
+
+        let table = match mode {
+            InputMode::Normal => &self.normal,
+            InputMode::Dialog => &self.dialog,
+            InputMode::TextInput => {
+                return text_input_conv(raw);
+            }
+        };
+
+        // Shortcuts by number key
+        match raw {
             RawCommand::KeyPress(Keycode::Num1) => {
                 return Some(Command::ActionShortcut(0));
             }

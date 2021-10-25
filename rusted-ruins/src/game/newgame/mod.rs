@@ -4,24 +4,13 @@ use common::gamedata::*;
 use common::gobj;
 use rules::RULES;
 
+#[derive(Clone, Default, Debug)]
 pub struct NewGameBuilder {
-    gd: GameData,
-    player_name: Option<String>,
-    chara_class: Option<CharaClass>,
+    pub player_name: Option<String>,
+    pub chara_class: Option<CharaClass>,
 }
 
 impl NewGameBuilder {
-    pub fn new() -> NewGameBuilder {
-        let mut gd = GameData::empty();
-        gd.play_time.start();
-
-        NewGameBuilder {
-            gd,
-            player_name: None,
-            chara_class: None,
-        }
-    }
-
     pub fn set_player_name(&mut self, name: &str) {
         self.player_name = Some(name.to_owned());
     }
@@ -30,63 +19,69 @@ impl NewGameBuilder {
         self.chara_class = Some(chara_class);
     }
 
-    pub fn build(mut self) -> GameData {
+    /// Build new GameData only with player
+    pub fn build_with_player(&self) -> GameData {
+        let mut gd = GameData::empty();
+
+        let class = self.chara_class.unwrap();
+        let chara_template_id = &RULES.newgame.chara_template_table[&class];
+        let mut chara = super::chara::gen::create_chara(
+            gobj::id_to_idx(chara_template_id),
+            1,
+            FactionId::player(),
+            Some(class),
+        );
+        chara.name = Some(self.player_name.as_ref().unwrap().clone());
+        chara
+            .traits
+            .push((CharaTraitOrigin::Inherent, CharaTrait::Player));
+        set_initial_skills(&mut chara);
+
+        chara.update();
+        gd.add_chara(CharaId::Player, chara);
+
+        gd
+    }
+
+    pub fn build(&self, mut gd: GameData) -> GameData {
         rng::reseed(crate::config::CONFIG.fix_rand);
-        {
-            let mut gd = &mut self.gd;
+        gd.play_time.start();
 
-            gd.meta.set_save_name(self.player_name.as_ref().unwrap());
+        gd.meta.set_save_name(self.player_name.as_ref().unwrap());
 
-            super::region::add_region(&mut gd, &RULES.newgame.start_region);
+        super::region::add_region(&mut gd, &RULES.newgame.start_region);
 
-            let mid = MapId::RegionMap {
-                rid: RegionId::default(),
-            };
-            gd.set_initial_mapid(mid);
-            let start_pos = RULES.newgame.start_pos;
+        let mid = MapId::RegionMap {
+            rid: RegionId::default(),
+        };
+        gd.set_initial_mapid(mid);
+        let start_pos = RULES.newgame.start_pos;
 
-            super::region::gen_dungeon(&mut gd, mid.rid());
+        super::region::gen_dungeon(&mut gd, mid.rid());
 
-            let class = self.chara_class.unwrap();
-            let chara_template_id = &RULES.newgame.chara_template_table[&class];
-            let mut chara = super::chara::gen::create_chara(
-                gobj::id_to_idx(chara_template_id),
-                1,
-                FactionId::player(),
-                Some(class),
-            );
-            chara.name = Some(self.player_name.as_ref().unwrap().clone());
-            chara
-                .traits
-                .push((CharaTraitOrigin::Inherent, CharaTrait::Player));
-            set_initial_skills(&mut chara);
-            chara.update();
+        gd.player.set_money(RULES.newgame.start_money as i64);
 
-            gd.player.set_money(RULES.newgame.start_money as i64);
+        gd.region
+            .get_map_mut(mid)
+            .locate_chara(CharaId::Player, start_pos);
+        set_initial_items(&mut gd);
 
-            gd.add_chara(CharaId::Player, chara);
-            gd.region
-                .get_map_mut(mid)
-                .locate_chara(CharaId::Player, start_pos);
-            set_initial_items(&mut gd);
+        // Initial date setting
+        gd.time = GameTime::new(
+            RULES.newgame.initial_date_year,
+            RULES.newgame.initial_date_month,
+            RULES.newgame.initial_date_day,
+            RULES.newgame.initial_date_hour,
+        );
 
-            // Initial date setting
-            gd.time = GameTime::new(
-                RULES.newgame.initial_date_year,
-                RULES.newgame.initial_date_month,
-                RULES.newgame.initial_date_day,
-                RULES.newgame.initial_date_hour,
-            );
-
-            // Faction relation setting
-            for (faction_id, faction) in &RULES.faction.factions {
-                gd.faction.set(*faction_id, faction.default_relation);
-            }
-
-            // Creation setting
-            crate::game::creation::add_initial_recipes(gd);
+        // Faction relation setting
+        for (faction_id, faction) in &RULES.faction.factions {
+            gd.faction.set(*faction_id, faction.default_relation);
         }
-        self.gd
+
+        // Creation setting
+        crate::game::creation::add_initial_recipes(&mut gd);
+        gd
     }
 }
 

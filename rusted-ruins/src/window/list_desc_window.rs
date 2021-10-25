@@ -1,11 +1,15 @@
 use super::commonuse::*;
 use super::widget::*;
 
+pub type CallbackSelected<T> = Box<dyn FnMut(u32, &mut ListWidget<T>)>;
+
 pub struct ListWithDescWindow<T> {
     rect: Rect,
     pub list: ListWidget<T>,
     pub text: LabelWidget,
     escape_click: bool,
+    cb_selection_changed: Option<Box<dyn FnMut(u32, &mut LabelWidget)>>,
+    cb_selected: Option<CallbackSelected<T>>,
 }
 
 impl<T: ListWidgetRow> ListWithDescWindow<T> {
@@ -25,7 +29,17 @@ impl<T: ListWidgetRow> ListWithDescWindow<T> {
             list,
             text,
             escape_click: false,
+            cb_selection_changed: None,
+            cb_selected: None,
         }
+    }
+
+    pub fn set_cb_selection_changed(&mut self, cb: Box<dyn FnMut(u32, &mut LabelWidget)>) {
+        self.cb_selection_changed = Some(cb);
+    }
+
+    pub fn set_cb_selected(&mut self, cb: CallbackSelected<T>) {
+        self.cb_selected = Some(cb);
     }
 }
 
@@ -57,7 +71,19 @@ impl<T: ListWidgetRow> DialogWindow for ListWithDescWindow<T> {
         check_escape_click!(self, command);
         let command = command.relative_to(self.rect);
 
-        self.list.process_command(&command);
+        match self.list.process_command(&command) {
+            Some(ListWidgetResponse::SelectionChanged(i)) => {
+                if let Some(cb) = self.cb_selection_changed.as_mut() {
+                    cb(i, &mut self.text);
+                }
+            }
+            Some(ListWidgetResponse::Select(i)) => {
+                if let Some(cb) = self.cb_selected.as_mut() {
+                    cb(i, &mut self.list);
+                }
+            }
+            _ => (),
+        }
 
         match command {
             Command::Cancel => DialogResult::Close,

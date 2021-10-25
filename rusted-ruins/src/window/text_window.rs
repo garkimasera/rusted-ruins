@@ -20,6 +20,19 @@ impl TextWindow {
     pub fn get_rect(&self) -> Rect {
         self.rect
     }
+
+    pub fn move_to(&mut self, x: Option<i32>, y: Option<i32>) {
+        if let Some(x) = x {
+            self.rect.x = x;
+        }
+        if let Some(y) = y {
+            self.rect.y = y;
+        }
+    }
+
+    pub fn set_text(&mut self, s: &str) {
+        self.label.set_text(s);
+    }
 }
 
 impl Window for TextWindow {

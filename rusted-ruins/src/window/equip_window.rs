@@ -20,7 +20,7 @@ pub struct EquipWindow {
 }
 
 impl EquipWindow {
-    pub fn new(game: &Game<'_>, cid: CharaId) -> EquipWindow {
+    pub fn new(gd: &GameData, cid: CharaId) -> EquipWindow {
         let rect = UI_CFG.equip_window.rect.into();
 
         let mut equip_window = EquipWindow {
@@ -35,12 +35,12 @@ impl EquipWindow {
             escape_click: false,
             menu: None,
         };
-        equip_window.update_list(game);
+        equip_window.update_list(gd);
         equip_window
     }
 
-    fn update_list(&mut self, game: &Game<'_>) {
-        let equips = game.gd.get_equip_list(self.cid);
+    fn update_list(&mut self, gd: &GameData) {
+        let equips = gd.get_equip_list(self.cid);
         self.list.set_n_item(equips.n_slots());
 
         self.list.update_rows_by_func(|i| {
@@ -86,7 +86,7 @@ impl DialogWindow for EquipWindow {
         if let Some(menu) = self.menu.as_mut() {
             match menu.process_command(command, pa) {
                 DialogResult::Special(SpecialDialogResult::ItemListUpdate) => {
-                    self.update_list(pa.game());
+                    self.update_list(pa.gd());
                     self.menu = None;
                     return DialogResult::Continue;
                 }
@@ -155,7 +155,7 @@ impl DialogWindow for EquipWindow {
                     }
                 }
                 ListWidgetResponse::Scrolled => {
-                    self.update_list(pa.game());
+                    self.update_list(pa.gd());
                 }
                 _ => (),
             }
@@ -173,7 +173,7 @@ impl DialogWindow for EquipWindow {
         _result: Option<DialogCloseValue>,
         pa: &mut DoPlayerAction<'_, '_>,
     ) -> DialogResult {
-        self.update_list(pa.game());
+        self.update_list(pa.gd());
         DialogResult::Continue
     }
 

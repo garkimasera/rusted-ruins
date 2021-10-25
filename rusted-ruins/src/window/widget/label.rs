@@ -66,9 +66,11 @@ impl LabelWidget {
 
     pub fn set_text<T: Into<String>>(&mut self, text: T) {
         let text = text.into();
+
         if self.s == text {
             return;
         }
+        self.s = text.clone();
 
         let cache = if let Some(w) = self.wrap_w {
             TextCache::wrapped(text, self.font, UI_CFG.color.normal_font, w)

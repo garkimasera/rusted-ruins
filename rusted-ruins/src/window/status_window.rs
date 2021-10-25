@@ -27,7 +27,7 @@ pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow 
                 idx: gobj::id_to_idx("!tab-icon-chara-equipments"),
                 text_id: "tab_text-chara_equipments",
             },
-            Box::new(move |game| Box::new(EquipWindow::new(game, cid))),
+            Box::new(move |game| Box::new(EquipWindow::new(&game.gd, cid))),
         ),
         (
             MemberInfo {
