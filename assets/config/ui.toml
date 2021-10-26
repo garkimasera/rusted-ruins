@@ -82,7 +82,7 @@ rect = { x = -1000, y = -1000, w = 200, h = 72 }
 rect = { x = -999, y = -999, w = 350, h = 28 }
 
 [newgame_dialog]
-explanation_text_rect = { x = -1000, y = 0, w = 300 }
+explanation_text_rect = { x = -1000, y = 0, w = 330 }
 column_pos = [0, 24]
 top_margin = 40
 bottom_margin = 16

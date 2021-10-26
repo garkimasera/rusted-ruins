@@ -8,18 +8,20 @@ use sdl2::rect::Rect;
 pub struct ButtonWidget {
     rect: Rect,
     cache: Option<TextCache>,
+    font: Option<FontKind>,
     icon: Option<IconIdx>,
     covered: bool,
     pressed: bool,
 }
 
 impl ButtonWidget {
-    pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> ButtonWidget {
+    pub fn new<R: Into<Rect>, S: Into<String>>(rect: R, s: S, font: FontKind) -> ButtonWidget {
         let rect = rect.into();
         let cache = TextCache::new(s, font, UI_CFG.color.normal_font);
         ButtonWidget {
             rect,
             cache: Some(cache),
+            font: Some(font),
             icon: None,
             covered: false,
             pressed: false,
@@ -30,10 +32,19 @@ impl ButtonWidget {
         ButtonWidget {
             rect: rect.into(),
             cache: None,
+            font: None,
             icon: Some(icon),
             covered: false,
             pressed: false,
         }
+    }
+
+    pub fn set_text<S: Into<String>>(&mut self, s: S) {
+        self.cache = Some(TextCache::new(
+            s,
+            self.font.unwrap(),
+            UI_CFG.color.normal_font,
+        ));
     }
 }
 

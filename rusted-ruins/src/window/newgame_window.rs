@@ -10,7 +10,7 @@ use super::widget::*;
 use super::SpecialDialogResult;
 use crate::config::{SCREEN_CFG, UI_CFG};
 use crate::game::newgame::NewGameBuilder;
-use crate::text::{self, misc_txt};
+use crate::text::{self, misc_txt, ui_txt};
 use crate::window::status_window::create_status_window_group;
 use common::basic::{TAB_ICON_H, TAB_TEXT_H};
 use common::gamedata::{CharaId, GameData};
@@ -57,8 +57,10 @@ impl DummyNewGameDialog {
     pub fn new() -> DummyNewGameDialog {
         let builder = Rc::new(RefCell::new(NewGameBuilder::default()));
         let (next_button_rect, back_button_rect) = Self::button_rect(0);
-        let next_button = ButtonWidget::new(next_button_rect, "Next", FontKind::M);
-        let back_button = ButtonWidget::new(back_button_rect, "Back", FontKind::M);
+        let next_button =
+            ButtonWidget::new(next_button_rect, ui_txt("button_text-next"), FontKind::M);
+        let back_button =
+            ButtonWidget::new(back_button_rect, ui_txt("button_text-back"), FontKind::M);
         let explanation_text =
             TextWindow::new(UI_CFG.newgame_dialog.explanation_text_rect.into(), "");
 
@@ -108,6 +110,13 @@ impl DummyNewGameDialog {
             .move_to(next_button_rect.x, next_button_rect.y);
         self.back_button
             .move_to(back_button_rect.x, back_button_rect.y);
+
+        let next_button_text_id = if self.page == NewGameBuildPage::PlayerInfo {
+            "button_text-start"
+        } else {
+            "button_text-next"
+        };
+        self.next_button.set_text(ui_txt(next_button_text_id));
     }
 }
 
@@ -300,9 +309,9 @@ impl NewGameBuildPage {
 
     fn explanation_text(&self) -> &'static str {
         match self {
-            Self::ChooseClass => "newgame-chooseclass",
-            Self::PlayerNameInput => "newgame-inputplayername",
-            Self::PlayerInfo => "newgame-complete",
+            Self::ChooseClass => "newgame-choose_class",
+            Self::PlayerNameInput => "newgame-input_player_name",
+            Self::PlayerInfo => "newgame-player_info",
         }
     }
 
