@@ -13,7 +13,11 @@ use common::gobj;
 
 const STATUS_WINDOW_GROUP_SIZE: u32 = 4;
 
-pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow {
+pub fn create_status_window_group(
+    game: &Game<'_>,
+    cid: CharaId,
+    changeable_by_player: bool,
+) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
         (
             MemberInfo {
@@ -27,7 +31,7 @@ pub fn create_status_window_group(game: &Game<'_>, cid: CharaId) -> GroupWindow 
                 idx: gobj::id_to_idx("!tab-icon-chara-equipments"),
                 text_id: "tab_text-chara_equipments",
             },
-            Box::new(move |game| Box::new(EquipWindow::new(&game.gd, cid))),
+            Box::new(move |game| Box::new(EquipWindow::new(&game.gd, cid, changeable_by_player))),
         ),
         (
             MemberInfo {

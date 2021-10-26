@@ -1,10 +1,11 @@
 use super::choose_window::ChooseWindow;
+use super::choose_window::DefaultBehavior;
 use super::commonuse::*;
 use super::item_info_window::ItemInfoWindow;
+use super::item_window::ItemWindow;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
 use crate::text::{self, ui_txt};
-use crate::window::choose_window::DefaultBehavior;
 use crate::window::{DialogResult, DialogWindow, Window};
 use common::gamedata::*;
 use common::gobj;
@@ -17,10 +18,11 @@ pub struct EquipWindow {
     cid: CharaId,
     escape_click: bool,
     menu: Option<EquipMenu>,
+    changeable: bool,
 }
 
 impl EquipWindow {
-    pub fn new(gd: &GameData, cid: CharaId) -> EquipWindow {
+    pub fn new(gd: &GameData, cid: CharaId, changeable: bool) -> EquipWindow {
         let rect = UI_CFG.equip_window.rect.into();
 
         let mut equip_window = EquipWindow {
@@ -34,6 +36,7 @@ impl EquipWindow {
             cid,
             escape_click: false,
             menu: None,
+            changeable,
         };
         equip_window.update_list(gd);
         equip_window
@@ -121,12 +124,9 @@ impl DialogWindow for EquipWindow {
         if let Some(response) = self.list.process_command(&command) {
             match response {
                 ListWidgetResponse::Select(i) => {
-                    if self.cid != CharaId::Player {
+                    if !self.changeable {
                         return DialogResult::Continue;
                     }
-
-                    // Any item is selected
-                    use super::item_window::ItemWindow;
 
                     // Callback function for selected item equipment
                     let cid = self.cid;
@@ -142,6 +142,11 @@ impl DialogWindow for EquipWindow {
                     return DialogResult::OpenChildDialog(Box::new(select_window));
                 }
                 ListWidgetResponse::SelectForMenu(i) => {
+                    // Workaround for menu not working in newgame window
+                    if !self.changeable && self.cid == CharaId::Player {
+                        return DialogResult::Continue;
+                    }
+
                     let equip_list = pa.gd().get_equip_list(self.cid);
                     let (esk, esk_i, _) = equip_list.slot_iter().nth(i as usize).unwrap();
                     if !equip_list.is_slot_empty(esk, esk_i as usize) {
@@ -151,6 +156,7 @@ impl DialogWindow for EquipWindow {
                             esk,
                             esk_i,
                             cursor_pos.unwrap(),
+                            self.changeable,
                         ));
                     }
                 }
@@ -197,13 +203,20 @@ struct EquipMenu {
 }
 
 impl EquipMenu {
-    pub fn new(_gd: &GameData, cid: CharaId, esk: EquipSlotKind, i: u8, pos: (i32, i32)) -> Self {
+    pub fn new(
+        _gd: &GameData,
+        cid: CharaId,
+        esk: EquipSlotKind,
+        i: u8,
+        pos: (i32, i32),
+        changeable: bool,
+    ) -> Self {
         let winpos = WindowPos::from_left_top(pos.0, pos.1);
 
         let mut choices = Vec::new();
         let mut menu_items = Vec::new();
 
-        if cid == CharaId::Player {
+        if changeable {
             choices.push(ui_txt("equip_menu-remove"));
             menu_items.push(EquipMenuItem::Remove);
         }

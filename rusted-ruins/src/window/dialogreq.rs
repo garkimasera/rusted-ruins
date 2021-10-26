@@ -28,7 +28,7 @@ pub fn create_dialog_from_request(
             Box::new(item_info_window::ItemInfoWindow::new(il, game))
         }
         DialogOpenRequest::CharaStatus { cid } => {
-            Box::new(status_window::create_status_window_group(game, cid))
+            Box::new(status_window::create_status_window_group(game, cid, false))
         }
         DialogOpenRequest::Read { title } => Box::new(read_window::ReadWindow::new(&title)),
         DialogOpenRequest::ShopBuy { cid } => {

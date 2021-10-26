@@ -262,7 +262,8 @@ impl DummyNewGameDialog {
 
     fn update_player_info(&mut self, game: &Game<'_>) {
         if self.page == NewGameBuildPage::PlayerInfo && self.player_info_window.is_none() {
-            self.player_info_window = Some(create_status_window_group(game, CharaId::Player));
+            self.player_info_window =
+                Some(create_status_window_group(game, CharaId::Player, false));
         }
     }
 }
