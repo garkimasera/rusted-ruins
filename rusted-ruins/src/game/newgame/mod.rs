@@ -8,6 +8,7 @@ use rules::RULES;
 pub struct NewGameBuilder {
     pub player_name: Option<String>,
     pub chara_class: Option<CharaClass>,
+    pub traits: Vec<CharaTrait>,
 }
 
 impl NewGameBuilder {
@@ -32,9 +33,16 @@ impl NewGameBuilder {
             Some(class),
         );
         chara.name = Some(self.player_name.as_ref().unwrap().clone());
+
+        // Trait setting
         chara
             .traits
             .push((CharaTraitOrigin::Inherent, CharaTrait::Player));
+
+        for t in &self.traits {
+            chara.traits.push((CharaTraitOrigin::Inherent, t.clone()));
+        }
+
         set_initial_skills(&mut chara);
 
         chara.update();

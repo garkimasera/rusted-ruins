@@ -26,6 +26,6 @@ impl Rule for CharaTraits {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CharaTrait {
     #[serde(default)]
-    cost: i32,
+    pub cost: i32,
     pub properties: Vec<Property>,
 }

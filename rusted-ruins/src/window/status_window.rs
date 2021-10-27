@@ -364,7 +364,7 @@ impl CharaTraitWindow {
 
             if let Some((_origin, t)) = &gd.chara.get(self.cid).traits.get(current_choice as usize)
             {
-                let desc_text = misc_txt(&format!("chara_trait-{}-desc", t.text_id()));
+                let desc_text = misc_txt(&format!("trait-{}-desc", t.text_id()));
                 self.window.text.set_text(desc_text);
             }
         }

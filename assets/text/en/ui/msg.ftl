@@ -5,5 +5,7 @@ dialog-move_floor = Do you want to move from this floor?
 dialog-enter_site = Do you want to enter {$site_name}?
 dialog-undertake_quest = Do you undertake this quest?
 newgame-choose_class = Choose your class
+newgame-choose_trait = Choose your traits
 newgame-input_player_name = Please input your name
 newgame-player_info = Do you start game as this character?
+newgame-remaining_point = Remaining point: {$remaining_point}

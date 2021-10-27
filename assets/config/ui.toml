@@ -83,11 +83,17 @@ rect = { x = -999, y = -999, w = 350, h = 28 }
 
 [newgame_dialog]
 explanation_text_rect = { x = -1000, y = 0, w = 330 }
-column_pos = [0, 24]
+class_column_pos = [0, 27]
+trait_column_pos = [0, 27, 200]
+cost_label_width = 32
+remaining_point_text_rect = { x = -1000, y = 0, w = 300 }
+remaining_point_text_margin = 8
+choose_trait_bottom_margin = 40
 top_margin = 40
 bottom_margin = 16
 button_w = 80
 button_h = 20
+button_space_choose_trait = 40
 button_space = 50
 
 [build_obj_dialog]

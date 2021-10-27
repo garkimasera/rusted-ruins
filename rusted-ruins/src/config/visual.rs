@@ -187,7 +187,12 @@ pub struct TextInputDialogConfig {
 #[derive(Debug, Deserialize)]
 pub struct NewGameDialogConfig {
     pub explanation_text_rect: CfgRect,
-    pub column_pos: Vec<i32>,
+    pub class_column_pos: Vec<i32>,
+    pub trait_column_pos: Vec<i32>,
+    pub cost_label_width: u32,
+    pub remaining_point_text_rect: CfgRect,
+    pub remaining_point_text_margin: i32,
+    pub choose_trait_bottom_margin: i32,
     pub top_margin: i32,
     pub bottom_margin: i32,
     pub button_w: u32,

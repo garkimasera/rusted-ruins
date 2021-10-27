@@ -22,13 +22,14 @@ pub enum TextAlignment {
 }
 
 impl LabelWidget {
-    pub fn new<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
+    pub fn new<S: Into<String>, R: Into<Rect>>(rect: R, s: S, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::new(s, font, UI_CFG.color.normal_font);
+        let s = s.into();
+        let cache = TextCache::new(&s, font, UI_CFG.color.normal_font);
         LabelWidget {
             rect,
             cache,
-            s: s.into(),
+            s,
             font,
             wrap_w: None,
             is_bordered: false,
@@ -36,13 +37,14 @@ impl LabelWidget {
         }
     }
 
-    pub fn bordered<R: Into<Rect>>(rect: R, s: &str, font: FontKind) -> LabelWidget {
+    pub fn bordered<S: Into<String>, R: Into<Rect>>(rect: R, s: S, font: FontKind) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::bordered(s, font, UI_CFG.color.normal_font);
+        let s = s.into();
+        let cache = TextCache::bordered(&s, font, UI_CFG.color.normal_font);
         LabelWidget {
             rect,
             cache,
-            s: s.into(),
+            s,
             font,
             wrap_w: None,
             is_bordered: true,
@@ -50,13 +52,19 @@ impl LabelWidget {
         }
     }
 
-    pub fn wrapped<R: Into<Rect>>(rect: R, s: &str, font: FontKind, w: u32) -> LabelWidget {
+    pub fn wrapped<S: Into<String>, R: Into<Rect>>(
+        rect: R,
+        s: S,
+        font: FontKind,
+        w: u32,
+    ) -> LabelWidget {
         let rect = rect.into();
-        let cache = TextCache::wrapped(s, font, UI_CFG.color.normal_font, w);
+        let s = s.into();
+        let cache = TextCache::wrapped(&s, font, UI_CFG.color.normal_font, w);
         LabelWidget {
             rect,
             cache,
-            s: s.into(),
+            s,
             font,
             wrap_w: Some(w),
             is_bordered: false,

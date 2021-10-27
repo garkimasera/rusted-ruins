@@ -1,7 +1,6 @@
 use super::choose_window::{ChooseWindow, DefaultBehavior};
 use super::commonuse::*;
 use crate::config::UI_CFG;
-use crate::text::ToText;
 use common::gamedata::ActionShortcut;
 
 pub struct RegisterShortcutDialog {

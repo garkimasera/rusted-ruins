@@ -142,7 +142,7 @@ impl ToText for Chara {
 
 impl ToText for CharaTrait {
     fn to_text(&self) -> Cow<'_, str> {
-        misc_txt(&format!("chara_trait-{}", self.text_id())).into()
+        misc_txt(&format!("trait-{}", self.text_id())).into()
     }
 }
 

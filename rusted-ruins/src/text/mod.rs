@@ -283,6 +283,7 @@ macro_rules! misc_txt_format {
 
 macro_rules! ui_txt_format {
     ($id:expr; $($target:ident = $value:expr),*) => {{
+        use crate::text::ToText;
         let mut table = fluent::FluentArgs::new();
         $(
             let value = fluent::FluentValue::String($value.to_text());
