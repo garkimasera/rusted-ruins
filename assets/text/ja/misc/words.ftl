@@ -72,6 +72,15 @@ armor_kind-arms = 腕
 armor_kind-legs = 足
 armor_kind-accessory = アクセサリ
 
+# CreationKind
+
+creation_kind-art = 芸術
+creation_kind-construction = 建築
+creation_kind-cooking = 料理
+creation_kind-craft = 細工
+creation_kind-pharmacy = 薬学
+creation_kind-smith = 鍛冶
+
 # MedicalEffect
 
 medical_effect-none = 効果なし
