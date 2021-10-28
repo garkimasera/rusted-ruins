@@ -1,4 +1,4 @@
-use super::total_effect;
+use super::total_modifier;
 use crate::game::extrait::*;
 use common::gamedata::*;
 use common::gobj;
@@ -10,34 +10,34 @@ pub fn update_attributes(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.idx);
 
     // Update total effect
-    chara.te = Box::default();
-    total_effect::add_class(&mut chara.te, RULES.classes.get(chara.class));
+    chara.tm = Box::default();
+    total_modifier::add_class(&mut chara.tm, RULES.classes.get(chara.class));
 
     for status in &chara.status {
-        total_effect::add_status(&mut chara.te, status);
+        total_modifier::add_status(&mut chara.tm, status);
     }
 
     for (_, chara_trait) in &chara.traits {
-        total_effect::add_chara_trait(&mut chara.te, chara_trait);
+        total_modifier::add_chara_trait(&mut chara.tm, chara_trait);
     }
 
     // Update attributes
     chara.attr.max_hp = calc_max_hp(chara, ct);
-    chara.attr.str = (ct.base_attr.str + chara.te.str).max(1) as u16;
-    chara.attr.vit = (ct.base_attr.vit + chara.te.vit).max(1) as u16;
-    chara.attr.dex = (ct.base_attr.dex + chara.te.dex).max(1) as u16;
-    chara.attr.int = (ct.base_attr.int + chara.te.int).max(1) as u16;
-    chara.attr.wil = (ct.base_attr.wil + chara.te.wil).max(1) as u16;
-    chara.attr.cha = (ct.base_attr.cha + chara.te.cha).max(1) as u16;
+    chara.attr.str = (ct.base_attr.str + chara.tm.str).max(1) as u16;
+    chara.attr.vit = (ct.base_attr.vit + chara.tm.vit).max(1) as u16;
+    chara.attr.dex = (ct.base_attr.dex + chara.tm.dex).max(1) as u16;
+    chara.attr.int = (ct.base_attr.int + chara.tm.int).max(1) as u16;
+    chara.attr.wil = (ct.base_attr.wil + chara.tm.wil).max(1) as u16;
+    chara.attr.cha = (ct.base_attr.cha + chara.tm.cha).max(1) as u16;
 
     // View range
     chara.attr.view_range = RULES.chara.default_view_range;
 }
 
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
-    let base_hp = (ct.base_attr.base_hp + chara.te.base_hp).max(1);
+    let base_hp = (ct.base_attr.base_hp + chara.tm.base_hp).max(1);
     let factor = chara.skill_level(SkillKind::Endurance) as i32 + 8;
-    ((factor * base_hp / 8) + chara.te.max_hp).max(1)
+    ((factor * base_hp / 8) + chara.tm.max_hp).max(1)
 }
 
 pub fn update_encumbrance_status(chara: &mut Chara) {
@@ -61,9 +61,9 @@ pub fn update_encumbrance_status(chara: &mut Chara) {
         chara.remove_encumbrance_status();
         1.0
     };
-    chara.te.spd_factor *= spd_factor;
-    chara.attr.spd = ((chara.obj().base_attr.spd as f32 + chara.te.spd as f32)
-        * chara.te.spd_factor)
+    chara.tm.spd_factor *= spd_factor;
+    chara.attr.spd = ((chara.obj().base_attr.spd as f32 + chara.tm.spd as f32)
+        * chara.tm.spd_factor)
         .max(1.0) as u16;
 }
 

@@ -1,5 +1,5 @@
 use super::Rule;
-use common::gamedata::Property;
+use common::gamedata::CharaModifier;
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -13,7 +13,7 @@ impl CharaTraits {
 }
 
 impl Rule for CharaTraits {
-    const NAME: &'static str = "chara_traits";
+    const NAME: &'static str = "traits";
 
     fn append(&mut self, other: Self) {
         for (k, v) in other.0.into_iter() {
@@ -27,5 +27,5 @@ impl Rule for CharaTraits {
 pub struct CharaTrait {
     #[serde(default)]
     pub cost: i32,
-    pub properties: Vec<Property>,
+    pub properties: Vec<CharaModifier>,
 }

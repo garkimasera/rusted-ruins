@@ -2,22 +2,22 @@ use super::skill::SkillKind;
 use derivative::Derivative;
 use fnv::FnvHashMap;
 
-/// Represents passive effect for character traits, items, etc.
+/// Represents modifier for character.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum Property {
-    CharaStr(i16),
-    CharaVit(i16),
-    CharaDex(i16),
-    CharaInt(i16),
-    CharaWil(i16),
-    CharaCha(i16),
-    CharaSpd(i16),
+pub enum CharaModifier {
+    Str(i16),
+    Vit(i16),
+    Dex(i16),
+    Int(i16),
+    Wil(i16),
+    Cha(i16),
+    Spd(i16),
 }
 
-/// Total passive effect a character received by properties, status, and other factors.
+/// Summed effect of modifiers a character received by properties, status, and other factors.
 #[derive(Clone, Debug, Serialize, Deserialize, Derivative)]
 #[derivative(Default)]
-pub struct CharaTotalEffect {
+pub struct CharaTotalModifier {
     pub base_hp: i32,
     pub max_hp: i32,
     pub str: i16,

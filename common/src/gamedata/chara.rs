@@ -2,7 +2,7 @@ use super::defs::{ActiveSkillId, ActiveSkillOrigin, Recipe};
 use super::faction::FactionId;
 use super::item::{EquipItemList, EquipSlotKind, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
-use super::property::CharaTotalEffect;
+use super::modifier::CharaTotalModifier;
 use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::{traits::*, unknown_id_err, UniqueId};
@@ -71,7 +71,7 @@ pub struct Chara {
     pub ai: CharaAi,
     pub hp: i32,
     pub sp: f32,
-    pub te: Box<CharaTotalEffect>,
+    pub tm: Box<CharaTotalModifier>,
     pub morale: Morale,
     pub traits: Vec<(CharaTraitOrigin, CharaTrait)>,
     pub status: Vec<CharaStatus>,
@@ -214,7 +214,7 @@ impl Default for Chara {
             hp: 100,
             sp: 0.0,
             morale: Morale::default(),
-            te: Box::default(),
+            tm: Box::default(),
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),

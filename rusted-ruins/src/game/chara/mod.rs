@@ -2,7 +2,7 @@ pub mod gen;
 pub mod power;
 pub mod preturn;
 pub mod status;
-mod total_effect;
+mod total_modifier;
 mod update;
 
 use super::extrait::*;
@@ -166,7 +166,7 @@ impl Chara {
     /// Get character's base skill level and the adjustment value.
     fn skill_level_with_adj(&self, kind: SkillKind) -> (u32, i32) {
         let lv = self.skills.skills.get(&kind).copied().unwrap_or(0);
-        let (bonus_factor, bonus_lv) = self.te.skill_level.get(&kind).unwrap_or(&(0.0, 0));
+        let (bonus_factor, bonus_lv) = self.tm.skill_level.get(&kind).unwrap_or(&(0.0, 0));
 
         let adj = bonus_lv + (lv as f32 * bonus_factor) as i32;
         (lv, adj)
