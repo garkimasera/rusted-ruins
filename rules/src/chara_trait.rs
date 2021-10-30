@@ -27,5 +27,7 @@ impl Rule for CharaTraits {
 pub struct CharaTrait {
     #[serde(default)]
     pub cost: i32,
+    #[serde(default)]
+    pub conflicts: Vec<String>,
     pub properties: Vec<CharaModifier>,
 }

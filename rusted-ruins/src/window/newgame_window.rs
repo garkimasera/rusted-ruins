@@ -472,22 +472,19 @@ impl ChooseTraitDialog {
         }));
 
         let mut selected = vec![false; len_traits];
+        let mut ng = vec![false; len_traits];
         let remaining_point = Rc::new(Cell::new(RULES.newgame.trait_initial_point));
         let remaining_point_clone = remaining_point.clone();
         let selection_changed = Rc::new(Cell::new(false));
         let selection_changed_clone = selection_changed.clone();
         window.set_cb_selected(Box::new(move |i, list| {
-            selection_changed_clone.set(true);
-            selected[i as usize] = !selected[i as usize];
-
-            for (i, &s) in selected.iter().enumerate() {
-                let icon = if s {
-                    icon_idx_checked()
-                } else {
-                    icon_idx_empty()
-                };
-                list.get_item_mut(i as u32).unwrap().0 = icon;
+            let i = i as usize;
+            if ng[i] {
+                return;
             }
+
+            selection_changed_clone.set(true);
+            selected[i] = !selected[i];
 
             let total_cost: i32 = selected
                 .iter()
@@ -517,6 +514,39 @@ impl ChooseTraitDialog {
                     })
                     .collect();
                 builder.borrow_mut().traits = chosen_traits;
+            }
+
+            // Update conflicts
+            ng.fill(false);
+            for (i, trait_id) in RULES.newgame.trait_choices.iter().enumerate() {
+                if !selected[i] {
+                    continue;
+                }
+
+                for conflict in &RULES.chara_traits.get(trait_id).conflicts {
+                    if let Some(i_conflict) = RULES
+                        .newgame
+                        .trait_choices
+                        .iter()
+                        .enumerate()
+                        .find(|(_, id)| *id == conflict)
+                        .map(|(i, _)| i)
+                    {
+                        ng[i_conflict] = true;
+                    }
+                }
+            }
+
+            // Update icons
+            for (i, &s) in selected.iter().enumerate() {
+                let icon = if s {
+                    icon_idx_checked()
+                } else if ng[i] {
+                    icon_idx_ng()
+                } else {
+                    icon_idx_empty()
+                };
+                list.get_item_mut(i as u32).unwrap().0 = icon;
             }
         }));
 
@@ -583,6 +613,13 @@ fn icon_idx_empty() -> IconIdx {
 fn icon_idx_checked() -> IconIdx {
     IconIdx::UiImg {
         idx: gobj::id_to_idx("!icon-ok"),
+        i_pattern: 0,
+    }
+}
+
+fn icon_idx_ng() -> IconIdx {
+    IconIdx::UiImg {
+        idx: gobj::id_to_idx("!icon-ng"),
         i_pattern: 0,
     }
 }
