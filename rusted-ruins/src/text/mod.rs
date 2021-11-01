@@ -1,3 +1,4 @@
+pub mod desc;
 pub mod prefix;
 pub mod readable;
 mod text_id_impl;

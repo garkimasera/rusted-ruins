@@ -10,13 +10,13 @@ pub fn add_chara_trait(tm: &mut CharaTotalModifier, t: &CharaTrait) {
     if let CharaTrait::Id(id) = t {
         let t = RULES.chara_traits.get(id);
 
-        for property in &t.properties {
-            add_property(tm, property);
+        for modifier in &t.modifiers {
+            add_modifier(tm, modifier);
         }
     }
 }
 
-pub fn add_property(tm: &mut CharaTotalModifier, p: &CharaModifier) {
+pub fn add_modifier(tm: &mut CharaTotalModifier, p: &CharaModifier) {
     match p {
         CharaModifier::Str(value) => tm.str += value,
         CharaModifier::Vit(value) => tm.vit += value,

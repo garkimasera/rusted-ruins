@@ -29,5 +29,5 @@ pub struct CharaTrait {
     pub cost: i32,
     #[serde(default)]
     pub conflicts: Vec<String>,
-    pub properties: Vec<CharaModifier>,
+    pub modifiers: Vec<CharaModifier>,
 }

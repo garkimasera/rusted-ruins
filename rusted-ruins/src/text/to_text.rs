@@ -146,6 +146,21 @@ impl ToText for CharaTrait {
     }
 }
 
+impl ToText for CharaModifier {
+    fn to_text(&self) -> Cow<'_, str> {
+        match self {
+            CharaModifier::Str(value) => format!("STR {:+}", value),
+            CharaModifier::Vit(value) => format!("VIT {:+}", value),
+            CharaModifier::Dex(value) => format!("DEX {:+}", value),
+            CharaModifier::Int(value) => format!("INT {:+}", value),
+            CharaModifier::Wil(value) => format!("WIL {:+}", value),
+            CharaModifier::Cha(value) => format!("CHA {:+}", value),
+            CharaModifier::Spd(value) => format!("SPD {:+}", value),
+        }
+        .into()
+    }
+}
+
 #[extend::ext(pub, name = CharaTraitTextId)]
 impl CharaTrait {
     fn text_id(&self) -> &str {

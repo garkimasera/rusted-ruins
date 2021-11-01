@@ -467,8 +467,8 @@ impl ChooseTraitDialog {
         );
 
         window.set_cb_selection_changed(Box::new(|i, desc| {
-            let desc_text_id = format!("trait-{}-desc", RULES.newgame.trait_choices[i as usize]);
-            desc.set_text(misc_txt(&desc_text_id));
+            let chara_trait = CharaTrait::Id(RULES.newgame.trait_choices[i as usize].clone());
+            desc.set_text(crate::text::desc::trait_description(&chara_trait));
         }));
 
         let mut selected = vec![false; len_traits];
