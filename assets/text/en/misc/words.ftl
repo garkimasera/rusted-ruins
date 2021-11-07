@@ -4,6 +4,12 @@
 
 you = you
 
+# Duration
+
+duration-days = days
+duration-hours = hours
+duration-minutes = minutes
+
 # DungeonKind
 
 dungeon_kind-cave = Cave

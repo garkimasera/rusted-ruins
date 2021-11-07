@@ -4,6 +4,12 @@
 
 you = あなた
 
+# Duration
+
+duration-days = 日
+duration-hours = 時間
+duration-minutes = 分
+
 # DungeonKind
 
 dungeon_kind-cave = 洞窟

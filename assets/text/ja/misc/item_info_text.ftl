@@ -4,4 +4,5 @@ item_info_text-medical_effect = {$medical_effect}
 item_info_text-nutrition = 栄養価: {$nutrition}
 item_info_text-melee_weapon = 近接攻撃力: {$power}
 item_info_text-ranged_weapon = 遠隔攻撃力: {$power}
+item_info_text-remaining = (残り: {$duration})
 item_info_text-defence = 守備力: 物理 {$physical}, 火炎 {$fire}, 冷気 {$cold}, 電撃 {$shock}, 毒 {$poison}, 精神 {$spirit}

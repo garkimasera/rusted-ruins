@@ -35,7 +35,6 @@ impl ToText for FactionId {
 impl ToText for Site {
     fn to_text(&self) -> Cow<'_, str> {
         if let Some(name) = self.name.as_ref() {
-            let name: &str = &*name;
             return name.into();
         }
 
@@ -57,6 +56,12 @@ impl ToText for Site {
                 "".into()
             }
         }
+    }
+}
+
+impl ToText for Region {
+    fn to_text(&self) -> Cow<'_, str> {
+        obj_txt(&self.name).into()
     }
 }
 
@@ -83,15 +88,15 @@ impl ToText for Item {
             let days = remaining.days();
             let hours = remaining.hours();
             let s = if days > 0 {
-                format!("{} days", days)
+                format!("{} {}", days, misc_txt("duration-days"))
             } else if hours > 0 {
-                format!("{} hours", hours)
+                format!("{} {}", hours, misc_txt("duration-hours"))
             } else {
                 let minutes = (remaining.minutes() / 10 + 1) * 10;
-                format!("{} minutes", minutes)
+                format!("{} {}", minutes, misc_txt("duration-minutes"))
             };
 
-            text.push_str(&format!(" (remaining: {})", &s));
+            text.push_str(&misc_txt_format!("item_info_text-remaining"; duration=s));
         }
 
         if let Some(ItemAttr::BuildObj(build_obj)) = find_attr!(self, ItemAttr::BuildObj) {

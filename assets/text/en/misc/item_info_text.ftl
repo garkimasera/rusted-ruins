@@ -4,4 +4,5 @@ item_info_text-medical_effect = {$medical_effect}
 item_info_text-nutrition = Nutrition: {$nutrition}
 item_info_text-melee_weapon = Melee attack: {$power}
 item_info_text-ranged_weapon = Ranged attack: {$power}
+item_info_text-remaining = (remaining: {$duration})
 item_info_text-defence = Defence: Physical {$physical}, Fire {$fire}, Cold {$cold}, Shock {$shock}, Poison {$poison}, Spirit {$spirit}

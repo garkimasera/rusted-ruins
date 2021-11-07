@@ -135,7 +135,7 @@ impl Window for FloorInfo {
                 }
                 MapId::RegionMap { rid } => {
                     let region = game.gd.region.get(rid);
-                    self.label.set_text(&region.name.to_string())
+                    self.label.set_text(region.to_text())
                 }
             }
         }
