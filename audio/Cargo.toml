@@ -15,6 +15,6 @@ flate2 = "1"
 tar = "0.4"
 
 [dependencies.sdl2]
-version = "0.34"
+version = "0.35"
 default-features = false
 features = ["mixer"]

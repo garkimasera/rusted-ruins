@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+#on: push
+
+jobs:
+  build-with-vcpkg:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set env
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: x86_64-pc-windows-msvc
+          override: true
+      - name: Build pak
+        shell: bash
+        run: ./build-pak.sh
+      - name: Setup cargo-vcpkg
+        run: cargo install cargo-vcpkg
+      - name: Build
+        run: |
+          pushd rusted-ruins
+          cargo vcpkg build
+          popd
+          cargo rustc --release --features sdl2-static-link -p rusted-ruins -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+      - name: Package
+        shell: bash
+        run: |
+          mkdir rusted-ruins-windows
+          mv assets rusted-ruins-windows/
+          cp target/release/rusted-ruins.exe rusted-ruins-windows/
+          7z a rusted-ruins_${RELEASE_VERSION}_windows.zip rusted-ruins-windows/
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-binary
+          path: "*.zip"
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          files: "*.zip"
+
+  build-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
+          override: true
+      - name: Install dev packages
+        run: sudo apt-get -yq --no-install-suggests --no-install-recommends install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev libgtk-3-dev
+      - name: Build pak
+        shell: bash
+        run: ./build-pak.sh
+      - name: Setup cargo-deb
+        run: cargo install cargo-deb
+      - name: Build
+        run: cargo deb -p rusted-ruins -- --features deb
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: deb-package
+          path: target/debian/*.deb
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          files: target/debian/*.deb
