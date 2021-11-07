@@ -110,8 +110,8 @@ There are some icons on the sidebar. Click icons to open windows.
 Icon list
 
 * Inventory window
-* Equipment window
 * Status window
+* Active skill window
 * Creation window
 * Game information window
 * Save / Exit game
@@ -132,15 +132,15 @@ r - Release an magical device item
 
 0..9 - Call shortcut registered by player
 
-f1 - open item window
+f1 - Open item window
 
-f2 - open equipment window
+f2 - Open status window
 
-f3 - open status window
+f3 - Open active skill window
 
-f4 - open creation window
+f4 - Open creation window
 
-f5 - open game info window
+f5 - Open game info window
 
 f6 / escape - Open exit window
 
