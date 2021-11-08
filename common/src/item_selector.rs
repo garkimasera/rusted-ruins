@@ -13,6 +13,8 @@ pub struct ItemSelector {
     level: u32,
     ids: Vec<String>,
     kinds: Vec<ItemKind>,
+    weapon: bool,
+    armor: bool,
     groups: Vec<String>,
 }
 
@@ -32,6 +34,10 @@ impl ItemSelector {
         let group = &obj.group;
         let kind = obj.kind;
 
+        if obj.gen_level > self.level {
+            return false;
+        }
+
         if let Some(esk) = self.esk {
             if Some(esk) != obj.kind.equip_slot_kind() {
                 return false;
@@ -44,6 +50,8 @@ impl ItemSelector {
 
         self.ids.iter().any(|s| s == id)
             || self.kinds.iter().any(|s| *s == kind)
+            || (self.weapon && matches!(kind, ItemKind::Weapon(_)))
+            || (self.armor && matches!(kind, ItemKind::Armor(_)))
             || self.groups.iter().any(|s| s == group)
     }
 
@@ -77,6 +85,10 @@ impl FromStr for ItemSelector {
             } else if let Some(kind) = a.strip_prefix("kind/") {
                 if let Ok(kind) = kind.parse() {
                     item_selector.kinds.push(kind);
+                } else if kind == "weapon" {
+                    item_selector.weapon = true;
+                } else if kind == "armor" {
+                    item_selector.armor = true;
                 } else {
                     return Err(ItemSelectorFromStrErr(s.into()));
                 }
@@ -90,6 +102,8 @@ impl FromStr for ItemSelector {
         if item_selector.ids.is_empty()
             && item_selector.kinds.is_empty()
             && item_selector.groups.is_empty()
+            && !item_selector.weapon
+            && !item_selector.armor
         {
             return Err(ItemSelectorFromStrErr(s.into()));
         }
@@ -113,6 +127,24 @@ impl std::fmt::Display for ItemSelector {
                 need_comma = true;
             }
             write!(f, "kind/{}", kind)?;
+        }
+
+        if self.weapon {
+            if need_comma {
+                write!(f, ",")?;
+            } else {
+                need_comma = true;
+            }
+            write!(f, "kind/weapon")?;
+        }
+
+        if self.armor {
+            if need_comma {
+                write!(f, ",")?;
+            } else {
+                need_comma = true;
+            }
+            write!(f, "kind/armor")?;
         }
 
         for group in &self.groups {

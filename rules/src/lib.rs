@@ -88,7 +88,7 @@ trait Rule: DeserializeOwned {
 
     fn from_file(path: &Path) -> Result<Self> {
         let file = fs::File::open(path)?;
-        let rule = ron::de::from_reader(file)?;
+        let rule = ron::de::from_reader(file).unwrap();
         Ok(rule)
     }
 

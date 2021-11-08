@@ -1,5 +1,6 @@
 use crate::Rule;
 use common::gamedata::*;
+use rusted_ruins_common::item_selector::ItemSelector;
 use std::collections::HashMap;
 
 /// Rules for map generation
@@ -22,7 +23,7 @@ pub struct DungeonGenParams {
     /// Item generatation probability on each tile
     pub item_gen_probability: f64,
     /// Item generation weight for each ItemKind
-    pub item_gen_weight_for_kind: HashMap<ItemKindRough, f32>,
+    pub item_gen_weight: Vec<(ItemSelector, f32)>,
     /// The range of number of floor of auto generated dungeons
     pub floor_range: [u32; 2],
     /// Default map music

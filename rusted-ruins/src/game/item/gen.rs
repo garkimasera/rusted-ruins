@@ -9,19 +9,11 @@ use rules::RULES;
 
 /// Generate new item on dungeon floor
 pub fn gen_dungeon_item(floor_level: u32, dungeon_kind: DungeonKind) -> Option<Item> {
-    let weight = move |item_obj: &ItemObject| {
-        let gen_rule = if let Some(gen_rule) = RULES.dungeon_gen.get(&dungeon_kind) {
-            gen_rule
-        } else {
-            return 0.0;
-        };
-        gen_rule
-            .item_gen_weight_for_kind
-            .get(&item_obj.kind.rough())
-            .copied()
-            .unwrap_or(0.0)
-    };
-    gen_item_by_level(floor_level, weight, false)
+    let gen_rule = RULES.dungeon_gen.get(&dungeon_kind)?;
+    let (_, (item_selector, _)) = rng::choose(&gen_rule.item_gen_weight, |(_, weight)| *weight)?;
+    let item_selector = item_selector.clone().level(floor_level);
+    let item_idx = choose_item_by_item_selector(&item_selector)?;
+    Some(gen_item_from_idx(item_idx, floor_level))
 }
 
 /// Generate new item by level.
