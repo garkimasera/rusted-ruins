@@ -1954,7 +1954,7 @@ dependencies = [
 
 [[package]]
 name = "rusted-ruins"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -1998,7 +1998,7 @@ dependencies = [
 
 [[package]]
 name = "rusted-ruins-common"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "arrayvec 0.7.2",
  "bitflags",
@@ -2031,7 +2031,7 @@ dependencies = [
 
 [[package]]
 name = "rusted-ruins-makepak"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "anyhow",
  "clap",
