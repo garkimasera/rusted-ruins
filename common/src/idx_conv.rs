@@ -54,7 +54,9 @@ macro_rules! idx_conv {
                                     }
                                 }
                             )*
-                            _ => (), // TODO: Should generate error
+                            _ => {
+                                warn!("unknown section name \"{}\" in idtable", &current_obj_type);
+                            }
                         }
                     }
                 }
@@ -64,7 +66,12 @@ macro_rules! idx_conv {
 
             $(
                 pub fn $mem(&self, i: $idx) -> $idx {
-                    $idx::from_usize(self.$mem[i.as_usize()] as usize)
+                    if let Some(i) = self.$mem.get(i.as_usize()).copied() {
+                        $idx::from_usize(i as usize)
+                    } else {
+                        warn!("invalid value in index conversion: {}({})", stringify!($idx), i.as_usize());
+                        $idx::from_usize(0)
+                    }
                 }
             )*
         }
