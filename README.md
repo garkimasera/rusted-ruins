@@ -70,10 +70,16 @@ For Windows user, you can download from [Releases page](https://github.com/garki
 Deb package is also available.
 
 ## How to build and try
-Please install SDL2 libraries at first.
-For Ubuntu users:
+Please install SDL2 libraries at first.  
+
+Ubuntu
 ```shell
 sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev
+```
+
+Fedora
+```shell
+sudo dnf install SDL2-devel.x86_64 SDL2_image-devel.x86_64 SDL2_ttf-devel.x86_64 SDL2_mixer-devel.x86_64
 ```
 
 Rusted Ruins is written in Rust, so please install Rust compilation tools. You can use [rustup](https://www.rustup.rs/) to install Rust.
