@@ -29,6 +29,7 @@ mod text;
 mod chara_log;
 mod config;
 mod context;
+mod cursor;
 mod draw;
 mod eventhandler;
 mod game;
@@ -46,6 +47,7 @@ fn main() {
 
     let sdl_context = SdlContext::init();
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
+    cursor::load();
 
     // Script engine initialization
     info!("start script engine initialization");
