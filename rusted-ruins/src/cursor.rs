@@ -63,6 +63,6 @@ impl Cursor {
         let rwops = RWops::from_bytes(&obj.img.data).map_err(to_err)?;
         let surface = rwops.load().map_err(to_err)?;
 
-        SdlCursor::from_surface(surface, 0, 0).map_err(to_err)
+        SdlCursor::from_surface(surface, obj.hot.0.into(), obj.hot.1.into()).map_err(to_err)
     }
 }

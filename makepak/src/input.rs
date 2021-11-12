@@ -17,6 +17,8 @@ pub struct Input {
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub tile: Option<TileDepInput>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub ui_img: Option<UiImgDepInput>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub wall: Option<WallDepInput>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub special_tile: Option<SpecialTileDepInput>,
@@ -109,6 +111,13 @@ pub struct TileDepInput {
     pub build_skill: Option<u32>,
     #[serde(default)]
     pub materials: Vec<(String, u32)>,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UiImgDepInput {
+    #[serde(default)]
+    pub hot: (u8, u8),
 }
 
 #[derive(Debug, Serialize, Deserialize)]

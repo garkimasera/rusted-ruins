@@ -85,6 +85,7 @@ pub enum TileKind {
 pub struct UiImgObject {
     pub id: String,
     pub img: Img,
+    pub hot: (u8, u8),
 }
 
 #[derive(Serialize, Deserialize)]

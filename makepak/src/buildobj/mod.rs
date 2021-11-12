@@ -80,11 +80,13 @@ fn build_tile_object(input: Input) -> Result<TileObject, Error> {
 }
 
 fn build_ui_img_object(input: Input) -> Result<UiImgObject, Error> {
+    let ui_img_dep_input = input.ui_img.unwrap_or_default();
     let img = get_optional_field!(input, image);
 
     Ok(UiImgObject {
         id: input.id,
         img: build_img(img)?.0,
+        hot: ui_img_dep_input.hot,
     })
 }
 
