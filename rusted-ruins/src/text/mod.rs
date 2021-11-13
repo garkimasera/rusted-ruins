@@ -20,7 +20,7 @@ pub use to_text::CharaTraitTextId;
 
 /// Initialize lazy static
 pub fn init() {
-    Lazy::force(&ACTIVE_SKILL_BUNDLE);
+    Lazy::force(&ABILITY_BUNDLE);
     Lazy::force(&FLAVOR_BUNDLE);
     Lazy::force(&LOG_BUNDLE);
     Lazy::force(&MISC_BUNDLE);
@@ -30,7 +30,7 @@ pub fn init() {
     Lazy::force(&UI_BUNDLE);
 }
 
-static ACTIVE_SKILL_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::ACTIVE_SKILL_TXT_DIR));
+static ABILITY_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::ABILITY_TXT_DIR));
 static FLAVOR_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::FLAVOR_TXT_DIR));
 static LOG_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::LOG_TXT_DIR));
 static MISC_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::MISC_TXT_DIR));
@@ -158,12 +158,12 @@ fn load_resource(kind: &str, lang: &str) -> Vec<FluentResource> {
     resource
 }
 
-pub fn active_skill_txt(id: &str) -> String {
-    active_skill_txt_with_args(id, None)
+pub fn ability_txt(id: &str) -> String {
+    ability_txt_with_args(id, None)
 }
 
-pub fn active_skill_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
-    if let Some(s) = ACTIVE_SKILL_BUNDLE.format(id, args) {
+pub fn ability_txt_with_args(id: &str, args: Option<&FluentArgs<'_>>) -> String {
+    if let Some(s) = ABILITY_BUNDLE.format(id, args) {
         s
     } else {
         id.to_owned()

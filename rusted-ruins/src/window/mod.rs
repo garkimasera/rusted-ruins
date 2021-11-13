@@ -1,7 +1,7 @@
 #[macro_use]
 mod tools;
 
-mod active_skill_window;
+mod ability_window;
 mod build_obj_dialog;
 mod choose_window;
 mod creation_window;
@@ -503,11 +503,8 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                     pa.goto_next_floor(Direction::none(), true);
                 }
             }
-            Command::OpenActiveSkillWin => {
-                let dialog = Box::new(active_skill_window::ActiveSkillWindow::new(
-                    pa.gd(),
-                    CharaId::Player,
-                ));
+            Command::OpenAbilityWin => {
+                let dialog = Box::new(ability_window::AbilityWindow::new(pa.gd(), CharaId::Player));
                 self.push_dialog_window(dialog);
             }
             Command::OpenCreationWin => {

@@ -13,7 +13,7 @@ extern crate rusted_ruins_common as common;
 extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_map_generator as map_generator;
 
-pub mod active_skill;
+pub mod ability;
 pub mod biome;
 pub mod chara;
 pub mod chara_trait;
@@ -97,7 +97,7 @@ trait Rule: DeserializeOwned {
 
 /// Contain game rules
 pub struct Rules {
-    pub active_skills: active_skill::ActiveSkills,
+    pub abilities: ability::Abilities,
     pub biomes: biome::Biomes,
     pub chara: chara::Chara,
     pub chara_gen: charagen::CharaGen,
@@ -132,7 +132,7 @@ impl Rules {
         }
 
         Ok(Rules {
-            active_skills: active_skill::ActiveSkills::load(&dirs)?,
+            abilities: ability::Abilities::load(&dirs)?,
             biomes: biome::Biomes::load(&dirs)?,
             chara: chara::Chara::load(&dirs)?,
             chara_gen: charagen::CharaGen::load(&dirs)?,

@@ -15,7 +15,7 @@ static ICON_IDX: Lazy<UiImgIdx> = Lazy::new(|| gobj::id_to_idx("sidebar-icon"));
 
 const ITEM_INVENTORY: u32 = 0;
 const ITEM_CHARAINFO: u32 = 1;
-const ITEM_ACTIVE_SKILL: u32 = 2;
+const ITEM_ABILITY: u32 = 2;
 const ITEM_CREATION: u32 = 3;
 const ITEM_GAMEINFO: u32 = 4;
 const ITEM_SAVE: u32 = 5;
@@ -103,8 +103,8 @@ impl DialogWindow for Sidebar {
                     return DialogResult::Command(Some(Command::OpenItemMenu));
                 } else if i == ITEM_CHARAINFO {
                     return DialogResult::Command(Some(Command::OpenStatusWin));
-                } else if i == ITEM_ACTIVE_SKILL {
-                    return DialogResult::Command(Some(Command::OpenActiveSkillWin));
+                } else if i == ITEM_ABILITY {
+                    return DialogResult::Command(Some(Command::OpenAbilityWin));
                 } else if i == ITEM_CREATION {
                     return DialogResult::Command(Some(Command::OpenCreationWin));
                 } else if i == ITEM_GAMEINFO {

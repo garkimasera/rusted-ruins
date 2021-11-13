@@ -1,4 +1,4 @@
-use super::defs::{ActiveSkillId, ActiveSkillOrigin, Recipe};
+use super::defs::{AbilityId, AbilityOrigin, Recipe};
 use super::faction::FactionId;
 use super::item::{EquipItemList, EquipSlotKind, Item, ItemList, ItemLocation, MaterialName};
 use super::map::MapId;
@@ -32,7 +32,7 @@ pub struct CharaTemplateObject {
     pub base_attr: CharaBaseAttr,
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     /// Learned active skills.
-    pub active_skills: Vec<ActiveSkillId>,
+    pub abilities: Vec<AbilityId>,
     pub equips: Vec<(EquipSlotKind, String, u32)>,
 }
 
@@ -76,7 +76,7 @@ pub struct Chara {
     pub traits: Vec<(CharaTraitOrigin, CharaTrait)>,
     pub status: Vec<CharaStatus>,
     pub skills: SkillList,
-    pub active_skills: Vec<(ActiveSkillOrigin, ActiveSkillId)>,
+    pub abilities: Vec<(AbilityOrigin, AbilityId)>,
     /// When talked, execute this script
     pub trigger_talk: Option<String>,
 }
@@ -218,7 +218,7 @@ impl Default for Chara {
             traits: Vec::new(),
             status: Vec::new(),
             skills: SkillList::default(),
-            active_skills: Vec::new(),
+            abilities: Vec::new(),
             trigger_talk: None,
         }
     }

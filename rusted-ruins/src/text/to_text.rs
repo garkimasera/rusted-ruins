@@ -1,5 +1,5 @@
 use crate::game::Command;
-use crate::text::{self, active_skill_txt, misc_txt, obj_txt, ui_txt, ToText, ToTextId};
+use crate::text::{self, ability_txt, misc_txt, obj_txt, ui_txt, ToText, ToTextId};
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
@@ -13,9 +13,9 @@ impl<T: ToTextId> ToText for T {
     }
 }
 
-impl ToText for ActiveSkillId {
+impl ToText for AbilityId {
     fn to_text(&self) -> Cow<'_, str> {
-        active_skill_txt(&self.0).into()
+        ability_txt(&self.0).into()
     }
 }
 
@@ -189,7 +189,7 @@ impl ToText for Command {
             RotateWindowRight => "command-rotate_window_right",
             RotateWindowLeft => "command-rotate_window_left",
             ItemInformation => "command-item_information",
-            OpenActiveSkillWin => "command-open_active_skill_win",
+            OpenAbilityWin => "command-open_ability_win",
             OpenCreationWin => "command-open_creation_win",
             OpenDebugCommandWin => "command-open_debug_command_win",
             OpenEquipWin => "command-open_equip_win",

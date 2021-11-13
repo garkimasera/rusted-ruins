@@ -4,10 +4,10 @@ use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(transparent)]
-pub struct ActiveSkills(HashMap<ActiveSkillId, ActiveSkill>);
+pub struct Abilities(HashMap<AbilityId, Ability>);
 
-impl Rule for ActiveSkills {
-    const NAME: &'static str = "active_skills";
+impl Rule for Abilities {
+    const NAME: &'static str = "abilities";
 
     fn append(&mut self, other: Self) {
         for (k, v) in other.0.into_iter() {
@@ -16,8 +16,8 @@ impl Rule for ActiveSkills {
     }
 }
 
-impl ActiveSkills {
-    pub fn get(&self, id: &ActiveSkillId) -> Option<&ActiveSkill> {
+impl Abilities {
+    pub fn get(&self, id: &AbilityId) -> Option<&Ability> {
         self.0.get(id)
     }
 }

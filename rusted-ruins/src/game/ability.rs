@@ -7,9 +7,9 @@ use ordered_float::NotNan;
 use rules::RULES;
 
 /// Return true if success.
-pub fn use_active_skill(
+pub fn use_ability(
     game: &mut Game<'_>,
-    active_skill_id: &ActiveSkillId,
+    ability_id: &AbilityId,
     cid: CharaId,
     target: CharaId,
 ) -> bool {
@@ -17,53 +17,45 @@ pub fn use_active_skill(
         return false;
     }
 
-    let active_skill = if let Some(active_skill) = RULES.active_skills.get(active_skill_id) {
-        active_skill
+    let ability = if let Some(ability) = RULES.abilities.get(ability_id) {
+        ability
     } else {
-        warn!("unknown active_skill \"{}\"", active_skill_id);
+        warn!("unknown ability \"{}\"", ability_id);
         return false;
     };
 
     let chara = game.gd.chara.get(cid);
-    if !chara.active_skill_available(active_skill) {
+    if !chara.ability_available(ability) {
         return false;
     }
 
-    let power =
-        crate::game::active_skill::calc_power(&game.gd, active_skill, cid) * active_skill.power;
-    let hit_power = active_skill.hit_power;
+    let power = crate::game::ability::calc_power(&game.gd, ability, cid) * ability.power;
+    let hit_power = ability.hit_power;
 
     let chara = game.gd.chara.get(cid);
     trace!(
         "{} uses active skill \"{}\", power = {}, hit_power = {}",
         chara.to_text(),
-        active_skill_id,
+        ability_id,
         power,
         hit_power,
     );
 
-    match active_skill.group {
-        ActiveSkillGroup::Magic => {
-            game_log!("use-active-skill-magic"; chara=chara, active_skill=active_skill_id);
+    match ability.group {
+        AbilityGroup::Magic => {
+            game_log!("use-ability-magic"; chara=chara, ability=ability_id);
         }
-        ActiveSkillGroup::Special => {
-            game_log!("use-active-skill-special"; chara=chara, active_skill=active_skill_id);
+        AbilityGroup::Special => {
+            game_log!("use-ability-special"; chara=chara, ability=ability_id);
         }
     }
 
-    do_effect(
-        game,
-        &active_skill.effect,
-        Some(cid),
-        target,
-        power,
-        hit_power,
-    );
+    do_effect(game, &ability.effect, Some(cid), target, power, hit_power);
     true
 }
 
-pub fn calc_power(gd: &GameData, active_skill: &'static ActiveSkill, cid: CharaId) -> f32 {
-    match active_skill.power_calc {
+pub fn calc_power(gd: &GameData, ability: &'static Ability, cid: CharaId) -> f32 {
+    match ability.power_calc {
         PowerCalcMethod::Num(n) => n,
         PowerCalcMethod::Magic => {
             let chara = gd.chara.get(cid);

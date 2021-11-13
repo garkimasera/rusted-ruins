@@ -1,5 +1,5 @@
+pub mod ability;
 mod action;
-pub mod active_skill;
 mod anim_queue;
 mod animation;
 pub mod building;
@@ -237,7 +237,7 @@ pub enum UiRequest {
 }
 
 pub mod extrait {
-    pub use super::active_skill::BasePowerExt;
+    pub use super::ability::BasePowerExt;
     pub use super::chara::status::{CharaStatusExt, CharaStatusOperation};
     pub use super::chara::CharaExt;
     pub use super::faction::FactionExt;

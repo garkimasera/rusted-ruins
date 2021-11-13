@@ -42,7 +42,7 @@ pub struct NpcAi {
     pub ranged_weapon_prob: f32,
     /// Probability of trying to use active skill.
     #[serde(default)]
-    pub active_skill_prob: f32,
+    pub ability_prob: f32,
     #[serde(default = "search_turn_default")]
     /// Required turn to change state search to normal
     pub search_turn: u32,
@@ -60,14 +60,14 @@ pub enum CombatActionKind {
     Skip,
     ApproachEnemy,
     RangedWeapon,
-    ActiveSkill,
+    Ability,
 }
 
 impl CombatActionKind {
     pub const ALL: &'static [CombatActionKind] = &[
         CombatActionKind::ApproachEnemy,
         CombatActionKind::RangedWeapon,
-        CombatActionKind::ActiveSkill,
+        CombatActionKind::Ability,
     ];
 }
 

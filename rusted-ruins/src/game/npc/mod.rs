@@ -4,8 +4,8 @@ pub mod map_search;
 
 use crate::game::action::shoot_target;
 
+use super::ability::use_ability;
 use super::action;
-use super::active_skill::use_active_skill;
 use super::extrait::*;
 use super::{Game, InfoGetter};
 use common::gamedata::*;
@@ -37,11 +37,11 @@ fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
         _ => unreachable!(),
     };
 
-    let mut enable_active_skill = true;
+    let mut enable_ability = true;
 
     for _ in 0..4 {
         let action_kind = rng::choose(CombatActionKind::ALL, |kind| {
-            if *kind == CombatActionKind::ActiveSkill && !enable_active_skill {
+            if *kind == CombatActionKind::Ability && !enable_ability {
                 0.0
             } else {
                 ai_rule.combat_prob.get(kind).copied().unwrap_or(0.0)
@@ -58,11 +58,11 @@ fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
             CombatActionKind::RangedWeapon => {
                 shoot_target(game, cid, target);
             }
-            CombatActionKind::ActiveSkill => {
-                if let Some(active_skill_id) = ct.active_skills.choose(&mut get_rng()) {
-                    use_active_skill(game, active_skill_id, cid, target);
+            CombatActionKind::Ability => {
+                if let Some(ability_id) = ct.abilities.choose(&mut get_rng()) {
+                    use_ability(game, ability_id, cid, target);
                 } else {
-                    enable_active_skill = false;
+                    enable_ability = false;
                     continue;
                 }
             }

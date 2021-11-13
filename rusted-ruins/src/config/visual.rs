@@ -60,7 +60,7 @@ pub struct UiConfig {
     pub info_window: InfoWindowConfig,
     pub status_window: StatusWindowConfig,
     pub chara_trait_window: CharaTraitWindowConfig,
-    pub active_skill_window: ActiveSkillWindowConfig,
+    pub ability_window: AbilityWindowConfig,
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
     pub quest_window: QuestWindowConfig,
@@ -315,7 +315,7 @@ pub struct CharaTraitWindowConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ActiveSkillWindowConfig {
+pub struct AbilityWindowConfig {
     pub rect: CfgRect,
     pub list_rect: CfgRect,
     pub n_row: u32,

@@ -61,8 +61,8 @@ drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
 harvest-plant = {$chara} harvested {$item} x {$n}.
 harvest-plant-not-ready = {$item} cannot be harvested yet.
-use-active-skill-magic = {$chara} used magic "{$active_skill}".
-use-active-skill-special = {$chara} used special skill "{$active_skill}".
+use-ability-magic = {$chara} used magic "{$ability}".
+use-ability-special = {$chara} used special skill "{$ability}".
 
 # Messages about using tools
 

@@ -5,70 +5,65 @@ use common::gamedata::*;
 use rules::RULES;
 
 /// Character active skill viewer
-pub struct ActiveSkillWindow {
+pub struct AbilityWindow {
     rect: Rect,
     cid: CharaId,
     list: ListWidget<(TextCache, TextCache)>,
-    active_skills: Vec<ActiveSkillId>,
+    abilities: Vec<AbilityId>,
     escape_click: bool,
 }
 
-impl ActiveSkillWindow {
+impl AbilityWindow {
     pub fn new(gd: &GameData, cid: CharaId) -> Self {
         let rect: Rect = UI_CFG.info_window.rect.into();
-        let cfg = &UI_CFG.active_skill_window;
+        let cfg = &UI_CFG.ability_window;
 
         let mut list =
             ListWidget::with_scroll_bar(cfg.list_rect, cfg.column_pos.clone(), cfg.n_row, false);
 
         let chara = gd.chara.get(cid);
-        let mut active_skills = Vec::new();
+        let mut abilities = Vec::new();
         let mut items = Vec::new();
 
-        for (_, active_skill_id) in &chara.active_skills {
-            let active_skill = if let Some(active_skill) = RULES.active_skills.get(active_skill_id)
-            {
-                active_skill
+        for (_, ability_id) in &chara.abilities {
+            let ability = if let Some(ability) = RULES.abilities.get(ability_id) {
+                ability
             } else {
-                warn!("unknown active skill id \"{}\"", active_skill_id);
+                warn!("unknown active skill id \"{}\"", ability_id);
                 continue;
             };
 
-            active_skills.push(active_skill_id.clone());
+            abilities.push(ability_id.clone());
 
-            let mut cost = if active_skill.cost_sp > 0 {
-                format!("SP {} ", active_skill.cost_sp)
+            let mut cost = if ability.cost_sp > 0 {
+                format!("SP {} ", ability.cost_sp)
             } else {
                 "".into()
             };
 
-            if active_skill.cost_mp > 0 {
-                cost.push_str(&format!("MP {} ", active_skill.cost_mp));
+            if ability.cost_mp > 0 {
+                cost.push_str(&format!("MP {} ", ability.cost_mp));
             }
 
             items.push((
-                TextCache::new(
-                    active_skill_id.to_text(),
-                    FontKind::M,
-                    UI_CFG.color.normal_font,
-                ),
+                TextCache::new(ability_id.to_text(), FontKind::M, UI_CFG.color.normal_font),
                 TextCache::new(cost, FontKind::M, UI_CFG.color.normal_font),
             ));
         }
 
         list.set_items(items);
 
-        ActiveSkillWindow {
+        AbilityWindow {
             rect,
             cid,
             list,
-            active_skills,
+            abilities,
             escape_click: false,
         }
     }
 }
 
-impl Window for ActiveSkillWindow {
+impl Window for AbilityWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
@@ -80,7 +75,7 @@ impl Window for ActiveSkillWindow {
     }
 }
 
-impl DialogWindow for ActiveSkillWindow {
+impl DialogWindow for AbilityWindow {
     fn process_command(
         &mut self,
         command: &Command,
@@ -90,7 +85,7 @@ impl DialogWindow for ActiveSkillWindow {
         let command = command.relative_to(self.rect);
 
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
-            if self.cid == CharaId::Player && pa.use_active_skill(&self.active_skills[i as usize]) {
+            if self.cid == CharaId::Player && pa.use_ability(&self.abilities[i as usize]) {
                 return DialogResult::Close;
             }
             return DialogResult::Continue;

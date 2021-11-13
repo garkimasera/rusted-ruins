@@ -36,7 +36,7 @@ pub const MAX_ACTION_SHORTCUTS: usize = 32;
 // Path settings
 pub const APP_DIR_NAME: &str = "rusted-ruins";
 pub const CFG_FILES_DIR: &str = "config";
-pub const ACTIVE_SKILL_TXT_DIR: &str = "active_skill";
+pub const ABILITY_TXT_DIR: &str = "ability";
 pub const FLAVOR_TXT_DIR: &str = "flavor";
 pub const OBJ_TXT_DIR: &str = "obj";
 pub const LOG_TXT_DIR: &str = "log";

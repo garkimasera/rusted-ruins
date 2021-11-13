@@ -23,7 +23,7 @@ pub enum Command {
     RotateWindowRight,
     RotateWindowLeft,
     ItemInformation,
-    OpenActiveSkillWin,
+    OpenAbilityWin,
     OpenCreationWin,
     OpenDebugCommandWin,
     OpenEquipWin,

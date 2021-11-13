@@ -61,8 +61,8 @@ drink-item = {$chara}は{$item}を飲み干した。
 eat-item = {$chara}は{$item}を食べた。
 harvest-plant = {$chara}は{$item} x {$n}を収穫した。
 harvest-plant-not-ready = {$item}はまだ収穫できないようだ。
-use-active-skill-magic = {$chara}は"{$active_skill}"を使用した。
-use-active-skill-special = {$chara}は"{$active_skill}"を使用した。
+use-ability-magic = {$chara}は"{$ability}"を使用した。
+use-ability-special = {$chara}は"{$ability}"を使用した。
 
 # Messages about using tools
 

@@ -173,8 +173,8 @@ impl Chara {
     }
 
     /// active skill available or not.
-    fn active_skill_available(&self, active_skill: &ActiveSkill) -> bool {
-        self.sp > active_skill.cost_sp as f32
+    fn ability_available(&self, ability: &Ability) -> bool {
+        self.sp > ability.cost_sp as f32
     }
 
     /// Update character level by the current skill level

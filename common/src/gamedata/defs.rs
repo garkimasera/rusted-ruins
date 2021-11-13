@@ -124,20 +124,20 @@ impl HarvestKind {
     }
 }
 
-/// Active skill id.
+/// Ability id.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct ActiveSkillId(pub String);
+pub struct AbilityId(pub String);
 
-impl std::fmt::Display for ActiveSkillId {
+impl std::fmt::Display for AbilityId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ActiveSkill {
-    pub group: ActiveSkillGroup,
+pub struct Ability {
+    pub group: AbilityGroup,
     pub icon: String,
     pub effect: Effect,
     #[serde(default)]
@@ -162,13 +162,13 @@ pub enum PowerCalcMethod {
 pub struct BasePower(pub NotNan<f32>, pub NotNan<f32>);
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum ActiveSkillGroup {
+pub enum AbilityGroup {
     Special,
     Magic,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub enum ActiveSkillOrigin {
+pub enum AbilityOrigin {
     Inherent,
     Learned,
     Race,

@@ -214,7 +214,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     }
 
     /// Use active skill. Returns false if the skill cost is not enough.
-    pub fn use_active_skill(&mut self, _active_skill_id: &ActiveSkillId) -> bool {
+    pub fn use_ability(&mut self, _ability_id: &AbilityId) -> bool {
         false
     }
 

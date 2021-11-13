@@ -145,7 +145,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         default_ai_kind: chara_dep_input.default_ai_kind,
         skill_bonus: chara_dep_input.skill_bonus,
         base_attr,
-        active_skills: chara_dep_input.active_skills,
+        abilities: chara_dep_input.abilities,
         equips: chara_dep_input.equips,
     })
 }
