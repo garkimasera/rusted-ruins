@@ -160,13 +160,23 @@ impl RegionHolder {
 
     /// Preload map from file
     pub fn preload_map<P: AsRef<Path>>(&mut self, mid: MapId, map_dir_path: P) {
+        self.preload_map_with_opts(mid, map_dir_path, false)
+    }
+
+    /// Preload map from file with options
+    pub(crate) fn preload_map_with_opts<P: AsRef<Path>>(
+        &mut self,
+        mid: MapId,
+        map_dir_path: P,
+        table_changed: bool,
+    ) {
         info!("preload map {:?}", mid);
         let boxed_map = self.get_boxed_map_mut(mid);
-        match boxed_map.read(map_dir_path) {
+        match boxed_map.read(map_dir_path, table_changed) {
             Ok(_) => (),
             Err(e) => {
                 error!("{}", e);
-                unimplemented!()
+                std::process::exit(1)
             }
         }
     }

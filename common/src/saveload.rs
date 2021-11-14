@@ -37,15 +37,21 @@ impl GameData {
         let map_dir = save_dir.join("maps");
         create_dir_all(&map_dir)?;
 
-        let mut errors: Vec<MapLoadError> = Vec::new();
-        self.region
-            .visit_all_maps(|_mid, map| match BoxedMap::write(map, &map_dir) {
-                Ok(_) => (),
-                Err(e) => errors.push(e),
-            });
+        let mut error_occured = false;
 
-        if !errors.is_empty() {
-            return Err(errors.into_iter().next().unwrap().into());
+        self.region.visit_all_maps(|mid, map| {
+            trace!("Saving map {:?}", mid);
+            match BoxedMap::write(map, &map_dir) {
+                Ok(_) => (),
+                Err(e) => {
+                    error!("{}", e);
+                    error_occured = true;
+                }
+            }
+        });
+
+        if error_occured {
+            todo!()
         }
 
         Ok(())
@@ -78,11 +84,11 @@ impl GameData {
         if is_table_changed {
             // Preload is needed if id table is changed
             let mut mid_vec = Vec::new();
-            gamedata.region.visit_all_maps(|mid, _map| {
+            gamedata.region.visit_all_maps(|mid, map| {
                 mid_vec.push(mid);
             });
             for mid in &mid_vec {
-                gamedata.region.preload_map(*mid, &map_dir);
+                gamedata.region.preload_map_with_opts(*mid, &map_dir, true);
             }
         } else {
             // Preload current map

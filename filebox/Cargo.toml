@@ -7,3 +7,4 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 [dependencies]
 serde = "1"
 flate2 = "1"
+log = "0.4"

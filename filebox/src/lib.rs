@@ -97,6 +97,7 @@ impl<T: WithId> FileBox<T> {
         if s.changed.get() {
             Self::write_force(s, p)
         } else {
+            log::trace!("Skip saving for unchanged data");
             Ok(())
         }
     }
@@ -105,13 +106,17 @@ impl<T: WithId> FileBox<T> {
         p.as_ref().join(format!("{:016x}", self.id))
     }
 
-    pub fn read<P: AsRef<Path>>(&mut self, p: P) -> Result<(), T::Error> {
+    pub fn read<P: AsRef<Path>>(&mut self, p: P, read_as_changed: bool) -> Result<(), T::Error> {
         if self.inner.is_some() {
             return Ok(());
         }
 
         let mut file = GzDecoder::new(BufReader::new(File::open(self.path(p))?));
         self.inner = Some(Box::new(T::read(&mut file)?));
+
+        if read_as_changed {
+            self.changed.set(true);
+        }
 
         Ok(())
     }
