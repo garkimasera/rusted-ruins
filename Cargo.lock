@@ -2001,6 +2001,7 @@ dependencies = [
 name = "rusted-ruins-common"
 version = "0.11.0"
 dependencies = [
+ "anyhow",
  "arrayvec 0.7.2",
  "bitflags",
  "derivative",

@@ -2,6 +2,7 @@ use crate::basic::SAVE_EXTENSION;
 use crate::gamedata::*;
 use crate::impl_filebox::MapLoadError;
 use crate::utils::to_writer_with_mode;
+use anyhow::Error;
 use serde_cbor::from_reader;
 use std::fs::{self, create_dir_all, File};
 use std::io::{BufReader, BufWriter, Write};
@@ -10,7 +11,7 @@ use std::path::{Path, PathBuf};
 #[cfg(feature = "global_state_obj")]
 impl GameData {
     /// Save game data to the specified directory
-    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
         if cfg!(debug_assertions) {
             print_save_data_size(self); // Debug code for save file size optimization
         }
@@ -51,14 +52,14 @@ impl GameData {
         });
 
         if error_occured {
-            todo!()
+            anyhow::bail!("Map loading failed");
         }
 
         Ok(())
     }
 
     /// Load game data from specified directory
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Box<dyn std::error::Error>> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<GameData, Error> {
         let save_dir = path.as_ref();
 
         // Read metadata file
@@ -99,7 +100,7 @@ impl GameData {
         Ok(gamedata)
     }
 
-    pub fn clean_map_dir<P: AsRef<Path>>(&self, path: P) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn clean_map_dir<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
         let map_dir = path.as_ref().join("maps");
 
         let mut map_files: Vec<PathBuf> = Vec::new();

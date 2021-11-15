@@ -23,7 +23,7 @@ macro_rules! idx_conv {
         impl IdxConvTable {
             #[cfg(feature="global_state_obj")]
             pub fn read<R: std::io::BufRead>(mut r: R, dest_hash: u64)
-                                             -> Result<Option<IdxConvTable>, Box<dyn std::error::Error>> {
+                                             -> Result<Option<IdxConvTable>, anyhow::Error> {
                 use crate::basic::ID_TABLE_SECTION_TAG;
 
                 let hash = {
