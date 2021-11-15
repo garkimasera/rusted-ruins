@@ -61,6 +61,14 @@ impl Chara {
         self.add_skill_exp(SkillKind::Evasion, RULES.exp.evasion, attacker_level);
     }
 
+    /// Add carry exp
+    fn add_carry_exp(&mut self) {
+        let (weight, capacity) = self.item_weight();
+        if rng::gen_bool(weight / capacity * RULES.exp.carry_prob) {
+            self.add_skill_exp(SkillKind::Carrying, RULES.exp.carry, self.lv);
+        }
+    }
+
     /// Add exp when regeneration
     fn add_regeneration_exp(&mut self) {
         let lv = self.skill_level(SkillKind::Endurance);

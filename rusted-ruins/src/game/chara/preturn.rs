@@ -83,6 +83,8 @@ pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
 
     let chara = game.gd.chara.get_mut(cid);
 
+    chara.add_carry_exp();
+
     if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
         // HP regeneration
         let lv = chara.skill_level(SkillKind::Endurance) as f32;

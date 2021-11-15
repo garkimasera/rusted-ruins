@@ -11,6 +11,10 @@ pub struct Exp {
     pub base_factor: f32,
     /// Base exp to weapon skills after attacking
     pub attack: u32,
+    /// Base exp to carry skill
+    pub carry: u32,
+    /// Probability of adding exp to carry exp
+    pub carry_prob: f32,
     /// Base exp to Conceal skill
     pub conceal: u32,
     /// Base exp to Defence skill when attacked

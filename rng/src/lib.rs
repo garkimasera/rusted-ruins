@@ -85,7 +85,7 @@ pub fn roll_dice<N1: Into<i32>, N2: Into<i32>>(n: N1, x: N2) -> i32 {
 /// Return bool from given probability
 pub fn gen_bool(p: f32) -> bool {
     let mut rng = GameRng;
-    rng.gen_bool(p.into())
+    rng.gen_bool(p.clamp(0.0, 1.0).into())
 }
 
 /// Choose a element from weight
