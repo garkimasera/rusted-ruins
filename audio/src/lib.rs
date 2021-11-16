@@ -36,14 +36,18 @@ pub struct AudioContext {
 }
 
 /// Initialize AudioPlayer
-pub fn init<P: AsRef<Path>>(data_dirs: &[P], music_volume: i32) -> AudioContext {
+pub fn init<P: AsRef<Path>>(
+    data_dirs: &[P],
+    sound_effect_volume: i32,
+    music_volume: i32,
+) -> AudioContext {
     let mixer_context = init_device();
 
     if let MixerContext::SDL2MixerContext(_) = mixer_context {
         // Setup the audio player for the SDL case
         AUDIO_PLAYER.with(|a| {
             assert!(a.borrow().is_none());
-            *a.borrow_mut() = Some(AudioPlayer::new(data_dirs));
+            *a.borrow_mut() = Some(AudioPlayer::new(data_dirs, sound_effect_volume));
         });
 
         sdl2::mixer::Music::set_volume(music_volume);
@@ -102,8 +106,8 @@ pub struct AudioPlayer {
 }
 
 impl AudioPlayer {
-    pub fn new<P: AsRef<Path>>(data_dirs: &[P]) -> AudioPlayer {
-        let wavtable = WavTable::new(data_dirs);
+    pub fn new<P: AsRef<Path>>(data_dirs: &[P], sound_effect_volume: i32) -> AudioPlayer {
+        let wavtable = WavTable::new(data_dirs, sound_effect_volume);
         let musictable = MusicTable::new(data_dirs);
         AudioPlayer {
             wavtable,

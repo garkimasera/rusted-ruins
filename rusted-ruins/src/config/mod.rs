@@ -268,6 +268,7 @@ pub struct Config {
     #[serde(default)]
     pub fix_rand: bool,
     pub enable_joystick: bool,
+    pub sound_effect_volume: i32,
     pub music_volume: i32,
 }
 

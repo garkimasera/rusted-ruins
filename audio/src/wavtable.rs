@@ -9,7 +9,7 @@ pub struct WavTable {
 }
 
 impl WavTable {
-    pub fn new<P: AsRef<Path>>(data_dirs: &[P]) -> WavTable {
+    pub fn new<P: AsRef<Path>>(data_dirs: &[P], volume: i32) -> WavTable {
         // Load chunks from datadir/sound
         let mut chunks = HashMap::new();
 
@@ -35,10 +35,10 @@ impl WavTable {
             }
         }
 
-        WavTable {
-            channel: mixer::Channel(0),
-            chunks,
-        }
+        let channel = mixer::Channel(0);
+        channel.set_volume(volume);
+
+        WavTable { channel, chunks }
     }
 
     pub fn play(&self, name: &str) -> Result<(), String> {

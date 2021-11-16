@@ -72,6 +72,7 @@ impl SdlContext {
             _image: sdl2::image::init(sdl2::image::InitFlag::PNG).expect("init failed : SDL_Image"),
             _audio_context: audio::init(
                 &config::get_data_dirs(),
+                crate::config::CONFIG.sound_effect_volume,
                 crate::config::CONFIG.music_volume,
             ),
         }
