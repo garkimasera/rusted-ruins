@@ -18,8 +18,12 @@ impl Screen {
             .video()
             .expect("Init Failed : SDL Video Subsystem");
 
-        let (screen_w, screen_h) = if CONFIG.double_scale_mode {
-            (SCREEN_CFG.screen_w * 2, SCREEN_CFG.screen_h * 2)
+        let (screen_w, screen_h) = if CONFIG.scale != 1 {
+            info!("custom scale {}", CONFIG.scale);
+            (
+                (SCREEN_CFG.screen_w as i32 * CONFIG.scale) as u32,
+                (SCREEN_CFG.screen_h as i32 * CONFIG.scale) as u32,
+            )
         } else {
             (SCREEN_CFG.screen_w, SCREEN_CFG.screen_h)
         };
@@ -38,8 +42,8 @@ impl Screen {
             canvas_builder.software()
         };
         let mut canvas = canvas_builder.build().unwrap();
-        if CONFIG.double_scale_mode {
-            try_sdl!(canvas.set_scale(2.0, 2.0));
+        if CONFIG.scale != 1 {
+            try_sdl!(canvas.set_scale(CONFIG.scale as f32, CONFIG.scale as f32));
         }
 
         Screen {
@@ -66,7 +70,10 @@ impl Screen {
             }
 
             let mouse_state = event_pump.mouse_state();
-            window_manager.update_cursor((mouse_state.x(), mouse_state.y()));
+            window_manager.update_cursor((
+                mouse_state.x() / CONFIG.scale,
+                mouse_state.y() / CONFIG.scale,
+            ));
             if !window_manager.animation_now()
                 && !window_manager.advance_turn(&mut self.event_handler)
             {

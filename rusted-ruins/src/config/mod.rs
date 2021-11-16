@@ -263,10 +263,14 @@ pub struct Config {
     pub second_lang: String,
     pub screen_config: String,
     pub hardware_acceleration: bool,
-    #[serde(default)]
-    pub double_scale_mode: bool,
+    #[serde(default = "default_scale")]
+    pub scale: i32,
     #[serde(default)]
     pub fix_rand: bool,
     pub enable_joystick: bool,
     pub music_volume: i32,
+}
+
+fn default_scale() -> i32 {
+    1
 }

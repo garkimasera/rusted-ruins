@@ -297,8 +297,8 @@ impl EventHandler {
         // returns mouse state
         if let Some(mouse_state) = self.mouse_state {
             return Some(Command::MouseState {
-                x: mouse_state.x(),
-                y: mouse_state.y(),
+                x: mouse_scale(mouse_state.x()),
+                y: mouse_scale(mouse_state.y()),
                 left_button: mouse_state.left(),
                 right_button: mouse_state.right(),
                 key_state: self.key_state,
@@ -436,8 +436,8 @@ impl CommandConvTable {
                     }
                 };
                 return Some(Command::MouseButtonDown {
-                    x,
-                    y,
+                    x: mouse_scale(x),
+                    y: mouse_scale(y),
                     button,
                     key_state,
                 });
@@ -457,14 +457,17 @@ impl CommandConvTable {
                     }
                 };
                 return Some(Command::MouseButtonUp {
-                    x,
-                    y,
+                    x: mouse_scale(x),
+                    y: mouse_scale(y),
                     button,
                     key_state,
                 });
             }
             RawCommand::MouseWheel { x, y } => {
-                return Some(Command::MouseWheel { x, y });
+                return Some(Command::MouseWheel {
+                    x: mouse_scale(x),
+                    y: mouse_scale(y),
+                });
             }
             _ => (),
         }
@@ -582,4 +585,12 @@ pub fn dialog_command(command: RawCommand) -> Option<RawCommand> {
         }
         _ => Some(command),
     })
+}
+
+fn mouse_scale(a: i32) -> i32 {
+    if CONFIG.scale == 1 {
+        a
+    } else {
+        a / CONFIG.scale
+    }
 }
