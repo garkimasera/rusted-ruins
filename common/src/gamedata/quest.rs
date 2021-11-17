@@ -1,5 +1,5 @@
 use super::defs::Reward;
-use crate::objholder::CharaTemplateIdx;
+use crate::objholder::ItemIdx;
 use std::slice::{Iter, IterMut};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -33,26 +33,24 @@ impl QuestHolder {
         self.quests.push((QuestState::Active, quest));
     }
 
-    pub fn remove_reward_received(&mut self) {
-        self.quests
-            .retain(|&(state, _)| state != QuestState::RewardReceived);
+    pub fn remove(&mut self, i: usize) {
+        self.quests.remove(i);
     }
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Quest {
-    SlayMonsters {
+    ItemDelivering {
         reward: Reward,
-        idx: CharaTemplateIdx,
-        goal: u32,
-        killed: u32,
+        idx: ItemIdx,
+        n: u32,
     },
 }
 
 impl Quest {
     pub fn reward(&self) -> &Reward {
         match self {
-            Quest::SlayMonsters { reward, .. } => reward,
+            Quest::ItemDelivering { reward, .. } => reward,
         }
     }
 }

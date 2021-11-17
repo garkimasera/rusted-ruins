@@ -49,31 +49,7 @@ fn gen_quest() -> Quest {
         item: Vec::new(),
     };
 
-    Quest::SlayMonsters {
-        reward,
-        idx: choose_npc_chara_template(&RULES.quest.slay_race_probability, 1).unwrap(),
-        goal: 10,
-        killed: 0,
-    }
-}
-
-pub fn count_slayed_monster(gd: &mut GameData, t: CharaTemplateIdx) {
-    for (state, quest) in gd.quest.iter_mut() {
-        match quest {
-            Quest::SlayMonsters {
-                idx, goal, killed, ..
-            } => {
-                if *state == QuestState::Active && *idx == t {
-                    *killed += 1;
-                    if *killed == *goal {
-                        *state = QuestState::Completed;
-                        // Log
-                        game_log!("quest-complete-slay_monsters"; monster=idx, n=goal);
-                    }
-                }
-            }
-        }
-    }
+    todo!()
 }
 
 pub fn receive_rewards(gd: &mut GameData) -> bool {
@@ -90,7 +66,6 @@ pub fn receive_rewards(gd: &mut GameData) -> bool {
     }
 
     if exist_completed_quest {
-        gd.quest.remove_reward_received();
         gd.player.add_money(money);
         game_log!("quest-reward-receive-money"; money=money);
     }

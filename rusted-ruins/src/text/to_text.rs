@@ -219,10 +219,11 @@ impl ToText for Command {
 impl ToText for Quest {
     fn to_text(&self) -> Cow<'_, str> {
         match self {
-            Quest::SlayMonsters { idx, .. } => {
-                let mut table = fluent::FluentArgs::new();
-                table.add("monster", fluent::FluentValue::String(idx.to_text()));
-                crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
+            Quest::ItemDelivering { idx, .. } => {
+                todo!()
+                // let mut table = fluent::FluentArgs::new();
+                // table.add("monster", fluent::FluentValue::String(idx.to_text()));
+                // crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
             }
         }
     }

@@ -80,7 +80,6 @@ pub fn do_damage(
             let chara = game.gd.chara.get(cid);
             let idx = chara.idx;
             let target_faction = chara.faction;
-            crate::game::quest::count_slayed_monster(&mut game.gd, idx);
 
             game.gd
                 .faction
