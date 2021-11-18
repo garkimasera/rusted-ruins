@@ -39,6 +39,7 @@ pub const CFG_FILES_DIR: &str = "config";
 pub const ABILITY_TXT_DIR: &str = "ability";
 pub const FLAVOR_TXT_DIR: &str = "flavor";
 pub const OBJ_TXT_DIR: &str = "obj";
+pub const QUEST_TXT_DIR: &str = "quest";
 pub const LOG_TXT_DIR: &str = "log";
 pub const UI_TXT_DIR: &str = "ui";
 pub const TALK_TXT_DIR: &str = "talk";

@@ -25,6 +25,7 @@ pub fn init() {
     Lazy::force(&LOG_BUNDLE);
     Lazy::force(&MISC_BUNDLE);
     Lazy::force(&OBJ_BUNDLE);
+    Lazy::force(&QUEST_BUNDLE);
     Lazy::force(&READABLE_BUNDLE);
     Lazy::force(&TALK_BUNDLE);
     Lazy::force(&UI_BUNDLE);
@@ -35,6 +36,7 @@ static FLAVOR_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::FLAVOR_TXT
 static LOG_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::LOG_TXT_DIR));
 static MISC_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::MISC_TXT_DIR));
 static OBJ_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::OBJ_TXT_DIR));
+static QUEST_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::QUEST_TXT_DIR));
 static READABLE_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::READABLE_TXT_DIR));
 static TALK_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::TALK_TXT_DIR));
 static UI_BUNDLE: Lazy<Bundle> = Lazy::new(|| Bundle::load(basic::UI_TXT_DIR));
@@ -193,6 +195,12 @@ pub fn obj_txt(id: &str) -> String {
 #[allow(unused)]
 pub fn obj_txt_checked(id: &str) -> Option<String> {
     OBJ_BUNDLE.format(id, None)
+}
+
+pub fn quest_txt(id: &str) -> String {
+    QUEST_BUNDLE
+        .format(id, None)
+        .unwrap_or_else(|| id.to_owned())
 }
 
 pub fn log_txt(id: &str) -> String {
