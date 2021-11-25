@@ -39,7 +39,12 @@ pub fn create_dialog_from_request(
             Box::new(super::register_shortcut_dialog::RegisterShortcutDialog::new(shortcut))
         }
         DialogOpenRequest::PickUpItem => Box::new(ItemWindow::new(ItemWindowMode::PickUp, game)),
-        DialogOpenRequest::Quest => Box::new(super::quest_window::QuestWindow::new(game)),
+        DialogOpenRequest::QuestOffer => {
+            Box::new(super::quest_window::QuestWindow::new_offer(&game.gd))
+        }
+        DialogOpenRequest::QuestReport => {
+            Box::new(super::quest_window::QuestWindow::new_report(&game.gd))
+        }
         DialogOpenRequest::GameOver => Box::new(super::exit_window::GameOverWindow::new()),
     })
 }

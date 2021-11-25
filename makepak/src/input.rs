@@ -191,6 +191,8 @@ pub struct SiteGenDepInput {
     pub npcs: Vec<sitegen::NpcGenData>,
     #[serde(default)]
     pub shops: Vec<sitegen::ShopGenData>,
+    #[serde(default)]
+    pub quests: Vec<sitegen::QuestGenData>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

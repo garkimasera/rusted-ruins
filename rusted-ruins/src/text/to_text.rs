@@ -5,7 +5,7 @@ use common::gobj;
 use common::objholder::*;
 use std::borrow::Cow;
 
-use super::obj_txt_checked;
+use super::{obj_txt_checked, quest_txt};
 
 impl<T: ToTextId> ToText for T {
     fn to_text(&self) -> Cow<'_, str> {
@@ -216,16 +216,9 @@ impl ToText for Command {
     }
 }
 
-impl ToText for Quest {
+impl ToText for TownQuest {
     fn to_text(&self) -> Cow<'_, str> {
-        match self {
-            Quest::ItemDelivering { idx, .. } => {
-                todo!()
-                // let mut table = fluent::FluentArgs::new();
-                // table.add("monster", fluent::FluentValue::String(idx.to_text()));
-                // crate::text::misc_txt_with_args("quest-slay_monsters", Some(&table)).into()
-            }
-        }
+        quest_txt(&self.text_id).into()
     }
 }
 

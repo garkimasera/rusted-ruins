@@ -203,6 +203,10 @@ pub fn quest_txt(id: &str) -> String {
         .unwrap_or_else(|| id.to_owned())
 }
 
+pub fn quest_txt_checked(id: &str) -> Option<String> {
+    QUEST_BUNDLE.format(id, None)
+}
+
 pub fn log_txt(id: &str) -> String {
     log_txt_with_args(id, None)
 }

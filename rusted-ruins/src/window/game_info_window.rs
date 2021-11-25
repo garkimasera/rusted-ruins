@@ -14,7 +14,7 @@ pub struct GameInfoWindow {
     escape_click: bool,
 }
 
-const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 2;
+const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 3;
 
 pub fn create_game_info_window_group(game: &Game<'_>) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -24,6 +24,13 @@ pub fn create_game_info_window_group(game: &Game<'_>) -> GroupWindow {
                 text_id: "tab_text-game_info",
             },
             Box::new(move |game| Box::new(GameInfoWindow::new(game))),
+        ),
+        (
+            MemberInfo {
+                idx: gobj::id_to_idx("!tab-icon-game-info-quest"),
+                text_id: "tab_text-game_info_quest",
+            },
+            Box::new(move |game| Box::new(super::quest_window::QuestWindow::new_list(&game.gd))),
         ),
         (
             MemberInfo {

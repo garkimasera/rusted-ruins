@@ -22,9 +22,11 @@ class ScriptYield:
     def shop_sell():
         return {"tag": "ShopSell"}
 
-    def quest():
-        return {"tag": "Quest"}
-
+    def quest_offer():
+        return {"tag": "QuestOffer"}
+    
+    def quest_report():
+        return {"tag": "QuestReport"}
 
 def _get_next_script_yield():
     if not isinstance(_rrscript_gen, _GeneratorType):

@@ -91,7 +91,9 @@ pub enum UseEffect {
 /// Reward for quests or events
 #[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Reward {
+    #[serde(default)]
     pub money: i64,
+    #[serde(default)]
     pub item: Vec<ItemIdx>,
 }
 

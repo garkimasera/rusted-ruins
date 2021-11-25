@@ -14,7 +14,6 @@ use crate::text::{self, misc_txt, ui_txt};
 use crate::window::status_window::create_status_window_group;
 use common::basic::{TAB_ICON_H, TAB_TEXT_H};
 use common::gamedata::{CharaId, CharaTrait, GameData};
-use common::gobj;
 use rules::RULES;
 
 pub struct NewGameWindow {
@@ -358,7 +357,7 @@ impl ChooseClassDialog {
             .iter()
             .map(|c| {
                 (
-                    icon_idx_empty(),
+                    IconIdx::empty(),
                     TextCache::new(
                         text::misc_txt(&format!("class-{}", c.as_str())),
                         FontKind::M,
@@ -385,9 +384,9 @@ impl ChooseClassDialog {
         let c = current_choice.clone();
         window.set_cb_selected(Box::new(move |i, list| {
             if c.get() != Some(i) {
-                list.get_item_mut(i).unwrap().0 = icon_idx_checked();
+                list.get_item_mut(i).unwrap().0 = IconIdx::checked();
                 if let Some(c) = c.get() {
-                    list.get_item_mut(c).unwrap().0 = icon_idx_empty();
+                    list.get_item_mut(c).unwrap().0 = IconIdx::empty();
                 }
                 c.set(Some(i));
                 builder
@@ -439,7 +438,7 @@ impl ChooseTraitDialog {
             .iter()
             .map(|t| {
                 (
-                    icon_idx_empty(),
+                    IconIdx::empty(),
                     TextCache::new(
                         text::misc_txt(&format!("trait-{}", t)),
                         FontKind::M,
@@ -540,11 +539,11 @@ impl ChooseTraitDialog {
             // Update icons
             for (i, &s) in selected.iter().enumerate() {
                 let icon = if s {
-                    icon_idx_checked()
+                    IconIdx::checked()
                 } else if ng[i] {
-                    icon_idx_ng()
+                    IconIdx::ng()
                 } else {
-                    icon_idx_empty()
+                    IconIdx::empty()
                 };
                 list.get_item_mut(i as u32).unwrap().0 = icon;
             }
@@ -600,27 +599,6 @@ impl DialogWindow for ChooseTraitDialog {
         }
 
         result
-    }
-}
-
-fn icon_idx_empty() -> IconIdx {
-    IconIdx::UiImg {
-        idx: gobj::id_to_idx("!"),
-        i_pattern: 0,
-    }
-}
-
-fn icon_idx_checked() -> IconIdx {
-    IconIdx::UiImg {
-        idx: gobj::id_to_idx("!icon-ok"),
-        i_pattern: 0,
-    }
-}
-
-fn icon_idx_ng() -> IconIdx {
-    IconIdx::UiImg {
-        idx: gobj::id_to_idx("!icon-ng"),
-        i_pattern: 0,
     }
 }
 

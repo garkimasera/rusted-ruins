@@ -197,8 +197,11 @@ list_size = 10
 column_pos = [5, 280, 390]
 
 [quest_window]
-rect = { x = -999, y = -999, w = 500, h = 300 }
+h = 330
 n_row = 6
+column_pos = [0, 27]
+ok_button_rect = { x = 50, y = 290, w = 100, h = 26 }
+cancel_button_rect = { x = 200, y = 290, w = 100, h = 26 }
 
 [label_widget]
 h = 24

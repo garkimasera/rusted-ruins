@@ -1,11 +1,10 @@
 use crate::Rule;
-/// Rules for quest
-use std::collections::HashMap;
 
+/// Rules for quest
 #[derive(Serialize, Deserialize)]
 pub struct Quest {
-    /// The probability of choose npc for monster slaying quest
-    pub slay_race_probability: HashMap<String, f32>,
+    pub duplicate_factor: f32,
+    pub update_duration_days: u32,
 }
 
 impl Rule for Quest {

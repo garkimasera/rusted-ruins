@@ -1,5 +1,6 @@
-use crate::gamedata::quest::Quest;
+use crate::gamedata::quest::*;
 use crate::gamedata::shop::*;
+use crate::gamedata::time::Time;
 use fnv::FnvHashMap;
 use std::collections::hash_map::{Values, ValuesMut};
 
@@ -7,7 +8,8 @@ use std::collections::hash_map::{Values, ValuesMut};
 pub struct Town {
     id: String,
     shops: FnvHashMap<u32, Shop>,
-    pub quests: Vec<Quest>,
+    pub quests: Vec<TownQuest>,
+    pub quests_last_update: Time,
 }
 
 impl Town {
@@ -16,6 +18,7 @@ impl Town {
             id: id.to_owned(),
             shops: FnvHashMap::default(),
             quests: Vec::new(),
+            quests_last_update: Time::from_secs(0),
         }
     }
 

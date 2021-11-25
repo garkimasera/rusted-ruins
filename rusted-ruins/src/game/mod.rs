@@ -223,7 +223,8 @@ pub enum DialogOpenRequest {
         shortcut: ActionShortcut,
     },
     PickUpItem,
-    Quest,
+    QuestOffer,
+    QuestReport,
     GameOver,
 }
 

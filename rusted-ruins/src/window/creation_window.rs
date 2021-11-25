@@ -232,7 +232,7 @@ impl CreationDetailDialog {
         }
         let cancel_button = ButtonWidget::new(
             c.cancel_button_rect,
-            &ui_txt("button_text-creation-cancel"),
+            ui_txt("button_text-cancel"),
             FontKind::M,
         );
 

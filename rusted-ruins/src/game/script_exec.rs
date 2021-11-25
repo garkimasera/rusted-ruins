@@ -77,9 +77,13 @@ impl<'s> Game<'s> {
                 self.request_dialog_open(DialogOpenRequest::ShopSell);
                 AdvanceScriptResult::Continue
             }
-            ScriptYield::Quest => {
+            ScriptYield::QuestOffer => {
                 crate::game::quest::update_town_quest(&mut self.gd);
-                self.request_dialog_open(DialogOpenRequest::Quest);
+                self.request_dialog_open(DialogOpenRequest::QuestOffer);
+                AdvanceScriptResult::Continue
+            }
+            ScriptYield::QuestReport => {
+                self.request_dialog_open(DialogOpenRequest::QuestReport);
                 AdvanceScriptResult::Continue
             }
         }

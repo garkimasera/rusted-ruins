@@ -124,11 +124,6 @@ mod _rr {
     }
 
     #[pyfunction]
-    fn receive_quest_rewards() -> bool {
-        with_gd_mut(|gd| call_game_method!(receive_quest_rewards)(gd))
-    }
-
-    #[pyfunction]
     fn receive_item(id: PyStrRef, n: u32) {
         with_gd_mut(|gd| call_game_method!(receive_item)(gd, id.as_ref(), n))
     }

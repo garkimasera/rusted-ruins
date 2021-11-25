@@ -1,56 +1,29 @@
-use super::defs::Reward;
+use super::{defs::Reward, SiteId, Time};
 use crate::objholder::ItemIdx;
 use std::slice::{Iter, IterMut};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum QuestState {
+pub enum TownQuestState {
     Active,
-    Completed,
-    RewardReceived,
+    Reportable,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct QuestHolder {
-    quests: Vec<(QuestState, Quest)>,
-}
-
-impl Default for QuestHolder {
-    fn default() -> Self {
-        QuestHolder { quests: Vec::new() }
-    }
-}
-
-impl QuestHolder {
-    pub fn iter(&self) -> Iter<'_, (QuestState, Quest)> {
-        self.quests.iter()
-    }
-
-    pub fn iter_mut(&mut self) -> IterMut<'_, (QuestState, Quest)> {
-        self.quests.iter_mut()
-    }
-
-    pub fn start_new_quest(&mut self, quest: Quest) {
-        self.quests.push((QuestState::Active, quest));
-    }
-
-    pub fn remove(&mut self, i: usize) {
-        self.quests.remove(i);
-    }
+    pub town_quests: Vec<(TownQuestState, TownQuest)>,
+    // custom_quests: Vec<_>,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum Quest {
-    ItemDelivering {
-        reward: Reward,
-        idx: ItemIdx,
-        n: u32,
-    },
+pub struct TownQuest {
+    pub sid: SiteId,
+    pub text_id: String,
+    pub deadline: Option<u32>,
+    pub reward: Reward,
+    pub kind: TownQuestKind,
 }
 
-impl Quest {
-    pub fn reward(&self) -> &Reward {
-        match self {
-            Quest::ItemDelivering { reward, .. } => reward,
-        }
-    }
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum TownQuestKind {
+    ItemDelivering { idx: ItemIdx, n: u32 },
 }

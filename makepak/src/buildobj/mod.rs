@@ -195,5 +195,6 @@ fn build_site_gen_object(input: Input) -> Result<SiteGenObject, Error> {
         map_template_id: sg.map_template_id,
         npcs: sg.npcs,
         shops: sg.shops,
+        quests: sg.quests,
     })
 }

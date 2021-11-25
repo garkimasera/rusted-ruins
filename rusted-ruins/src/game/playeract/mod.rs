@@ -266,9 +266,14 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
         self.0.advance_script(None)
     }
 
-    /// Undertake quest
-    pub fn undertake_quest(&mut self, i: u32) {
-        crate::game::quest::undertake_quest(self.0, i);
+    /// Undertake quests
+    pub fn undertake_quests(&mut self, targets: Vec<usize>) {
+        crate::game::quest::undertake_quests(self.gd_mut(), targets);
+    }
+
+    /// Report quests
+    pub fn report_quests(&mut self, targets: Vec<usize>) {
+        crate::game::quest::report_quests(self.gd_mut(), targets);
     }
 
     pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {

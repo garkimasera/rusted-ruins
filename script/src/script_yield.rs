@@ -6,7 +6,8 @@ pub enum ScriptYield {
     Talk { talk: TalkText },
     ShopBuy,
     ShopSell,
-    Quest,
+    QuestOffer,
+    QuestReport,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

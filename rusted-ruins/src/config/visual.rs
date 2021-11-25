@@ -337,8 +337,11 @@ pub struct SkillWindowConfig {
 
 #[derive(Debug, Deserialize)]
 pub struct QuestWindowConfig {
-    pub rect: CfgRect,
+    pub h: u32,
     pub n_row: u32,
+    pub column_pos: Vec<i32>,
+    pub ok_button_rect: CfgRect,
+    pub cancel_button_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

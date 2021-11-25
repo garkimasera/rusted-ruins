@@ -118,3 +118,26 @@ impl_iconidx! {
     {Item, ItemIdx},
     {UiImg, UiImgIdx}
 }
+
+impl IconIdx {
+    pub fn empty() -> Self {
+        Self::UiImg {
+            idx: gobj::id_to_idx("!"),
+            i_pattern: 0,
+        }
+    }
+
+    pub fn checked() -> Self {
+        Self::UiImg {
+            idx: gobj::id_to_idx("!icon-ok"),
+            i_pattern: 0,
+        }
+    }
+
+    pub fn ng() -> Self {
+        Self::UiImg {
+            idx: gobj::id_to_idx("!icon-ng"),
+            i_pattern: 0,
+        }
+    }
+}
