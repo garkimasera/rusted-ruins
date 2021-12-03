@@ -2,7 +2,7 @@ use crate::dir;
 use crate::error::*;
 use crate::pyscript::read_pyscript;
 use crate::verbose::print_verbose;
-use anyhow::*;
+use anyhow::{bail, Result};
 use common::obj::Object;
 use common::pakutil::write_object;
 use std::fs::File;
@@ -46,7 +46,7 @@ pub fn compile(files: &[&str], output_file: &str) {
     builder.finish().unwrap();
 }
 
-fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
+fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object> {
     let path = path.as_ref();
     let s = {
         let mut f = File::open(path)?;
@@ -78,7 +78,7 @@ fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object, Error> {
     Ok(object)
 }
 
-fn write_to_vec(obj: &Object) -> Result<Vec<u8>, Error> {
+fn write_to_vec(obj: &Object) -> Result<Vec<u8>> {
     let mut v = Vec::new();
     match write_object(&mut v, obj) {
         Ok(_) => Ok(v),

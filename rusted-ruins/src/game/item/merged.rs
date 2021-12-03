@@ -33,14 +33,15 @@ impl MergedItemListGet for GameData {
 }
 
 impl<'a> MergedItemList<'a> {
-    // pub fn iter(&self) -> impl Iterator<Item = &(Item, u32)> {
-    //     let first = self.first.1.iter();
-    //     if let Some(second) = self.second.as_ref() {
-    //         first.chain(second.1.iter())
-    //     } else {
-    //         first.chain(self.dummy_list.iter())
-    //     }
-    // }
+    #[allow(unused)]
+    pub fn iter(&self) -> impl Iterator<Item = &(Item, u32)> {
+        let first = self.first.1.iter();
+        if let Some(second) = self.second.as_ref() {
+            first.chain(second.1.iter())
+        } else {
+            first.chain(self.dummy_list.iter())
+        }
+    }
 
     pub fn item_location(&self, i: usize) -> ItemLocation {
         if let Some(second) = self.second.as_ref() {
