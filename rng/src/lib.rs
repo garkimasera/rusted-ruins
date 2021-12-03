@@ -1,11 +1,11 @@
 //! Helper crate for using thread local and fast random number generator
-
 #![warn(
     rust_2018_compatibility,
     rust_2018_idioms,
     future_incompatible,
     nonstandard_style
 )]
+#![allow(clippy::redundant_closure)]
 
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 pub use rand::seq::SliceRandom;

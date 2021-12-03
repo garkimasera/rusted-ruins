@@ -33,10 +33,10 @@ impl IconView {
         let filter_wall: gtk::TreeModelFilter = get_object!(builder, "filter-wall");
         let filter_deco: gtk::TreeModelFilter = get_object!(builder, "filter-deco");
         let filter_item: gtk::TreeModelFilter = get_object!(builder, "filter-item");
-        filter_tile.set_visible_func(|m, i| item_filter(m, i));
-        filter_wall.set_visible_func(|m, i| item_filter(m, i));
-        filter_deco.set_visible_func(|m, i| item_filter(m, i));
-        filter_item.set_visible_func(|m, i| item_filter(m, i));
+        filter_tile.set_visible_func(item_filter);
+        filter_wall.set_visible_func(item_filter);
+        filter_deco.set_visible_func(item_filter);
+        filter_item.set_visible_func(item_filter);
 
         IconView {
             iconview_tile: get_object!(builder, "iconview-tile"),

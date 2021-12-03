@@ -7,6 +7,7 @@
 #![cfg_attr(not(global_state_obj), allow(dead_code))]
 #![cfg_attr(not(global_state_obj), allow(unused_variables))]
 #![cfg_attr(not(global_state_obj), allow(unused_imports))]
+#![allow(clippy::derivable_impls)]
 
 #[macro_use]
 extern crate serde_derive;
