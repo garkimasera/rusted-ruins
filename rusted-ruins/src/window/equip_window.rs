@@ -23,7 +23,8 @@ pub struct EquipWindow {
 
 impl EquipWindow {
     pub fn new(gd: &GameData, cid: CharaId, changeable: bool) -> EquipWindow {
-        let rect = UI_CFG.equip_window.rect.into();
+        let mut rect: Rect = UI_CFG.info_window.rect.into();
+        rect.h = (UI_CFG.equip_window.n_row * UI_CFG.list_widget.h_row_default) as _;
 
         let mut equip_window = EquipWindow {
             rect,

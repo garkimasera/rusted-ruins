@@ -129,7 +129,7 @@ start_button_rect = { x = 60, y = 265, w = 100, h = 30 }
 cancel_button_rect = { x = 290, y = 265, w = 100, h = 30 }
 
 [faction_window]
-list_rect = { x = 0, y = 0, w = 500, h = 286 }
+list_rect = { x = 0, y = 0, w = 550, h = 312 }
 n_row = 9
 column_pos = [1, 400]
 
@@ -150,7 +150,7 @@ desc_text = { x = 24, y = 48, w = 422 }
 desc_text_icon = { x = 3, y = 52, w = 16, h = 16 }
 
 [equip_window]
-rect = { x = -999, y = -999, w = 500, h = 286 }
+rect = { x = -999, y = -999, w = 550, h = 286 }
 n_row = 10
 column_pos = [1, 28, 58]
 
@@ -159,7 +159,7 @@ line_space = 30
 speed = 1.5
 
 [info_window]
-rect = { x = -999, y = -999, w = 500, h = 286 }
+rect = { x = -999, y = -999, w = 550, h = 312 }
 
 [status_window]
 image_rect = { x = 5, y = 5, w = 48, h = 96 }
@@ -182,8 +182,8 @@ travel_speed_label_rect = { x = 105, y = 154 }
 column_pos = [4]
 
 [ability_window]
-rect = { x = -999, y = -999, w = 520, h = 286 }
-list_rect = { x = 0, y = 0, w = 520, h = 286 }
+rect = { x = -999, y = -999, w = 550, h = 312 }
+list_rect = { x = 0, y = 0, w = 550, h = 312 }
 n_row = 10
 column_pos = [1, 340, 450]
 
@@ -192,16 +192,16 @@ play_time_label_rect = { x = 5, y = 5 }
 money_label_rect = { x = 5, y = 27 }
 
 [skill_window]
-list_rect = { x = 0, y = 0, w = 500, h = 286 }
-list_size = 10
+list_rect = { x = 0, y = 0, w = 550, h = 312 }
+list_size = 11
 column_pos = [5, 280, 390]
 
 [quest_window]
 h = 330
 n_row = 6
 column_pos = [0, 27]
-ok_button_rect = { x = 50, y = 290, w = 100, h = 26 }
-cancel_button_rect = { x = 200, y = 290, w = 100, h = 26 }
+ok_button_rect = { x = 150, y = 300, w = 100, h = 26 }
+cancel_button_rect = { x = 300, y = 300, w = 100, h = 26 }
 
 [label_widget]
 h = 24
