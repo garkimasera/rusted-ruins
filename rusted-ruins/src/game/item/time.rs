@@ -5,7 +5,10 @@ use common::gobj;
 use rules::RULES;
 
 /// Update item time stamp for current map.
+#[allow(clippy::needless_collect)]
 pub fn update_item_time(gd: &mut GameData) {
+    trace!("update item time");
+
     let cids: Vec<CharaId> = gd.get_current_map().iter_charaid().copied().collect();
 
     // For characters
@@ -22,6 +25,21 @@ pub fn update_item_time(gd: &mut GameData) {
 
         update_item_list_time(gd, ill);
     }
+
+    // For shops
+    if !mid.is_region_map() {
+        let sid = mid.sid();
+        if let SiteContent::Town { town } = &gd.region.get_site(sid).content {
+            let shop_ids: Vec<u32> = town.iter_shop_n().collect();
+
+            for id in shop_ids.into_iter() {
+                let ill = ItemListLocation::Shop {
+                    cid: CharaId::OnSite { sid, id },
+                };
+                update_item_list_time(gd, ill);
+            }
+        }
+    }
 }
 
 #[derive(Debug, Default)]
@@ -34,6 +52,11 @@ fn update_item_list_time(gd: &mut GameData, ill: ItemListLocation) {
     let mut items_to_remove: Vec<(u32, u32)> = Vec::new();
 
     let mut rule = UpdateItemRule::default();
+
+    if let ItemListLocation::Shop { .. } = ill {
+        rule.prevent_rot = true;
+    }
+
     if let ItemListLocation::Container { ill, i } = ill {
         let container_item = &gd.get_item((ill.into(), i)).0;
         let item_obj = container_item.obj();

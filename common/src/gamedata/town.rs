@@ -2,7 +2,8 @@ use crate::gamedata::quest::*;
 use crate::gamedata::shop::*;
 use crate::gamedata::time::Time;
 use fnv::FnvHashMap;
-use std::collections::hash_map::{Values, ValuesMut};
+use std::collections::hash_map::{Keys, Values, ValuesMut};
+use std::iter::Copied;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Town {
@@ -32,6 +33,10 @@ impl Town {
 
     pub fn get_shop_mut(&mut self, n: u32) -> Option<&mut Shop> {
         self.shops.get_mut(&n)
+    }
+
+    pub fn iter_shop_n(&self) -> Copied<Keys<'_, u32, Shop>> {
+        self.shops.keys().copied()
     }
 
     pub fn iter_shops(&self) -> Values<'_, u32, Shop> {
