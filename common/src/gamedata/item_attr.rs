@@ -82,6 +82,7 @@ pub enum ItemObjAttr {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
     PreventRot,
+    DeliveryChest,
     Converter {
         kind: String,
     },

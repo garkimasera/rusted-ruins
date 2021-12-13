@@ -18,6 +18,8 @@ pub struct SiteGenObject {
     /// pub random_npcs: Vec<>,
     pub shops: Vec<ShopGenData>,
     pub quests: Vec<QuestGenData>,
+    /// Delivery chest potision and object id for town sites
+    pub delivery_chest: Option<(u32, Vec2d, String)>,
 }
 
 /// Data to generate a unique citizen

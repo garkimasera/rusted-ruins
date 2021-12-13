@@ -1,3 +1,4 @@
+use crate::gamedata::item::ItemLocation;
 use crate::gamedata::quest::*;
 use crate::gamedata::shop::*;
 use crate::gamedata::time::Time;
@@ -11,6 +12,7 @@ pub struct Town {
     shops: FnvHashMap<u32, Shop>,
     pub quests: Vec<TownQuest>,
     pub quests_last_update: Time,
+    pub delivery_chest: Option<ItemLocation>,
 }
 
 impl Town {
@@ -20,6 +22,7 @@ impl Town {
             shops: FnvHashMap::default(),
             quests: Vec::new(),
             quests_last_update: Time::from_secs(0),
+            delivery_chest: None,
         }
     }
 

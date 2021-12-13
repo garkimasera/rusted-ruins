@@ -131,3 +131,5 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
 
     // for quest in quests.into_iter() {}
 }
+
+pub fn update_quest_status(_gd: &mut GameData) {}

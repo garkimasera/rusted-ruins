@@ -1,3 +1,4 @@
+use crate::game::item::gen::gen_item_from_id;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
@@ -31,6 +32,24 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
         }
     }
     update_shops(gd, sid, sg);
+
+    // Locate delivery chest
+    if let Some((floor, pos, ref id)) = sg.delivery_chest {
+        let mut item = gen_item_from_id(id, 0);
+        item.flags |= ItemFlags::FIXED;
+        let ill = ItemListLocation::OnMap {
+            mid: MapId::SiteMap { sid, floor },
+            pos,
+        };
+        let item_list = gd.get_item_list_mut(ill);
+        item_list.clear();
+        item_list.append_simple(item, 1);
+        let town = match gd.region.get_site_mut(sid).content {
+            SiteContent::Town { ref mut town } => town,
+            _ => unreachable!(),
+        };
+        town.delivery_chest = Some((ill, 0));
+    }
 }
 
 /// Update shop states

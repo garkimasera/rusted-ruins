@@ -193,6 +193,8 @@ pub struct SiteGenDepInput {
     pub shops: Vec<sitegen::ShopGenData>,
     #[serde(default)]
     pub quests: Vec<sitegen::QuestGenData>,
+    #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
+    pub delivery_chest: Option<(u32, Vec2d, String)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

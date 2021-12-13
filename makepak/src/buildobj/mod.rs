@@ -196,5 +196,6 @@ fn build_site_gen_object(input: Input) -> Result<SiteGenObject, Error> {
         npcs: sg.npcs,
         shops: sg.shops,
         quests: sg.quests,
+        delivery_chest: sg.delivery_chest,
     })
 }

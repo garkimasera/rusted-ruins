@@ -83,6 +83,7 @@ impl<'s> Game<'s> {
                 AdvanceScriptResult::Continue
             }
             ScriptYield::QuestReport => {
+                crate::game::quest::update_quest_status(&mut self.gd);
                 self.request_dialog_open(DialogOpenRequest::QuestReport);
                 AdvanceScriptResult::Continue
             }

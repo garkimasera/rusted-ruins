@@ -16,7 +16,9 @@ pub struct GameInfoWindow {
 
 const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 3;
 
-pub fn create_game_info_window_group(game: &Game<'_>) -> GroupWindow {
+pub fn create_game_info_window_group(pa: &mut DoPlayerAction<'_, '_>) -> GroupWindow {
+    pa.update_quest_status();
+
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
         (
             MemberInfo {
@@ -45,7 +47,7 @@ pub fn create_game_info_window_group(game: &Game<'_>) -> GroupWindow {
         "game_info",
         GAME_INFO_WINDOW_GROUP_SIZE,
         None,
-        game,
+        pa.game(),
         mem_info,
         (rect.x, rect.y),
     )

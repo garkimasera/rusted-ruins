@@ -548,7 +548,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                 self.push_dialog_window(dialog);
             }
             Command::OpenGameInfoWin => {
-                let dialog = Box::new(game_info_window::create_game_info_window_group(pa.game()));
+                let dialog = Box::new(game_info_window::create_game_info_window_group(&mut pa));
                 self.push_dialog_window(dialog);
             }
             Command::PickUpItem => {

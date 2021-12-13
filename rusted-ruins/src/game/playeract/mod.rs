@@ -342,4 +342,8 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
             *build_obj = new_build_obj;
         }
     }
+
+    pub fn update_quest_status(&mut self) {
+        super::quest::update_quest_status(self.gd_mut());
+    }
 }
