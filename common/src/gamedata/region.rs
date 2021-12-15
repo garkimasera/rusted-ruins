@@ -273,6 +273,22 @@ impl RegionHolder {
         None
     }
 
+    pub fn iter_sites(&self) -> impl Iterator<Item = (SiteId, &Site)> {
+        self.0.iter().flat_map(|(_, region)| region.iter())
+    }
+
+    pub fn towns(&self) -> Vec<SiteId> {
+        self.iter_sites()
+            .filter_map(|(sid, site)| {
+                if let SiteContent::Town { .. } = &site.content {
+                    Some(sid)
+                } else {
+                    None
+                }
+            })
+            .collect()
+    }
+
     pub(crate) fn remove_site(&mut self, sid: SiteId) {
         let region = self
             .0
@@ -331,6 +347,12 @@ impl Region {
 
     pub fn get_map_mut(&mut self) -> &mut Map {
         &mut self.map
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (SiteId, &Site)> {
+        self.sites
+            .iter()
+            .map(|(sid, site_info)| (*sid, &site_info.site))
     }
 
     fn search_empty_n(&self, kind: SiteKind) -> u32 {
