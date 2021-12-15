@@ -35,7 +35,10 @@ pub enum ItemObjAttr {
         selector: ItemSelector,
         /// Weight capacity (gram)
         capacity: u32,
-        functions: Vec<ContainerFunction>,
+        #[serde(default)]
+        prevent_rot: bool,
+        #[serde(default)]
+        function: ContainerFunction,
     },
     /// Hours to rotting for food items
     Rot(Duration),
@@ -81,7 +84,7 @@ pub enum ItemObjAttr {
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ContainerFunction {
-    PreventRot,
+    None,
     DeliveryChest,
     Converter {
         kind: String,
@@ -94,6 +97,12 @@ pub enum ContainerFunction {
         product_multiplier: u32,
         ingredients: Vec<(ItemSelector, u32)>,
     },
+}
+
+impl Default for ContainerFunction {
+    fn default() -> Self {
+        ContainerFunction::None
+    }
 }
 
 fn product_multiplier_default() -> u32 {

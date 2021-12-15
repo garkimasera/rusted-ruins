@@ -44,11 +44,6 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
         let item_list = gd.get_item_list_mut(ill);
         item_list.clear();
         item_list.append_simple(item, 1);
-        let town = match gd.region.get_site_mut(sid).content {
-            SiteContent::Town { ref mut town } => town,
-            _ => unreachable!(),
-        };
-        town.delivery_chest = Some((ill, 0));
     }
 }
 

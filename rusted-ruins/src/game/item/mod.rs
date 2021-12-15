@@ -317,31 +317,30 @@ impl GameData {
             .unwrap_or(item_location.0);
         let src_list = self.get_item_list_mut(src_list_location);
         src_list.items.retain(|(_, n)| *n > 0);
+
+        after_src_item_list(self, src_list_location);
     }
 
     fn append_item_to(&mut self, ill: ItemListLocation, item: Item, n: u32) {
         if let Some(container_il) = ill.container_item_location() {
             let container_item = &mut self.get_item_mut(container_il).0;
 
-            if let Some(ItemObjAttr::Container { functions, .. }) =
+            if let Some(ItemObjAttr::Container { function, .. }) =
                 find_attr!(container_item.obj(), ItemObjAttr::Container)
             {
-                for function in functions {
-                    match function {
-                        ContainerFunction::Converter { .. } => {
-                            self::convert_container::append_to_converter(container_item, item, n);
-                            return;
-                        }
-                        ContainerFunction::ConvertMixed { .. } => {
-                            self::convert_container::append_to_mixed_converter(
-                                container_item,
-                                item,
-                                n,
-                            );
-                            return;
-                        }
-                        _ => (),
+                match function {
+                    ContainerFunction::DeliveryChest { .. } => {
+                        crate::game::quest::update_delivery_chest(self, ill);
                     }
+                    ContainerFunction::Converter { .. } => {
+                        self::convert_container::append_to_converter(container_item, item, n);
+                        return;
+                    }
+                    ContainerFunction::ConvertMixed { .. } => {
+                        self::convert_container::append_to_mixed_converter(container_item, item, n);
+                        return;
+                    }
+                    _ => (),
                 }
             }
         }
@@ -421,5 +420,19 @@ pub fn remove_equipment(gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u
     if let Some(removed_equipment) = gd.get_equip_list_mut(cid).remove(slot.0, slot.1 as usize) {
         gd.get_item_list_mut(ItemListLocation::Chara { cid })
             .append(removed_equipment, 1);
+    }
+}
+
+fn after_src_item_list(gd: &mut GameData, ill: ItemListLocation) {
+    if let ItemListLocation::Container { ill: ill0, i } = ill {
+        let container_item = &mut gd.get_item((ill0.into(), i)).0;
+
+        if let Some(ItemObjAttr::Container {
+            function: ContainerFunction::DeliveryChest,
+            ..
+        }) = find_attr!(container_item.obj(), ItemObjAttr::Container)
+        {
+            crate::game::quest::update_delivery_chest(gd, ill);
+        }
     }
 }

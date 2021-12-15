@@ -2,6 +2,7 @@ use crate::gamedata::item::ItemLocation;
 use crate::gamedata::quest::*;
 use crate::gamedata::shop::*;
 use crate::gamedata::time::Time;
+use crate::objholder::ItemIdx;
 use fnv::FnvHashMap;
 use std::collections::hash_map::{Keys, Values, ValuesMut};
 use std::iter::Copied;
@@ -12,7 +13,7 @@ pub struct Town {
     shops: FnvHashMap<u32, Shop>,
     pub quests: Vec<TownQuest>,
     pub quests_last_update: Time,
-    pub delivery_chest: Option<ItemLocation>,
+    pub delivery_chest_content: Vec<(ItemIdx, u32)>,
 }
 
 impl Town {
@@ -22,7 +23,7 @@ impl Town {
             shops: FnvHashMap::default(),
             quests: Vec::new(),
             quests_last_update: Time::from_secs(0),
-            delivery_chest: None,
+            delivery_chest_content: Vec::new(),
         }
     }
 

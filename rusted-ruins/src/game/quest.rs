@@ -133,3 +133,5 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
 }
 
 pub fn update_quest_status(_gd: &mut GameData) {}
+
+pub fn update_delivery_chest(_gd: &mut GameData, _ill: ItemListLocation) {}

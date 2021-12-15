@@ -61,15 +61,9 @@ fn update_item_list_time(gd: &mut GameData, ill: ItemListLocation) {
         let container_item = &gd.get_item((ill.into(), i)).0;
         let item_obj = container_item.obj();
 
-        for container_func in
-            find_attr!(item_obj, ItemObjAttr::Container { functions, .. } => functions)
-                .expect("invalid item for container")
-                .iter()
-        {
-            if container_func == &ContainerFunction::PreventRot {
-                rule.prevent_rot = true;
-            }
-        }
+        rule.prevent_rot =
+            *find_attr!(item_obj, ItemObjAttr::Container { prevent_rot, .. } => prevent_rot)
+                .expect("invalid item for container");
     }
 
     let item_list_len = gd.get_item_list(ill).len() as u32;
@@ -132,36 +126,30 @@ fn process_item(gd: &mut GameData, il: ItemLocation, rule: &UpdateItemRule) -> U
         }
     }
 
-    if let Some(functions) =
-        find_attr!(item_obj, ItemObjAttr::Container { functions, .. } => functions)
+    if let Some(ContainerFunction::ConvertMixed {
+        product,
+        product_multiplier,
+        ingredients,
+        ..
+    }) = find_attr!(item_obj, ItemObjAttr::Container { function, .. } => function)
     {
-        for function in functions {
-            if let ContainerFunction::ConvertMixed {
-                product,
-                product_multiplier,
-                ingredients,
-                ..
-            } = function
+        if item.update_time(true) {
+            let container_item_list = if let Some(ItemAttr::Container(container)) =
+                find_attr_mut!(item, ItemAttr::Container)
             {
-                if item.update_time(true) {
-                    let container_item_list = if let Some(ItemAttr::Container(container)) =
-                        find_attr_mut!(item, ItemAttr::Container)
-                    {
-                        &mut container.item_list
-                    } else {
-                        return UpdateTimeResult::None;
-                    };
-                    super::convert_container::do_mixed_convert(
-                        container_item_list,
-                        product,
-                        *product_multiplier,
-                        ingredients,
-                    );
-                    item.time = None;
-                }
+                &mut container.item_list
+            } else {
                 return UpdateTimeResult::None;
-            }
+            };
+            super::convert_container::do_mixed_convert(
+                container_item_list,
+                product,
+                *product_multiplier,
+                ingredients,
+            );
+            item.time = None;
         }
+        return UpdateTimeResult::None;
     }
 
     item.update_time(true);

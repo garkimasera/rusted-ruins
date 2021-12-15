@@ -27,69 +27,63 @@ pub fn append_to_converter(container_item: &mut Item, item: Item, n: u32) {
 }
 
 pub fn append_to_mixed_converter(container_item: &mut Item, item: Item, n: u32) {
-    let functions =
-        find_attr!(container_item.obj(), ItemObjAttr::Container { functions, .. } => functions)
+    let function =
+        find_attr!(container_item.obj(), ItemObjAttr::Container { function, .. } => function)
             .unwrap();
 
-    let (duration, product, product_multiplier, ingredients) = functions
-        .iter()
-        .filter_map(|function| match function {
-            ContainerFunction::ConvertMixed {
-                duration,
-                product,
-                product_multiplier,
-                ingredients,
-            } => Some((duration, product, product_multiplier, ingredients)),
-            _ => None,
-        })
-        .next()
-        .unwrap();
-
-    let container_item_list = if let Some(ItemAttr::Container(container)) =
-        find_attr_mut!(container_item, ItemAttr::Container)
+    if let ContainerFunction::ConvertMixed {
+        duration,
+        product,
+        product_multiplier,
+        ingredients,
+    } = function
     {
-        &mut container.item_list
-    } else {
-        return;
-    };
-
-    if duration.as_secs() > 0 {
-        // Caluculate average remaining duration
-        let sum_items = container_item_list
-            .items
-            .iter()
-            .map(|item| item.1)
-            .sum::<u32>() as u64;
-        let remaining = if let Some(time) = container_item.time {
-            time.remaining.as_secs()
+        let container_item_list = if let Some(ItemAttr::Container(container)) =
+            find_attr_mut!(container_item, ItemAttr::Container)
+        {
+            &mut container.item_list
         } else {
-            duration.as_secs()
+            return;
         };
 
-        let new_remaining =
-            (remaining * sum_items + duration.as_secs() * n as u64) / (sum_items + n as u64);
-        container_item.reset_time(Duration::from_seconds(new_remaining));
-    }
+        if duration.as_secs() > 0 {
+            // Caluculate average remaining duration
+            let sum_items = container_item_list
+                .items
+                .iter()
+                .map(|item| item.1)
+                .sum::<u32>() as u64;
+            let remaining = if let Some(time) = container_item.time {
+                time.remaining.as_secs()
+            } else {
+                duration.as_secs()
+            };
 
-    let container_item_list = if let Some(ItemAttr::Container(container)) =
-        find_attr_mut!(container_item, ItemAttr::Container)
-    {
-        &mut container.item_list
-    } else {
-        return;
-    };
+            let new_remaining =
+                (remaining * sum_items + duration.as_secs() * n as u64) / (sum_items + n as u64);
+            container_item.reset_time(Duration::from_seconds(new_remaining));
+        }
 
-    container_item_list.append_simple(item, n);
+        let container_item_list = if let Some(ItemAttr::Container(container)) =
+            find_attr_mut!(container_item, ItemAttr::Container)
+        {
+            &mut container.item_list
+        } else {
+            return;
+        };
 
-    if calc_n_product(&container_item_list.items, ingredients) == 0 {
-        container_item.time = None;
-    } else if container_item.time.is_none() {
-        do_mixed_convert(
-            container_item_list,
-            product,
-            *product_multiplier,
-            ingredients,
-        );
+        container_item_list.append_simple(item, n);
+
+        if calc_n_product(&container_item_list.items, ingredients) == 0 {
+            container_item.time = None;
+        } else if container_item.time.is_none() {
+            do_mixed_convert(
+                container_item_list,
+                product,
+                *product_multiplier,
+                ingredients,
+            );
+        }
     }
 }
 
