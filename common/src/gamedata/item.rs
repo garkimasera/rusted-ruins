@@ -78,6 +78,11 @@ impl PartialOrd for Item {
 
 impl Item {
     pub fn cmp_except_time(&self, other: &Item) -> Ordering {
+        let order = self.flags.cmp(&other.flags);
+        if order != Ordering::Equal {
+            return order.reverse();
+        }
+
         let order = self.kind.cmp(&other.kind);
         if order != Ordering::Equal {
             return order;
