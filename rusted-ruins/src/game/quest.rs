@@ -4,7 +4,9 @@ use super::item::gen::choose_item_by_item_selector;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
+use common::objholder::ItemIdx;
 use common::sitegen::QuestGenData;
+use fnv::FnvHashMap;
 use rules::RULES;
 use std::collections::HashSet;
 
@@ -134,4 +136,75 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
 
 pub fn update_quest_status(_gd: &mut GameData) {}
 
-pub fn update_delivery_chest(_gd: &mut GameData, _ill: ItemListLocation) {}
+pub fn update_delivery_chest(gd: &mut GameData, ill: ItemListLocation) {
+    let sid = if let ItemListLocation::Container {
+        ill:
+            ItemListLocationExceptContainer::OnMap {
+                mid: MapId::SiteMap { sid, .. },
+                ..
+            },
+        ..
+    } = ill
+    {
+        sid
+    } else {
+        warn!("Invalid located delivery chest");
+        return;
+    };
+
+    let mut delivery_chest_content: Vec<(ItemIdx, u32)> = Vec::new();
+    for (item, n) in gd.get_item_list(ill).iter() {
+        if let Some((_, a)) = delivery_chest_content
+            .iter_mut()
+            .find(|(idx, _)| *idx == item.idx)
+        {
+            *a += *n;
+        } else {
+            delivery_chest_content.push((item.idx, *n));
+        }
+    }
+
+    if let SiteContent::Town { town } = &mut gd.region.get_site_mut(sid).content {
+        town.delivery_chest = Some(ill);
+        town.delivery_chest_content = delivery_chest_content;
+    }
+
+    update_item_delivery_quest_status(gd, Some(sid));
+}
+
+pub fn update_item_delivery_quest_status(gd: &mut GameData, sid: Option<SiteId>) {
+    let mut delivery_chest_contents: FnvHashMap<SiteId, Vec<(ItemIdx, u32)>> =
+        FnvHashMap::default();
+
+    for (state, quest) in gd.quest.town_quests.iter_mut() {
+        if sid.is_some() && quest.sid != sid.unwrap() {
+            continue;
+        }
+        let sid = quest.sid;
+
+        let (idx, n) = if let TownQuestKind::ItemDelivering { idx, n } = quest.kind {
+            (idx, n)
+        } else {
+            continue;
+        };
+
+        if delivery_chest_contents.get(&sid).is_none() {
+            if let SiteContent::Town { town } = &gd.region.get_site(sid).content {
+                delivery_chest_contents.insert(sid, town.delivery_chest_content.clone());
+            } else {
+                continue;
+            };
+        }
+
+        let c = delivery_chest_contents.get_mut(&sid).unwrap();
+
+        if let Some((_, n_content)) = c.iter_mut().find(|(idx_content, _)| *idx_content == idx) {
+            if *n_content >= n {
+                *n_content -= n;
+                *state = TownQuestState::Reportable;
+            } else {
+                *state = TownQuestState::Active;
+            }
+        }
+    }
+}

@@ -322,6 +322,8 @@ impl GameData {
     }
 
     fn append_item_to(&mut self, ill: ItemListLocation, item: Item, n: u32) {
+        let mut update_delivery_chest_needed = false;
+
         if let Some(container_il) = ill.container_item_location() {
             let container_item = &mut self.get_item_mut(container_il).0;
 
@@ -330,7 +332,7 @@ impl GameData {
             {
                 match function {
                     ContainerFunction::DeliveryChest { .. } => {
-                        crate::game::quest::update_delivery_chest(self, ill);
+                        update_delivery_chest_needed = true;
                     }
                     ContainerFunction::Converter { .. } => {
                         self::convert_container::append_to_converter(container_item, item, n);
@@ -347,6 +349,10 @@ impl GameData {
 
         let item_list = self.get_item_list_mut(ill);
         item_list.append(item, n);
+
+        if update_delivery_chest_needed {
+            crate::game::quest::update_delivery_chest(self, ill);
+        }
     }
 
     /// Find container item that have specified id

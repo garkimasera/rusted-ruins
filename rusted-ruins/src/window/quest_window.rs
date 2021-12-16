@@ -73,15 +73,15 @@ impl QuestWindow {
             .quest
             .town_quests
             .iter()
-            .filter_map(|(state, quest)| {
-                if *state == TownQuestState::Active {
-                    Some((
-                        IconIdx::empty(),
-                        TextCache::new(quest.to_text(), FontKind::M, UI_CFG.color.normal_font),
-                    ))
-                } else {
-                    None
-                }
+            .map(|(state, quest)| {
+                let icon = match *state {
+                    TownQuestState::Active => IconIdx::empty(),
+                    TownQuestState::Reportable => IconIdx::checked(),
+                };
+                (
+                    icon,
+                    TextCache::new(quest.to_text(), FontKind::M, UI_CFG.color.normal_font),
+                )
             })
             .collect();
 

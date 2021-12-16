@@ -7,12 +7,15 @@ use fnv::FnvHashMap;
 use std::collections::hash_map::{Keys, Values, ValuesMut};
 use std::iter::Copied;
 
+use super::ItemListLocation;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Town {
     id: String,
     shops: FnvHashMap<u32, Shop>,
     pub quests: Vec<TownQuest>,
     pub quests_last_update: Time,
+    pub delivery_chest: Option<ItemListLocation>,
     pub delivery_chest_content: Vec<(ItemIdx, u32)>,
 }
 
@@ -23,6 +26,7 @@ impl Town {
             shops: FnvHashMap::default(),
             quests: Vec::new(),
             quests_last_update: Time::from_secs(0),
+            delivery_chest: None,
             delivery_chest_content: Vec::new(),
         }
     }
