@@ -178,6 +178,8 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
                 .append(item, n);
         }
     }
+
+    game_log!("quest-report-completed-quests"; player=gd.chara.get(CharaId::Player));
 }
 
 pub fn update_quest_status(_gd: &mut GameData) {}

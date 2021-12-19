@@ -93,8 +93,7 @@ shop-lack-of-money = {$chara} do not have enough money to buy it.
 
 # Messages about quest
 
-quest-complete-slay_monsters = Quest completed! Slayed {$monster} x {$n}.
-quest-reward-receive-money = Recieved {$money} gold as the quest reward.
+quest-report-completed-quests = {$player} reported completed quests.
 
 # Messages about factions
 faction-relation-improve = Relations with {$faction} improved by {$value}.

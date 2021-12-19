@@ -93,8 +93,7 @@ shop-lack-of-money = {$chara}はそれを買うのに十分なお金を持って
 
 # Messages about quest
 
-quest-complete-slay_monsters = {$monster}を{$n}体始末した。クエストを達成した。
-quest-reward-receive-money = {$money}ゴールドを報酬として受け取った。
+quest-report-completed-quests = {$player}は達成したクエストを報告した。
 
 # Messages about factions
 faction-relation-improve = {$faction}との関係が改善した ({$value})。
