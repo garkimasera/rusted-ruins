@@ -61,8 +61,7 @@ pub enum QuestGenData {
         text_id: String,
         deadline: u32,
         reward: Reward,
-        item: ItemSelector,
-        n: u32,
+        items: Vec<(ItemSelector, u32)>,
     },
 }
 

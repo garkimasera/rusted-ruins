@@ -55,6 +55,7 @@ item-container-capacity-limit = それを入れる容量がない。
 item-equip = {$chara}は{$item}を装備した。
 item-pickup = {$chara}は{$item}を拾った。
 item-pick-up-plant = {$item}は植物であり、拾うことはできない。
+item-pick-up-fixed = {$item}は固定されている。
 item-drop = {$chara}は{$item}を床に置いた。
 item-owned-by-others = {$item}は他者の所有物である。
 drink-item = {$chara}は{$item}を飲み干した。

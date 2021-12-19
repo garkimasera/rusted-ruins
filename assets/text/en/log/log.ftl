@@ -55,6 +55,7 @@ item-container-capacity-limit = There is no space for it.
 item-equip = {$chara} equipped {$item}.
 item-pickup = {$chara} picked up {$item}.
 item-pick-up-plant = {$item} is a living plant and cannot be moved.
+item-pick-up-fixed = {$item} is fixed and cannot be moved.
 item-drop = {$chara} dropped {$item}.
 item-owned-by-others = {$item} is owned by others.
 drink-item = {$chara} drank a {$item}.

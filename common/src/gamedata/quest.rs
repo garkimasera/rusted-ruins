@@ -25,6 +25,6 @@ pub struct TownQuest {
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum TownQuestKind {
-    ItemDelivering { idx: ItemIdx, n: u32 },
+    ItemDelivering { items: Vec<(ItemIdx, u32)> },
     DestroyBase,
 }

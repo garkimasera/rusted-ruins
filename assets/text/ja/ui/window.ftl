@@ -22,6 +22,7 @@ tab_text-item_read = 読む
 tab_text-item_open = 開く
 tab_text-item_take = 出す
 tab_text-item_put = 入れる
+button_text-quest-report = 報告する
 button_text-quest-take = 引き受ける
 button_text-back = 戻る
 button_text-cancel = キャンセル

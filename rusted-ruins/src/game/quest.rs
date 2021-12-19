@@ -1,6 +1,7 @@
 //! Quest handlings
 
-use super::item::gen::choose_item_by_item_selector;
+use super::item::gen::{choose_item_by_item_selector, gen_item_from_idx};
+use super::item::ItemListExt;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
@@ -59,19 +60,26 @@ fn create_quest(qg: &QuestGenData, sid: SiteId) -> TownQuest {
             text_id,
             deadline,
             reward,
-            item,
-            n,
+            items,
             ..
-        } => TownQuest {
-            sid,
-            text_id: text_id.clone(),
-            deadline: Some(*deadline),
-            reward: reward.clone(),
-            kind: TownQuestKind::ItemDelivering {
-                idx: choose_item_by_item_selector(item).unwrap_or_default(),
-                n: *n,
-            },
-        },
+        } => {
+            let items = items
+                .iter()
+                .map(|(item_selector, n)| {
+                    (
+                        choose_item_by_item_selector(item_selector).unwrap_or_default(),
+                        *n,
+                    )
+                })
+                .collect();
+            TownQuest {
+                sid,
+                text_id: text_id.clone(),
+                deadline: Some(*deadline),
+                reward: reward.clone(),
+                kind: TownQuestKind::ItemDelivering { items },
+            }
+        }
     }
 }
 
@@ -131,7 +139,45 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
         quests.push(quest);
     }
 
-    // for quest in quests.into_iter() {}
+    for quest in quests.into_iter() {
+        match quest.kind {
+            TownQuestKind::ItemDelivering { items } => {
+                // Get item list for delivery chest in the current map.
+                let sid = gd.get_current_mapid().sid();
+                let town = match &gd.region.get_site(sid).content {
+                    SiteContent::Town { town } => town,
+                    _ => {
+                        error!("Invalid quest report");
+                        return;
+                    }
+                };
+                let ill = if let Some(ill) = town.delivery_chest {
+                    ill
+                } else {
+                    error!("Delivery chest unreachable");
+                    return;
+                };
+                let item_list = gd.get_item_list_mut(ill);
+
+                // Consume items
+                for &(idx, n) in &items {
+                    item_list.consume(idx, n, |_, _| (), false);
+                }
+            }
+            _ => todo!(),
+        }
+
+        // Receive rewards
+        if quest.reward.money > 0 {
+            gd.player.add_money(quest.reward.money);
+        }
+
+        for &(item_idx, n) in &quest.reward.item {
+            let item = gen_item_from_idx(item_idx, 0);
+            gd.get_item_list_mut(ItemListLocation::PLAYER)
+                .append(item, n);
+        }
+    }
 }
 
 pub fn update_quest_status(_gd: &mut GameData) {}
@@ -176,14 +222,14 @@ pub fn update_item_delivery_quest_status(gd: &mut GameData, sid: Option<SiteId>)
     let mut delivery_chest_contents: FnvHashMap<SiteId, Vec<(ItemIdx, u32)>> =
         FnvHashMap::default();
 
-    for (state, quest) in gd.quest.town_quests.iter_mut() {
+    'quest_loop: for (state, quest) in gd.quest.town_quests.iter_mut() {
         if sid.is_some() && quest.sid != sid.unwrap() {
             continue;
         }
         let sid = quest.sid;
 
-        let (idx, n) = if let TownQuestKind::ItemDelivering { idx, n } = quest.kind {
-            (idx, n)
+        let items = if let TownQuestKind::ItemDelivering { items } = &quest.kind {
+            items
         } else {
             continue;
         };
@@ -198,13 +244,22 @@ pub fn update_item_delivery_quest_status(gd: &mut GameData, sid: Option<SiteId>)
 
         let c = delivery_chest_contents.get_mut(&sid).unwrap();
 
-        if let Some((_, n_content)) = c.iter_mut().find(|(idx_content, _)| *idx_content == idx) {
-            if *n_content >= n {
-                *n_content -= n;
-                *state = TownQuestState::Reportable;
-            } else {
-                *state = TownQuestState::Active;
+        for &(idx, n) in items {
+            if let Some((_, n_content)) = c.iter_mut().find(|(idx_content, _)| *idx_content == idx)
+            {
+                if *n_content < n {
+                    *state = TownQuestState::Active;
+                    break 'quest_loop;
+                }
             }
         }
+
+        for &(idx, n) in items {
+            if let Some((_, n_content)) = c.iter_mut().find(|(idx_content, _)| *idx_content == idx)
+            {
+                *n_content -= n;
+            }
+        }
+        *state = TownQuestState::Reportable;
     }
 }

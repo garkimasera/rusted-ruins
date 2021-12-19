@@ -22,6 +22,7 @@ tab_text-item_read = Read
 tab_text-item_open = Open
 tab_text-item_take = Take
 tab_text-item_put = Put
+button_text-quest-report = Report
 button_text-quest-take = Take
 button_text-back = Back
 button_text-cancel = Cancel
