@@ -117,7 +117,7 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
 
     let skill_level = gd.chara.get(cid).skill_level(harvest.kind.related_skill());
 
-    for item in &harvest.item {
+    for item in &harvest.items {
         let target_item_idx: ItemIdx = gobj::id_to_idx(&item.0);
         let target_item = crate::game::item::gen::gen_item_from_idx(target_item_idx, 0);
         let min_yield = std::cmp::min(item.1, item.2);

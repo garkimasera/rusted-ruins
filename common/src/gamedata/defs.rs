@@ -101,7 +101,7 @@ pub struct Reward {
 pub struct Harvest {
     pub kind: HarvestKind,
     /// item id and yield
-    pub item: Vec<(String, u32, u32)>,
+    pub items: Vec<(String, u32, u32)>,
     pub difficulty: u32,
 }
 
