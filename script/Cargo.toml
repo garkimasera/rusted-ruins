@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 thiserror = "1"
-rustpython-vm = { git = "https://github.com/RustPython/RustPython.git", rev = "2e685b858a91ac4a80358fe8c59641f0576a4d3f", features = ["freeze-stdlib"] }
+rustpython-vm = { git = "https://github.com/RustPython/RustPython.git", rev = "db3b3127df34ff5dd569301aa36ed71ae5624e4e", features = ["freeze-stdlib"] }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"

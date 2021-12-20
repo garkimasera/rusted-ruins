@@ -1,8 +1,4 @@
-use rustpython_vm::{
-    compile::CompileError,
-    exceptions::{write_exception, PyBaseExceptionRef},
-    VirtualMachine,
-};
+use rustpython_vm::{builtins::PyBaseExceptionRef, compile::CompileError, VirtualMachine};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -18,7 +14,7 @@ pub enum Error {
 impl Error {
     pub fn from_py(vm: &VirtualMachine, e: PyBaseExceptionRef) -> Self {
         let mut s = String::new();
-        let _ = write_exception(&mut s, vm, &e);
+        let _ = vm.write_exception(&mut s, &e);
         Error::Python(s)
     }
 }

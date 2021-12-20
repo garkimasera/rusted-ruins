@@ -10,7 +10,7 @@ mod _rr {
     use rustpython_vm as vm;
     use std::convert::TryInto;
     use vm::builtins::{PyNone, PyStrRef};
-    use vm::{IntoPyObject, PyObjectRef, PyResult, PyValue, VirtualMachine};
+    use vm::{function::IntoPyObject, PyObjectRef, PyResult, PyValue, VirtualMachine};
 
     #[pyfunction]
     fn response(vm: &VirtualMachine) -> Option<PyObjectRef> {
@@ -34,7 +34,7 @@ mod _rr {
     #[pyfunction]
     fn set_gvar(name: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
         let value = py_to_value(vm, value)?;
-        with_gd_mut(|gd| gd.vars.set_global_var(name.as_ref(), value));
+        with_gd_mut(|gd| gd.vars.set_global_var(name.as_str(), value));
         Ok(())
     }
 
@@ -74,7 +74,7 @@ mod _rr {
         with_gd_mut(|gd| {
             gd.vars.set_local_var(
                 gd.script_exec.current_script_id.as_ref().unwrap(),
-                name.as_ref(),
+                name.as_str(),
                 value,
             )
         });

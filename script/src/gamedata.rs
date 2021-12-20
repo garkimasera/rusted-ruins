@@ -9,7 +9,7 @@ use std::convert::TryInto;
 use std::sync::RwLock;
 use vm::builtins::PyInt;
 use vm::VirtualMachine;
-use vm::{IntoPyObject, PyObjectRef, PyResult};
+use vm::{function::IntoPyObject, PyObjectRef, PyResult};
 
 thread_local!(
     static GAME_DATA: UnsyncLazy<RefCell<Option<GameData>>> =
