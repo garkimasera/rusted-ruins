@@ -2,9 +2,12 @@ use super::commonuse::*;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
 use crate::game::quest::{available_quests, reportable_quests};
+use crate::text::obj_txt;
 use crate::text::{quest_txt_checked, ui_txt, ToText};
+use common::gamedata::TownQuestKind;
 use common::gamedata::TownQuestState;
 use common::gamedata::{GameData, TownQuest};
+use common::gobj;
 
 enum QuestWindowMode {
     List,
@@ -31,7 +34,7 @@ pub struct QuestWindow {
 }
 
 impl QuestWindow {
-    fn new(mode: QuestWindowMode, rows: Vec<(IconIdx, TextCache)>) -> QuestWindow {
+    fn new(gd: &GameData, mode: QuestWindowMode, rows: Vec<(IconIdx, TextCache)>) -> QuestWindow {
         let mut rect: Rect = UI_CFG.info_window.rect.into();
         rect.h = UI_CFG.quest_window.h as _;
 
@@ -56,16 +59,18 @@ impl QuestWindow {
             rect.width(),
             rect.height() - list_rect.height() - 2,
         );
-        let desc = LabelWidget::wrapped(desc_rect, "", FontKind::M, desc_rect.width());
+        let desc = LabelWidget::wrapped(desc_rect, "", FontKind::S, desc_rect.width());
 
-        QuestWindow {
+        let mut window = QuestWindow {
             rect,
             mode,
             list,
             desc,
             line_y: list_rect.h,
             escape_click: false,
-        }
+        };
+        window.update_desc_text(gd, 0);
+        window
     }
 
     pub fn new_list(gd: &GameData) -> QuestWindow {
@@ -87,7 +92,7 @@ impl QuestWindow {
 
         let mode = QuestWindowMode::List;
 
-        Self::new(mode, rows)
+        Self::new(gd, mode, rows)
     }
 
     pub fn new_offer(gd: &GameData) -> QuestWindow {
@@ -115,7 +120,7 @@ impl QuestWindow {
             ),
         };
 
-        Self::new(mode, rows)
+        Self::new(gd, mode, rows)
     }
 
     pub fn new_report(gd: &GameData) -> QuestWindow {
@@ -149,7 +154,37 @@ impl QuestWindow {
             reportable_quests,
         };
 
-        Self::new(mode, rows)
+        Self::new(gd, mode, rows)
+    }
+
+    pub fn update_desc_text(&mut self, gd: &GameData, i: u32) {
+        let desc_text = match &self.mode {
+            QuestWindowMode::List { .. } => {
+                if let Some((_, town_quest)) = &gd.quest.town_quests.get(i as usize) {
+                    town_quest_desc_text(town_quest)
+                } else {
+                    return;
+                }
+            }
+            QuestWindowMode::Offer { .. } => {
+                if let Some(town_quest) = &available_quests(gd).get(i as usize) {
+                    town_quest_desc_text(town_quest)
+                } else {
+                    return;
+                }
+            }
+            QuestWindowMode::Report {
+                reportable_quests, ..
+            } => {
+                if let Some(i) = reportable_quests.get(i as usize) {
+                    let town_quest = &gd.quest.town_quests[*i as usize].1;
+                    town_quest_desc_text(town_quest)
+                } else {
+                    return;
+                }
+            }
+        };
+        self.desc.set_text(desc_text);
     }
 }
 
@@ -277,24 +312,7 @@ impl DialogWindow for QuestWindow {
                 _ => (),
             },
             Some(ListWidgetResponse::SelectionChanged(i)) => {
-                let desc_text = match &self.mode {
-                    QuestWindowMode::List { .. } => {
-                        let town_quest = &pa.gd().quest.town_quests[i as usize].1;
-                        town_quest_desc_text(town_quest)
-                    }
-                    QuestWindowMode::Offer { .. } => {
-                        let town_quest = &available_quests(pa.gd())[i as usize];
-                        town_quest_desc_text(town_quest)
-                    }
-                    QuestWindowMode::Report {
-                        reportable_quests, ..
-                    } => {
-                        let i = reportable_quests[i as usize];
-                        let town_quest = &pa.gd().quest.town_quests[i as usize].1;
-                        town_quest_desc_text(town_quest)
-                    }
-                };
-                self.desc.set_text(desc_text);
+                self.update_desc_text(pa.gd(), i);
             }
             _ => (),
         }
@@ -313,6 +331,44 @@ impl DialogWindow for QuestWindow {
 
 fn town_quest_desc_text(quest: &TownQuest) -> String {
     let desc_text_id = format!("{}-desc", &quest.text_id);
+    let mut text = quest_txt_checked(&desc_text_id).unwrap_or_else(|| "".into());
 
-    quest_txt_checked(&desc_text_id).unwrap_or_else(|| "".into())
+    text.push_str("\n\n");
+    match &quest.kind {
+        TownQuestKind::ItemDelivering { items } => {
+            text.push_str(&ui_txt("label_text-quest-delivery_chest"));
+            text.push_str(": ");
+            let len = items.len();
+            for (i, &(item_idx, n)) in items.iter().enumerate() {
+                let id = gobj::idx_to_id(item_idx);
+                text.push_str(&format!("{}x{}", obj_txt(id), n));
+                if i < len - 1 {
+                    text.push(',');
+                }
+            }
+        }
+        _ => todo!(),
+    }
+
+    text.push('\n');
+    text.push_str(&ui_txt("label_text-quest-reward"));
+    text.push_str(": ");
+
+    if quest.reward.money > 0 {
+        text.push_str(&format!("{} gold", quest.reward.money));
+        if !quest.reward.items.is_empty() {
+            text.push(',');
+        }
+    }
+
+    let len = quest.reward.items.len();
+    for (i, &(item_idx, n)) in quest.reward.items.iter().enumerate() {
+        let id = gobj::idx_to_id(item_idx);
+        text.push_str(&format!("{}x{}", obj_txt(id), n));
+        if i < len - 1 {
+            text.push(',');
+        }
+    }
+
+    text
 }

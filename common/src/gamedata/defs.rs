@@ -94,7 +94,7 @@ pub struct Reward {
     #[serde(default)]
     pub money: i64,
     #[serde(default)]
-    pub item: Vec<(ItemIdx, u32)>,
+    pub items: Vec<(ItemIdx, u32)>,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

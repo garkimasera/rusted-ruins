@@ -172,7 +172,7 @@ pub fn report_quests(gd: &mut GameData, mut targets: Vec<usize>) {
             gd.player.add_money(quest.reward.money);
         }
 
-        for &(item_idx, n) in &quest.reward.item {
+        for &(item_idx, n) in &quest.reward.items {
             let item = gen_item_from_idx(item_idx, 0);
             gd.get_item_list_mut(ItemListLocation::PLAYER)
                 .append(item, n);
