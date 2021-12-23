@@ -2,7 +2,7 @@ use crate::game::extrait::*;
 use crate::game::Game;
 use common::gamedata::*;
 
-pub fn skill_learn(game: &mut Game<'_>, cid: CharaId, skills: &[SkillKind]) {
+pub fn skill_learn(game: &mut Game, cid: CharaId, skills: &[SkillKind]) {
     let gd = &mut game.gd;
 
     for skill_kind in skills {

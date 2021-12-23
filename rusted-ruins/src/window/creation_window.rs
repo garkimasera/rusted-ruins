@@ -10,7 +10,7 @@ use common::gobj;
 use common::objholder::*;
 
 pub fn create_creation_window_group(
-    game: &Game<'_>,
+    game: &Game,
     creation_kind: Option<CreationKind>,
 ) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -130,7 +130,7 @@ impl Window for CreationWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
@@ -143,11 +143,7 @@ impl Window for CreationWindow {
 }
 
 impl DialogWindow for CreationWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
 
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
@@ -395,7 +391,7 @@ impl Window for CreationDetailDialog {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -415,11 +411,7 @@ impl Window for CreationDetailDialog {
 }
 
 impl DialogWindow for CreationDetailDialog {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
 
         let command = command.relative_to(self.rect);

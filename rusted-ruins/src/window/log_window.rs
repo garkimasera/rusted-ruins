@@ -25,7 +25,7 @@ impl Window for LogWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         context.set_viewport(None);

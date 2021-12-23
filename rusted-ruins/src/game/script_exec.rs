@@ -1,8 +1,6 @@
 use super::{DialogOpenRequest, Game};
 use common::gamedata::*;
-use common::gobj;
-use common::obj::ScriptObject;
-use script::{ScriptYield, TalkText};
+use script::{ScriptResult, TalkText};
 
 pub enum AdvanceScriptResult {
     Continue,
@@ -10,83 +8,89 @@ pub enum AdvanceScriptResult {
     Quit,
 }
 
-impl<'s> Game<'s> {
+#[derive(Clone, Copy, Default, PartialEq, Eq, Debug)]
+pub struct ScriptState {
+    talking: bool,
+    dialog: bool,
+    /// Target character of talking
+    target_cid: Option<CharaId>,
+}
+
+impl ScriptState {
+    fn clear(&mut self) {
+        *self = Self::default();
+    }
+}
+
+impl Game {
     /// Start script. Give cid if talk.
     pub fn start_script(&mut self, id: &str, cid: Option<CharaId>, scene: Option<String>) {
-        self.gd.script_exec.current_script_id = Some(id.into());
-        self.gd.script_exec.target_chara = cid;
-        self.gd.script_exec.scene = scene;
+        info!("Start script {}", id);
+        self.script_state.target_cid = cid;
+        self.se.start_script(id, scene);
 
-        let script_obj: &ScriptObject = if let Some(script_obj) = gobj::get_by_id_checked(id) {
-            script_obj
-        } else {
-            warn!("script id \"{}\" not found", id);
-            self.gd.script_exec.clear();
-            return;
-        };
-        if let Err(e) = self.se.start(script_obj, id) {
-            warn!("script \"{}\" starting failed:\n{}", id, e);
-            self.gd.script_exec.clear();
-            return;
-        }
         self.advance_script(None);
     }
 
     /// Advance current script.
-    /// When called by advance_talk, give player's choice.
-    pub fn advance_script(&mut self, choice: Option<u32>) -> AdvanceScriptResult {
-        self.gd.script_exec.response = choice.map(|n| Value::Int(n.into()));
-        let result = match self.se.next(&mut self.gd) {
-            Ok(result) => result,
-            Err(e) => {
-                warn!("script execution failed:\n{}", e);
-                self.gd.script_exec.clear();
-                return AdvanceScriptResult::Quit;
-            }
-        };
-        let result = if let Some(result) = result {
-            result
-        } else {
-            self.gd.script_exec.clear();
-            return AdvanceScriptResult::Quit;
-        };
+    /// `ui_response` is needed if the previous result is ui request.
+    pub fn advance_script(&mut self, ui_response: Option<Value>) -> AdvanceScriptResult {
+        if let Some(ui_response) = ui_response {
+            self.script_state.dialog = false;
+            self.se.ui_response(ui_response);
+        } else if self.script_state.dialog {
+            self.script_state.dialog = false;
+            self.se.ui_response(Value::None);
+        }
 
-        match result {
-            ScriptYield::Talk { talk } => {
-                if !self.gd.script_exec.talking {
-                    self.gd.script_exec.talking = true;
+        let result = match self.se.next(&mut self.gd) {
+            ScriptResult::Finish => AdvanceScriptResult::Quit,
+            ScriptResult::UiRequest(script::UiRequest::Talk { talk }) => {
+                if self.script_state.talking {
+                    AdvanceScriptResult::UpdateTalkText(talk)
+                } else {
+                    self.script_state.talking = true;
                     self.request_dialog_open(DialogOpenRequest::Talk {
-                        cid: self.gd.script_exec.target_chara,
+                        cid: self.script_state.target_cid,
                         talk_text: talk,
                     });
                     AdvanceScriptResult::Continue
-                } else {
-                    AdvanceScriptResult::UpdateTalkText(talk)
                 }
             }
-            ScriptYield::ShopBuy => {
-                let cid = if let Some(cid) = self.gd.script_exec.target_chara {
-                    cid
+            ScriptResult::UiRequest(script::UiRequest::ShopBuy) => {
+                if let Some(cid) = self.script_state.target_cid {
+                    self.request_dialog_open(DialogOpenRequest::ShopBuy { cid });
+                    self.script_state.dialog = true;
+                    AdvanceScriptResult::Continue
                 } else {
-                    return AdvanceScriptResult::Quit;
-                };
-                self.request_dialog_open(DialogOpenRequest::ShopBuy { cid });
-                AdvanceScriptResult::Continue
+                    AdvanceScriptResult::Quit
+                }
             }
-            ScriptYield::ShopSell => {
-                self.request_dialog_open(DialogOpenRequest::ShopSell);
-                AdvanceScriptResult::Continue
+            ScriptResult::UiRequest(script::UiRequest::ShopSell) => {
+                if let Some(_cid) = self.script_state.target_cid {
+                    self.request_dialog_open(DialogOpenRequest::ShopSell);
+                    self.script_state.dialog = true;
+                    AdvanceScriptResult::Continue
+                } else {
+                    AdvanceScriptResult::Quit
+                }
             }
-            ScriptYield::QuestOffer => {
+            ScriptResult::UiRequest(script::UiRequest::QuestOffer) => {
                 crate::game::quest::update_town_quest(&mut self.gd);
                 self.request_dialog_open(DialogOpenRequest::QuestOffer);
+                self.script_state.dialog = true;
                 AdvanceScriptResult::Continue
             }
-            ScriptYield::QuestReport => {
+            ScriptResult::UiRequest(script::UiRequest::QuestReport) => {
                 crate::game::quest::update_quest_status(&mut self.gd);
                 self.request_dialog_open(DialogOpenRequest::QuestReport);
+                self.script_state.dialog = true;
                 AdvanceScriptResult::Continue
             }
+        };
+        if matches!(result, AdvanceScriptResult::Quit) {
+            self.script_state.clear();
         }
+        result
     }
 }

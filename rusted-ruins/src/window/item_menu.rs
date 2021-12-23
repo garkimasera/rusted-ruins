@@ -75,7 +75,7 @@ impl Window for ItemMenu {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.choose_window.draw(context, game, anim);
@@ -83,11 +83,7 @@ impl Window for ItemMenu {
 }
 
 impl DialogWindow for ItemMenu {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         match self.choose_window.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 if let DialogCloseValue::Index(n) = v {

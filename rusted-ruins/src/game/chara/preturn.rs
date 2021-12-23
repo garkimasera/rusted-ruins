@@ -9,7 +9,7 @@ use rules::RULES;
 
 /// This function will be called before the character's turn
 ///
-pub fn preturn(game: &mut Game<'_>, cid: CharaId) -> bool {
+pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     awake_other_npc(game, cid);
 
     let chara = game.gd.chara.get_mut(cid);
@@ -130,7 +130,7 @@ fn can_act(chara: &Chara) -> bool {
 }
 
 /// Awake enemy NPC to combat state.
-fn awake_other_npc(game: &mut Game<'_>, cid: CharaId) {
+fn awake_other_npc(game: &mut Game, cid: CharaId) {
     let center = if let Some(center) = game.gd.chara_pos(cid) {
         center
     } else {

@@ -3,7 +3,7 @@ use crate::game::extrait::ItemExt;
 use crate::game::InfoGetter;
 use common::gamedata::*;
 
-impl<'a, 's> DoPlayerAction<'a, 's> {
+impl<'a> DoPlayerAction<'a> {
     pub fn register_shortcut(&mut self, shortcut: ActionShortcut, n: u32) {
         self.0.gd.settings.action_shortcuts[n as usize] = Some(shortcut);
     }

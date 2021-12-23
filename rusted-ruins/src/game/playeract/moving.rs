@@ -6,7 +6,7 @@ use crate::text::ToText;
 use common::gamedata::*;
 use geom::*;
 
-impl<'a, 's> DoPlayerAction<'a, 's> {
+impl<'a> DoPlayerAction<'a> {
     pub fn try_move(&mut self, dir: Direction) {
         let dest_tile = self
             .gd()
@@ -146,7 +146,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 }
             };
 
-            let cb = Box::new(move |pa: &mut DoPlayerAction<'_, '_>, result: bool| {
+            let cb = Box::new(move |pa: &mut DoPlayerAction<'_>, result: bool| {
                 if !result {
                     return;
                 }
@@ -185,7 +185,7 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
                 Destination::Exit => LogMessage::ExitToOutside,
                 _ => LogMessage::ChangeFloor,
             };
-            let cb = Box::new(move |pa: &mut DoPlayerAction<'_, '_>, result: bool| {
+            let cb = Box::new(move |pa: &mut DoPlayerAction<'_>, result: bool| {
                 if !result {
                     return;
                 }

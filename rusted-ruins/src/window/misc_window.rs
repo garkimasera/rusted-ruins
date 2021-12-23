@@ -22,7 +22,7 @@ impl Window for ImageWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);

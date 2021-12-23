@@ -32,7 +32,7 @@ impl NewGameWindow {
     pub fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         self.back_image.draw(context);
@@ -125,7 +125,7 @@ impl Window for DummyNewGameDialog {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         if let Some(opening_text) = self.opening_text.as_mut() {
@@ -154,11 +154,7 @@ impl Window for DummyNewGameDialog {
 }
 
 impl DialogWindow for DummyNewGameDialog {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         if let Some(opening_text) = self.opening_text.as_mut() {
             if (matches!(command, Command::Enter) && opening_text.is_finished())
                 || matches!(command, Command::Cancel)
@@ -248,7 +244,7 @@ impl DummyNewGameDialog {
     fn process_command_page(
         &mut self,
         command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
         match self.page {
             NewGameBuildPage::ChooseClass => self.choose_class_dialog.process_command(command, pa),
@@ -273,7 +269,7 @@ impl DummyNewGameDialog {
         }
     }
 
-    fn update_player_info(&mut self, game: &Game<'_>) {
+    fn update_player_info(&mut self, game: &Game) {
         if self.page == NewGameBuildPage::PlayerInfo && self.player_info_window.is_none() {
             self.player_info_window =
                 Some(create_status_window_group(game, CharaId::Player, false));
@@ -406,7 +402,7 @@ impl Window for ChooseClassDialog {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.window.draw(context, game, anim);
@@ -414,11 +410,7 @@ impl Window for ChooseClassDialog {
 }
 
 impl DialogWindow for ChooseClassDialog {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         self.window.process_command(command, pa)
     }
 }
@@ -574,7 +566,7 @@ impl Window for ChooseTraitDialog {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.window.draw(context, game, anim);
@@ -583,11 +575,7 @@ impl Window for ChooseTraitDialog {
 }
 
 impl DialogWindow for ChooseTraitDialog {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         let result = self.window.process_command(command, pa);
 
         if self.selection_changed.get() {

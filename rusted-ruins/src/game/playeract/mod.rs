@@ -14,14 +14,14 @@ use geom::*;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
-pub struct DoPlayerAction<'a, 's>(pub(super) &'a mut Game<'s>);
+pub struct DoPlayerAction<'a>(pub(super) &'a mut Game);
 
-impl<'a, 's> DoPlayerAction<'a, 's> {
-    pub fn new(game: &'a mut Game<'s>) -> DoPlayerAction<'a, 's> {
+impl<'a> DoPlayerAction<'a> {
+    pub fn new(game: &'a mut Game) -> DoPlayerAction<'a> {
         DoPlayerAction(game)
     }
 
-    pub fn game(&self) -> &Game<'_> {
+    pub fn game(&self) -> &Game {
         self.0
     }
 
@@ -258,7 +258,12 @@ impl<'a, 's> DoPlayerAction<'a, 's> {
     /// Advance current talk. Give player's choice if the talk has choices.
     /// If returns new text, continue talk dialog.
     pub fn advance_talk(&mut self, choice: Option<u32>) -> AdvanceScriptResult {
-        self.0.advance_script(choice)
+        let response = if let Some(choice) = choice {
+            Value::Int(choice.into())
+        } else {
+            Value::None
+        };
+        self.0.advance_script(Some(response))
     }
 
     /// Shotcut to Game::advance_talk

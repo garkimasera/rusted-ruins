@@ -3,8 +3,27 @@ use crate::hashmap::HashMap;
 /// Value is used to be stored in Variable.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Value {
+    None,
     Bool(bool),
     Int(i64),
+}
+
+impl Default for Value {
+    fn default() -> Self {
+        Value::None
+    }
+}
+
+impl From<bool> for Value {
+    fn from(value: bool) -> Self {
+        Value::Bool(value)
+    }
+}
+
+impl From<u32> for Value {
+    fn from(value: u32) -> Self {
+        Value::Int(value.into())
+    }
 }
 
 /// Stores variables which are referenced in scripts

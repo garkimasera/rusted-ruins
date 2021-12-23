@@ -38,6 +38,7 @@ pub use self::animation::Animation;
 pub use self::command::Command;
 pub use self::infogetter::InfoGetter;
 pub use self::playeract::DoPlayerAction;
+use self::script_exec::ScriptState;
 // pub use self::script::TalkText;
 // use self::script::*;
 pub use self::target::Target;
@@ -58,14 +59,15 @@ pub enum GameState {
 
 /// Holds all game state.
 /// The difference to GameData is that Game includes temporary data in this process.
-pub struct Game<'s> {
+pub struct Game {
     pub gd: GameData,
     state: GameState,
     anim_queue: anim_queue::AnimQueue,
     destroy_anim_queued: bool,
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,
-    se: ScriptEngine<'s>,
+    pub se: ScriptEngine,
+    script_state: ScriptState,
     /// Player's current target of shot and similer actions
     target_chara: Option<CharaId>,
     save_dir: Option<PathBuf>,
@@ -73,8 +75,8 @@ pub struct Game<'s> {
     pub frequent_tex: self::frequent_tex::FrequentTextures,
 }
 
-impl<'s> Game<'s> {
-    pub fn new(gd: GameData, se: ScriptEngine<'s>) -> Game<'s> {
+impl Game {
+    pub fn new(gd: GameData, se: ScriptEngine) -> Game {
         let save_dir = self::saveload::get_each_save_dir(&gd);
 
         rng::reseed(crate::config::CONFIG.fix_rand);
@@ -87,6 +89,7 @@ impl<'s> Game<'s> {
             dialog_open_request: None,
             ui_request: VecDeque::new(),
             se,
+            script_state: ScriptState::default(),
             target_chara: None,
             save_dir: Some(save_dir),
             view_map: view::ViewMap::new(),
@@ -95,10 +98,11 @@ impl<'s> Game<'s> {
     }
 
     /// Create empty Game. This is used before starting actual gameplay.
-    pub fn empty(se: ScriptEngine<'s>) -> Game<'s> {
+    pub fn empty(se: ScriptEngine) -> Game {
         Game {
             gd: GameData::empty(),
             state: GameState::PlayerTurn,
+            script_state: ScriptState::default(),
             anim_queue: anim_queue::AnimQueue::default(),
             destroy_anim_queued: false,
             dialog_open_request: None,
@@ -196,7 +200,7 @@ impl<'s> Game<'s> {
 
 pub enum DialogOpenRequest {
     YesNo {
-        callback: Box<dyn FnMut(&mut DoPlayerAction<'_, '_>, bool)>,
+        callback: Box<dyn FnMut(&mut DoPlayerAction<'_>, bool)>,
         msg: String,
     },
     Talk {
@@ -233,7 +237,7 @@ pub enum UiRequest {
     StopCentering,
     StartTargeting {
         effect: Effect,
-        callback: Box<dyn Fn(&mut DoPlayerAction<'_, '_>, self::target::Target) + 'static>,
+        callback: Box<dyn Fn(&mut DoPlayerAction<'_>, self::target::Target) + 'static>,
     },
 }
 

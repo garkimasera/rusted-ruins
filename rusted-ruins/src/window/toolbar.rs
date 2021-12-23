@@ -35,7 +35,7 @@ impl Window for Toolbar {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         let cfg = &UI_CFG.toolbar;
@@ -90,11 +90,7 @@ impl Window for Toolbar {
 }
 
 impl DialogWindow for Toolbar {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
         match command {
@@ -180,7 +176,7 @@ impl Window for ShortcutList {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         self.update(&game.gd);
@@ -230,11 +226,7 @@ impl Window for ShortcutList {
 }
 
 impl DialogWindow for ShortcutList {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         let cfg = &UI_CFG.toolbar;
 
         match command {
@@ -336,7 +328,7 @@ impl Window for ToolbarMenu {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.choose_window.draw(context, game, anim);
@@ -344,11 +336,7 @@ impl Window for ToolbarMenu {
 }
 
 impl DialogWindow for ToolbarMenu {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         match self.choose_window.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 if let DialogCloseValue::Index(n) = v {

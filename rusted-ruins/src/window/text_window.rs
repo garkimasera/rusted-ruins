@@ -39,7 +39,7 @@ impl Window for TextWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         let window_size = self.label.adjust_widget_size(context.sv);
@@ -86,7 +86,7 @@ impl Window for ScrollingTextWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         if self.is_finished {

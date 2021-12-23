@@ -42,7 +42,7 @@ impl ViewMap {
     }
 }
 
-pub fn update_view_map(game: &mut Game<'_>) {
+pub fn update_view_map(game: &mut Game) {
     let map = game.gd.get_current_map();
     let (w, h) = map.size();
     let view_map = &mut game.view_map;

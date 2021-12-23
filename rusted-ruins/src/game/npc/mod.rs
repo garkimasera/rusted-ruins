@@ -14,7 +14,7 @@ use geom::*;
 use rng::*;
 use rules::{npc_ai::*, RULES};
 
-pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
+pub fn process_npc_turn(game: &mut Game, cid: CharaId) {
     match game.gd.chara.get(cid).ai.state {
         AiState::Normal => process_npc_turn_normal(game, cid),
         AiState::Combat { .. } => process_npc_turn_combat(game, cid),
@@ -22,11 +22,11 @@ pub fn process_npc_turn(game: &mut Game<'_>, cid: CharaId) {
     }
 }
 
-fn process_npc_turn_normal(game: &mut Game<'_>, cid: CharaId) {
+fn process_npc_turn_normal(game: &mut Game, cid: CharaId) {
     move_normal(game, cid);
 }
 
-fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
+fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
     let chara = game.gd.chara.get(cid);
     let ai = &chara.ai;
     let ai_rule = RULES.npc_ai.get(ai.kind);
@@ -72,7 +72,7 @@ fn process_npc_turn_combat(game: &mut Game<'_>, cid: CharaId) {
     }
 }
 
-fn process_npc_turn_search(game: &mut Game<'_>, cid: CharaId) {
+fn process_npc_turn_search(game: &mut Game, cid: CharaId) {
     let view_range = game.gd.chara.get(cid).attr.view_range;
     if let Some(target) = crate::game::map::search::search_nearest_target(
         &game.gd,
@@ -101,7 +101,7 @@ fn process_npc_turn_search(game: &mut Game<'_>, cid: CharaId) {
 }
 
 /// Move when normal state or missing target
-fn move_normal(game: &mut Game<'_>, cid: CharaId) {
+fn move_normal(game: &mut Game, cid: CharaId) {
     if game.gd.player.party.contains(&cid) {
         follow_other(game, cid, CharaId::Player);
     }
@@ -133,7 +133,7 @@ fn move_normal(game: &mut Game<'_>, cid: CharaId) {
 }
 
 /// Move npc at random
-fn random_walk(game: &mut Game<'_>, cid: CharaId) {
+fn random_walk(game: &mut Game, cid: CharaId) {
     let dir = Direction::new(
         *[HDirection::Left, HDirection::None, HDirection::Right]
             .choose(&mut get_rng())
@@ -146,7 +146,7 @@ fn random_walk(game: &mut Game<'_>, cid: CharaId) {
 }
 
 /// Move npc to nearest enemy
-fn move_to_target_enemy(game: &mut Game<'_>, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
+fn move_to_target_enemy(game: &mut Game, cid: CharaId, ai_rule: &NpcAi, target: CharaId) {
     if let Some(dir) = dir_to_chara(&game.gd, cid, target, ai_rule.pathfinding_step) {
         action::try_move(game, cid, dir);
     } else {
@@ -156,7 +156,7 @@ fn move_to_target_enemy(game: &mut Game<'_>, cid: CharaId, ai_rule: &NpcAi, targ
 }
 
 /// Follow other chara
-fn follow_other(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
+fn follow_other(game: &mut Game, cid: CharaId, target: CharaId) {
     let (pos, target_pos) = if let (Some(pos), Some(target_pos)) =
         (game.gd.chara_pos(cid), game.gd.chara_pos(target))
     {

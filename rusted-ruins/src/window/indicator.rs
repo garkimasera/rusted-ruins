@@ -73,7 +73,7 @@ impl Window for BarIndicator {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         match self.kind {
@@ -120,7 +120,7 @@ impl Window for FloorInfo {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         let current_mid = game.gd.get_current_mapid();
@@ -177,7 +177,7 @@ impl Window for TimeInfo {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, SCREEN_CFG.time_info);
@@ -232,7 +232,7 @@ impl StatusInfo {
         }
     }
 
-    fn update(&mut self, game: &Game<'_>) {
+    fn update(&mut self, game: &Game) {
         let player_chara = game.gd.chara.get(CharaId::Player);
         let rect: Rect = SCREEN_CFG.status_info.into();
 
@@ -256,7 +256,7 @@ impl Window for StatusInfo {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         self.update(game);

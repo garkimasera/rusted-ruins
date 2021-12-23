@@ -13,7 +13,7 @@ impl MainWinDrawer {
     pub fn draw_target_mode(
         &self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         target_mode: &TargetModeDrawInfo,
     ) {
         let map = game.gd.get_current_map();
@@ -30,7 +30,7 @@ impl MainWinDrawer {
         &self,
         context: &mut Context<'_, '_, '_, '_>,
         pos: Vec2d,
-        game: &Game<'_>,
+        game: &Game,
         target_mode: &TargetModeDrawInfo,
     ) {
         if target_mode.range.is_inside(pos) {

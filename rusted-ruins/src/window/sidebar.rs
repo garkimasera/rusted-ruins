@@ -38,7 +38,7 @@ impl Window for Sidebar {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         let cfg = &UI_CFG.sidebar;
@@ -68,11 +68,7 @@ impl Window for Sidebar {
 }
 
 impl DialogWindow for Sidebar {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         match command {
             Command::MouseState { x, y, .. } => {
                 self.mouseover = None;

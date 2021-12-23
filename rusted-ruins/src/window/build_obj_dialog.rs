@@ -51,7 +51,7 @@ impl Window for BuildObjDialog {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -60,11 +60,7 @@ impl Window for BuildObjDialog {
 }
 
 impl DialogWindow for BuildObjDialog {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         if *command == Command::Cancel {
             return DialogResult::Close;
         }

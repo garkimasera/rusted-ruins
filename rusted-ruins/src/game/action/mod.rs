@@ -14,7 +14,7 @@ use common::gobj;
 use geom::*;
 use rules::RULES;
 
-pub fn try_move(game: &mut Game<'_>, cid: CharaId, dir: Direction) -> bool {
+pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
     // Move to current tile always success
     if dir.as_vec() == (0, 0) {
         return true;
@@ -62,7 +62,7 @@ pub fn try_move(game: &mut Game<'_>, cid: CharaId, dir: Direction) -> bool {
 }
 
 /// Melee attack
-pub fn melee_attack(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
+pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     use crate::game::chara::power::*;
 
     let attacker = game.gd.chara.get(cid);
@@ -115,7 +115,7 @@ pub fn melee_attack(game: &mut Game<'_>, cid: CharaId, target: CharaId) {
 }
 
 /// Shoot target
-pub fn shoot_target(game: &mut Game<'_>, cid: CharaId, target: CharaId) -> bool {
+pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     use crate::game::chara::power::*;
 
     if !game.gd.target_visible(cid, target) || cid == target {
@@ -159,7 +159,7 @@ fn get_skill_kind_from_weapon(item: &Item) -> SkillKind {
 }
 
 /// Throw one item
-pub fn throw_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Target) {
+pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let gd = &mut game.gd;
     let effect = crate::game::item::throw::item_to_throw_effect(gd, il, cid);
     let item = gd.remove_item_and_get(il, 1);
@@ -188,7 +188,7 @@ pub fn throw_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: T
 }
 
 /// Drink one item
-pub fn drink_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
+pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let gd = &mut game.gd;
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
 
@@ -204,7 +204,7 @@ pub fn drink_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
 }
 
 /// Eat one item
-pub fn eat_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
+pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let gd = &mut game.gd;
     let item = gd.remove_item_and_get(il, 1); // Decrease the number of item by 1
     let item_obj = item.obj();
@@ -232,7 +232,7 @@ pub fn eat_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId) {
     }
 }
 
-pub fn release_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Target) {
+pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let mut item = game.gd.remove_item_and_get(il, 1);
     let item_obj = item.obj();
 

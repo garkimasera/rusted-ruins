@@ -16,7 +16,7 @@ use common::objholder::TileIdx;
 use geom::*;
 
 pub fn do_effect<T: Into<Target>>(
-    game: &mut Game<'_>,
+    game: &mut Game,
     effect: &Effect,
     cause: Option<CharaId>,
     target: T,
@@ -145,7 +145,7 @@ pub fn do_effect<T: Into<Target>>(
 }
 
 // Get characters list in range of the effect.
-fn get_cids(game: &Game<'_>, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
+fn get_cids(game: &Game, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
     let map = game.gd.get_current_map();
     let mut cids = vec![];
 
@@ -158,12 +158,7 @@ fn get_cids(game: &Game<'_>, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> 
 }
 
 // Get tile positions of the effect
-fn get_tiles(
-    game: &Game<'_>,
-    effect: &Effect,
-    target: Target,
-    cause: Option<CharaId>,
-) -> Vec<Vec2d> {
+fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId>) -> Vec<Vec2d> {
     let cause = cause.map(|cause| game.gd.chara_pos(cause)).flatten();
     let target = match target {
         Target::None => {
@@ -202,7 +197,7 @@ fn to_shape(effect: &Effect, target: Vec2d, _cause: Option<Vec2d>) -> Option<Sha
 }
 
 // Cause status effect to given chara.
-fn cause_status(game: &mut Game<'_>, cid: CharaId, power: f32, status: StatusEffect) {
+fn cause_status(game: &mut Game, cid: CharaId, power: f32, status: StatusEffect) {
     let chara = game.gd.chara.get_mut(cid);
 
     match status {

@@ -123,17 +123,13 @@ pub trait Window {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     );
 }
 
 pub trait DialogWindow: Window {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult;
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult;
 
     /// Return InputMode for this window
     fn mode(&self) -> InputMode {
@@ -143,7 +139,7 @@ pub trait DialogWindow: Window {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        _pa: &mut DoPlayerAction<'_, '_>,
+        _pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
         DialogResult::Continue
     }
@@ -193,9 +189,8 @@ impl WindowManageMode {
 }
 
 /// Manage all windows
-pub struct WindowManager<'sdl, 't, 's> {
-    game: Game<'s>,
-    se: ScriptEngine<'s>,
+pub struct WindowManager<'sdl, 't> {
+    game: Game,
     mode: WindowManageMode,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
@@ -204,20 +199,19 @@ pub struct WindowManager<'sdl, 't, 's> {
     window_stack: Vec<Box<dyn DialogWindow>>,
 }
 
-impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
+impl<'sdl, 't> WindowManager<'sdl, 't> {
     pub fn new(
         sdl_context: &'sdl SdlContext,
         texture_creator: &'t TextureCreator<WindowContext>,
-        se: ScriptEngine<'s>,
-    ) -> WindowManager<'sdl, 't, 's> {
-        let game = Game::empty(se.clone());
+        se: ScriptEngine,
+    ) -> WindowManager<'sdl, 't> {
+        let game = Game::empty(se);
         let sdl_values = SdlValues::new(sdl_context, texture_creator);
         let window_stack: Vec<Box<dyn DialogWindow>> =
             vec![Box::new(start_window::StartDialog::new())];
 
         WindowManager {
             game,
-            se,
             mode: WindowManageMode::Start(start_window::StartWindow::new()),
             sdl_values,
             text_input_util: sdl_context.sdl_context.video().unwrap().text_input(),
@@ -627,7 +621,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                        let game = Game::new(*gd, self.se.clone());
+                        let game = Game::new(*gd, self.game.se.clone());
                         self.game = game;
                         self.game.update_before_player_turn();
                         game_log!("start"; version=env!("CARGO_PKG_VERSION"));
@@ -642,7 +636,7 @@ impl<'sdl, 't, 's> WindowManager<'sdl, 't, 's> {
                     self.window_stack.clear();
                     self.mode = WindowManageMode::OnGame(GameWindows::new());
 
-                    let game = Game::new(*gd, self.se.clone());
+                    let game = Game::new(*gd, self.game.se.clone());
                     self.game = game;
                     self.game.update_before_player_turn();
                     self.game.start_new_game();
@@ -788,7 +782,7 @@ impl GameWindows {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         for hborder in self.hborders.iter_mut() {

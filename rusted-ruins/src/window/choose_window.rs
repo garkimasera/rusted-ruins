@@ -12,7 +12,7 @@ pub struct ChooseWindow {
     rect: Option<Rect>,
     answer_list: TextListWidget,
     default_behavior: DefaultBehavior,
-    callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction<'_, '_>) + 'static>>,
+    callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction<'_>) + 'static>>,
     mainwin_cursor: bool,
     escape_click: bool,
 }
@@ -51,7 +51,7 @@ impl ChooseWindow {
     pub fn menu(
         winpos: WindowPos,
         text_ids: Vec<&str>,
-        callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction<'_, '_>) + 'static>>,
+        callbacks: Vec<Box<dyn FnMut(&mut DoPlayerAction<'_>) + 'static>>,
     ) -> ChooseWindow {
         let choices: Vec<String> = text_ids.iter().map(|tid| ui_txt(tid)).collect();
         ChooseWindow {
@@ -74,7 +74,7 @@ impl Window for ChooseWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         // Update window size
@@ -102,11 +102,7 @@ impl Window for ChooseWindow {
 }
 
 impl DialogWindow for ChooseWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         let rect = if let Some(rect) = self.rect {
             rect
         } else {

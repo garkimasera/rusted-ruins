@@ -12,7 +12,7 @@ use common::gamedata::*;
 use common::gobj;
 use sdl2::rect::Rect;
 
-pub type ActionCallback = dyn FnMut(&mut DoPlayerAction<'_, '_>, ItemLocation) -> DialogResult;
+pub type ActionCallback = dyn FnMut(&mut DoPlayerAction<'_>, ItemLocation) -> DialogResult;
 pub enum ItemWindowMode {
     List,
     PickUp,
@@ -66,7 +66,7 @@ pub struct ItemWindow {
 
 const ITEM_WINDOW_GROUP_SIZE: u32 = 9;
 
-pub fn create_item_window_group(game: &Game<'_>, mode: Option<ItemWindowMode>) -> GroupWindow {
+pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> GroupWindow {
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
         (
             MemberInfo {
@@ -156,7 +156,7 @@ pub fn create_item_window_group(game: &Game<'_>, mode: Option<ItemWindowMode>) -
     )
 }
 
-pub fn create_take_put_window_group(game: &Game<'_>, il: ItemLocation) -> GroupWindow {
+pub fn create_take_put_window_group(game: &Game, il: ItemLocation) -> GroupWindow {
     let id = game
         .gd
         .get_item(il)
@@ -206,7 +206,7 @@ pub fn create_take_put_window_group(game: &Game<'_>, il: ItemLocation) -> GroupW
 }
 
 impl ItemWindow {
-    pub fn new(mode: ItemWindowMode, game: &Game<'_>) -> ItemWindow {
+    pub fn new(mode: ItemWindowMode, game: &Game) -> ItemWindow {
         let rect = UI_CFG.item_window.rect.into();
         let n_row = UI_CFG.item_window.n_row;
         let list_h = UI_CFG.list_widget.h_row_default;
@@ -235,7 +235,7 @@ impl ItemWindow {
         ill: ItemListLocation,
         filter: ItemFilter,
         action: Box<ActionCallback>,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> ItemWindow {
         let mode = ItemWindowMode::Select {
             ill,
@@ -248,9 +248,9 @@ impl ItemWindow {
     pub fn new_select_and_equip(
         cid: CharaId,
         slot: (EquipSlotKind, u8),
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> ItemWindow {
-        let equip_selected_item = move |pa: &mut DoPlayerAction<'_, '_>, il: ItemLocation| {
+        let equip_selected_item = move |pa: &mut DoPlayerAction<'_>, il: ItemLocation| {
             pa.change_equipment(cid, slot, il);
             DialogResult::Close
         };
@@ -452,7 +452,7 @@ impl ItemWindow {
 
     fn do_action_for_item(
         &mut self,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
         il: ItemLocation,
     ) -> DialogResult {
         match self.mode {
@@ -538,7 +538,7 @@ impl Window for ItemWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -552,11 +552,7 @@ impl Window for ItemWindow {
 }
 
 impl DialogWindow for ItemWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         if let Some(menu) = self.menu.as_mut() {
             match menu.process_command(command, pa) {
                 DialogResult::Special(SpecialDialogResult::ItemListUpdate) => {
@@ -622,7 +618,7 @@ impl DialogWindow for ItemWindow {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
         self.update_by_mode(pa.gd());
         DialogResult::Continue

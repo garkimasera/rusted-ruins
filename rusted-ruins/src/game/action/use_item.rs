@@ -5,7 +5,7 @@ use crate::game::{DialogOpenRequest, Game, InfoGetter};
 use common::gamedata::*;
 use common::gobj;
 
-pub fn use_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Target) {
+pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target) {
     let item = game.gd.get_item(il);
     let item_obj = gobj::get_obj(item.0.idx);
 
@@ -48,7 +48,7 @@ pub fn use_item(game: &mut Game<'_>, il: ItemLocation, cid: CharaId, target: Tar
     game.gd.remove_item(il, 1);
 }
 
-fn use_deed(game: &mut Game<'_>) -> bool {
+fn use_deed(game: &mut Game) -> bool {
     let gd = &mut game.gd;
     let mapid = gd.get_current_mapid();
     if !mapid.is_region_map() {

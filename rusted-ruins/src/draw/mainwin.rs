@@ -46,7 +46,7 @@ impl MainWinDrawer {
     pub fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
         centering_tile: Option<Vec2d>,
         hover_tile: Option<Vec2d>,
@@ -107,7 +107,7 @@ impl MainWinDrawer {
     fn draw_except_anim(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         player_move_adjust: (i32, i32),
         player_move_dir: Option<Direction>,
     ) {
@@ -299,7 +299,7 @@ impl MainWinDrawer {
     fn draw_overlay(
         &self,
         canvas: &mut WindowCanvas,
-        game: &Game<'_>,
+        game: &Game,
         sv: &SdlValues<'_, '_>,
         p: Vec2d,
     ) {
@@ -326,7 +326,7 @@ impl MainWinDrawer {
     }
 
     /// Draw overlay for all tiles
-    fn draw_overlay_all(&self, context: &mut Context<'_, '_, '_, '_>, game: &Game<'_>) {
+    fn draw_overlay_all(&self, context: &mut Context<'_, '_, '_, '_>, game: &Game) {
         let idx = if let Some(idx) = overlay::all(game) {
             idx
         } else {
@@ -347,7 +347,7 @@ impl MainWinDrawer {
     fn draw_anim(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         anim: &Animation,
         i_frame: u32,
     ) {

@@ -41,6 +41,7 @@ mod window;
 fn main() {
     setup_logger();
     init_lazy();
+    let se = script::ScriptEngine::start_init(crate::game::script_methods::game_method_caller);
     init_obj();
     // Must be after init_obj()
     init_rules();
@@ -49,12 +50,8 @@ fn main() {
     let mut screen = screen::Screen::new(&sdl_context.sdl_context);
     cursor::load();
 
-    // Script engine initialization
-    info!("start script engine initialization");
-    crate::game::script_methods::init();
-    script::enter(|se| {
-        screen.main_loop(&sdl_context, se);
-    });
+    se.wait_init();
+    screen.main_loop(&sdl_context, se);
 }
 
 pub struct SdlContext {

@@ -112,7 +112,7 @@ impl Window for TalkWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         if let Some(image_window) = self.image_window.as_mut() {
@@ -127,11 +127,7 @@ impl Window for TalkWindow {
 }
 
 impl DialogWindow for TalkWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         if let Some(ref mut choose_win) = self.choose_win {
             if let DialogResult::CloseWithValue(DialogCloseValue::Index(choosed_answer)) =
                 choose_win.process_command(command, pa)
@@ -188,7 +184,7 @@ impl DialogWindow for TalkWindow {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
         match pa.advance_script() {
             AdvanceScriptResult::UpdateTalkText(talk_text) => {

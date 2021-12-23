@@ -14,7 +14,7 @@ use common::gobj;
 const STATUS_WINDOW_GROUP_SIZE: u32 = 4;
 
 pub fn create_status_window_group(
-    game: &Game<'_>,
+    game: &Game,
     cid: CharaId,
     changeable_by_player: bool,
 ) -> GroupWindow {
@@ -196,7 +196,7 @@ impl Window for StatusWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -219,11 +219,7 @@ impl Window for StatusWindow {
 }
 
 impl DialogWindow for StatusWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
 
         match *command {
@@ -297,7 +293,7 @@ impl Window for SkillWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -306,11 +302,7 @@ impl Window for SkillWindow {
 }
 
 impl DialogWindow for SkillWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
         let command = command.relative_to(self.rect);
 
@@ -376,7 +368,7 @@ impl Window for CharaTraitWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.window.draw(context, game, anim);
@@ -384,11 +376,7 @@ impl Window for CharaTraitWindow {
 }
 
 impl DialogWindow for CharaTraitWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         let result = self.window.process_command(command, pa);
         if let DialogResult::Continue = result {
             self.update(pa.gd(), false);

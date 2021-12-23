@@ -72,7 +72,7 @@ impl Window for FactionWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -81,11 +81,7 @@ impl Window for FactionWindow {
 }
 
 impl DialogWindow for FactionWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
         let command = command.relative_to(self.rect);
 

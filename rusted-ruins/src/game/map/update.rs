@@ -3,7 +3,7 @@ use common::gamedata::*;
 use rules::RULES;
 
 /// Map update after map switching.
-pub fn update_map(game: &mut Game<'_>) {
+pub fn update_map(game: &mut Game) {
     crate::game::item::time::update_item_time(&mut game.gd);
 
     let map = game.gd.get_current_map_mut();

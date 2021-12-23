@@ -7,12 +7,7 @@ use ordered_float::NotNan;
 use rules::RULES;
 
 /// Return true if success.
-pub fn use_ability(
-    game: &mut Game<'_>,
-    ability_id: &AbilityId,
-    cid: CharaId,
-    target: CharaId,
-) -> bool {
+pub fn use_ability(game: &mut Game, ability_id: &AbilityId, cid: CharaId, target: CharaId) -> bool {
     if !game.gd.target_visible(cid, target) {
         return false;
     }

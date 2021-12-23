@@ -16,7 +16,7 @@ pub struct GameInfoWindow {
 
 const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 3;
 
-pub fn create_game_info_window_group(pa: &mut DoPlayerAction<'_, '_>) -> GroupWindow {
+pub fn create_game_info_window_group(pa: &mut DoPlayerAction<'_>) -> GroupWindow {
     pa.update_quest_status();
 
     let mem_info: Vec<(MemberInfo, ChildWinCreator)> = vec![
@@ -54,7 +54,7 @@ pub fn create_game_info_window_group(pa: &mut DoPlayerAction<'_, '_>) -> GroupWi
 }
 
 impl GameInfoWindow {
-    pub fn new(game: &Game<'_>) -> GameInfoWindow {
+    pub fn new(game: &Game) -> GameInfoWindow {
         let cfg = &UI_CFG.game_info_window;
         let rect: Rect = UI_CFG.info_window.rect.into();
 
@@ -94,7 +94,7 @@ impl Window for GameInfoWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         self.update();
@@ -106,11 +106,7 @@ impl Window for GameInfoWindow {
 }
 
 impl DialogWindow for GameInfoWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         check_escape_click!(self, command);
 
         match *command {

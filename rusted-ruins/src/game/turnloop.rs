@@ -6,7 +6,7 @@ use super::{Game, GameState, InfoGetter};
 use common::gamedata::*;
 
 /// Main game turn loop
-pub fn turn_loop(game: &mut Game<'_>) {
+pub fn turn_loop(game: &mut Game) {
     loop {
         if check_dying(game) {
             return;
@@ -39,7 +39,7 @@ pub fn turn_loop(game: &mut Game<'_>) {
     }
 }
 
-fn decrease_wait_time(game: &mut Game<'_>) -> (CharaId, u32) {
+fn decrease_wait_time(game: &mut Game) -> (CharaId, u32) {
     let cids_on_map = game.gd.get_charas_on_map();
     let min_wt = cids_on_map
         .iter()
@@ -64,7 +64,7 @@ fn decrease_wait_time(game: &mut Game<'_>) -> (CharaId, u32) {
 }
 
 /// Check dying charas and push destroy animation.
-fn check_dying(game: &mut Game<'_>) -> bool {
+fn check_dying(game: &mut Game) -> bool {
     if game.destroy_anim_queued {
         game.destroy_anim_queued = false;
         return false;
@@ -87,7 +87,7 @@ fn check_dying(game: &mut Game<'_>) -> bool {
 
 /// Dying chara is removed before new turn processing.
 /// If returns true, player died.
-fn remove_dying_charas(game: &mut Game<'_>) -> bool {
+fn remove_dying_charas(game: &mut Game) -> bool {
     for cid in game.gd.get_charas_on_map() {
         let chara = game.gd.chara.get_mut(cid);
         if chara.hp <= 0 {

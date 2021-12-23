@@ -17,7 +17,7 @@ pub(super) static CENTERING_STOP_REQ: AtomicBool = AtomicBool::new(false);
 enum MainWindowMode {
     Normal,
     Target {
-        callback: Box<dyn Fn(&mut DoPlayerAction<'_, '_>, Target) + 'static>,
+        callback: Box<dyn Fn(&mut DoPlayerAction<'_>, Target) + 'static>,
         draw_info: TargetModeDrawInfo,
     },
     // TargetPreview,
@@ -48,7 +48,7 @@ pub enum ConvertMouseEventResult {
     None,
     Command(Command),
     OpenWindow(Box<dyn DialogWindow>),
-    DoAction(Box<dyn Fn(&mut DoPlayerAction<'_, '_>) + 'static>),
+    DoAction(Box<dyn Fn(&mut DoPlayerAction<'_>) + 'static>),
 }
 
 impl MainWindow {
@@ -88,7 +88,7 @@ impl MainWindow {
     pub fn convert_mouse_event(
         &mut self,
         command: Command,
-        game: &Game<'_>,
+        game: &Game,
     ) -> ConvertMouseEventResult {
         match command {
             Command::MouseButtonDown { .. } => ConvertMouseEventResult::None,
@@ -131,7 +131,7 @@ impl MainWindow {
                         {
                             let mode = std::mem::replace(&mut self.mode, MainWindowMode::Normal);
                             if let MainWindowMode::Target { callback, .. } = mode {
-                                let callback: Box<dyn Fn(&mut DoPlayerAction<'_, '_>) + 'static> =
+                                let callback: Box<dyn Fn(&mut DoPlayerAction<'_>) + 'static> =
                                     Box::new(move |pa| callback(pa, Target::Tile(pos)));
                                 return ConvertMouseEventResult::DoAction(callback);
                             }
@@ -181,9 +181,9 @@ impl MainWindow {
 
     pub fn start_targeting_mode(
         &mut self,
-        game: &Game<'_>,
+        game: &Game,
         effect: Effect,
-        callback: Box<dyn Fn(&mut DoPlayerAction<'_, '_>, Target) + 'static>,
+        callback: Box<dyn Fn(&mut DoPlayerAction<'_>, Target) + 'static>,
     ) {
         let center = game.gd.player_pos();
         let range = crate::game::effect::effect_to_range(&effect, center);
@@ -205,7 +205,7 @@ impl Window for MainWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         let mut centering_start_req = CENTERING_START_REQ.lock().unwrap();

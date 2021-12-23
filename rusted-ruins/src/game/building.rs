@@ -5,7 +5,7 @@ use common::obj::*;
 use common::objholder::*;
 use geom::*;
 
-pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj: BuildObj) {
+pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId, build_obj: BuildObj) {
     let needed_materials = match &build_obj {
         BuildObj::Tile(id) => {
             let tile_idx: TileIdx = gobj::id_to_idx(id);
@@ -48,7 +48,7 @@ pub fn start_build(game: &mut Game<'_>, pos: Vec2d, builder: CharaId, build_obj:
     finish_build(game, pos, &build_obj);
 }
 
-pub fn finish_build(game: &mut Game<'_>, pos: Vec2d, build_obj: &BuildObj) {
+pub fn finish_build(game: &mut Game, pos: Vec2d, build_obj: &BuildObj) {
     match build_obj {
         BuildObj::Tile(id) => {
             let tile_idx: TileIdx = gobj::id_to_idx(id);

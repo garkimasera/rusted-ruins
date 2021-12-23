@@ -70,7 +70,7 @@ impl Window for EquipWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -82,11 +82,7 @@ impl Window for EquipWindow {
 }
 
 impl DialogWindow for EquipWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         if let Some(menu) = self.menu.as_mut() {
             match menu.process_command(command, pa) {
                 DialogResult::Special(SpecialDialogResult::ItemListUpdate) => {
@@ -178,7 +174,7 @@ impl DialogWindow for EquipWindow {
     fn callback_child_closed(
         &mut self,
         _result: Option<DialogCloseValue>,
-        pa: &mut DoPlayerAction<'_, '_>,
+        pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
         self.update_list(pa.gd());
         DialogResult::Continue
@@ -241,7 +237,7 @@ impl Window for EquipMenu {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        game: &Game<'_>,
+        game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
         self.choose_window.draw(context, game, anim);
@@ -249,11 +245,7 @@ impl Window for EquipMenu {
 }
 
 impl DialogWindow for EquipMenu {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
         match self.choose_window.process_command(command, pa) {
             DialogResult::CloseWithValue(v) => {
                 if let DialogCloseValue::Index(n) = v {

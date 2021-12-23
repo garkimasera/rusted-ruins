@@ -7,8 +7,6 @@ pub enum Error {
     Python(String),
     #[error("python compile failed:\n{0}")]
     Compile(#[from] CompileError),
-    #[error("{0}")]
-    JsonSerde(#[from] serde_json::error::Error),
 }
 
 impl Error {

@@ -6,7 +6,7 @@ use common::gobj;
 use common::objholder::*;
 use std::str::FromStr;
 
-pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
+pub fn exec_debug_command(game: &mut Game, command: &str) {
     let mut args = command.split_whitespace();
     let arg0 = if let Some(arg0) = args.next() {
         arg0
@@ -89,7 +89,7 @@ pub fn exec_debug_command(game: &mut Game<'_>, command: &str) {
     }
 }
 
-fn gen_chara(game: &mut Game<'_>, arg1: &str) {
+fn gen_chara(game: &mut Game, arg1: &str) {
     let idx = if let Some(idx) = gobj::id_to_idx_checked::<CharaTemplateIdx>(arg1) {
         idx
     } else {
@@ -111,7 +111,7 @@ fn gen_chara(game: &mut Game<'_>, arg1: &str) {
     }
 }
 
-fn gen_item(game: &mut Game<'_>, arg1: &str, n: u32) {
+fn gen_item(game: &mut Game, arg1: &str, n: u32) {
     let item_gen = ItemGen {
         id: arg1.to_owned(),
     };

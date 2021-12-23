@@ -45,7 +45,7 @@ impl Window for HelpWindow {
     fn draw(
         &mut self,
         context: &mut Context<'_, '_, '_, '_>,
-        _game: &Game<'_>,
+        _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
         draw_window_border(context, self.rect);
@@ -56,11 +56,7 @@ impl Window for HelpWindow {
 }
 
 impl DialogWindow for HelpWindow {
-    fn process_command(
-        &mut self,
-        command: &Command,
-        _pa: &mut DoPlayerAction<'_, '_>,
-    ) -> DialogResult {
+    fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
         match command {
             Command::Cancel => DialogResult::Close,
             _ => DialogResult::Continue,

@@ -7,7 +7,7 @@ use common::objholder::ItemIdx;
 use rules::RULES;
 
 pub fn start_creation(
-    game: &mut Game<'_>,
+    game: &mut Game,
     kind: CreationKind,
     recipe: &Recipe,
     ill: ItemListLocation,
