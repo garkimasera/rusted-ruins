@@ -1,23 +1,18 @@
 use crate::config::Config;
-use clap::{App, Arg, ArgMatches};
+use clap::Parser;
 
-fn get_matches() -> ArgMatches<'static> {
-    App::new("Rusted Ruins")
-        .version(env!("CARGO_PKG_VERSION"))
-        .arg(
-            Arg::with_name("fix-rand")
-                .long("fix-rand")
-                .help("Fixes the state of RNG when game start"),
-        )
-        .get_matches()
+#[derive(Parser, Debug)]
+#[clap(author, version, about)]
+struct Args {
+    /// Use fixed random seed
+    #[clap(long)]
+    fix_rand: bool,
 }
 
 pub fn modify_config_by_args(mut config: Config) -> Config {
-    let matches = get_matches();
+    let args = Args::parse();
 
-    if matches.is_present("fix-rand") {
-        config.fix_rand = true;
-    }
+    config.fix_rand = args.fix_rand;
 
     config
 }

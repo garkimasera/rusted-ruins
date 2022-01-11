@@ -14,7 +14,7 @@ serde_with = "1"
 ron = "0.7"
 thiserror = "1"
 tar = "0.4"
-clap = "2"
+clap = { version = "3", features = ["derive"] }
 image = "0.23"
 
 [dependencies.rusted-ruins-geom]

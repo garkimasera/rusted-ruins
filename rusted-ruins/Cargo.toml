@@ -11,7 +11,7 @@ sdl2-static-link = ["sdl2/static-link", "sdl2/use-vcpkg"]
 
 [dependencies]
 anyhow = "1"
-clap = "2"
+clap = { version = "3", features = ["derive"] }
 dirs = "4"
 env_logger = "0.9"
 fluent = "0.14"

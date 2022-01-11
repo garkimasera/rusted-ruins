@@ -8,11 +8,12 @@ use common::pakutil::write_object;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
+use std::path::PathBuf;
 
 use crate::buildobj::build_object;
 use crate::input::Input;
 
-pub fn compile(files: &[&str], output_file: &str) {
+pub fn compile(files: &[PathBuf], output_file: &Path) {
     let out = File::create(output_file).unwrap();
     let mut builder = tar::Builder::new(out);
 

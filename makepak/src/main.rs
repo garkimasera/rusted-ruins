@@ -19,72 +19,45 @@ mod dir;
 mod error;
 mod pyscript;
 
+use clap::{IntoApp, Parser};
+use std::path::PathBuf;
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about)]
+struct Args {
+    input_files: Vec<PathBuf>,
+    #[clap(short, long)]
+    output: Option<PathBuf>,
+    #[clap(long)]
+    info: bool,
+    #[clap(long)]
+    verbose: bool,
+}
+
 fn main() {
-    let matches = create_matches();
+    let args = Args::parse();
 
-    // Input files
-    let files: Vec<&str> = matches.values_of("INPUT").unwrap().collect();
-    if files.is_empty() {
+    verbose::set_verbose(args.verbose);
+
+    if args.input_files.is_empty() {
+        let _ = <Args as IntoApp>::into_app().print_help();
         return;
-    }
-
-    // Verbose mode
-    if matches.is_present("verbose") {
-        verbose::set_verbose(true);
     }
 
     // Print information of pak files
-    if matches.is_present("info") {
-        print_info(&files);
-        return;
+    if args.info {
+        print_info(&args.input_files);
     }
 
-    let output_file: String = if let Some(f) = matches.value_of("output") {
-        f.to_owned()
-    } else {
-        let mut f = files[0].to_string();
-        f.push_str(".pak");
-        f
-    };
+    let output_file = args.output.unwrap_or_else(|| {
+        let mut path = args.input_files[0].clone();
+        path.set_extension("pak");
+        path
+    });
 
-    compile::compile(&files, &output_file);
+    compile::compile(&args.input_files, &output_file);
 }
 
-fn print_info(files: &[&str]) {
+fn print_info(files: &[PathBuf]) {
     println!("Information of {:?} will be printed", files);
-}
-
-fn create_matches() -> clap::ArgMatches<'static> {
-    use clap::{App, Arg};
-
-    App::new("rusted-ruins-makepak")
-        .about("Pak file maker for Rusted Ruins")
-        .arg(
-            Arg::with_name("verbose")
-                .short("v")
-                .long("verbose")
-                .help("Verbose mode"),
-        )
-        .arg(
-            Arg::with_name("info")
-                .short("i")
-                .long("info")
-                .help("Print given pak file information"),
-        )
-        .arg(
-            Arg::with_name("output")
-                .short("o")
-                .long("output")
-                .value_name("FILE")
-                .help("Set output pakage file name")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("INPUT")
-                .help("Input ron files")
-                .index(1)
-                .multiple(true)
-                .required(true),
-        )
-        .get_matches()
 }
