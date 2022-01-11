@@ -135,6 +135,10 @@ pub struct LogWindowConfig {
 #[derive(Debug, Deserialize)]
 pub struct ExitWindowConfig {
     pub rect: CfgRect,
+    pub save_button_rect: CfgRect,
+    pub exit_button_rect: CfgRect,
+    pub title_screen_button_rect: CfgRect,
+    pub cancel_button_rect: CfgRect,
 }
 
 #[derive(Debug, Deserialize)]

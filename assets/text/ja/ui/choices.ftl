@@ -1,12 +1,14 @@
 creation-start = スタート
-dialog-choice-close = 閉じる
 dialog-choice-exit = 終了
 dialog-choice-exit_game = ゲーム終了
 dialog-choice-loadgame = ゲームをロード
 dialog-choice-newgame = ニューゲーム
 dialog-choice-save_game = ゲームを保存
-dialog-choice-main_menu = メインメニュー
 dialog-choice-restart = 再開
+dialog-button-cancel = キャンセル
+dialog-button-exit = 終了
+dialog-button-save = セーブ
+dialog-button-title_screen = タイトル画面
 equip_menu-information = 情報
 equip_menu-remove = 外す
 item_menu-information = 情報

@@ -44,8 +44,11 @@ h = 19
 n_display_line = 7
 
 [exit_window]
-rect = { x = -999, y = 120, w = 200, h = 100 }
-list_y = 52
+rect = { x = -999, y = -999, w = 200, h = 180 }
+save_button_rect = { x = 10, y = 10, w = 180, h = 30 }
+title_screen_button_rect = { x = 10, y = 50, w = 180, h = 30 }
+exit_button_rect = { x = 10, y = 90, w = 180, h = 30 }
+cancel_button_rect = { x = 10, y = 140, w = 180, h = 30 }
 
 [flavor_text_window]
 rect = { x = -999, y = 50, w = 480, h = 340 }
@@ -150,8 +153,8 @@ desc_text = { x = 24, y = 48, w = 422 }
 desc_text_icon = { x = 3, y = 52, w = 16, h = 16 }
 
 [equip_window]
-rect = { x = -999, y = -999, w = 550, h = 286 }
-n_row = 10
+rect = { x = -999, y = -999, w = 550, h = 312 }
+n_row = 11
 column_pos = [1, 28, 58]
 
 [scrolling_text_window]

@@ -1,12 +1,14 @@
 creation-start = Start
-dialog-choice-close = Close
 dialog-choice-exit = Exit
 dialog-choice-exit_game = Exit Game
 dialog-choice-loadgame = Load Game
 dialog-choice-newgame = New Game
 dialog-choice-save_game = Save Game
-dialog-choice-main_menu = Main menu
 dialog-choice-restart = Restart
+dialog-button-cancel = Cancel
+dialog-button-exit = Exit
+dialog-button-save = Save
+dialog-button-title_screen = Title Screen
 equip_menu-information = Information
 equip_menu-remove = Remove
 item_menu-information = Information
