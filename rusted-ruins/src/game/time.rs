@@ -71,6 +71,10 @@ pub fn advance_game_time_by_secs(game: &mut Game, advanced_secs: u64) {
     }
 }
 
+pub fn reset_time(time: Time) {
+    *CURRENT_TIME.lock().unwrap() = time;
+}
+
 pub fn update_time(game: &mut Game) {
     *CURRENT_TIME.lock().unwrap() = game.gd.time.current_time();
 }

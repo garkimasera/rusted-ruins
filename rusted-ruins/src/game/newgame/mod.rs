@@ -24,6 +24,16 @@ impl NewGameBuilder {
     pub fn build_with_player(&self) -> GameData {
         let mut gd = GameData::empty();
 
+        // Initial date setting
+        gd.time = GameTime::new(
+            RULES.newgame.initial_date_year,
+            RULES.newgame.initial_date_month,
+            RULES.newgame.initial_date_day,
+            RULES.newgame.initial_date_hour,
+        );
+        crate::game::time::reset_time(gd.time.current_time());
+
+        // Class setting
         let class = self.chara_class.unwrap();
         let chara_template_id = &RULES.newgame.chara_template_table[&class];
         let mut chara = super::chara::gen::create_chara(
@@ -73,14 +83,6 @@ impl NewGameBuilder {
             .get_map_mut(mid)
             .locate_chara(CharaId::Player, start_pos);
         set_initial_items(&mut gd);
-
-        // Initial date setting
-        gd.time = GameTime::new(
-            RULES.newgame.initial_date_year,
-            RULES.newgame.initial_date_month,
-            RULES.newgame.initial_date_day,
-            RULES.newgame.initial_date_hour,
-        );
 
         // Faction relation setting
         for (faction_id, faction) in &RULES.faction.factions {

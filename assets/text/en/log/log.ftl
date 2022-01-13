@@ -75,7 +75,7 @@ chopping-not-adjacent-tile = Need to specify an adjacent tile to chop.
 mining-not-adjacent-tile = Need to specify an adjacent tile to mine.
 
 # Messages about using items
-inventory-item-rotten = {$item} x {$n} in your inventory were rotten.
+inventory-item-rotten = {$item} x {$n} in your inventory has rotten.
 use_item-deed-invalid-map = You can not use deeds in this area.
 use_item-deed-occupied = You can not use deeds at this occupied area.
 use_item-deed-succeed = You built new home!
