@@ -6,6 +6,13 @@ use script::GameMethod;
 
 pub fn game_method_caller(gd: &mut GameData, method: GameMethod) -> Value {
     match method {
+        GameMethod::CompleteCustomQuest { id } => {
+            crate::game::quest::complete_custom_quest(gd, id);
+            Value::None
+        }
+        GameMethod::CustomQuestStarted { id } => {
+            crate::game::quest::custom_quest_started(gd, &id).into()
+        }
         GameMethod::GenDungeons => {
             let mid = gd.get_current_mapid();
             crate::game::region::gen_dungeon_max(gd, mid.rid());
@@ -40,6 +47,10 @@ pub fn game_method_caller(gd: &mut GameData, method: GameMethod) -> Value {
         }
         GameMethod::ResurrectPartyMembers => {
             crate::game::party::resurrect_party_members(gd);
+            Value::None
+        }
+        GameMethod::StartCustomQuest { id, phase } => {
+            crate::game::quest::start_custom_quest(gd, id, phase);
             Value::None
         }
     }

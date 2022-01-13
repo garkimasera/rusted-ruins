@@ -4,13 +4,22 @@ use crate::draw::border::draw_window_border;
 use crate::game::quest::{available_quests, reportable_quests};
 use crate::text::obj_txt;
 use crate::text::{quest_txt_checked, ui_txt, ToText};
+use common::gamedata::CustomQuest;
 use common::gamedata::TownQuestKind;
 use common::gamedata::TownQuestState;
 use common::gamedata::{GameData, TownQuest};
 use common::gobj;
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum QuestKind {
+    Custom(usize),
+    Town(usize),
+}
+
 enum QuestWindowMode {
-    List,
+    List {
+        quests: Vec<QuestKind>,
+    },
     Offer {
         selected: Vec<bool>,
         take_button: ButtonWidget,
@@ -74,23 +83,34 @@ impl QuestWindow {
     }
 
     pub fn new_list(gd: &GameData) -> QuestWindow {
-        let rows: Vec<(IconIdx, TextCache)> = gd
-            .quest
-            .town_quests
-            .iter()
-            .map(|(state, quest)| {
-                let icon = match *state {
-                    TownQuestState::Active => IconIdx::empty(),
-                    TownQuestState::Reportable => IconIdx::checked(),
-                };
-                (
-                    icon,
-                    TextCache::new(quest.to_text(), FontKind::M, UI_CFG.color.normal_font),
-                )
-            })
-            .collect();
+        let mut quests = Vec::new();
+        let mut rows: Vec<(IconIdx, TextCache)> = Vec::new();
 
-        let mode = QuestWindowMode::List;
+        for (i, custom_quest) in gd.quest.custom_quests.iter().enumerate() {
+            quests.push(QuestKind::Custom(i));
+            rows.push((
+                IconIdx::empty(),
+                TextCache::new(
+                    custom_quest.to_text(),
+                    FontKind::M,
+                    UI_CFG.color.normal_font,
+                ),
+            ));
+        }
+
+        for (i, (state, town_quest)) in gd.quest.town_quests.iter().enumerate() {
+            let icon = match *state {
+                TownQuestState::Active => IconIdx::empty(),
+                TownQuestState::Reportable => IconIdx::checked(),
+            };
+            quests.push(QuestKind::Town(i));
+            rows.push((
+                icon,
+                TextCache::new(town_quest.to_text(), FontKind::M, UI_CFG.color.normal_font),
+            ));
+        }
+
+        let mode = QuestWindowMode::List { quests };
 
         Self::new(gd, mode, rows)
     }
@@ -159,13 +179,23 @@ impl QuestWindow {
 
     pub fn update_desc_text(&mut self, gd: &GameData, i: u32) {
         let desc_text = match &self.mode {
-            QuestWindowMode::List { .. } => {
-                if let Some((_, town_quest)) = &gd.quest.town_quests.get(i as usize) {
-                    town_quest_desc_text(town_quest)
-                } else {
-                    return;
+            QuestWindowMode::List { quests } => match quests.get(i as usize) {
+                Some(QuestKind::Custom(i)) => {
+                    if let Some(custom_quest) = &gd.quest.custom_quests.get(*i as usize) {
+                        custom_quest_desc_text(custom_quest)
+                    } else {
+                        return;
+                    }
                 }
-            }
+                Some(QuestKind::Town(i)) => {
+                    if let Some((_, town_quest)) = &gd.quest.town_quests.get(*i as usize) {
+                        town_quest_desc_text(town_quest)
+                    } else {
+                        return;
+                    }
+                }
+                None => "".into(),
+            },
             QuestWindowMode::Offer { .. } => {
                 if let Some(town_quest) = &available_quests(gd).get(i as usize) {
                     town_quest_desc_text(town_quest)
@@ -323,6 +353,19 @@ impl DialogWindow for QuestWindow {
             WindowDrawMode::SkipUnderWindows
         }
     }
+}
+
+fn custom_quest_desc_text(quest: &CustomQuest) -> String {
+    let desc_text_id = format!("{}-desc", &quest.id);
+    let mut text = quest_txt_checked(&desc_text_id).unwrap_or_else(|| "".into());
+
+    let phase_desc_text_id = format!("{}-desc-{}", quest.id, quest.phase);
+    if let Some(phase_desc_text) = quest_txt_checked(&phase_desc_text_id) {
+        text.push('\n');
+        text.push_str(&phase_desc_text);
+    }
+
+    text
 }
 
 fn town_quest_desc_text(quest: &TownQuest) -> String {

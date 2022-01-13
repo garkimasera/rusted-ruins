@@ -216,6 +216,12 @@ impl ToText for Command {
     }
 }
 
+impl ToText for CustomQuest {
+    fn to_text(&self) -> Cow<'_, str> {
+        quest_txt(&self.id).into()
+    }
+}
+
 impl ToText for TownQuest {
     fn to_text(&self) -> Cow<'_, str> {
         quest_txt(&self.text_id).into()

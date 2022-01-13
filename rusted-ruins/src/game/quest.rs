@@ -265,3 +265,24 @@ pub fn update_item_delivery_quest_status(gd: &mut GameData, sid: Option<SiteId>)
         *state = TownQuestState::Reportable;
     }
 }
+
+pub fn start_custom_quest(gd: &mut GameData, id: String, phase: String) {
+    if custom_quest_started(gd, &id) {
+        error!("Already started custom quest \"{}\"", id);
+        return;
+    }
+    gd.quest.custom_quests.push(CustomQuest { id, phase });
+}
+
+pub fn complete_custom_quest(gd: &mut GameData, id: String) {
+    if !custom_quest_started(gd, &id) {
+        error!("Complete custom quest that are not started \"{}\"", id);
+        return;
+    }
+    gd.quest.custom_quests.retain(|q| q.id != id);
+    gd.quest.completed_custom_quests.insert(id);
+}
+
+pub fn custom_quest_started(gd: &mut GameData, id: &str) -> bool {
+    gd.quest.custom_quests.iter().any(|q| q.id == id)
+}

@@ -165,6 +165,13 @@ mod _rr {
                 .to_py(vm)
         }
 
+        #[pymethod]
+        fn custom_quest_completed(&self, id: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
+            let id = id.as_str().to_owned();
+            self.with_gd(move |gd| Value::Bool(gd.quest.completed_custom_quests.contains(&id)))
+                .to_py(vm)
+        }
+
         // Ui request methods
 
         #[pymethod]
@@ -211,6 +218,22 @@ mod _rr {
         }
 
         // ScriptMethod methods
+
+        #[pymethod]
+        fn complete_custom_quest(&self, id: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
+            self.call_method(GameMethod::CompleteCustomQuest {
+                id: id.as_str().to_owned(),
+            })
+            .to_py(vm)
+        }
+
+        #[pymethod]
+        fn custom_quest_started(&self, id: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
+            self.call_method(GameMethod::CustomQuestStarted {
+                id: id.as_str().to_owned(),
+            })
+            .to_py(vm)
+        }
 
         #[pymethod]
         fn gen_dungeons(&self) {
@@ -264,6 +287,14 @@ mod _rr {
         #[pymethod]
         fn resurrect_party_members(&self) {
             self.call_method(GameMethod::ResurrectPartyMembers);
+        }
+
+        #[pymethod]
+        fn start_custom_quest(&self, id: PyStrRef, phase: PyStrRef) {
+            self.call_method(GameMethod::StartCustomQuest {
+                id: id.as_str().to_owned(),
+                phase: phase.as_str().to_owned(),
+            });
         }
     }
 

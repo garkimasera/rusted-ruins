@@ -31,6 +31,8 @@ pub struct TalkText {
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum GameMethod {
+    CompleteCustomQuest { id: String },
+    CustomQuestStarted { id: String },
     GenDungeons,
     GenPartyChara { id: String, lv: u32 },
     HasEmptyForParty,
@@ -39,4 +41,5 @@ pub enum GameMethod {
     ReceiveMoney { amount: i64 },
     RemoveItem { id: String, n: u32 },
     ResurrectPartyMembers,
+    StartCustomQuest { id: String, phase: String },
 }

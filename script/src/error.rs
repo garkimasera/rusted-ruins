@@ -7,6 +7,8 @@ pub enum Error {
     Python(String),
     #[error("python compile failed:\n{0}")]
     Compile(#[from] CompileError),
+    #[error("object not found")]
+    NoObject(String),
 }
 
 impl Error {

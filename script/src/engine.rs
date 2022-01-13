@@ -153,7 +153,8 @@ fn call_script(
     start_script: &StartScript,
     pygame: PyGame,
 ) -> Result<(), Error> {
-    let script_obj: &ScriptObject = common::gobj::get_by_id(&start_script.id);
+    let script_obj: &ScriptObject = common::gobj::get_by_id_checked(&start_script.id)
+        .ok_or_else(|| Error::NoObject(start_script.id.clone()))?;
 
     let scope = vm.new_scope_with_builtins();
     scope
