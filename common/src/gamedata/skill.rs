@@ -272,7 +272,6 @@ define_skill_kind! {
         Evasion, "evasion",
         Conceal, "conceal",
         Detection, "detection",
-        Throwing, "throwing",
         MagicDevice, "magic_device",
         Mining, "mining",
         Plants, "plants",
@@ -288,6 +287,7 @@ define_skill_kind! {
     }
     ranged_weapon_kind = 0x0800;
     {
+        Throwing, "throwing",
         Bow, "bow",
         Crossbow, "crossbow",
         Firearm, "firearm",

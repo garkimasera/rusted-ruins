@@ -66,6 +66,7 @@ weapon_kind-cross_bow = クロスボウ
 weapon_kind-firearm = 銃器
 weapon_kind-spear = 槍
 weapon_kind-sword = 剣
+weapon_kind-throwing = 投擲
 weapon_kind-whip = 鞭
 
 # ArmorKind

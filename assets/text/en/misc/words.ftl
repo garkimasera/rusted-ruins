@@ -66,6 +66,7 @@ weapon_kind-cross_bow = Cross Bow
 weapon_kind-firearm = Firearm
 weapon_kind-spear = Spear
 weapon_kind-sword = Sword
+weapon_kind-throwing = Throwing
 weapon_kind-whip = Whip
 
 # ArmorKind
