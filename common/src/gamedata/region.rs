@@ -225,22 +225,10 @@ impl RegionHolder {
             if a.len() != 2 {
                 return None;
             }
-            let floor: u32 = if let Ok(floor) = a[0].parse() {
-                floor
-            } else {
-                return None;
-            };
+            let floor: u32 = a[0].parse().ok()?;
             let pos: Vec<&str> = a[1].split(',').collect();
-            let pos_x: u32 = if let Ok(pos_x) = pos[0].parse() {
-                pos_x
-            } else {
-                return None;
-            };
-            let pos_y: u32 = if let Ok(pos_y) = pos[1].parse() {
-                pos_y
-            } else {
-                return None;
-            };
+            let pos_x: u32 = pos[0].parse().ok()?;
+            let pos_y: u32 = pos[1].parse().ok()?;
             Some((floor, Vec2d::from((pos_x, pos_y))))
         }
 
