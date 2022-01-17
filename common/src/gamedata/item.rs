@@ -143,6 +143,8 @@ pub enum ItemKind {
     Readable,
     /// Usable to create other items.
     Material,
+    /// Module items for weapon/armor items.
+    Module,
     /// Other items that might not have effects, but have some price.
     Object,
 }
@@ -160,6 +162,7 @@ pub enum ItemKindRough {
     Special,
     Readable,
     Material,
+    Module,
     Object,
 }
 
@@ -177,6 +180,7 @@ impl ItemKind {
             ItemKind::Special => ItemKindRough::Special,
             ItemKind::Readable => ItemKindRough::Readable,
             ItemKind::Material => ItemKindRough::Material,
+            ItemKind::Module => ItemKindRough::Module,
             ItemKind::Object => ItemKindRough::Object,
         }
     }
@@ -203,6 +207,7 @@ impl FromStr for ItemKind {
             "special" => ItemKind::Special,
             "readable" => ItemKind::Readable,
             "material" => ItemKind::Material,
+            "module" => ItemKind::Module,
             "object" => ItemKind::Object,
             _ => {
                 return Err(KindParseError(s.into()));
@@ -223,6 +228,7 @@ impl std::fmt::Display for ItemKind {
             ItemKind::Special => "special",
             ItemKind::Readable => "readable",
             ItemKind::Material => "material",
+            ItemKind::Module => "module",
             ItemKind::Object => "object",
             ItemKind::Weapon(weapon_kind) => {
                 return write!(f, "{}", weapon_kind);

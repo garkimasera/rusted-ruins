@@ -35,6 +35,7 @@ impl ToTextId for ItemKind {
             Special => "item_kind-special",
             Readable => "item_kind-readable",
             Material => "item_kind-material",
+            Module => "item_kind-module",
             Object => "item_kind-object",
         }
     }

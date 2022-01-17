@@ -21,6 +21,7 @@ pub fn build_item_object(input: Input) -> Result<ItemObject, Error> {
         "container" => ItemKind::Container,
         "readable" => ItemKind::Readable,
         "material" => ItemKind::Material,
+        "module" => ItemKind::Module,
         "special" => ItemKind::Special,
         _ => {
             bail!(PakCompileError::UnexpectedValue {

@@ -66,6 +66,7 @@ impl ItemInfoText {
             ItemKind::Special => {}
             ItemKind::Readable => {}
             ItemKind::Material => {}
+            ItemKind::Module => {}
             ItemKind::Object => {}
         }
 

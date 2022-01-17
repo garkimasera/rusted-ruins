@@ -40,6 +40,7 @@ item_kind-container = 入れ物
 item_kind-special = 特殊
 item_kind-readable = 読み物
 item_kind-material = 素材
+item_kind-module = モジュール
 item_kind-object = オブジェクト
 
 # SkillKind

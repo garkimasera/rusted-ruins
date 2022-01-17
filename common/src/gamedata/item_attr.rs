@@ -1,8 +1,9 @@
 use crate::item_selector::ItemSelector;
+use crate::objholder::ItemIdx;
 
-use super::defs::*;
 use super::effect::Effect;
 use super::time::{Duration, Time};
+use super::{defs::*, CharaModifier};
 use super::{item::*, BasePower, UniqueId, UniqueIdGenerator};
 use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 
@@ -128,6 +129,13 @@ pub enum ItemAttr {
     Container(ItemListContainer),
     /// Material of this item
     Material(MaterialName),
+    /// For module items
+    Module(ModuleEffect),
+    /// For weapon/armor items
+    ModuleSlot {
+        kind: ModuleSlotKind,
+        content: Option<(ItemIdx, ModuleEffect)>,
+    },
     /// For skill learning items
     SkillLearning(super::skill::SkillKind),
     /// Title for readable items
@@ -196,4 +204,23 @@ impl Ord for ItemListContainer {
     fn cmp(&self, other: &ItemListContainer) -> Ordering {
         self.id.cmp(&other.id)
     }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ModuleSlotKind {
+    Ability,
+    Extend,
+    Spirit,
+}
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ModuleEffect {
+    Ability { group: String },
+    Extend(ExtendModuleEffect),
+    Spirit,
+}
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum ExtendModuleEffect {
+    Modifier(CharaModifier),
 }
