@@ -1,11 +1,13 @@
 use once_cell::sync::Lazy;
 use sdl2::pixels::Color;
+use sdl2::rect::Rect;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 
 use super::textrenderer::FontKind;
 use super::textrenderer::TextRenderer;
 use super::textrenderer::{ERR_MSG_FONT_REND, ERR_MSG_FONT_TEX};
+use super::Context;
 
 use std::sync::Mutex;
 
@@ -85,6 +87,29 @@ impl TextCache {
             wrap_size: None,
             is_bordered: true,
         }
+    }
+
+    pub fn render_at(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        x: i32,
+        y: i32,
+        top: bool,
+        left: bool,
+    ) {
+        let canvas = &mut context.canvas;
+        let sv = &mut context.sv;
+        let tex = sv.tt_one(self);
+
+        let w = tex.query().width;
+        let h = tex.query().height;
+        let dest = Rect::new(
+            x - if top { 0 } else { w as i32 },
+            y - if left { 0 } else { h as i32 },
+            w,
+            h,
+        );
+        try_sdl!(canvas.copy(tex, None, dest));
     }
 
     // pub fn get_str(&self, i: usize) -> &str {

@@ -66,6 +66,7 @@ pub struct UiConfig {
     pub quest_window: QuestWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
+    pub supplement_info: SupplementInfoConfig,
     pub time_info: TimeInfoConfig,
     pub progress_bar: ProgressBarConfig,
     pub vscroll_widget: VScrollWidgetConfig,
@@ -359,6 +360,12 @@ pub struct ListWidgetConfig {
     pub h_row_with_text: u32,
     pub icon_column_w: u32,
     pub left_margin: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SupplementInfoConfig {
+    pub margin: i32,
+    pub h: i32,
 }
 
 #[derive(Debug, Deserialize)]

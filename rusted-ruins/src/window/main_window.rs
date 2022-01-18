@@ -73,10 +73,13 @@ impl MainWindow {
         self.centering_tile = None;
     }
 
-    pub fn update_tile_cursor(&mut self, pos: (i32, i32)) {
+    pub fn update_tile_cursor(&mut self, pos: (i32, i32)) -> Option<Vec2d> {
         if self.rect.contains_point(pos) {
             let tile = self.cursor_pos_to_tile(pos.0, pos.1);
             self.hover_tile = Some(tile);
+            Some(tile)
+        } else {
+            None
         }
     }
 

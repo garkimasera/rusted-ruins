@@ -186,11 +186,20 @@ impl WindowManageMode {
     pub fn is_on_game(&self) -> bool {
         matches!(self, WindowManageMode::OnGame(_))
     }
+
+    pub fn update_game_windows_per_advance_turn(&mut self, game: &Game) {
+        if let WindowManageMode::OnGame(GameWindows {
+            supplement_info, ..
+        }) = self
+        {
+            supplement_info.update(game);
+        }
+    }
 }
 
 /// Manage all windows
 pub struct WindowManager<'sdl, 't> {
-    game: Game,
+    pub game: Game,
     mode: WindowManageMode,
     sdl_values: SdlValues<'sdl, 't>,
     text_input_util: TextInputUtil,
@@ -228,6 +237,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
         if self.game.get_state() == GameState::WaitingForNextTurn && self.mode.is_on_game() {
             self.game.advance_turn();
+            self.mode.update_game_windows_per_advance_turn(&self.game);
         }
 
         // Process ui requests
@@ -254,7 +264,12 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
 
     pub fn update_cursor(&mut self, pos: (i32, i32)) {
         if let WindowManageMode::OnGame(ref mut game_windows) = self.mode {
-            game_windows.main_window.update_tile_cursor(pos);
+            let tile = game_windows.main_window.update_tile_cursor(pos);
+            if let Some(tile) = tile {
+                game_windows
+                    .supplement_info
+                    .update_hover_tile(&self.game, tile);
+            }
         }
     }
 
@@ -742,6 +757,7 @@ struct GameWindows {
     indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
     status_info: indicator::StatusInfo,
+    supplement_info: indicator::SupplementInfo,
     time_info: indicator::TimeInfo,
     hborders: Vec<self::widget::HBorder>,
     vborders: Vec<self::widget::VBorder>,
@@ -772,6 +788,7 @@ impl GameWindows {
             indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
             floor_info: FloorInfo::new(),
             status_info: StatusInfo::new(),
+            supplement_info: SupplementInfo::default(),
             time_info: TimeInfo::new(),
             hborders,
             vborders,
@@ -801,6 +818,7 @@ impl GameWindows {
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);
+        self.supplement_info.draw(context, game, anim);
         self.time_info.draw(context, game, anim);
         self.progress_bar.draw(context, game, anim);
     }

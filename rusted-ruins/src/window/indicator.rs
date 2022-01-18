@@ -7,6 +7,7 @@ use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::UiImgObject;
+use geom::Vec2d;
 use rules::RULES;
 
 #[derive(Clone, Copy, Debug)]
@@ -264,6 +265,92 @@ impl Window for StatusInfo {
         context.set_viewport(None);
         for label in self.labels.iter_mut() {
             label.draw(context);
+        }
+    }
+}
+
+#[derive(Default)]
+pub struct SupplementInfo {
+    hover_tile: Option<Vec2d>,
+    tile_obj: Option<TextCache>,
+    chara: Option<TextCache>,
+}
+
+impl SupplementInfo {
+    pub fn update_hover_tile(&mut self, game: &Game, pos: Vec2d) {
+        if self.hover_tile != Some(pos) {
+            self.hover_tile = Some(pos);
+            self.update(game);
+        }
+    }
+
+    pub fn update(&mut self, game: &Game) {
+        let pos = if let Some(pos) = self.hover_tile {
+            pos
+        } else {
+            return;
+        };
+
+        if !game.view_map.get_tile_visible(pos) {
+            return;
+        }
+
+        // About tile object
+        let map = game.gd.get_current_map();
+        let text: Option<String> = if let SpecialTileKind::SiteSymbol { .. } = map.tile[pos].special
+        {
+            let mid = game.gd.get_current_mapid();
+            if mid.is_region_map() {
+                let region = game.gd.region.get(mid.rid());
+                if let Some(sid) = region.get_id_by_pos(pos) {
+                    let site = game.gd.region.get_site(sid);
+                    Some(site.to_text().into())
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+        self.tile_obj =
+            text.map(|text| TextCache::bordered(text, FontKind::T, UI_CFG.color.normal_font));
+
+        // About character
+        let text: Option<String> = if let Some(cid) = game.gd.get_current_map().tile[pos].chara {
+            let chara = game.gd.chara.get(cid);
+            Some(chara.to_text().into())
+        } else {
+            None
+        };
+        self.chara =
+            text.map(|text| TextCache::bordered(text, FontKind::T, UI_CFG.color.normal_font));
+    }
+}
+
+impl Window for SupplementInfo {
+    fn draw(
+        &mut self,
+        context: &mut Context<'_, '_, '_, '_>,
+        _game: &Game,
+        _anim: Option<(&Animation, u32)>,
+    ) {
+        context.set_viewport(None);
+
+        let bottom_right = Rect::from(SCREEN_CFG.main_window).bottom_right();
+        let margin = UI_CFG.supplement_info.margin;
+        let h = UI_CFG.supplement_info.h;
+        let x = bottom_right.x - margin;
+        let mut y = bottom_right.y - margin;
+
+        if let Some(tile_obj) = &mut self.tile_obj {
+            tile_obj.render_at(context, x, y, false, false);
+            y -= h;
+        }
+
+        if let Some(chara) = &mut self.chara {
+            chara.render_at(context, x, y, false, false);
         }
     }
 }
