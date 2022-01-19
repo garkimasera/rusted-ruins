@@ -169,6 +169,10 @@ pub fn gen_item_from_idx(idx: ItemIdx, level: u32) -> Item {
         gen_tool_item(&mut item, item_obj);
     }
 
+    if has_attr!(item_obj, ItemObjAttr::Module) {
+        gen_module_item(&mut item, item_obj);
+    }
+
     set_quality(&mut item, item_obj, level);
     set_material(&mut item, item_obj, level);
 
@@ -244,6 +248,14 @@ fn gen_tool_item(item: &mut Item, item_obj: &ItemObject) {
     if tool_effect == &ToolEffect::Build {
         item.attrs
             .push(ItemAttr::BuildObj(RULES.item.build_obj_default.clone()));
+    }
+}
+
+/// Generate module item
+fn gen_module_item(item: &mut Item, item_obj: &ItemObject) {
+    let effects = find_attr!(item_obj, ItemObjAttr::Module { effects } => effects).unwrap();
+    if let Some((_, effect)) = rng::choose(effects, |(_, weight)| (*weight).into()) {
+        item.attrs.push(ItemAttr::Module(effect.0.clone()));
     }
 }
 

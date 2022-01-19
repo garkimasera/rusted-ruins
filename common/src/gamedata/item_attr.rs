@@ -1,3 +1,5 @@
+use ordered_float::NotNan;
+
 use crate::item_selector::ItemSelector;
 use crate::objholder::ItemIdx;
 
@@ -73,6 +75,9 @@ pub enum ItemObjAttr {
         #[serde(rename = "type")]
         ty: String,
         quality: i8,
+    },
+    Module {
+        effects: Vec<(ModuleEffect, NotNan<f32>)>,
     },
     Titles(Vec<String>),
     ConvertableByContainer {
@@ -222,5 +227,12 @@ pub enum ModuleEffect {
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ExtendModuleEffect {
-    Modifier(CharaModifier),
+    Chara(CharaModifier),
+    Weapon(WeaponModifier),
+}
+
+/// Represents modifier for weapon item
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+pub enum WeaponModifier {
+    PowerFactor(NotNan<f32>),
 }
