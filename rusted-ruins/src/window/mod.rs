@@ -294,6 +294,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         match self.mode {
             WindowManageMode::OnGame(ref mut game_windows) => {
                 self.game.update_before_drawing();
+                game_windows.covered = !self.window_stack.is_empty();
                 game_windows.draw(&mut context, &self.game, anim);
             }
             WindowManageMode::Start(ref mut start_window) => {
@@ -762,6 +763,7 @@ struct GameWindows {
     hborders: Vec<self::widget::HBorder>,
     vborders: Vec<self::widget::VBorder>,
     progress_bar: progress_bar::ProgressBar,
+    covered: bool,
 }
 
 impl GameWindows {
@@ -793,6 +795,7 @@ impl GameWindows {
             hborders,
             vborders,
             progress_bar: progress_bar::ProgressBar::new(),
+            covered: false,
         }
     }
 
@@ -818,7 +821,9 @@ impl GameWindows {
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);
-        self.supplement_info.draw(context, game, anim);
+        if !self.covered {
+            self.supplement_info.draw(context, game, anim);
+        }
         self.time_info.draw(context, game, anim);
         self.progress_bar.draw(context, game, anim);
     }

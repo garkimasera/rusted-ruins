@@ -292,6 +292,7 @@ impl SupplementInfo {
         };
 
         if !game.view_map.get_tile_visible(pos) {
+            *self = Self::default();
             return;
         }
 
