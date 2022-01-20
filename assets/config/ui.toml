@@ -196,7 +196,7 @@ money_label_rect = { x = 5, y = 27 }
 
 [skill_window]
 list_rect = { x = 0, y = 0, w = 550, h = 312 }
-list_size = 11
+list_size = 12
 column_pos = [5, 280, 390]
 
 [quest_window]

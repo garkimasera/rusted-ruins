@@ -135,7 +135,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
     }
 
     pub fn set_items(&mut self, items: Vec<T>) {
-        self.n_item = items.len() as u32;
+        self.set_n_item(items.len() as u32);
         self.set_rows(items);
     }
 
@@ -152,7 +152,19 @@ impl<T: ListWidgetRow> ListWidget<T> {
     }
 
     pub fn page_item_idx(&self) -> (u32, u32) {
-        (0, self.n_item)
+        let start_item = if let Some(scroll) = self.scroll.as_ref() {
+            if !self.update_by_user {
+                scroll.value()
+            } else {
+                0
+            }
+        } else {
+            0
+        };
+        (
+            start_item,
+            std::cmp::min(self.n_item, self.page_size + start_item),
+        )
     }
 
     /// Get current choice
@@ -263,7 +275,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 if self.update_by_user {
                     return Some(ListWidgetResponse::Scrolled);
                 } else {
-                    todo!();
+                    return None;
                 }
             }
         }
@@ -289,7 +301,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         } else {
                             self.current_choice -= 1;
                         }
-                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
+                        return Some(ListWidgetResponse::SelectionChanged(
+                            self.get_current_choice(),
+                        ));
                     }
                     VDirection::Down => {
                         if self.current_choice == self.n_row as u32 - 1 {
@@ -297,7 +311,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         } else {
                             self.current_choice += 1;
                         }
-                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
+                        return Some(ListWidgetResponse::SelectionChanged(
+                            self.get_current_choice(),
+                        ));
                     }
                     _ => (),
                 }
@@ -328,7 +344,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                     if self.current_choice != idx {
                         self.current_choice = idx;
                         audio::play_sound("select-item");
-                        return Some(ListWidgetResponse::SelectionChanged(self.current_choice));
+                        return Some(ListWidgetResponse::SelectionChanged(
+                            self.get_current_choice(),
+                        ));
                     }
                 }
                 None

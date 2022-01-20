@@ -93,6 +93,7 @@ impl VScrollWidget {
     fn try_up_scroll(&mut self) -> Option<ScrollResponse> {
         if self.value > 0 {
             self.value -= 1;
+            self.update_knob();
             Some(ScrollResponse::Scrolled)
         } else {
             None
@@ -102,6 +103,7 @@ impl VScrollWidget {
     fn try_down_scroll(&mut self) -> Option<ScrollResponse> {
         if self.value < self.limit {
             self.value += 1;
+            self.update_knob();
             Some(ScrollResponse::Scrolled)
         } else {
             None
@@ -113,6 +115,7 @@ impl VScrollWidget {
             None
         } else {
             self.value = new_value;
+            self.update_knob();
             Some(ScrollResponse::Scrolled)
         }
     }
