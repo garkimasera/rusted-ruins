@@ -269,9 +269,9 @@ pub struct ItemInfoWindowConfig {
     pub item_image: CfgRect,
     pub item_name: CfgRect,
     pub item_kind: CfgRect,
-    pub flavor_button: CfgRect,
-    pub desc_text: CfgRect,
-    pub desc_text_icon: CfgRect,
+    pub column_pos: Vec<i32>,
+    pub flavor_text_y: i32,
+    pub list_y: i32,
 }
 
 #[derive(Debug, Deserialize)]

@@ -52,7 +52,7 @@ impl ImageWidget {
         Self::new(rect, ImageIdx::item(item))
     }
 
-    pub fn set_rect<R: Into<Rect>>(&mut self, rect: R) {
+    pub fn _set_rect<R: Into<Rect>>(&mut self, rect: R) {
         self.rect = rect.into();
     }
 }

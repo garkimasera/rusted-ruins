@@ -144,13 +144,13 @@ info_label_rect0 = { x = 5, y = 312, w = 10, h = 10 }
 info_label_rect1 = { x = 5, y = 312, w = 510, h = 10 }
 
 [item_info_window]
-rect = { x = -999, y = -999, w = 450, h = 300 }
+rect = { x = -999, y = -999, w = 480, h = 352 }
 item_image = { x = 2, y = 0, w = 48, h = 48 }
 item_name = { x = 50, y = 2 }
 item_kind = { x = 50, y = 25 }
-flavor_button = { x = 410, y = 8, w = 32, h = 32 }
-desc_text = { x = 24, y = 48, w = 422 }
-desc_text_icon = { x = 3, y = 52, w = 16, h = 16 }
+column_pos = [1, 34]
+flavor_text_y = 46
+list_y = 118
 
 [equip_window]
 rect = { x = -999, y = -999, w = 550, h = 312 }

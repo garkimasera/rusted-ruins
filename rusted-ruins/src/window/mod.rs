@@ -9,7 +9,6 @@ mod dialogreq;
 mod equip_window;
 mod exit_window;
 mod faction_window;
-mod flavor_text_window;
 mod game_info_window;
 mod group_window;
 mod help_window;
