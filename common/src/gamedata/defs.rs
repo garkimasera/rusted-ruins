@@ -12,7 +12,7 @@ use std::ops::{Index, IndexMut};
 pub enum Element {
     None = -1,
     Physical = 0,
-    Fire = 1,
+    Heat = 1,
     Cold = 2,
     Shock = 3,
     Poison = 4,
@@ -21,7 +21,7 @@ pub enum Element {
 
 pub const ELEMENTS: [Element; Element::Spirit as usize + 1] = [
     Element::Physical,
-    Element::Fire,
+    Element::Heat,
     Element::Cold,
     Element::Shock,
     Element::Poison,

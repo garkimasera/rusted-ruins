@@ -56,10 +56,10 @@ impl ItemInfoText {
                         format!("{}", item.defence(Element::Physical)),
                     ));
                 }
-                if item.defence(Element::Fire) != 0 {
+                if item.defence(Element::Heat) != 0 {
                     desc_text.push((
                         "!icon-defence-heat",
-                        format!("{}", item.defence(Element::Fire)),
+                        format!("{}", item.defence(Element::Heat)),
                     ));
                 }
                 if item.defence(Element::Cold) != 0 {
