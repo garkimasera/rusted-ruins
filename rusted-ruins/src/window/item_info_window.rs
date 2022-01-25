@@ -55,6 +55,7 @@ impl ItemInfoWindow {
             list_rect.height() / UI_CFG.list_widget.h_row_default,
             false,
         );
+        attrs_list.no_row_highlight();
         attrs_list.set_items(items);
 
         ItemInfoWindow {

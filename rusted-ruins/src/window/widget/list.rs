@@ -22,6 +22,7 @@ pub struct ListWidget<T> {
     /// Need update after Scrolled response returned or not
     update_by_user: bool,
     draw_border: bool,
+    row_highlight: bool,
     scroll: Option<VScrollWidget>,
     header: Option<T>,
 }
@@ -64,6 +65,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             current_choice: 0,
             update_by_user,
             draw_border: false,
+            row_highlight: true,
             scroll: None,
             header: None,
         }
@@ -121,9 +123,14 @@ impl<T: ListWidgetRow> ListWidget<T> {
             current_choice: 0,
             update_by_user,
             draw_border: false,
+            row_highlight: true,
             scroll: Some(scroll),
             header,
         }
+    }
+
+    pub fn no_row_highlight(&mut self) {
+        self.row_highlight = false;
     }
 
     fn set_rows(&mut self, rows: Vec<T>) {
@@ -393,10 +400,12 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 self.rect.w as u32,
                 h_row as u32,
             );
-            context
-                .canvas
-                .set_draw_color(UI_CFG.color.window_bg_highlight);
-            try_sdl!(context.canvas.fill_rect(highlight_rect));
+            if self.row_highlight {
+                context
+                    .canvas
+                    .set_draw_color(UI_CFG.color.window_bg_highlight);
+                try_sdl!(context.canvas.fill_rect(highlight_rect));
+            }
 
             // Draw each rows
             let (start, end) = self.page_item_idx();
@@ -416,16 +425,18 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
             let canvas = &mut context.canvas;
 
             // Draw highlight row borders
-            canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
-            try_sdl!(canvas.draw_rect(highlight_rect));
-            let r = Rect::new(
-                highlight_rect.x + 1,
-                highlight_rect.y + 1,
-                highlight_rect.w as u32 - 2,
-                highlight_rect.h as u32 - 2,
-            );
-            canvas.set_draw_color(UI_CFG.color.border_highlight_light);
-            try_sdl!(canvas.draw_rect(r));
+            if self.row_highlight {
+                canvas.set_draw_color(UI_CFG.color.border_highlight_dark);
+                try_sdl!(canvas.draw_rect(highlight_rect));
+                let r = Rect::new(
+                    highlight_rect.x + 1,
+                    highlight_rect.y + 1,
+                    highlight_rect.w as u32 - 2,
+                    highlight_rect.h as u32 - 2,
+                );
+                canvas.set_draw_color(UI_CFG.color.border_highlight_light);
+                try_sdl!(canvas.draw_rect(r));
+            }
         }
 
         // Draw scrollbar
