@@ -50,16 +50,42 @@ impl ItemInfoText {
                 }
             }
             ItemKind::Armor(_) => {
-                let d0 = format!("{:+}", item.defence(Element::Physical));
-                let d1 = format!("{:+}", item.defence(Element::Fire));
-                let d2 = format!("{:+}", item.defence(Element::Cold));
-                let d3 = format!("{:+}", item.defence(Element::Shock));
-                let d4 = format!("{:+}", item.defence(Element::Poison));
-                let d5 = format!("{:+}", item.defence(Element::Spirit));
-                let t = misc_txt_format!(
-                    "item_info_text-defence";
-                    physical=d0, fire=d1, cold=d2, shock=d3, poison=d4, spirit=d5);
-                desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                if item.defence(Element::Physical) != 0 {
+                    desc_text.push((
+                        "!icon-defence-physical",
+                        format!("{}", item.defence(Element::Physical)),
+                    ));
+                }
+                if item.defence(Element::Fire) != 0 {
+                    desc_text.push((
+                        "!icon-defence-heat",
+                        format!("{}", item.defence(Element::Fire)),
+                    ));
+                }
+                if item.defence(Element::Cold) != 0 {
+                    desc_text.push((
+                        "!icon-defence-cold",
+                        format!("{}", item.defence(Element::Cold)),
+                    ));
+                }
+                if item.defence(Element::Shock) != 0 {
+                    desc_text.push((
+                        "!icon-defence-shock",
+                        format!("{}", item.defence(Element::Shock)),
+                    ));
+                }
+                if item.defence(Element::Poison) != 0 {
+                    desc_text.push((
+                        "!icon-defence-poison",
+                        format!("{}", item.defence(Element::Poison)),
+                    ));
+                }
+                if item.defence(Element::Spirit) != 0 {
+                    desc_text.push((
+                        "!icon-defence-spirit",
+                        format!("{}", item.defence(Element::Spirit)),
+                    ));
+                }
             }
             ItemKind::Tool => {}
             ItemKind::Container => {}
