@@ -309,6 +309,9 @@ pub struct StatusWindowConfig {
     pub wil_label_rect: CfgRect,
     pub cha_label_rect: CfgRect,
     pub spd_label_rect: CfgRect,
+    pub power_labels_rect: CfgRect,
+    pub power_labels_icon_rect: CfgRect,
+    pub power_labels_label_dy: i32,
     pub carry_label_rect: CfgRect,
     pub travel_speed_label_rect: CfgRect,
 }

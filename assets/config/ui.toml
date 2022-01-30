@@ -178,8 +178,11 @@ int_label_rect = { x = 5, y = 198 }
 wil_label_rect = { x = 5, y = 218 }
 cha_label_rect = { x = 5, y = 238 }
 spd_label_rect = { x = 5, y = 258 }
-carry_label_rect = { x = 105, y = 136 }
-travel_speed_label_rect = { x = 105, y = 154 }
+power_labels_rect = { x = 120, y = 132 }
+power_labels_icon_rect = { w = 22, h = 22 }
+power_labels_label_dy = 3
+carry_label_rect = { x = 210, y = 136 }
+travel_speed_label_rect = { x = 210, y = 154 }
 
 [chara_trait_window]
 column_pos = [4]

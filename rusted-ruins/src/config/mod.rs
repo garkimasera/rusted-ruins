@@ -235,7 +235,9 @@ fn load_main_config_file() -> Config {
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct CfgRect {
+    #[serde(default)]
     pub x: i32,
+    #[serde(default)]
     pub y: i32,
     #[serde(default)]
     pub w: u32,

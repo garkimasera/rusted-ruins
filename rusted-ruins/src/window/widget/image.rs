@@ -10,6 +10,7 @@ use sdl2::rect::Rect;
 pub struct ImageWidget {
     rect: Rect,
     idx: ImageIdx,
+    centering: bool,
 }
 
 pub enum ImageIdx {
@@ -34,7 +35,11 @@ impl ImageIdx {
 impl ImageWidget {
     pub fn new<R: Into<Rect>>(rect: R, idx: ImageIdx) -> Self {
         let rect = rect.into();
-        ImageWidget { rect, idx }
+        ImageWidget {
+            rect,
+            idx,
+            centering: true,
+        }
     }
 
     /// Create image widget that show a UIImg
@@ -63,15 +68,25 @@ impl WidgetTrait for ImageWidget {
     fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         match self.idx {
             ImageIdx::UiImg(idx) => {
-                context.render_tex(idx, self.rect);
+                if self.centering {
+                    context.render_tex_n_center(idx, self.rect, 0);
+                } else {
+                    context.render_tex(idx, self.rect);
+                }
             }
             ImageIdx::Chara(idx) => {
-                // Centering to given rect
-                context.render_tex_n_center(idx, self.rect, 0);
+                if self.centering {
+                    context.render_tex_n_center(idx, self.rect, 0);
+                } else {
+                    context.render_tex(idx, self.rect);
+                }
             }
             ImageIdx::Item(idx) => {
-                // Centering to given rect
-                context.render_tex_n_center(idx.0, self.rect, idx.1);
+                if self.centering {
+                    context.render_tex_n_center(idx.0, self.rect, 0);
+                } else {
+                    context.render_tex(idx.0, self.rect);
+                }
             }
         }
     }

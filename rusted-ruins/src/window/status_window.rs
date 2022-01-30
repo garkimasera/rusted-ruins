@@ -75,10 +75,23 @@ pub struct StatusWindow {
     wil_label: LabelWidget,
     cha_label: LabelWidget,
     spd_label: LabelWidget,
+    power_labels: Vec<(ImageWidget, LabelWidget)>,
     carry_label: LabelWidget,
     travel_speed_label: LabelWidget,
     escape_click: bool,
 }
+
+#[allow(clippy::type_complexity)]
+const POWER_LABELS: &[(&str, fn(&Chara) -> String)] = &[
+    ("!icon-melee-weapon", |_chara| "000".into()),
+    ("!icon-ranged-weapon", |_chara| "000".into()),
+    ("!icon-defence-physical", |_chara| "000".into()),
+    ("!icon-defence-heat", |_chara| "000".into()),
+    ("!icon-defence-cold", |_chara| "000".into()),
+    ("!icon-defence-shock", |_chara| "000".into()),
+    ("!icon-defence-poison", |_chara| "000".into()),
+    ("!icon-defence-spirit", |_chara| "000".into()),
+];
 
 impl StatusWindow {
     pub fn new(gd: &GameData, cid: CharaId) -> StatusWindow {
@@ -152,6 +165,34 @@ impl StatusWindow {
             &format!("SPD  {}", chara.attr.spd),
             FontKind::MonoM,
         );
+        let mut y = cfg.power_labels_rect.y - cfg.power_labels_icon_rect.h as i32;
+        let power_labels = POWER_LABELS
+            .iter()
+            .map(|(icon_id, f)| {
+                y += cfg.power_labels_icon_rect.h as i32;
+                (
+                    ImageWidget::ui_img(
+                        Rect::new(
+                            cfg.power_labels_rect.x,
+                            y,
+                            cfg.power_labels_icon_rect.w,
+                            cfg.power_labels_icon_rect.h,
+                        ),
+                        icon_id,
+                    ),
+                    LabelWidget::new(
+                        Rect::new(
+                            cfg.power_labels_rect.x + cfg.power_labels_icon_rect.w as i32,
+                            y + cfg.power_labels_label_dy,
+                            0,
+                            0,
+                        ),
+                        f(chara),
+                        FontKind::MonoM,
+                    ),
+                )
+            })
+            .collect();
         let carry_label = LabelWidget::new(
             cfg.carry_label_rect,
             &format!(
@@ -187,6 +228,7 @@ impl StatusWindow {
             spd_label,
             carry_label,
             travel_speed_label,
+            power_labels,
             escape_click: false,
         }
     }
@@ -213,6 +255,12 @@ impl Window for StatusWindow {
         self.wil_label.draw(context);
         self.cha_label.draw(context);
         self.spd_label.draw(context);
+
+        for (image, label) in &mut self.power_labels {
+            image.draw(context);
+            label.draw(context);
+        }
+
         self.carry_label.draw(context);
         self.travel_speed_label.draw(context);
     }
