@@ -1,3 +1,4 @@
+item_info_text-hit = 命中: {$hit}
 item_info_text-item_kind = アイテムの種別: {$item_kind}
 item_info_text-material = 素材: {$material}
 item_info_text-medical_effect = {$medical_effect}

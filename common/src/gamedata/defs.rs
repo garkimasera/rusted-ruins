@@ -3,7 +3,7 @@
 use ordered_float::NotNan;
 
 use crate::gamedata::effect::Effect;
-use crate::gamedata::skill::SkillKind;
+use crate::gamedata::skill::{MagicKind, SkillKind, WeaponKind};
 use crate::objholder::ItemIdx;
 use std::ops::{Index, IndexMut};
 
@@ -142,10 +142,6 @@ pub struct Ability {
     pub group: AbilityGroup,
     pub icon: String,
     pub effect: Effect,
-    #[serde(default)]
-    pub power: f32,
-    #[serde(default)]
-    pub hit_power: f32,
     pub power_calc: PowerCalcMethod,
     #[serde(default)]
     pub cost_sp: u32,
@@ -153,15 +149,41 @@ pub struct Ability {
     pub cost_mp: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum PowerCalcMethod {
-    Num(f32),
-    Magic,
+    Fixed,
+    BareHands,
+    Melee(WeaponKind),
+    Ranged(WeaponKind),
+    Release,
+    Magic(MagicKind),
+    Medical,
+    Throw(u32),
     Custom(String),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct BasePower(pub NotNan<f32>, pub NotNan<f32>);
+
+impl Default for BasePower {
+    fn default() -> Self {
+        BasePower::new(1.0, 0.0)
+    }
+}
+
+impl BasePower {
+    pub fn new(p: f32, var: f32) -> Self {
+        BasePower(NotNan::new(p).unwrap(), NotNan::new(var).unwrap())
+    }
+}
+
+impl std::ops::Mul<f32> for BasePower {
+    type Output = Self;
+    fn mul(self, rhs: f32) -> Self {
+        let rhs = NotNan::new(rhs).unwrap();
+        BasePower(self.0 * rhs, self.1)
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum AbilityGroup {

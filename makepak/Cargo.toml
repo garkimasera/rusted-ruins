@@ -15,7 +15,7 @@ ron = "0.7"
 thiserror = "1"
 tar = "0.4"
 clap = { version = "3", features = ["derive"] }
-image = "0.23"
+image = "0.24"
 
 [dependencies.rusted-ruins-geom]
 path = "../geom"

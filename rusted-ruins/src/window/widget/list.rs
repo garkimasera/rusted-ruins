@@ -296,7 +296,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 }
             }
             Command::Move { dir } => {
-                audio::play_sound("select-item");
+                if self.row_highlight {
+                    audio::play_sound("select-item");
+                }
 
                 if self.n_row == 0 {
                     return None;
@@ -350,7 +352,9 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 if let Some(idx) = self.get_idx_from_pos(x, y) {
                     if self.current_choice != idx {
                         self.current_choice = idx;
-                        audio::play_sound("select-item");
+                        if self.row_highlight {
+                            audio::play_sound("select-item");
+                        }
                         return Some(ListWidgetResponse::SelectionChanged(
                             self.get_current_choice(),
                         ));

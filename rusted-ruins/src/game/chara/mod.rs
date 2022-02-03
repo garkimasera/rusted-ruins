@@ -1,5 +1,4 @@
 pub mod gen;
-pub mod power;
 pub mod preturn;
 pub mod status;
 mod total_modifier;

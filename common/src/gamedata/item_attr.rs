@@ -46,22 +46,22 @@ pub enum ItemObjAttr {
     /// Hours to rotting for food items
     Rot(Duration),
     /// Power for weapon items
-    WeaponPower(BasePower),
+    Weapon {
+        base_power: BasePower,
+        hit: NotNan<f32>,
+    },
     /// Defence for armor items
     Defence(ElementArray<u16>),
     /// Effect for food or potion items
     Medical {
-        power: BasePower,
         effect: Effect,
     },
     /// Effect for releasable items
     Release {
-        power: BasePower,
         effect: Effect,
     },
     /// Effect for throwable items
     Throw {
-        power: BasePower,
         effect: Effect,
     },
     /// For harvestable items

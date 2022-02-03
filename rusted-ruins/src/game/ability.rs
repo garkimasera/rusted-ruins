@@ -24,16 +24,15 @@ pub fn use_ability(game: &mut Game, ability_id: &AbilityId, cid: CharaId, target
         return false;
     }
 
-    let power = crate::game::ability::calc_power(&game.gd, ability, cid) * ability.power;
-    let hit_power = ability.hit_power;
+    let power = super::power::calc_power(&game.gd, cid, &ability.power_calc);
+    let hit = super::power::calc_hit(&game.gd, cid, &ability.power_calc);
 
     let chara = game.gd.chara.get(cid);
     trace!(
-        "{} uses active skill \"{}\", power = {}, hit_power = {}",
+        "{} uses active skill \"{}\", power = {}",
         chara.to_text(),
         ability_id,
         power,
-        hit_power,
     );
 
     match ability.group {
@@ -45,21 +44,8 @@ pub fn use_ability(game: &mut Game, ability_id: &AbilityId, cid: CharaId, target
         }
     }
 
-    do_effect(game, &ability.effect, Some(cid), target, power, hit_power);
+    do_effect(game, &ability.effect, Some(cid), target, power, hit);
     true
-}
-
-pub fn calc_power(gd: &GameData, ability: &'static Ability, cid: CharaId) -> f32 {
-    match ability.power_calc {
-        PowerCalcMethod::Num(n) => n,
-        PowerCalcMethod::Magic => {
-            let chara = gd.chara.get(cid);
-            let skill_level = chara.skill_level(SkillKind::MagicDevice) as f32;
-            let int = chara.attr.int as f32;
-            skill_level * int
-        }
-        _ => todo!(),
-    }
 }
 
 #[extend::ext(pub)]

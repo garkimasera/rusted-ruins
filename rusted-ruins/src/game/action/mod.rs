@@ -7,10 +7,10 @@ pub mod use_item;
 use super::damage::*;
 use super::effect::{do_effect, weapon_to_effect};
 use super::extrait::*;
+use super::power::{calc_hit, calc_power};
 use super::target::Target;
 use super::{Game, InfoGetter};
 use common::gamedata::*;
-use common::gobj;
 use geom::*;
 use rules::RULES;
 
@@ -63,99 +63,90 @@ pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
 
 /// Melee attack
 pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
-    use crate::game::chara::power::*;
-
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, weapon_power) = if let Some(weapon) =
-        attacker.equip.item(EquipSlotKind::MeleeWeapon, 0)
-    {
-        let skill_kind = get_skill_kind_from_weapon(weapon);
-        let weapon_power = find_attr!(weapon.obj(), ItemObjAttr::WeaponPower(power))
-            .map(|power| power.calc(weapon.power_factor()))
-            .unwrap_or(0.0);
-        (weapon_to_effect(weapon), skill_kind, weapon_power)
-    } else {
-        // Attack by bare hands
-        let skill_level = game.gd.chara.get(target).skills.get(SkillKind::BareHands);
+    let (effect, power_calc) =
+        if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
+            let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
+                weapon_kind
+            } else {
+                return;
+            };
+            (
+                weapon_to_effect(weapon),
+                PowerCalcMethod::Melee(weapon_kind),
+            )
+        } else {
+            // Attack by bare hands
+            let skill_level = game.gd.chara.get(target).skills.get(SkillKind::BareHands);
 
-        let base_power = skill_level as f32 * RULES.combat.bare_hand_power_factor
-            + RULES.combat.bare_hand_power_base;
-        let base_power = base_power + (1.0 + rng::gen_range(0.0..RULES.combat.bare_hand_power_var));
+            let base_power = skill_level as f32 * RULES.power.bare_hand_power_factor
+                + RULES.power.bare_hand_power_base
+                + 1.0;
+            let base_power_var = RULES.power.bare_hand_power_var;
+            let hit = RULES.power.bare_hand_hit;
 
-        let effect = Effect {
-            kind: vec![EffectKind::Melee {
-                element: Element::Physical,
-            }],
-            target_mode: TargetMode::Enemy,
-            power_adjust: vec![],
-            range: 1,
-            shape: ShapeKind::OneTile,
-            size: 0,
-            anim_kind: EffectAnimKind::Chara,
-            anim_img: "!damage-blunt".into(),
-            anim_img_shot: String::new(),
-            sound: "punch".into(),
+            let effect = Effect {
+                kind: vec![EffectKind::Melee {
+                    element: Element::Physical,
+                }],
+                target_mode: TargetMode::Enemy,
+                base_power: BasePower::new(base_power, base_power_var),
+                hit,
+                range: 1,
+                shape: ShapeKind::OneTile,
+                size: 0,
+                anim_kind: EffectAnimKind::Chara,
+                anim_img: "!damage-blunt".into(),
+                sound: "punch".into(),
+                ..Effect::default()
+            };
+            (effect, PowerCalcMethod::BareHands)
         };
-        (effect, SkillKind::BareHands, base_power)
-    };
-    let (power, hit_power) = calc_power(
-        attacker,
-        CharaPowerKind::MeleeAttack,
-        Element::Physical,
-        skill_kind,
-    );
-    let power = power * weapon_power;
+    let power = super::power::calc_power(&game.gd, cid, &power_calc);
+    let hit = super::power::calc_hit(&game.gd, cid, &power_calc);
 
-    do_effect(game, &effect, Some(cid), target, power, hit_power);
+    do_effect(game, &effect, Some(cid), target, power, hit);
 
     // Exp processing
     let target_level = game.gd.chara.get(target).lv;
     let attacker = game.gd.chara.get_mut(cid);
+    let skill_kind = match power_calc {
+        PowerCalcMethod::BareHands => SkillKind::BareHands,
+        PowerCalcMethod::Melee(weapon_kind) => weapon_kind.into(),
+        _ => unreachable!(),
+    };
     attacker.add_attack_exp(skill_kind, target_level);
 }
 
 /// Shoot target
 pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
-    use crate::game::chara::power::*;
-
     if !game.gd.target_visible(cid, target) || cid == target {
         return false;
     }
 
     let attacker = game.gd.chara.get(cid);
-    let (effect, skill_kind, weapon_power) =
+    let (effect, weapon_kind) =
         if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
-            let skill_kind = get_skill_kind_from_weapon(weapon);
-            let weapon_power = find_attr!(weapon.obj(), ItemObjAttr::WeaponPower(power))
-                .map(|power| power.calc(weapon.power_factor()))
-                .unwrap_or(0.0);
-            (weapon_to_effect(weapon), skill_kind, weapon_power)
+            let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
+                weapon_kind
+            } else {
+                return false;
+            };
+            (weapon_to_effect(weapon), weapon_kind)
         } else {
             return false;
         };
-    let (power, hit_power) = calc_power(
-        attacker,
-        CharaPowerKind::RangedAttack,
-        Element::Physical,
-        skill_kind,
-    );
-    let power = power * weapon_power;
-    do_effect(game, &effect, Some(cid), target, power, hit_power);
+    let power_calc = PowerCalcMethod::Ranged(weapon_kind);
+    let power = calc_power(&game.gd, cid, &power_calc);
+    let hit = calc_hit(&game.gd, cid, &power_calc);
+    do_effect(game, &effect, Some(cid), target, power, hit);
 
     // Exp processing
     let target_level = game.gd.chara.get(target).lv;
     let attacker = game.gd.chara.get_mut(cid);
-    attacker.add_attack_exp(skill_kind, target_level);
+    attacker.add_attack_exp(weapon_kind.into(), target_level);
 
     true
-}
-
-fn get_skill_kind_from_weapon(item: &Item) -> SkillKind {
-    let weapon_obj = gobj::get_obj(item.idx);
-    match weapon_obj.kind {
-        ItemKind::Weapon(kind) => kind.into(),
-        _ => SkillKind::BareHands,
-    }
 }
 
 /// Throw one item
@@ -163,20 +154,14 @@ pub fn throw_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Targe
     let gd = &mut game.gd;
     let effect = crate::game::item::throw::item_to_throw_effect(gd, il, cid);
     let item = gd.remove_item_and_get(il, 1);
+
+    let power_calc = PowerCalcMethod::Throw(item.w());
+    let power = calc_power(gd, cid, &power_calc);
+    let hit = calc_hit(gd, cid, &power_calc);
+
     let chara = gd.chara.get(cid);
-
-    let power = find_attr!(item.obj(), ItemObjAttr::Throw { power, .. } => power);
-
-    let power = if let Some(power) = power {
-        power.calc(item.power_factor())
-            * chara.attr.str as f32
-            * chara.attr.dex as f32
-            * (chara.skill_level(SkillKind::Throwing) as f32 + RULES.combat.skill_base)
-    } else {
-        item.w() as f32 * RULES.effect.throw_weight_to_power_factor * chara.attr.str as f32
-    };
     game_log_i!("throw-item"; chara=chara, item=item);
-    super::effect::do_effect(game, &effect, Some(cid), target, power, 1.0);
+    super::effect::do_effect(game, &effect, Some(cid), target, power, hit);
 
     // Exp processing
     let target_level = match target {
@@ -195,11 +180,10 @@ pub fn drink_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
     let chara = gd.chara.get_mut(cid);
     game_log_i!("drink-item"; chara=chara, item=item);
 
-    if let Some(ItemObjAttr::Medical { power, effect }) =
-        find_attr!(item.obj(), ItemObjAttr::Medical)
-    {
-        let power = power.calc(item.power_factor() * RULES.effect.item_drink_power_factor);
-        super::effect::do_effect(game, effect, None, cid, power, 1.0);
+    if let Some(ItemObjAttr::Medical { effect }) = find_attr!(item.obj(), ItemObjAttr::Medical) {
+        let power = calc_power(&game.gd, cid, &PowerCalcMethod::Medical) * item.power_factor();
+        let hit = calc_hit(&game.gd, cid, &PowerCalcMethod::Medical);
+        super::effect::do_effect(game, effect, None, cid, power, hit);
     }
 }
 
@@ -224,11 +208,11 @@ pub fn eat_item(game: &mut Game, il: ItemLocation, cid: CharaId) {
         do_damage(game, cid, damage, CharaDamageKind::Starve, None);
     }
 
-    if let Some(ItemObjAttr::Medical { power, effect }) =
-        find_attr!(item.obj(), ItemObjAttr::Medical)
+    if let Some(ItemObjAttr::Medical { effect, .. }) = find_attr!(item.obj(), ItemObjAttr::Medical)
     {
-        let power = power.calc(item.power_factor() * RULES.effect.item_drink_power_factor);
-        super::effect::do_effect(game, effect, None, cid, power, 1.0);
+        let power = calc_power(&game.gd, cid, &PowerCalcMethod::Medical) * item.power_factor();
+        let hit = calc_hit(&game.gd, cid, &PowerCalcMethod::Medical);
+        super::effect::do_effect(game, effect, None, cid, power, hit);
     }
 }
 
@@ -238,14 +222,13 @@ pub fn release_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Tar
 
     match item.charge() {
         Some(n) if n >= 1 => {
-            if let Some(ItemObjAttr::Release { power, effect }) =
+            if let Some(ItemObjAttr::Release { effect, .. }) =
                 find_attr!(item_obj, ItemObjAttr::Release)
             {
-                let skill_level = game.gd.chara.get(cid).skill_level(SkillKind::MagicDevice) as f32;
-                let item_power = power.calc(item.power_factor());
                 let power =
-                    (skill_level / 10.0 + 1.0) * item_power * RULES.params.magic_device_base_power;
-                super::effect::do_effect(game, effect, Some(cid), target, power, 1.0);
+                    calc_power(&game.gd, cid, &PowerCalcMethod::Release) * item.power_factor();
+                let hit = calc_hit(&game.gd, cid, &PowerCalcMethod::Release);
+                super::effect::do_effect(game, effect, Some(cid), target, power, hit);
             } else {
                 return;
             }

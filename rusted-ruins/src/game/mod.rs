@@ -20,6 +20,7 @@ mod npc;
 pub mod party;
 pub mod play_time;
 pub mod playeract;
+pub mod power;
 pub mod quest;
 mod region;
 pub mod saveload;

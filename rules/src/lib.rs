@@ -32,6 +32,7 @@ pub mod newgame;
 pub mod npc;
 pub mod npc_ai;
 pub mod params;
+pub mod power;
 pub mod quest;
 pub mod race;
 pub mod recipe;
@@ -116,6 +117,7 @@ pub struct Rules {
     pub npc: npc::Npc,
     pub npc_ai: npc_ai::NpcAIs,
     pub params: params::Params,
+    pub power: power::Power,
     pub quest: quest::Quest,
     pub races: race::Races,
     pub recipes: recipe::Recipes,
@@ -151,6 +153,7 @@ impl Rules {
             npc: npc::Npc::load(&dirs)?,
             npc_ai: npc_ai::NpcAIs::load(&dirs)?,
             params: params::Params::load(&dirs)?,
+            power: power::Power::load(&dirs)?,
             quest: quest::Quest::load(&dirs)?,
             races: race::Races::load(&dirs)?,
             recipes: recipe::Recipes::load(&dirs)?,

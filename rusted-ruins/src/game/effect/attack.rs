@@ -6,8 +6,8 @@ use crate::rng;
 use common::gamedata::*;
 use common::gobj;
 use geom::ShapeKind;
+use ordered_float::NotNan;
 use rng::Rng;
-// use rules::RULES;
 
 #[derive(Clone, Copy)]
 struct AttackParams {
@@ -212,6 +212,14 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
         _ => unreachable!(),
     };
 
+    let (base_power, hit) = if let Some(ItemObjAttr::Weapon { base_power, hit }) =
+        find_attr!(item.obj(), ItemObjAttr::Weapon)
+    {
+        (*base_power, *hit)
+    } else {
+        (BasePower::default(), NotNan::default())
+    };
+
     let effect_kind = vec![if weapon_kind.is_melee() {
         EffectKind::Melee {
             element: Element::Physical,
@@ -255,6 +263,8 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
     Effect {
         kind: effect_kind,
         target_mode: TargetMode::Enemy,
+        base_power,
+        hit,
         power_adjust: vec![],
         range: 1,
         shape: ShapeKind::OneTile,

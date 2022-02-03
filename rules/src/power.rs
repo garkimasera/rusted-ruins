@@ -1,0 +1,23 @@
+use super::Rule;
+use ordered_float::NotNan;
+
+/// Rules for calculation related to power/hit calclation.
+#[derive(Serialize, Deserialize)]
+pub struct Power {
+    pub skill_base: f32,
+    pub bare_hand_hit: NotNan<f32>,
+    pub bare_hand_power_base: f32,
+    pub bare_hand_power_factor: f32,
+    pub bare_hand_power_var: f32,
+    pub throw_weight_factor: f32,
+    pub throw_hit_str_factor: f32,
+    pub medical_power_base: f32,
+}
+
+impl Rule for Power {
+    const NAME: &'static str = "power";
+
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
+}

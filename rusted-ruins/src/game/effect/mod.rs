@@ -21,13 +21,16 @@ pub fn do_effect<T: Into<Target>>(
     cause: Option<CharaId>,
     target: T,
     power: f32,
-    hit_power: f32,
+    hit: f32,
 ) {
     let target = target.into();
     // Target tiles
     let tiles = get_tiles(game, effect, target, cause);
     // Target characters
     let cids = get_cids(game, effect, &tiles);
+
+    let power = effect.base_power.calc(power);
+    let hit = f32::from(effect.hit) + hit;
 
     for effect_kind in &effect.kind {
         match effect_kind {
@@ -38,26 +41,12 @@ pub fn do_effect<T: Into<Target>>(
             }
             EffectKind::Melee { element } => {
                 for cid in &cids {
-                    self::attack::melee_attack(
-                        game,
-                        cause.unwrap(),
-                        *cid,
-                        power,
-                        hit_power,
-                        *element,
-                    );
+                    self::attack::melee_attack(game, cause.unwrap(), *cid, power, hit, *element);
                 }
             }
             EffectKind::Ranged { element } => {
                 for cid in &cids {
-                    self::attack::ranged_attack(
-                        game,
-                        cause.unwrap(),
-                        *cid,
-                        power,
-                        hit_power,
-                        *element,
-                    );
+                    self::attack::ranged_attack(game, cause.unwrap(), *cid, power, hit, *element);
                 }
             }
             EffectKind::Explosion { element } => {
@@ -67,7 +56,7 @@ pub fn do_effect<T: Into<Target>>(
                         cause.unwrap(),
                         *cid,
                         power,
-                        hit_power,
+                        hit,
                         *element,
                     );
                 }

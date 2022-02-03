@@ -51,6 +51,10 @@ macro_rules! define_skill_kind {
         {
             $($creation:ident, $creation_as_str:expr,)*
         }
+        magic_kind = $magic_start_value:expr;
+        {
+            $($magic:ident, $magic_as_str:expr,)*
+        }
     } => {
         #[repr(u16)]
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
@@ -75,6 +79,11 @@ macro_rules! define_skill_kind {
             $(
                 $creation,
             )*
+            #[doc(hidden)]
+            _DummyMagicSkill = $magic_start_value,
+            $(
+                $magic,
+            )*
         }
 
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
@@ -93,6 +102,13 @@ macro_rules! define_skill_kind {
         pub enum CreationKind {
             $(
                 $creation,
+            )*
+        }
+
+        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
+        pub enum MagicKind {
+            $(
+                $magic,
             )*
         }
 
@@ -198,6 +214,16 @@ macro_rules! define_skill_kind {
             }
         }
 
+        impl From<MagicKind> for SkillKind {
+            fn from(magic_kind: MagicKind) -> Self {
+                match magic_kind {
+                    $(
+                        MagicKind::$magic => SkillKind::$magic,
+                    )*
+                }
+            }
+        }
+
         impl WeaponKind {
             pub fn is_melee(self) -> bool {
                 self < WeaponKind::_DummyWeapon
@@ -259,6 +285,16 @@ macro_rules! define_skill_kind {
                 )*
             ];
         }
+
+        impl MagicKind {
+            pub fn textid(self) -> &'static str {
+                match self {
+                    $(
+                        MagicKind::$magic => concat!("magic_kind-", $magic_as_str),
+                    )*
+                }
+            }
+        }
     }
 }
 
@@ -272,6 +308,7 @@ define_skill_kind! {
         Evasion, "evasion",
         Conceal, "conceal",
         Detection, "detection",
+        Magic, "magic",
         MagicDevice, "magic_device",
         Mining, "mining",
         Plants, "plants",
@@ -300,5 +337,11 @@ define_skill_kind! {
         Craft, "craft",
         Pharmacy, "pharmacy",
         Smith, "smith",
+    }
+    magic_kind = 0x1200;
+    {
+        Heat, "heat",
+        Cold, "cold",
+        Shock, "shock",
     }
 }

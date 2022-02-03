@@ -1,6 +1,7 @@
 use crate::game::extrait::*;
 use crate::text::ToText;
 use common::gamedata::*;
+use ordered_float::NotNan;
 
 const UI_IMG_ID_ITEM_INFO: &str = "!icon-item-info";
 
@@ -34,10 +35,12 @@ impl ItemInfoText {
             ItemKind::Throwing => {}
             ItemKind::MagicDevice => {}
             ItemKind::Weapon(weapon_kind) => {
-                let power = if let Some(power) = find_attr!(obj, ItemObjAttr::WeaponPower(power)) {
-                    power.calc_without_var(item.power_factor())
+                let (power, hit) = if let Some(ItemObjAttr::Weapon { base_power, hit }) =
+                    find_attr!(obj, ItemObjAttr::Weapon)
+                {
+                    (base_power.calc_without_var(item.power_factor()), *hit)
                 } else {
-                    0.0
+                    (0.0, NotNan::default())
                 };
                 if weapon_kind.is_melee() {
                     let t = misc_txt_format!(
@@ -48,6 +51,9 @@ impl ItemInfoText {
                         "item_info_text-ranged_weapon"; power=power);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
+                let t = misc_txt_format!(
+                    "item_info_text-hit"; hit=hit);
+                desc_text.push((UI_IMG_ID_ITEM_INFO, t));
             }
             ItemKind::Armor(_) => {
                 if item.defence(Element::Physical) != 0 {

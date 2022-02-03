@@ -1,5 +1,6 @@
 use super::defs::Element;
 use super::skill::SkillKind;
+use super::BasePower;
 use geom::ShapeKind;
 use ordered_float::NotNan;
 
@@ -7,6 +8,10 @@ use ordered_float::NotNan;
 pub struct Effect {
     pub kind: Vec<EffectKind>,
     pub target_mode: TargetMode,
+    #[serde(default)]
+    pub base_power: BasePower,
+    #[serde(default)]
+    pub hit: NotNan<f32>,
     #[serde(default)]
     pub power_adjust: Vec<NotNan<f32>>,
     pub range: u32,
@@ -27,6 +32,8 @@ impl Default for Effect {
         Effect {
             kind: Vec::new(),
             target_mode: TargetMode::default(),
+            base_power: BasePower::new(1.0, 0.0),
+            hit: NotNan::default(),
             power_adjust: Vec::new(),
             range: 1,
             shape: ShapeKind::OneTile,
