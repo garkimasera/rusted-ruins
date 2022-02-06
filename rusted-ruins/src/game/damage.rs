@@ -1,4 +1,5 @@
 use crate::config::changeable::game_log_cfg;
+use crate::damage_popup::PopupKind;
 use crate::game::extrait::*;
 use crate::game::{Game, InfoGetter};
 use common::gamedata::*;
@@ -34,7 +35,7 @@ pub fn do_damage(
     }
 
     if let Some(pos) = pos {
-        crate::chara_log::get_log_mut().push_damage(cid, pos, damage);
+        crate::damage_popup::push(cid, pos, PopupKind::Damage(damage));
     } else {
         error!("damage to character that is not on map");
     }

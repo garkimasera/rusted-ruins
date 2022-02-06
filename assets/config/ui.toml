@@ -250,6 +250,8 @@ n_shortcut = 10
 target_icon_x = 32
 target_icon_y = 28
 
-[damage]
-damage_view_dy = 20
-n_frame = 12
+[damage_popup]
+start_dy = 20
+digit_h = 14
+n_frame = 18
+speed = 2

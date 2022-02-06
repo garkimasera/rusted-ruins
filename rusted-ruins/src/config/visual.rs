@@ -73,7 +73,7 @@ pub struct UiConfig {
     pub sidebar: SidebarConfig,
     pub toolbar: ToolbarConfig,
     pub chara_info: CharaInfoConfig,
-    pub damage: DamageConfig,
+    pub damage_popup: DamagePopupConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -411,7 +411,9 @@ pub struct CharaInfoConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct DamageConfig {
-    pub damage_view_dy: i32,
+pub struct DamagePopupConfig {
+    pub start_dy: i32,
+    pub digit_h: i32,
     pub n_frame: u32,
+    pub speed: i32,
 }

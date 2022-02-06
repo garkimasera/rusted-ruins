@@ -26,10 +26,10 @@ mod error;
 mod log;
 #[macro_use]
 mod text;
-mod chara_log;
 mod config;
 mod context;
 mod cursor;
+mod damage_popup;
 mod draw;
 mod eventhandler;
 mod game;

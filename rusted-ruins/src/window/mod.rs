@@ -324,7 +324,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
         if anim.is_some() {
             self.passed_frame += 1;
         }
-        crate::chara_log::advance_frame();
+        crate::damage_popup::advance_frame();
     }
 
     pub fn animation_now(&self) -> bool {

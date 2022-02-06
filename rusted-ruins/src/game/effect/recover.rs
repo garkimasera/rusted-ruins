@@ -9,5 +9,5 @@ pub fn recover_hp(game: &mut Game, cid: CharaId, power: f32) {
     let pos = game.gd.chara_pos(cid).unwrap();
     let chara = game.gd.chara.get_mut(cid);
     chara.heal(value);
-    crate::chara_log::get_log_mut().push_damage(cid, pos, -value);
+    crate::damage_popup::push(cid, pos, crate::damage_popup::PopupKind::Heal(value));
 }

@@ -1,4 +1,5 @@
 use crate::config::changeable::game_log_cfg;
+use crate::damage_popup::PopupKind;
 use crate::game::damage::*;
 use crate::game::extrait::*;
 use crate::game::power::calc_evasion_power;
@@ -182,8 +183,14 @@ fn hit_judge(gd: &GameData, hit_power: f32, target_id: CharaId, kind: CharaDamag
     );
     let is_hit = rng::get_rng().gen_bool(p.into());
 
-    if !is_hit && game_log_cfg().combat_log.attack() {
-        game_log_i!("attack-evade"; chara=gd.chara.get(target_id));
+    if !is_hit {
+        if let Some(pos) = gd.chara_pos(target_id) {
+            crate::damage_popup::push(target_id, pos, PopupKind::Miss);
+        }
+
+        if game_log_cfg().combat_log.attack() {
+            game_log_i!("attack-evade"; chara=gd.chara.get(target_id));
+        }
     }
 
     is_hit
