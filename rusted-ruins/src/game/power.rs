@@ -2,6 +2,8 @@ use crate::game::chara::CharaExt;
 use common::gamedata::*;
 use rules::RULES;
 
+use super::damage::CharaDamageKind;
+
 pub fn calc_power(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 {
     let skill_base = RULES.power.skill_base;
 
@@ -114,4 +116,19 @@ pub fn calc_hit(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 {
         }
         PowerCalcMethod::Custom(..) => todo!(),
     }
+}
+
+/// Calculate evasion power
+pub fn calc_evasion_power(gd: &GameData, cid: CharaId, kind: CharaDamageKind) -> f32 {
+    let chara = gd.chara.get(cid);
+    let skill_level = chara.skill_level(SkillKind::Evasion) as f32;
+    let chara_param = chara.attr.dex as f32;
+
+    let correction = match kind {
+        CharaDamageKind::MeleeAttack => 1.0,
+        CharaDamageKind::RangedAttack => 1.0,
+        _ => 0.0,
+    };
+
+    skill_level + chara_param + correction + RULES.power.base_evasion_power
 }

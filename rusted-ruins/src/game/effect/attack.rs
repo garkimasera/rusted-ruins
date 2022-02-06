@@ -1,6 +1,7 @@
 use crate::config::changeable::game_log_cfg;
 use crate::game::damage::*;
 use crate::game::extrait::*;
+use crate::game::power::calc_evasion_power;
 use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;
@@ -8,6 +9,7 @@ use common::gobj;
 use geom::ShapeKind;
 use ordered_float::NotNan;
 use rng::Rng;
+use rules::RULES;
 
 #[derive(Clone, Copy)]
 struct AttackParams {
@@ -161,40 +163,23 @@ fn calc_defence_power(equip_def: u32, chara_param: u16, skill_level: u32) -> f32
     (equip_def + 16.0) * chara_param * (skill_level + 8.0)
 }
 
-/// Calculate evasion power
-fn calc_evasion_power(equip: u32, skill_level: u32, chara_param: u16) -> f32 {
-    let equip = equip as f32;
-    let skill_level = skill_level as f32;
-    let chara_param = chara_param as f32 * 0.25;
+fn hit_judge(gd: &GameData, hit_power: f32, target_id: CharaId, kind: CharaDamageKind) -> bool {
+    let evasion_power = calc_evasion_power(gd, target_id, kind);
 
-    equip + skill_level + chara_param * 0.5
-}
-
-fn hit_judge(
-    gd: &GameData,
-    accuracy_power: f32,
-    target_id: CharaId,
-    kind: CharaDamageKind,
-) -> bool {
-    let evasion_power = {
-        let equip = match kind {
-            CharaDamageKind::MeleeAttack => 1,
-            CharaDamageKind::RangedAttack => 1,
-            _ => {
-                return true;
-            } // Some kind damage always hits
-        };
-
-        let target = gd.chara.get(target_id);
-        calc_evasion_power(
-            equip,
-            target.skill_level(SkillKind::Evasion),
-            target.attr.dex,
-        )
+    let d = hit_power - evasion_power + RULES.power.hit_calc_factor0;
+    let factor = if d < 0.0 {
+        RULES.power.hit_calc_factor1
+    } else {
+        RULES.power.hit_calc_factor2
     };
-
-    let d = accuracy_power - evasion_power;
-    let p = 1.0 / (1.0 + (-d * 0.125).exp());
+    let d = factor * d;
+    let p = (0.5 * d) / (1.0 + d.abs()) + 0.5;
+    trace!(
+        "hit_power = {}, evasion_power = {}, p = {}",
+        hit_power,
+        evasion_power,
+        p
+    );
     let is_hit = rng::get_rng().gen_bool(p.into());
 
     if !is_hit && game_log_cfg().combat_log.attack() {
