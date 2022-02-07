@@ -118,15 +118,33 @@ pub fn calc_hit(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
+pub enum AttackKind {
+    Melee,
+    Ranged,
+    Explosion,
+    // Direct,
+}
+
+impl From<AttackKind> for CharaDamageKind {
+    fn from(kind: AttackKind) -> CharaDamageKind {
+        match kind {
+            AttackKind::Melee => CharaDamageKind::MeleeAttack,
+            AttackKind::Ranged => CharaDamageKind::RangedAttack,
+            AttackKind::Explosion => CharaDamageKind::Explosion,
+        }
+    }
+}
+
 /// Calculate evasion power
-pub fn calc_evasion_power(gd: &GameData, cid: CharaId, kind: CharaDamageKind) -> f32 {
+pub fn calc_evasion_power(gd: &GameData, cid: CharaId, kind: AttackKind) -> f32 {
     let chara = gd.chara.get(cid);
     let skill_level = chara.skill_level(SkillKind::Evasion) as f32;
     let chara_param = chara.attr.dex as f32;
 
     let correction = match kind {
-        CharaDamageKind::MeleeAttack => 1.0,
-        CharaDamageKind::RangedAttack => 1.0,
+        AttackKind::Melee => 1.0,
+        AttackKind::Ranged => 1.0,
         _ => 0.0,
     };
 

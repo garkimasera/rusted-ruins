@@ -3,6 +3,7 @@ use crate::damage_popup::PopupKind;
 use crate::game::damage::*;
 use crate::game::extrait::*;
 use crate::game::power::calc_evasion_power;
+use crate::game::power::AttackKind;
 use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;
@@ -15,7 +16,7 @@ use rules::RULES;
 #[derive(Clone, Copy)]
 struct AttackParams {
     pub attacker_id: Option<CharaId>,
-    pub kind: CharaDamageKind,
+    pub kind: AttackKind,
     pub element: Element,
     pub attack_power: f32,
     pub hit_power: f32,
@@ -40,7 +41,7 @@ pub fn melee_attack(
 
     let attack_params = AttackParams {
         attacker_id: Some(cid),
-        kind: CharaDamageKind::MeleeAttack,
+        kind: AttackKind::Melee,
         element,
         attack_power,
         hit_power,
@@ -67,7 +68,7 @@ pub fn ranged_attack(
 
     let attack_params = AttackParams {
         attacker_id: Some(cid),
-        kind: CharaDamageKind::RangedAttack,
+        kind: AttackKind::Ranged,
         element,
         attack_power,
         hit_power,
@@ -88,11 +89,11 @@ pub fn explosion_attack(
 ) {
     let attack_params = AttackParams {
         attacker_id: Some(cid),
-        kind: CharaDamageKind::Explosion,
+        kind: AttackKind::Explosion,
         element,
         attack_power,
         hit_power,
-        always_hit: false,
+        always_hit: true,
     };
 
     attack_target(game, attack_params, cid, target_id);
@@ -127,7 +128,13 @@ fn attack_target(
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
     // Give damage
-    let hp = do_damage(game, target_id, damage, attack_params.kind, Some(cid));
+    let hp = do_damage(
+        game,
+        target_id,
+        damage,
+        attack_params.kind.into(),
+        Some(cid),
+    );
 
     if hp > 0 {
         // Exp for targetted character
@@ -164,7 +171,7 @@ fn calc_defence_power(equip_def: u32, chara_param: u16, skill_level: u32) -> f32
     (equip_def + 16.0) * chara_param * (skill_level + 8.0)
 }
 
-fn hit_judge(gd: &GameData, hit_power: f32, target_id: CharaId, kind: CharaDamageKind) -> bool {
+fn hit_judge(gd: &GameData, hit_power: f32, target_id: CharaId, kind: AttackKind) -> bool {
     let evasion_power = calc_evasion_power(gd, target_id, kind);
 
     let d = hit_power - evasion_power + RULES.power.hit_calc_factor0;
