@@ -5,11 +5,12 @@ use ordered_float::NotNan;
 #[derive(Serialize, Deserialize)]
 pub struct Power {
     pub skill_base: f32,
+    pub base_evasion_power: f32,
+    pub base_defence: f32,
     pub bare_hand_hit: NotNan<f32>,
     pub bare_hand_power_base: f32,
     pub bare_hand_power_factor: f32,
     pub bare_hand_power_var: f32,
-    pub base_evasion_power: f32,
     pub hit_calc_factor0: f32,
     pub hit_calc_factor1: f32,
     pub hit_calc_factor2: f32,

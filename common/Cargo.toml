@@ -37,6 +37,7 @@ tar = "0.4"
 fnv = "1"
 thiserror = "1"
 arrayvec = { version = "0.7", features = ["serde"] }
+enum-map = "2"
 regex = "1"
 derivative = "2"
 

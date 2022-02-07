@@ -343,5 +343,6 @@ define_skill_kind! {
         Heat, "heat",
         Cold, "cold",
         Shock, "shock",
+        Spirit, "spirit",
     }
 }

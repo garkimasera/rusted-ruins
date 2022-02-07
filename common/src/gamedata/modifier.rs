@@ -1,4 +1,4 @@
-use super::skill::SkillKind;
+use super::{skill::SkillKind, ElementArray};
 use derivative::Derivative;
 use fnv::FnvHashMap;
 
@@ -30,4 +30,5 @@ pub struct CharaTotalModifier {
     #[derivative(Default(value = "1.0"))]
     pub spd_factor: f32,
     pub skill_level: FnvHashMap<SkillKind, (f32, i32)>,
+    pub defence: ElementArray<f32>,
 }

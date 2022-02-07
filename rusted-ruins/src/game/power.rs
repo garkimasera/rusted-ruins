@@ -1,4 +1,4 @@
-use crate::game::chara::CharaExt;
+use crate::game::extrait::*;
 use common::gamedata::*;
 use rules::RULES;
 
@@ -118,20 +118,13 @@ pub fn calc_hit(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub enum AttackKind {
-    Melee,
-    Ranged,
-    Explosion,
-    // Direct,
-}
-
 impl From<AttackKind> for CharaDamageKind {
     fn from(kind: AttackKind) -> CharaDamageKind {
         match kind {
             AttackKind::Melee => CharaDamageKind::MeleeAttack,
             AttackKind::Ranged => CharaDamageKind::RangedAttack,
             AttackKind::Explosion => CharaDamageKind::Explosion,
+            AttackKind::Direct => CharaDamageKind::Direct,
         }
     }
 }
@@ -149,4 +142,52 @@ pub fn calc_evasion_power(gd: &GameData, cid: CharaId, kind: AttackKind) -> f32 
     };
 
     skill_level + chara_param + correction + RULES.power.base_evasion_power
+}
+
+pub fn calc_defence(gd: &GameData, cid: CharaId, element: Element, _kind: AttackKind) -> f32 {
+    let equip_def = calc_equip_defence(gd, cid, element);
+    let chara = gd.chara.get(cid);
+
+    let defence_skill_level = chara.skill_level(SkillKind::Defence);
+    let (attr, skill_level) = match element {
+        Element::None => {
+            return 1.0;
+        }
+        Element::Physical => (chara.attr.dex, defence_skill_level),
+        Element::Heat => (
+            chara.attr.dex,
+            defence_skill_level / 2 + chara.skill_level(SkillKind::Heat),
+        ),
+        Element::Cold => (
+            chara.attr.dex,
+            defence_skill_level / 2 + chara.skill_level(SkillKind::Cold),
+        ),
+        Element::Shock => (
+            chara.attr.dex,
+            defence_skill_level / 2 + chara.skill_level(SkillKind::Shock),
+        ),
+        Element::Poison => (
+            chara.attr.dex,
+            defence_skill_level / 2 + chara.skill_level(SkillKind::Pharmacy),
+        ),
+        Element::Spirit => (
+            chara.attr.wil,
+            defence_skill_level / 2 + chara.skill_level(SkillKind::Spirit),
+        ),
+    };
+
+    (equip_def as f32 + chara.tm.defence[element] + RULES.power.base_defence)
+        * attr as f32
+        * (RULES.power.skill_base + skill_level as f32)
+}
+
+/// Calculate character's defence for each elements
+fn calc_equip_defence(gd: &GameData, cid: CharaId, element: Element) -> u32 {
+    let mut def = 0u32;
+
+    for (_, _, item) in gd.get_equip_list(cid).item_iter() {
+        def = def.saturating_add(item.defence(element));
+    }
+
+    def
 }

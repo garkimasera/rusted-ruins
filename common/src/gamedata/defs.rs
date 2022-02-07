@@ -5,6 +5,7 @@ use ordered_float::NotNan;
 use crate::gamedata::effect::Effect;
 use crate::gamedata::skill::{MagicKind, SkillKind, WeaponKind};
 use crate::objholder::ItemIdx;
+use enum_map::Enum;
 use std::ops::{Index, IndexMut};
 
 /// Elements of damage/attack
@@ -51,6 +52,14 @@ impl<T> IndexMut<Element> for ElementArray<T> {
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default, Debug, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct ElementProtection(i8);
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Enum)]
+pub enum AttackKind {
+    Melee,
+    Ranged,
+    Explosion,
+    Direct,
+}
 
 /// A recipe for creation
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

@@ -3,7 +3,6 @@ use crate::damage_popup::PopupKind;
 use crate::game::damage::*;
 use crate::game::extrait::*;
 use crate::game::power::calc_evasion_power;
-use crate::game::power::AttackKind;
 use crate::game::Game;
 use crate::rng;
 use common::gamedata::*;
@@ -117,13 +116,11 @@ fn attack_target(
         return 0;
     }
 
-    let equip_def = calc_equip_defence(&game.gd, target_id);
-    let target = game.gd.chara.get_mut(target_id);
-    let defence_skill_level = target.skill_level(SkillKind::Defence);
-    let defence_power = calc_defence_power(
-        equip_def[attack_params.element],
-        target.attr.vit,
-        defence_skill_level,
+    let defence_power = crate::game::power::calc_defence(
+        &game.gd,
+        target_id,
+        attack_params.element,
+        attack_params.kind,
     );
     let damage = (attack_params.attack_power / defence_power).floor() as i32;
 
@@ -146,29 +143,6 @@ fn attack_target(
     }
 
     damage
-}
-
-/// Calculate character's defence for each elements
-fn calc_equip_defence(gd: &GameData, cid: CharaId) -> ElementArray<u32> {
-    let mut def: ElementArray<u32> = ElementArray::default();
-
-    for (_, _, item) in gd.get_equip_list(cid).item_iter() {
-        for e in &ELEMENTS {
-            def[*e] = def[*e].saturating_add(item.defence(*e));
-        }
-    }
-
-    def
-}
-
-/// Calculate defence power
-fn calc_defence_power(equip_def: u32, chara_param: u16, skill_level: u32) -> f32 {
-    assert!(chara_param > 0);
-    let equip_def = equip_def as f32;
-    let chara_param = chara_param as f32;
-    let skill_level = skill_level as f32;
-
-    (equip_def + 16.0) * chara_param * (skill_level + 8.0)
 }
 
 fn hit_judge(gd: &GameData, hit_power: f32, target_id: CharaId, kind: AttackKind) -> bool {

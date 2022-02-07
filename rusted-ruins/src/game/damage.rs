@@ -10,6 +10,7 @@ pub enum CharaDamageKind {
     MeleeAttack,
     RangedAttack,
     Explosion,
+    Direct,
     Poison,
     Starve,
 }
@@ -68,6 +69,9 @@ pub fn do_damage(
             }
             CharaDamageKind::Explosion => {
                 game_log_i!("killed-by-explosion"; chara=chara);
+            }
+            CharaDamageKind::Direct => {
+                game_log_i!("killed"; chara=chara);
             }
             CharaDamageKind::Poison => {
                 game_log_i!("killed-by-poison-damage"; chara=chara);
