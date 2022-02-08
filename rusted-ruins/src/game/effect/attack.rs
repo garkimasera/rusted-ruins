@@ -248,3 +248,61 @@ pub fn weapon_to_effect(item: &Item) -> Effect {
         sound,
     }
 }
+
+pub fn melee_attack_effect(gd: &GameData, cid: CharaId) -> (Effect, PowerCalcMethod) {
+    let chara = gd.chara.get(cid);
+    if let Some(weapon) = chara.equip.item(EquipSlotKind::MeleeWeapon, 0) {
+        let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
+            weapon_kind
+        } else {
+            unreachable!();
+        };
+        (
+            weapon_to_effect(weapon),
+            PowerCalcMethod::Melee(weapon_kind),
+        )
+    } else {
+        // Attack by bare hands
+        let skill_level = gd.chara.get(cid).skills.get(SkillKind::BareHands);
+
+        let base_power = skill_level as f32 * RULES.power.bare_hand_power_factor
+            + RULES.power.bare_hand_power_base
+            + 1.0;
+        let base_power_var = RULES.power.bare_hand_power_var;
+        let hit = RULES.power.bare_hand_hit;
+
+        let effect = Effect {
+            kind: vec![EffectKind::Melee {
+                element: Element::Physical,
+            }],
+            target_mode: TargetMode::Enemy,
+            base_power: BasePower::new(base_power, base_power_var),
+            hit,
+            range: 1,
+            shape: ShapeKind::OneTile,
+            size: 0,
+            anim_kind: EffectAnimKind::Chara,
+            anim_img: "!damage-blunt".into(),
+            sound: "punch".into(),
+            ..Effect::default()
+        };
+        (effect, PowerCalcMethod::BareHands)
+    }
+}
+
+pub fn ranged_attack_effect(gd: &GameData, cid: CharaId) -> Option<(Effect, PowerCalcMethod)> {
+    let chara = gd.chara.get(cid);
+    if let Some(weapon) = chara.equip.item(EquipSlotKind::RangedWeapon, 0) {
+        let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
+            weapon_kind
+        } else {
+            return None;
+        };
+        Some((
+            weapon_to_effect(weapon),
+            PowerCalcMethod::Ranged(weapon_kind),
+        ))
+    } else {
+        None
+    }
+}

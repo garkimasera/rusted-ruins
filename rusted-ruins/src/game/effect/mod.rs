@@ -4,7 +4,7 @@ mod range;
 mod recover;
 mod skill_learn;
 
-pub use attack::weapon_to_effect;
+pub use attack::*;
 pub use range::*;
 
 use crate::game::extrait::*;

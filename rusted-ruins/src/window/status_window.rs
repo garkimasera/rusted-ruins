@@ -6,6 +6,8 @@ use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
 use crate::game::extrait::*;
+use crate::game::power;
+use crate::game::power::calc_power;
 use crate::text::{ui_txt, ToText};
 use common::basic::SKILL_EXP_LVUP;
 use common::gamedata::*;
@@ -82,16 +84,48 @@ pub struct StatusWindow {
 }
 
 #[allow(clippy::type_complexity)]
-const POWER_LABELS: &[(&str, fn(&Chara) -> String)] = &[
-    ("!icon-melee-weapon", |_chara| "000".into()),
-    ("!icon-ranged-weapon", |_chara| "000".into()),
-    ("!icon-defence-physical", |_chara| "000".into()),
-    ("!icon-defence-heat", |_chara| "000".into()),
-    ("!icon-defence-cold", |_chara| "000".into()),
-    ("!icon-defence-shock", |_chara| "000".into()),
-    ("!icon-defence-poison", |_chara| "000".into()),
-    ("!icon-defence-spirit", |_chara| "000".into()),
+const POWER_LABELS: &[(&str, fn(&GameData, CharaId) -> String)] = &[
+    ("!icon-melee-weapon", |gd, cid| {
+        let (effect, power_calc) = crate::game::effect::melee_attack_effect(gd, cid);
+        let power = effect
+            .base_power
+            .calc_without_var(calc_power(gd, cid, &power_calc));
+        format!("{:3.0}", power.sqrt() / 4.0)
+    }),
+    ("!icon-ranged-weapon", |gd, cid| {
+        let power = crate::game::effect::ranged_attack_effect(gd, cid)
+            .map(|(effect, power_calc)| {
+                effect
+                    .base_power
+                    .calc_without_var(calc_power(gd, cid, &power_calc))
+            })
+            .unwrap_or(0.0);
+        format!("{:3.0}", power.sqrt() / 4.0)
+    }),
+    ("!icon-defence-physical", |gd, cid| {
+        defence_label(gd, cid, Element::Physical)
+    }),
+    ("!icon-defence-heat", |gd, cid| {
+        defence_label(gd, cid, Element::Heat)
+    }),
+    ("!icon-defence-cold", |gd, cid| {
+        defence_label(gd, cid, Element::Cold)
+    }),
+    ("!icon-defence-shock", |gd, cid| {
+        defence_label(gd, cid, Element::Shock)
+    }),
+    ("!icon-defence-poison", |gd, cid| {
+        defence_label(gd, cid, Element::Poison)
+    }),
+    ("!icon-defence-spirit", |gd, cid| {
+        defence_label(gd, cid, Element::Spirit)
+    }),
 ];
+
+fn defence_label(gd: &GameData, cid: CharaId, element: Element) -> String {
+    let value = power::calc_defence(gd, cid, element, AttackKind::Direct).sqrt();
+    format!("{:3.0}", value / 2.0)
+}
 
 impl StatusWindow {
     pub fn new(gd: &GameData, cid: CharaId) -> StatusWindow {
@@ -187,7 +221,7 @@ impl StatusWindow {
                             0,
                             0,
                         ),
-                        f(chara),
+                        f(gd, cid),
                         FontKind::MonoM,
                     ),
                 )

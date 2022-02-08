@@ -5,7 +5,7 @@ pub mod harvest;
 pub mod use_item;
 
 use super::damage::*;
-use super::effect::{do_effect, weapon_to_effect};
+use super::effect::{do_effect, melee_attack_effect, ranged_attack_effect};
 use super::extrait::*;
 use super::power::{calc_hit, calc_power};
 use super::target::Target;
@@ -63,45 +63,7 @@ pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
 
 /// Melee attack
 pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
-    let attacker = game.gd.chara.get(cid);
-    let (effect, power_calc) =
-        if let Some(weapon) = attacker.equip.item(EquipSlotKind::MeleeWeapon, 0) {
-            let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
-                weapon_kind
-            } else {
-                return;
-            };
-            (
-                weapon_to_effect(weapon),
-                PowerCalcMethod::Melee(weapon_kind),
-            )
-        } else {
-            // Attack by bare hands
-            let skill_level = game.gd.chara.get(target).skills.get(SkillKind::BareHands);
-
-            let base_power = skill_level as f32 * RULES.power.bare_hand_power_factor
-                + RULES.power.bare_hand_power_base
-                + 1.0;
-            let base_power_var = RULES.power.bare_hand_power_var;
-            let hit = RULES.power.bare_hand_hit;
-
-            let effect = Effect {
-                kind: vec![EffectKind::Melee {
-                    element: Element::Physical,
-                }],
-                target_mode: TargetMode::Enemy,
-                base_power: BasePower::new(base_power, base_power_var),
-                hit,
-                range: 1,
-                shape: ShapeKind::OneTile,
-                size: 0,
-                anim_kind: EffectAnimKind::Chara,
-                anim_img: "!damage-blunt".into(),
-                sound: "punch".into(),
-                ..Effect::default()
-            };
-            (effect, PowerCalcMethod::BareHands)
-        };
+    let (effect, power_calc) = melee_attack_effect(&game.gd, cid);
     let power = super::power::calc_power(&game.gd, cid, &power_calc);
     let hit = super::power::calc_hit(&game.gd, cid, &power_calc);
 
@@ -124,19 +86,11 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
         return false;
     }
 
-    let attacker = game.gd.chara.get(cid);
-    let (effect, weapon_kind) =
-        if let Some(weapon) = attacker.equip.item(EquipSlotKind::RangedWeapon, 0) {
-            let weapon_kind = if let ItemKind::Weapon(weapon_kind) = weapon.kind {
-                weapon_kind
-            } else {
-                return false;
-            };
-            (weapon_to_effect(weapon), weapon_kind)
-        } else {
-            return false;
-        };
-    let power_calc = PowerCalcMethod::Ranged(weapon_kind);
+    let (effect, power_calc) = if let Some(result) = ranged_attack_effect(&game.gd, cid) {
+        result
+    } else {
+        return false;
+    };
     let power = calc_power(&game.gd, cid, &power_calc);
     let hit = calc_hit(&game.gd, cid, &power_calc);
     do_effect(game, &effect, Some(cid), target, power, hit);
@@ -144,7 +98,11 @@ pub fn shoot_target(game: &mut Game, cid: CharaId, target: CharaId) -> bool {
     // Exp processing
     let target_level = game.gd.chara.get(target).lv;
     let attacker = game.gd.chara.get_mut(cid);
-    attacker.add_attack_exp(weapon_kind.into(), target_level);
+    let skill_kind = match power_calc {
+        PowerCalcMethod::Ranged(weapon_kind) => weapon_kind.into(),
+        _ => unreachable!(),
+    };
+    attacker.add_attack_exp(skill_kind, target_level);
 
     true
 }
