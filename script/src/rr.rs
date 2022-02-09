@@ -2,7 +2,7 @@
 
 use common::gamedata::Value;
 use rustpython_vm::{
-    builtins::{PyInt, PyNone},
+    builtins::{PyInt, PyNone, PyStr},
     pymodule, VirtualMachine,
     {function::IntoPyObject, PyObjectRef, PyResult},
 };
@@ -11,6 +11,7 @@ pub(crate) use _rr::{make_module, PyGame};
 
 trait ValueExt: Sized {
     fn to_py(self, vm: &VirtualMachine) -> PyObjectRef;
+    fn to_py_opt(self, vm: &VirtualMachine) -> Option<PyObjectRef>;
     fn from_py(vm: &VirtualMachine, pyvalue: PyObjectRef) -> PyResult<Self>;
 }
 
@@ -20,16 +21,28 @@ impl ValueExt for Value {
             Value::None => PyNone.into_pyobject(vm),
             Value::Bool(value) => value.into_pyobject(vm),
             Value::Int(value) => value.into_pyobject(vm),
+            Value::String(value) => value.into_pyobject(vm),
+        }
+    }
+
+    fn to_py_opt(self, vm: &VirtualMachine) -> Option<PyObjectRef> {
+        match self {
+            Value::None => None,
+            _ => Some(self.to_py(vm)),
         }
     }
 
     fn from_py(vm: &VirtualMachine, pyvalue: PyObjectRef) -> PyResult<Self> {
-        let value = if let Some(i) = pyvalue.payload::<PyInt>() {
-            let i: i64 = i.as_bigint().try_into().unwrap();
+        let value = if pyvalue.payload::<PyNone>().is_some() {
+            Value::None
+        } else if let Some(i) = pyvalue.payload::<PyInt>() {
+            let i: i64 = i.as_bigint().try_into().expect("Failed bigint conversion");
             Value::Int(i)
+        } else if let Some(s) = pyvalue.payload::<PyStr>() {
+            Value::String(s.as_str().to_owned())
         } else {
             return Err(
-                vm.new_type_error(format!("Invalid type value \"{}\" for set_gvar", pyvalue))
+                vm.new_type_error(format!("Invalid type value \"{}\" for vars/gvars", pyvalue))
             );
         };
         Ok(value)
@@ -51,7 +64,7 @@ mod _rr {
 
     #[pyattr(name = "Game")]
     #[pyclass(module = "rr", name = "Game")]
-    #[derive(Debug, PyValue)]
+    #[derive(Clone, Debug, PyValue)]
     pub(crate) struct PyGame {
         pub scene: Option<String>,
         pub self_id: String,
@@ -90,67 +103,14 @@ mod _rr {
             }
         }
 
-        #[pymethod]
-        fn exist_gvar(&self, name: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| gd.vars.global_var(&name).is_some().into())
-                .to_py(vm)
+        #[pyproperty]
+        fn gvars(&self) -> PyGvars {
+            PyGvars(self.clone())
         }
 
-        #[pymethod]
-        fn get_gvar(&self, name: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| gd.vars.global_var(&name).cloned().unwrap_or(Value::None))
-                .to_py(vm)
-        }
-
-        #[pymethod]
-        fn set_gvar(
-            &self,
-            name: PyStrRef,
-            value: PyObjectRef,
-            vm: &VirtualMachine,
-        ) -> PyResult<()> {
-            let value = Value::from_py(vm, value)?;
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| {
-                gd.vars.set_global_var(name, value);
-                Value::None
-            });
-            Ok(())
-        }
-
-        #[pymethod]
-        fn exist_var(&self, name: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
-            let self_id = self.self_id.clone();
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| gd.vars.local_var(&self_id, &name).is_some().into())
-                .to_py(vm)
-        }
-
-        #[pymethod]
-        fn get_var(&self, name: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
-            let self_id = self.self_id.clone();
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| {
-                gd.vars
-                    .local_var(&self_id, &name)
-                    .cloned()
-                    .unwrap_or(Value::None)
-            })
-            .to_py(vm)
-        }
-
-        #[pymethod]
-        fn set_var(&self, name: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
-            let value = Value::from_py(vm, value)?;
-            let self_id = self.self_id.clone();
-            let name = name.as_str().to_owned();
-            self.with_gd(move |gd| {
-                gd.vars.set_local_var(self_id, name, value);
-                Value::None
-            });
-            Ok(())
+        #[pyproperty]
+        fn vars(&self) -> PyVars {
+            PyVars(self.clone())
         }
 
         #[pymethod]
@@ -306,5 +266,87 @@ mod _rr {
         choices: Option<PyListRef>,
         #[pyarg(any, optional)]
         target_chara: Option<PyStrRef>,
+    }
+
+    #[pyattr(name = "Gvars")]
+    #[pyclass(module = "rr", name = "Gvars")]
+    #[derive(Debug, PyValue)]
+    pub(crate) struct PyGvars(PyGame);
+
+    #[pyimpl]
+    impl PyGvars {
+        #[pymethod(magic)]
+        fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
+            self.0
+                .with_gd(move |gd| {
+                    gd.vars
+                        .global_var(key.as_str())
+                        .cloned()
+                        .unwrap_or(Value::None)
+                })
+                .to_py_opt(vm)
+        }
+
+        #[pymethod(magic)]
+        fn setitem(&self, key: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+            let value = Value::from_py(vm, value)?;
+            self.0.with_gd(move |gd| {
+                gd.vars.set_global_var(key.as_str(), value);
+                Value::None
+            });
+            Ok(())
+        }
+
+        #[pymethod(magic)]
+        fn delitem(&self, key: PyStrRef) -> PyResult<()> {
+            self.0.with_gd(move |gd| {
+                gd.vars.remove_global_var(key.as_str());
+                Value::None
+            });
+            Ok(())
+        }
+    }
+
+    #[pyattr(name = "Vars")]
+    #[pyclass(module = "rr", name = "Vars")]
+    #[derive(Debug, PyValue)]
+    pub(crate) struct PyVars(PyGame);
+
+    #[pyimpl]
+    impl PyVars {
+        #[pymethod(magic)]
+        fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
+            let self_id = self.0.self_id.clone();
+            self.0
+                .with_gd(move |gd| {
+                    gd.vars
+                        .local_var(&self_id, key.as_str())
+                        .cloned()
+                        .unwrap_or(Value::None)
+                })
+                .to_py_opt(vm)
+        }
+
+        #[pymethod(magic)]
+        fn setitem(&self, name: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+            let value = Value::from_py(vm, value)?;
+            let self_id = self.0.self_id.clone();
+            let name = name.as_str().to_owned();
+            self.0.with_gd(move |gd| {
+                gd.vars.set_local_var(self_id, name, value);
+                Value::None
+            });
+            Ok(())
+        }
+
+        #[pymethod(magic)]
+        fn delitem(&self, key: PyStrRef) -> PyResult<()> {
+            let self_id = self.0.self_id.clone();
+            self.0.with_gd(move |gd| {
+                gd.vars.remove_local_var(&self_id, key.as_str());
+                Value::None
+            });
+            Ok(())
+        }
     }
 }

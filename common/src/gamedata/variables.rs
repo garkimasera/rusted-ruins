@@ -6,6 +6,7 @@ pub enum Value {
     None,
     Bool(bool),
     Int(i64),
+    String(String),
 }
 
 impl Default for Value {
@@ -58,6 +59,11 @@ impl Variables {
         self.global.insert(name.to_string(), v);
     }
 
+    /// Remove globally named variable
+    pub fn remove_global_var(&mut self, name: &str) {
+        self.global.remove(name);
+    }
+
     /// Get local named variable
     pub fn local_var(&self, script_id: &str, name: &str) -> Option<&Value> {
         self.local.get(&(script_id.to_owned(), name.to_owned()))
@@ -72,5 +78,10 @@ impl Variables {
     pub fn set_local_var<S1: ToString, S2: ToString>(&mut self, script_id: S1, name: S2, v: Value) {
         self.local
             .insert((script_id.to_string(), name.to_string()), v);
+    }
+
+    /// Remove local named variable
+    pub fn remove_local_var(&mut self, script_id: &str, name: &str) {
+        self.local.remove(&(script_id.to_owned(), name.to_owned()));
     }
 }
