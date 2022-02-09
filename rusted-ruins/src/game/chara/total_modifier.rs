@@ -25,6 +25,12 @@ pub fn add_modifier(tm: &mut CharaTotalModifier, p: &CharaModifier) {
         CharaModifier::Wil(value) => tm.wil += value,
         CharaModifier::Cha(value) => tm.cha += value,
         CharaModifier::Spd(value) => tm.spd += value,
+        &CharaModifier::Defence { element, value } => {
+            tm.defence[element].0 += f32::from(value);
+        }
+        &CharaModifier::DefenceMultiplier { element, value } => {
+            tm.defence[element].1 += f32::from(value);
+        }
     }
 }
 

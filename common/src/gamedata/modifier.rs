@@ -1,6 +1,7 @@
-use super::{skill::SkillKind, ElementArray};
+use super::{skill::SkillKind, Element, ElementArray};
 use derivative::Derivative;
 use fnv::FnvHashMap;
+use ordered_float::NotNan;
 
 /// Represents modifier for character.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -12,6 +13,14 @@ pub enum CharaModifier {
     Wil(i16),
     Cha(i16),
     Spd(i16),
+    Defence {
+        element: Element,
+        value: NotNan<f32>,
+    },
+    DefenceMultiplier {
+        element: Element,
+        value: NotNan<f32>,
+    },
 }
 
 /// Summed effect of modifiers a character received by properties, status, and other factors.
@@ -30,5 +39,5 @@ pub struct CharaTotalModifier {
     #[derivative(Default(value = "1.0"))]
     pub spd_factor: f32,
     pub skill_level: FnvHashMap<SkillKind, (f32, i32)>,
-    pub defence: ElementArray<f32>,
+    pub defence: ElementArray<(f32, f32)>,
 }

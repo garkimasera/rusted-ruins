@@ -176,9 +176,12 @@ pub fn calc_defence(gd: &GameData, cid: CharaId, element: Element, _kind: Attack
         ),
     };
 
-    (equip_def as f32 + chara.tm.defence[element] + RULES.power.base_defence)
+    let modifier_factor = (chara.tm.defence[element].1 + 1.0).clamp(0.2, 5.0);
+
+    (equip_def as f32 + chara.tm.defence[element].0 + RULES.power.base_defence)
         * attr as f32
         * (RULES.power.skill_base + skill_level as f32)
+        * modifier_factor
 }
 
 /// Calculate character's defence for each elements
