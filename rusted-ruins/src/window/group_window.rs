@@ -29,6 +29,7 @@ pub struct GroupWindow {
     members: Vec<Option<Box<dyn DialogWindow>>>,
     mem_info: Vec<(MemberInfo, ChildWinCreator)>,
     tab_navigator: TabsNavigator,
+    reopen: bool,
 }
 
 impl GroupWindow {
@@ -39,6 +40,7 @@ impl GroupWindow {
         game: &Game,
         mem_info: Vec<(MemberInfo, ChildWinCreator)>,
         window_top_left: (i32, i32),
+        reopen: bool,
     ) -> GroupWindow {
         let members: Vec<Option<Box<dyn DialogWindow>>> = (0..size).map(|_| None).collect();
         let init_win = if let Some(init_win) = init_win {
@@ -66,6 +68,7 @@ impl GroupWindow {
             members,
             mem_info,
             tab_navigator,
+            reopen,
         };
         group_window.switch(init_win, game);
         group_window
@@ -84,7 +87,7 @@ impl GroupWindow {
 
         // Change window
         self.current_window = i_win;
-        if self.members[i_win as usize].is_none() {
+        if self.members[i_win as usize].is_none() || self.reopen {
             self.members[i_win as usize] = Some((self.mem_info[i_win as usize].1)(game));
         } else {
             let item_window = self.members[i_win as usize].as_mut().unwrap();

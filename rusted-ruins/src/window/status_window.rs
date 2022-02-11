@@ -58,6 +58,7 @@ pub fn create_status_window_group(
         game,
         mem_info,
         (rect.x, rect.y),
+        true,
     )
 }
 

@@ -153,6 +153,7 @@ pub fn create_item_window_group(game: &Game, mode: Option<ItemWindowMode>) -> Gr
         game,
         mem_info,
         (rect.x, rect.y),
+        true,
     )
 }
 
@@ -202,6 +203,7 @@ pub fn create_take_put_window_group(game: &Game, il: ItemLocation) -> GroupWindo
         game,
         mem_info,
         (rect.x, rect.y),
+        true,
     )
 }
 

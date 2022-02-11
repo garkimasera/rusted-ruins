@@ -50,6 +50,7 @@ pub fn create_game_info_window_group(pa: &mut DoPlayerAction<'_>) -> GroupWindow
         pa.game(),
         mem_info,
         (rect.x, rect.y),
+        false,
     )
 }
 

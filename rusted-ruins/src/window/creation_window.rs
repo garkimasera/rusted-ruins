@@ -73,6 +73,7 @@ pub fn create_creation_window_group(
         game,
         mem_info,
         (rect.x, rect.y),
+        false,
     )
 }
 
