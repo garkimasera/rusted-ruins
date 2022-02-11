@@ -88,7 +88,7 @@ pub struct CharaTemplateDepInput {
     #[serde(default)]
     pub abilities: Vec<AbilityId>,
     #[serde(default)]
-    pub equips: Vec<(EquipSlotKind, String, u32)>,
+    pub equips: Vec<(EquipSlotKind, String, i32)>,
     pub base_hp: i32,
     pub str: u16,
     pub vit: u16,

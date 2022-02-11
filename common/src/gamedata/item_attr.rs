@@ -216,14 +216,14 @@ impl Ord for ItemListContainer {
 pub enum ModuleSlotKind {
     Ability,
     Extend,
-    Spirit,
+    Core,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ModuleEffect {
     Ability { group: String },
     Extend(ExtendModuleEffect),
-    Spirit,
+    Core,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]

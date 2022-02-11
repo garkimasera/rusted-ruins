@@ -88,6 +88,7 @@ armor_kind-skin = 肌
 armor_kind-body = 体
 armor_kind-arms = 腕
 armor_kind-legs = 足
+armor_kind-armor_plate = 装甲板
 armor_kind-accessory = アクセサリ
 
 # CreationKind

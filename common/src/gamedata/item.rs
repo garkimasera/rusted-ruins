@@ -307,6 +307,7 @@ pub enum ArmorKind {
     Body,
     Arms,
     Legs,
+    ArmorPlate,
     Accessory,
 }
 
@@ -319,6 +320,7 @@ impl std::fmt::Display for ArmorKind {
             ArmorKind::Body => "body",
             ArmorKind::Arms => "arms",
             ArmorKind::Legs => "legs",
+            ArmorKind::ArmorPlate => "armor_plate",
             ArmorKind::Accessory => "accessory",
         };
         write!(f, "{}", s)
@@ -336,6 +338,7 @@ impl FromStr for ArmorKind {
             "body" => ArmorKind::Body,
             "arms" => ArmorKind::Arms,
             "legs" => ArmorKind::Legs,
+            "armor_plate" => ArmorKind::ArmorPlate,
             "accessory" => ArmorKind::Accessory,
             _ => {
                 return Err(KindParseError(s.into()));
@@ -616,6 +619,7 @@ pub enum EquipSlotKind {
     Body,
     Arms,
     Legs,
+    ArmorPlate,
     Accessory,
 }
 
@@ -649,6 +653,7 @@ impl ArmorKind {
             ArmorKind::Body => EquipSlotKind::Body,
             ArmorKind::Arms => EquipSlotKind::Arms,
             ArmorKind::Legs => EquipSlotKind::Legs,
+            ArmorKind::ArmorPlate => EquipSlotKind::ArmorPlate,
             ArmorKind::Accessory => EquipSlotKind::Accessory,
         }
     }

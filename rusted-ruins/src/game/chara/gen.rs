@@ -155,16 +155,16 @@ fn gen_skill_list(_ct: &CharaTemplateObject, lv: u32, class: CharaClass) -> Skil
 
 /// Generate equipments from rules.
 fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
+    use crate::game::item::gen::*;
+
     let slots = equip_slots(&ct.race);
     let equip = EquipItemList::new(&slots);
     chara.equip = equip;
 
     let equips_rule = &RULES.classes.get(chara.class).equips;
+    let level = chara.lv;
 
-    for (esk, item_selector, bonus) in equips_rule {
-        use crate::game::item::gen::*;
-
-        let level = chara.lv + bonus;
+    for (esk, item_selector, _bonus) in equips_rule {
         let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
 
         let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
@@ -179,10 +179,7 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
     }
 
     // Overwrite class equipment by chara template equipment settings
-    for (esk, item_selector, bonus) in &ct.equips {
-        use crate::game::item::gen::*;
-
-        let level = chara.lv + bonus;
+    for (esk, item_selector, _bonus) in &ct.equips {
         let item_selector: ItemSelector = match item_selector.parse() {
             Ok(item_selector) => item_selector,
             Err(e) => {

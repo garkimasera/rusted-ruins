@@ -33,7 +33,7 @@ pub struct CharaTemplateObject {
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     /// Learned active skills.
     pub abilities: Vec<AbilityId>,
-    pub equips: Vec<(EquipSlotKind, String, u32)>,
+    pub equips: Vec<(EquipSlotKind, String, i32)>,
 }
 
 /// Character classes

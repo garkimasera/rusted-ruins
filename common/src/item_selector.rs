@@ -34,13 +34,16 @@ impl ItemSelector {
         let group = &obj.group;
         let kind = obj.kind;
 
-        if obj.gen_level > self.level {
-            return false;
-        }
-
         if let Some(esk) = self.esk {
             if Some(esk) != obj.kind.equip_slot_kind() {
                 return false;
+            }
+        }
+
+        if obj.gen_level > self.level {
+            // Ignore gen level if id directly matches
+            if self.ids.len() == 1 && self.ids[0] == obj.id {
+                return true;
             }
         }
 

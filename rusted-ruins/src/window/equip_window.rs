@@ -285,6 +285,7 @@ fn slotkind_to_icon_idx(esk: EquipSlotKind) -> IconIdx {
         EquipSlotKind::Body => "!icon-body",
         EquipSlotKind::Arms => "!icon-arms",
         EquipSlotKind::Legs => "!icon-legs",
+        EquipSlotKind::ArmorPlate => "!icon-armor_plate",
         EquipSlotKind::Accessory => "!icon-accessory",
     };
     let idx: UiImgIdx = gobj::id_to_idx(id);

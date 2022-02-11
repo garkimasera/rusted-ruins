@@ -77,6 +77,7 @@ impl ToTextId for ArmorKind {
             Body => "armor_kind-body",
             Arms => "armor_kind-arms",
             Legs => "armor_kind-legs",
+            ArmorPlate => "armor_kind-armor_plate",
             Accessory => "armor_kind-accessory",
         }
     }

@@ -88,6 +88,7 @@ armor_kind-skin = Skin
 armor_kind-body = Body
 armor_kind-arms = Arms
 armor_kind-legs = Legs
+armor_kind-armor_plate = Armor Plate
 armor_kind-accessory = Accessory
 
 # CreationKind
