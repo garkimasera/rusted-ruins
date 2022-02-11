@@ -29,6 +29,16 @@ chara_status-asleep = 睡眠
 chara_status-poisoned = 毒
 chara_status-work = 作業中
 
+# Element
+
+element-none = 無属性
+element-physical = 物理属性
+element-heat = 熱属性
+element-cold = 冷属性
+element-shock = 電撃属性
+element-poison = 毒属性
+element-spirit = 精神属性
+
 # ItemKind
 
 item_kind-potion = 薬

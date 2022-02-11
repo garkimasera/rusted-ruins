@@ -20,6 +20,20 @@ impl ToTextId for CharaStatus {
     }
 }
 
+impl ToTextId for Element {
+    fn to_textid(&self) -> &'static str {
+        match *self {
+            Element::None => "element-none",
+            Element::Physical => "element-physical",
+            Element::Heat => "element-heat",
+            Element::Cold => "element-cold",
+            Element::Shock => "element-shock",
+            Element::Poison => "element-poison",
+            Element::Spirit => "element-spirit",
+        }
+    }
+}
+
 impl ToTextId for ItemKind {
     fn to_textid(&self) -> &'static str {
         use ItemKind::*;

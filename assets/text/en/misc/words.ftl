@@ -29,6 +29,16 @@ chara_status-asleep = Asleep
 chara_status-poisoned = Poisoned
 chara_status-work = Working
 
+# Element
+
+element-none = non-elemental
+element-physical = physical
+element-heat = heat
+element-cold = cold
+element-shock = shock
+element-poison = poison
+element-spirit = spirit
+
 # ItemKind
 
 item_kind-potion = Potion

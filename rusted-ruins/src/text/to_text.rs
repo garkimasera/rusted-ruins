@@ -162,10 +162,10 @@ impl ToText for CharaModifier {
             CharaModifier::Cha(value) => format!("CHA {:+}", value),
             CharaModifier::Spd(value) => format!("SPD {:+}", value),
             CharaModifier::Defence { element, value } => {
-                format!("Defence {:?} {:+}", element, value)
+                format!("Defence {} {:+}", element.to_text(), value)
             }
             CharaModifier::DefenceMultiplier { element, value } => {
-                format!("Defence {:?} {:+.0}%", element, value * 100.0)
+                format!("Defence {} {:+.0}%", element.to_text(), value * 100.0)
             }
         }
         .into()

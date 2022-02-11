@@ -1,5 +1,5 @@
 use crate::game::extrait::*;
-use crate::text::ToText;
+use crate::text::{misc_txt, ToText};
 use common::gamedata::*;
 use ordered_float::NotNan;
 
@@ -100,6 +100,21 @@ impl ItemInfoText {
             ItemKind::Material => {}
             ItemKind::Module => {}
             ItemKind::Object => {}
+        }
+
+        for obj_attr in &obj.attrs {
+            match obj_attr {
+                ItemObjAttr::CharaModifier(m) => {
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, m.to_text().into()));
+                }
+                ItemObjAttr::Facility { ty, quality } => {
+                    let ty = misc_txt(&format!("facility-{}", ty));
+                    let t = misc_txt_format!(
+                        "item_info_text-facility"; ty=ty, quality=quality);
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                }
+                _ => (),
+            }
         }
 
         for attr in &item.attrs {
