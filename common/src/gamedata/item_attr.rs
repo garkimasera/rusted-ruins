@@ -79,6 +79,7 @@ pub enum ItemObjAttr {
     Module {
         effects: Vec<(ModuleEffect, NotNan<f32>)>,
     },
+    CharaModifier(CharaModifier),
     Titles(Vec<String>),
     ConvertableByContainer {
         kind: String,

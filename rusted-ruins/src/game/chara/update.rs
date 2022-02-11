@@ -1,4 +1,3 @@
-use super::total_modifier;
 use crate::game::extrait::*;
 use common::gamedata::*;
 use common::gobj;
@@ -9,17 +8,7 @@ use rules::RULES;
 pub fn update_attributes(chara: &mut Chara) {
     let ct = gobj::get_obj(chara.idx);
 
-    // Update total effect
-    chara.tm = Box::default();
-    total_modifier::add_class(&mut chara.tm, RULES.classes.get(chara.class));
-
-    for status in &chara.status {
-        total_modifier::add_status(&mut chara.tm, status);
-    }
-
-    for (_, chara_trait) in &chara.traits {
-        total_modifier::add_chara_trait(&mut chara.tm, chara_trait);
-    }
+    super::total_modifier::update(chara);
 
     // Update attributes
     chara.attr.max_hp = calc_max_hp(chara, ct);

@@ -7,7 +7,7 @@ pub mod throw;
 pub mod time;
 
 use crate::context::IconIdx;
-use crate::game::extrait::MapExt;
+use crate::game::extrait::*;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::ImgVariationRule;
@@ -420,12 +420,15 @@ pub fn change_equipment(
     {
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }
+
+    gd.chara.get_mut(cid).update();
 }
 
 pub fn remove_equipment(gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8)) {
     if let Some(removed_equipment) = gd.get_equip_list_mut(cid).remove(slot.0, slot.1 as usize) {
         gd.get_item_list_mut(ItemListLocation::Chara { cid })
             .append(removed_equipment, 1);
+        gd.chara.get_mut(cid).update();
     }
 }
 

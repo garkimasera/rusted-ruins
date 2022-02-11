@@ -1,19 +1,26 @@
 use common::basic::BonusLevel;
+use common::gamedata::*;
 use common::gamedata::{
     CharaAttrDiff, CharaModifier, CharaStatus, CharaTotalModifier, CharaTrait, SkillKind,
 };
+use common::gobj;
 use rules::class::Class;
 use rules::RULES;
 use std::collections::HashMap;
 
-pub fn add_chara_trait(tm: &mut CharaTotalModifier, t: &CharaTrait) {
-    if let CharaTrait::Id(id) = t {
-        let t = RULES.chara_traits.get(id);
+pub fn update(chara: &mut Chara) {
+    chara.tm = Box::default();
+    add_class(&mut chara.tm, RULES.classes.get(chara.class));
 
-        for modifier in &t.modifiers {
-            add_modifier(tm, modifier);
-        }
+    for status in &chara.status {
+        add_status(&mut chara.tm, status);
     }
+
+    for (_, chara_trait) in &chara.traits {
+        add_chara_trait(&mut chara.tm, chara_trait);
+    }
+
+    add_equipments(&mut chara.tm, &chara.equip);
 }
 
 pub fn add_modifier(tm: &mut CharaTotalModifier, p: &CharaModifier) {
@@ -30,6 +37,16 @@ pub fn add_modifier(tm: &mut CharaTotalModifier, p: &CharaModifier) {
         }
         &CharaModifier::DefenceMultiplier { element, value } => {
             tm.defence[element].1 += f32::from(value);
+        }
+    }
+}
+
+pub fn add_chara_trait(tm: &mut CharaTotalModifier, t: &CharaTrait) {
+    if let CharaTrait::Id(id) = t {
+        let t = RULES.chara_traits.get(id);
+
+        for modifier in &t.modifiers {
+            add_modifier(tm, modifier);
         }
     }
 }
@@ -67,5 +84,22 @@ fn add_skill_bonus_map(te: &mut CharaTotalModifier, skill_bonus: &HashMap<SkillK
                 *lv += bonus.1;
             })
             .or_insert((bonus.0, bonus.1));
+    }
+}
+
+fn add_equipments(tm: &mut CharaTotalModifier, equip: &EquipItemList) {
+    for (_, _, item) in equip.slot_iter() {
+        let item = if let Some(item) = item {
+            item
+        } else {
+            continue;
+        };
+        let item_obj = gobj::get_obj(item.idx);
+
+        for item_obj_attr in &item_obj.attrs {
+            if let ItemObjAttr::CharaModifier(m) = item_obj_attr {
+                add_modifier(tm, m);
+            }
+        }
     }
 }
