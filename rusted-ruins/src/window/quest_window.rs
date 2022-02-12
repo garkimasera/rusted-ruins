@@ -394,7 +394,7 @@ fn town_quest_desc_text(quest: &TownQuest) -> String {
     text.push_str(": ");
 
     if quest.reward.money > 0 {
-        text.push_str(&format!("{} gold", quest.reward.money));
+        text.push_str(&format!("{} silver", quest.reward.money));
         if !quest.reward.items.is_empty() {
             text.push(',');
         }

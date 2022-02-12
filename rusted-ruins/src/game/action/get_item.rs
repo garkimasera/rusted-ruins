@@ -15,8 +15,8 @@ pub fn get_item<T: Into<ItemMoveNum>>(
         ItemMoveNum::All => src_list.get_number(item_location.1),
     };
 
-    // If item is gold and dest is player, increases player money.
-    if obj.id == "!gold" {
+    // If item is silver and dest is player, increases player money.
+    if obj.id == "!silver" {
         gd.remove_item(item_location, n);
         if cid == CharaId::Player {
             gd.player.add_money(n.into());

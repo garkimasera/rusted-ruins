@@ -3,6 +3,7 @@ use super::group_window::*;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::textrenderer::FontKind;
+use crate::text::obj_txt;
 use crate::text::ui_txt;
 use common::gobj;
 
@@ -61,7 +62,7 @@ impl GameInfoWindow {
 
         let money_label = LabelWidget::new(
             cfg.money_label_rect,
-            &format!("{} Gold", game.gd.player.money()),
+            &format!("{} {}", game.gd.player.money(), obj_txt("!silver")),
             FontKind::M,
         );
 

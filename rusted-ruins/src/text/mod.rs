@@ -177,6 +177,7 @@ pub fn flavor_txt_checked(id: &str) -> Option<String> {
 }
 
 pub fn obj_txt(id: &str) -> String {
+    let id = id.trim_start_matches('!');
     if let Some(s) = OBJ_BUNDLE.format(id, None) {
         s
     } else {

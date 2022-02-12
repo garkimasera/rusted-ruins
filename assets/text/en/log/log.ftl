@@ -122,4 +122,4 @@ party-add-chara = {$chara} attended your party.
 # Messages about script
 
 player-receive-item = {$chara} received {$item} x {$n}.
-player-receive-money = {$chara} received {$amount} gold.
+player-receive-money = {$chara} received {$amount} silver.

@@ -120,4 +120,4 @@ party-add-chara = {$chara}があなたに付いてくことになった！
 # Messages about script
 
 player-receive-item = {$chara}は{$item} x {$n}を受け取った。
-player-receive-money = {$chara}は{$amount}ゴールドを受け取った。
+player-receive-money = {$chara}は{$amount}シルバーを受け取った。
