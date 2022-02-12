@@ -42,10 +42,7 @@ pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
         let harvest = if let Some(harvest) = item_obj
             .attrs
             .iter()
-            .filter_map(|attr| match attr {
-                ItemObjAttr::Harvest(harvest) => Some(harvest),
-                _ => None,
-            })
+            .filter_map(|attr| attr.harvest())
             .next()
         {
             harvest
@@ -104,10 +101,7 @@ pub fn finish_harvest(gd: &mut GameData, cid: CharaId, item_idx: ItemIdx, il: It
     let harvest = if let Some(harvest) = item_obj
         .attrs
         .iter()
-        .filter_map(|attr| match attr {
-            ItemObjAttr::Harvest(harvest) => Some(harvest),
-            _ => None,
-        })
+        .filter_map(|attr| attr.harvest())
         .next()
     {
         harvest

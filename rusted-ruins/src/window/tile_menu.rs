@@ -77,10 +77,7 @@ pub fn create_menu(
             let harvest = item_obj
                 .attrs
                 .iter()
-                .filter_map(|attr| match attr {
-                    ItemObjAttr::Harvest(harvest) => Some(harvest),
-                    _ => None,
-                })
+                .filter_map(|attr| attr.harvest())
                 .next()
                 .unwrap();
 

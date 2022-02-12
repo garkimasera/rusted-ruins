@@ -65,7 +65,11 @@ pub enum ItemObjAttr {
         effect: Effect,
     },
     /// For harvestable items
-    Harvest(Harvest),
+    Harvest {
+        kind: HarvestKind,
+        items: Vec<(String, u32, u32)>,
+        difficulty: u32,
+    },
     /// For tool items
     Tool(ToolEffect),
     /// For usable items
@@ -87,6 +91,23 @@ pub enum ItemObjAttr {
         #[serde(default = "Duration::zero")]
         duration: Duration,
     },
+}
+
+impl ItemObjAttr {
+    pub fn harvest(&self) -> Option<Harvest> {
+        match self {
+            ItemObjAttr::Harvest {
+                kind,
+                items,
+                difficulty,
+            } => Some(Harvest {
+                kind: *kind,
+                items: items.clone(),
+                difficulty: *difficulty,
+            }),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
