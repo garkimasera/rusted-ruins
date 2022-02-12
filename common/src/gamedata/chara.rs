@@ -7,6 +7,7 @@ use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::{traits::*, unknown_id_err, UniqueId};
 use crate::basic::{ArrayStringId, BonusLevel};
+use crate::item_selector::ItemSelector;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use arrayvec::ArrayString;
 use geom::Vec2d;
@@ -33,7 +34,17 @@ pub struct CharaTemplateObject {
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
     /// Learned active skills.
     pub abilities: Vec<AbilityId>,
-    pub equips: Vec<(EquipSlotKind, String, i32)>,
+    pub equips: Vec<EquipGen>,
+}
+
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub struct EquipGen {
+    pub esk: EquipSlotKind,
+    pub item_selector: ItemSelector,
+    #[serde(default)]
+    pub gen_level_bonus: u32,
+    #[serde(default)]
+    pub quality_bonus: i32,
 }
 
 /// Character classes

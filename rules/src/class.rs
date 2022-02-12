@@ -1,7 +1,6 @@
 use crate::Rule;
 use common::basic::BonusLevel;
 use common::gamedata::*;
-use common::item_selector::ItemSelector;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
@@ -33,7 +32,7 @@ pub struct Class {
     pub attr: CharaAttrDiff,
     /// Skill bonus
     pub skill_bonus: HashMap<SkillKind, BonusLevel>,
-    /// Item generation for equipment slot. The last number is level bonus.
+    /// Item generation for equipment slot with bonus for gen level and quality
     #[serde(default)]
-    pub equips: Vec<(EquipSlotKind, ItemSelector, u32)>,
+    pub equips: Vec<EquipGen>,
 }

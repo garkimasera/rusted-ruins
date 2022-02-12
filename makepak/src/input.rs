@@ -1,5 +1,5 @@
 use common::basic::BonusLevel;
-use common::gamedata::{self, AbilityId, CharaClass, EquipSlotKind, FactionId, SkillKind};
+use common::gamedata::{self, AbilityId, CharaClass, EquipGen, FactionId, SkillKind};
 use common::sitegen;
 use geom::Vec2d;
 use std::collections::HashMap;
@@ -88,7 +88,7 @@ pub struct CharaTemplateDepInput {
     #[serde(default)]
     pub abilities: Vec<AbilityId>,
     #[serde(default)]
-    pub equips: Vec<(EquipSlotKind, String, i32)>,
+    pub equips: Vec<EquipGen>,
     pub base_hp: i32,
     pub str: u16,
     pub vit: u16,

@@ -2,7 +2,6 @@ use crate::game::extrait::*;
 use common::basic::{BonusLevel, WAIT_TIME_NUMERATOR};
 use common::gamedata::*;
 use common::gobj;
-use common::item_selector::ItemSelector;
 use common::obj::CharaTemplateObject;
 use common::objholder::CharaTemplateIdx;
 use rules::RULES;
@@ -162,9 +161,15 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
     chara.equip = equip;
 
     let equips_rule = &RULES.classes.get(chara.class).equips;
-    let level = chara.lv;
 
-    for (esk, item_selector, _bonus) in equips_rule {
+    for EquipGen {
+        esk,
+        item_selector,
+        gen_level_bonus,
+        quality_bonus,
+    } in equips_rule
+    {
+        let level = chara.lv + *gen_level_bonus;
         let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
 
         let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
@@ -173,21 +178,21 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
             continue;
         };
 
-        let item = gen_item_from_idx(item_idx, level);
-
+        let mut item = gen_item_from_idx(item_idx, level);
+        item.quality.base += *quality_bonus;
         chara.equip.equip(*esk, 0, item);
     }
 
     // Overwrite class equipment by chara template equipment settings
-    for (esk, item_selector, _bonus) in &ct.equips {
-        let item_selector: ItemSelector = match item_selector.parse() {
-            Ok(item_selector) => item_selector,
-            Err(e) => {
-                warn!("{}", e);
-                continue;
-            }
-        };
-        let item_selector = item_selector.equip_slot_kind(*esk).level(level);
+    for EquipGen {
+        esk,
+        item_selector,
+        gen_level_bonus,
+        quality_bonus,
+    } in &ct.equips
+    {
+        let level = chara.lv + *gen_level_bonus;
+        let item_selector = item_selector.clone().equip_slot_kind(*esk).level(level);
 
         let item_idx = if let Some(item_idx) = choose_item_by_item_selector(&item_selector) {
             item_idx
@@ -195,8 +200,8 @@ fn gen_equips(chara: &mut Chara, ct: &CharaTemplateObject) {
             continue;
         };
 
-        let item = gen_item_from_idx(item_idx, level);
-
+        let mut item = gen_item_from_idx(item_idx, level);
+        item.quality.base += *quality_bonus;
         chara.equip.equip(*esk, 0, item);
     }
 }
