@@ -21,8 +21,4 @@ pub struct Power {
 
 impl Rule for Power {
     const NAME: &'static str = "power";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

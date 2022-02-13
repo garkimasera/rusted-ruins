@@ -10,8 +10,4 @@ pub struct Creation {
 
 impl Rule for Creation {
     const NAME: &'static str = "creation";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

@@ -35,8 +35,4 @@ pub struct Exp {
 
 impl Rule for Exp {
     const NAME: &'static str = "exp";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

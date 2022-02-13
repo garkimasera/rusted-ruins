@@ -11,8 +11,4 @@ pub struct World {
 
 impl Rule for World {
     const NAME: &'static str = "world";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

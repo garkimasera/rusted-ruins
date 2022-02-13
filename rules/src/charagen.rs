@@ -12,8 +12,4 @@ pub struct CharaGen {
 
 impl Rule for CharaGen {
     const NAME: &'static str = "chara_gen";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

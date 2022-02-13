@@ -93,7 +93,9 @@ trait Rule: DeserializeOwned {
         Ok(rule)
     }
 
-    fn append(&mut self, other: Self);
+    fn append(&mut self, other: Self) {
+        *self = other;
+    }
 }
 
 /// Contain game rules

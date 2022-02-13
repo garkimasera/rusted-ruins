@@ -13,8 +13,4 @@ pub struct Effect {
 
 impl Rule for Effect {
     const NAME: &'static str = "effect";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

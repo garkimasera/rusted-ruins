@@ -35,8 +35,4 @@ pub struct NewGame {
 
 impl Rule for NewGame {
     const NAME: &'static str = "newgame";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

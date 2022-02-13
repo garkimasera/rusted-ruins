@@ -45,8 +45,4 @@ pub struct Chara {
 
 impl Rule for Chara {
     const NAME: &'static str = "chara";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

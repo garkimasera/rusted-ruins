@@ -13,8 +13,4 @@ pub struct Combat {
 
 impl Rule for Combat {
     const NAME: &'static str = "combat";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

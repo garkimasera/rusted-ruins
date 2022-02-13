@@ -12,8 +12,4 @@ pub struct Npc {
 
 impl Rule for Npc {
     const NAME: &'static str = "npc";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

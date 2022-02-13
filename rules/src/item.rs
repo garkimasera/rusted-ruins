@@ -12,8 +12,4 @@ pub struct Item {
 
 impl Rule for Item {
     const NAME: &'static str = "item";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

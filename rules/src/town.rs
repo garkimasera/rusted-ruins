@@ -15,8 +15,4 @@ pub struct Town {
 
 impl Rule for Town {
     const NAME: &'static str = "town";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

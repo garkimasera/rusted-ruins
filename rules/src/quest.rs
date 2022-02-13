@@ -9,8 +9,4 @@ pub struct Quest {
 
 impl Rule for Quest {
     const NAME: &'static str = "quest";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

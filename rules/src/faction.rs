@@ -37,8 +37,4 @@ pub struct FactionInfo {
 
 impl Rule for Faction {
     const NAME: &'static str = "faction";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }

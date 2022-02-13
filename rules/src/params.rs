@@ -16,8 +16,4 @@ pub struct Params {
 
 impl Rule for Params {
     const NAME: &'static str = "params";
-
-    fn append(&mut self, other: Self) {
-        *self = other;
-    }
 }
