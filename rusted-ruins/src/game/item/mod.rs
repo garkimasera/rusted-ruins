@@ -3,6 +3,7 @@ pub mod filter;
 pub mod gen;
 pub mod info;
 pub mod merged;
+pub mod slot;
 pub mod throw;
 pub mod time;
 

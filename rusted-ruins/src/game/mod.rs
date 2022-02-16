@@ -230,6 +230,8 @@ pub enum DialogOpenRequest {
     PickUpItem,
     QuestOffer,
     QuestReport,
+    InstallAbilitySlot,
+    InstallExtendSlot,
     GameOver,
 }
 

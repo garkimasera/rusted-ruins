@@ -413,8 +413,8 @@ impl ItemWindow {
 
             // Information displayed in the right column
             let additional_info = match mode {
-                ItemWindowMode::ShopBuy { .. } => format!("{}G", item.price()),
-                ItemWindowMode::ShopSell => format!("{}G", item.selling_price()),
+                ItemWindowMode::ShopBuy { .. } => format!("{}s", item.price()),
+                ItemWindowMode::ShopSell => format!("{}s", item.selling_price()),
                 _ => format!("{:.1}kg", w / 1000.0),
             };
 

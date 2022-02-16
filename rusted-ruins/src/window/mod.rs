@@ -28,6 +28,7 @@ mod quest_window;
 mod read_window;
 mod register_shortcut_dialog;
 mod sidebar;
+mod slot_window;
 mod start_window;
 mod status_window;
 mod talk_window;

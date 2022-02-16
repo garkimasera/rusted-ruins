@@ -64,6 +64,7 @@ pub struct UiConfig {
     pub game_info_window: GameInfoWindowConfig,
     pub skill_window: SkillWindowConfig,
     pub quest_window: QuestWindowConfig,
+    pub slot_window: SlotWindowConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
     pub supplement_info: SupplementInfoConfig,
@@ -349,6 +350,13 @@ pub struct QuestWindowConfig {
     pub column_pos: Vec<i32>,
     pub ok_button_rect: CfgRect,
     pub cancel_button_rect: CfgRect,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SlotWindowConfig {
+    pub rect: CfgRect,
+    pub column_pos: Vec<i32>,
+    pub n_row: u32,
 }
 
 #[derive(Debug, Deserialize)]

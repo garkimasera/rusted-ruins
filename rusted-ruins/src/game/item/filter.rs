@@ -205,15 +205,6 @@ impl<'a> FilteredItemList<'a> {
             count: 0,
         }
     }
-
-    // pub fn all(item_list: &'a ItemList, location: ItemListLocation) -> FilteredItemList<'a> {
-    //     FilteredItemList {
-    //         item_list,
-    //         location,
-    //         filter: ItemFilter::all(),
-    //         count: 0,
-    //     }
-    // }
 }
 
 impl<'a> Iterator for FilteredItemList<'a> {

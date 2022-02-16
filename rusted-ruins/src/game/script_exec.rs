@@ -87,6 +87,16 @@ impl Game {
                 self.script_state.dialog = true;
                 AdvanceScriptResult::Continue
             }
+            ScriptResult::UiRequest(script::UiRequest::InstallAbilitySlot) => {
+                self.request_dialog_open(DialogOpenRequest::InstallAbilitySlot);
+                self.script_state.dialog = true;
+                AdvanceScriptResult::Continue
+            }
+            ScriptResult::UiRequest(script::UiRequest::InstallExtendSlot) => {
+                self.request_dialog_open(DialogOpenRequest::InstallExtendSlot);
+                self.script_state.dialog = true;
+                AdvanceScriptResult::Continue
+            }
         };
         if matches!(result, AdvanceScriptResult::Quit) {
             self.script_state.clear();

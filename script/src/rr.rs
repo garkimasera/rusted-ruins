@@ -177,6 +177,16 @@ mod _rr {
             self.send_message(ScriptMessage::UiRequest(UiRequest::QuestReport));
         }
 
+        #[pymethod]
+        fn install_ability_slot(&self) {
+            self.send_message(ScriptMessage::UiRequest(UiRequest::InstallAbilitySlot));
+        }
+
+        #[pymethod]
+        fn install_extend_slot(&self) {
+            self.send_message(ScriptMessage::UiRequest(UiRequest::InstallExtendSlot));
+        }
+
         // ScriptMethod methods
 
         #[pymethod]

@@ -7,7 +7,7 @@ use super::status_window;
 use super::talk_window;
 use super::DialogWindow;
 use crate::game::{DialogOpenRequest, Game};
-use common::gamedata::CharaId;
+use common::gamedata::{CharaId, ModuleSlotKind};
 use script::TalkText;
 
 pub fn create_dialog_from_request(
@@ -45,6 +45,12 @@ pub fn create_dialog_from_request(
         DialogOpenRequest::QuestReport => {
             Box::new(super::quest_window::QuestWindow::new_report(&game.gd))
         }
+        DialogOpenRequest::InstallAbilitySlot => Box::new(
+            super::slot_window::SlotInstallWindow::new(&game.gd, ModuleSlotKind::Ability),
+        ),
+        DialogOpenRequest::InstallExtendSlot => Box::new(
+            super::slot_window::SlotInstallWindow::new(&game.gd, ModuleSlotKind::Extend),
+        ),
         DialogOpenRequest::GameOver => Box::new(super::exit_window::GameOverWindow::new()),
     })
 }

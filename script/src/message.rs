@@ -20,6 +20,8 @@ pub enum UiRequest {
     ShopSell,
     QuestOffer,
     QuestReport,
+    InstallAbilitySlot,
+    InstallExtendSlot,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]

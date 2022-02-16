@@ -80,6 +80,7 @@ pub enum ItemObjAttr {
         ty: String,
         quality: i8,
     },
+    /// Module effects with random choose weight
     Module {
         effects: Vec<(ModuleEffect, NotNan<f32>)>,
     },
@@ -233,11 +234,11 @@ impl Ord for ItemListContainer {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
 pub enum ModuleSlotKind {
     Ability,
-    Extend,
     Core,
+    Extend,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
