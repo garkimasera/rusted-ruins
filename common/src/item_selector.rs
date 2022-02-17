@@ -77,6 +77,10 @@ impl FromStr for ItemSelector {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut item_selector = ItemSelector::default();
 
+        if s.is_empty() {
+            return Ok(ItemSelector::default());
+        }
+
         if s == "*" {
             item_selector.all = true;
             return Ok(item_selector);
@@ -214,8 +218,12 @@ impl<'de> Deserialize<'de> for ItemSelector {
 #[test]
 fn item_selector_test() {
     let s = "kind/food,group/food,hoge";
-
     let item_selector: ItemSelector = s.parse().unwrap();
+    assert_eq!(s, item_selector.to_string());
+    eprintln!("{:?}", item_selector);
 
+    let s = "hoge";
+    let item_selector: ItemSelector = s.parse().unwrap();
+    assert_eq!(s, item_selector.to_string());
     eprintln!("{:?}", item_selector);
 }

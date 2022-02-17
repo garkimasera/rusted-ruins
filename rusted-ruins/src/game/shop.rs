@@ -1,7 +1,8 @@
 use crate::game::extrait::*;
 use crate::game::item::gen::gen_item_by_level;
 use common::gamedata::*;
-use common::item_selector::ItemSelector;
+use common::obj::SiteGenObject;
+use common::sitegen::NpcGenId;
 use common::sitegen::ShopGenData;
 use rules::RULES;
 
@@ -29,6 +30,50 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
     gd.chara.get_mut(CharaId::Player).update();
 }
 
+/// Update shop states
+pub fn update_shops(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
+    let site = gd.region.get_site_mut(sid);
+    for npc_gen_id in sg.shops.keys() {
+        let shop = Shop {
+            items: ItemList::default(),
+            level: 1,
+            custom_shop_gen: None,
+        };
+        let cid = match *npc_gen_id {
+            NpcGenId::Site(id) => CharaId::OnSite { sid, id },
+            NpcGenId::Unique(id) => CharaId::Unique { id },
+        };
+        site.add_shop(cid, shop);
+    }
+
+    for (cid, shop) in site.iter_shops_mut() {
+        let shop_gen = if let Some(shop_gen) = get_shop_gen(*cid, sid, sg) {
+            shop_gen
+        } else if let Some(shop_gen) = &shop.custom_shop_gen {
+            shop_gen.clone()
+        } else {
+            continue;
+        };
+        update_items_on_shop(shop, &shop_gen);
+    }
+}
+
+fn get_shop_gen(cid: CharaId, sid: SiteId, sg: &SiteGenObject) -> Option<ShopGenData> {
+    let npc_gen_id = match cid {
+        CharaId::OnSite { sid: sid_a, id } => {
+            if sid != sid_a {
+                return None;
+            }
+            NpcGenId::Site(id)
+        }
+        CharaId::Unique { id } => NpcGenId::Unique(id),
+        _ => {
+            return None;
+        }
+    };
+    sg.shops.get(&npc_gen_id).cloned()
+}
+
 /// Update items on a shop
 pub fn update_items_on_shop(shop: &mut Shop, shop_gen: &ShopGenData) {
     shop.items.clear();
@@ -44,11 +89,8 @@ pub fn update_items_on_shop(shop: &mut Shop, shop_gen: &ShopGenData) {
 
 /// Generate new item at shops
 fn gen_shop_item(floor_level: u32, shop_gen: &ShopGenData) -> Option<Item> {
-    let item_selector: ItemSelector = if shop_gen.shop_kind.is_empty() {
-        shop_gen
-            .selector
-            .parse()
-            .unwrap_or_else(|e| panic!("invalid selector for shop in site_gen object\n{}", e))
+    let item_selector = if shop_gen.shop_kind.is_empty() {
+        shop_gen.item_selector.clone()
     } else {
         RULES
             .town

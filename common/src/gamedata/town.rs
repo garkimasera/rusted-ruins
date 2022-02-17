@@ -12,7 +12,6 @@ use super::ItemListLocation;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Town {
     id: String,
-    shops: FnvHashMap<u32, Shop>,
     pub quests: Vec<TownQuest>,
     pub quests_last_update: Time,
     pub delivery_chest: Option<ItemListLocation>,
@@ -23,7 +22,6 @@ impl Town {
     pub fn new(id: &str) -> Town {
         Town {
             id: id.to_owned(),
-            shops: FnvHashMap::default(),
             quests: Vec::new(),
             quests_last_update: Time::from_secs(0),
             delivery_chest: None,
@@ -33,29 +31,5 @@ impl Town {
 
     pub fn id(&self) -> &str {
         &self.id
-    }
-
-    pub fn get_shop(&self, n: u32) -> Option<&Shop> {
-        self.shops.get(&n)
-    }
-
-    pub fn get_shop_mut(&mut self, n: u32) -> Option<&mut Shop> {
-        self.shops.get_mut(&n)
-    }
-
-    pub fn iter_shop_n(&self) -> Copied<Keys<'_, u32, Shop>> {
-        self.shops.keys().copied()
-    }
-
-    pub fn iter_shops(&self) -> Values<'_, u32, Shop> {
-        self.shops.values()
-    }
-
-    pub fn iter_shops_mut(&mut self) -> ValuesMut<'_, u32, Shop> {
-        self.shops.values_mut()
-    }
-
-    pub fn add_shop(&mut self, shop: Shop, n: u32) {
-        self.shops.insert(n, shop);
     }
 }

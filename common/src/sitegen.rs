@@ -3,6 +3,7 @@ use crate::gamedata::faction::FactionId;
 use crate::gamedata::map::SiteSymbolKind;
 use crate::gamedata::site::SiteKind;
 use crate::gamedata::Reward;
+use crate::hashmap::HashMap;
 use crate::item_selector::ItemSelector;
 use geom::Vec2d;
 
@@ -15,8 +16,8 @@ pub struct SiteGenObject {
     pub default_faction_id: FactionId,
     pub map_template_id: Vec<String>,
     pub npcs: Vec<NpcGenData>,
-    /// pub random_npcs: Vec<>,
-    pub shops: Vec<ShopGenData>,
+    // pub random_npcs: Vec<>,
+    pub shops: HashMap<NpcGenId, ShopGenData>,
     pub quests: Vec<QuestGenData>,
     /// Delivery chest potision and object id for town sites
     pub delivery_chest: Option<(u32, Vec2d, String)>,
@@ -36,7 +37,7 @@ pub struct NpcGenData {
     pub talk_script_id: String,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum NpcGenId {
     Site(u32),
     Unique(ArrayStringId),
@@ -45,12 +46,10 @@ pub enum NpcGenId {
 /// Data to generate a shop on the site
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ShopGenData {
-    /// Shopkeeper's id
-    pub chara_id: u32,
     #[serde(default)]
     pub shop_kind: String,
     #[serde(default)]
-    pub selector: String,
+    pub item_selector: ItemSelector,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]

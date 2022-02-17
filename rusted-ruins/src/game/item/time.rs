@@ -29,15 +29,11 @@ pub fn update_item_time(gd: &mut GameData) {
     // For shops
     if !mid.is_region_map() {
         let sid = mid.sid();
-        if let SiteContent::Town { town } = &gd.region.get_site(sid).content {
-            let shop_ids: Vec<u32> = town.iter_shop_n().collect();
+        let shop_cids: Vec<CharaId> = gd.region.get_site(sid).iter_shop_ids().collect();
 
-            for id in shop_ids.into_iter() {
-                let ill = ItemListLocation::Shop {
-                    cid: CharaId::OnSite { sid, id },
-                };
-                update_item_list_time(gd, ill);
-            }
+        for cid in shop_cids.into_iter() {
+            let ill = ItemListLocation::Shop { cid };
+            update_item_list_time(gd, ill);
         }
     }
 }

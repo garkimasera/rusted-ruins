@@ -1,7 +1,10 @@
 use super::map::{Map, MapId};
 use super::region::RegionId;
 use super::town::Town;
+use super::{CharaId, Shop};
 use crate::basic::ArrayStringId;
+use crate::hashmap::HashMap;
+use crate::sitegen::NpcGenId;
 use filebox::FileBox;
 use geom::Vec2d;
 
@@ -19,6 +22,7 @@ pub struct Site {
     max_floor: u32,
     /// Site kind specific data
     pub content: SiteContent,
+    pub shops: HashMap<CharaId, Shop>,
 }
 
 /// Site kind specific data
@@ -55,6 +59,7 @@ impl Site {
             map: Vec::new(),
             max_floor,
             content: SiteContent::Other,
+            shops: HashMap::default(),
         }
     }
 
@@ -107,6 +112,32 @@ impl Site {
         for (i, map) in self.map.iter().enumerate() {
             f(i as u32, map)
         }
+    }
+
+    pub fn get_shop(&self, cid: CharaId) -> Option<&Shop> {
+        self.shops.get(&cid)
+    }
+
+    pub fn get_shop_mut(&mut self, cid: CharaId) -> Option<&mut Shop> {
+        self.shops.get_mut(&cid)
+    }
+
+    pub fn iter_shop_ids(
+        &self,
+    ) -> std::iter::Copied<std::collections::hash_map::Keys<'_, CharaId, Shop>> {
+        self.shops.keys().copied()
+    }
+
+    pub fn iter_shops(&self) -> std::collections::hash_map::Iter<'_, CharaId, Shop> {
+        self.shops.iter()
+    }
+
+    pub fn iter_shops_mut(&mut self) -> std::collections::hash_map::IterMut<'_, CharaId, Shop> {
+        self.shops.iter_mut()
+    }
+
+    pub fn add_shop(&mut self, cid: CharaId, shop: Shop) {
+        self.shops.insert(cid, shop);
     }
 }
 

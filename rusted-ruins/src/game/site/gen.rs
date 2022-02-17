@@ -83,5 +83,7 @@ pub fn add_site_from_obj(
         kind: sg.site_symbol,
     };
 
+    crate::game::shop::update_shops(gd, sid, sg);
+
     Some(sid)
 }

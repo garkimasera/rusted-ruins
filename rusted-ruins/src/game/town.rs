@@ -15,23 +15,7 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
     let mut site = gd.region.get_site_mut(sid);
     site.content = site_content;
 
-    // Shop settings
     let sg: &SiteGenObject = gobj::get_by_id(town_id);
-    {
-        let town = match gd.region.get_site_mut(sid).content {
-            SiteContent::Town { ref mut town } => town,
-            _ => unreachable!(),
-        };
-
-        for shop_gen_data in &sg.shops {
-            let shop = Shop {
-                items: ItemList::default(),
-                level: 1,
-            };
-            town.add_shop(shop, shop_gen_data.chara_id);
-        }
-    }
-    update_shops(gd, sid, sg);
 
     // Locate delivery chest
     if let Some((floor, pos, ref id)) = sg.delivery_chest {
@@ -44,24 +28,5 @@ pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
         let item_list = gd.get_item_list_mut(ill);
         item_list.clear();
         item_list.append_simple(item, 1);
-    }
-}
-
-/// Update shop states
-pub fn update_shops(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
-    use crate::game::shop::update_items_on_shop;
-
-    let site = gd.region.get_site_mut(sid);
-    let town = match &mut site.content {
-        SiteContent::Town { ref mut town } => town,
-        _ => {
-            warn!("Tried to update shops for a site which is not town.");
-            return;
-        }
-    };
-
-    for (i, shop) in town.iter_shops_mut().enumerate() {
-        let shop_gen = &sg.shops[i];
-        update_items_on_shop(shop, shop_gen);
     }
 }

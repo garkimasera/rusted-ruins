@@ -4,10 +4,10 @@ use crate::gamedata::item::{Item, ItemList};
 use crate::gamedata::region::RegionId;
 use crate::gamedata::site::{DungeonKind, SiteId};
 use crate::gamedata::time::Time;
+use crate::hashmap::HashMap;
 use crate::objholder::*;
 use arrayvec::ArrayVec;
 use geom::*;
-use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
 
 pub use crate::piece_pattern::*;
@@ -233,7 +233,7 @@ impl Map {
             last_visit: Time::default(),
             entrance: ArrayVec::new(),
             charaid: Vec::new(),
-            charas: Some(HashMap::new()),
+            charas: Some(HashMap::default()),
             outside_tile: None,
             boundary: MapBoundary::default(),
             music: String::default(),

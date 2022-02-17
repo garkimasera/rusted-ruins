@@ -1,8 +1,9 @@
 use common::basic::BonusLevel;
 use common::gamedata::{self, AbilityId, CharaClass, EquipGen, FactionId, SkillKind};
+use common::hashmap::HashMap;
 use common::sitegen;
 use geom::Vec2d;
-use std::collections::HashMap;
+use rusted_ruins_common::sitegen::NpcGenId;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Input {
@@ -190,7 +191,7 @@ pub struct SiteGenDepInput {
     #[serde(default)]
     pub npcs: Vec<sitegen::NpcGenData>,
     #[serde(default)]
-    pub shops: Vec<sitegen::ShopGenData>,
+    pub shops: HashMap<NpcGenId, sitegen::ShopGenData>,
     #[serde(default)]
     pub quests: Vec<sitegen::QuestGenData>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]

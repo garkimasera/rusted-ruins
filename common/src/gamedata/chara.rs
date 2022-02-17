@@ -7,11 +7,11 @@ use super::site::SiteId;
 use super::skill::{CreationKind, SkillKind, SkillList};
 use super::{traits::*, unknown_id_err, UniqueId};
 use crate::basic::{ArrayStringId, BonusLevel};
+use crate::hashmap::HashMap;
 use crate::item_selector::ItemSelector;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use arrayvec::ArrayString;
 use geom::Vec2d;
-use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
 pub struct CharaTemplateObject {
@@ -326,8 +326,8 @@ pub struct CharaHolder {
 impl CharaHolder {
     pub(crate) fn new() -> CharaHolder {
         CharaHolder {
-            c: HashMap::new(),
-            on_map: HashMap::new(),
+            c: HashMap::default(),
+            on_map: HashMap::default(),
         }
     }
 

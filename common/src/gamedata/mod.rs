@@ -233,7 +233,12 @@ impl GameData {
             ItemListLocation::Chara { cid } => &self.chara.get(cid).item_list,
             ItemListLocation::Equip { cid } => self.chara.get(cid).equip.list(),
             ItemListLocation::OnMap { mid, pos } => &self.region.get_map(mid).tile[pos].item_list,
-            ItemListLocation::Shop { cid } => &self.get_shop(cid).items,
+            ItemListLocation::Shop { cid } => {
+                &self
+                    .get_shop(cid)
+                    .expect("invalid shop id during get_item_list")
+                    .items
+            }
             ItemListLocation::Container { ill, i } => {
                 let item = self.get_item((ill.into(), i));
 
@@ -260,7 +265,12 @@ impl GameData {
             ItemListLocation::OnMap { mid, pos } => {
                 &mut self.region.get_map_mut(mid).tile[pos].item_list
             }
-            ItemListLocation::Shop { cid } => &mut self.get_shop_mut(cid).items,
+            ItemListLocation::Shop { cid } => {
+                &mut self
+                    .get_shop_mut(cid)
+                    .expect("invalid shop id during get_item_list_mut")
+                    .items
+            }
             ItemListLocation::Container { ill, i } => {
                 let item = self.get_item_mut((ill.into(), i));
 
@@ -339,32 +349,20 @@ impl GameData {
             .map(|i| (ItemListLocation::Equip { cid }, i as u32))
     }
 
-    pub fn get_shop(&self, cid: CharaId) -> &Shop {
-        let (sid, id) = match cid {
-            CharaId::OnSite { sid, id } => (sid, id),
-            _ => panic!("Tried to get shop according to no OnSite character"),
+    pub fn get_shop(&self, cid: CharaId) -> Option<&Shop> {
+        let sid = match cid {
+            CharaId::OnSite { sid, id } => sid,
+            _ => self.current_mapid.sid(),
         };
-        let site = self.region.get_site(sid);
-        match &site.content {
-            SiteContent::Town { ref town } => town
-                .get_shop(id)
-                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", id, sid)),
-            _ => unreachable!("Tried to get shop in a site that is not town"),
-        }
+        self.region.get_site(sid).get_shop(cid)
     }
 
-    pub fn get_shop_mut(&mut self, cid: CharaId) -> &mut Shop {
-        let (sid, id) = match cid {
-            CharaId::OnSite { sid, id } => (sid, id),
-            _ => panic!("Tried to get shop according to no OnSite character"),
+    pub fn get_shop_mut(&mut self, cid: CharaId) -> Option<&mut Shop> {
+        let sid = match cid {
+            CharaId::OnSite { sid, id } => sid,
+            _ => self.current_mapid.sid(),
         };
-        let site = self.region.get_site_mut(sid);
-        match &mut site.content {
-            SiteContent::Town { ref mut town } => town
-                .get_shop_mut(id)
-                .unwrap_or_else(|| panic!("Shop #{} doesnot exit in {:?}", id, sid)),
-            _ => unreachable!("Tried to get shop in a site that is not town"),
-        }
+        self.region.get_site_mut(sid).get_shop_mut(cid)
     }
 }
 
