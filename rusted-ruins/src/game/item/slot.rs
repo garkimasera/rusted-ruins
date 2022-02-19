@@ -1,6 +1,6 @@
 use super::{
     filter::{FilteredListHolder, ItemFilter},
-    ItemExt,
+    GameDataItemExt, ItemExt,
 };
 use common::gamedata::*;
 use rules::RULES;
@@ -48,7 +48,7 @@ pub fn n_slot(item: &Item, slot_kind: ModuleSlotKind) -> (u32, u32, u32) {
             }
             ModuleSlotKind::Extend => {
                 if let Some(v) = RULES.item.extend_slot_required_quality.get(&esk) {
-                    v.iter().filter(|a| **a >= item.quality.base).count() as u32
+                    v.iter().filter(|a| **a <= item.quality.base).count() as u32
                 } else {
                     0
                 }
@@ -88,4 +88,18 @@ pub fn slot_installable_item_list(
     gd.get_filtered_item_list(ItemListLocation::PLAYER, ItemFilter::all())
         .filter_map(|(il, item, _)| slot_install_cost(item, slot_kind).map(|cost| (il, cost)))
         .collect()
+}
+
+pub fn install_slot(gd: &mut GameData, il: ItemLocation, slot_kind: ModuleSlotKind, cost: i64) {
+    if gd.player.money() < cost {
+        return;
+    }
+    let mut item = gd.remove_item_and_get(il, 1);
+    item.attrs.push(ItemAttr::ModuleSlot {
+        kind: slot_kind,
+        content: None,
+    });
+    item.attrs.sort();
+    gd.append_item_to(ItemListLocation::PLAYER, item, 1);
+    gd.player.sub_money(cost);
 }

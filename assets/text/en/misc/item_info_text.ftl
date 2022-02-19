@@ -1,3 +1,4 @@
+item_info_text-empty_slot = Empty
 item_info_text-hit = Hit: {$hit}
 item_info_text-item_kind = Kind of this item: {$item_kind}
 item_info_text-facility = Facility ({$ty}) quality {$quality}

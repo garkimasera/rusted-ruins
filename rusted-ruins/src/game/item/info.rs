@@ -118,11 +118,22 @@ impl ItemInfoText {
         }
 
         for attr in &item.attrs {
-            if let ItemAttr::Material(material) = attr {
-                let material_name = crate::text::prefix::material(*material);
-                let t = misc_txt_format!(
+            match attr {
+                ItemAttr::Material(material) => {
+                    let material_name = crate::text::prefix::material(*material);
+                    let t = misc_txt_format!(
                         "item_info_text-material"; material=material_name);
-                desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                    desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                }
+                ItemAttr::ModuleSlot { kind, content } => {
+                    let t = if let Some(_content) = content {
+                        todo!()
+                    } else {
+                        misc_txt("item_info_text-empty_slot")
+                    };
+                    desc_text.push((slot_icon(*kind), t));
+                }
+                _ => (),
             }
         }
 
@@ -131,5 +142,13 @@ impl ItemInfoText {
             item_kind,
             desc_text,
         }
+    }
+}
+
+pub fn slot_icon(kind: ModuleSlotKind) -> &'static str {
+    match kind {
+        ModuleSlotKind::Ability => "!icon-module_slot-ability",
+        ModuleSlotKind::Core => "!icon-module_slot-core",
+        ModuleSlotKind::Extend => "!icon-module_slot-extend",
     }
 }

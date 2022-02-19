@@ -213,6 +213,11 @@ impl<'a> DoPlayerAction<'a> {
         super::item::remove_equipment(self.gd_mut(), cid, slot);
     }
 
+    /// Install slot to specified item
+    pub fn install_slot(&mut self, il: ItemLocation, slot_kind: ModuleSlotKind, cost: i64) {
+        super::item::slot::install_slot(self.gd_mut(), il, slot_kind, cost);
+    }
+
     /// Use active skill. Returns false if the skill cost is not enough.
     pub fn use_ability(&mut self, _ability_id: &AbilityId) -> bool {
         false

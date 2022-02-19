@@ -1,3 +1,4 @@
+item_info_text-empty_slot = 空
 item_info_text-hit = 命中: {$hit}
 item_info_text-item_kind = アイテムの種別: {$item_kind}
 item_info_text-facility = 設備 ({$ty}) 品質{$quality}
