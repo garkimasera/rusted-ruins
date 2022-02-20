@@ -96,7 +96,7 @@ impl DialogWindow for Sidebar {
                 }
                 let i = (*y - self.rect.y) as u32 / (UI_CFG.sidebar.icon_h + UI_CFG.sidebar.space);
                 if i == ITEM_INVENTORY {
-                    return DialogResult::Command(Some(Command::OpenItemMenu));
+                    return DialogResult::Command(Some(Command::OpenItemWin));
                 } else if i == ITEM_CHARAINFO {
                     return DialogResult::Command(Some(Command::OpenStatusWin));
                 } else if i == ITEM_ABILITY {

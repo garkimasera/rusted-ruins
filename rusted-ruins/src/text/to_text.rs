@@ -203,7 +203,7 @@ impl ToText for Command {
             OpenGameInfoWin => "command-open_game_info_win",
             OpenHelpWin => "command-open_help_win",
             OpenStatusWin => "command-open_status_win",
-            OpenItemMenu => "command-open_item_menu",
+            OpenItemWin => "command-open_item_menu",
             PickUpItem => "command-pick_up_item",
             DropItem => "command-drop_item",
             DrinkItem => "command-drink_item",

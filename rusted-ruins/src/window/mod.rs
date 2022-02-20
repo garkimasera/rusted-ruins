@@ -530,7 +530,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             Command::OpenHelpWin => {
                 self.push_dialog_window(Box::new(help_window::HelpWindow::new()));
             }
-            Command::OpenItemMenu => {
+            Command::OpenItemWin => {
                 let dialog = Box::new(item_window::create_item_window_group(pa.game(), None));
                 self.push_dialog_window(dialog);
             }

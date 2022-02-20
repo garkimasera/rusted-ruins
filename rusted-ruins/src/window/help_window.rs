@@ -12,7 +12,7 @@ const COMMANDS: &[Command] = &[
     Command::OpenHelpWin,
     Command::OpenStatusWin,
     Command::OpenGameInfoWin,
-    Command::OpenItemMenu,
+    Command::OpenItemWin,
     Command::OpenEquipWin,
     Command::EatItem,
     Command::DrinkItem,

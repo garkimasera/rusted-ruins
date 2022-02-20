@@ -31,7 +31,7 @@ pub enum Command {
     OpenGameInfoWin,
     OpenHelpWin,
     OpenStatusWin,
-    OpenItemMenu,
+    OpenItemWin,
     PickUpItem,
     DropItem,
     DrinkItem,

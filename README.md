@@ -124,8 +124,6 @@ Icon list
 
 ### Shortcut keys
 
-d - Drop items
-
 e - Eat an item
 
 g - Pick up items
@@ -135,6 +133,8 @@ h - Help
 q - Drink an item
 
 r - Release an magical device item
+
+v - Drop items
 
 0..9 - Call shortcut registered by player
 
