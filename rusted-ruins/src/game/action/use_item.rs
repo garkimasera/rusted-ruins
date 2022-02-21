@@ -43,6 +43,10 @@ pub fn use_item(game: &mut Game, il: ItemLocation, cid: CharaId, target: Target)
             game.request_dialog_open(DialogOpenRequest::BuildObj { il });
             return;
         }
+        UseEffect::InsertModule => {
+            game.request_dialog_open(DialogOpenRequest::InsertModule);
+            return;
+        }
     }
 
     game.gd.remove_item(il, 1);

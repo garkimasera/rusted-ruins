@@ -95,6 +95,7 @@ pub enum UseEffect {
     Deed,
     Seed { plant: String },
     SelectBuilding,
+    InsertModule,
 }
 
 /// Reward for quests or events

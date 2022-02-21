@@ -232,6 +232,7 @@ pub enum DialogOpenRequest {
     QuestReport,
     InstallAbilitySlot,
     InstallExtendSlot,
+    InsertModule,
     GameOver,
 }
 
