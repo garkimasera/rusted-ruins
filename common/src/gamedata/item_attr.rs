@@ -248,6 +248,16 @@ pub enum ModuleEffect {
     Core,
 }
 
+impl ModuleEffect {
+    pub fn kind(&self) -> ModuleSlotKind {
+        match self {
+            Self::Ability { .. } => ModuleSlotKind::Ability,
+            Self::Extend(_) => ModuleSlotKind::Extend,
+            Self::Core => ModuleSlotKind::Core,
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ExtendModuleEffect {
     Chara(CharaModifier),

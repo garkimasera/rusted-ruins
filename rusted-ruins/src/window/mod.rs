@@ -104,6 +104,19 @@ impl std::fmt::Debug for DialogResult {
     }
 }
 
+impl DialogResult {
+    fn is_close(&self) -> bool {
+        matches!(
+            self,
+            DialogResult::Close
+                | DialogResult::CloseAll
+                | DialogResult::CloseAllAndReprocess(_)
+                | DialogResult::CloseAndOpen(_)
+                | DialogResult::CloseWithValue(_)
+        )
+    }
+}
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum DialogCloseValue {
     Index(u32),

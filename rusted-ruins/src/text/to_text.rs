@@ -172,6 +172,19 @@ impl ToText for CharaModifier {
     }
 }
 
+impl ToText for ModuleEffect {
+    fn to_text(&self) -> Cow<'_, str> {
+        match self {
+            ModuleEffect::Ability { group } => misc_txt(&format!("ability_group-{}", group)).into(),
+            ModuleEffect::Extend(effect) => match effect {
+                ExtendModuleEffect::Chara(chara_modifier) => chara_modifier.to_text(),
+                ExtendModuleEffect::Weapon(_weapon_modifier) => todo!(),
+            },
+            ModuleEffect::Core => "Core".into(),
+        }
+    }
+}
+
 #[extend::ext(pub, name = CharaTraitTextId)]
 impl CharaTrait {
     fn text_id(&self) -> &str {

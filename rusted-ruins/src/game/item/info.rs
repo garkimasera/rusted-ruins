@@ -1,6 +1,7 @@
 use crate::game::extrait::*;
 use crate::text::{misc_txt, ToText};
 use common::gamedata::*;
+use common::objholder::ItemIdx;
 use ordered_float::NotNan;
 
 const UI_IMG_ID_ITEM_INFO: &str = "!icon-item-info";
@@ -126,12 +127,10 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
                 ItemAttr::ModuleSlot { kind, content } => {
-                    let t = if let Some(_content) = content {
-                        todo!()
-                    } else {
-                        misc_txt("item_info_text-empty_slot")
-                    };
-                    desc_text.push((slot_icon(*kind), t));
+                    desc_text.push((slot_icon(*kind), slot_text(content)));
+                }
+                ItemAttr::Module(effect) => {
+                    desc_text.push((slot_icon(effect.kind()), effect.to_text().into()));
                 }
                 _ => (),
             }
@@ -150,5 +149,13 @@ pub fn slot_icon(kind: ModuleSlotKind) -> &'static str {
         ModuleSlotKind::Ability => "!icon-module_slot-ability",
         ModuleSlotKind::Core => "!icon-module_slot-core",
         ModuleSlotKind::Extend => "!icon-module_slot-extend",
+    }
+}
+
+pub fn slot_text(content: &Option<(ItemIdx, ModuleEffect)>) -> String {
+    if let Some((_, effect)) = content {
+        effect.to_text().into()
+    } else {
+        misc_txt("item_info_text-empty_slot")
     }
 }

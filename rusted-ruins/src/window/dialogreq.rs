@@ -51,7 +51,9 @@ pub fn create_dialog_from_request(
         DialogOpenRequest::InstallExtendSlot => Box::new(
             super::slot_window::SlotInstallWindow::new(&game.gd, ModuleSlotKind::Extend),
         ),
-        DialogOpenRequest::InsertModule => todo!(),
+        DialogOpenRequest::InsertModule => {
+            Box::new(super::slot_window::slot_insertable_item_window(game))
+        }
         DialogOpenRequest::GameOver => Box::new(super::exit_window::GameOverWindow::new()),
     })
 }

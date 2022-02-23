@@ -20,6 +20,8 @@ pub struct ItemFilter {
     pub container: bool,
     pub throw_str: Option<u16>,
     pub convertable_by_container: Option<String>,
+    pub module_insertable: bool,
+    pub module_kind: Option<ModuleSlotKind>,
 }
 
 impl ItemFilter {
@@ -106,6 +108,20 @@ impl ItemFilter {
             }
         }
 
+        if self.module_insertable && !has_attr!(item, ItemAttr::ModuleSlot) {
+            return false;
+        }
+
+        if let Some(module_kind) = self.module_kind {
+            if let Some(effect) = find_attr!(item, ItemAttr::Module(effect) => effect) {
+                if effect.kind() != module_kind {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
         true
     }
 
@@ -168,6 +184,16 @@ impl ItemFilter {
         self.convertable_by_container = Some(kind.into());
         self
     }
+
+    pub fn module_insertable(mut self, module_insertable: bool) -> ItemFilter {
+        self.module_insertable = module_insertable;
+        self
+    }
+
+    pub fn module_kind(mut self, module_kind: ModuleSlotKind) -> ItemFilter {
+        self.module_kind = Some(module_kind);
+        self
+    }
 }
 
 impl Default for ItemFilter {
@@ -186,6 +212,8 @@ impl Default for ItemFilter {
             container: false,
             throw_str: None,
             convertable_by_container: None,
+            module_insertable: false,
+            module_kind: None,
         }
     }
 }

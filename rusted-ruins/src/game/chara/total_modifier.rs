@@ -101,5 +101,15 @@ fn add_equipments(tm: &mut CharaTotalModifier, equip: &EquipItemList) {
                 add_modifier(tm, m);
             }
         }
+
+        for item_attr in &item.attrs {
+            if let ItemAttr::ModuleSlot {
+                content: Some((_, ModuleEffect::Extend(ExtendModuleEffect::Chara(m)))),
+                ..
+            } = item_attr
+            {
+                add_modifier(tm, m);
+            }
+        }
     }
 }

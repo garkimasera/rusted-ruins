@@ -2,7 +2,7 @@ use super::{
     filter::{FilteredListHolder, ItemFilter},
     GameDataItemExt, ItemExt,
 };
-use common::gamedata::*;
+use common::{gamedata::*, objholder::ItemIdx};
 use rules::RULES;
 
 /// Returns the number of given item's (filled, empty, installable) slots
@@ -102,4 +102,48 @@ pub fn install_slot(gd: &mut GameData, il: ItemLocation, slot_kind: ModuleSlotKi
     item.attrs.sort();
     gd.append_item_to(ItemListLocation::PLAYER, item, 1);
     gd.player.sub_money(cost);
+}
+
+pub fn insert_module_to(item: &mut Item, module_item: Item, i_slot: u32) -> Option<Item> {
+    let module_item_idx = module_item.idx;
+    let effect = if let Some(effect) = find_attr!(module_item, ItemAttr::Module(effect) => effect) {
+        effect
+    } else {
+        error!("insert module failed");
+        return None;
+    };
+
+    if let Some(ItemAttr::ModuleSlot { content, .. }) = item
+        .attrs
+        .iter_mut()
+        .filter(|attr| matches!(attr, ItemAttr::ModuleSlot { .. }))
+        .nth(i_slot as usize)
+    {
+        std::mem::replace(content, Some((module_item_idx, effect.clone())))
+            .map(|(module_item_idx, effect)| module_item_from(module_item_idx, effect))
+    } else {
+        error!("insert module failed");
+        None
+    }
+}
+
+fn module_item_from(item_idx: ItemIdx, effect: ModuleEffect) -> Item {
+    let mut item = super::gen::gen_item_from_idx(item_idx, 0);
+    if let Some(ItemAttr::Module(e)) = find_attr_mut!(item, ItemAttr::Module) {
+        *e = effect;
+    }
+    item
+}
+
+pub fn slot_list(item: &Item) -> Vec<(ModuleSlotKind, String)> {
+    item.attrs
+        .iter()
+        .filter_map(|attr| {
+            if let ItemAttr::ModuleSlot { kind, content } = attr {
+                Some((*kind, super::info::slot_text(content)))
+            } else {
+                None
+            }
+        })
+        .collect()
 }

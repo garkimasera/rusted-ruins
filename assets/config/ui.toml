@@ -211,7 +211,7 @@ cancel_button_rect = { x = 300, y = 300, w = 100, h = 26 }
 
 [slot_window]
 rect = { x = -999, y = -999, w = 300, h = 260 }
-column_pos = [0, 27, 260]
+column_pos = [0, 32, 260]
 n_row = 10
 
 [label_widget]
