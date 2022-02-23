@@ -89,7 +89,7 @@ trait Rule: DeserializeOwned {
 
     fn from_file(path: &Path) -> Result<Self> {
         let file = fs::File::open(path)?;
-        let rule = ron::de::from_reader(file).unwrap();
+        let rule = ron::de::from_reader(file)?;
         Ok(rule)
     }
 
@@ -181,7 +181,7 @@ pub static RULES: Lazy<Rules> = Lazy::new(|| {
     match rules {
         Ok(rules) => rules,
         Err(e) => {
-            error!("rules initalization failed:\n{}", e);
+            error!("rules initalization failed:\n{:?}", e);
             std::process::exit(1);
         }
     }
