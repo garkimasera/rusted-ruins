@@ -132,6 +132,11 @@ impl Chara {
         self.hp = std::cmp::min(self.hp + value, self.attr.max_hp);
     }
 
+    /// Add MP for this character
+    fn add_mp(&mut self, value: i32) {
+        self.mp = std::cmp::min(self.mp + value, self.attr.max_mp);
+    }
+
     /// Update character parameters by its status
     fn update(&mut self) {
         update::update_attributes(self);

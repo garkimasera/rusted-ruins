@@ -12,10 +12,12 @@ pub struct Chara {
     pub max_hp_skill_factor: i32,
     /// Factor for calculating max mp
     pub max_mp_skill_factor: i32,
-    /// The probability of HP regeneration per turn
+    /// The probability of HP regeneration per turn, multiplied by VIT
     pub hp_regeneration_probability: f32,
     /// Multiplying factor of HP regeneration
     pub hp_regeneration_factor: f32,
+    /// The probability of MP regeneration per turn, multiplied by WIL
+    pub mp_regeneration_probability: f32,
     /// Default sp when a new character is created
     pub sp_default: f32,
     /// Maximum sp

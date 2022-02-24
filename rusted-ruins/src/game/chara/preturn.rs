@@ -82,13 +82,13 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
     };
 
     let chara = game.gd.chara.get_mut(cid);
-
     chara.add_carry_exp();
 
     if chara.hp < chara.attr.max_hp && chara.sp > RULES.chara.sp_starving {
         // HP regeneration
         let lv = chara.skill_level(SkillKind::Endurance) as f32;
-        if get_rng().gen_bool(RULES.chara.hp_regeneration_probability.into()) {
+        let p = (RULES.chara.hp_regeneration_probability * chara.attr.vit as f32).clamp(0.0, 1.0);
+        if get_rng().gen_bool(p.into()) {
             let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
             let v = roll_dice(1, a);
             chara.heal(v);
@@ -102,6 +102,18 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let damage = chara.sub_sp(RULES.chara.sp_consumption * sp_consumption_factor, cid);
         if let Some(damage) = damage {
             do_damage(game, cid, damage, CharaDamageKind::Starve, None);
+        }
+    }
+
+    let chara = game.gd.chara.get_mut(cid);
+    if chara.mp < chara.attr.max_mp && chara.sp > RULES.chara.sp_starving {
+        // MP regeneration
+        let lv = chara.skill_level(SkillKind::Magic) as f32;
+        let p = (RULES.chara.mp_regeneration_probability * chara.attr.wil as f32).clamp(0.0, 1.0);
+        if get_rng().gen_bool(p.into()) {
+            let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
+            let v = roll_dice(1, a);
+            chara.add_mp(v);
         }
     }
 
