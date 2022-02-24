@@ -13,6 +13,7 @@ use rules::RULES;
 #[derive(Clone, Copy, Debug)]
 pub enum BarIndicatorKind {
     Hp,
+    Mp,
     Sp,
 }
 
@@ -20,6 +21,7 @@ impl BarIndicatorKind {
     fn label_id(self) -> &'static str {
         match self {
             BarIndicatorKind::Hp => "!label-hp",
+            BarIndicatorKind::Mp => "!label-mp",
             BarIndicatorKind::Sp => "!label-sp",
         }
     }
@@ -27,6 +29,7 @@ impl BarIndicatorKind {
     fn color_mode(self) -> GaugeColorMode {
         match self {
             BarIndicatorKind::Hp => GaugeColorMode::Hp,
+            BarIndicatorKind::Mp => GaugeColorMode::Mp,
             BarIndicatorKind::Sp => GaugeColorMode::Sp,
         }
     }
@@ -34,6 +37,7 @@ impl BarIndicatorKind {
     fn rect(self) -> Rect {
         match self {
             BarIndicatorKind::Hp => SCREEN_CFG.hp_indicator.into(),
+            BarIndicatorKind::Mp => SCREEN_CFG.mp_indicator.into(),
             BarIndicatorKind::Sp => SCREEN_CFG.sp_indicator.into(),
         }
     }
@@ -81,6 +85,10 @@ impl Window for BarIndicator {
             BarIndicatorKind::Hp => {
                 let (max_hp, hp) = game.gd.player_hp();
                 self.guage.set_params(0.0, max_hp as f32, hp as f32);
+            }
+            BarIndicatorKind::Mp => {
+                let (max_mp, mp) = game.gd.player_mp();
+                self.guage.set_params(0.0, max_mp as f32, mp as f32);
             }
             BarIndicatorKind::Sp => {
                 let sp = game.gd.chara.get(CharaId::Player).sp;

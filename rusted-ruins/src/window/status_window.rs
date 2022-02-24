@@ -70,6 +70,7 @@ pub struct StatusWindow {
     faction_label: LabelWidget,
     lv_label: LabelWidget,
     hp_label: LabelWidget,
+    mp_label: LabelWidget,
     sp_label: LabelWidget,
     str_label: LabelWidget,
     vit_label: LabelWidget,
@@ -158,6 +159,11 @@ impl StatusWindow {
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect,
             &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
+            FontKind::MonoM,
+        );
+        let mp_label = LabelWidget::new(
+            cfg.mp_label_rect,
+            &format!("MP  {} / {}", chara.mp, chara.attr.max_mp),
             FontKind::MonoM,
         );
         let sp_label = LabelWidget::new(
@@ -253,6 +259,7 @@ impl StatusWindow {
             faction_label,
             lv_label,
             hp_label,
+            mp_label,
             sp_label,
             str_label,
             vit_label,
@@ -282,6 +289,7 @@ impl Window for StatusWindow {
         self.faction_label.draw(context);
         self.lv_label.draw(context);
         self.hp_label.draw(context);
+        self.mp_label.draw(context);
         self.sp_label.draw(context);
         self.str_label.draw(context);
         self.vit_label.draw(context);

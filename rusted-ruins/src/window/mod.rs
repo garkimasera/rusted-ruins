@@ -768,6 +768,7 @@ struct GameWindows {
     toolbar: toolbar::Toolbar,
     shortcut_list: toolbar::ShortcutList,
     indicator_hp: indicator::BarIndicator,
+    indicator_mp: indicator::BarIndicator,
     indicator_sp: indicator::BarIndicator,
     floor_info: indicator::FloorInfo,
     status_info: indicator::StatusInfo,
@@ -800,6 +801,7 @@ impl GameWindows {
             toolbar: toolbar::Toolbar::new(),
             shortcut_list: toolbar::ShortcutList::new(),
             indicator_hp: BarIndicator::new(BarIndicatorKind::Hp),
+            indicator_mp: BarIndicator::new(BarIndicatorKind::Mp),
             indicator_sp: BarIndicator::new(BarIndicatorKind::Sp),
             floor_info: FloorInfo::new(),
             status_info: StatusInfo::new(),
@@ -831,6 +833,7 @@ impl GameWindows {
         self.toolbar.draw(context, game, anim);
         self.shortcut_list.draw(context, game, anim);
         self.indicator_hp.draw(context, game, anim);
+        self.indicator_mp.draw(context, game, anim);
         self.indicator_sp.draw(context, game, anim);
         self.floor_info.draw(context, game, anim);
         self.status_info.draw(context, game, anim);

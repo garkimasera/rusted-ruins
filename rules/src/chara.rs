@@ -8,6 +8,10 @@ pub struct Chara {
     pub default_view_range: i32,
     /// Minimul speed
     pub min_spd: u16,
+    /// Factor for calculating max hp
+    pub max_hp_skill_factor: i32,
+    /// Factor for calculating max mp
+    pub max_mp_skill_factor: i32,
     /// The probability of HP regeneration per turn
     pub hp_regeneration_probability: f32,
     /// Multiplying factor of HP regeneration

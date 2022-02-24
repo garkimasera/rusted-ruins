@@ -30,6 +30,12 @@ impl GameData {
         (player.attr.max_hp, player.hp)
     }
 
+    /// Get player's (maxhp, hp)
+    fn player_mp(&self) -> (i32, i32) {
+        let player = self.chara.get(CharaId::Player);
+        (player.attr.max_mp, player.mp)
+    }
+
     /// Get item location that player has
     fn player_item_location(&self, id: &str) -> Option<ItemLocation> {
         let idx: ItemIdx = gobj::id_to_idx_checked(id)?;

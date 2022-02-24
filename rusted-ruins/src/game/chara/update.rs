@@ -12,6 +12,7 @@ pub fn update_attributes(chara: &mut Chara) {
 
     // Update attributes
     chara.attr.max_hp = calc_max_hp(chara, ct);
+    chara.attr.max_mp = calc_max_mp(chara, ct);
     chara.attr.str = (ct.base_attr.str + chara.tm.str).max(1) as u16;
     chara.attr.vit = (ct.base_attr.vit + chara.tm.vit).max(1) as u16;
     chara.attr.dex = (ct.base_attr.dex + chara.tm.dex).max(1) as u16;
@@ -25,8 +26,14 @@ pub fn update_attributes(chara: &mut Chara) {
 
 fn calc_max_hp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
     let base_hp = (ct.base_attr.base_hp + chara.tm.base_hp).max(1);
-    let factor = chara.skill_level(SkillKind::Endurance) as i32 + 8;
-    ((factor * base_hp / 8) + chara.tm.max_hp).max(1)
+    let factor = chara.skill_level(SkillKind::Endurance) as i32 + RULES.chara.max_hp_skill_factor;
+    ((factor * base_hp / RULES.chara.max_hp_skill_factor) + chara.tm.max_hp).max(1)
+}
+
+fn calc_max_mp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
+    let base_mp = (ct.base_attr.base_mp + chara.tm.base_mp).max(0);
+    let factor = chara.skill_level(SkillKind::Magic) as i32 + RULES.chara.max_mp_skill_factor;
+    ((factor * base_mp / RULES.chara.max_mp_skill_factor) + chara.tm.max_mp).max(0)
 }
 
 pub fn update_encumbrance_status(chara: &mut Chara) {

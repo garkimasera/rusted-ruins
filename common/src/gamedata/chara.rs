@@ -81,6 +81,7 @@ pub struct Chara {
     pub wait_time: u32,
     pub ai: CharaAi,
     pub hp: i32,
+    pub mp: i32,
     pub sp: f32,
     pub tm: Box<CharaTotalModifier>,
     pub morale: Morale,
@@ -99,6 +100,8 @@ pub struct Chara {
 pub struct CharaAttributes {
     /// Max HP
     pub max_hp: i32,
+    /// Max MP
+    pub max_mp: i32,
     /// Strength
     pub str: u16,
     /// Vitality
@@ -120,6 +123,7 @@ pub struct CharaAttributes {
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct CharaBaseAttr {
     pub base_hp: i32,
+    pub base_mp: i32,
     pub str: i16,
     pub vit: i16,
     pub dex: i16,
@@ -136,6 +140,7 @@ pub struct CharaBaseAttr {
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct CharaAttrDiff {
     pub base_hp: i32,
+    pub base_mp: i32,
     pub str: i16,
     pub vit: i16,
     pub dex: i16,
@@ -223,6 +228,7 @@ impl Default for Chara {
             wait_time: crate::basic::WAIT_TIME_NUMERATOR,
             ai: CharaAi::default(),
             hp: 100,
+            mp: 0,
             sp: 0.0,
             morale: Morale::default(),
             tm: Box::default(),

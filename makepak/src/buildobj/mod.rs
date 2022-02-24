@@ -123,6 +123,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
 
     let base_attr = CharaBaseAttr {
         base_hp: chara_dep_input.base_hp,
+        base_mp: chara_dep_input.base_mp,
         str: chara_dep_input.str as i16,
         vit: chara_dep_input.vit as i16,
         dex: chara_dep_input.dex as i16,

@@ -91,6 +91,7 @@ pub struct CharaTemplateDepInput {
     #[serde(default)]
     pub equips: Vec<EquipGen>,
     pub base_hp: i32,
+    pub base_mp: i32,
     pub str: u16,
     pub vit: u16,
     pub dex: u16,

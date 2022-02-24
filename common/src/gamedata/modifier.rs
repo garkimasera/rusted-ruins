@@ -28,7 +28,9 @@ pub enum CharaModifier {
 #[derivative(Default)]
 pub struct CharaTotalModifier {
     pub base_hp: i32,
+    pub base_mp: i32,
     pub max_hp: i32,
+    pub max_mp: i32,
     pub str: i16,
     pub vit: i16,
     pub dex: i16,

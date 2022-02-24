@@ -15,7 +15,8 @@ gauge_bg = { r=7, g=7, b =7 }
 gauge_border_dark = { r=153, g=116, b =20 }
 gauge_border_light = { r=229, g=211, b =4 }
 gauge_exp = { r=153, g=153, b=117 }
-gauge_hp = { r=237, g=47, b =37 }
+gauge_hp = { r=237, g=47, b=37 }
+gauge_mp = { r=13, g=109, b=255 }
 gauge_sp = { r=200, g=200, b =0 }
 gauge_work = { r = 224, g = 224, b = 20 }
 list_border = { r=59, g=69, b=103 }
@@ -170,19 +171,20 @@ name_label_rect = { x = 57, y = 3 }
 faction_label_rect = { x = 57, y = 28 }
 lv_label_rect = { x = 57, y = 59 }
 hp_label_rect = { x = 57, y = 77 }
-sp_label_rect = { x = 57, y = 95 }
-str_label_rect = { x = 5, y = 138 }
-vit_label_rect = { x = 5, y = 158 }
-dex_label_rect = { x = 5, y = 178 }
-int_label_rect = { x = 5, y = 198 }
-wil_label_rect = { x = 5, y = 218 }
-cha_label_rect = { x = 5, y = 238 }
-spd_label_rect = { x = 5, y = 258 }
+mp_label_rect = { x = 57, y = 95 }
+sp_label_rect = { x = 57, y = 113 }
+str_label_rect = { x = 5, y = 135 }
+vit_label_rect = { x = 5, y = 155 }
+dex_label_rect = { x = 5, y = 175 }
+int_label_rect = { x = 5, y = 195 }
+wil_label_rect = { x = 5, y = 215 }
+cha_label_rect = { x = 5, y = 235 }
+spd_label_rect = { x = 5, y = 255 }
 power_labels_rect = { x = 120, y = 132 }
 power_labels_icon_rect = { w = 22, h = 22 }
 power_labels_label_dy = 3
-carry_label_rect = { x = 210, y = 136 }
-travel_speed_label_rect = { x = 210, y = 154 }
+carry_label_rect = { x = 210, y = 133 }
+travel_speed_label_rect = { x = 210, y = 151 }
 
 [chara_trait_window]
 column_pos = [4]

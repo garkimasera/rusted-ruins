@@ -40,6 +40,12 @@ h = 34
 
 [hp_indicator]
 x = 52
+y = 538
+w = 80
+h = 15
+
+[mp_indicator]
+x = 52
 y = 560
 w = 80
 h = 15
