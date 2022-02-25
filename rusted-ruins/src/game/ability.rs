@@ -35,14 +35,8 @@ pub fn use_ability(game: &mut Game, ability_id: &AbilityId, cid: CharaId, target
         power,
     );
 
-    match ability.group {
-        AbilityGroup::Magic => {
-            game_log!("use-ability-magic"; chara=chara, ability=ability_id);
-        }
-        AbilityGroup::Special => {
-            game_log!("use-ability-special"; chara=chara, ability=ability_id);
-        }
-    }
+    let use_ability_text_id = format!("use-ability-{}", ability.category);
+    game_log!(&use_ability_text_id; chara=chara, ability=ability_id);
 
     do_effect(game, &ability.effect, Some(cid), target, power, hit);
     true

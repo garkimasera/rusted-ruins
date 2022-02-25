@@ -20,6 +20,13 @@ pub fn update_attributes(chara: &mut Chara) {
     chara.attr.wil = (ct.base_attr.wil + chara.tm.wil).max(1) as u16;
     chara.attr.cha = (ct.base_attr.cha + chara.tm.cha).max(1) as u16;
 
+    if chara.hp > chara.attr.max_hp {
+        chara.hp = chara.attr.max_hp;
+    }
+    if chara.mp > chara.attr.max_mp {
+        chara.mp = chara.attr.max_mp;
+    }
+
     // View range
     chara.attr.view_range = RULES.chara.default_view_range;
 }
@@ -34,6 +41,7 @@ fn calc_max_mp(chara: &mut Chara, ct: &CharaTemplateObject) -> i32 {
     let base_mp = (ct.base_attr.base_mp + chara.tm.base_mp).max(0);
     let factor = chara.skill_level(SkillKind::Magic) as i32 + RULES.chara.max_mp_skill_factor;
     ((factor * base_mp / RULES.chara.max_mp_skill_factor) + chara.tm.max_mp).max(0)
+        / RULES.chara.max_mp_denominator
 }
 
 pub fn update_encumbrance_status(chara: &mut Chara) {

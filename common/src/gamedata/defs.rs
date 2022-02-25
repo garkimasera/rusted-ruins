@@ -3,7 +3,7 @@
 use ordered_float::NotNan;
 
 use crate::gamedata::effect::Effect;
-use crate::gamedata::skill::{MagicKind, SkillKind, WeaponKind};
+use crate::gamedata::skill::{SkillKind, SpecialSkillKind, WeaponKind};
 use crate::objholder::ItemIdx;
 use enum_map::Enum;
 use std::ops::{Index, IndexMut};
@@ -149,7 +149,8 @@ impl std::fmt::Display for AbilityId {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ability {
-    pub group: AbilityGroup,
+    pub category: String,
+    pub group: String,
     pub icon: String,
     pub effect: Effect,
     pub power_calc: PowerCalcMethod,
@@ -166,7 +167,7 @@ pub enum PowerCalcMethod {
     Melee(WeaponKind),
     Ranged(WeaponKind),
     Release,
-    Magic(MagicKind),
+    Magic(SkillKind),
     Medical,
     Throw(u32),
     Custom(String),
@@ -195,18 +196,13 @@ impl std::ops::Mul<f32> for BasePower {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub enum AbilityGroup {
-    Special,
-    Magic,
-}
-
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum AbilityOrigin {
     Inherent,
     Learned,
     Race,
     Class,
+    Module,
 }
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]

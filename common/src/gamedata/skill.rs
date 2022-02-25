@@ -51,9 +51,9 @@ macro_rules! define_skill_kind {
         {
             $($creation:ident, $creation_as_str:expr,)*
         }
-        magic_kind = $magic_start_value:expr;
+        special_skill_kind = $special_skill_start_value:expr;
         {
-            $($magic:ident, $magic_as_str:expr,)*
+            $($special_skill:ident, $special_skill_as_str:expr,)*
         }
     } => {
         #[repr(u16)]
@@ -80,9 +80,9 @@ macro_rules! define_skill_kind {
                 $creation,
             )*
             #[doc(hidden)]
-            _DummyMagicSkill = $magic_start_value,
+            _DummySpecialSkill = $special_skill_start_value,
             $(
-                $magic,
+                $special_skill,
             )*
         }
 
@@ -106,9 +106,9 @@ macro_rules! define_skill_kind {
         }
 
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize, Deserialize)]
-        pub enum MagicKind {
+        pub enum SpecialSkillKind {
             $(
-                $magic,
+                $special_skill,
             )*
         }
 
@@ -214,11 +214,11 @@ macro_rules! define_skill_kind {
             }
         }
 
-        impl From<MagicKind> for SkillKind {
-            fn from(magic_kind: MagicKind) -> Self {
-                match magic_kind {
+        impl From<SpecialSkillKind> for SkillKind {
+            fn from(special_skill_kind: SpecialSkillKind) -> Self {
+                match special_skill_kind {
                     $(
-                        MagicKind::$magic => SkillKind::$magic,
+                        SpecialSkillKind::$special_skill => SkillKind::$special_skill,
                     )*
                 }
             }
@@ -286,11 +286,11 @@ macro_rules! define_skill_kind {
             ];
         }
 
-        impl MagicKind {
+        impl SpecialSkillKind {
             pub fn textid(self) -> &'static str {
                 match self {
                     $(
-                        MagicKind::$magic => concat!("magic_kind-", $magic_as_str),
+                        SpecialSkillKind::$special_skill => concat!("special_skill_kind-", $special_skill_as_str),
                     )*
                 }
             }
@@ -338,7 +338,7 @@ define_skill_kind! {
         Pharmacy, "pharmacy",
         Smith, "smith",
     }
-    magic_kind = 0x1200;
+    special_skill_kind = 0x1200;
     {
         Heat, "heat",
         Cold, "cold",

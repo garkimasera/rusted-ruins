@@ -33,9 +33,9 @@ pub fn calc_power(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 
             let int = chara.attr.int as f32;
             int * int * (skill_level + skill_base).powf(1.4)
         }
-        PowerCalcMethod::Magic(magic_kind) => {
+        PowerCalcMethod::Magic(skill_kind) => {
             let chara = gd.chara.get(cid);
-            let skill_level = (chara.skill_level(magic_kind.into()) as f32
+            let skill_level = (chara.skill_level(skill_kind) as f32
                 + chara.skill_level(SkillKind::Magic) as f32)
                 / 2.0;
             let wil = chara.attr.wil as f32;
@@ -87,9 +87,9 @@ pub fn calc_hit(gd: &GameData, cid: CharaId, method: &PowerCalcMethod) -> f32 {
             let dex = chara.attr.dex as f32;
             dex + skill_level
         }
-        PowerCalcMethod::Magic(magic_kind) => {
+        PowerCalcMethod::Magic(skill_kind) => {
             let chara = gd.chara.get(cid);
-            let skill_level = chara.skill_level(magic_kind.into()) as f32;
+            let skill_level = chara.skill_level(skill_kind) as f32;
             let wil = chara.attr.wil as f32;
             wil + skill_level
         }

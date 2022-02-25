@@ -12,6 +12,8 @@ pub struct Chara {
     pub max_hp_skill_factor: i32,
     /// Factor for calculating max mp
     pub max_mp_skill_factor: i32,
+    /// Denominator for calculating max mp
+    pub max_mp_denominator: i32,
     /// The probability of HP regeneration per turn, multiplied by VIT
     pub hp_regeneration_probability: f32,
     /// Multiplying factor of HP regeneration
