@@ -102,6 +102,5 @@ fn get_biome(
 fn to_biome_name(name: &str) -> Option<&str> {
     static RE: Lazy<Regex> = Lazy::new(|| Regex::new("rm.([a-zA-Z-_]+)-[0-9]+").unwrap());
     RE.captures(name)
-        .map(|cap| cap.get(1).map(|m| m.as_str()))
-        .flatten()
+        .and_then(|cap| cap.get(1).map(|m| m.as_str()))
 }

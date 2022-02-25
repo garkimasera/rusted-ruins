@@ -148,7 +148,7 @@ fn get_cids(game: &Game, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
 
 // Get tile positions of the effect
 fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId>) -> Vec<Vec2d> {
-    let cause = cause.map(|cause| game.gd.chara_pos(cause)).flatten();
+    let cause = cause.and_then(|cause| game.gd.chara_pos(cause));
     let target = match target {
         Target::None => {
             return vec![];
