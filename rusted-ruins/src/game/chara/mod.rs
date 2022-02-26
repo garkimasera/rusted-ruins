@@ -143,6 +143,12 @@ impl Chara {
         update::update_encumbrance_status(self);
     }
 
+    /// Update after equipment/class/trait changes
+    fn update_all(&mut self) {
+        update::update_ability(self);
+        self.update();
+    }
+
     /// Reset wait time
     fn reset_wait_time(&mut self) {
         self.wait_time = WAIT_TIME_NUMERATOR / self.attr.spd as u32;

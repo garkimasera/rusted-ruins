@@ -151,6 +151,8 @@ impl std::fmt::Display for AbilityId {
 pub struct Ability {
     pub category: String,
     pub group: String,
+    #[serde(default)]
+    pub require: Vec<AbilityRequire>,
     pub icon: String,
     pub effect: Effect,
     pub power_calc: PowerCalcMethod,
@@ -158,6 +160,12 @@ pub struct Ability {
     pub cost_sp: u32,
     #[serde(default)]
     pub cost_mp: u32,
+}
+
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+pub enum AbilityRequire {
+    Level(u32),
+    Skill(SkillKind, u32),
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

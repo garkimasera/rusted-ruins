@@ -422,7 +422,7 @@ pub fn change_equipment(
         gd.get_item_list_mut(il.0).append(removed_equipment, 1);
     }
 
-    gd.chara.get_mut(cid).update();
+    gd.chara.get_mut(cid).update_all();
 }
 
 pub fn remove_equipment(gd: &mut GameData, cid: CharaId, slot: (EquipSlotKind, u8)) {

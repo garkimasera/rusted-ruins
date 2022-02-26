@@ -1,10 +1,16 @@
 use super::Rule;
 use common::gamedata::*;
-use std::collections::HashMap;
+use std::collections::{hash_map::Iter, HashMap};
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(transparent)]
 pub struct Abilities(HashMap<AbilityId, Ability>);
+
+impl Abilities {
+    pub fn iter(&self) -> Iter<'_, AbilityId, Ability> {
+        self.0.iter()
+    }
+}
 
 impl Rule for Abilities {
     const NAME: &'static str = "abilities";

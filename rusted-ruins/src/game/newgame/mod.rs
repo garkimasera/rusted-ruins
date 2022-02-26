@@ -55,7 +55,7 @@ impl NewGameBuilder {
 
         set_initial_skills(&mut chara);
 
-        chara.update();
+        chara.update_all();
         gd.add_chara(CharaId::Player, chara);
 
         gd

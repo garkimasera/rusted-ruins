@@ -47,7 +47,7 @@ pub fn create_chara<T: Into<Option<FactionId>>>(
 
     gen_equips(&mut chara, ct);
 
-    chara.update();
+    chara.update_all();
     chara.hp = chara.attr.max_hp;
     chara.mp = chara.attr.max_mp;
     chara.reset_wait_time();

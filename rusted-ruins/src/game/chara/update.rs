@@ -78,3 +78,37 @@ pub fn calc_carrying_capacity(chara: &Chara) -> f32 {
         * (skill_level + 10.0)
         * RULES.chara.carrying_capacity_factor
 }
+
+pub fn update_ability(chara: &mut Chara) {
+    let mut abilities: Vec<_> = chara
+        .abilities
+        .iter()
+        .filter(|(origin, _)| matches!(origin, AbilityOrigin::Inherent | AbilityOrigin::Learned))
+        .cloned()
+        .collect();
+
+    for (_, _, item) in chara.equip.item_iter() {
+        if let Some(ItemAttr::ModuleSlot {
+            content: Some((_, ModuleEffect::Ability { group })),
+            ..
+        }) = find_attr!(item, ItemAttr::ModuleSlot)
+        {
+            for (ability_id, ability) in RULES.abilities.iter() {
+                if ability.group == *group && meet_requirement(chara, ability) {
+                    abilities.push((AbilityOrigin::Module, ability_id.clone()));
+                }
+            }
+        }
+    }
+
+    chara.abilities = abilities;
+}
+
+pub fn meet_requirement(chara: &Chara, ability: &Ability) -> bool {
+    ability.require.iter().all(|require| match require {
+        AbilityRequire::Level(lv) => chara.lv >= *lv,
+        AbilityRequire::Skill(skill_kind, skill_level) => {
+            chara.skill_level(*skill_kind) >= *skill_level
+        }
+    })
+}
