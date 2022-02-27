@@ -37,6 +37,11 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
         _ => unreachable!(),
     };
 
+    if !game.gd.target_visible(cid, target) {
+        game.gd.chara.get_mut(cid).ai.state = AiState::default_search();
+        return;
+    }
+
     let mut enable_ability = true;
 
     for _ in 0..4 {
