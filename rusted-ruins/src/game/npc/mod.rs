@@ -4,8 +4,8 @@ pub mod map_search;
 
 use crate::game::action::shoot_target;
 
-use super::ability::use_ability;
 use super::action;
+use super::action::ability::use_ability;
 use super::extrait::*;
 use super::{Game, InfoGetter};
 use common::gamedata::*;
@@ -59,7 +59,13 @@ fn process_npc_turn_combat(game: &mut Game, cid: CharaId) {
                 shoot_target(game, cid, target);
             }
             CombatActionKind::Ability => {
-                if let Some(ability_id) = ct.abilities.choose(&mut get_rng()) {
+                if let Ok(ability_id) = ct.abilities.choose_weighted(&mut get_rng(), |ability_id| {
+                    if super::action::ability::usable(&game.gd, cid, ability_id, false) {
+                        1.0
+                    } else {
+                        0.0
+                    }
+                }) {
                     use_ability(game, ability_id, cid, target);
                 } else {
                     enable_ability = false;

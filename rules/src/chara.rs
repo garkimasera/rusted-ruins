@@ -20,6 +20,8 @@ pub struct Chara {
     pub hp_regeneration_factor: f32,
     /// The probability of MP regeneration per turn, multiplied by WIL
     pub mp_regeneration_probability: f32,
+    /// Multiplying factor of HP regeneration
+    pub mp_regeneration_factor: f32,
     /// Default sp when a new character is created
     pub sp_default: f32,
     /// Maximum sp

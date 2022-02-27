@@ -111,9 +111,11 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         let lv = chara.skill_level(SkillKind::Magic) as f32;
         let p = (RULES.chara.mp_regeneration_probability * chara.attr.wil as f32).clamp(0.0, 1.0);
         if get_rng().gen_bool(p.into()) {
-            let a = (lv * RULES.chara.hp_regeneration_factor) as i32;
-            let v = roll_dice(1, a);
-            chara.add_mp(v);
+            let a = (lv * RULES.chara.mp_regeneration_factor) as i32;
+            if a > 0 {
+                let v = roll_dice(1, a);
+                chara.add_mp(v);
+            }
         }
     }
 

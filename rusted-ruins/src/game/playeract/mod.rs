@@ -11,6 +11,7 @@ use crate::game::{DialogOpenRequest, InfoGetter};
 use common::gamedata::*;
 use common::objholder::ItemIdx;
 use geom::*;
+use rules::RULES;
 
 /// Player actions are processed through this.
 /// Mutable access to Game or GameData is limited by this wrapper.
@@ -230,8 +231,31 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     /// Use active skill. Returns false if the skill cost is not enough.
-    pub fn use_ability(&mut self, _ability_id: &AbilityId) -> bool {
-        false
+    pub fn use_ability(&mut self, ability_id: &AbilityId) -> bool {
+        if !super::action::ability::usable(self.gd(), CharaId::Player, ability_id, true) {
+            return false;
+        }
+        let ability = if let Some(ability) = RULES.abilities.get(ability_id) {
+            ability
+        } else {
+            return false;
+        };
+
+        let target = if let Some(target) = auto_target_for_player(self.0, &ability.effect) {
+            target
+        } else {
+            let ability_id = ability_id.clone();
+            self.0.ui_request.push_back(UiRequest::StartTargeting {
+                effect: ability.effect.clone(),
+                callback: Box::new(move |pa, target| {
+                    super::action::ability::use_ability(pa.0, &ability_id, CharaId::Player, target);
+                    pa.0.finish_player_turn();
+                }),
+            });
+            return true;
+        };
+        super::action::ability::use_ability(self.0, ability_id, CharaId::Player, target);
+        true
     }
 
     /// Try talk to next chara

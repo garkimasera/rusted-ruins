@@ -63,8 +63,10 @@ drink-item = {$chara}は{$item}を飲み干した。
 eat-item = {$chara}は{$item}を食べた。
 harvest-plant = {$chara}は{$item} x {$n}を収穫した。
 harvest-plant-not-ready = {$item}はまだ収穫できないようだ。
-use-ability-magic = {$chara}は"{$ability}"を使用した。
+use-ability-ether = {$chara}は"{$ability}"を使用した。
 use-ability-special = {$chara}は"{$ability}"を使用した。
+ability-not-enough-mp = {$chara}のMPが足りない。
+ability-not-enough-sp = {$chara}のSPが足りない。
 
 # Messages about using tools
 

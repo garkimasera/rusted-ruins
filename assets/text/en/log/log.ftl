@@ -63,8 +63,10 @@ drink-item = {$chara} drank a {$item}.
 eat-item = {$chara} ate a {$item}.
 harvest-plant = {$chara} harvested {$item} x {$n}.
 harvest-plant-not-ready = {$item} cannot be harvested yet.
-use-ability-magic = {$chara} used magic "{$ability}".
+use-ability-ether = {$chara} used ether "{$ability}".
 use-ability-special = {$chara} used special skill "{$ability}".
+ability-not-enough-mp = {$chara} didn't have enough MP.
+ability-not-enough-sp = {$chara} didn't have enough SP.
 
 # Messages about using tools
 

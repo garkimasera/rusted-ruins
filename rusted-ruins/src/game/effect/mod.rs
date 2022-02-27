@@ -14,6 +14,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::TileIdx;
 use geom::*;
+use ordered_float::NotNan;
 
 pub fn do_effect<T: Into<Target>>(
     game: &mut Game,
@@ -204,5 +205,26 @@ fn cause_status(game: &mut Game, cid: CharaId, power: f32, status: StatusEffect)
             chara.add_status(CharaStatus::Scanned);
             game_log_i!("scanned"; chara=chara);
         }
+    }
+}
+
+#[extend::ext(pub)]
+impl BasePower {
+    fn calc(&self, factor: f32) -> f32 {
+        let factor = NotNan::new(factor).unwrap();
+        let base_power = self.0 * factor;
+        let power_var = self.1 * factor;
+        let power_min = std::cmp::max(base_power - power_var, NotNan::new(0.0).unwrap());
+        let power_max = base_power + power_var;
+        let power = if power_max > power_min {
+            rng::gen_range(power_min..power_max)
+        } else {
+            power_min
+        };
+        power.into_inner()
+    }
+
+    fn calc_without_var(&self, factor: f32) -> f32 {
+        self.0.into_inner() * factor
     }
 }
