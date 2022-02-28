@@ -266,6 +266,13 @@ mod _rr {
                 phase: phase.as_str().to_owned(),
             });
         }
+
+        #[pymethod]
+        fn learn_skill(&self, skill: PyStrRef) {
+            self.call_method(GameMethod::LearnSkill {
+                skill: skill.as_str().to_owned(),
+            });
+        }
     }
 
     #[derive(FromArgs)]

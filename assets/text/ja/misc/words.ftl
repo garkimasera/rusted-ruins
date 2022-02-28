@@ -63,11 +63,16 @@ skill_kind-evasion = 回避
 skill_kind-conceal = 隠密
 skill_kind-detection = 探知
 skill_kind-throwing = 投擲
+skill_kind-magic = エーテル
 skill_kind-magic_device = 魔道具
 skill_kind-mining = 採掘
 skill_kind-plants = 栽培
 skill_kind-animal = 動物
 skill_kind-leadership = 統率
+skill_kind-heat = 熱
+skill_kind-cold = 冷気
+skill_kind-shock = 電撃
+skill_kind-spirit = 精神
 
 # WeaponKind
 

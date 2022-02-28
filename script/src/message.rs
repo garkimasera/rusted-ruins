@@ -44,4 +44,5 @@ pub enum GameMethod {
     RemoveItem { id: String, n: u32 },
     ResurrectPartyMembers,
     StartCustomQuest { id: String, phase: String },
+    LearnSkill { skill: String },
 }

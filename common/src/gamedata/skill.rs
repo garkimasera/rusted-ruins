@@ -145,6 +145,9 @@ macro_rules! define_skill_kind {
                     $(
                         SkillKind::$basic_skill => concat!("skill_kind-", $basic_skill_as_str),
                     )*
+                    $(
+                        SkillKind::$special_skill => concat!("skill_kind-", $special_skill_as_str),
+                    )*
                     _ => unreachable!(),
                 }
             }
@@ -165,6 +168,9 @@ macro_rules! define_skill_kind {
                     )*
                     $(
                         $creation_as_str => SkillKind::$creation,
+                    )*
+                    $(
+                        $special_skill_as_str => SkillKind::$special_skill,
                     )*
                     _ => {
                         return Err(KindParseError(s.to_owned()));

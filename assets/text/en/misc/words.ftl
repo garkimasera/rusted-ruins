@@ -63,11 +63,16 @@ skill_kind-evasion = Evasion
 skill_kind-conceal = Conceal
 skill_kind-detection = Detection
 skill_kind-throwing = Throwing
+skill_kind-magic = Ether
 skill_kind-magic_device = Magic Device
 skill_kind-mining = Mining
 skill_kind-plants = Plants
 skill_kind-animal = Animals
 skill_kind-leadership = Leadership
+skill_kind-heat = Heat
+skill_kind-cold = Cold
+skill_kind-shock = Shock
+skill_kind-spirit = Spirit
 
 # WeaponKind
 
