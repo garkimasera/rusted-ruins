@@ -65,8 +65,8 @@ pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
 /// Melee attack
 pub fn melee_attack(game: &mut Game, cid: CharaId, target: CharaId) {
     let (effect, power_calc) = melee_attack_effect(&game.gd, cid);
-    let power = super::power::calc_power(&game.gd, cid, &power_calc);
-    let hit = super::power::calc_hit(&game.gd, cid, &power_calc);
+    let power = calc_power(&game.gd, cid, &power_calc);
+    let hit = calc_hit(&game.gd, cid, &power_calc);
 
     do_effect(game, &effect, Some(cid), target, power, hit);
 

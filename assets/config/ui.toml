@@ -193,7 +193,7 @@ column_pos = [4]
 rect = { x = -999, y = -999, w = 550, h = 312 }
 list_rect = { x = 0, y = 0, w = 550, h = 312 }
 n_row = 10
-column_pos = [1, 340, 450]
+column_pos = [5, 450]
 
 [game_info_window]
 play_time_label_rect = { x = 5, y = 5 }

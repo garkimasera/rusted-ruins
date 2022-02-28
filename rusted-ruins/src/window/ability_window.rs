@@ -8,7 +8,7 @@ use rules::RULES;
 pub struct AbilityWindow {
     rect: Rect,
     cid: CharaId,
-    list: ListWidget<(TextCache, TextCache)>,
+    list: ListWidget<(TextCache, LabelWidget)>,
     abilities: Vec<AbilityId>,
     escape_click: bool,
 }
@@ -45,9 +45,17 @@ impl AbilityWindow {
                 cost.push_str(&format!("MP {} ", ability.cost_mp));
             }
 
+            let cost_w = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
+            let cost_label = LabelWidget::new(
+                Rect::new(0, 0, cost_w as u32, UI_CFG.list_widget.h_row_default),
+                cost,
+                FontKind::M,
+            )
+            .right();
+
             items.push((
                 TextCache::new(ability_id.to_text(), FontKind::M, UI_CFG.color.normal_font),
-                TextCache::new(cost, FontKind::M, UI_CFG.color.normal_font),
+                cost_label,
             ));
         }
 
