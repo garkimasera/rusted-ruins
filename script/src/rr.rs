@@ -54,13 +54,14 @@ mod _rr {
     use super::ValueExt;
     use crate::message::ScriptMessage;
     use crate::{GameMethod, TalkText, UiRequest};
-    use common::gamedata::{GameData, Value};
+    use common::gamedata::{GameData, SkillKind, Value};
     use rustpython_vm::builtins::PyIntRef;
     use rustpython_vm::{
         builtins::{PyListRef, PyNone, PyStrRef},
         function::IntoPyObject,
         pyclass, pyimpl, FromArgs, PyObjectRef, PyResult, PyValue, VirtualMachine,
     };
+    use std::str::FromStr;
 
     #[pyattr(name = "Game")]
     #[pyclass(module = "rr", name = "Game")]
@@ -268,10 +269,20 @@ mod _rr {
         }
 
         #[pymethod]
-        fn learn_skill(&self, skill: PyStrRef) {
-            self.call_method(GameMethod::LearnSkill {
-                skill: skill.as_str().to_owned(),
-            });
+        fn skill_level(&self, skill: PyStrRef, vm: &VirtualMachine) -> PyResult<PyObjectRef> {
+            let skill_kind = SkillKind::from_str(skill.as_str())
+                .map_err(|e| vm.new_value_error(e.to_string()))?;
+            Ok(self
+                .call_method(GameMethod::SkillLevel { skill_kind })
+                .to_py(vm))
+        }
+
+        #[pymethod]
+        fn learn_skill(&self, skill: PyStrRef, vm: &VirtualMachine) -> PyResult<()> {
+            let skill_kind = SkillKind::from_str(skill.as_str())
+                .map_err(|e| vm.new_value_error(e.to_string()))?;
+            self.call_method(GameMethod::LearnSkill { skill_kind });
+            Ok(())
         }
     }
 

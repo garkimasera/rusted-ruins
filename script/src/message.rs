@@ -1,4 +1,4 @@
-use common::gamedata::{GameData, Value};
+use common::gamedata::{GameData, SkillKind, Value};
 
 pub(crate) enum ScriptMessage {
     Finish,
@@ -44,5 +44,6 @@ pub enum GameMethod {
     RemoveItem { id: String, n: u32 },
     ResurrectPartyMembers,
     StartCustomQuest { id: String, phase: String },
-    LearnSkill { skill: String },
+    SkillLevel { skill_kind: SkillKind },
+    LearnSkill { skill_kind: SkillKind },
 }

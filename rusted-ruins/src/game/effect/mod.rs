@@ -2,7 +2,7 @@ mod attack;
 mod misc;
 mod range;
 mod recover;
-mod skill_learn;
+pub mod skill_learn;
 
 pub use attack::*;
 pub use range::*;
@@ -74,7 +74,7 @@ pub fn do_effect<T: Into<Target>>(
             }
             EffectKind::SkillLearning { skills } => {
                 for cid in &cids {
-                    self::skill_learn::skill_learn(game, *cid, skills);
+                    self::skill_learn::skill_learn(&mut game.gd, *cid, skills);
                 }
             }
             EffectKind::PlaceTile { tile } => {

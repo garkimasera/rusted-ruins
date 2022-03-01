@@ -3,7 +3,6 @@ use crate::game::InfoGetter;
 use common::gamedata::*;
 use common::gobj;
 use script::GameMethod;
-use std::str::FromStr;
 
 pub fn game_method_caller(gd: &mut GameData, method: GameMethod) -> Value {
     match method {
@@ -54,15 +53,12 @@ pub fn game_method_caller(gd: &mut GameData, method: GameMethod) -> Value {
             crate::game::quest::start_custom_quest(gd, id, phase);
             Value::None
         }
-        GameMethod::LearnSkill { skill } => {
-            if let Ok(skill_kind) = SkillKind::from_str(&skill) {
-                gd.chara
-                    .get_mut(CharaId::Player)
-                    .skills
-                    .learn_new_skill(skill_kind);
-            } else {
-                warn!("tried to learn unknown skill \"{}\"", skill);
-            }
+        GameMethod::SkillLevel { skill_kind } => {
+            let skill_level = gd.chara.get(CharaId::Player).skill_level(skill_kind);
+            Value::Int(skill_level.into())
+        }
+        GameMethod::LearnSkill { skill_kind } => {
+            crate::game::effect::skill_learn::skill_learn(gd, CharaId::Player, &[skill_kind]);
             Value::None
         }
     }
