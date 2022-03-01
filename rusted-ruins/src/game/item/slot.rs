@@ -92,6 +92,7 @@ pub fn slot_installable_item_list(
 
 pub fn install_slot(gd: &mut GameData, il: ItemLocation, slot_kind: ModuleSlotKind, cost: i64) {
     if gd.player.money() < cost {
+        game_log!("install-slot-lack-of-money"; chara=gd.chara.get(CharaId::Player));
         return;
     }
     let mut item = gd.remove_item_and_get(il, 1);

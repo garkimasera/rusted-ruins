@@ -78,6 +78,7 @@ chopping-not-adjacent-tile = 木を切り倒すには隣接タイルを指定し
 mining-not-adjacent-tile = 掘るには隣接タイルを指定しなければならない。
 
 # Messages about using items
+
 inventory-item-rotten = 荷物の中の{$item} x {$n}が腐敗した。
 use_item-deed-invalid-map = ここで権利証を使うことはできない。
 use_item-deed-occupied = 権利証を使うには、占拠されていない土地が必要だ。
@@ -92,7 +93,11 @@ scanned = {$chara}のスキャンが完了した。
 not-scanned = {$chara}はまだスキャンされていない。
 asleep = {$chara}は眠っている。
 poison-damage = {$chara}は毒のダメージを受けた({$damage})。
+
+# Messages about shops
+
 shop-lack-of-money = {$chara}はそれを買うのに十分なお金を持っていない。
+install-slot-lack-of-money = {$chara}はスロットの取付けに必要なお金を持っていない。
 
 # Messages about quest
 
