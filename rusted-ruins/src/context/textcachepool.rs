@@ -4,8 +4,8 @@ use sdl2::rect::Rect;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 
-use super::textrenderer::FontKind;
 use super::textrenderer::TextRenderer;
+use super::textrenderer::{FontKind, SurfaceConf};
 use super::textrenderer::{ERR_MSG_FONT_REND, ERR_MSG_FONT_TEX};
 use super::Context;
 
@@ -33,8 +33,7 @@ pub struct TextCache {
     pub s: Vec<String>,
     pub font: FontKind,
     pub color: Color,
-    pub wrap_size: Option<u32>,
-    pub is_bordered: bool,
+    pub conf: SurfaceConf,
 }
 
 impl TextCache {
@@ -46,8 +45,7 @@ impl TextCache {
             s,
             font,
             color,
-            wrap_size: None,
-            is_bordered: false,
+            conf: SurfaceConf::default(),
         }
     }
 
@@ -57,8 +55,10 @@ impl TextCache {
             s: vec![s.into()],
             font,
             color: color.into(),
-            wrap_size: None,
-            is_bordered: false,
+            conf: SurfaceConf {
+                image_inline: true,
+                ..SurfaceConf::default()
+            },
         }
     }
 
@@ -73,8 +73,10 @@ impl TextCache {
             s: vec![s.into()],
             font,
             color: color.into(),
-            wrap_size: Some(w),
-            is_bordered: false,
+            conf: SurfaceConf {
+                wrapped: Some(w),
+                ..SurfaceConf::default()
+            },
         }
     }
 
@@ -84,8 +86,10 @@ impl TextCache {
             s: vec![s.into()],
             font,
             color: color.into(),
-            wrap_size: None,
-            is_bordered: true,
+            conf: SurfaceConf {
+                bordered: true,
+                ..SurfaceConf::default()
+            },
         }
     }
 
@@ -169,7 +173,7 @@ impl<'t> TextCachePool<'t> {
             let mut v = Vec::new();
             for s in c.s.iter() {
                 let surface = tr
-                    .surface(c.font, s, c.color, c.wrap_size, c.is_bordered)
+                    .surface(c.font, s, c.color, c.conf)
                     .expect(ERR_MSG_FONT_REND);
                 let t = tc
                     .create_texture_from_surface(surface)

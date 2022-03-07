@@ -1,6 +1,7 @@
 #[macro_use]
 mod macros;
 pub mod desc;
+pub mod img_inline;
 pub mod prefix;
 pub mod readable;
 mod text_id_impl;
