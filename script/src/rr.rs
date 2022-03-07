@@ -75,8 +75,16 @@ mod _rr {
 
     impl PyGame {
         fn send_message(&self, msg: ScriptMessage) -> Value {
-            self.method_tx.send(msg).unwrap();
-            self.method_result_rx.recv().unwrap()
+            self.method_tx.send(msg).unwrap_or_else(|e| {
+                log::trace!("{}", e);
+                std::thread::sleep(std::time::Duration::from_secs(60));
+                panic!()
+            });
+            self.method_result_rx.recv().unwrap_or_else(|e| {
+                log::trace!("{}", e);
+                std::thread::sleep(std::time::Duration::from_secs(60));
+                panic!()
+            })
         }
 
         fn call_method(&self, method: GameMethod) -> Value {
