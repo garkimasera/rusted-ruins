@@ -81,6 +81,7 @@ pub struct CharaTemplateDepInput {
     #[serde(default)]
     pub faction: FactionId,
     pub gen_weight: f32,
+    #[serde(default)]
     pub gen_level: u32,
     #[serde(default)]
     pub default_ai_kind: gamedata::NpcAiKind,
@@ -154,6 +155,7 @@ pub struct ItemDepInput {
     pub gen_weight: f32,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub shop_weight: Option<f32>,
+    #[serde(default)]
     pub gen_level: u32,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
     pub weapon_kind: Option<gamedata::WeaponKind>,
