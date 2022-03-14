@@ -7,10 +7,10 @@ use rules::RULES;
 /// Character active skill viewer
 pub struct AbilityWindow {
     rect: Rect,
+    closer: DialogCloser,
     cid: CharaId,
     list: ListWidget<(TextCache, LabelWidget)>,
     abilities: Vec<AbilityId>,
-    escape_click: bool,
 }
 
 impl AbilityWindow {
@@ -63,10 +63,10 @@ impl AbilityWindow {
 
         AbilityWindow {
             rect,
+            closer: DialogCloser::new(rect),
             cid,
             list,
             abilities,
-            escape_click: false,
         }
     }
 }
@@ -78,6 +78,7 @@ impl Window for AbilityWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -85,7 +86,7 @@ impl Window for AbilityWindow {
 
 impl DialogWindow for AbilityWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {

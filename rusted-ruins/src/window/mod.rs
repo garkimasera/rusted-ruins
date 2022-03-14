@@ -1,5 +1,7 @@
 #[macro_use]
 mod tools;
+#[macro_use]
+mod closer;
 
 mod ability_window;
 mod build_obj_dialog;
@@ -59,6 +61,7 @@ mod commonuse {
     pub use crate::draw::border::draw_window_border;
     pub use crate::eventhandler::InputMode;
     pub use crate::game::{Animation, Command, DoPlayerAction, Game, InfoGetter};
+    pub use crate::window::closer::DialogCloser;
     pub use crate::window::widget::WidgetTrait;
     pub use crate::window::winpos::WindowPos;
     pub use crate::window::{

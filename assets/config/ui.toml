@@ -216,6 +216,12 @@ rect = { x = -999, y = -999, w = 300, h = 260 }
 column_pos = [0, 32, 260]
 n_row = 10
 
+[close_button_widget]
+w = 32
+h = 32
+closer_dx = 3
+closer_dy = 8
+
 [label_widget]
 h = 24
 left_margin = 3

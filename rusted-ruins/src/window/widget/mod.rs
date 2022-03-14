@@ -1,5 +1,6 @@
 mod border;
 mod button;
+mod close_button;
 mod gauge;
 mod image;
 mod label;
@@ -23,6 +24,7 @@ pub trait MovableWidget: WidgetTrait {
 
 pub use self::border::*;
 pub use self::button::*;
+pub use self::close_button::*;
 pub use self::gauge::*;
 pub use self::image::*;
 pub use self::label::*;

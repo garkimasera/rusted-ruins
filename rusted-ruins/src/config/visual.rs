@@ -66,6 +66,7 @@ pub struct UiConfig {
     pub skill_window: SkillWindowConfig,
     pub quest_window: QuestWindowConfig,
     pub slot_window: SlotWindowConfig,
+    pub close_button_widget: CloseButtonWidgetConfig,
     pub label_widget: LabelWidgetConfig,
     pub list_widget: ListWidgetConfig,
     pub supplement_info: SupplementInfoConfig,
@@ -360,6 +361,14 @@ pub struct SlotWindowConfig {
     pub rect: CfgRect,
     pub column_pos: Vec<i32>,
     pub n_row: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CloseButtonWidgetConfig {
+    pub w: u32,
+    pub h: u32,
+    pub closer_dx: i32,
+    pub closer_dy: i32,
 }
 
 #[derive(Debug, Deserialize)]
