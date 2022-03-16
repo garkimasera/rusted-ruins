@@ -2,6 +2,7 @@ use super::commonuse::*;
 use super::widget::{CloseButtonIconKind, CloseButtonWidget};
 use crate::config::UI_CFG;
 use sdl2::rect::Rect;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 #[derive(Default)]
 pub struct DialogCloser {
@@ -9,13 +10,25 @@ pub struct DialogCloser {
     pub escape_click: bool,
 }
 
+pub fn set_on_newgame(b: bool) {
+    ON_NEWGAME.store(b, Ordering::Relaxed);
+}
+
+static ON_NEWGAME: AtomicBool = AtomicBool::new(false);
+
 impl DialogCloser {
     pub fn new(parent_rect: Rect) -> Self {
         let p = parent_rect.top_right();
+        let icon_kind = if ON_NEWGAME.load(Ordering::Relaxed) {
+            CloseButtonIconKind::Return
+        } else {
+            CloseButtonIconKind::Close
+        };
+
         let button = CloseButtonWidget::from_bottom_right(
             p.x + UI_CFG.close_button_widget.closer_dx,
             p.y - UI_CFG.close_button_widget.closer_dy,
-            CloseButtonIconKind::Close,
+            icon_kind,
         );
 
         Self {

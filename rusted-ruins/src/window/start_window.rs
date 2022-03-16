@@ -92,6 +92,7 @@ impl DialogWindow for StartDialog {
 
 pub struct ChooseSaveFileDialog {
     rect: Rect,
+    closer: DialogCloser,
     list: TextListWidget,
     save_files: Vec<PathBuf>,
 }
@@ -114,6 +115,7 @@ impl ChooseSaveFileDialog {
 
         ChooseSaveFileDialog {
             rect,
+            closer: DialogCloser::new(rect),
             list: TextListWidget::text_choices((0, 0, rect.width(), rect.height()), file_name_list),
             save_files,
         }
@@ -127,6 +129,7 @@ impl Window for ChooseSaveFileDialog {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -134,6 +137,7 @@ impl Window for ChooseSaveFileDialog {
 
 impl DialogWindow for ChooseSaveFileDialog {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
+        closer!(self, command, false);
         let command = command.relative_to(self.rect);
         if let Some(response) = self.list.process_command(&command) {
             if let ListWidgetResponse::Select(i) = response {

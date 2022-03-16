@@ -632,6 +632,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     // Start new game
                     SpecialDialogResult::StartDialogNewGame => {
                         info!("Start newgame dialog");
+                        closer::set_on_newgame(true);
                         self.window_stack.clear();
                         self.mode = WindowManageMode::NewGame(newgame_window::NewGameWindow::new());
                         self.push_dialog_window(
@@ -640,6 +641,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     }
                     // Load game from saved data
                     SpecialDialogResult::StartDialogLoadGame => {
+                        closer::set_on_newgame(true);
                         self.push_dialog_window(
                             Box::new(start_window::ChooseSaveFileDialog::new()),
                         );
@@ -647,6 +649,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
                     // Load from file
                     SpecialDialogResult::NewGameStart(mut gd) => {
                         info!("Load game from file");
+                        closer::set_on_newgame(false);
                         gd.play_time.start();
                         self.window_stack.clear();
                         self.mode = WindowManageMode::OnGame(GameWindows::new());
