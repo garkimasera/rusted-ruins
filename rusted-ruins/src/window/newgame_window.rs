@@ -102,8 +102,10 @@ impl DummyNewGameDialog {
 
         self.explanation_text
             .set_text(&text::ui_txt(self.page.explanation_text()));
-        self.explanation_text
-            .move_to(None, Some(top - UI_CFG.newgame_dialog.top_margin));
+        self.explanation_text.move_to(
+            None,
+            Some(std::cmp::max(top - UI_CFG.newgame_dialog.top_margin, 0)),
+        );
 
         let (next_button_rect, back_button_rect) =
             Self::button_rect(bottom + UI_CFG.newgame_dialog.bottom_margin);
