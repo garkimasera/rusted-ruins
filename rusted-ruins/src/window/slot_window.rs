@@ -12,10 +12,10 @@ use std::rc::Rc;
 
 pub struct SlotInstallWindow {
     rect: Rect,
+    closer: DialogCloser,
     il_cost: Vec<(ItemLocation, i64)>,
     list: ListWidget<(IconIdx, TextCache, TextCache)>,
     kind: ModuleSlotKind,
-    escape_click: bool,
 }
 
 impl SlotInstallWindow {
@@ -31,10 +31,10 @@ impl SlotInstallWindow {
 
         let mut window = SlotInstallWindow {
             rect,
+            closer: DialogCloser::new(rect),
             il_cost: Vec::new(),
             list,
             kind,
-            escape_click: false,
         };
         window.update(gd);
         window
@@ -65,6 +65,7 @@ impl Window for SlotInstallWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -72,7 +73,7 @@ impl Window for SlotInstallWindow {
 
 impl DialogWindow for SlotInstallWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command, false);
+        closer!(self, command, false);
         let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             // Any item is selected
@@ -112,10 +113,10 @@ pub fn slot_insertable_item_window(game: &Game) -> ItemWindow {
 
 pub struct SlotInsertWindow {
     rect: Rect,
+    closer: DialogCloser,
     slots: Vec<(ModuleSlotKind, String)>,
     list: ListWidget<(IconIdx, TextCache)>,
     item: Rc<RefCell<Item>>,
-    escape_click: bool,
 }
 
 impl SlotInsertWindow {
@@ -131,10 +132,10 @@ impl SlotInsertWindow {
 
         let mut window = SlotInsertWindow {
             rect,
+            closer: DialogCloser::new(rect),
             slots: Vec::new(),
             list,
             item: Rc::new(RefCell::new(item)),
-            escape_click: false,
         };
         window.update();
         window
@@ -161,7 +162,7 @@ impl SlotInsertWindow {
         command: &Command,
         pa: &mut DoPlayerAction<'_>,
     ) -> DialogResult {
-        check_escape_click!(self, command, false);
+        closer!(self, command, false);
         let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {
             let win = module_select_item_window(
@@ -187,6 +188,7 @@ impl Window for SlotInsertWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }

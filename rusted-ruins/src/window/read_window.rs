@@ -5,7 +5,7 @@ use common::objholder::UiImgIdx;
 
 pub struct ReadWindow {
     rect: Rect,
-    escape_click: bool,
+    closer: DialogCloser,
     label: LabelWidget,
     text: Vec<String>,
     current_page: usize,
@@ -34,7 +34,7 @@ impl ReadWindow {
 
         ReadWindow {
             rect,
-            escape_click: false,
+            closer: DialogCloser::new(rect),
             label,
             text,
             current_page: 0,
@@ -64,6 +64,7 @@ impl Window for ReadWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.label.draw(context);
         self.page_label.draw(context);
@@ -79,7 +80,7 @@ impl Window for ReadWindow {
 
 impl DialogWindow for ReadWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         let button_available = self.button_available();

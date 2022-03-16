@@ -35,11 +35,11 @@ enum QuestWindowMode {
 
 pub struct QuestWindow {
     rect: Rect,
+    closer: DialogCloser,
     mode: QuestWindowMode,
     list: ListWidget<(IconIdx, TextCache)>,
     desc: LabelWidget,
     line_y: i32,
-    escape_click: bool,
 }
 
 impl QuestWindow {
@@ -72,11 +72,11 @@ impl QuestWindow {
 
         let mut window = QuestWindow {
             rect,
+            closer: DialogCloser::new(rect),
             mode,
             list,
             desc,
             line_y: list_rect.h,
-            escape_click: false,
         };
         window.update_desc_text(gd, 0);
         window
@@ -225,6 +225,7 @@ impl Window for QuestWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
 
@@ -270,7 +271,7 @@ impl Window for QuestWindow {
 
 impl DialogWindow for QuestWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(
+        closer!(
             self,
             command,
             matches!(self.mode, QuestWindowMode::List { .. })

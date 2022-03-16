@@ -10,9 +10,9 @@ use common::gobj;
 /// Game play information viewer
 pub struct GameInfoWindow {
     rect: Rect,
+    closer: DialogCloser,
     money_label: LabelWidget,
     play_time_label: LabelWidget,
-    escape_click: bool,
 }
 
 const GAME_INFO_WINDOW_GROUP_SIZE: u32 = 3;
@@ -70,9 +70,9 @@ impl GameInfoWindow {
 
         let mut game_info_win = GameInfoWindow {
             rect,
+            closer: DialogCloser::new(rect),
             money_label,
             play_time_label,
-            escape_click: false,
         };
 
         game_info_win.update();
@@ -99,6 +99,8 @@ impl Window for GameInfoWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
+
         self.update();
 
         draw_window_border(context, self.rect);
@@ -109,7 +111,7 @@ impl Window for GameInfoWindow {
 
 impl DialogWindow for GameInfoWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
 
         match *command {
             Command::Cancel => DialogResult::Close,

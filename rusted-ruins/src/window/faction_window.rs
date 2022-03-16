@@ -8,8 +8,8 @@ use common::gamedata::*;
 /// Faction viewer
 pub struct FactionWindow {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<(TextCache, LabelWidget)>,
-    escape_click: bool,
 }
 
 impl FactionWindow {
@@ -62,8 +62,8 @@ impl FactionWindow {
 
         FactionWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list,
-            escape_click: false,
         }
     }
 }
@@ -75,6 +75,7 @@ impl Window for FactionWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -82,7 +83,7 @@ impl Window for FactionWindow {
 
 impl DialogWindow for FactionWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         self.list.process_command(&command);

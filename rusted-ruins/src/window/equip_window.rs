@@ -14,9 +14,9 @@ use sdl2::rect::Rect;
 
 pub struct EquipWindow {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<(IconIdx, IconIdx, TextCache)>,
     cid: CharaId,
-    escape_click: bool,
     menu: Option<EquipMenu>,
     changeable: bool,
 }
@@ -28,6 +28,7 @@ impl EquipWindow {
 
         let mut equip_window = EquipWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list: ListWidget::new(
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 UI_CFG.equip_window.column_pos.clone(),
@@ -35,7 +36,6 @@ impl EquipWindow {
                 true,
             ),
             cid,
-            escape_click: false,
             menu: None,
             changeable,
         };
@@ -73,6 +73,7 @@ impl Window for EquipWindow {
         game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
         if let Some(menu) = self.menu.as_mut() {
@@ -114,7 +115,7 @@ impl DialogWindow for EquipWindow {
             None
         };
 
-        check_escape_click!(self, command);
+        closer!(self, command);
 
         let command = command.relative_to(self.rect);
 

@@ -65,6 +65,7 @@ pub fn create_status_window_group(
 /// Character status viewer
 pub struct StatusWindow {
     rect: Rect,
+    closer: DialogCloser,
     image: ImageWidget,
     name_label: LabelWidget,
     faction_label: LabelWidget,
@@ -82,7 +83,6 @@ pub struct StatusWindow {
     power_labels: Vec<(ImageWidget, LabelWidget)>,
     carry_label: LabelWidget,
     travel_speed_label: LabelWidget,
-    escape_click: bool,
 }
 
 #[allow(clippy::type_complexity)]
@@ -254,6 +254,7 @@ impl StatusWindow {
         );
         StatusWindow {
             rect,
+            closer: DialogCloser::new(rect),
             image,
             name_label,
             faction_label,
@@ -271,7 +272,6 @@ impl StatusWindow {
             carry_label,
             travel_speed_label,
             power_labels,
-            escape_click: false,
         }
     }
 }
@@ -283,6 +283,7 @@ impl Window for StatusWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.image.draw(context);
         self.name_label.draw(context);
@@ -311,7 +312,7 @@ impl Window for StatusWindow {
 
 impl DialogWindow for StatusWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
 
         match *command {
             Command::Cancel => DialogResult::Close,
@@ -323,8 +324,8 @@ impl DialogWindow for StatusWindow {
 /// Character skill viewer
 pub struct SkillWindow {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<(TextCache, TextCache, TextCache)>,
-    escape_click: bool,
 }
 
 impl SkillWindow {
@@ -374,8 +375,8 @@ impl SkillWindow {
 
         SkillWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list,
-            escape_click: false,
         }
     }
 }
@@ -387,6 +388,7 @@ impl Window for SkillWindow {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -394,7 +396,7 @@ impl Window for SkillWindow {
 
 impl DialogWindow for SkillWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         self.list.process_command(&command);

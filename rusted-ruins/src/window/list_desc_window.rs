@@ -5,9 +5,9 @@ pub type CallbackSelected<T> = Box<dyn FnMut(u32, &mut ListWidget<T>)>;
 
 pub struct ListWithDescWindow<T> {
     rect: Rect,
+    closer: DialogCloser,
     pub list: ListWidget<T>,
     pub text: LabelWidget,
-    escape_click: bool,
     cb_selection_changed: Option<Box<dyn FnMut(u32, &mut LabelWidget)>>,
     cb_selected: Option<CallbackSelected<T>>,
 }
@@ -26,9 +26,9 @@ impl<T: ListWidgetRow> ListWithDescWindow<T> {
 
         ListWithDescWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list,
             text,
-            escape_click: false,
             cb_selection_changed: None,
             cb_selected: None,
         }
@@ -50,6 +50,7 @@ impl<T: ListWidgetRow> Window for ListWithDescWindow<T> {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
 
         let line_x = self.rect.w / 2;
@@ -64,7 +65,7 @@ impl<T: ListWidgetRow> Window for ListWithDescWindow<T> {
 
 impl<T: ListWidgetRow> DialogWindow for ListWithDescWindow<T> {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         match self.list.process_command(&command) {

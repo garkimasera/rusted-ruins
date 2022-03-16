@@ -8,10 +8,10 @@ use sdl2::rect::Rect;
 
 pub struct BuildObjDialog {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<TextCache>,
     build_objs: Vec<(BuildObj, u32)>,
     il: ItemLocation,
-    escape_click: bool,
 }
 
 impl BuildObjDialog {
@@ -39,10 +39,10 @@ impl BuildObjDialog {
 
         BuildObjDialog {
             rect,
+            closer: DialogCloser::new(rect),
             list,
             build_objs,
             il,
-            escape_click: false,
         }
     }
 }
@@ -54,6 +54,7 @@ impl Window for BuildObjDialog {
         _game: &Game,
         _anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
     }
@@ -65,7 +66,7 @@ impl DialogWindow for BuildObjDialog {
             return DialogResult::Close;
         }
 
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {

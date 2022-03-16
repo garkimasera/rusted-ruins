@@ -79,11 +79,11 @@ pub fn create_creation_window_group(
 
 pub struct CreationWindow {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<(IconIdx, TextCache)>,
     recipes: Vec<&'static Recipe>,
     kind: CreationKind,
     detail_dialog: Option<CreationDetailDialog>,
-    escape_click: bool,
 }
 
 impl CreationWindow {
@@ -93,6 +93,7 @@ impl CreationWindow {
 
         let mut w = CreationWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list: ListWidget::with_scroll_bar(
                 (0i32, 0i32, rect.w as u32, rect.h as u32),
                 c.column_pos.clone(),
@@ -102,7 +103,6 @@ impl CreationWindow {
             recipes: Vec::new(),
             kind,
             detail_dialog: None,
-            escape_click: false,
         };
 
         w.update(gd, kind);
@@ -134,6 +134,7 @@ impl Window for CreationWindow {
         game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
             detail_dialog.draw(context, game, anim);
         } else {
@@ -145,7 +146,7 @@ impl Window for CreationWindow {
 
 impl DialogWindow for CreationWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
 
         if let Some(detail_dialog) = self.detail_dialog.as_mut() {
             let result = detail_dialog.process_command(command, pa);
@@ -180,6 +181,7 @@ impl DialogWindow for CreationWindow {
 
 pub struct CreationDetailDialog {
     rect: Rect,
+    closer: DialogCloser,
     kind: CreationKind,
     recipe: &'static Recipe,
     available_material: Vec<(ItemIdx, u32)>,
@@ -189,7 +191,6 @@ pub struct CreationDetailDialog {
     start_button: Option<ButtonWidget>,
     cancel_button: ButtonWidget,
     list: ListWidget<(IconIdx, TextCache, TextCache)>,
-    escape_click: bool,
     facility_ok_icon: ImageWidget,
     facility_label: LabelWidget,
     enough_ingredients_icon: ImageWidget,
@@ -287,6 +288,7 @@ impl CreationDetailDialog {
 
         let mut dialog = CreationDetailDialog {
             rect,
+            closer: DialogCloser::default(),
             kind,
             recipe,
             available_material,
@@ -296,7 +298,6 @@ impl CreationDetailDialog {
             list,
             start_button: None,
             cancel_button,
-            escape_click: false,
             facility_ok_icon,
             facility_label,
             enough_ingredients_icon,
@@ -413,7 +414,7 @@ impl Window for CreationDetailDialog {
 
 impl DialogWindow for CreationDetailDialog {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
 
         let command = command.relative_to(self.rect);
         if let Some(ListWidgetResponse::Select(i)) = self.list.process_command(&command) {

@@ -9,11 +9,11 @@ use sdl2::rect::Rect;
 
 pub struct ExitWindow {
     rect: Rect,
+    closer: DialogCloser,
     save_button: ButtonWidget,
     title_screen_button: ButtonWidget,
     exit_button: ButtonWidget,
     cancel_button: ButtonWidget,
-    escape_click: bool,
 }
 
 impl ExitWindow {
@@ -44,11 +44,11 @@ impl ExitWindow {
 
         ExitWindow {
             rect,
+            closer: DialogCloser::default(),
             save_button,
             title_screen_button,
             exit_button,
             cancel_button,
-            escape_click: false,
         }
     }
 }
@@ -70,7 +70,7 @@ impl Window for ExitWindow {
 
 impl DialogWindow for ExitWindow {
     fn process_command(&mut self, command: &Command, pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command);
+        closer!(self, command);
         let command = command.relative_to(self.rect);
 
         if command == Command::Cancel {

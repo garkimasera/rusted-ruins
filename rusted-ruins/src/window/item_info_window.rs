@@ -1,3 +1,4 @@
+use super::commonuse::DialogCloser;
 use super::widget::*;
 use crate::config::UI_CFG;
 use crate::context::*;
@@ -12,12 +13,12 @@ use sdl2::rect::Rect;
 
 pub struct ItemInfoWindow {
     rect: Rect,
+    closer: DialogCloser,
     item_image: ImageWidget,
     item_name: LabelWidget,
     item_kind: LabelWidget,
     flavor_text: LabelWidget,
     attrs_list: ListWidget<(IconIdx, TextCache)>,
-    escape_click: bool,
 }
 
 impl ItemInfoWindow {
@@ -60,12 +61,12 @@ impl ItemInfoWindow {
 
         ItemInfoWindow {
             rect: UI_CFG.item_info_window.rect.into(),
+            closer: DialogCloser::default(),
             item_image,
             item_name,
             item_kind,
             flavor_text,
             attrs_list,
-            escape_click: false,
         }
     }
 }
@@ -91,7 +92,7 @@ impl Window for ItemInfoWindow {
 
 impl DialogWindow for ItemInfoWindow {
     fn process_command(&mut self, command: &Command, _pa: &mut DoPlayerAction<'_>) -> DialogResult {
-        check_escape_click!(self, command, false);
+        closer!(self, command, false);
 
         let command = command.relative_to(self.rect);
 

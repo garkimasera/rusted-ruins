@@ -55,10 +55,10 @@ impl ItemWindowMode {
 
 pub struct ItemWindow {
     rect: Rect,
+    closer: DialogCloser,
     list: ListWidget<(IconIdx, TextCache, LabelWidget)>,
     mode: ItemWindowMode,
     item_locations: Vec<ItemLocation>,
-    escape_click: bool,
     info_label0: LabelWidget,
     info_label1: LabelWidget,
     menu: Option<super::item_menu::ItemMenu>,
@@ -215,6 +215,7 @@ impl ItemWindow {
 
         let mut item_window = ItemWindow {
             rect,
+            closer: DialogCloser::new(rect),
             list: ListWidget::with_scroll_bar(
                 (0i32, 0i32, rect.w as u32, n_row * list_h),
                 UI_CFG.item_window.column_pos.clone(),
@@ -223,7 +224,6 @@ impl ItemWindow {
             ),
             mode,
             item_locations: Vec::new(),
-            escape_click: false,
             info_label0: LabelWidget::new(UI_CFG.item_window.info_label_rect0, "", FontKind::M),
             info_label1: LabelWidget::new(UI_CFG.item_window.info_label_rect1, "", FontKind::M)
                 .right(),
@@ -554,6 +554,7 @@ impl Window for ItemWindow {
         game: &Game,
         anim: Option<(&Animation, u32)>,
     ) {
+        self.closer.draw(context);
         draw_window_border(context, self.rect);
         self.list.draw(context);
         self.info_label0.draw(context);
@@ -593,7 +594,7 @@ impl DialogWindow for ItemWindow {
             None
         };
 
-        check_escape_click!(self, command, self.mode.is_main_mode());
+        closer!(self, command, self.mode.is_main_mode());
 
         if command == &Command::ItemInformation {
             let il = self.item_locations[self.list.get_current_choice() as usize];

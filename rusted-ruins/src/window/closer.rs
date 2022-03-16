@@ -3,8 +3,9 @@ use super::widget::{CloseButtonIconKind, CloseButtonWidget};
 use crate::config::UI_CFG;
 use sdl2::rect::Rect;
 
+#[derive(Default)]
 pub struct DialogCloser {
-    button: CloseButtonWidget,
+    button: Option<CloseButtonWidget>,
     pub escape_click: bool,
 }
 
@@ -17,19 +18,25 @@ impl DialogCloser {
             CloseButtonIconKind::Close,
         );
 
-        DialogCloser {
-            button,
+        Self {
+            button: Some(button),
             escape_click: false,
         }
     }
 
     pub fn process_command(&mut self, command: &Command) -> bool {
-        self.button.process_command(command) == Some(true)
+        if let Some(button) = &mut self.button {
+            button.process_command(command) == Some(true)
+        } else {
+            false
+        }
     }
 
     pub fn draw(&mut self, context: &mut Context<'_, '_, '_, '_>) {
         context.canvas.set_viewport(None);
-        self.button.draw(context);
+        if let Some(button) = &mut self.button {
+            button.draw(context);
+        }
     }
 }
 
