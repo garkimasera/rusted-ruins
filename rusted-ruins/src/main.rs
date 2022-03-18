@@ -100,10 +100,6 @@ fn init_rules() {
 }
 
 /// Setup logger. It is not game logger. It is for debug and warning information.
-#[cfg(not(target_os = "windows"))]
 fn setup_logger() {
     env_logger::builder().format_timestamp(None).init();
 }
-
-#[cfg(target_os = "windows")]
-fn setup_logger() {}
