@@ -72,8 +72,13 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
                     return;
                 }
             };
+            let lv = args
+                .next()
+                .map(|s| s.parse::<u32>().unwrap_or(1))
+                .unwrap_or(1);
             let player = game.gd.chara.get_mut(CharaId::Player);
             player.skills.learn_new_skill(skill_kind);
+            player.skills.set_skill_level(skill_kind, lv);
         }
         "print_ids" => {
             if let Some(arg1) = args.next() {

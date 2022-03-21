@@ -2,12 +2,8 @@ use super::commonuse::*;
 use super::widget::*;
 use crate::draw::border::draw_window_border;
 use crate::game::quest::{available_quests, reportable_quests};
-use crate::text::obj_txt;
-use crate::text::{quest_txt_checked, ui_txt, ToText};
-use common::gamedata::CustomQuest;
-use common::gamedata::TownQuestKind;
-use common::gamedata::TownQuestState;
-use common::gamedata::{GameData, TownQuest};
+use crate::text::{obj_txt, quest_txt_checked, ui_txt, ToText};
+use common::gamedata::{CustomQuest, GameData, TownQuest, TownQuestKind, TownQuestState};
 use common::gobj;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]

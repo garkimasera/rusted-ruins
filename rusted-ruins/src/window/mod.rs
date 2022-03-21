@@ -666,6 +666,7 @@ impl<'sdl, 't> WindowManager<'sdl, 't> {
             WindowManageMode::NewGame(_) => match result {
                 SpecialDialogResult::NewGameStart(gd) => {
                     info!("Create newgame from dialog result");
+                    closer::set_on_newgame(false);
                     self.window_stack.clear();
                     self.mode = WindowManageMode::OnGame(GameWindows::new());
 
