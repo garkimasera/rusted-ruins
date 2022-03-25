@@ -26,3 +26,10 @@ pub fn lang_selector() -> &'static str {
         _ => "en",
     }
 }
+
+pub fn exit_with_error(title: impl std::fmt::Display, e: impl std::fmt::Display) -> ! {
+    let title = title.to_string();
+    let e = e.to_string();
+    show_simple_message_box(MessageBoxFlag::ERROR, &title, &e, None).unwrap();
+    std::process::exit(1)
+}

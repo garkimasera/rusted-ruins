@@ -33,7 +33,7 @@ mod damage_popup;
 mod draw;
 mod eventhandler;
 mod game;
-mod lang_selector;
+mod msg_box;
 mod screen;
 mod sdltypeconv;
 mod window;

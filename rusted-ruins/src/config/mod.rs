@@ -5,31 +5,33 @@ pub mod font;
 pub mod input;
 pub mod visual;
 
+use anyhow::{bail, Result};
 use common::basic;
 use once_cell::sync::Lazy;
 use std::env;
 use std::fs::read_to_string;
 use std::path::PathBuf;
-use std::process::exit;
+
+const INIT_ERR_TITLE: &str = "Rusted Ruins configulation error";
 
 macro_rules! load_config_file {
     ($path:expr) => {{
         let path = cfg_path($path);
-        info!("Loading config file : \"{}\"", path.display());
+        info!("loading config file : \"{}\"", path.display());
         let s = match read_to_string(&path) {
             Ok(s) => s,
-            Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
-                exit(1);
-            }
+            Err(e) => crate::msg_box::exit_with_error(
+                INIT_ERR_TITLE,
+                format!("cannot load config file \"{}\"\n{}", path.display(), e),
+            ),
         };
 
         match toml::de::from_str(&s) {
             Ok(config) => config,
-            Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
-                exit(1);
-            }
+            Err(e) => crate::msg_box::exit_with_error(
+                INIT_ERR_TITLE,
+                format!("cannot load config file \"{}\"\n{}", path.display(), e),
+            ),
         }
     }};
 }
@@ -48,11 +50,17 @@ pub fn init() {
 }
 
 pub static ASSETS_DIR: Lazy<PathBuf> =
-    Lazy::new(|| get_assets_dir().expect("Cannot get data directory path"));
+    Lazy::new(|| get_assets_dir().expect("cannot get data directory path"));
 pub static USER_DIR: Lazy<PathBuf> = Lazy::new(get_user_dir);
 pub static ADDON_DIR: Lazy<Option<PathBuf>> = Lazy::new(get_addon_dir);
 pub static CONFIG: Lazy<Config> = Lazy::new(|| {
-    let config: Config = load_main_config_file();
+    let config: Config = match load_main_config_file() {
+        Ok(config) => config,
+        Err(e) => {
+            error!("{}", e);
+            crate::msg_box::exit_with_error(INIT_ERR_TITLE, e)
+        }
+    };
     args::modify_config_by_args(config)
 });
 pub static SCREEN_CFG: Lazy<visual::ScreenConfig> =
@@ -144,7 +152,7 @@ pub fn cfg_path(s: &str) -> PathBuf {
 }
 
 /// Load main config file from user directory, or create it if not exist.
-fn load_main_config_file() -> Config {
+fn load_main_config_file() -> Result<Config> {
     let file_name = "config.toml";
 
     let mut path = USER_DIR.clone();
@@ -154,7 +162,7 @@ fn load_main_config_file() -> Config {
     if !path.exists() {
         info!("config.toml not exist");
 
-        let lang = crate::lang_selector::lang_selector();
+        let lang = crate::msg_box::lang_selector();
 
         let mut default_conf_path = ASSETS_DIR.clone();
         default_conf_path.push(basic::CFG_FILES_DIR);
@@ -163,20 +171,18 @@ fn load_main_config_file() -> Config {
         let s = match read_to_string(&default_conf_path) {
             Ok(s) => s,
             Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
-                exit(1);
+                bail!("cannot read config file \"{}\"\n{}", path.display(), e);
             }
         };
 
         let mut default_config: Config = match toml::de::from_str(&s) {
             Ok(config) => config,
             Err(e) => {
-                error!(
-                    "Cannot load config file \"{}\"\n{}",
+                bail!(
+                    "cannot load config file \"{}\"\n{}",
                     path.to_string_lossy(),
                     e
                 );
-                exit(1);
             }
         };
 
@@ -196,7 +202,7 @@ fn load_main_config_file() -> Config {
 
         let dir_path = path.parent().expect("invalid config path");
         if let Err(e) = std::fs::create_dir_all(dir_path) {
-            error!(
+            bail!(
                 "cannot create config directory \"{}\"\n{}",
                 dir_path.to_string_lossy(),
                 e
@@ -205,29 +211,26 @@ fn load_main_config_file() -> Config {
 
         info!("creating config file for {}", path.display());
         if let Err(e) = std::fs::write(&path, &config_string) {
-            error!(
+            bail!(
                 "cannot create config file \"{}\"\n{}",
                 path.to_string_lossy(),
                 e
             );
-            exit(1);
         }
 
-        default_config
+        Ok(default_config)
     } else {
         let s = match read_to_string(&path) {
             Ok(s) => s,
             Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
-                exit(1);
+                bail!("cannot load config file \"{}\"\n{}", path.display(), e);
             }
         };
 
         match toml::de::from_str(&s) {
-            Ok(config) => config,
+            Ok(config) => Ok(config),
             Err(e) => {
-                error!("Cannot load config file \"{}\"\n{}", path.display(), e);
-                exit(1);
+                bail!("cannot load config file \"{}\"\n{}", path.display(), e);
             }
         }
     }
