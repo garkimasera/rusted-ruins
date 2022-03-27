@@ -19,7 +19,7 @@ mod dir;
 mod error;
 mod pyscript;
 
-use clap::{IntoApp, Parser};
+use clap::Parser;
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
@@ -40,7 +40,7 @@ fn main() {
     verbose::set_verbose(args.verbose);
 
     if args.input_files.is_empty() {
-        let _ = <Args as IntoApp>::into_app().print_help();
+        let _ = <Args as clap::CommandFactory>::command().print_help();
         return;
     }
 

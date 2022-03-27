@@ -1,6 +1,6 @@
 [package]
 name = "rusted-ruins"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2021"
 authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 
