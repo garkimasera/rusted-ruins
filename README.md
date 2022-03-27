@@ -15,6 +15,11 @@ Town (Example of created map by map-editor)
 
 https://youtu.be/t3Fo2ujrYIo
 
+## Manual
+
+[English](https://github.com/garkimasera/rusted-ruins/wiki/Manual),
+[日本語](https://github.com/garkimasera/rusted-ruins/wiki/Manual-Ja)
+
 ## Game Objective
 
 The player arrives at a recently discovered continent where a lot of ruins remain. The player will explore ruins and fight against monsters. By collecting relics in ruins, the player can earn money and fame, and solve the mystery of the ruined nation.
@@ -96,6 +101,8 @@ RUSTED_RUINS_ASSETS_DIR=./assets cargo run --release -p rusted-ruins
 ## How to operate
 
 Operate the player character with the keyboard and mouse.
+
+![how to operate](https://github.com/garkimasera/rusted-ruins/wiki/images/4a56abf8.png)
 
 Left click on tiles - Move to the tile, melee attack, or start talking.
 
