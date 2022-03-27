@@ -76,7 +76,7 @@ assets = [
 [package.metadata.vcpkg]
 dependencies = ["sdl2", "sdl2-image[libjpeg-turbo,tiff,libwebp]", "sdl2-ttf", "sdl2-mixer[opusfile]"]
 git = "https://github.com/microsoft/vcpkg"
-rev = "5568f110b509a9fd90711978a7cb76bae75bb092"
+rev = "9ff4659a075d5f4f30aaca9f7c4e7f059ecc1d6d"
 
 [package.metadata.vcpkg.target]
 x86_64-pc-windows-msvc = { triplet = "x64-windows-static-md" }
