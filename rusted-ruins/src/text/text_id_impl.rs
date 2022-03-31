@@ -20,6 +20,16 @@ impl ToTextId for CharaStatus {
     }
 }
 
+impl ToTextId for StatusEffect {
+    fn to_textid(&self) -> &'static str {
+        match self {
+            StatusEffect::Asleep => "chara_status-asleep",
+            StatusEffect::Poison => "chara_status-poisoned",
+            StatusEffect::Scanned => "chara_status-scanned",
+        }
+    }
+}
+
 impl ToTextId for Element {
     fn to_textid(&self) -> &'static str {
         match *self {

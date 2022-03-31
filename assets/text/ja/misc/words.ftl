@@ -29,6 +29,22 @@ chara_status-asleep = 睡眠
 chara_status-poisoned = 毒
 chara_status-work = 作業中
 
+# EffectKind
+
+effect_kind-none = 効果無し
+effect_kind-restore_hp = HP回復 (効果値: {$power})
+effect_kind-restore_sp = SP回復 (効果値: {$power})
+effect_kind-restore_mp = MP回復 (効果値: {$power})
+effect_kind-melee = 近接攻撃 (効果値: {$power})
+effect_kind-ranged = 遠隔攻撃 (効果値: {$power})
+effect_kind-explosion = 範囲攻撃 (効果値: {$power})
+effect_kind-direct = 直接攻撃 (効果値: {$power})
+effect_kind-status = ステータス付与 {$status} (命中: {$hit})
+effect_kind-wall_damage = 壁へのダメージ
+effect_kind-skill_learning = スキル習得
+effect_kind-place_tile = タイル設置
+effect_kind-gen_item = アイテム生成
+
 # Element
 
 element-none = 無属性

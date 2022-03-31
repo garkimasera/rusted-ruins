@@ -1,7 +1,7 @@
 mod attack;
 mod misc;
 mod range;
-mod recover;
+mod restore;
 pub mod skill_learn;
 
 pub use attack::*;
@@ -35,9 +35,9 @@ pub fn do_effect<T: Into<Target>>(
 
     for effect_kind in &effect.kind {
         match effect_kind {
-            EffectKind::RecoverHp => {
+            EffectKind::RestoreHp => {
                 for cid in &cids {
-                    self::recover::recover_hp(game, *cid, power);
+                    self::restore::restore_hp(game, *cid, power);
                 }
             }
             EffectKind::Melee { element } => {

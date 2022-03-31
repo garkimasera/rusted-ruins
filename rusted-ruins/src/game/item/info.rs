@@ -1,10 +1,9 @@
 use crate::game::extrait::*;
+use crate::text::effect::UI_IMG_ID_ITEM_INFO;
 use crate::text::{misc_txt, ToText};
 use common::gamedata::*;
 use common::objholder::ItemIdx;
 use ordered_float::NotNan;
-
-const UI_IMG_ID_ITEM_INFO: &str = "!icon-item-info";
 
 #[derive(Default, Debug)]
 pub struct ItemInfoText {
@@ -28,13 +27,22 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));
                 }
 
-                if let Some(ItemObjAttr::Medical { .. }) = find_attr!(obj, ItemObjAttr::Medical) {
-                    // let t = // TODO: Add text by its medical effect
-                    // desc_text.push((UI_IMG_ID_ITEM_INFO, t));
+                if let Some(ItemObjAttr::Medical { effect }) = find_attr!(obj, ItemObjAttr::Medical)
+                {
+                    desc_text.append(&mut crate::text::effect::EffectText::new().effect(effect));
                 }
             }
-            ItemKind::Throwing => {}
-            ItemKind::MagicDevice => {}
+            ItemKind::Throwing => {
+                if let Some(ItemObjAttr::Throw { effect }) = find_attr!(obj, ItemObjAttr::Throw) {
+                    desc_text.append(&mut crate::text::effect::EffectText::new().effect(effect));
+                }
+            }
+            ItemKind::MagicDevice => {
+                if let Some(ItemObjAttr::Release { effect }) = find_attr!(obj, ItemObjAttr::Release)
+                {
+                    desc_text.append(&mut crate::text::effect::EffectText::new().effect(effect));
+                }
+            }
             ItemKind::Weapon(weapon_kind) => {
                 let (power, hit) = if let Some(ItemObjAttr::Weapon { base_power, hit }) =
                     find_attr!(obj, ItemObjAttr::Weapon)

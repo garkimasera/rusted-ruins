@@ -29,6 +29,22 @@ chara_status-asleep = Asleep
 chara_status-poisoned = Poisoned
 chara_status-work = Working
 
+# EffectKind
+
+effect_kind-none = No effect
+effect_kind-restore_hp = Restores HP (Power: {$power})
+effect_kind-restore_sp = Restores SP (Power: {$power})
+effect_kind-restore_mp = Restores MP (Power: {$power})
+effect_kind-melee = Melee attack (Power: {$power})
+effect_kind-ranged = Ranged attack (Power: {$power})
+effect_kind-explosion = Explosion (Power: {$power})
+effect_kind-direct = Direct attack (Power: {$power})
+effect_kind-status = Status effect {$status} (Hit: {$hit})
+effect_kind-wall_damage = Damages to walls
+effect_kind-skill_learning = Learn new skill
+effect_kind-place_tile = Places a tile
+effect_kind-gen_item = Generates an item
+
 # Element
 
 element-none = non-elemental

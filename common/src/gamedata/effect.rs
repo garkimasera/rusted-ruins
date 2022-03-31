@@ -50,9 +50,9 @@ impl Default for Effect {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum EffectKind {
     None,
-    RecoverHp,
-    RecoverSp,
-    RecoverMp,
+    RestoreHp,
+    RestoreSp,
+    RestoreMp,
     Melee { element: Element },
     Ranged { element: Element },
     Explosion { element: Element },
