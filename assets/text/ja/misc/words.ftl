@@ -93,6 +93,7 @@ skill_kind-spirit = 精神
 # WeaponKind
 
 weapon_kind-axe = 斧
+weapon_kind-blunt = 鈍器
 weapon_kind-bow = 弓
 weapon_kind-cross_bow = クロスボウ
 weapon_kind-firearm = 銃器

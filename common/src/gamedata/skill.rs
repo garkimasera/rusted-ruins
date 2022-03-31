@@ -326,6 +326,7 @@ define_skill_kind! {
         Sword, "sword",
         Spear, "spear",
         Axe, "axe",
+        Blunt, "blunt",
         Whip, "whip",
     }
     ranged_weapon_kind = 0x0800;

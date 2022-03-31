@@ -93,6 +93,7 @@ skill_kind-spirit = Spirit
 # WeaponKind
 
 weapon_kind-axe = Axe
+weapon_kind-blunt = Blunt
 weapon_kind-bow = Bow
 weapon_kind-cross_bow = Cross Bow
 weapon_kind-firearm = Firearm
