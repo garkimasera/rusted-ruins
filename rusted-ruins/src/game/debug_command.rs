@@ -4,7 +4,11 @@ use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use std::str::FromStr;
+
+static RE_DURATION: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\d+)([smhd])").unwrap());
 
 pub fn exec_debug_command(game: &mut Game, command: &str) {
     let mut args = command.split_whitespace();
@@ -86,6 +90,27 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
                 obj_holder.debug_print(arg1);
             } else {
                 game_log!("debug-command-need-1arg"; command="print_ids");
+            }
+        }
+        "advance" => {
+            if let Some(arg1) = args.next() {
+                if let Some(caps) = RE_DURATION.captures(arg1) {
+                    let n: u64 = caps.get(1).unwrap().as_str().parse().unwrap();
+                    let unit = caps.get(2).unwrap().as_str();
+
+                    let secs = match unit {
+                        "s" => n,
+                        "m" => n * 60,
+                        "h" => n * 3600,
+                        "d" => n * 3600 * 24,
+                        _ => unreachable!(),
+                    };
+
+                    debug!("advance time by {} seconds", secs);
+                    crate::game::time::advance_game_time_by_secs(game, secs);
+                }
+            } else {
+                game_log!("debug-command-need-1arg"; command="advance");
             }
         }
         _ => {

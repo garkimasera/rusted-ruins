@@ -17,18 +17,18 @@ static CURRENT_TIME: Lazy<Mutex<Time>> = Lazy::new(|| {
 });
 
 /// Player moved at the previous turn or not
-static PLAYER_MODED: AtomicBool = AtomicBool::new(false);
+static PLAYER_MOVED: AtomicBool = AtomicBool::new(false);
 
 pub fn player_moved() -> bool {
-    PLAYER_MODED.load(Ordering::Relaxed)
+    PLAYER_MOVED.load(Ordering::Relaxed)
 }
 
 pub fn set_player_moved() {
-    PLAYER_MODED.store(true, Ordering::Relaxed);
+    PLAYER_MOVED.store(true, Ordering::Relaxed);
 }
 
 pub fn clear_player_moved() {
-    PLAYER_MODED.store(false, Ordering::Relaxed);
+    PLAYER_MOVED.store(false, Ordering::Relaxed);
 }
 
 pub fn current_time() -> Time {
