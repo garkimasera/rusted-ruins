@@ -90,7 +90,12 @@ impl Chara {
         } else {
             self.sp + v
         };
-        self.sp = new_sp;
+
+        if new_sp < r.sp_max {
+            self.sp = new_sp;
+        } else {
+            self.sp = r.sp_max
+        }
 
         // Update status about sp
         match cid {
