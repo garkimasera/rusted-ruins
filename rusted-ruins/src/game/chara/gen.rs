@@ -37,12 +37,14 @@ pub fn create_chara<T: Into<Option<FactionId>>>(
         ..Chara::default()
     };
 
-    if let Some(race) = RULES.races.get(&ct.race) {
-        for race_trait in &race.traits {
-            chara
-                .traits
-                .push((CharaTraitOrigin::Race, race_trait.clone()));
-        }
+    for race_trait in RULES
+        .races
+        .iter(&ct.race)
+        .flat_map(|race| race.traits.iter())
+    {
+        chara
+            .traits
+            .push((CharaTraitOrigin::Race, race_trait.clone()));
     }
 
     gen_equips(&mut chara, ct);
@@ -76,11 +78,13 @@ pub fn choose_npc_chara_template(
     let weight_dist = CalcLevelWeightDist::new(floor_level);
 
     let calc_weight = |ct: &CharaTemplateObject| {
-        if let Some(da) = nrp.get(&ct.race) {
-            weight_dist.calc(ct.gen_level) * ct.gen_weight as f32 * *da as f32
-        } else {
-            0.0
-        }
+        RULES
+            .races
+            .iter_ids(&ct.race)
+            .filter_map(|race_id| nrp.get(race_id).copied())
+            .reduce(f32::max)
+            .map(|p| weight_dist.calc(ct.gen_level) * ct.gen_weight as f32 * p)
+            .unwrap_or(0.0)
     };
 
     rng::choose(chara_templates, calc_weight).map(|(i, _)| CharaTemplateIdx::from_usize(i))
@@ -117,16 +121,7 @@ impl CalcLevelWeightDist {
 /// Get equip slot list
 pub fn equip_slots(race: &str) -> Vec<EquipSlotKind> {
     let mut slots = RULES.chara_gen.equip_slots.clone();
-    slots.extend_from_slice(
-        &RULES
-            .races
-            .get(race)
-            .unwrap_or_else(|| {
-                error!("unknown race \"{}\"", race);
-                panic!()
-            })
-            .equip_slots,
-    );
+    slots.extend_from_slice(&RULES.races.get(race).equip_slots);
     slots
 }
 
