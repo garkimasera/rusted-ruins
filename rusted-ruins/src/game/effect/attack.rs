@@ -105,6 +105,8 @@ fn attack_target(
     cid: CharaId,
     target_id: CharaId,
 ) -> i32 {
+    let attacker_level = attack_params.attacker_id.map(|id| game.gd.chara.get(id).lv);
+
     if !attack_params.always_hit
         && !hit_judge(
             &game.gd,
@@ -113,6 +115,10 @@ fn attack_target(
             attack_params.kind,
         )
     {
+        if let Some(attacker_level) = attacker_level {
+            let target = game.gd.chara.get_mut(target_id);
+            target.add_evasion_exp(attacker_level);
+        }
         return 0;
     }
 
@@ -135,10 +141,10 @@ fn attack_target(
 
     if hp > 0 {
         // Exp for targetted character
-        if let Some(attacker_id) = attack_params.attacker_id {
-            let attacker_level = game.gd.chara.get(attacker_id).lv;
+        if let Some(attacker_level) = attacker_level {
             let target = game.gd.chara.get_mut(target_id);
             target.add_damage_exp(damage, attacker_level);
+            target.add_evasion_exp(attacker_level);
         }
     }
 
