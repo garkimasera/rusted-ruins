@@ -57,8 +57,7 @@ mod _rr {
     use common::gamedata::{GameData, SkillKind, Value};
     use rustpython_vm::builtins::PyIntRef;
     use rustpython_vm::{
-        builtins::{PyListRef, PyNone, PyStrRef},
-        function::IntoPyObject,
+        builtins::{PyListRef, PyStrRef},
         pyclass, pyimpl, FromArgs, PyObjectRef, PyResult, PyValue, VirtualMachine,
     };
     use std::str::FromStr;
@@ -67,7 +66,7 @@ mod _rr {
     #[pyclass(module = "rr", name = "Game")]
     #[derive(Clone, Debug, PyValue)]
     pub(crate) struct PyGame {
-        pub scene: Option<String>,
+        pub args: std::collections::HashMap<String, Value>,
         pub self_id: String,
         pub method_tx: crossbeam_channel::Sender<ScriptMessage>,
         pub method_result_rx: crossbeam_channel::Receiver<Value>,
@@ -103,13 +102,9 @@ mod _rr {
             self.self_id.clone()
         }
 
-        #[pymethod]
-        fn scene(&self, vm: &VirtualMachine) -> PyObjectRef {
-            if let Some(scene) = self.scene.clone() {
-                scene.into_pyobject(vm)
-            } else {
-                PyNone.into_object(vm)
-            }
+        #[pyproperty]
+        fn args(&self) -> PyScriptArgs {
+            PyScriptArgs(self.clone())
         }
 
         #[pyproperty]
@@ -302,6 +297,22 @@ mod _rr {
         choices: Option<PyListRef>,
         #[pyarg(any, optional)]
         target_chara: Option<PyStrRef>,
+    }
+
+    #[pyattr(name = "ScriptArgs")]
+    #[pyclass(module = "rr", name = "ScriptArgs")]
+    #[derive(Debug, PyValue)]
+    pub(crate) struct PyScriptArgs(PyGame);
+
+    #[pyimpl]
+    impl PyScriptArgs {
+        #[pymethod(magic)]
+        fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
+            self.0
+                .args
+                .get(key.as_str())
+                .and_then(|value| value.clone().to_py_opt(vm))
+        }
     }
 
     #[pyattr(name = "Gvars")]

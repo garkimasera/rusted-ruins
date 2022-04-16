@@ -5,6 +5,7 @@ use common::gamedata::{GameData, Value};
 use common::obj::ScriptObject;
 use crossbeam_channel::{Receiver, Sender};
 use rustpython_vm as vm;
+use std::collections::HashMap;
 use vm::function::IntoPyObject;
 
 pub type GameMethodCaller = fn(&mut GameData, method: GameMethod) -> Value;
@@ -21,12 +22,12 @@ pub struct ScriptEngine {
 #[derive(Clone, Debug)]
 pub struct StartScript {
     id: String,
-    scene: Option<String>,
+    args: HashMap<String, Value>,
 }
 
 impl ScriptEngine {
     pub fn start_init(game_method_caller: GameMethodCaller) -> Self {
-        log::trace!("Start script engine initialization");
+        log::trace!("start script engine initialization");
         let (ready_tx, ready_rx) = crossbeam_channel::bounded(0);
         let (start_tx, start_rx) = crossbeam_channel::bounded(0);
         let (method_tx, method_rx) = crossbeam_channel::bounded(0);
@@ -49,14 +50,22 @@ impl ScriptEngine {
         self.ready_rx
             .recv()
             .expect("Script engine initialization failed");
-        log::info!("Finish script engine initialization");
+        log::info!("finish script engine initialization");
     }
 
-    pub fn start_script(&mut self, id: &str, scene: Option<String>) {
+    pub fn start_script(&mut self, input: &str) {
+        let (id, args) = match crate::parse::parse_input(input) {
+            Ok(result) => result,
+            Err(e) => {
+                log::warn!("invalid input for start_script\n{:?}", e);
+                return;
+            }
+        };
+
         self.start_tx
             .send(StartScript {
-                id: id.into(),
-                scene,
+                id,
+                args,
             })
             .unwrap();
     }
@@ -129,14 +138,14 @@ fn script_loop(
 ) -> Result<(), Error> {
     while let Ok(start_script) = start_rx.recv() {
         let pygame = PyGame {
-            scene: start_script.scene.clone(),
+            args: start_script.args.clone(),
             self_id: start_script.id.clone(),
             method_tx: method_tx.clone(),
             method_result_rx: method_result_rx.clone(),
         };
         if let Err(e) = call_script(vm, &start_script, pygame) {
             log::warn!(
-                "Error during executing script \"{}\"\n{}",
+                "error during executing script \"{}\"\n{}",
                 start_script.id,
                 e
             );
@@ -170,7 +179,7 @@ fn call_script(
     vm.run_code_obj(script, scope)
         .map_err(|e| Error::from_py(vm, e))?;
 
-    log::trace!("Finish running script");
+    log::trace!("finish running script");
     Ok(())
 }
 

@@ -30,9 +30,9 @@ pub fn add_npcs(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
             let mut chara = game::chara::gen::create_chara(idx, 1, faction, None);
             chara.ai.initial_pos = npc_gen.pos;
 
-            if !npc_gen.talk_script_id.is_empty() {
+            if !npc_gen.talk_script.is_empty() {
                 // Talk script setting
-                chara.trigger_talk = Some(npc_gen.talk_script_id.to_owned());
+                chara.talk_script = Some(npc_gen.talk_script.to_owned());
             }
 
             gd.add_chara(cid, chara);

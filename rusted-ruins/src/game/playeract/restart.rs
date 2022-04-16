@@ -13,6 +13,6 @@ impl<'a> DoPlayerAction<'a> {
             .path_to_map_id_and_pos(&RULES.world.restart_path)
             .unwrap();
         crate::game::map::switch_map(self.0, Destination::MapIdWithPos(mid, pos));
-        self.0.start_script(&RULES.world.restart_script, None, None);
+        self.0.start_script(&RULES.world.restart_script, None);
     }
 }

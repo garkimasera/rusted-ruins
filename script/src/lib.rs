@@ -10,6 +10,7 @@ extern crate rusted_ruins_common as common;
 mod engine;
 mod error;
 mod message;
+mod parse;
 mod random;
 mod rr;
 

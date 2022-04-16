@@ -34,7 +34,7 @@ pub struct NpcGenData {
     pub name: String,
     pub chara_template_id: String,
     #[serde(default)]
-    pub talk_script_id: String,
+    pub talk_script: String,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]

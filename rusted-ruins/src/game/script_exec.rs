@@ -24,10 +24,10 @@ impl ScriptState {
 
 impl Game {
     /// Start script. Give cid if talk.
-    pub fn start_script(&mut self, id: &str, cid: Option<CharaId>, scene: Option<String>) {
-        info!("Start script {}", id);
+    pub fn start_script(&mut self, script: &str, cid: Option<CharaId>) {
+        info!("start script \"{}\"", script);
         self.script_state.target_cid = cid;
-        self.se.start_script(id, scene);
+        self.se.start_script(script);
 
         self.advance_script(None);
     }

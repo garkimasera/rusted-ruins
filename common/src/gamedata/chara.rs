@@ -90,7 +90,7 @@ pub struct Chara {
     pub skills: SkillList,
     pub abilities: Vec<(AbilityOrigin, AbilityId)>,
     /// When talked, execute this script
-    pub trigger_talk: Option<String>,
+    pub talk_script: Option<String>,
 }
 
 /// Character attributes
@@ -236,7 +236,7 @@ impl Default for Chara {
             status: Vec::new(),
             skills: SkillList::default(),
             abilities: Vec::new(),
-            trigger_talk: None,
+            talk_script: None,
         }
     }
 }

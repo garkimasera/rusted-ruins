@@ -276,7 +276,7 @@ impl<'a> DoPlayerAction<'a> {
                 let other_chara = gd.chara.get(other_chara);
                 match relation {
                     Relationship::Ally | Relationship::Friendly | Relationship::Neutral => {
-                        if let Some(ref t) = other_chara.trigger_talk {
+                        if let Some(ref t) = other_chara.talk_script {
                             trigger_talk = Some(t.clone())
                         }
                     }
@@ -285,7 +285,7 @@ impl<'a> DoPlayerAction<'a> {
             }
         }
         if let Some(trigger_talk) = trigger_talk {
-            self.0.start_script(&trigger_talk, cid, None);
+            self.0.start_script(&trigger_talk, cid);
         }
     }
 
