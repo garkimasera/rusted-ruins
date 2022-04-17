@@ -49,6 +49,7 @@ killed-by-ranged-attack = {$chara}は倒された。
 killed-by-explosion = {$chara}は爆死した。
 killed-by-poison-damage = {$chara}は毒により死んだ。
 killed-by-starve-damage = {$chara}は餓死した。
+killed-by-encumbrance-damage = {$chara}は重さに耐えられず死んだ。
 
 # Messages about character action
 

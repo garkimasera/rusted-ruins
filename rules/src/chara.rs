@@ -46,11 +46,18 @@ pub struct Chara {
     pub carrying_capacity_threshold_stressed: f32,
     pub carrying_capacity_threshold_strained: f32,
     pub carrying_capacity_threshold_overloaded: f32,
-    /// speed coefficent for burdened status
+    /// speed coefficent for encumbrance status
     pub speed_coeff_burdened: f32,
     pub speed_coeff_stressed: f32,
     pub speed_coeff_strained: f32,
     pub speed_coeff_overloaded: f32,
+    /// Damage factor for calculating encumbrance damage
+    pub damage_factor_burdened: f32,
+    pub damage_factor_stressed: f32,
+    pub damage_factor_strained: f32,
+    pub damage_factor_overloaded: f32,
+    /// Dafame factor for calculating poison damage
+    pub damage_factor_poisoned: f32,
 }
 
 impl Rule for Chara {

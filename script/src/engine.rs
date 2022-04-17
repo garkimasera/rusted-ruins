@@ -62,12 +62,7 @@ impl ScriptEngine {
             }
         };
 
-        self.start_tx
-            .send(StartScript {
-                id,
-                args,
-            })
-            .unwrap();
+        self.start_tx.send(StartScript { id, args }).unwrap();
     }
 
     pub fn ui_response(&mut self, value: Value) {

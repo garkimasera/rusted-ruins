@@ -49,6 +49,7 @@ killed-by-ranged-attack = {$chara} was killed.
 killed-by-explosion = {$chara} was killed.
 killed-by-poison-damage = {$chara} was killed by poison.
 killed-by-starve-damage = {$chara} starved to death.
+killed-by-encumbrance-damage = {$chara} was killed by their own weight.
 
 # Messages about character action
 

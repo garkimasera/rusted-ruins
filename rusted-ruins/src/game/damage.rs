@@ -13,6 +13,7 @@ pub enum CharaDamageKind {
     Direct,
     Poison,
     Starve,
+    Encumbrance,
 }
 
 /// Give damage to a character.
@@ -78,6 +79,9 @@ pub fn do_damage(
             }
             CharaDamageKind::Starve => {
                 game_log_i!("killed-by-starve-damage"; chara=chara);
+            }
+            CharaDamageKind::Encumbrance => {
+                game_log_i!("killed-by-encumbrance-damage"; chara=chara);
             }
         }
 

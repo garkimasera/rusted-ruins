@@ -35,14 +35,28 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
         s.expire(&mut game.gd, cid);
     }
 
+    // Process character status
     let chara = game.gd.chara.get_mut(cid);
     let mut is_poisoned = false;
+    let mut encumbrance_damage = 0.0;
     let mut progress_anim = None;
 
     for s in chara.status.iter() {
         match *s {
             CharaStatus::Poisoned => {
                 is_poisoned = true;
+            }
+            CharaStatus::Burdened => {
+                encumbrance_damage = RULES.chara.damage_factor_burdened;
+            }
+            CharaStatus::Strained => {
+                encumbrance_damage = RULES.chara.damage_factor_strained;
+            }
+            CharaStatus::Stressed => {
+                encumbrance_damage = RULES.chara.damage_factor_stressed;
+            }
+            CharaStatus::Overloaded => {
+                encumbrance_damage = RULES.chara.damage_factor_overloaded;
             }
             CharaStatus::Work {
                 turn_left,
@@ -58,9 +72,15 @@ pub fn preturn(game: &mut Game, cid: CharaId) -> bool {
 
     if is_poisoned {
         let chara = game.gd.chara.get_mut(cid);
-        let damage = chara.attr.max_hp / 20;
-        game_log_i!("poison-damage"; chara=chara, damage=damage);
-        do_damage(game, cid, damage, CharaDamageKind::Poison, None);
+        let damage =
+            chara.attr.max_hp as f32 * RULES.chara.damage_factor_poisoned / chara.attr.vit as f32;
+        do_damage(game, cid, damage as i32, CharaDamageKind::Poison, None);
+    }
+
+    if encumbrance_damage > 0.0 {
+        let chara = game.gd.chara.get_mut(cid);
+        let damage = chara.attr.max_hp as f32 * encumbrance_damage / chara.attr.vit as f32;
+        do_damage(game, cid, damage as i32, CharaDamageKind::Encumbrance, None);
     }
 
     if let Some(ratio) = progress_anim {
