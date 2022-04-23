@@ -3,21 +3,27 @@ use crate::game::item::gen::from_item_gen;
 use common::gamedata::*;
 use common::gobj;
 use common::maptemplate::*;
+use common::objholder::MapTemplateIdx;
 
-pub fn from_template(t: &MapTemplateObject, item_own_flag: bool) -> Map {
+pub fn from_template_idx(idx: MapTemplateIdx, item_own_flag: bool) -> Map {
+    let t = gobj::get_obj(idx);
     let mut map = create_terrain(t);
+    map.template = Some(idx);
     set_boundary(&mut map, t, 0);
     gen_items(&mut map, t, item_own_flag);
     map
 }
 
 pub fn from_template_id(id: &str, item_own_flag: bool) -> Option<Map> {
-    Some(from_template(gobj::get_by_id_checked(id)?, item_own_flag))
+    Some(from_template_idx(
+        gobj::id_to_idx_checked(id)?,
+        item_own_flag,
+    ))
 }
 
 /// Create map its terrains (tile, wall) are loaded from template
 fn create_terrain(t: &MapTemplateObject) -> Map {
-    let mut map = Map::new(t.w, t.h);
+    let mut map = Map::new(t.w, t.h, crate::game::time::current_time());
 
     for (pos, c) in t.tile.iter_with_idx() {
         // Setting tiles

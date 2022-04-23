@@ -107,7 +107,11 @@ pub fn generated_map_to_map(
     entrance_method: EntranceMethod,
 ) -> Map {
     let size = gm.size;
-    let mut map = Map::new(size.0 as u32, size.1 as u32);
+    let mut map = Map::new(
+        size.0 as u32,
+        size.1 as u32,
+        crate::game::time::current_time(),
+    );
     let wall_obj = gobj::get_obj(wall);
 
     trace!("New map creating");
