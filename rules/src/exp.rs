@@ -9,6 +9,8 @@ pub struct Exp {
     pub adjust_coeff: Vec<f32>,
     /// All exp is multiplied by this value
     pub base_factor: f32,
+    /// Int bonus to exp is (exp) * (int) / (int_bonus_divisor)
+    pub int_bonus_divisor: u32,
     /// Base exp to weapon skills after attacking
     pub attack: u32,
     /// Base exp to carry skill

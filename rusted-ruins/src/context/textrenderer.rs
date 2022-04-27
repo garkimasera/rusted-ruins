@@ -218,8 +218,6 @@ fn border_text(surface: &mut Surface<'_>) {
     assert!(surface.pixel_format_enum() == PixelFormatEnum::ARGB8888);
 
     surface.with_lock_mut(|pixel: &mut [u8]| {
-        assert!((w * h * 4) as usize == pixel.len());
-
         let mut opacity: Vec<bool> = Vec::with_capacity((w * h) as usize);
         for y in 0..h {
             for x in 0..w {

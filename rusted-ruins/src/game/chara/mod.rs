@@ -30,9 +30,13 @@ impl Chara {
     fn add_skill_exp(&mut self, kind: SkillKind, add_exp: u32, base_level: u32) {
         if self.faction == FactionId::player() {
             self.skills.enable_exp();
+        } else if self.skills.exp.is_none() {
+            return;
         }
 
-        let result = self.skills.add_exp(kind, add_exp, base_level);
+        let int_bonus = add_exp * self.attr.int as u32 / RULES.exp.int_bonus_divisor;
+
+        let result = self.skills.add_exp(kind, add_exp + int_bonus, base_level);
         trace!("{} gains {} exp for {:?}", self.to_text(), result.1, kind);
         if result.0 {
             // If level up
