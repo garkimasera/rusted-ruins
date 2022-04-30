@@ -213,11 +213,12 @@ const OPACITY_BORDER: u8 = 64;
 fn border_text(surface: &mut Surface<'_>) {
     use sdl2::pixels::PixelFormatEnum;
 
-    let size = surface.size();
-    let (w, h) = (size.0 as i32, size.1 as i32);
     assert!(surface.pixel_format_enum() == PixelFormatEnum::ARGB8888);
 
+    let h = surface.size().1 as i32;
+
     surface.with_lock_mut(|pixel: &mut [u8]| {
+        let w = (pixel.len() / h as usize) as i32 / 4;
         let mut opacity: Vec<bool> = Vec::with_capacity((w * h) as usize);
         for y in 0..h {
             for x in 0..w {
