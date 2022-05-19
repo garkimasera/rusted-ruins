@@ -20,7 +20,7 @@ pub fn harvest_item(gd: &mut GameData, il: ItemLocation) -> bool {
     true
 }
 
-pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Vec2d) {
+pub fn harvest_by_tool(game: &mut Game, chara_id: CharaId, pos: Coords) {
     let gd = &mut game.gd;
     let player_pos = gd.player_pos();
 

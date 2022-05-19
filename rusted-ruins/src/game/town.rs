@@ -2,10 +2,10 @@ use crate::game::item::gen::gen_item_from_id;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::SiteGenObject;
-use geom::Vec2d;
+use geom::Coords;
 
 /// Create town from SiteGenObect and add it to region map
-pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Vec2d, town_id: &str) {
+pub fn add_town(gd: &mut GameData, rid: RegionId, pos: Coords, town_id: &str) {
     let sid = crate::game::site::gen::add_site_from_obj(gd, rid, pos, town_id).unwrap();
 
     let town = Town::new(town_id);

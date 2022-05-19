@@ -10,8 +10,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate log;
 extern crate rusted_ruins_common as common;
-extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_map_generator as map_generator;
+extern crate tile_geom as geom;
 
 pub mod ability;
 pub mod biome;

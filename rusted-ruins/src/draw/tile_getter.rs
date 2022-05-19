@@ -14,7 +14,7 @@ pub struct BackgroundDrawInfo<'a> {
 }
 
 impl<'a> BackgroundDrawInfo<'a> {
-    pub fn new(map: &Map, pos: Vec2d) -> BackgroundDrawInfo<'_> {
+    pub fn new(map: &Map, pos: Coords) -> BackgroundDrawInfo<'_> {
         let mut di = BackgroundDrawInfo::default();
 
         let tile = if map.is_inside(pos) {
@@ -62,7 +62,7 @@ pub struct ForegroundDrawInfo<'a> {
 }
 
 impl<'a> ForegroundDrawInfo<'a> {
-    pub fn new(map: &'a Map, view_map: &ViewMap, pos: Vec2d) -> ForegroundDrawInfo<'a> {
+    pub fn new(map: &'a Map, view_map: &ViewMap, pos: Coords) -> ForegroundDrawInfo<'a> {
         let mut di = ForegroundDrawInfo::default();
 
         if map.is_inside(pos) {
@@ -107,6 +107,6 @@ impl<'a> ForegroundDrawInfo<'a> {
 }
 
 /// Adjust piece pattern when getting piece pattern from the nearest tile.
-fn adjust_pattern_from_nearest(pp: &mut PiecePattern, _pos: Vec2d, _nearest_pos: Vec2d) {
+fn adjust_pattern_from_nearest(pp: &mut PiecePattern, _pos: Coords, _nearest_pos: Coords) {
     *pp = PiecePattern::SURROUNDED;
 }

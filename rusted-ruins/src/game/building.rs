@@ -5,7 +5,7 @@ use common::obj::*;
 use common::objholder::*;
 use geom::*;
 
-pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId, build_obj: BuildObj) {
+pub fn start_build(game: &mut Game, pos: Coords, builder: CharaId, build_obj: BuildObj) {
     let needed_materials = match &build_obj {
         BuildObj::Tile(id) => {
             let tile_idx: TileIdx = gobj::id_to_idx(id);
@@ -48,7 +48,7 @@ pub fn start_build(game: &mut Game, pos: Vec2d, builder: CharaId, build_obj: Bui
     finish_build(game, pos, &build_obj);
 }
 
-pub fn finish_build(game: &mut Game, pos: Vec2d, build_obj: &BuildObj) {
+pub fn finish_build(game: &mut Game, pos: Coords, build_obj: &BuildObj) {
     match build_obj {
         BuildObj::Tile(id) => {
             let tile_idx: TileIdx = gobj::id_to_idx(id);
@@ -64,7 +64,7 @@ pub fn finish_build(game: &mut Game, pos: Vec2d, build_obj: &BuildObj) {
     audio::play_sound("finish-build");
 }
 
-fn is_buildable(gd: &GameData, pos: Vec2d) -> bool {
+fn is_buildable(gd: &GameData, pos: Coords) -> bool {
     let map = gd.get_current_map();
 
     if !map.is_inside(pos) {

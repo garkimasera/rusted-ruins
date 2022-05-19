@@ -10,13 +10,13 @@ pub enum Command {
         dir: Direction,
     },
     MoveTo {
-        dest: Vec2d,
+        dest: Coords,
     },
     Shoot {
-        target: Vec2d,
+        target: Coords,
     },
     UseTool {
-        target: Vec2d,
+        target: Coords,
     },
     Enter,
     Cancel,

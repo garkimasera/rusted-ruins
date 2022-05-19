@@ -23,15 +23,14 @@ serde = "1"
 serde_derive = "1"
 extend = "1"
 rand = "0.8"
-ordered-float = { version = "2", features = ["rand", "serde"] }
+ordered-float = { version = "3", features = ["rand", "serde"] }
 tar = "0.4"
 toml = "0.5"
 unic-langid = "0.9"
 walkdir = "2"
 num-rational = "0.4"
 
-[dependencies.rusted-ruins-geom]
-path = "../geom"
+tile-geom = { git = "https://github.com/garkimasera/tile-geom.git" }
 
 [dependencies.rusted-ruins-common]
 path = "../common"

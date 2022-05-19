@@ -7,7 +7,7 @@ use crate::input::Input;
 use anyhow::*;
 use common::gamedata::CharaBaseAttr;
 use common::obj::*;
-use geom::Vec2d;
+use geom::Coords;
 
 pub fn build_object(input: Input) -> Result<Object, Error> {
     let object_type = input.object_type.clone();
@@ -164,7 +164,7 @@ fn build_region_gen_object(input: Input) -> Result<RegionGenObject, Error> {
     let rg = get_optional_field!(input, region_gen);
     use crate::input::SiteGenIdAndPos;
 
-    let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Vec2d)> {
+    let f = |v: Vec<SiteGenIdAndPos>| -> Vec<(String, Coords)> {
         v.into_iter().map(|a| (a.id, a.pos)).collect()
     };
 

@@ -23,7 +23,7 @@ pub struct Region {
 pub struct SiteInfo {
     site: Site,
     /// Position on the region map
-    pos: Option<Vec2d>,
+    pos: Option<Coords>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -82,7 +82,7 @@ impl RegionHolder {
             .site
     }
 
-    pub fn get_site_pos(&self, sid: SiteId) -> Option<Vec2d> {
+    pub fn get_site_pos(&self, sid: SiteId) -> Option<Coords> {
         let region = self
             .0
             .get(&sid.rid)
@@ -219,8 +219,8 @@ impl RegionHolder {
     }
 
     /// Covnert map path to MapId and pos.
-    pub fn path_to_map_id_and_pos(&self, path: &str) -> Option<(MapId, Vec2d)> {
-        fn floor_and_pos(a: &str) -> Option<(u32, Vec2d)> {
+    pub fn path_to_map_id_and_pos(&self, path: &str) -> Option<(MapId, Coords)> {
+        fn floor_and_pos(a: &str) -> Option<(u32, Coords)> {
             let a: Vec<&str> = a.split(':').collect();
             if a.len() != 2 {
                 return None;
@@ -229,7 +229,7 @@ impl RegionHolder {
             let pos: Vec<&str> = a[1].split(',').collect();
             let pos_x: u32 = pos[0].parse().ok()?;
             let pos_y: u32 = pos[1].parse().ok()?;
-            Some((floor, Vec2d::from((pos_x, pos_y))))
+            Some((floor, Coords::from((pos_x, pos_y))))
         }
 
         let path_elements: Vec<&str> = path.split('/').collect();
@@ -301,7 +301,7 @@ impl Region {
 
     /// Add new site to region
     /// If already site is existed, this function will fail and return None
-    pub fn add_site(&mut self, site: Site, kind: SiteKind, pos: Option<Vec2d>) -> Option<SiteId> {
+    pub fn add_site(&mut self, site: Site, kind: SiteKind, pos: Option<Coords>) -> Option<SiteId> {
         // Calculate new number for the given site
         let n = self.search_empty_n(kind);
         let sid = SiteId {
@@ -320,7 +320,7 @@ impl Region {
     }
 
     /// Get site by position on the region
-    pub fn get_id_by_pos(&self, pos: Vec2d) -> Option<SiteId> {
+    pub fn get_id_by_pos(&self, pos: Coords) -> Option<SiteId> {
         for (sid, sinfo) in self.sites.iter() {
             if sinfo.pos == Some(pos) {
                 return Some(*sid);

@@ -5,12 +5,12 @@ use geom::*;
 #[derive(Clone, Copy, Debug)]
 pub enum Target {
     None,
-    Tile(Vec2d),
+    Tile(Coords),
     Chara(CharaId),
 }
 
-impl From<Vec2d> for Target {
-    fn from(pos: Vec2d) -> Target {
+impl From<Coords> for Target {
+    fn from(pos: Coords) -> Target {
         Target::Tile(pos)
     }
 }

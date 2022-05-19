@@ -29,7 +29,7 @@ impl MainWinDrawer {
     fn draw_target_mode_to_tile(
         &self,
         context: &mut Context<'_, '_, '_, '_>,
-        pos: Vec2d,
+        pos: Coords,
         game: &Game,
         target_mode: &TargetModeDrawInfo,
     ) {

@@ -1,8 +1,8 @@
 use crate::game::Game;
 use common::gamedata::*;
-use geom::{Direction, Vec2d};
+use geom::{Coords, Direction};
 
-pub fn print_tile_info(_game: &Game, _pos: Vec2d) {
+pub fn print_tile_info(_game: &Game, _pos: Coords) {
     game_log!("tile-information-no-info");
 }
 
@@ -13,7 +13,7 @@ pub struct TileInfoQuery {
     pub chara: Option<CharaId>,
 }
 
-pub fn tile_info_query(gd: &GameData, pos: Vec2d) -> TileInfoQuery {
+pub fn tile_info_query(gd: &GameData, pos: Coords) -> TileInfoQuery {
     let map = gd.get_current_map();
 
     let tinfo = &map.observed_tile[pos];

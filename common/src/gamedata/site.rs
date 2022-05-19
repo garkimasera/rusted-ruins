@@ -6,7 +6,7 @@ use crate::basic::ArrayStringId;
 use crate::hashmap::HashMap;
 use crate::sitegen::NpcGenId;
 use filebox::FileBox;
-use geom::Vec2d;
+use geom::Coords;
 
 pub type BoxedMap = FileBox<Map>;
 
@@ -44,7 +44,7 @@ pub enum SiteContent {
     /// Temporary map
     Temp {
         return_map: MapId,
-        return_pos: Vec2d,
+        return_pos: Coords,
         is_open_air: bool,
     },
     /// This does not include specific data, but character and other elements can be placed its map

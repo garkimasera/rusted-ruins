@@ -10,13 +10,13 @@ pub enum FogPattern {
     PiecePattern(EffectImgIdx, PiecePattern),
 }
 
-pub fn view_fog(game: &Game, p: Vec2d) -> FogPattern {
+pub fn view_fog(game: &Game, p: Coords) -> FogPattern {
     let view_map = &game.view_map;
 
     if view_map.get_tile_visible(p) {
         let mut piece_pattern_flags = PiecePatternFlags::default();
         for dir in &Direction::EIGHT_DIRS {
-            piece_pattern_flags.set(*dir, view_map.get_tile_visible(p + dir.as_vec()));
+            piece_pattern_flags.set(*dir, view_map.get_tile_visible(p + dir.as_coords()));
         }
 
         let pp = piece_pattern_flags.to_piece_pattern(5);

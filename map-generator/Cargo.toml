@@ -14,8 +14,7 @@ serde_derive = "1"
 arrayvec = "0.7"
 rand = "0.8"
 
-[dependencies.rusted-ruins-geom]
-path = "../geom"
+tile-geom = { git = "https://github.com/garkimasera/tile-geom.git" }
 
 [dependencies.rusted-ruins-rng]
 path = "../rng"

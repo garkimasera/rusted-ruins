@@ -8,8 +8,8 @@ pub struct Lattice {
     ny: u32,
     ew_open: Array2d<bool>,
     ns_open: Array2d<bool>,
-    start: Vec2d,
-    end: Vec2d,
+    start: Coords,
+    end: Coords,
 }
 
 impl Lattice {
@@ -19,8 +19,8 @@ impl Lattice {
             ny,
             ew_open: Array2d::new(nx - 1, ny, false),
             ns_open: Array2d::new(nx, ny - 1, false),
-            start: Vec2d(0, 0),
-            end: Vec2d(0, 0),
+            start: Coords(0, 0),
+            end: Coords(0, 0),
         }
     }
 
@@ -29,11 +29,11 @@ impl Lattice {
         let ns_wall_len = (gm.size.1 - self.ny as i32 + 1) / self.ny as i32;
 
         // Set entrance/exit
-        let e0 = Vec2d(
+        let e0 = Coords(
             self.start.0 * (ew_wall_len + 1) + ew_wall_len / 2,
             self.start.1 * (ns_wall_len + 1) + ns_wall_len / 2,
         );
-        let e1 = Vec2d(
+        let e1 = Coords(
             self.end.0 * (ew_wall_len + 1) + ew_wall_len / 2,
             self.end.1 * (ns_wall_len + 1) + ns_wall_len / 2,
         );
@@ -111,7 +111,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
     let mut lattice = Lattice::new(nx, ny);
     let mut is_reach = Array2d::new(nx, ny, false);
 
-    let start_room = Vec2d(gen_range(0..nx) as i32, gen_range(0..ny) as i32);
+    let start_room = Coords(gen_range(0..nx) as i32, gen_range(0..ny) as i32);
     lattice.start = start_room;
 
     let max_step = gen_range(min_step..max_step);
@@ -121,7 +121,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
 
     // Make all room reachable
     'room_scan: loop {
-        let right_bottom = Vec2d(nx as i32, ny as i32);
+        let right_bottom = Coords(nx as i32, ny as i32);
         for room in right_bottom.iter_from_zero() {
             if is_reach[room] {
                 continue;
@@ -177,7 +177,7 @@ pub fn create_lattice(nx: u32, ny: u32, min_step: u32, max_step: u32) -> Lattice
 }
 
 fn random_walk(
-    room: Vec2d,
+    room: Coords,
     lattice: &mut Lattice,
     is_reach: &mut Array2d<bool>,
     count: u32,
@@ -236,9 +236,9 @@ impl std::fmt::Display for Lattice {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for j in 0..self.ny {
             for i in 0..self.nx {
-                if self.start == Vec2d(i as i32, j as i32) {
+                if self.start == Coords(i as i32, j as i32) {
                     write!(f, "S")?;
-                } else if self.end == Vec2d(i as i32, j as i32) {
+                } else if self.end == Coords(i as i32, j as i32) {
                     write!(f, "E")?;
                 } else {
                     write!(f, ".")?;

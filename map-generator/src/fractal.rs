@@ -60,7 +60,7 @@ pub fn write_to_map(gm: &mut GeneratedMap, wall_weight: f32, enable_edge_bias: b
     }
 }
 
-pub fn create_fractal(size: Vec2d, enable_edge_bias: bool) -> Array2d<f32> {
+pub fn create_fractal(size: Coords, enable_edge_bias: bool) -> Array2d<f32> {
     let mut map = Array2d::new(size.0 as u32, size.1 as u32, 0.0);
 
     // Biasing for edges
@@ -71,8 +71,8 @@ pub fn create_fractal(size: Vec2d, enable_edge_bias: bool) -> Array2d<f32> {
             write_rect(
                 &mut map,
                 *b,
-                Vec2d(i, i),
-                Vec2d(size.0 - i - 1, size.1 - i - 1),
+                Coords(i, i),
+                Coords(size.0 - i - 1, size.1 - i - 1),
             );
         }
     }
@@ -120,9 +120,9 @@ fn write_block(map: &mut Array2d<f32>, block_size: u32, weight: f32) {
     }
 }
 
-fn write_rect(map: &mut Array2d<f32>, value: f32, top_left: Vec2d, bottom_right: Vec2d) {
-    let top_right = Vec2d(bottom_right.0, top_left.1);
-    let bottom_left = Vec2d(top_left.0, bottom_right.1);
+fn write_rect(map: &mut Array2d<f32>, value: f32, top_left: Coords, bottom_right: Coords) {
+    let top_right = Coords(bottom_right.0, top_left.1);
+    let bottom_left = Coords(top_left.0, bottom_right.1);
 
     for p in LineIter::new(top_left, top_right) {
         map[p] = value;
@@ -148,7 +148,7 @@ fn calc_threshold(fractal: &Array2d<f32>, floor_ratio: f32) -> f32 {
 }
 
 /// Calculate tiles are reacheable from given tile
-fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
+fn create_reach_map(map: &GeneratedMap, start: Coords) -> (Array2d<bool>, u32) {
     let mut reachable = Array2d::new(map.size.0 as u32, map.size.1 as u32, false);
     let mut reachable_tile_count = 0;
 
@@ -163,7 +163,7 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
 
         for p in map.tile.iter_idx() {
             if reachable[p] {
-                let mut try_next_tile = |next_tile: Vec2d| {
+                let mut try_next_tile = |next_tile: Coords| {
                     if map.tile.in_range(next_tile)
                         && map.tile[next_tile].is_passable()
                         && !reachable[next_tile]
@@ -190,9 +190,9 @@ fn create_reach_map(map: &GeneratedMap, start: Vec2d) -> (Array2d<bool>, u32) {
 }
 
 /// Pick one passable tile at random
-fn pick_passable_tile(map: &GeneratedMap) -> Vec2d {
+fn pick_passable_tile(map: &GeneratedMap) -> Coords {
     loop {
-        let p = Vec2d(gen_range(0..map.size.0), gen_range(0..map.size.1));
+        let p = Coords(gen_range(0..map.size.0), gen_range(0..map.size.1));
 
         if map.tile[p].is_passable() {
             return p;

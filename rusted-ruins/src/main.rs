@@ -8,11 +8,11 @@
 
 extern crate rusted_ruins_audio as audio;
 extern crate rusted_ruins_common as common;
-extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_map_generator as map_generator;
 extern crate rusted_ruins_rng as rng;
 extern crate rusted_ruins_rules as rules;
 extern crate rusted_ruins_script as script;
+extern crate tile_geom as geom;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]

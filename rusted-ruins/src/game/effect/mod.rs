@@ -135,7 +135,7 @@ pub fn do_effect<T: Into<Target>>(
 }
 
 // Get characters list in range of the effect.
-fn get_cids(game: &Game, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
+fn get_cids(game: &Game, _effect: &Effect, tiles: &[Coords]) -> Vec<CharaId> {
     let map = game.gd.get_current_map();
     let mut cids = vec![];
 
@@ -148,7 +148,7 @@ fn get_cids(game: &Game, _effect: &Effect, tiles: &[Vec2d]) -> Vec<CharaId> {
 }
 
 // Get tile positions of the effect
-fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId>) -> Vec<Vec2d> {
+fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId>) -> Vec<Coords> {
     let cause = cause.and_then(|cause| game.gd.chara_pos(cause));
     let target = match target {
         Target::None => {
@@ -175,7 +175,7 @@ fn get_tiles(game: &Game, effect: &Effect, target: Target, cause: Option<CharaId
     }
 }
 
-fn to_shape(effect: &Effect, target: Vec2d, _cause: Option<Vec2d>) -> Option<Shape> {
+fn to_shape(effect: &Effect, target: Coords, _cause: Option<Coords>) -> Option<Shape> {
     match effect.shape {
         ShapeKind::OneTile => Some(Shape::OneTile { pos: target }),
         ShapeKind::Line => unimplemented!(),

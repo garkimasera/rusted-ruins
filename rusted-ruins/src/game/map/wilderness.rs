@@ -13,7 +13,7 @@ use super::builder::EntranceMethod;
 
 pub fn generate_wilderness(
     gd: &GameData,
-    pos: Vec2d,
+    pos: Coords,
     entrance_method: EntranceMethod,
 ) -> Option<Map> {
     let (biome, _sub_biomes) = get_biome(gd, pos)?;
@@ -72,7 +72,7 @@ pub fn generate_wilderness(
 
 fn get_biome(
     gd: &GameData,
-    pos: Vec2d,
+    pos: Coords,
 ) -> Option<(&'static BiomeDetail, Vec<&'static SubBiomeDetail>)> {
     if !gd.get_current_mapid().is_region_map() {
         return None;

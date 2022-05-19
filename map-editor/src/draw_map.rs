@@ -41,7 +41,7 @@ pub fn draw_map(
 
     for iy in 0..tile_ny {
         for ix in 0..tile_nx {
-            let p = Vec2d(ix + pos.0, iy + pos.1);
+            let p = Coords(ix + pos.0, iy + pos.1);
             if p.0 >= map.width as i32 || p.1 >= map.height as i32 {
                 continue;
             }

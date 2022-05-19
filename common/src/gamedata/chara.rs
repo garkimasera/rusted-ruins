@@ -11,7 +11,7 @@ use crate::hashmap::HashMap;
 use crate::item_selector::ItemSelector;
 use crate::objholder::{CharaTemplateIdx, ItemIdx};
 use arrayvec::ArrayString;
-use geom::Vec2d;
+use geom::Coords;
 
 #[derive(Serialize, Deserialize)]
 pub struct CharaTemplateObject {
@@ -265,7 +265,7 @@ pub struct CharaAi {
     /// AI kind id.
     pub kind: NpcAiKind,
     /// Used for some kind AI that try to return to the initial position.
-    pub initial_pos: Vec2d,
+    pub initial_pos: Coords,
     /// Current NPC AI State.
     pub state: AiState,
 }
@@ -285,7 +285,7 @@ impl Default for CharaAi {
     fn default() -> CharaAi {
         CharaAi {
             kind: NpcAiKind::default(),
-            initial_pos: Vec2d::new(0, 0),
+            initial_pos: Coords::new(0, 0),
             state: AiState::default(),
         }
     }

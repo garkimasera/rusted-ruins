@@ -21,7 +21,7 @@ use rules::RULES;
 #[extend::ext(pub)]
 impl Map {
     /// The tile is passable for given character or not.
-    fn is_passable(&self, _chara: &Chara, pos: Vec2d) -> bool {
+    fn is_passable(&self, _chara: &Chara, pos: Coords) -> bool {
         if !self.is_inside(pos) {
             return false;
         }
@@ -39,7 +39,7 @@ impl Map {
 
     fn move_chara(&mut self, cid: CharaId, dir: Direction) -> bool {
         if let Some(p) = self.chara_pos(cid) {
-            let new_p = p + dir.as_vec();
+            let new_p = p + dir.as_coords();
             self.swap_chara(p, new_p)
         } else {
             false
@@ -48,12 +48,12 @@ impl Map {
 
     /// Locate item at the specified tile.
     /// Usually should use GameData functions instead of this to move and append item.
-    fn locate_item(&mut self, item: Item, pos: Vec2d, n: u32) {
+    fn locate_item(&mut self, item: Item, pos: Coords, n: u32) {
         self.tile[pos].item_list.append(item, n);
     }
 
     /// Reveal map
-    fn reveal<F: FnMut(Vec2d) -> bool>(&mut self, mut visible: F) {
+    fn reveal<F: FnMut(Coords) -> bool>(&mut self, mut visible: F) {
         for p in self.tile.iter_idx() {
             if !visible(p) {
                 continue;
@@ -73,7 +73,7 @@ impl Map {
         }
     }
 
-    fn tile_fertility(&self, pos: Vec2d) -> u8 {
+    fn tile_fertility(&self, pos: Coords) -> u8 {
         if let Some(tile) = self.tile.get(pos) {
             let mut fertility = 0u8;
             for t in tile.tile.iter_idx() {
@@ -86,7 +86,7 @@ impl Map {
         }
     }
 
-    fn is_empty_tile(&self, pos: Vec2d) -> bool {
+    fn is_empty_tile(&self, pos: Coords) -> bool {
         if self.is_inside(pos) {
             let tile = &self.tile[pos];
             is_empty_tile(tile)
@@ -95,7 +95,7 @@ impl Map {
         }
     }
 
-    fn empty_tile_around(&self, pos: Vec2d) -> Option<Vec2d> {
+    fn empty_tile_around(&self, pos: Coords) -> Option<Coords> {
         for pos in SpiralIter::new(pos).take(100) {
             if self.is_inside(pos) && self.is_empty_tile(pos) {
                 return Some(pos);
@@ -220,7 +220,7 @@ pub fn destination_to_mid(gd: &GameData, dest: Destination) -> MapId {
 }
 
 /// Get destination position.
-pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Vec2d {
+pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Coords {
     let prev_mid = gd.get_current_mapid();
     let new_mid = destination_to_mid(gd, dest);
     let pos = match dest {
@@ -257,7 +257,7 @@ pub fn destination_to_pos(gd: &GameData, dest: Destination) -> Vec2d {
     let pos = if let Some(p) = dest_map.search_stairs(prev_mid.floor()) {
         p
     } else {
-        dest_map.entrance.get(0).copied().unwrap_or(Vec2d(0, 0))
+        dest_map.entrance.get(0).copied().unwrap_or(Coords(0, 0))
     };
     pos
 }
@@ -286,12 +286,12 @@ pub fn gen_npcs(gd: &mut GameData, mid: MapId, n: u32, floor_level: u32) {
 }
 
 /// Choose one empty tile in random
-pub fn choose_empty_tile(map: &Map) -> Option<Vec2d> {
+pub fn choose_empty_tile(map: &Map) -> Option<Coords> {
     use rng::gen_range;
     const MAX_TRY: usize = 10;
 
     for _ in 0..MAX_TRY {
-        let p = Vec2d(gen_range(0..map.w) as i32, gen_range(0..map.h) as i32);
+        let p = Coords(gen_range(0..map.w) as i32, gen_range(0..map.h) as i32);
         let tile = &map.tile[p];
 
         // Empty tile don't has wall, chara, and isn't special tile.

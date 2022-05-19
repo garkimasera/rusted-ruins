@@ -120,7 +120,7 @@ pub fn generated_map_to_map(
         map.tile[p].tile = tile.into();
         if gm.tile[p] == TileKind::Wall {
             let piece_pattern = {
-                let f = |pos: Vec2d| {
+                let f = |pos: Coords| {
                     if let Some(t) = gm.tile.get(pos) {
                         *t == TileKind::Wall
                     } else {
@@ -129,7 +129,7 @@ pub fn generated_map_to_map(
                 };
                 let mut piece_pattern_flags = PiecePatternFlags::default();
                 for dir in &Direction::EIGHT_DIRS {
-                    piece_pattern_flags.set(*dir, f(p + dir.as_vec()));
+                    piece_pattern_flags.set(*dir, f(p + dir.as_coords()));
                 }
                 let wall_obj = gobj::get_obj(wall);
                 piece_pattern_flags.to_piece_pattern(wall_obj.img.n_pattern)
@@ -171,11 +171,11 @@ pub fn generated_map_to_map(
     map
 }
 
-fn search_empty_tile_on_boundary(gm: &GeneratedMap) -> Vec2d {
-    let d0 = Vec2d(1, 0);
-    let d1 = Vec2d(0, -1);
+fn search_empty_tile_on_boundary(gm: &GeneratedMap) -> Coords {
+    let d0 = Coords(1, 0);
+    let d1 = Coords(0, -1);
 
-    let start = Vec2d(gm.size.0 / 2, gm.size.1 - 1);
+    let start = Coords(gm.size.0 / 2, gm.size.1 - 1);
     let mut a = 0i32;
     let mut b = 0i32;
 

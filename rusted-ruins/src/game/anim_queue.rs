@@ -23,7 +23,7 @@ impl AnimQueue {
         self.push(Animation::player_move(dir));
     }
 
-    pub fn push_destroy(&mut self, tile: Vec2d) {
+    pub fn push_destroy(&mut self, tile: Coords) {
         self.push(Animation::destroy(vec![tile]));
     }
 

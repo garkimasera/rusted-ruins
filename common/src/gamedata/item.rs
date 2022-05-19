@@ -7,7 +7,7 @@ use super::KindParseError;
 use crate::basic::ArrayStringId;
 use crate::objholder::ItemIdx;
 use bitflags::bitflags;
-use geom::Vec2d;
+use geom::Coords;
 use std::cmp::{Ord, Ordering, PartialOrd};
 use std::str::FromStr;
 
@@ -357,7 +357,7 @@ pub struct ItemGen {
 pub enum ItemListLocation {
     OnMap {
         mid: super::map::MapId,
-        pos: Vec2d,
+        pos: Coords,
     },
     Chara {
         cid: super::chara::CharaId,
@@ -417,7 +417,7 @@ impl From<ItemListLocationExceptContainer> for ItemListLocation {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum ItemListLocationExceptContainer {
-    OnMap { mid: super::map::MapId, pos: Vec2d },
+    OnMap { mid: super::map::MapId, pos: Coords },
     Chara { cid: super::chara::CharaId },
     Equip { cid: super::chara::CharaId },
     Shop { cid: super::CharaId },

@@ -33,7 +33,7 @@ impl ViewMap {
         }
     }
 
-    pub fn get_tile_visible(&self, pos: Vec2d) -> bool {
+    pub fn get_tile_visible(&self, pos: Coords) -> bool {
         if self.visible.in_range(pos) {
             self.visible[pos]
         } else {
@@ -75,7 +75,7 @@ pub fn update_view_map(game: &mut Game) {
     }
 }
 
-pub fn calc_visual_distance(map: &Map, orig: Vec2d, dist: Vec2d) -> Option<i32> {
+pub fn calc_visual_distance(map: &Map, orig: Coords, dist: Coords) -> Option<i32> {
     for pos in LineIter::new(orig, dist) {
         if !map.tile[pos].wall.is_empty() {
             return None;

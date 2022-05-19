@@ -5,7 +5,7 @@ use crate::gamedata::site::SiteKind;
 use crate::gamedata::Reward;
 use crate::hashmap::HashMap;
 use crate::item_selector::ItemSelector;
-use geom::Vec2d;
+use geom::Coords;
 
 /// Hold data for site generation
 #[derive(Clone, Serialize, Deserialize)]
@@ -20,7 +20,7 @@ pub struct SiteGenObject {
     pub shops: HashMap<NpcGenId, ShopGenData>,
     pub quests: Vec<QuestGenData>,
     /// Delivery chest potision and object id for town sites
-    pub delivery_chest: Option<(u32, Vec2d, String)>,
+    pub delivery_chest: Option<(u32, Coords, String)>,
 }
 
 /// Data to generate a unique citizen
@@ -28,7 +28,7 @@ pub struct SiteGenObject {
 pub struct NpcGenData {
     /// Unique id in this site
     pub id: NpcGenId,
-    pub pos: Vec2d,
+    pub pos: Coords,
     pub floor: u32,
     #[serde(default)]
     pub name: String,

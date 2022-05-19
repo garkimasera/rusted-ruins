@@ -251,13 +251,13 @@ impl PiecePatternFlags {
         }
     }
 
-    pub fn from_fn<F>(pos: Vec2d, mut f: F) -> PiecePatternFlags
+    pub fn from_fn<F>(pos: Coords, mut f: F) -> PiecePatternFlags
     where
-        F: FnMut(Vec2d) -> bool,
+        F: FnMut(Coords) -> bool,
     {
         let mut piece_pattern_flags = PiecePatternFlags::default();
         for dir in &Direction::EIGHT_DIRS {
-            piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
+            piece_pattern_flags.set(*dir, f(pos + dir.as_coords()));
         }
         piece_pattern_flags
     }

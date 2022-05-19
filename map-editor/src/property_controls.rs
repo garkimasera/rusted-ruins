@@ -1,7 +1,7 @@
 use crate::edit_map::EditingMap;
 use crate::ui::{SelectedItem, Ui};
 use common::maptemplate::MapTemplateBoundaryBehavior;
-use geom::Vec2d;
+use geom::Coords;
 use gtk::prelude::*;
 use std::cell::Cell;
 use std::rc::Rc;
@@ -31,7 +31,7 @@ pub struct PropertyControls {
     pub button_select_tile_mode: gtk::Button,
     pub label_selected_tile: gtk::Label,
     pub entry_item_id: gtk::Entry,
-    pub selected_tile: Rc<Cell<Vec2d>>,
+    pub selected_tile: Rc<Cell<Coords>>,
 }
 
 impl PropertyControls {
@@ -60,7 +60,7 @@ impl PropertyControls {
             button_select_tile_mode: get_object!(builder, "button-select-tile-mode"),
             label_selected_tile: get_object!(builder, "label-selected-tile"),
             entry_item_id: get_object!(builder, "entry-item-id"),
-            selected_tile: Rc::new(Cell::new(Vec2d(0, 0))),
+            selected_tile: Rc::new(Cell::new(Coords(0, 0))),
         }
     }
 
@@ -165,7 +165,7 @@ pub fn connect_for_property_controls(ui: &Ui) {
             if uic.get_signal_mode() {
                 let text = widget.text();
                 uic.map.borrow_mut().property.entrance.clear();
-                if let Ok(entrance) = text.parse::<Vec2d>() {
+                if let Ok(entrance) = text.parse::<Coords>() {
                     uic.map.borrow_mut().property.entrance.push(entrance);
                 }
             }

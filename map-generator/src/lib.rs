@@ -7,8 +7,8 @@
     nonstandard_style
 )]
 
-extern crate rusted_ruins_geom as geom;
 extern crate rusted_ruins_rng as rng;
+extern crate tile_geom as geom;
 
 use arrayvec::ArrayVec;
 use geom::*;
@@ -39,23 +39,23 @@ impl TileKind {
 #[derive(Clone)]
 pub enum Entrance {
     /// Tile position
-    Pos(ArrayVec<Vec2d, 4>),
+    Pos(ArrayVec<Coords, 4>),
     /// the later is for deeper floor
-    Stairs(Vec2d, Option<Vec2d>),
+    Stairs(Coords, Option<Coords>),
 }
 
 pub struct GeneratedMap {
-    pub size: Vec2d,
+    pub size: Coords,
     pub tile: Array2d<TileKind>,
     pub entrance: Entrance,
-    pub exit: Option<Vec2d>,
+    pub exit: Option<Coords>,
 }
 
 impl GeneratedMap {
-    pub fn new<S: Into<Vec2d>>(size: S) -> GeneratedMap {
+    pub fn new<S: Into<Coords>>(size: S) -> GeneratedMap {
         let size = size.into();
         let mut v = ArrayVec::new();
-        v.push(Vec2d(0, 0));
+        v.push(Coords(0, 0));
         GeneratedMap {
             size,
             tile: Array2d::new(size.0 as u32, size.1 as u32, TileKind::Floor),
@@ -157,7 +157,7 @@ impl Default for MapGenParam {
 }
 
 impl Entrance {
-    fn entrance_char(&self, pos: Vec2d) -> Option<char> {
+    fn entrance_char(&self, pos: Coords) -> Option<char> {
         match *self {
             Entrance::Pos(ref v) => {
                 if v.iter().any(|p| pos == *p) {
@@ -183,7 +183,7 @@ impl std::fmt::Display for GeneratedMap {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for ny in 0..self.size.1 {
             for nx in 0..self.size.0 {
-                let c = if let Some(c) = self.entrance.entrance_char(Vec2d(nx, ny)) {
+                let c = if let Some(c) = self.entrance.entrance_char(Coords(nx, ny)) {
                     c
                 } else {
                     match self.tile[(nx, ny)] {

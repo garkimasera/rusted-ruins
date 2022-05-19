@@ -17,7 +17,7 @@ use rules::RULES;
 
 pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
     // Move to current tile always success
-    if dir.as_vec() == (0, 0) {
+    if dir.as_coords() == (0, 0) {
         return true;
     }
 
@@ -25,7 +25,7 @@ pub fn try_move(game: &mut Game, cid: CharaId, dir: Direction) -> bool {
         super::time::set_player_moved();
     }
 
-    let dest_tile = game.gd.get_current_map().chara_pos(cid).unwrap() + dir.as_vec();
+    let dest_tile = game.gd.get_current_map().chara_pos(cid).unwrap() + dir.as_coords();
 
     if !game
         .gd

@@ -13,7 +13,7 @@ use CharaId::Player;
 static MINING_ANIM_IDX: Lazy<AnimImgIdx> = Lazy::new(|| gobj::id_to_idx("mining"));
 
 impl<'a> DoPlayerAction<'a> {
-    pub fn use_tool(&mut self, pos: Vec2d) {
+    pub fn use_tool(&mut self, pos: Coords) {
         let player = self.gd().chara.get(CharaId::Player);
         let player_pos = self.gd().player_pos();
         let tool = if let Some(tool) = player.equip.item(EquipSlotKind::Tool, 0) {

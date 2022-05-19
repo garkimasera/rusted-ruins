@@ -4,7 +4,7 @@ use crate::context::*;
 use crate::damage_popup::{DamagePopup, PopupKind};
 use common::gobj;
 use common::objholder::UiImgIdx;
-use geom::Vec2d;
+use geom::Coords;
 use once_cell::sync::Lazy;
 use sdl2::rect::Rect;
 
@@ -77,7 +77,7 @@ impl MainWinDrawer {
         context: &mut Context<'_, '_, '_, '_>,
         value: i32,
         color: u32,
-        pos: Vec2d,
+        pos: Coords,
         dy: i32,
     ) {
         let digit_w = DIGIT_DRAW_INFO.digit_w;
@@ -105,7 +105,7 @@ impl MainWinDrawer {
         &self,
         context: &mut Context<'_, '_, '_, '_>,
         idx: UiImgIdx,
-        pos: Vec2d,
+        pos: Coords,
         dy: i32,
     ) {
         let obj = gobj::get_obj(idx);

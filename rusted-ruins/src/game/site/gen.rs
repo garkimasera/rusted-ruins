@@ -50,7 +50,7 @@ pub fn add_npcs(gd: &mut GameData, sid: SiteId, sg: &SiteGenObject) {
 pub fn add_site_from_obj(
     gd: &mut GameData,
     rid: RegionId,
-    pos: Vec2d,
+    pos: Coords,
     site_id: &str,
 ) -> Option<SiteId> {
     let sg: &SiteGenObject = gobj::get_by_id(site_id);

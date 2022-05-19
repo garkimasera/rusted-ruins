@@ -10,7 +10,7 @@ use super::main_window::{CENTERING_START_REQ, CENTERING_STOP_REQ};
 
 pub fn create_menu(
     game: &Game,
-    tile: Vec2d,
+    tile: Coords,
     x: i32,
     y: i32,
     centering_mode: bool,

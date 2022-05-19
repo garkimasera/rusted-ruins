@@ -45,7 +45,7 @@ pub use self::target::Target;
 use common::gamedata::*;
 use common::gobj;
 use common::objholder::ScriptIdx;
-use geom::Vec2d;
+use geom::Coords;
 use script::{ScriptEngine, TalkText};
 use std::collections::VecDeque;
 use std::path::PathBuf;
@@ -164,7 +164,7 @@ impl Game {
 
     /// Set target chara by position.
     /// If given tile position is empty, returns false.
-    pub fn set_target(&mut self, pos: Vec2d) -> bool {
+    pub fn set_target(&mut self, pos: Coords) -> bool {
         let map = self.gd.get_current_map();
         if let Some(cid) = map.get_chara(pos) {
             let player = self.gd.chara.get(CharaId::Player);

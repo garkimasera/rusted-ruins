@@ -13,10 +13,10 @@ impl<'a> DoPlayerAction<'a> {
             .get_current_map()
             .chara_pos(CharaId::Player)
             .unwrap()
-            + dir.as_vec();
+            + dir.as_coords();
         // If there is friendy chara on target tile, and have a trigger to start talk
         let will_talk = {
-            if dir.as_vec() != (0, 0) {
+            if dir.as_coords() != (0, 0) {
                 let gd = self.gd();
                 if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
                     let relation = gd.chara_relation(CharaId::Player, other_chara);
@@ -49,7 +49,7 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
-    pub fn move_to(&mut self, dest: Vec2d) {
+    pub fn move_to(&mut self, dest: Coords) {
         let d = dest - self.gd().player_pos();
         let hdir = if d.0 < 0 {
             HDirection::Left
@@ -72,7 +72,7 @@ impl<'a> DoPlayerAction<'a> {
         let map = self.gd().get_current_map();
         let player = self.gd().chara.get(CharaId::Player);
         let is_passable = |dir: Direction| {
-            let dest_tile = map.chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+            let dest_tile = map.chara_pos(CharaId::Player).unwrap() + dir.as_coords();
             map.is_passable(player, dest_tile)
         };
 
@@ -214,7 +214,7 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
-    pub fn enter_wilderness(&mut self, pos: Vec2d) {
+    pub fn enter_wilderness(&mut self, pos: Coords) {
         if let Some(map) = crate::game::map::wilderness::generate_wilderness(
             self.gd(),
             pos,

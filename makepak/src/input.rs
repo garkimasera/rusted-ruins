@@ -2,7 +2,7 @@ use common::basic::BonusLevel;
 use common::gamedata::{self, AbilityId, CharaClass, EquipGen, FactionId, SkillKind};
 use common::hashmap::HashMap;
 use common::sitegen;
-use geom::Vec2d;
+use geom::Coords;
 use rusted_ruins_common::sitegen::NpcGenId;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -181,7 +181,7 @@ pub struct RegionGenDepInput {
 #[serde(deny_unknown_fields)]
 pub struct SiteGenIdAndPos {
     pub id: String,
-    pub pos: Vec2d,
+    pub pos: Coords,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -198,7 +198,7 @@ pub struct SiteGenDepInput {
     #[serde(default)]
     pub quests: Vec<sitegen::QuestGenData>,
     #[serde(default, with = "::serde_with::rust::unwrap_or_skip")]
-    pub delivery_chest: Option<(u32, Vec2d, String)>,
+    pub delivery_chest: Option<(u32, Coords, String)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

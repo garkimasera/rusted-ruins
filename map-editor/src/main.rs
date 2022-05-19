@@ -6,7 +6,7 @@
 )]
 
 extern crate rusted_ruins_common as common;
-extern crate rusted_ruins_geom as geom;
+extern crate tile_geom as geom;
 
 mod edit_map;
 #[macro_use]

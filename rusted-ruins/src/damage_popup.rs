@@ -1,6 +1,6 @@
 use crate::config::UI_CFG;
 use common::gamedata::*;
-use geom::Vec2d;
+use geom::Coords;
 use once_cell::sync::Lazy;
 use std::collections::VecDeque;
 use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
@@ -20,7 +20,7 @@ pub enum PopupKind {
 
 pub struct DamagePopup {
     pub cid: CharaId,
-    pub pos: Vec2d,
+    pub pos: Coords,
     /// (passed_frame, popup)
     pub queue: VecDeque<(u32, PopupKind)>,
 }
@@ -33,7 +33,7 @@ fn get_mut() -> RwLockWriteGuard<'static, DamagePopupList> {
     DAMAGE_POPUP.try_write().expect("failed lock COMBAT_LOG")
 }
 
-pub fn push(cid: CharaId, pos: Vec2d, popup: PopupKind) {
+pub fn push(cid: CharaId, pos: Coords, popup: PopupKind) {
     get_mut().push(cid, pos, popup);
 }
 
@@ -48,7 +48,7 @@ impl DamagePopupList {
         }
     }
 
-    pub fn push(&mut self, cid: CharaId, pos: Vec2d, popup_kind: PopupKind) {
+    pub fn push(&mut self, cid: CharaId, pos: Coords, popup_kind: PopupKind) {
         if let Some(popup) = self
             .popup_list
             .iter_mut()

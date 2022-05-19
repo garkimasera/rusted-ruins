@@ -5,7 +5,7 @@ use crate::property_controls::PropertyControls;
 use common::basic::TILE_SIZE_I;
 use common::gamedata::ItemGen;
 use common::objholder::*;
-use geom::Vec2d;
+use geom::Coords;
 use gtk::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::error::Error;
@@ -67,7 +67,7 @@ pub struct Ui {
     pub wall_visible: Rc<Cell<bool>>,
     pub deco_visible: Rc<Cell<bool>>,
     pub item_visible: Rc<Cell<bool>>,
-    pub drag_start: Rc<Cell<Option<Vec2d>>>,
+    pub drag_start: Rc<Cell<Option<Coords>>>,
 }
 
 macro_rules! get_object {
@@ -442,7 +442,7 @@ fn on_map_clicked(ui: &Ui, eb: &gdk::EventButton) {
     let button = eb.button();
     if button == WRITE_BUTTON {
         ui.drag_start
-            .set(Some(Vec2d::from(ui.cursor_to_tile_pos(eb.position()))));
+            .set(Some(Coords::from(ui.cursor_to_tile_pos(eb.position()))));
         if !ui.radiobutton_rect.is_active() {
             ui.drag_mode.set(DragMode::Write);
             try_write(ui, eb.position());
@@ -463,7 +463,7 @@ fn on_button_released(ui: &Ui, eb: &gdk::EventButton) {
         } else {
             return;
         };
-        let end = Vec2d::from(ui.cursor_to_tile_pos(eb.position()));
+        let end = Coords::from(ui.cursor_to_tile_pos(eb.position()));
         if ui.radiobutton_rect.is_active() {
             try_write_rect(ui, start, end);
         }
@@ -552,29 +552,31 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
         match ui.selected_item.get() {
             SelectedItem::Tile(idx) => {
                 if ui.shift.get() {
-                    ui.map
-                        .borrow_mut()
-                        .tile_layer_draw(Vec2d(ix, iy), idx, ui.current_layer.get());
+                    ui.map.borrow_mut().tile_layer_draw(
+                        Coords(ix, iy),
+                        idx,
+                        ui.current_layer.get(),
+                    );
                 } else {
                     ui.map
                         .borrow_mut()
-                        .set_tile(Vec2d(ix, iy), idx, ui.current_layer.get());
+                        .set_tile(Coords(ix, iy), idx, ui.current_layer.get());
                 }
             }
             SelectedItem::Wall(idx) => {
-                ui.map.borrow_mut().set_wall(Vec2d(ix, iy), Some(idx));
+                ui.map.borrow_mut().set_wall(Coords(ix, iy), Some(idx));
             }
             SelectedItem::Deco(idx) => {
-                ui.map.borrow_mut().set_deco(Vec2d(ix, iy), Some(idx));
+                ui.map.borrow_mut().set_deco(Coords(ix, iy), Some(idx));
             }
             SelectedItem::Item(idx) => {
                 let id = common::gobj::idx_to_id(idx).to_owned();
                 ui.map
                     .borrow_mut()
-                    .set_item(Vec2d(ix, iy), Some(ItemGen { id }));
+                    .set_item(Coords(ix, iy), Some(ItemGen { id }));
             }
             SelectedItem::SelectTile => {
-                ui.property_controls.selected_tile.set(Vec2d(ix, iy));
+                ui.property_controls.selected_tile.set(Coords(ix, iy));
                 ui.property_controls
                     .label_selected_tile
                     .set_text(&format!("Selected Tile ({}, {})", ix, iy));
@@ -587,21 +589,21 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
     }
 }
 
-fn try_write_rect(ui: &Ui, start: Vec2d, end: Vec2d) {
+fn try_write_rect(ui: &Ui, start: Coords, end: Coords) {
     use std::cmp::{max, min};
     let width = ui.map.borrow().width as i32;
     let height = ui.map.borrow().height as i32;
-    let start = Vec2d::new(
+    let start = Coords::new(
         min(max(start.0, 0), width - 1),
         min(max(start.1, 0), height - 1),
     );
-    let end = Vec2d::new(
+    let end = Coords::new(
         min(max(end.0, 0), width - 1),
         min(max(end.1, 0), height - 1),
     );
     let (start, end) = (
-        Vec2d::new(min(start.0, end.0), min(start.1, end.1)),
-        Vec2d::new(max(start.0, end.0), max(start.1, end.1)),
+        Coords::new(min(start.0, end.0), min(start.1, end.1)),
+        Coords::new(max(start.0, end.0), max(start.1, end.1)),
     );
     for p in geom::RectIter::new(start, end) {
         match ui.selected_item.get() {
@@ -629,13 +631,13 @@ fn try_erase(ui: &Ui, pos: (f64, f64)) {
         SelectedItem::Tile(_) => {
             ui.map
                 .borrow_mut()
-                .erase_layer(Vec2d(ix, iy), ui.current_layer.get());
+                .erase_layer(Coords(ix, iy), ui.current_layer.get());
         }
         SelectedItem::Item(_) => {
-            ui.map.borrow_mut().set_item(Vec2d(ix, iy), None);
+            ui.map.borrow_mut().set_item(Coords(ix, iy), None);
         }
         _ => {
-            ui.map.borrow_mut().erase(Vec2d(ix, iy));
+            ui.map.borrow_mut().erase(Coords(ix, iy));
         }
     }
     ui.map_redraw();

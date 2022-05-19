@@ -11,20 +11,20 @@ pub enum Animation {
     Img {
         n_frame: u32,
         idx: AnimImgIdx,
-        tiles: Vec<Vec2d>,
+        tiles: Vec<Coords>,
     },
     Shot {
         n_frame: u32,
         n_image: u32,
         idx: AnimImgIdx,
         dir: (f32, f32),
-        start: Vec2d,
-        target: Vec2d,
+        start: Coords,
+        target: Coords,
     },
     Destroy {
         n_frame: u32,
         idx: AnimImgIdx,
-        tiles: Vec<Vec2d>,
+        tiles: Vec<Coords>,
     },
     Work {
         n_frame: u32,
@@ -47,7 +47,7 @@ impl Animation {
         Animation::PlayerMove { n_frame: 6, dir }
     }
 
-    pub fn img_tiles(idx: AnimImgIdx, tiles: Vec<Vec2d>) -> Animation {
+    pub fn img_tiles(idx: AnimImgIdx, tiles: Vec<Coords>) -> Animation {
         let img = &gobj::get_obj(idx).img;
         let n_frame = if img.duration != 0 {
             img.duration
@@ -61,11 +61,11 @@ impl Animation {
         }
     }
 
-    pub fn img_onetile(idx: AnimImgIdx, pos: Vec2d) -> Animation {
+    pub fn img_onetile(idx: AnimImgIdx, pos: Coords) -> Animation {
         Self::img_tiles(idx, vec![pos])
     }
 
-    pub fn shot(idx: AnimImgIdx, start: Vec2d, target: Vec2d) -> Animation {
+    pub fn shot(idx: AnimImgIdx, start: Coords, target: Coords) -> Animation {
         let dx = (target.0 - start.0) as f32;
         let dy = (target.1 - start.1) as f32;
         let d = (dx * dx + dy * dy).sqrt();
@@ -89,7 +89,7 @@ impl Animation {
         }
     }
 
-    pub fn destroy(tiles: Vec<Vec2d>) -> Animation {
+    pub fn destroy(tiles: Vec<Coords>) -> Animation {
         let idx: AnimImgIdx = gobj::id_to_idx("!destroy-blood");
         let animobj = gobj::get_obj(idx);
 

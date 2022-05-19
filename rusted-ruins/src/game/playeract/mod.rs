@@ -34,7 +34,7 @@ impl<'a> DoPlayerAction<'a> {
         &mut self.0.gd
     }
 
-    pub fn shoot(&mut self, target: Vec2d) {
+    pub fn shoot(&mut self, target: Coords) {
         let map = self.gd().get_current_map();
         if let Some(target_id) = map.get_chara(target) {
             if super::action::shoot_target(self.0, CharaId::Player, target_id) {
@@ -43,7 +43,7 @@ impl<'a> DoPlayerAction<'a> {
         }
     }
 
-    pub fn set_target(&mut self, pos: Vec2d) -> bool {
+    pub fn set_target(&mut self, pos: Coords) -> bool {
         self.0.set_target(pos)
     }
 
@@ -261,7 +261,7 @@ impl<'a> DoPlayerAction<'a> {
     /// Try talk to next chara
     /// If success, returns id of the talk script
     pub fn try_talk(&mut self, dir: Direction) {
-        if dir.as_vec() == (0, 0) {
+        if dir.as_coords() == (0, 0) {
             return;
         }
 
@@ -269,7 +269,8 @@ impl<'a> DoPlayerAction<'a> {
         let mut cid = None;
         {
             let gd = self.gd();
-            let dest_tile = gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_vec();
+            let dest_tile =
+                gd.get_current_map().chara_pos(CharaId::Player).unwrap() + dir.as_coords();
             if let Some(other_chara) = gd.get_current_map().get_chara(dest_tile) {
                 cid = Some(other_chara);
                 let relation = gd.chara_relation(CharaId::Player, other_chara);
@@ -349,7 +350,7 @@ impl<'a> DoPlayerAction<'a> {
     }
 
     /// Print information of specified tile
-    pub fn print_tile_info(&mut self, tile: Vec2d) {
+    pub fn print_tile_info(&mut self, tile: Coords) {
         // Open StatusWindow for selected character
         let cid = self.gd().get_current_map().get_chara(tile);
 

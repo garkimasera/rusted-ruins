@@ -26,7 +26,7 @@ pub struct MainWinDrawer {
     rect: Rect,
     w: u32,
     h: u32,
-    topleft: Vec2d,
+    topleft: Coords,
     dx: i32,
     dy: i32,
 }
@@ -37,7 +37,7 @@ impl MainWinDrawer {
             rect,
             w: rect.width(),
             h: rect.height(),
-            topleft: Vec2d(0, 0),
+            topleft: Coords(0, 0),
             dx: 0,
             dy: 0,
         }
@@ -48,8 +48,8 @@ impl MainWinDrawer {
         context: &mut Context<'_, '_, '_, '_>,
         game: &Game,
         anim: Option<(&Animation, u32)>,
-        centering_tile: Option<Vec2d>,
-        hover_tile: Option<Vec2d>,
+        centering_tile: Option<Coords>,
+        hover_tile: Option<Coords>,
         target_mode: Option<&TargetModeDrawInfo>,
     ) {
         super::frame::next_frame();
@@ -64,8 +64,8 @@ impl MainWinDrawer {
         let player_move_adjust = if let Some(anim) = anim {
             match *anim.0 {
                 Animation::PlayerMove { n_frame, dir } => {
-                    let v =
-                        dir.as_vec() * (TILE_SIZE_I * (n_frame - anim.1) as i32 / n_frame as i32);
+                    let v = dir.as_coords()
+                        * (TILE_SIZE_I * (n_frame - anim.1) as i32 / n_frame as i32);
                     player_move_dir = Some(dir);
                     (v.0, v.1)
                 }
@@ -118,7 +118,8 @@ impl MainWinDrawer {
         let map = gd.get_current_map();
         let view_map = &game.view_map;
         let player_pos = gd.player_pos();
-        let prev_player_pos: Option<Vec2d> = player_move_dir.map(|dir| player_pos - dir.as_vec());
+        let prev_player_pos: Option<Coords> =
+            player_move_dir.map(|dir| player_pos - dir.as_coords());
         let prev_player_pos_one_back_side =
             prev_player_pos.map(|prev_player_pos| prev_player_pos + (0, -1));
 
@@ -146,7 +147,7 @@ impl MainWinDrawer {
         // Draw foreground parts
         for ny in tile_range.iter1() {
             for nx in tile_range.iter0() {
-                let p = Vec2d(nx, ny);
+                let p = Coords(nx, ny);
 
                 // Control the order of drawing foreground parts
                 // because foreground parts on player's original or destination tiles
@@ -209,7 +210,7 @@ impl MainWinDrawer {
     }
 
     /// Draw tile background parts
-    fn draw_background_parts(&self, context: &mut Context<'_, '_, '_, '_>, map: &Map, p: Vec2d) {
+    fn draw_background_parts(&self, context: &mut Context<'_, '_, '_, '_>, map: &Map, p: Coords) {
         let di = BackgroundDrawInfo::new(map, p);
 
         if let Some(t) = di.tile {
@@ -237,7 +238,7 @@ impl MainWinDrawer {
         context: &mut Context<'_, '_, '_, '_>,
         map: &Map,
         view_map: &ViewMap,
-        p: Vec2d,
+        p: Coords,
         gd: &GameData,
         is_player_moving: bool,
         player_move_adjust: (i32, i32),
@@ -301,7 +302,7 @@ impl MainWinDrawer {
         canvas: &mut WindowCanvas,
         game: &Game,
         sv: &SdlValues<'_, '_>,
-        p: Vec2d,
+        p: Coords,
     ) {
         match overlay::view_fog(game, p) {
             overlay::FogPattern::None => (),
@@ -400,7 +401,7 @@ impl MainWinDrawer {
         canvas: &mut WindowCanvas,
         tex: &Texture<'_>,
         obj: &T,
-        p: Vec2d,
+        p: Coords,
         piece_pattern: PiecePattern,
     ) {
         let img = obj.get_img();
@@ -436,7 +437,7 @@ impl MainWinDrawer {
         }
     }
 
-    fn draw_tile_cursor(&self, context: &mut Context<'_, '_, '_, '_>, ct: Vec2d) {
+    fn draw_tile_cursor(&self, context: &mut Context<'_, '_, '_, '_>, ct: Coords) {
         let idx: UiImgIdx = gobj::id_to_idx_checked("!tile-cursor")
             .expect("UIImg object \"!tile-cursor\" not found");
 
@@ -448,7 +449,7 @@ impl MainWinDrawer {
     fn update_draw_params(
         &mut self,
         map_size: (i32, i32),
-        centering_tile: Vec2d,
+        centering_tile: Coords,
         player_move_adjust: (i32, i32),
         centering_mode: bool,
     ) {
@@ -479,13 +480,13 @@ impl MainWinDrawer {
         } else {
             center_p.1 - win_h / 2
         };
-        let top_left_tile = Vec2d(left / TILE_SIZE_I, top / TILE_SIZE_I);
+        let top_left_tile = Coords(left / TILE_SIZE_I, top / TILE_SIZE_I);
         self.dx = -left;
         self.dy = -top;
         self.topleft = top_left_tile;
     }
 
-    fn centering_at_tile(&self, src: Rect, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+    fn centering_at_tile(&self, src: Rect, tile: Coords, dx: i32, dy: i32) -> Rect {
         Rect::new(
             (TILE_SIZE_I * tile.0 + (TILE_SIZE_I - src.w) / 2) + dx + self.dx,
             (TILE_SIZE_I * tile.1 + (TILE_SIZE_I - src.h) / 2) + dy + self.dy,
@@ -503,7 +504,7 @@ impl MainWinDrawer {
     //     )
     // }
 
-    pub fn tile_rect(&self, tile: Vec2d, dx: i32, dy: i32) -> Rect {
+    pub fn tile_rect(&self, tile: Coords, dx: i32, dy: i32) -> Rect {
         Rect::new(
             TILE_SIZE_I * tile.0 + dx + self.dx,
             TILE_SIZE_I * tile.1 + dy + self.dy,
@@ -532,11 +533,11 @@ impl MainWinDrawer {
     pub fn tile_range(&self) -> RectIter {
         let (nx, ny) = self.calc_tile_num();
         let top_left = self.topleft;
-        let bottom_right = Vec2d(nx + top_left.0, ny + top_left.1 + 1);
+        let bottom_right = Coords(nx + top_left.0, ny + top_left.1 + 1);
         RectIter::new(top_left, bottom_right)
     }
 
-    pub fn pos_to_tile(&self, x: i32, y: i32) -> Vec2d {
+    pub fn pos_to_tile(&self, x: i32, y: i32) -> Coords {
         let x = x - self.dx;
         let y = y - self.dy;
         (x / TILE_SIZE_I, y / TILE_SIZE_I).into()

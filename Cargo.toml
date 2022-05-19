@@ -1,7 +1,6 @@
 
 [workspace]
 members = [
-    "geom",
     "common",
     "filebox",
     "makepak",

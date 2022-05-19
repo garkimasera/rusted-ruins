@@ -21,8 +21,8 @@ pub struct Map {
     pub generated_at: Time,
     pub last_visit: Time,
     pub template: Option<MapTemplateIdx>,
-    pub player_pos: Vec2d,
-    pub entrance: ArrayVec<Vec2d, 4>,
+    pub player_pos: Coords,
+    pub entrance: ArrayVec<Coords, 4>,
     /// Characters on this map
     charaid: Vec<CharaId>,
     /// Character data on this map. The current map's charas are moved to CharaHolder temporary.
@@ -194,7 +194,7 @@ impl MapBoundary {
 pub enum Destination {
     Floor(u32),
     Exit,
-    MapIdWithPos(MapId, Vec2d),
+    MapIdWithPos(MapId, Coords),
     MapIdWithEntrance(MapId, u32),
     MapId(MapId),
 }
@@ -231,7 +231,7 @@ impl Map {
             h,
             tile: Array2d::new(w, h, TileInfo::default()),
             observed_tile: Array2d::new(w, h, ObservedTileInfo::default()),
-            player_pos: Vec2d(0, 0),
+            player_pos: Coords(0, 0),
             generated_at: time,
             template: None,
             last_visit: Time::default(),
@@ -256,7 +256,7 @@ impl Map {
         (self.w, self.h)
     }
 
-    pub fn get_chara<T: Into<Vec2d>>(&self, pos: T) -> Option<CharaId> {
+    pub fn get_chara<T: Into<Coords>>(&self, pos: T) -> Option<CharaId> {
         let pos = pos.into();
         if !self.is_inside(pos) {
             return None;
@@ -270,12 +270,12 @@ impl Map {
 
     /// Return given pos is inside map or not
     #[inline]
-    pub fn is_inside(&self, pos: Vec2d) -> bool {
+    pub fn is_inside(&self, pos: Coords) -> bool {
         pos.0 >= 0 && pos.1 >= 0 && (pos.0 as u32) < self.w && (pos.1 as u32) < self.h
     }
 
     /// Get character position
-    pub fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
+    pub fn chara_pos(&self, cid: CharaId) -> Option<Coords> {
         for p in self.tile.iter_idx() {
             if self.tile[p].chara.as_ref() == Some(&cid) {
                 return Some(p);
@@ -285,7 +285,7 @@ impl Map {
     }
 
     /// Swaps characters on given tiles
-    pub fn swap_chara(&mut self, a: Vec2d, b: Vec2d) -> bool {
+    pub fn swap_chara(&mut self, a: Coords, b: Coords) -> bool {
         if !(self.is_inside(a) && self.is_inside(b)) {
             return false;
         }
@@ -299,7 +299,7 @@ impl Map {
 
     /// Locate a character at given position.
     /// If the new position is not empty, this function will fail and return false
-    pub fn locate_chara(&mut self, cid: CharaId, pos: Vec2d) -> bool {
+    pub fn locate_chara(&mut self, cid: CharaId, pos: Coords) -> bool {
         if !self.charaid.iter().any(|a| *a == cid) {
             self.charaid.push(cid);
         }
@@ -346,13 +346,13 @@ impl Map {
 
     /// Set tile. If layer is None, set to the last element of layers default.
     #[cfg(feature = "global_state_obj")]
-    pub fn set_tile(&mut self, pos: Vec2d, tile_idx: TileIdx, layer: Option<usize>) {
+    pub fn set_tile(&mut self, pos: Coords, tile_idx: TileIdx, layer: Option<usize>) {
         self.tile[pos].tile[layer.unwrap_or(N_TILE_IMG_LAYER - 1)] = TileIdxPp::new(tile_idx);
     }
 
     /// Set wall and wall hp to given pos
     #[cfg(feature = "global_state_obj")]
-    pub fn set_wall(&mut self, pos: Vec2d, wall_idx: WallIdx) {
+    pub fn set_wall(&mut self, pos: Coords, wall_idx: WallIdx) {
         let wall_obj = crate::gobj::get_obj(wall_idx);
         self.tile[pos].wall = WallIdxPp::new(wall_idx);
         self.tile[pos].wall_hp = wall_obj.hp;
@@ -361,7 +361,7 @@ impl Map {
 
     /// Erase wall
     #[cfg(feature = "global_state_obj")]
-    pub fn erase_wall(&mut self, pos: Vec2d) {
+    pub fn erase_wall(&mut self, pos: Coords) {
         self.tile[pos].wall = WallIdxPp::empty();
         self.tile[pos].wall_hp = 0;
         self.reset_wall_pp(pos, pos);
@@ -369,7 +369,7 @@ impl Map {
 
     /// Reset wall piece patterns
     #[cfg(feature = "global_state_obj")]
-    pub fn reset_wall_pp(&mut self, top_left: Vec2d, bottom_right: Vec2d) {
+    pub fn reset_wall_pp(&mut self, top_left: Coords, bottom_right: Coords) {
         let rect_iter = RectIter::new(top_left - (1, 1), bottom_right + (1, 1));
 
         for p in rect_iter {
@@ -401,7 +401,7 @@ impl Map {
     /// Get tile index with extrapolation
     /// If pos is outside map and self.outside_tile has value, returns it.
     /// If pos is outside map and self.outside_tile is None, returns the nearest tile.
-    pub fn get_tile_extrapolated(&self, pos: Vec2d) -> &TileLayers {
+    pub fn get_tile_extrapolated(&self, pos: Coords) -> &TileLayers {
         if self.is_inside(pos) {
             return &self.tile[pos].tile;
         }
@@ -412,7 +412,7 @@ impl Map {
         }
     }
 
-    pub fn get_wall_extrapolated(&self, pos: Vec2d) -> WallIdxPp {
+    pub fn get_wall_extrapolated(&self, pos: Coords) -> WallIdxPp {
         if self.is_inside(pos) {
             return self.tile[pos].wall;
         }
@@ -428,7 +428,7 @@ impl Map {
     }
 
     /// Calculate the position of nearest and exsitent tile
-    pub fn nearest_existent_tile(&self, pos: Vec2d) -> Vec2d {
+    pub fn nearest_existent_tile(&self, pos: Coords) -> Coords {
         if self.is_inside(pos) {
             return pos;
         }
@@ -447,11 +447,11 @@ impl Map {
         } else {
             pos.1
         };
-        Vec2d(x, y)
+        Coords(x, y)
     }
 
     /// Search stairs that is connected to given floor
-    pub fn search_stairs(&self, floor: u32) -> Option<Vec2d> {
+    pub fn search_stairs(&self, floor: u32) -> Option<Coords> {
         for (p, tile) in self.tile.iter_with_idx() {
             if let SpecialTileKind::Stairs { dest_floor, .. } = tile.special {
                 if dest_floor == floor {
@@ -464,8 +464,8 @@ impl Map {
 
     /// Returns boundart when player move from 'pos' to 'dir' direction
     /// If its destination tile is inside map, return None
-    pub fn get_boundary_by_tile_and_dir(&self, pos: Vec2d, dir: Direction) -> Option<Destination> {
-        let dest_pos = pos + dir.as_vec();
+    pub fn get_boundary_by_tile_and_dir(&self, pos: Coords, dir: Direction) -> Option<Destination> {
+        let dest_pos = pos + dir.as_coords();
         if dest_pos.1 < 0 {
             self.boundary.n
         } else if dest_pos.1 >= self.h as i32 {

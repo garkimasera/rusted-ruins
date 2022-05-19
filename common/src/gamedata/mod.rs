@@ -21,7 +21,7 @@ pub mod town;
 pub mod traits;
 pub mod variables;
 
-use geom::Vec2d;
+use geom::Coords;
 
 pub use self::chara::*;
 pub use self::defs::*;
@@ -181,7 +181,7 @@ impl GameData {
         site: Site,
         kind: SiteKind,
         rid: RegionId,
-        pos: Option<Vec2d>,
+        pos: Option<Coords>,
     ) -> Option<SiteId> {
         let region = self.region.get_mut(rid);
         region.add_site(site, kind, pos)
@@ -288,7 +288,7 @@ impl GameData {
     }
 
     /// Get item list on the current map
-    pub fn get_item_list_on_current_map(&self, pos: Vec2d) -> &ItemList {
+    pub fn get_item_list_on_current_map(&self, pos: Coords) -> &ItemList {
         let mid = self.get_current_mapid();
         &self.region.get_map(mid).tile[pos].item_list
     }

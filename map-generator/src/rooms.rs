@@ -65,7 +65,7 @@ impl Rooms {
         let mut rooms_with_stairs: [usize; 2] = [0, 0];
         (0..rooms.len()).choose_multiple_fill(&mut GameRng, &mut rooms_with_stairs);
 
-        let mut e0 = Vec2d(0, 0);
+        let mut e0 = Coords(0, 0);
         let mut e1 = None;
 
         for (i, room) in rooms.iter().enumerate() {
@@ -79,7 +79,7 @@ impl Rooms {
             if i == rooms_with_stairs[0] || i == rooms_with_stairs[1] {
                 let dx = gen_range(1..(room.w - 1)) as i32;
                 let dy = gen_range(1..(room.h - 1)) as i32;
-                let stair_tile = Vec2d(room.x + dx, room.y + dy);
+                let stair_tile = Coords(room.x + dx, room.y + dy);
                 if i == rooms_with_stairs[0] {
                     e0 = stair_tile;
                 } else {
@@ -98,8 +98,8 @@ impl Rooms {
     fn locate_new_room(
         &self,
         rooms: &mut Vec<Room>,
-        doors: &mut Vec<Vec2d>,
-        size: Vec2d,
+        doors: &mut Vec<Coords>,
+        size: Coords,
     ) -> Result<(), ()> {
         // Search empty wall that does not have a door
         let n_empty_wall = rooms
@@ -138,7 +138,7 @@ impl Rooms {
             let parent = &rooms[i_room];
 
             // Make new door
-            let new_door_pos = Vec2d::from(match dir {
+            let new_door_pos = Coords::from(match dir {
                 Direction::N => (parent.x + gen_range(0..(parent.w as i32)), parent.y - 1),
                 Direction::E => (
                     parent.x + parent.w as i32,
@@ -211,7 +211,7 @@ impl Rooms {
         Err(())
     }
 
-    fn create_start_room(&self, size: Vec2d) -> Room {
+    fn create_start_room(&self, size: Coords) -> Room {
         let center_tile = (size.0 / 2, size.1 / 2);
 
         let room_size = self.gen_room_size();
@@ -225,8 +225,8 @@ impl Rooms {
         }
     }
 
-    fn gen_room_size(&self) -> Vec2d {
-        Vec2d(
+    fn gen_room_size(&self) -> Coords {
+        Coords(
             gen_range(self.min_room_size..=self.max_room_size) as i32,
             gen_range(self.min_room_size..=self.max_room_size) as i32,
         )

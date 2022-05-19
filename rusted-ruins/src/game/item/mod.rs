@@ -13,7 +13,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::obj::ImgVariationRule;
 use common::objholder::ItemIdx;
-use geom::Vec2d;
+use geom::Coords;
 use rules::material::Material;
 use rules::RULES;
 
@@ -267,7 +267,7 @@ impl ItemList {
 #[extend::ext(pub, name = GameDataItemExt)]
 impl GameData {
     /// Add item on specified tile of the current map
-    fn add_item_on_tile(&mut self, pos: Vec2d, item: Item, n: u32) {
+    fn add_item_on_tile(&mut self, pos: Coords, item: Item, n: u32) {
         let map = self.get_current_map_mut();
         map.locate_item(item, pos, n);
     }

@@ -7,7 +7,7 @@ use crate::text::ToText;
 use common::gamedata::*;
 use common::gobj;
 use common::obj::UiImgObject;
-use geom::Vec2d;
+use geom::Coords;
 use rules::RULES;
 
 #[derive(Clone, Copy, Debug)]
@@ -279,13 +279,13 @@ impl Window for StatusInfo {
 
 #[derive(Default)]
 pub struct SupplementInfo {
-    hover_tile: Option<Vec2d>,
+    hover_tile: Option<Coords>,
     tile_obj: Option<TextCache>,
     chara: Option<TextCache>,
 }
 
 impl SupplementInfo {
-    pub fn update_hover_tile(&mut self, game: &Game, pos: Vec2d) {
+    pub fn update_hover_tile(&mut self, game: &Game, pos: Coords) {
         if self.hover_tile != Some(pos) {
             self.hover_tile = Some(pos);
             self.update(game);

@@ -11,7 +11,7 @@ use sdl2::rect::Rect;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 
-pub(super) static CENTERING_START_REQ: Lazy<Mutex<Option<Vec2d>>> = Lazy::new(|| Mutex::new(None));
+pub(super) static CENTERING_START_REQ: Lazy<Mutex<Option<Coords>>> = Lazy::new(|| Mutex::new(None));
 pub(super) static CENTERING_STOP_REQ: AtomicBool = AtomicBool::new(false);
 
 enum MainWindowMode {
@@ -39,8 +39,8 @@ impl MainWindowMode {
 pub struct MainWindow {
     rect: Rect,
     drawer: MainWinDrawer,
-    centering_tile: Option<Vec2d>,
-    hover_tile: Option<Vec2d>,
+    centering_tile: Option<Coords>,
+    hover_tile: Option<Coords>,
     mode: MainWindowMode,
 }
 
@@ -63,7 +63,7 @@ impl MainWindow {
         }
     }
 
-    pub fn start_centering_mode(&mut self, tile: Vec2d) {
+    pub fn start_centering_mode(&mut self, tile: Coords) {
         info!("Start centering mode");
         self.centering_tile = Some(tile);
     }
@@ -73,7 +73,7 @@ impl MainWindow {
         self.centering_tile = None;
     }
 
-    pub fn update_tile_cursor(&mut self, pos: (i32, i32)) -> Option<Vec2d> {
+    pub fn update_tile_cursor(&mut self, pos: (i32, i32)) -> Option<Coords> {
         if self.rect.contains_point(pos) {
             let tile = self.cursor_pos_to_tile(pos.0, pos.1);
             self.hover_tile = Some(tile);
@@ -197,7 +197,7 @@ impl MainWindow {
         };
     }
 
-    fn cursor_pos_to_tile(&self, x: i32, y: i32) -> Vec2d {
+    fn cursor_pos_to_tile(&self, x: i32, y: i32) -> Coords {
         let x = x - self.rect.x;
         let y = y - self.rect.y;
         self.drawer.pos_to_tile(x, y)

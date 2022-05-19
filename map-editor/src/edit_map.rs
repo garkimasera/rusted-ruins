@@ -35,18 +35,21 @@ impl EditingMap {
         }
     }
 
-    pub fn set_tile(&mut self, pos: Vec2d, idx: TileIdx, layer: usize) {
+    pub fn set_tile(&mut self, pos: Coords, idx: TileIdx, layer: usize) {
         self.tile[pos][layer] = TileIdxPp::new(idx);
     }
 
-    pub fn set_wall(&mut self, pos: Vec2d, wall: Option<WallIdx>) {
+    pub fn set_wall(&mut self, pos: Coords, wall: Option<WallIdx>) {
         if let Some(idx) = wall {
             self.wall[pos] = WallIdxPp::new(idx);
         } else {
             self.wall[pos] = WallIdxPp::default();
         }
 
-        for p in RectIter::new(pos + Direction::NW.as_vec(), pos + Direction::SE.as_vec()) {
+        for p in RectIter::new(
+            pos + Direction::NW.as_coords(),
+            pos + Direction::SE.as_coords(),
+        ) {
             if !self.is_inside(p) || self.wall[p].is_empty() {
                 continue;
             }
@@ -74,11 +77,11 @@ impl EditingMap {
         }
     }
 
-    pub fn set_deco(&mut self, pos: Vec2d, deco: Option<DecoIdx>) {
+    pub fn set_deco(&mut self, pos: Coords, deco: Option<DecoIdx>) {
         self.deco[pos] = deco;
     }
 
-    pub fn set_item(&mut self, pos: Vec2d, item_gen: Option<ItemGen>) {
+    pub fn set_item(&mut self, pos: Coords, item_gen: Option<ItemGen>) {
         if let Some(item_gen) = item_gen {
             self.items[pos] = vec![item_gen];
         } else {
@@ -86,22 +89,22 @@ impl EditingMap {
         }
     }
 
-    pub fn get_item(&self, pos: Vec2d) -> Option<&ItemGen> {
+    pub fn get_item(&self, pos: Coords) -> Option<&ItemGen> {
         self.items[pos].get(0)
     }
 
-    pub fn erase(&mut self, pos: Vec2d) {
+    pub fn erase(&mut self, pos: Coords) {
         self.set_wall(pos, None);
         self.deco[pos] = None;
     }
 
-    pub fn erase_layer(&mut self, pos: Vec2d, layer: usize) {
+    pub fn erase_layer(&mut self, pos: Coords, layer: usize) {
         self.tile[pos][layer] = TileIdxPp::default();
     }
 
-    pub fn tile_layer_draw(&mut self, pos: Vec2d, new_tile_idx: TileIdx, layer: usize) {
+    pub fn tile_layer_draw(&mut self, pos: Coords, new_tile_idx: TileIdx, layer: usize) {
         let piece_pattern = {
-            let f = |pos: Vec2d| {
+            let f = |pos: Coords| {
                 if let Some(t) = self.tile.get(pos) {
                     t[layer].idx() == Some(new_tile_idx)
                 } else {
@@ -110,7 +113,7 @@ impl EditingMap {
             };
             let mut piece_pattern_flags = PiecePatternFlags::default();
             for dir in &Direction::EIGHT_DIRS {
-                piece_pattern_flags.set(*dir, f(pos + dir.as_vec()));
+                piece_pattern_flags.set(*dir, f(pos + dir.as_coords()));
             }
             let tile_obj = gobj::get_obj(new_tile_idx);
             piece_pattern_flags.to_piece_pattern(tile_obj.img.n_pattern)
@@ -122,8 +125,8 @@ impl EditingMap {
     pub fn resize(&mut self, new_w: u32, new_h: u32, offset_x: i32, offset_y: i32) {
         self.width = new_w;
         self.height = new_h;
-        let top_left = Vec2d(offset_x, offset_y);
-        let bottom_right = Vec2d(new_w as i32 + offset_x, new_h as i32 + offset_y);
+        let top_left = Coords(offset_x, offset_y);
+        let bottom_right = Coords(new_w as i32 + offset_x, new_h as i32 + offset_y);
         let tile = self
             .tile
             .clip_with_default(top_left, bottom_right, TileLayers::default());
@@ -140,7 +143,7 @@ impl EditingMap {
         self.items = items;
     }
 
-    pub fn is_inside(&self, p: Vec2d) -> bool {
+    pub fn is_inside(&self, p: Coords) -> bool {
         p.0 >= 0 && p.0 < self.width as i32 && p.1 >= 0 && p.1 < self.height as i32
     }
 
@@ -239,7 +242,7 @@ pub struct MapProperty {
     pub id: String,
     pub is_region_map: bool,
     pub boundary: MapTemplateBoundary,
-    pub entrance: ArrayVec<Vec2d, 4>,
+    pub entrance: ArrayVec<Coords, 4>,
     pub music: String,
 }
 

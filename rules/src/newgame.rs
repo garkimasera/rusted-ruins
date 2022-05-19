@@ -2,7 +2,7 @@ use crate::Rule;
 use common::gamedata::*;
 use common::gobj::ObjIdxAsId;
 use common::objholder::ItemIdx;
-use geom::Vec2d;
+use geom::Coords;
 use serde_with::serde_as;
 use std::collections::HashMap;
 
@@ -16,7 +16,7 @@ pub struct NewGame {
     pub trait_choices: Vec<String>,
     pub trait_initial_point: i32,
     pub start_region: String,
-    pub start_pos: Vec2d,
+    pub start_pos: Coords,
     pub start_money: u32,
     pub chara_template_table: HashMap<CharaClass, String>,
     pub common_initial_skills: Vec<SkillKind>,

@@ -18,7 +18,7 @@ impl GameData {
     }
 
     /// Get player's position
-    fn player_pos(&self) -> Vec2d {
+    fn player_pos(&self) -> Coords {
         self.get_current_map()
             .chara_pos(CharaId::Player)
             .expect("Internal Error: Player position undefined")
@@ -55,7 +55,7 @@ impl GameData {
     }
 
     /// Character position on the current map
-    fn chara_pos(&self, cid: CharaId) -> Option<Vec2d> {
+    fn chara_pos(&self, cid: CharaId) -> Option<Coords> {
         let map = self.get_current_map();
         map.chara_pos(cid)
     }
@@ -132,7 +132,7 @@ impl GameData {
     }
 
     /// Get list of harvestable items
-    fn search_harvestable_item(&self, tile: Vec2d) -> Vec<(ItemLocation, ItemIdx)> {
+    fn search_harvestable_item(&self, tile: Coords) -> Vec<(ItemLocation, ItemIdx)> {
         let item_list = self.get_item_list_on_current_map(tile);
 
         let ill = ItemListLocation::OnMap {
