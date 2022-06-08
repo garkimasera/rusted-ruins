@@ -3,8 +3,9 @@
 use common::gamedata::Value;
 use rustpython_vm::{
     builtins::{PyInt, PyNone, PyStr},
+    convert::ToPyObject,
     pymodule, VirtualMachine,
-    {function::IntoPyObject, PyObjectRef, PyResult},
+    {object::PyPayload, PyObjectRef, PyResult},
 };
 
 pub(crate) use _rr::{make_module, PyGame};
@@ -19,9 +20,9 @@ impl ValueExt for Value {
     fn to_py(self, vm: &VirtualMachine) -> PyObjectRef {
         match self {
             Value::None => PyNone.into_pyobject(vm),
-            Value::Bool(value) => value.into_pyobject(vm),
-            Value::Int(value) => value.into_pyobject(vm),
-            Value::String(value) => value.into_pyobject(vm),
+            Value::Bool(value) => value.to_pyobject(vm),
+            Value::Int(value) => value.to_pyobject(vm),
+            Value::String(value) => value.to_pyobject(vm),
         }
     }
 
@@ -58,13 +59,13 @@ mod _rr {
     use rustpython_vm::builtins::PyIntRef;
     use rustpython_vm::{
         builtins::{PyListRef, PyStrRef},
-        pyclass, pyimpl, FromArgs, PyObjectRef, PyResult, PyValue, VirtualMachine,
+        pyclass, pyimpl, FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
     };
     use std::str::FromStr;
 
     #[pyattr(name = "Game")]
     #[pyclass(module = "rr", name = "Game")]
-    #[derive(Clone, Debug, PyValue)]
+    #[derive(Clone, Debug, PyPayload)]
     pub(crate) struct PyGame {
         pub args: std::collections::HashMap<String, Value>,
         pub self_id: String,
@@ -301,7 +302,7 @@ mod _rr {
 
     #[pyattr(name = "ScriptArgs")]
     #[pyclass(module = "rr", name = "ScriptArgs")]
-    #[derive(Debug, PyValue)]
+    #[derive(Debug, PyPayload)]
     pub(crate) struct PyScriptArgs(PyGame);
 
     #[pyimpl]
@@ -317,7 +318,7 @@ mod _rr {
 
     #[pyattr(name = "Gvars")]
     #[pyclass(module = "rr", name = "Gvars")]
-    #[derive(Debug, PyValue)]
+    #[derive(Debug, PyPayload)]
     pub(crate) struct PyGvars(PyGame);
 
     #[pyimpl]
@@ -356,7 +357,7 @@ mod _rr {
 
     #[pyattr(name = "Vars")]
     #[pyclass(module = "rr", name = "Vars")]
-    #[derive(Debug, PyValue)]
+    #[derive(Debug, PyPayload)]
     pub(crate) struct PyVars(PyGame);
 
     #[pyimpl]

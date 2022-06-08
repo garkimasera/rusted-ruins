@@ -6,7 +6,7 @@ use common::obj::ScriptObject;
 use crossbeam_channel::{Receiver, Sender};
 use rustpython_vm as vm;
 use std::collections::HashMap;
-use vm::function::IntoPyObject;
+use vm::PyPayload;
 
 pub type GameMethodCaller = fn(&mut GameData, method: GameMethod) -> Value;
 
@@ -101,17 +101,11 @@ fn init_script(
     method_tx: Sender<ScriptMessage>,
     method_result_tx: Receiver<Value>,
 ) {
-    let settings = vm::PySettings {
-        no_site: true,
-        no_user_site: true,
-        ignore_environment: true,
-        isolated: true,
-        ..vm::PySettings::default()
-    };
-    let result: Result<(), Error> = vm::Interpreter::new_with_init(settings, |vm| {
+    let settings = vm::prelude::Settings::default();
+
+    let result: Result<(), Error> = vm::Interpreter::with_init(settings, |vm| {
         vm.add_native_module("rr".to_owned(), Box::new(crate::rr::make_module));
         vm.add_native_module("random".to_owned(), Box::new(crate::random::make_module));
-        vm::InitParameter::Internal
     })
     .enter(move |vm| {
         load_modules(vm)?;
