@@ -3,6 +3,7 @@ use super::widget::*;
 use crate::text::ToText;
 use common::gamedata::*;
 use rules::RULES;
+use std::fmt::Write;
 
 /// Character active skill viewer
 pub struct AbilityWindow {
@@ -42,7 +43,7 @@ impl AbilityWindow {
             };
 
             if ability.cost_mp > 0 {
-                cost.push_str(&format!("MP {} ", ability.cost_mp));
+                write!(cost, "MP {} ", ability.cost_mp).unwrap();
             }
 
             let cost_w = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;

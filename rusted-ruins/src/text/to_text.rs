@@ -4,6 +4,7 @@ use common::gamedata::*;
 use common::gobj;
 use common::objholder::*;
 use std::borrow::Cow;
+use std::fmt::Write;
 
 use super::{obj_txt_checked, quest_txt};
 
@@ -71,53 +72,22 @@ impl ToText for Item {
         let mut text: String = obj_txt(gobj::idx_to_id(self.idx));
 
         if let Some(n) = self.charge() {
-            text.push_str(&format!(" ({} : {})", ui_txt("item-charges"), n));
+            write!(text, " ({} : {})", ui_txt("item-charges"), n).unwrap();
         }
 
         if let Some(title) = self.title() {
             if let Some(title) = super::readable::readable_title_txt(title) {
-                text.push_str(&format!(" <{}>", title));
+                write!(text, " <{}>", title).unwrap();
             }
         }
 
         if let Some((material_name, _)) = self.material() {
-            text.push_str(&format!(" ({})", super::prefix::material(material_name)))
-        }
-
-        if let Some(remaining) = self.remaining() {
-            let days = remaining.days();
-            let hours = remaining.hours();
-            let s = if days > 0 {
-                format!("{} {}", days, misc_txt("duration-days"))
-            } else if hours > 0 {
-                format!("{} {}", hours, misc_txt("duration-hours"))
-            } else {
-                let minutes = (remaining.minutes() / 10 + 1) * 10;
-                format!("{} {}", minutes, misc_txt("duration-minutes"))
-            };
-
-            text.push_str(&misc_txt_format!("item_info_text-remaining"; duration=s));
-        }
-
-        if let Some(ItemAttr::BuildObj(build_obj)) = find_attr!(self, ItemAttr::BuildObj) {
-            let obj_name = match build_obj {
-                BuildObj::Tile(id) => obj_txt(id),
-                BuildObj::Wall(id) => obj_txt(id),
-            };
-            text.push_str(&format!(" ({})", obj_name));
-        }
-
-        let quality = self.quality.as_int();
-
-        if quality > 0 {
-            text.push_str(&format!(" +{}", quality));
-        } else if quality < 0 {
-            text.push_str(&format!(" -{}", -quality));
+            write!(text, " ({})", super::prefix::material(material_name)).unwrap();
         }
 
         for attr in &self.attrs {
             if let ItemAttr::SkillLearning(kind) = attr {
-                text.push_str(&format!(" <{}>", kind.to_text()));
+                write!(text, " <{}>", kind.to_text()).unwrap();
             }
         }
 

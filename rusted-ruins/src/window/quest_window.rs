@@ -5,6 +5,7 @@ use crate::game::quest::{available_quests, reportable_quests};
 use crate::text::{obj_txt, quest_txt_checked, ui_txt, ToText};
 use common::gamedata::{CustomQuest, GameData, TownQuest, TownQuestKind, TownQuestState};
 use common::gobj;
+use std::fmt::Write;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum QuestKind {
@@ -377,7 +378,7 @@ fn town_quest_desc_text(quest: &TownQuest) -> String {
             let len = items.len();
             for (i, &(item_idx, n)) in items.iter().enumerate() {
                 let id = gobj::idx_to_id(item_idx);
-                text.push_str(&format!("{}x{}", obj_txt(id), n));
+                write!(text, "{}x{}", obj_txt(id), n).unwrap();
                 if i < len - 1 {
                     text.push(',');
                 }
@@ -391,7 +392,7 @@ fn town_quest_desc_text(quest: &TownQuest) -> String {
     text.push_str(": ");
 
     if quest.reward.money > 0 {
-        text.push_str(&format!("{} silver", quest.reward.money));
+        write!(text, "{} silver", quest.reward.money).unwrap();
         if !quest.reward.items.is_empty() {
             text.push(',');
         }
@@ -400,7 +401,7 @@ fn town_quest_desc_text(quest: &TownQuest) -> String {
     let len = quest.reward.items.len();
     for (i, &(item_idx, n)) in quest.reward.items.iter().enumerate() {
         let id = gobj::idx_to_id(item_idx);
-        text.push_str(&format!("{}x{}", obj_txt(id), n));
+        write!(text, "{}x{}", obj_txt(id), n).unwrap();
         if i < len - 1 {
             text.push(',');
         }

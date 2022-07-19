@@ -98,7 +98,7 @@ impl Chara {
         if new_sp < r.sp_max {
             self.sp = new_sp;
         } else {
-            self.sp = r.sp_max
+            self.sp = r.sp_max;
         }
 
         // Update status about sp
@@ -185,7 +185,7 @@ impl Chara {
         if adj > 0 {
             lv + adj as u32
         } else {
-            let adj = adj.abs() as u32;
+            let adj = adj.unsigned_abs();
             lv.saturating_sub(adj)
         }
     }

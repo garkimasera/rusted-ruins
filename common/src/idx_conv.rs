@@ -24,7 +24,7 @@ macro_rules! idx_conv {
             #[cfg(feature="global_state_obj")]
             pub fn read<R: std::io::BufRead>(mut r: R, dest_hash: u64)
                                              -> Result<Option<IdxConvTable>, anyhow::Error> {
-                use crate::basic::ID_TABLE_SECTION_TAG;
+                use $crate::basic::ID_TABLE_SECTION_TAG;
 
                 let hash = {
                     let mut buf = String::new();
@@ -47,7 +47,7 @@ macro_rules! idx_conv {
                         match current_obj_type.as_str() {
                             $(
                                 stringify!($obj) => {
-                                    if let Some(dest_idx) = crate::gobj::id_to_idx_checked::<$idx>(&line) {
+                                    if let Some(dest_idx) = $crate::gobj::id_to_idx_checked::<$idx>(&line) {
                                         table.$mem.push(dest_idx.as_usize() as u32);
                                     } else {
                                         table.$mem.push($idx::default().as_usize() as u32);
@@ -82,7 +82,7 @@ macro_rules! idx_conv {
                 fn deserialize<D>(deserializer: D) -> Result<$idx, D::Error>
                 where D: serde::Deserializer<'de> {
 
-                    let lock = crate::idx_conv::IDX_CONV_TABLE.read().expect("IDX_CONV_TABLE lock error");
+                    let lock = $crate::idx_conv::IDX_CONV_TABLE.read().expect("IDX_CONV_TABLE lock error");
                     let i = u32::deserialize(deserializer)?;
                     let idx = $idx::from_raw_int(i).unwrap(); // TODO: Should generate error if None
                     if let Some(idx_conv_table) = lock.as_ref() {
