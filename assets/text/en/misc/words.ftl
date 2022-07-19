@@ -84,6 +84,7 @@ skill_kind-magic_device = Magic Device
 skill_kind-mining = Mining
 skill_kind-plants = Plants
 skill_kind-animal = Animals
+skill_kind-negotiation = Negotiation
 skill_kind-leadership = Leadership
 skill_kind-heat = Heat
 skill_kind-cold = Cold

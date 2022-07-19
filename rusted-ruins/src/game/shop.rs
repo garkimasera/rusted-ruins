@@ -7,7 +7,10 @@ use common::sitegen::ShopGenData;
 use rules::RULES;
 
 pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
-    let price = gd.get_item(il).0.price();
+    let player = gd.chara.get(CharaId::Player);
+    let player_negotiation = player.skill_level(SkillKind::Negotiation);
+    let player_lv = player.lv;
+    let price = gd.get_item(il).0.buying_price(player_negotiation);
     if gd.player.has_money(price) {
         gd.player.sub_money(price);
         gd.move_item(
@@ -18,16 +21,31 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
             1,
         );
         gd.chara.get_mut(CharaId::Player).update();
+
+        let exp = std::cmp::min(price / ((player_negotiation as i64 + 1) * 5), 1000);
+        gd.chara.get_mut(CharaId::Player).add_skill_exp(
+            SkillKind::Negotiation,
+            exp as u32,
+            player_lv,
+        );
     } else {
         game_log!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player));
     }
 }
 
 pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
-    let price = gd.get_item(il).0.selling_price();
+    let player = gd.chara.get(CharaId::Player);
+    let player_negotiation = player.skill_level(SkillKind::Negotiation);
+    let player_lv = player.lv;
+    let price = gd.get_item(il).0.selling_price(player_negotiation);
     gd.player.add_money(price);
     gd.remove_item(il, 1);
     gd.chara.get_mut(CharaId::Player).update();
+
+    let exp = std::cmp::min(price / ((player_negotiation as i64 + 1) * 5), 1000);
+    gd.chara
+        .get_mut(CharaId::Player)
+        .add_skill_exp(SkillKind::Negotiation, exp as u32, player_lv);
 }
 
 /// Update shop states

@@ -319,6 +319,7 @@ define_skill_kind! {
         Mining, "mining",
         Plants, "plants",
         Animals, "animals",
+        Negotiation, "negotiation",
         Leadership, "leadership",
     }
     melee_weapon_kind = 0x0400;

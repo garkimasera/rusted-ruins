@@ -100,7 +100,7 @@ pub fn finish_creation(
     let skill_kind = kind.into();
     let skill_level = player.skill_level(skill_kind);
     if skill_level > 0 {
-        let exp = RULES.exp.creation_base_exp;
+        let exp = RULES.exp.creation;
         player.add_skill_exp(skill_kind, exp, recipe.difficulty);
     }
 

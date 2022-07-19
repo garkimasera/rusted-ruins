@@ -62,6 +62,7 @@ pub struct ItemWindow {
     info_label0: LabelWidget,
     info_label1: LabelWidget,
     menu: Option<super::item_menu::ItemMenu>,
+    player_negotiation: u32,
 }
 
 const ITEM_WINDOW_GROUP_SIZE: u32 = 9;
@@ -209,6 +210,11 @@ pub fn create_take_put_window_group(game: &Game, il: ItemLocation) -> GroupWindo
 
 impl ItemWindow {
     pub fn new(mode: ItemWindowMode, game: &Game) -> ItemWindow {
+        let player_negotiation = game
+            .gd
+            .chara
+            .get(CharaId::Player)
+            .skill_level(SkillKind::Negotiation);
         let rect = UI_CFG.item_window.rect.into();
         let n_row = UI_CFG.item_window.n_row;
         let list_h = UI_CFG.list_widget.h_row_default;
@@ -228,6 +234,7 @@ impl ItemWindow {
             info_label1: LabelWidget::new(UI_CFG.item_window.info_label_rect1, "", FontKind::M)
                 .right(),
             menu: None,
+            player_negotiation,
         };
         item_window.update_by_mode(&game.gd);
         item_window
@@ -395,6 +402,7 @@ impl ItemWindow {
     fn update_list(&mut self, list: FilteredItemList<'_>) {
         self.list.set_n_item(list.clone().count() as u32);
 
+        let player_negotiation = self.player_negotiation;
         let mode = &self.mode;
 
         self.item_locations.clear();
@@ -414,13 +422,17 @@ impl ItemWindow {
             // Information displayed in the right column
             let additional_info = match mode {
                 ItemWindowMode::ShopBuy { .. } => {
-                    format!("{}{}", crate::text::img_inline::SILVER, item.price())
+                    format!(
+                        "{}{}",
+                        crate::text::img_inline::SILVER,
+                        item.buying_price(player_negotiation)
+                    )
                 }
                 ItemWindowMode::ShopSell => {
                     format!(
                         "{}{}",
                         crate::text::img_inline::SILVER,
-                        item.selling_price()
+                        item.selling_price(player_negotiation)
                     )
                 }
                 _ => format!("{:.1}kg", w / 1000.0),

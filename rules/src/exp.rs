@@ -31,8 +31,8 @@ pub struct Exp {
     pub evasion: u32,
     /// Base exp to Mining skill
     pub mining: u32,
-    /// Base exp for creation
-    pub creation_base_exp: u32,
+    /// Base exp for Creation
+    pub creation: u32,
 }
 
 impl Rule for Exp {

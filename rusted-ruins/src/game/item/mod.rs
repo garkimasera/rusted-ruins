@@ -91,9 +91,16 @@ impl Item {
         (item_obj.basic_price as f32 * factor) as i64
     }
 
+    /// Calculate item buying price
+    fn buying_price(&self, negotiation: u32) -> i64 {
+        let negotiation_factor = 1.0 + 0.5 / (1.0 + (1 + negotiation) as f32 * 0.1);
+        (self.price() as f32 * negotiation_factor) as i64
+    }
+
     /// Calculate item selling price
-    fn selling_price(&self) -> i64 {
-        self.price() / 2
+    fn selling_price(&self, negotiation: u32) -> i64 {
+        let negotiation_factor = 1.5 + 0.5 / (1.0 + (1 + negotiation) as f32 * 0.05);
+        (self.price() as f32 / negotiation_factor) as i64
     }
 
     fn w(&self) -> u32 {
