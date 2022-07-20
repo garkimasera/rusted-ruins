@@ -22,7 +22,10 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
         );
         gd.chara.get_mut(CharaId::Player).update();
 
-        let exp = std::cmp::min(price / ((player_negotiation as i64 + 1) * 5), 1000);
+        let exp = std::cmp::min(
+            price as u32 / ((player_negotiation + 1) * 5),
+            RULES.exp.negotiation_max,
+        );
         gd.chara.get_mut(CharaId::Player).add_skill_exp(
             SkillKind::Negotiation,
             exp as u32,
@@ -42,7 +45,10 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
     gd.remove_item(il, 1);
     gd.chara.get_mut(CharaId::Player).update();
 
-    let exp = std::cmp::min(price / ((player_negotiation as i64 + 1) * 5), 1000);
+    let exp = std::cmp::min(
+        price as u32 / ((player_negotiation + 1) * 5),
+        RULES.exp.negotiation_max,
+    );
     gd.chara
         .get_mut(CharaId::Player)
         .add_skill_exp(SkillKind::Negotiation, exp as u32, player_lv);

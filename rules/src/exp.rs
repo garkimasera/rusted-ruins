@@ -31,6 +31,8 @@ pub struct Exp {
     pub evasion: u32,
     /// Base exp to Mining skill
     pub mining: u32,
+    /// Max exp to Negotiation skill
+    pub negotiation_max: u32,
     /// Base exp for Creation
     pub creation: u32,
 }
