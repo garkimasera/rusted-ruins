@@ -96,13 +96,9 @@ impl Map {
     }
 
     fn empty_tile_around(&self, pos: Coords) -> Option<Coords> {
-        for pos in SpiralIter::new(pos).take(100) {
-            if self.is_inside(pos) && self.is_empty_tile(pos) {
-                return Some(pos);
-            }
-        }
-
-        None
+        SpiralIter::new(pos)
+            .take(100)
+            .find(|&pos| self.is_inside(pos) && self.is_empty_tile(pos))
     }
 }
 

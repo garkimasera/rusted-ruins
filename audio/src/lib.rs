@@ -140,7 +140,7 @@ fn init_device() -> MixerContext {
     let chunk_size = 1024;
 
     let open_audio_result = sdl2::mixer::open_audio(frequency, format, channels, chunk_size);
-    let mixer_context = if let Err(e) = open_audio_result {
+    if let Err(e) = open_audio_result {
         // Return null mixer context if we can't open the audio
         warn!("couldn't open audio: {}", e);
         MixerContext::NullMixerContext
@@ -155,9 +155,7 @@ fn init_device() -> MixerContext {
                 MixerContext::NullMixerContext
             }
         }
-    };
-
-    mixer_context
+    }
 }
 
 #[cfg(test)]

@@ -1,7 +1,7 @@
 use super::CharaId;
 
 /// Unique data for player
-#[derive(Clone, PartialEq, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Player {
     money: i64,
     pub party: fnv::FnvHashSet<CharaId>,

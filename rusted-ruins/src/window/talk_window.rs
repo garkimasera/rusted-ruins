@@ -99,7 +99,7 @@ impl TalkWindow {
                 .talk_text
                 .choices
                 .iter()
-                .map(|a| text::talk_txt(&*a))
+                .map(|a| text::talk_txt(a))
                 .collect();
             self.choose_win = Some(ChooseWindow::new(winpos, choices, DefaultBehavior::Ignore));
         }

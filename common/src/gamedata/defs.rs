@@ -213,7 +213,7 @@ pub enum AbilityOrigin {
     Module,
 }
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Debug, Serialize, Deserialize)]
 pub enum PassiveEffect {
     AttrStr(i16),
     AttrVit(i16),

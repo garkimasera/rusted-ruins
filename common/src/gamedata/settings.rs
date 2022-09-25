@@ -2,7 +2,7 @@ use crate::basic::MAX_ACTION_SHORTCUTS;
 use crate::objholder::*;
 
 /// Custom settings for each game playing
-#[derive(Clone, PartialEq, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Default, Debug, Serialize, Deserialize)]
 pub struct Settings {
     pub action_shortcuts: Vec<Option<ActionShortcut>>,
 }

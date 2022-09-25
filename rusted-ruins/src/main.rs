@@ -4,7 +4,7 @@
     future_incompatible,
     nonstandard_style
 )]
-#![allow(clippy::comparison_chain)]
+#![allow(clippy::comparison_chain, clippy::type_complexity)]
 
 extern crate rusted_ruins_audio as audio;
 extern crate rusted_ruins_common as common;

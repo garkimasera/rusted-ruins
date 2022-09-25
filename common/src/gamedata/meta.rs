@@ -1,5 +1,5 @@
 /// Meta data
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct MetaData {
     /// Save directory name
     save_name: String,

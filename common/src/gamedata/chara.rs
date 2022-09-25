@@ -151,7 +151,7 @@ pub struct CharaAttrDiff {
 }
 
 /// Represents chara status
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum CharaStatus {
     /// Sp status
     Hungry,
@@ -200,7 +200,7 @@ impl CharaStatus {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum Work {
     Creation {
         kind: CreationKind,

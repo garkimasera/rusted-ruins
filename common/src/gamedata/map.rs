@@ -276,12 +276,9 @@ impl Map {
 
     /// Get character position
     pub fn chara_pos(&self, cid: CharaId) -> Option<Coords> {
-        for p in self.tile.iter_idx() {
-            if self.tile[p].chara.as_ref() == Some(&cid) {
-                return Some(p);
-            }
-        }
-        None
+        self.tile
+            .iter_idx()
+            .find(|&p| self.tile[p].chara.as_ref() == Some(&cid))
     }
 
     /// Swaps characters on given tiles

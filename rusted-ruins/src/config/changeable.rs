@@ -4,12 +4,12 @@ use std::fs::read_to_string;
 use std::process::exit;
 use std::sync::{RwLock, RwLockReadGuard};
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct ChangeableConfig {
     pub game_log: GameLogConfig,
 }
 
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct GameLogConfig {
     pub combat_log: CombatLog,
 }
