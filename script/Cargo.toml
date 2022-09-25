@@ -18,6 +18,6 @@ rusted-ruins-rng = { path = "../rng" }
 
 [dependencies.rustpython-vm]
 git = "https://github.com/RustPython/RustPython.git"
-rev = "3d345d7de27e767d3637cac94739e7d47d5f4513"
+rev = "2a26ed00964b900d247d6a8478d8cd24b13cc096"
 default-features = false
-features = ["threading", "compile-parse", "freeze-stdlib"]
+features = ["threading", "compiler", "parser"]

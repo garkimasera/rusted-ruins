@@ -162,7 +162,7 @@ fn call_script(
 
     let script = vm.compile(
         &script_obj.script,
-        vm::compile::Mode::Exec,
+        vm::compiler::Mode::Exec,
         start_script.id.clone(),
     )?;
     vm.run_code_obj(script, scope)
@@ -175,7 +175,7 @@ fn call_script(
 fn load_modules(vm: &vm::VirtualMachine) -> Result<(), Error> {
     let code_obj = vm.compile(
         r#"import rr"#,
-        vm::compile::Mode::Exec,
+        vm::compiler::Mode::Exec,
         "<load_modules>".to_owned(),
     )?;
     vm.run_code_obj(code_obj, vm.new_scope_with_builtins())

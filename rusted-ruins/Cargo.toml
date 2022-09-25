@@ -56,6 +56,9 @@ version = "0.35"
 default-features = false
 features = ["ttf", "image", "mixer"]
 
+# [profile.release]
+# debug = true
+
 # for cargo-deb
 # build after "./build-pak.sh", and with command "cargo deb -p rusted-ruins -- --features deb"
 [package.metadata.deb]

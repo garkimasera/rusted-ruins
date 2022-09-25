@@ -42,9 +42,10 @@ impl ValueExt for Value {
         } else if let Some(s) = pyvalue.payload::<PyStr>() {
             Value::String(s.as_str().to_owned())
         } else {
-            return Err(
-                vm.new_type_error(format!("Invalid type value \"{}\" for vars/gvars", pyvalue))
-            );
+            return Err(vm.new_type_error(format!(
+                "Invalid type value \"{:?}\" for vars/gvars",
+                pyvalue
+            )));
         };
         Ok(value)
     }
@@ -59,7 +60,7 @@ mod _rr {
     use rustpython_vm::builtins::PyIntRef;
     use rustpython_vm::{
         builtins::{PyListRef, PyStrRef},
-        pyclass, pyimpl, FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
+        pyclass, FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
     };
     use std::str::FromStr;
 
@@ -96,24 +97,24 @@ mod _rr {
         }
     }
 
-    #[pyimpl]
+    #[pyclass]
     impl PyGame {
         #[pymethod]
         fn self_id(&self) -> String {
             self.self_id.clone()
         }
 
-        #[pyproperty]
+        #[pygetset]
         fn args(&self) -> PyScriptArgs {
             PyScriptArgs(self.clone())
         }
 
-        #[pyproperty]
+        #[pygetset]
         fn gvars(&self) -> PyGvars {
             PyGvars(self.clone())
         }
 
-        #[pyproperty]
+        #[pygetset]
         fn vars(&self) -> PyVars {
             PyVars(self.clone())
         }
@@ -305,7 +306,7 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyScriptArgs(PyGame);
 
-    #[pyimpl]
+    #[pyclass]
     impl PyScriptArgs {
         #[pymethod(magic)]
         fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
@@ -321,7 +322,7 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyGvars(PyGame);
 
-    #[pyimpl]
+    #[pyclass]
     impl PyGvars {
         #[pymethod(magic)]
         fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
@@ -360,7 +361,7 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyVars(PyGame);
 
-    #[pyimpl]
+    #[pyclass]
     impl PyVars {
         #[pymethod(magic)]
         fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {

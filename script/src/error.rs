@@ -1,4 +1,4 @@
-use rustpython_vm::{builtins::PyBaseExceptionRef, compile::CompileError, VirtualMachine};
+use rustpython_vm::{builtins::PyBaseExceptionRef, compiler::CompileError, VirtualMachine};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
