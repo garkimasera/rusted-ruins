@@ -26,7 +26,7 @@ impl Classes {
 }
 
 /// Rules for character generation
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Class {
     /// Attribute revisions by class
     pub attr: CharaAttrDiff,

@@ -4,6 +4,19 @@
 
 you = あなた
 
+# BonusLevel
+
+bonus_level-awful = ひどい
+bonus_level-very_bad = とても悪い
+bonus_level-bad = 悪い
+bonus_level-slightly_bad = 少し悪い
+bonus_level-none = なし
+bonus_level-slightly_good = 少し良い
+bonus_level-good = 良い
+bonus_level-very_good = とても良い
+bonus_level-excellent = 素晴らしい
+bonus_level-superb = 最高
+
 # Duration
 
 duration-days = 日

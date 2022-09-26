@@ -1,4 +1,5 @@
 use std::cell::{Cell, RefCell};
+use std::fmt::Write;
 use std::rc::Rc;
 
 use super::commonuse::*;
@@ -10,6 +11,7 @@ use super::widget::*;
 use super::SpecialDialogResult;
 use crate::config::{SCREEN_CFG, UI_CFG};
 use crate::game::newgame::NewGameBuilder;
+use crate::text::ToText;
 use crate::text::{self, misc_txt, ui_txt};
 use crate::window::status_window::create_status_window_group;
 use common::basic::{TAB_ICON_H, TAB_TEXT_H};
@@ -372,11 +374,26 @@ impl ChooseClassDialog {
         );
 
         window.set_cb_selection_changed(Box::new(|i, desc| {
-            let desc_text_id = format!(
+            let mut desc_text = misc_txt(&format!(
                 "class-{}-desc",
                 RULES.newgame.class_choices[i as usize].as_str()
-            );
-            desc.set_text(misc_txt(&desc_text_id));
+            ));
+            let class = RULES.classes.get(RULES.newgame.class_choices[i as usize]);
+
+            let skill_bonuses: std::collections::BTreeMap<_, _> =
+                class.skill_bonus.iter().collect();
+            desc_text.push('\n');
+            for (skill_kind, bonus) in &skill_bonuses {
+                write!(
+                    &mut desc_text,
+                    "\n{}: {}",
+                    skill_kind.to_text(),
+                    bonus.to_text()
+                )
+                .unwrap();
+            }
+
+            desc.set_text(desc_text);
         }));
         let current_choice = Rc::new(Cell::new(None));
         let c = current_choice.clone();

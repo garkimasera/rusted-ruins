@@ -1,5 +1,6 @@
 use super::ToTextId;
 
+use common::basic::BonusLevel;
 use common::gamedata::*;
 
 impl ToTextId for CharaStatus {
@@ -16,6 +17,23 @@ impl ToTextId for CharaStatus {
             CharaStatus::Asleep { .. } => "chara_status-asleep",
             CharaStatus::Poisoned => "chara_status-poisoned",
             CharaStatus::Work { .. } => "chara_status-work",
+        }
+    }
+}
+
+impl ToTextId for BonusLevel {
+    fn to_textid(&self) -> &'static str {
+        match *self {
+            BonusLevel::Awful => "bonus_level-awful",
+            BonusLevel::VeryBad => "bonus_level-very_bad",
+            BonusLevel::Bad => "bonus_level-bad",
+            BonusLevel::SlightlyBad => "bonus_level-slightly_bad",
+            BonusLevel::None => "bonus_level-none",
+            BonusLevel::SlightlyGood => "bonus_level-slightly_good",
+            BonusLevel::Good => "bonus_level-good",
+            BonusLevel::VeryGood => "bonus_level-very_good",
+            BonusLevel::Excellent => "bonus_level-excellent",
+            BonusLevel::Superb => "bonus_level-superb",
         }
     }
 }

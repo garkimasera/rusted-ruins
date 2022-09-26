@@ -4,6 +4,19 @@
 
 you = you
 
+# BonusLevel
+
+bonus_level-awful = awful
+bonus_level-very_bad = very bad
+bonus_level-bad = bad
+bonus_level-slightly_bad = slightly bad
+bonus_level-none = none
+bonus_level-slightly_good = slightly good
+bonus_level-good = good
+bonus_level-very_good = very good
+bonus_level-excellent = excellent
+bonus_level-superb = superb
+
 # Duration
 
 duration-days = days
