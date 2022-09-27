@@ -6,6 +6,7 @@ use common::gobj;
 use common::objholder::*;
 use once_cell::sync::Lazy;
 use regex::Regex;
+use rules::RULES;
 use std::str::FromStr;
 
 static RE_DURATION: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\d+)([smhd])").unwrap());
@@ -112,6 +113,14 @@ pub fn exec_debug_command(game: &mut Game, command: &str) {
             } else {
                 game_log!("debug-command-need-1arg"; command="advance");
             }
+        }
+        "all_recipes" => {
+            for creation_kind in CreationKind::ALL {
+                for recipe in RULES.recipes.get(*creation_kind) {
+                    game.gd.learned_recipes.add(*creation_kind, &recipe.product);
+                }
+            }
+            debug!("learned all recipes");
         }
         _ => {
             game_log!("debug-command-invalid");
