@@ -35,12 +35,25 @@ pub struct CharaTemplateObject {
     /// Learned active skills.
     pub abilities: Vec<AbilityId>,
     pub equips: Vec<EquipGen>,
+    pub drop_items: Vec<DropItem>,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct EquipGen {
     pub esk: EquipSlotKind,
     pub item_selector: ItemSelector,
+    #[serde(default)]
+    pub gen_level_bonus: u32,
+    #[serde(default)]
+    pub quality_bonus: i32,
+}
+
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+pub struct DropItem {
+    pub item_selector: ItemSelector,
+    #[serde(default)]
+    pub hunting: bool,
+    pub probability: f32,
     #[serde(default)]
     pub gen_level_bonus: u32,
     #[serde(default)]

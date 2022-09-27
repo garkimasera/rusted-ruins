@@ -319,6 +319,7 @@ define_skill_kind! {
         Mining, "mining",
         Plants, "plants",
         Animals, "animals",
+        Hunting, "hunting",
         Negotiation, "negotiation",
         Leadership, "leadership",
     }

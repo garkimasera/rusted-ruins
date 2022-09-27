@@ -1,5 +1,5 @@
 use common::basic::BonusLevel;
-use common::gamedata::{self, AbilityId, CharaClass, EquipGen, FactionId, SkillKind};
+use common::gamedata::{self, AbilityId, CharaClass, DropItem, EquipGen, FactionId, SkillKind};
 use common::hashmap::HashMap;
 use common::sitegen;
 use geom::Coords;
@@ -91,6 +91,8 @@ pub struct CharaTemplateDepInput {
     pub abilities: Vec<AbilityId>,
     #[serde(default)]
     pub equips: Vec<EquipGen>,
+    #[serde(default)]
+    pub drop_items: Vec<DropItem>,
     pub base_hp: i32,
     pub base_mp: i32,
     pub str: u16,

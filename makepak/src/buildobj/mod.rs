@@ -148,6 +148,7 @@ fn build_chara_template_object(input: Input) -> Result<CharaTemplateObject, Erro
         base_attr,
         abilities: chara_dep_input.abilities,
         equips: chara_dep_input.equips,
+        drop_items: chara_dep_input.drop_items,
     })
 }
 
