@@ -1,10 +1,12 @@
 use common::gamedata::{GameData, SkillKind, Value};
 
+use crate::rr::ScriptMethodErr;
+
 pub(crate) enum ScriptMessage {
     Finish,
     Fail,
     UiRequest(UiRequest),
-    Exec(Box<dyn FnOnce(&mut GameData) -> Value + Send + 'static>),
+    Exec(Box<dyn FnOnce(&mut GameData) -> Result<Value, ScriptMethodErr> + Send + 'static>),
     Method(GameMethod),
 }
 

@@ -8,7 +8,7 @@ use rustpython_vm::{
     {object::PyPayload, PyObjectRef, PyResult},
 };
 
-pub(crate) use _rr::{make_module, PyGame};
+pub(crate) use _rr::{make_module, PyGame, ScriptMethodErr};
 
 trait ValueExt: Sized {
     fn to_py(self, vm: &VirtualMachine) -> PyObjectRef;
@@ -58,11 +58,21 @@ mod _rr {
     use crate::{GameMethod, TalkText, UiRequest};
     use common::gamedata::{GameData, SkillKind, Value};
     use rustpython_vm::builtins::PyIntRef;
+    use rustpython_vm::protocol::PySequenceMethods;
+    use rustpython_vm::PyObject;
     use rustpython_vm::{
         builtins::{PyListRef, PyStrRef},
-        pyclass, FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
+        convert::ToPyObject,
+        protocol::PyMappingMethods,
+        pyclass,
+        types::{AsMapping, AsSequence},
+        FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
     };
     use std::str::FromStr;
+
+    #[derive(Debug, thiserror::Error)]
+    #[error("{0}")]
+    pub struct ScriptMethodErr(String);
 
     #[pyattr(name = "Game")]
     #[pyclass(module = "rr", name = "Game")]
@@ -71,28 +81,31 @@ mod _rr {
         pub args: std::collections::HashMap<String, Value>,
         pub self_id: String,
         pub method_tx: crossbeam_channel::Sender<ScriptMessage>,
-        pub method_result_rx: crossbeam_channel::Receiver<Value>,
+        pub method_result_rx: crossbeam_channel::Receiver<Result<Value, ScriptMethodErr>>,
     }
 
     impl PyGame {
-        fn send_message(&self, msg: ScriptMessage) -> Value {
+        fn send_message(&self, msg: ScriptMessage) -> Result<Value, ScriptMethodErr> {
             self.method_tx.send(msg).unwrap_or_else(|e| {
-                log::trace!("{}", e);
+                log::error!("{}", e);
                 std::thread::sleep(std::time::Duration::from_secs(60));
                 panic!()
             });
             self.method_result_rx.recv().unwrap_or_else(|e| {
-                log::trace!("{}", e);
+                log::error!("{}", e);
                 std::thread::sleep(std::time::Duration::from_secs(60));
                 panic!()
             })
         }
 
         fn call_method(&self, method: GameMethod) -> Value {
-            self.send_message(ScriptMessage::Method(method))
+            self.send_message(ScriptMessage::Method(method)).unwrap()
         }
 
-        fn with_gd<F: FnOnce(&mut GameData) -> Value + Send + 'static>(&self, f: F) -> Value {
+        fn with_gd<F: FnOnce(&mut GameData) -> Result<Value, ScriptMethodErr> + Send + 'static>(
+            &self,
+            f: F,
+        ) -> Result<Value, ScriptMethodErr> {
             self.send_message(ScriptMessage::Exec(Box::new(f)))
         }
     }
@@ -121,20 +134,23 @@ mod _rr {
 
         #[pymethod]
         fn current_time(&self, vm: &VirtualMachine) -> PyObjectRef {
-            self.with_gd(|gd| Value::Int(gd.time.current_time().as_secs() as _))
+            self.with_gd(|gd| Ok(Value::Int(gd.time.current_time().as_secs() as _)))
+                .unwrap()
                 .to_py(vm)
         }
 
         #[pymethod]
         fn number_of_dead_party_members(&self, vm: &VirtualMachine) -> PyObjectRef {
-            self.with_gd(|gd| Value::Int(gd.player.party_dead.len() as _))
+            self.with_gd(|gd| Ok(Value::Int(gd.player.party_dead.len() as _)))
+                .unwrap()
                 .to_py(vm)
         }
 
         #[pymethod]
         fn custom_quest_completed(&self, id: PyStrRef, vm: &VirtualMachine) -> PyObjectRef {
             let id = id.as_str().to_owned();
-            self.with_gd(move |gd| Value::Bool(gd.quest.completed_custom_quests.contains(&id)))
+            self.with_gd(move |gd| Ok(Value::Bool(gd.quest.completed_custom_quests.contains(&id))))
+                .unwrap()
                 .to_py(vm)
         }
 
@@ -160,37 +176,37 @@ mod _rr {
                     target_chara,
                 },
             }));
-            Ok(response.to_py(vm))
+            Ok(response.unwrap().to_py(vm))
         }
 
         #[pymethod]
         fn shop_buy(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::ShopBuy));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::ShopBuy));
         }
 
         #[pymethod]
         fn shop_sell(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::ShopSell));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::ShopSell));
         }
 
         #[pymethod]
         fn quest_offer(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::QuestOffer));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::QuestOffer));
         }
 
         #[pymethod]
         fn quest_report(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::QuestReport));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::QuestReport));
         }
 
         #[pymethod]
         fn install_ability_slot(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::InstallAbilitySlot));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::InstallAbilitySlot));
         }
 
         #[pymethod]
         fn install_extend_slot(&self) {
-            self.send_message(ScriptMessage::UiRequest(UiRequest::InstallExtendSlot));
+            let _ = self.send_message(ScriptMessage::UiRequest(UiRequest::InstallExtendSlot));
         }
 
         // ScriptMethod methods
@@ -322,38 +338,101 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyGvars(PyGame);
 
-    #[pyclass]
+    #[pyclass(with(AsMapping))]
     impl PyGvars {
         #[pymethod(magic)]
-        fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
+        fn contains(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<bool> {
+            self._contains(&key, vm)
+        }
+
+        fn _contains(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<bool> {
+            let key_str: String = key.try_to_value(vm)?;
+            self.0
+                .with_gd(move |gd| Ok(Value::Bool(gd.vars.global_var(&key_str).is_some())))
+                .map(|value| matches!(value, Value::Bool(true)))
+                .map_err(|_| unreachable!())
+        }
+
+        #[pymethod(magic)]
+        fn getitem(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<PyObjectRef> {
+            self._getitem(&key, vm)
+        }
+
+        fn _getitem(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<PyObjectRef> {
+            let key_str: String = key.try_to_value(vm)?;
             self.0
                 .with_gd(move |gd| {
                     gd.vars
-                        .global_var(key.as_str())
+                        .global_var(&key_str)
                         .cloned()
-                        .unwrap_or(Value::None)
+                        .ok_or_else(|| ScriptMethodErr("".into()))
                 })
-                .to_py_opt(vm)
+                .map(|value| value.to_py(vm))
+                .map_err(|_| vm.new_key_error(key.to_pyobject(vm)))
         }
 
         #[pymethod(magic)]
-        fn setitem(&self, key: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+        fn setitem(
+            &self,
+            name: PyObjectRef,
+            value: PyObjectRef,
+            vm: &VirtualMachine,
+        ) -> PyResult<()> {
+            self._setitem(&name, value, vm)
+        }
+
+        fn _setitem(
+            &self,
+            name: &PyObject,
+            value: PyObjectRef,
+            vm: &VirtualMachine,
+        ) -> PyResult<()> {
+            let name: String = name.try_to_value(vm)?;
             let value = Value::from_py(vm, value)?;
-            self.0.with_gd(move |gd| {
-                gd.vars.set_global_var(key.as_str(), value);
-                Value::None
+            let _ = self.0.with_gd(move |gd| {
+                gd.vars.set_global_var(name, value);
+                Ok(Value::None)
             });
             Ok(())
         }
 
         #[pymethod(magic)]
-        fn delitem(&self, key: PyStrRef) -> PyResult<()> {
-            self.0.with_gd(move |gd| {
-                gd.vars.remove_global_var(key.as_str());
-                Value::None
-            });
-            Ok(())
+        fn delitem(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+            self._delitem(&key, vm)
         }
+
+        fn _delitem(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<()> {
+            let key_str: String = key.try_to_value(vm)?;
+            self.0
+                .with_gd(move |gd| {
+                    gd.vars.remove_global_var(&key_str);
+                    Ok(Value::None)
+                })
+                .map(|_| ())
+                .map_err(|_| vm.new_key_error(key.to_pyobject(vm)))
+        }
+    }
+
+    impl AsMapping for PyGvars {
+        const AS_MAPPING: PyMappingMethods = PyMappingMethods {
+            length: None,
+            subscript: Some(|mapping, key, vm| Self::mapping_downcast(mapping)._getitem(key, vm)),
+            ass_subscript: Some(|mapping, key, value, vm| {
+                let mapping = Self::mapping_downcast(mapping);
+                if let Some(value) = value {
+                    mapping._setitem(key, value, vm)
+                } else {
+                    mapping._delitem(key, vm)
+                }
+            }),
+        };
+    }
+
+    impl AsSequence for PyGvars {
+        const AS_SEQUENCE: PySequenceMethods = PySequenceMethods {
+            contains: Some(|seq, key, vm| Self::sequence_downcast(seq)._contains(key, vm)),
+            ..PySequenceMethods::NOT_IMPLEMENTED
+        };
     }
 
     #[pyattr(name = "Vars")]
@@ -361,41 +440,104 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyVars(PyGame);
 
-    #[pyclass]
+    #[pyclass(with(AsMapping, AsSequence))]
     impl PyVars {
         #[pymethod(magic)]
-        fn getitem(&self, key: PyStrRef, vm: &VirtualMachine) -> Option<PyObjectRef> {
+        fn contains(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<bool> {
+            self._contains(&key, vm)
+        }
+
+        fn _contains(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<bool> {
             let self_id = self.0.self_id.clone();
+            let key_str: String = key.try_to_value(vm)?;
+            self.0
+                .with_gd(move |gd| Ok(Value::Bool(gd.vars.local_var(&self_id, &key_str).is_some())))
+                .map(|value| matches!(value, Value::Bool(true)))
+                .map_err(|_| unreachable!())
+        }
+
+        #[pymethod(magic)]
+        fn getitem(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<PyObjectRef> {
+            self._getitem(&key, vm)
+        }
+
+        fn _getitem(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<PyObjectRef> {
+            let self_id = self.0.self_id.clone();
+            let key_str: String = key.try_to_value(vm)?;
             self.0
                 .with_gd(move |gd| {
                     gd.vars
-                        .local_var(&self_id, key.as_str())
+                        .local_var(&self_id, &key_str)
                         .cloned()
-                        .unwrap_or(Value::None)
+                        .ok_or_else(|| ScriptMethodErr("".into()))
                 })
-                .to_py_opt(vm)
+                .map(|value| value.to_py(vm))
+                .map_err(|_| vm.new_key_error(key.to_pyobject(vm)))
         }
 
         #[pymethod(magic)]
-        fn setitem(&self, name: PyStrRef, value: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+        fn setitem(
+            &self,
+            name: PyObjectRef,
+            value: PyObjectRef,
+            vm: &VirtualMachine,
+        ) -> PyResult<()> {
+            self._setitem(&name, value, vm)
+        }
+
+        fn _setitem(
+            &self,
+            name: &PyObject,
+            value: PyObjectRef,
+            vm: &VirtualMachine,
+        ) -> PyResult<()> {
             let value = Value::from_py(vm, value)?;
             let self_id = self.0.self_id.clone();
-            let name = name.as_str().to_owned();
-            self.0.with_gd(move |gd| {
+            let name: String = name.try_to_value(vm)?;
+            let _ = self.0.with_gd(move |gd| {
                 gd.vars.set_local_var(self_id, name, value);
-                Value::None
+                Ok(Value::None)
             });
             Ok(())
         }
 
         #[pymethod(magic)]
-        fn delitem(&self, key: PyStrRef) -> PyResult<()> {
-            let self_id = self.0.self_id.clone();
-            self.0.with_gd(move |gd| {
-                gd.vars.remove_local_var(&self_id, key.as_str());
-                Value::None
-            });
-            Ok(())
+        fn delitem(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<()> {
+            self._delitem(&key, vm)
         }
+
+        fn _delitem(&self, key: &PyObject, vm: &VirtualMachine) -> PyResult<()> {
+            let self_id = self.0.self_id.clone();
+            let key_str: String = key.try_to_value(vm)?;
+            self.0
+                .with_gd(move |gd| {
+                    gd.vars.remove_local_var(&self_id, &key_str);
+                    Ok(Value::None)
+                })
+                .map(|_| ())
+                .map_err(|_| vm.new_key_error(key.to_pyobject(vm)))
+        }
+    }
+
+    impl AsMapping for PyVars {
+        const AS_MAPPING: PyMappingMethods = PyMappingMethods {
+            length: None,
+            subscript: Some(|mapping, key, vm| Self::mapping_downcast(mapping)._getitem(key, vm)),
+            ass_subscript: Some(|mapping, key, value, vm| {
+                let mapping = Self::mapping_downcast(mapping);
+                if let Some(value) = value {
+                    mapping._setitem(key, value, vm)
+                } else {
+                    mapping._delitem(key, vm)
+                }
+            }),
+        };
+    }
+
+    impl AsSequence for PyVars {
+        const AS_SEQUENCE: PySequenceMethods = PySequenceMethods {
+            contains: Some(|seq, key, vm| Self::sequence_downcast(seq)._contains(key, vm)),
+            ..PySequenceMethods::NOT_IMPLEMENTED
+        };
     }
 }

@@ -37,10 +37,10 @@ impl Game {
     pub fn advance_script(&mut self, ui_response: Option<Value>) -> AdvanceScriptResult {
         if let Some(ui_response) = ui_response {
             self.script_state.dialog = false;
-            self.se.ui_response(ui_response);
+            self.se.ui_response(Ok(ui_response));
         } else if self.script_state.dialog {
             self.script_state.dialog = false;
-            self.se.ui_response(Value::None);
+            self.se.ui_response(Ok(Value::None));
         }
 
         let result = match self.se.next(&mut self.gd) {

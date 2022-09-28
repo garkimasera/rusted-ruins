@@ -1,4 +1,4 @@
-use crate::rr::PyGame;
+use crate::rr::{PyGame, ScriptMethodErr};
 use crate::{message::ScriptMessage, Error};
 use crate::{GameMethod, ScriptResult};
 use common::gamedata::{GameData, Value};
@@ -15,7 +15,7 @@ pub struct ScriptEngine {
     ready_rx: Receiver<()>,
     start_tx: Sender<StartScript>,
     method_rx: Receiver<ScriptMessage>,
-    method_result_tx: Sender<Value>,
+    method_result_tx: Sender<Result<Value, ScriptMethodErr>>,
     game_method_caller: GameMethodCaller,
 }
 
@@ -65,7 +65,7 @@ impl ScriptEngine {
         self.start_tx.send(StartScript { id, args }).unwrap();
     }
 
-    pub fn ui_response(&mut self, value: Value) {
+    pub fn ui_response(&mut self, value: Result<Value, ScriptMethodErr>) {
         self.method_result_tx.send(value).unwrap();
     }
 
@@ -88,7 +88,7 @@ impl ScriptEngine {
                 }
                 ScriptMessage::Method(method) => {
                     let result = (self.game_method_caller)(gd, method);
-                    self.method_result_tx.send(result).unwrap();
+                    self.method_result_tx.send(Ok(result)).unwrap();
                 }
             }
         }
@@ -99,7 +99,7 @@ fn init_script(
     ready_tx: Sender<()>,
     start_rx: Receiver<StartScript>,
     method_tx: Sender<ScriptMessage>,
-    method_result_tx: Receiver<Value>,
+    method_result_tx: Receiver<Result<Value, ScriptMethodErr>>,
 ) {
     let settings = vm::prelude::Settings::default();
 
@@ -123,7 +123,7 @@ fn script_loop(
     vm: &vm::VirtualMachine,
     start_rx: Receiver<StartScript>,
     method_tx: Sender<ScriptMessage>,
-    method_result_rx: Receiver<Value>,
+    method_result_rx: Receiver<Result<Value, ScriptMethodErr>>,
 ) -> Result<(), Error> {
     while let Ok(start_script) = start_rx.recv() {
         let pygame = PyGame {
