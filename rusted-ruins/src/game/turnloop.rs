@@ -1,7 +1,7 @@
 use super::chara::preturn::preturn;
 use super::chara::CharaExt;
 use super::npc::process_npc_turn;
-use super::DialogOpenRequest;
+use super::{ClosureTrigger, DialogOpenRequest};
 use super::{Game, GameState, InfoGetter};
 use common::gamedata::*;
 
@@ -95,6 +95,14 @@ fn remove_dying_charas(game: &mut Game) -> bool {
                 game.request_dialog_open(DialogOpenRequest::GameOver);
                 return true;
             }
+            // Process closures if registered
+            for closure in game
+                .pop_closure(ClosureTrigger::CharaRemove(cid))
+                .into_iter()
+            {
+                closure(game);
+            }
+
             // Remove dying chara
             game.gd.remove_chara_from_map(cid);
             // If the current target is cid, remove it

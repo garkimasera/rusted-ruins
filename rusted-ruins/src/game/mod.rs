@@ -47,7 +47,7 @@ use common::gobj;
 use common::objholder::ScriptIdx;
 use geom::Coords;
 use script::{ScriptEngine, TalkText};
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 use std::path::PathBuf;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -66,6 +66,7 @@ pub struct Game {
     destroy_anim_queued: bool,
     dialog_open_request: Option<DialogOpenRequest>,
     ui_request: VecDeque<UiRequest>,
+    closures: HashMap<ClosureTrigger, Vec<GameClosure>>,
     pub se: ScriptEngine,
     script_state: ScriptState,
     /// Player's current target of shot and similer actions
@@ -88,6 +89,7 @@ impl Game {
             destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
+            closures: HashMap::new(),
             se,
             script_state: ScriptState::default(),
             target_chara: None,
@@ -107,6 +109,7 @@ impl Game {
             destroy_anim_queued: false,
             dialog_open_request: None,
             ui_request: VecDeque::new(),
+            closures: HashMap::new(),
             se,
             target_chara: None,
             save_dir: None,
@@ -148,6 +151,17 @@ impl Game {
 
     pub fn pop_ui_request(&mut self) -> Option<UiRequest> {
         self.ui_request.pop_front()
+    }
+
+    pub fn push_closure(&mut self, trigger: ClosureTrigger, closure: GameClosure) {
+        self.closures
+            .entry(trigger)
+            .or_insert(Vec::new())
+            .push(closure);
+    }
+
+    pub fn pop_closure(&mut self, trigger: ClosureTrigger) -> Vec<GameClosure> {
+        self.closures.remove(&trigger).unwrap_or_default()
     }
 
     pub fn request_dialog_open(&mut self, req: DialogOpenRequest) {
@@ -242,6 +256,13 @@ pub enum UiRequest {
         effect: Effect,
         callback: Box<dyn Fn(&mut DoPlayerAction<'_>, self::target::Target) + 'static>,
     },
+}
+
+pub type GameClosure = Box<dyn FnOnce(&mut Game)>;
+
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+pub enum ClosureTrigger {
+    CharaRemove(CharaId),
 }
 
 pub mod extrait {
