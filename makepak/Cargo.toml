@@ -14,7 +14,7 @@ serde_with = "2"
 ron = "0.8"
 thiserror = "1"
 tar = "0.4"
-clap = { version = "3", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
 image = "0.24"
 
 tile-geom = { git = "https://github.com/garkimasera/tile-geom.git" }

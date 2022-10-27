@@ -7,11 +7,11 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 [dependencies]
 rusted-ruins-common = { path = "../common", features = ["global_state_obj"] }
 
-gtk = "0.15"
-gdk = "0.15"
-gio = "0.15"
-gdk-pixbuf = "0.15"
-cairo-rs = "0.15"
+gtk = "0.16"
+gdk = "0.16"
+gio = "0.16"
+gdk-pixbuf = "0.16"
+cairo-rs = "0.16"
 tar = "0.4"
 arrayvec = "0.7"
 log = "0.4"
