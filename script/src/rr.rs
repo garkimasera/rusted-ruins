@@ -42,10 +42,9 @@ impl ValueExt for Value {
         } else if let Some(s) = pyvalue.payload::<PyStr>() {
             Value::String(s.as_str().to_owned())
         } else {
-            return Err(vm.new_type_error(format!(
-                "Invalid type value \"{:?}\" for vars/gvars",
-                pyvalue
-            )));
+            return Err(
+                vm.new_type_error(format!("Invalid type value \"{pyvalue:?}\" for vars/gvars"))
+            );
         };
         Ok(value)
     }
@@ -57,16 +56,15 @@ mod _rr {
     use crate::message::ScriptMessage;
     use crate::{GameMethod, TalkText, UiRequest};
     use common::gamedata::{GameData, SkillKind, Value};
-    use rustpython_vm::builtins::PyIntRef;
-    use rustpython_vm::protocol::PySequenceMethods;
-    use rustpython_vm::PyObject;
+    use once_cell::sync::Lazy;
     use rustpython_vm::{
-        builtins::{PyListRef, PyStrRef},
+        atomic_func,
+        builtins::{PyIntRef, PyListRef, PyStrRef},
         convert::ToPyObject,
-        protocol::PyMappingMethods,
+        protocol::{PyMappingMethods, PySequenceMethods},
         pyclass,
         types::{AsMapping, AsSequence},
-        FromArgs, PyObjectRef, PyPayload, PyResult, VirtualMachine,
+        FromArgs, PyObject, PyObjectRef, PyPayload, PyResult, VirtualMachine,
     };
     use std::str::FromStr;
 
@@ -338,7 +336,7 @@ mod _rr {
     #[derive(Debug, PyPayload)]
     pub(crate) struct PyGvars(PyGame);
 
-    #[pyclass(with(AsMapping))]
+    #[pyclass(with(AsMapping, AsSequence))]
     impl PyGvars {
         #[pymethod(magic)]
         fn contains(&self, key: PyObjectRef, vm: &VirtualMachine) -> PyResult<bool> {
@@ -414,25 +412,35 @@ mod _rr {
     }
 
     impl AsMapping for PyGvars {
-        const AS_MAPPING: PyMappingMethods = PyMappingMethods {
-            length: None,
-            subscript: Some(|mapping, key, vm| Self::mapping_downcast(mapping)._getitem(key, vm)),
-            ass_subscript: Some(|mapping, key, value, vm| {
-                let mapping = Self::mapping_downcast(mapping);
-                if let Some(value) = value {
-                    mapping._setitem(key, value, vm)
-                } else {
-                    mapping._delitem(key, vm)
-                }
-            }),
-        };
+        fn as_mapping() -> &'static PyMappingMethods {
+            static AS_MAPPING: Lazy<PyMappingMethods> = Lazy::new(|| PyMappingMethods {
+                subscript: atomic_func!(|mapping, needle, vm| {
+                    PyGvars::mapping_downcast(mapping)._getitem(needle, vm)
+                }),
+                ass_subscript: atomic_func!(|mapping, needle, value, vm| {
+                    let zelf = PyGvars::mapping_downcast(mapping);
+                    if let Some(value) = value {
+                        zelf._setitem(needle, value, vm)
+                    } else {
+                        zelf._delitem(needle, vm)
+                    }
+                }),
+                ..PyMappingMethods::NOT_IMPLEMENTED
+            });
+            &AS_MAPPING
+        }
     }
 
     impl AsSequence for PyGvars {
-        const AS_SEQUENCE: PySequenceMethods = PySequenceMethods {
-            contains: Some(|seq, key, vm| Self::sequence_downcast(seq)._contains(key, vm)),
-            ..PySequenceMethods::NOT_IMPLEMENTED
-        };
+        fn as_sequence() -> &'static PySequenceMethods {
+            static AS_SEQUENCE: Lazy<PySequenceMethods> = Lazy::new(|| PySequenceMethods {
+                contains: atomic_func!(
+                    |seq, target, vm| PyGvars::sequence_downcast(seq)._contains(target, vm)
+                ),
+                ..PySequenceMethods::NOT_IMPLEMENTED
+            });
+            &AS_SEQUENCE
+        }
     }
 
     #[pyattr(name = "Vars")]
@@ -520,24 +528,34 @@ mod _rr {
     }
 
     impl AsMapping for PyVars {
-        const AS_MAPPING: PyMappingMethods = PyMappingMethods {
-            length: None,
-            subscript: Some(|mapping, key, vm| Self::mapping_downcast(mapping)._getitem(key, vm)),
-            ass_subscript: Some(|mapping, key, value, vm| {
-                let mapping = Self::mapping_downcast(mapping);
-                if let Some(value) = value {
-                    mapping._setitem(key, value, vm)
-                } else {
-                    mapping._delitem(key, vm)
-                }
-            }),
-        };
+        fn as_mapping() -> &'static PyMappingMethods {
+            static AS_MAPPING: Lazy<PyMappingMethods> = Lazy::new(|| PyMappingMethods {
+                subscript: atomic_func!(|mapping, needle, vm| {
+                    PyGvars::mapping_downcast(mapping)._getitem(needle, vm)
+                }),
+                ass_subscript: atomic_func!(|mapping, needle, value, vm| {
+                    let zelf = PyGvars::mapping_downcast(mapping);
+                    if let Some(value) = value {
+                        zelf._setitem(needle, value, vm)
+                    } else {
+                        zelf._delitem(needle, vm)
+                    }
+                }),
+                ..PyMappingMethods::NOT_IMPLEMENTED
+            });
+            &AS_MAPPING
+        }
     }
 
     impl AsSequence for PyVars {
-        const AS_SEQUENCE: PySequenceMethods = PySequenceMethods {
-            contains: Some(|seq, key, vm| Self::sequence_downcast(seq)._contains(key, vm)),
-            ..PySequenceMethods::NOT_IMPLEMENTED
-        };
+        fn as_sequence() -> &'static PySequenceMethods {
+            static AS_SEQUENCE: Lazy<PySequenceMethods> = Lazy::new(|| PySequenceMethods {
+                contains: atomic_func!(
+                    |seq, target, vm| PyGvars::sequence_downcast(seq)._contains(target, vm)
+                ),
+                ..PySequenceMethods::NOT_IMPLEMENTED
+            });
+            &AS_SEQUENCE
+        }
     }
 }

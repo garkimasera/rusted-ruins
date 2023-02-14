@@ -36,7 +36,7 @@ pub fn compile(files: &[PathBuf], output_file: &Path) {
             Err(e) => {
                 eprintln!("Cannot process \"{}\"", f.to_string_lossy());
                 for e in e.chain() {
-                    eprintln!("{}", e);
+                    eprintln!("{e}");
                 }
                 continue;
             }
@@ -56,7 +56,7 @@ fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object> {
         s
     };
 
-    print_verbose(|| format!("Processing \"{:?}\"", path));
+    print_verbose(|| format!("Processing \"{path:?}\""));
 
     let ext = if let Some(ext) = path.extension() {
         ext
@@ -73,7 +73,7 @@ fn read_input_file<P: AsRef<Path>>(path: P) -> Result<Object> {
         bail!("invalid input file type: {}", path.to_string_lossy());
     };
 
-    print_verbose(|| format!("{:?}", input));
+    print_verbose(|| format!("{input:?}"));
     let object = build_object(input)?;
 
     Ok(object)

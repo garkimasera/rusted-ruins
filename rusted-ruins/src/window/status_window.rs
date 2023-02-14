@@ -141,10 +141,10 @@ impl StatusWindow {
         } else {
             chara.to_text().into()
         };
-        let name_label = LabelWidget::new(cfg.name_label_rect, &chara_name, FontKind::M);
+        let name_label = LabelWidget::new(cfg.name_label_rect, chara_name, FontKind::M);
         let faction_label = LabelWidget::new(
             cfg.faction_label_rect,
-            &format!(
+            format!(
                 "{}  {}",
                 ui_txt("label_text-status-faction"),
                 chara.faction.to_text()
@@ -153,57 +153,57 @@ impl StatusWindow {
         );
         let lv_label = LabelWidget::new(
             cfg.lv_label_rect,
-            &format!("Lv. {}", chara.lv),
+            format!("Lv. {}", chara.lv),
             FontKind::MonoM,
         );
         let hp_label = LabelWidget::new(
             cfg.hp_label_rect,
-            &format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
+            format!("HP  {} / {}", chara.hp, chara.attr.max_hp),
             FontKind::MonoM,
         );
         let mp_label = LabelWidget::new(
             cfg.mp_label_rect,
-            &format!("MP  {} / {}", chara.mp, chara.attr.max_mp),
+            format!("MP  {} / {}", chara.mp, chara.attr.max_mp),
             FontKind::MonoM,
         );
         let sp_label = LabelWidget::new(
             cfg.sp_label_rect,
-            &format!("SP  {:2.0}", chara.sp),
+            format!("SP  {:2.0}", chara.sp),
             FontKind::MonoM,
         );
         let str_label = LabelWidget::new(
             cfg.str_label_rect,
-            &format!("STR  {}", chara.attr.str),
+            format!("STR  {}", chara.attr.str),
             FontKind::MonoM,
         );
         let vit_label = LabelWidget::new(
             cfg.vit_label_rect,
-            &format!("VIT  {}", chara.attr.vit),
+            format!("VIT  {}", chara.attr.vit),
             FontKind::MonoM,
         );
         let dex_label = LabelWidget::new(
             cfg.dex_label_rect,
-            &format!("DEX  {}", chara.attr.dex),
+            format!("DEX  {}", chara.attr.dex),
             FontKind::MonoM,
         );
         let int_label = LabelWidget::new(
             cfg.int_label_rect,
-            &format!("INT  {}", chara.attr.int),
+            format!("INT  {}", chara.attr.int),
             FontKind::MonoM,
         );
         let wil_label = LabelWidget::new(
             cfg.wil_label_rect,
-            &format!("WIL  {}", chara.attr.wil),
+            format!("WIL  {}", chara.attr.wil),
             FontKind::MonoM,
         );
         let cha_label = LabelWidget::new(
             cfg.cha_label_rect,
-            &format!("CHA  {}", chara.attr.cha),
+            format!("CHA  {}", chara.attr.cha),
             FontKind::MonoM,
         );
         let spd_label = LabelWidget::new(
             cfg.spd_label_rect,
-            &format!("SPD  {}", chara.attr.spd),
+            format!("SPD  {}", chara.attr.spd),
             FontKind::MonoM,
         );
         let mut y = cfg.power_labels_rect.y - cfg.power_labels_icon_rect.h as i32;
@@ -236,7 +236,7 @@ impl StatusWindow {
             .collect();
         let carry_label = LabelWidget::new(
             cfg.carry_label_rect,
-            &format!(
+            format!(
                 "{}  {}",
                 ui_txt("label_text-status-carry"),
                 ct.base_attr.carry
@@ -245,7 +245,7 @@ impl StatusWindow {
         );
         let travel_speed_label = LabelWidget::new(
             cfg.travel_speed_label_rect,
-            &format!(
+            format!(
                 "{}  {}",
                 ui_txt("label_text-status-travel_speed"),
                 ct.base_attr.travel_speed
@@ -350,11 +350,11 @@ impl SkillWindow {
                 let skill_name =
                     TextCache::new(skill_kind.to_text(), FontKind::M, UI_CFG.color.normal_font);
                 let skill_level = if adj == 0 {
-                    format!("Lv. {}", lv)
+                    format!("Lv. {lv}")
                 } else if adj < 0 {
                     format!("Lv. {} - {}", lv, -adj)
                 } else {
-                    format!("Lv. {} + {}", lv, adj)
+                    format!("Lv. {lv} + {adj}")
                 };
                 let skill_level =
                     TextCache::new(skill_level, FontKind::M, UI_CFG.color.normal_font);

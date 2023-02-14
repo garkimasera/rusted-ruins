@@ -231,13 +231,13 @@ impl std::fmt::Display for ItemKind {
             ItemKind::Module => "module",
             ItemKind::Object => "object",
             ItemKind::Weapon(weapon_kind) => {
-                return write!(f, "{}", weapon_kind);
+                return write!(f, "{weapon_kind}");
             }
             ItemKind::Armor(armor_kind) => {
-                return write!(f, "{}", armor_kind);
+                return write!(f, "{armor_kind}");
             }
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 
@@ -323,7 +323,7 @@ impl std::fmt::Display for ArmorKind {
             ArmorKind::ArmorPlate => "armor_plate",
             ArmorKind::Accessory => "accessory",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 
@@ -686,7 +686,7 @@ impl SlotInfo {
     }
 }
 
-pub const MAX_SLOT_NUM_PER_KIND: usize = crate::basic::MAX_EQUIP_SLOT as usize;
+pub const MAX_SLOT_NUM_PER_KIND: usize = crate::basic::MAX_EQUIP_SLOT;
 
 impl EquipItemList {
     pub fn new(slots: &[EquipSlotKind]) -> EquipItemList {

@@ -23,7 +23,7 @@ impl Materials {
             material
         } else {
             static MATERIAL: Lazy<Material> = Lazy::new(Material::default);
-            &*MATERIAL
+            &MATERIAL
         }
     }
 

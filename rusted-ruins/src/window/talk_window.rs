@@ -61,7 +61,7 @@ impl TalkWindow {
         trace!("talk window update {:?}", &talk_text);
 
         if let Some(talk_text) = talk_text {
-            self.msg_text = MsgText::new(&*talk_text.text_id);
+            self.msg_text = MsgText::new(&talk_text.text_id);
             self.choose_win = None;
 
             let cid = talk_text.target_chara.as_ref().and_then(|target_chara| {

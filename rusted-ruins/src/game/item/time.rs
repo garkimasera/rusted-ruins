@@ -69,7 +69,7 @@ fn update_item_list_time(gd: &mut GameData, ill: ItemListLocation) {
             UpdateTimeResult::None => (),
             UpdateTimeResult::Transform(item, n_gen, n_remove) => {
                 items_to_add.push((item, n_gen));
-                items_to_remove.push((i as u32, n_remove));
+                items_to_remove.push((i, n_remove));
             }
         }
     }

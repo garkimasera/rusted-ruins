@@ -247,7 +247,7 @@ impl CreationDetailDialog {
                 facility_item.to_text()
             )
         } else if let Some(facility_name) = recipe.facility.as_ref() {
-            let text_id = format!("facility-{}", facility_name);
+            let text_id = format!("facility-{facility_name}");
             format!(
                 "{}: {}",
                 ui_txt("label_text-creation-required-facility"),
@@ -256,7 +256,7 @@ impl CreationDetailDialog {
         } else {
             ui_txt("label_text-creation-no-required-facility")
         };
-        let facility_label = LabelWidget::new(c.facility_label_rect, &label, FontKind::M);
+        let facility_label = LabelWidget::new(c.facility_label_rect, label, FontKind::M);
 
         let (enough_ingredients_icon, enough_ingredients_label) =
             ("!icon-ng", "label_text-creation-not-enough-ingredients");
@@ -264,7 +264,7 @@ impl CreationDetailDialog {
             ImageWidget::ui_img(c.enough_ingredients_icon_rect, enough_ingredients_icon);
         let enough_ingredients_label = LabelWidget::new(
             c.enough_ingredients_label_rect,
-            &ui_txt(enough_ingredients_label),
+            ui_txt(enough_ingredients_label),
             FontKind::M,
         );
 
@@ -282,7 +282,7 @@ impl CreationDetailDialog {
         );
         let required_skill_label = LabelWidget::new(
             c.required_skill_label_rect,
-            &required_skill_label,
+            required_skill_label,
             FontKind::M,
         );
 
@@ -294,7 +294,7 @@ impl CreationDetailDialog {
             available_material,
             selected_material: 0,
             available_skill_facility: possible,
-            product_name: LabelWidget::new(c.product_name, &obj_txt(&recipe.product), FontKind::M),
+            product_name: LabelWidget::new(c.product_name, obj_txt(&recipe.product), FontKind::M),
             list,
             start_button: None,
             cancel_button,
@@ -330,11 +330,8 @@ impl CreationDetailDialog {
                         let msg = ui_txt_format!(
                             "list_item_text-creation-no_ingredient"; group=material_group_name);
                         let item_name = TextCache::new(msg, FontKind::M, UI_CFG.color.normal_font);
-                        let item_n = TextCache::new(
-                            format!("0/{}", n),
-                            FontKind::M,
-                            UI_CFG.color.normal_font,
-                        );
+                        let item_n =
+                            TextCache::new(format!("0/{n}"), FontKind::M, UI_CFG.color.normal_font);
                         return (IconIdx::from(icon_idx), item_name, item_n);
                     }
                 } else {
@@ -356,7 +353,7 @@ impl CreationDetailDialog {
                     UI_CFG.color.normal_font,
                 );
                 let item_n = TextCache::new(
-                    format!("{}/{}", total, n),
+                    format!("{total}/{n}"),
                     FontKind::M,
                     UI_CFG.color.normal_font,
                 );
@@ -374,13 +371,13 @@ impl CreationDetailDialog {
             ImageWidget::ui_img(c.enough_ingredients_icon_rect, enough_ingredients_icon);
         self.enough_ingredients_label = LabelWidget::new(
             c.enough_ingredients_label_rect,
-            &ui_txt(enough_ingredients_label),
+            ui_txt(enough_ingredients_label),
             FontKind::M,
         );
         self.start_button = if enough_ingredients && self.available_skill_facility {
             Some(ButtonWidget::new(
                 c.start_button_rect,
-                &ui_txt("button_text-creation-start"),
+                ui_txt("button_text-creation-start"),
                 FontKind::M,
             ))
         } else {

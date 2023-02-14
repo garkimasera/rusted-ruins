@@ -71,7 +71,7 @@ impl MusicTable {
             *current_music = Some(name.to_owned());
             Ok(())
         } else {
-            Err(format!("Unknown music \"{}\"", name))
+            Err(format!("Unknown music \"{name}\""))
         }
     }
 }

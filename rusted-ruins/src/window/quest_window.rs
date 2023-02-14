@@ -178,14 +178,14 @@ impl QuestWindow {
         let desc_text = match &self.mode {
             QuestWindowMode::List { quests } => match quests.get(i as usize) {
                 Some(QuestKind::Custom(i)) => {
-                    if let Some(custom_quest) = &gd.quest.custom_quests.get(*i as usize) {
+                    if let Some(custom_quest) = &gd.quest.custom_quests.get(*i) {
                         custom_quest_desc_text(custom_quest)
                     } else {
                         return;
                     }
                 }
                 Some(QuestKind::Town(i)) => {
-                    if let Some((_, town_quest)) = &gd.quest.town_quests.get(*i as usize) {
+                    if let Some((_, town_quest)) = &gd.quest.town_quests.get(*i) {
                         town_quest_desc_text(town_quest)
                     } else {
                         return;

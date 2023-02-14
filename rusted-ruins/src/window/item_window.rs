@@ -444,7 +444,7 @@ impl ItemWindow {
                 - UI_CFG.vscroll_widget.width;
             let t2 = LabelWidget::new(
                 Rect::new(0, 0, w, UI_CFG.list_widget.h_row_default),
-                &additional_info,
+                additional_info,
                 FontKind::M,
             )
             .right();

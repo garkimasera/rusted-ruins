@@ -66,9 +66,7 @@ fn load_png(img: &Img) -> PixbufSet {
     let pixbuf_icon = if img.grid_nx == 1 && img.grid_ny == 1 {
         pixbuf.clone()
     } else {
-        pixbuf
-            .new_subpixbuf(0, 0, img.w as i32, img.h as i32)
-            .expect(ERR_MSG)
+        pixbuf.new_subpixbuf(0, 0, img.w as i32, img.h as i32)
     };
 
     PixbufSet {

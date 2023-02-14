@@ -258,7 +258,7 @@ impl DialogWindow for EquipMenu {
 
                     match item {
                         EquipMenuItem::Remove => {
-                            pa.remove_equipment(self.cid, (self.esk, self.i as u8));
+                            pa.remove_equipment(self.cid, (self.esk, self.i));
                             DialogResult::Special(SpecialDialogResult::ItemListUpdate)
                         }
                         EquipMenuItem::Information => {

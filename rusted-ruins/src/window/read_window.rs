@@ -30,7 +30,7 @@ impl ReadWindow {
         let n_page = text.len();
         let page_label = format!("{} / {}", 1, n_page);
         let page_label =
-            LabelWidget::new(cfg.page_label_rect, &page_label, FontKind::Talk).centering();
+            LabelWidget::new(cfg.page_label_rect, page_label, FontKind::Talk).centering();
 
         ReadWindow {
             rect,

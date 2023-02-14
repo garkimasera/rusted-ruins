@@ -62,7 +62,7 @@ impl GameInfoWindow {
 
         let money_label = LabelWidget::new(
             cfg.money_label_rect,
-            &format!("{} {}", game.gd.player.money(), obj_txt("!silver")),
+            format!("{} {}", game.gd.player.money(), obj_txt("!silver")),
             FontKind::M,
         );
 

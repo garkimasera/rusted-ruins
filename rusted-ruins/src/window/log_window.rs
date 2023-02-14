@@ -36,7 +36,7 @@ impl Window for LogWindow {
         self.line_cache.update();
 
         let end = self.line_cache.lines.len();
-        let n_display_line = UI_CFG.log_window.n_display_line as usize;
+        let n_display_line = UI_CFG.log_window.n_display_line;
         let start = if end > n_display_line {
             end - n_display_line
         } else {

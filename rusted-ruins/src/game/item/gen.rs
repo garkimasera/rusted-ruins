@@ -46,7 +46,7 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f32>(
         } else {
             item.gen_weight
         };
-        sum += weight_dist.calc(item.gen_level) * gen_weight as f32 * f(item);
+        sum += weight_dist.calc(item.gen_level) * gen_weight * f(item);
         if first_available_item_idx.is_none() {
             first_available_item_idx = Some(i);
         }
@@ -65,7 +65,7 @@ fn choose_item_by_floor_level<F: FnMut(&ItemObject) -> f32>(
         } else {
             item.gen_weight
         };
-        sum += weight_dist.calc(item.gen_level) * gen_weight as f32 * f(item);
+        sum += weight_dist.calc(item.gen_level) * gen_weight * f(item);
         if r < sum {
             return Some(ItemIdx::from_usize(i));
         }

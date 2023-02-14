@@ -24,7 +24,7 @@ pub static OBJ_HOLDER_HASH: Lazy<u64> = Lazy::new(|| {
 });
 
 pub fn get_objholder() -> &'static ObjectHolder {
-    &*OBJ_HOLDER
+    &OBJ_HOLDER
 }
 
 pub fn get_obj<T: ObjectIndex>(idx: T) -> &'static T::ObjectType {
@@ -52,7 +52,7 @@ pub fn get_by_id<T: FromId>(id: &str) -> &'static T {
     if let Some(s) = T::get_obj_from_objholder_by_id(id, &OBJ_HOLDER) {
         s
     } else {
-        eprintln!("Object \"{}\" is not found", id);
+        eprintln!("Object \"{id}\" is not found");
         panic!();
     }
 }

@@ -15,5 +15,5 @@ pub fn print_verbose<F: FnOnce() -> String>(f: F) {
     }
 
     let s = f();
-    println!("{}", s);
+    println!("{s}");
 }

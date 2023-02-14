@@ -83,7 +83,7 @@ impl MainWinDrawer {
         let digit_w = DIGIT_DRAW_INFO.digit_w;
         let digit_h = DIGIT_DRAW_INFO.digit_h;
 
-        let s = format!("{}", value);
+        let s = format!("{value}");
         let string_w = s.len() as i32 * digit_w;
         let tile_rect = self.tile_rect(pos, 0, 0);
         let top_left_x = tile_rect.x + (tile_rect.w - string_w) / 2;

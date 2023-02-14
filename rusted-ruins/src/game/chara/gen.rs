@@ -83,7 +83,7 @@ pub fn choose_npc_chara_template(
             .iter_ids(&ct.race)
             .filter_map(|race_id| nrp.get(race_id).copied())
             .reduce(f32::max)
-            .map(|p| weight_dist.calc(ct.gen_level) * ct.gen_weight as f32 * p)
+            .map(|p| weight_dist.calc(ct.gen_level) * ct.gen_weight * p)
             .unwrap_or(0.0)
     };
 

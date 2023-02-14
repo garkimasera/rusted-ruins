@@ -228,7 +228,7 @@ impl<'de> Visitor<'de> for DurationVisitor {
     {
         static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]+)([dhms])$").unwrap());
 
-        let err_msg = || de::Error::custom(format!("invalid duration string \"{}\"", s));
+        let err_msg = || de::Error::custom(format!("invalid duration string \"{s}\""));
 
         let caps = RE.captures(s).ok_or_else(err_msg)?;
 

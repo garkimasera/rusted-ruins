@@ -117,7 +117,7 @@ impl ItemInfoText {
                     desc_text.push((UI_IMG_ID_ITEM_INFO, m.to_text().into()));
                 }
                 ItemObjAttr::Facility { ty, quality } => {
-                    let ty = misc_txt(&format!("facility-{}", ty));
+                    let ty = misc_txt(&format!("facility-{ty}"));
                     let t = misc_txt_format!(
                         "item_info_text-facility"; ty=ty, quality=quality);
                     desc_text.push((UI_IMG_ID_ITEM_INFO, t));

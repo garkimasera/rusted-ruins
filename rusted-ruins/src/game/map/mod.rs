@@ -67,7 +67,7 @@ impl Map {
             observed_tile.special = tile.special;
             observed_tile.items.clear();
 
-            for &(ref item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
+            for (item, _) in tile.item_list.iter().take(MAX_ITEM_FOR_DRAW) {
                 observed_tile.items.push((item.idx, item.img_variation()));
             }
         }

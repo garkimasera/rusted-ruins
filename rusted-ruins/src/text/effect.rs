@@ -27,7 +27,7 @@ impl EffectText {
         hit: f32,
     ) -> (&'static str, String) {
         let power = format!("{:.0}", power * self.power_factor);
-        let hit = format!("{:.0}", hit);
+        let hit = format!("{hit:.0}");
 
         match effect_kind {
             EffectKind::None => ("!", misc_txt("effect_kind-none")),

@@ -48,7 +48,7 @@ impl AbilityWindow {
 
             let cost_w = rect.width() - cfg.column_pos[1] as u32 - UI_CFG.vscroll_widget.width;
             let cost_label = LabelWidget::new(
-                Rect::new(0, 0, cost_w as u32, UI_CFG.list_widget.h_row_default),
+                Rect::new(0, 0, cost_w, UI_CFG.list_widget.h_row_default),
                 cost,
                 FontKind::M,
             )

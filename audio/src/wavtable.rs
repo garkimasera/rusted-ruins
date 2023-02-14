@@ -47,7 +47,7 @@ impl WavTable {
             self.channel.play(chunk, 0)?;
             Ok(())
         } else {
-            Err(format!("Unknown sound effect \"{}\"", name))
+            Err(format!("Unknown sound effect \"{name}\""))
         }
     }
 }

@@ -78,7 +78,7 @@ pub fn gen_box_id(gd: &GameData) -> u64 {
         // Check generated name is not used
         let mut path = get_each_save_dir(gd);
         path.push("maps");
-        path.push(format!("{:016x}", s));
+        path.push(format!("{s:016x}"));
         if !path.exists() {
             return s;
         }

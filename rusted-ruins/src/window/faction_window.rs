@@ -26,7 +26,7 @@ impl FactionWindow {
             ),
             LabelWidget::new(
                 Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),
-                &ui_txt("list_header-relation"),
+                ui_txt("list_header-relation"),
                 FontKind::M,
             ),
         );
@@ -50,7 +50,7 @@ impl FactionWindow {
                 let relation = format!("{}", Into::<i16>::into(*relation));
                 let relation = LabelWidget::new(
                     Rect::new(0, 0, column1_width, UI_CFG.list_widget.h_row_default),
-                    &relation,
+                    relation,
                     FontKind::M,
                 )
                 .right();

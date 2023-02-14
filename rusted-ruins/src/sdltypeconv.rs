@@ -21,7 +21,7 @@ impl From<CfgRect> for Rect {
             (SCREEN_CFG.screen_h - value.h) as i32 / 2
         } else if value.y == CENTERING_POS {
             let tab_h = TAB_ICON_H + TAB_TEXT_H;
-            if value.h + tab_h < SCREEN_CFG.main_window.h as u32 {
+            if value.h + tab_h < SCREEN_CFG.main_window.h {
                 SCREEN_CFG.main_window.y
                     + (SCREEN_CFG.main_window.h - value.h) as i32 / 2
                     + tab_h as i32 / 2

@@ -43,13 +43,13 @@ impl WindowPos {
         let h = h as i32;
 
         let x = match self.h {
-            WindowHPos::Center => (parent_w - w) as i32 / 2,
+            WindowHPos::Center => (parent_w - w) / 2,
             WindowHPos::LeftMargin(m) => m,
             WindowHPos::RightMargin(m) => parent_w - w - m,
             WindowHPos::RightX(x) => x - w,
         };
         let y = match self.v {
-            WindowVPos::Center => (parent_h - h) as i32 / 2,
+            WindowVPos::Center => (parent_h - h) / 2,
             WindowVPos::TopMargin(m) => m,
             WindowVPos::BottomMargin(m) => parent_h - h - m,
         };

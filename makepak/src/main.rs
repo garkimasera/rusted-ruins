@@ -59,5 +59,5 @@ fn main() {
 }
 
 fn print_info(files: &[PathBuf]) {
-    println!("Information of {:?} will be printed", files);
+    println!("Information of {files:?} will be printed");
 }

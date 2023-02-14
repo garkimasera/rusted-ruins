@@ -153,8 +153,8 @@ pub fn build_ui(application: &gtk::Application) {
             let pos = uic.get_map_pos();
             crate::draw_map::draw_map(
                 context,
-                &*map,
-                &*uic.pbh,
+                &map,
+                &uic.pbh,
                 width,
                 height,
                 pos,
@@ -229,7 +229,7 @@ pub fn build_ui(application: &gtk::Application) {
                 let new_map = EditingMap::new(&new_map_id, width, height);
                 *uic.map.borrow_mut() = new_map;
                 uic.set_signal_mode(false);
-                uic.property_controls.update(&*uic.map.borrow());
+                uic.property_controls.update(&uic.map.borrow());
                 uic.set_signal_mode(true);
                 uic.map_redraw();
                 *uic.filepath.borrow_mut() = None;
@@ -247,7 +247,7 @@ pub fn build_ui(application: &gtk::Application) {
                             *uic.map.borrow_mut() = EditingMap::from(mapobj);
                         }
                         uic.set_signal_mode(false);
-                        uic.property_controls.update(&*uic.map.borrow());
+                        uic.property_controls.update(&uic.map.borrow());
                         uic.set_signal_mode(true);
                         uic.reset_map_size(uic.map.borrow().width, uic.map.borrow().height);
                         *uic.filepath.borrow_mut() = Some(path);
@@ -489,7 +489,7 @@ fn on_motion(ui: &Ui, em: &gdk::EventMotion, w: i32, h: i32) {
     }
     // Update cursor position display
     let (ix, iy) = ui.cursor_to_tile_pos(pos);
-    let text = format!("({},{})", ix, iy);
+    let text = format!("({ix},{iy})");
     ui.label_cursor_pos.set_text(&text);
 }
 
@@ -503,7 +503,7 @@ fn file_open(ui: &Ui) -> Option<PathBuf> {
         ("Open", gtk::ResponseType::Ok),
         ("Cancel", gtk::ResponseType::Cancel),
     ]);
-    file_chooser.add_filter(&create_file_filter());
+    file_chooser.add_filter(create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.filename().expect("Couldn't get filename");
         file_chooser.close();
@@ -524,7 +524,7 @@ fn file_save_as(ui: &Ui) -> Option<PathBuf> {
         ("Save", gtk::ResponseType::Ok),
         ("Cancel", gtk::ResponseType::Cancel),
     ]);
-    file_chooser.add_filter(&create_file_filter());
+    file_chooser.add_filter(create_file_filter());
     if file_chooser.run() == gtk::ResponseType::Ok {
         let filename = file_chooser.filename().expect("Couldn't get filename");
         file_chooser.close();
@@ -579,9 +579,9 @@ fn try_write(ui: &Ui, pos: (f64, f64)) {
                 ui.property_controls.selected_tile.set(Coords(ix, iy));
                 ui.property_controls
                     .label_selected_tile
-                    .set_text(&format!("Selected Tile ({}, {})", ix, iy));
+                    .set_text(&format!("Selected Tile ({ix}, {iy})"));
                 ui.set_signal_mode(false);
-                ui.property_controls.update(&*ui.map.borrow());
+                ui.property_controls.update(&ui.map.borrow());
                 ui.set_signal_mode(true);
             }
         }

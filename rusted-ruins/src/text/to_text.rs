@@ -29,7 +29,7 @@ impl ToText for FactionId {
             s
         };
 
-        misc_txt(&format!("faction-{}", s)).into()
+        misc_txt(&format!("faction-{s}")).into()
     }
 }
 
@@ -77,7 +77,7 @@ impl ToText for Item {
 
         if let Some(title) = self.title() {
             if let Some(title) = super::readable::readable_title_txt(title) {
-                write!(text, " <{}>", title).unwrap();
+                write!(text, " <{title}>").unwrap();
             }
         }
 
@@ -124,13 +124,13 @@ impl ToText for CharaTrait {
 impl ToText for CharaModifier {
     fn to_text(&self) -> Cow<'_, str> {
         match self {
-            CharaModifier::Str(value) => format!("STR {:+}", value),
-            CharaModifier::Vit(value) => format!("VIT {:+}", value),
-            CharaModifier::Dex(value) => format!("DEX {:+}", value),
-            CharaModifier::Int(value) => format!("INT {:+}", value),
-            CharaModifier::Wil(value) => format!("WIL {:+}", value),
-            CharaModifier::Cha(value) => format!("CHA {:+}", value),
-            CharaModifier::Spd(value) => format!("SPD {:+}", value),
+            CharaModifier::Str(value) => format!("STR {value:+}"),
+            CharaModifier::Vit(value) => format!("VIT {value:+}"),
+            CharaModifier::Dex(value) => format!("DEX {value:+}"),
+            CharaModifier::Int(value) => format!("INT {value:+}"),
+            CharaModifier::Wil(value) => format!("WIL {value:+}"),
+            CharaModifier::Cha(value) => format!("CHA {value:+}"),
+            CharaModifier::Spd(value) => format!("SPD {value:+}"),
             CharaModifier::Defence { element, value } => {
                 format!("Defence {} {:+}", element.to_text(), value)
             }
@@ -145,7 +145,7 @@ impl ToText for CharaModifier {
 impl ToText for ModuleEffect {
     fn to_text(&self) -> Cow<'_, str> {
         match self {
-            ModuleEffect::Ability { group } => misc_txt(&format!("ability_group-{}", group)).into(),
+            ModuleEffect::Ability { group } => misc_txt(&format!("ability_group-{group}")).into(),
             ModuleEffect::Extend(effect) => match effect {
                 ExtendModuleEffect::Chara(chara_modifier) => chara_modifier.to_text(),
                 ExtendModuleEffect::Weapon(_weapon_modifier) => todo!(),

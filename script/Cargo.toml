@@ -7,6 +7,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1"
 crossbeam-channel = "0.5"
+crossbeam-utils = "0.8.9"
 log = "0.4"
 nom = "7"
 once_cell = "1"
@@ -18,6 +19,6 @@ rusted-ruins-rng = { path = "../rng" }
 
 [dependencies.rustpython-vm]
 git = "https://github.com/RustPython/RustPython.git"
-rev = "2a26ed00964b900d247d6a8478d8cd24b13cc096"
+tag = "v0.2.0"
 default-features = false
 features = ["threading", "compiler", "parser"]

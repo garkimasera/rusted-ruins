@@ -210,7 +210,7 @@ fn load_main_config_file() -> Result<Config> {
         }
 
         info!("creating config file for {}", path.display());
-        if let Err(e) = std::fs::write(&path, &config_string) {
+        if let Err(e) = std::fs::write(&path, config_string) {
             bail!(
                 "cannot create config file \"{}\"\n{}",
                 path.to_string_lossy(),

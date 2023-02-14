@@ -7,14 +7,14 @@ authors = ["T. Okubo <t.okubo.rx78+devel@gmail.com>"]
 [dependencies]
 rusted-ruins-common = { path = "../common", features = ["global_state_obj"] }
 
-gtk = "0.16"
-gdk = "0.16"
-gio = "0.16"
-gdk-pixbuf = "0.16"
-cairo-rs = "0.16"
+gtk = "0.17"
+gdk = "0.17"
+gio = "0.17"
+gdk-pixbuf = "0.17"
+cairo-rs = "0.17"
 tar = "0.4"
 arrayvec = "0.7"
 log = "0.4"
-env_logger = "0.9"
+env_logger = "0.10"
 
 tile-geom = { git = "https://github.com/garkimasera/tile-geom.git" }

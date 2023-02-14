@@ -36,7 +36,7 @@ impl VScrollWidget {
         let up_button_rect = Rect::new(rect.x, rect.y, cfg.width, cfg.button_height);
         let down_button_rect = Rect::new(
             rect.x,
-            rect.bottom() as i32 - cfg.button_height as i32,
+            rect.bottom() - cfg.button_height as i32,
             cfg.width,
             cfg.button_height,
         );

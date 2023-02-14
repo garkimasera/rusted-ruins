@@ -133,7 +133,7 @@ impl std::fmt::Display for ItemSelector {
             } else {
                 need_comma = true;
             }
-            write!(f, "kind/{}", kind)?;
+            write!(f, "kind/{kind}")?;
         }
 
         if self.weapon {
@@ -160,7 +160,7 @@ impl std::fmt::Display for ItemSelector {
             } else {
                 need_comma = true;
             }
-            write!(f, "group/{}", group)?;
+            write!(f, "group/{group}")?;
         }
 
         for id in &self.ids {
@@ -169,7 +169,7 @@ impl std::fmt::Display for ItemSelector {
             } else {
                 need_comma = true;
             }
-            write!(f, "{}", id)?;
+            write!(f, "{id}")?;
         }
 
         Ok(())

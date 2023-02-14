@@ -19,7 +19,7 @@ impl GameData {
         let save_dir = path.as_ref();
 
         // Create directory
-        create_dir_all(&save_dir)?;
+        create_dir_all(save_dir)?;
 
         // Write id table file
         let mut file = BufWriter::new(File::create(save_dir.join("idtable"))?);

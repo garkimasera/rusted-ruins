@@ -16,7 +16,7 @@ pub fn create_dialog_from_request(
 ) -> Option<Box<dyn DialogWindow>> {
     Some(match req {
         DialogOpenRequest::YesNo { mut callback, msg } => {
-            let msgdialog = msg_dialog::MsgDialog::with_yesno(&*msg, move |pa, n| {
+            let msgdialog = msg_dialog::MsgDialog::with_yesno(&msg, move |pa, n| {
                 callback(pa, n == 0);
                 super::DialogResult::Close
             });

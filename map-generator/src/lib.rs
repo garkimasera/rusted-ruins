@@ -193,7 +193,7 @@ impl std::fmt::Display for GeneratedMap {
                     }
                 };
 
-                write!(f, "{}", c)?;
+                write!(f, "{c}")?;
             }
             writeln!(f)?;
         }

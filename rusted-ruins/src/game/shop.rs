@@ -26,11 +26,9 @@ pub fn buy_item(gd: &mut GameData, il: ItemLocation) {
             price as u32 / ((player_negotiation + 1) * 5),
             RULES.exp.negotiation_max,
         );
-        gd.chara.get_mut(CharaId::Player).add_skill_exp(
-            SkillKind::Negotiation,
-            exp as u32,
-            player_lv,
-        );
+        gd.chara
+            .get_mut(CharaId::Player)
+            .add_skill_exp(SkillKind::Negotiation, exp, player_lv);
     } else {
         game_log!("shop-lack-of-money"; chara=gd.chara.get(CharaId::Player));
     }
@@ -51,7 +49,7 @@ pub fn sell_item(gd: &mut GameData, il: ItemLocation) {
     );
     gd.chara
         .get_mut(CharaId::Player)
-        .add_skill_exp(SkillKind::Negotiation, exp as u32, player_lv);
+        .add_skill_exp(SkillKind::Negotiation, exp, player_lv);
 }
 
 /// Update shop states

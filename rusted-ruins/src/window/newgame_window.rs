@@ -451,7 +451,7 @@ impl ChooseTraitDialog {
                 (
                     IconIdx::empty(),
                     TextCache::new(
-                        text::misc_txt(&format!("trait-{}", t)),
+                        text::misc_txt(&format!("trait-{t}")),
                         FontKind::M,
                         UI_CFG.color.normal_font,
                     ),
@@ -462,7 +462,7 @@ impl ChooseTraitDialog {
                             UI_CFG.newgame_dialog.cost_label_width,
                             UI_CFG.list_widget.h_row_default,
                         ),
-                        &format!("{:+}", -RULES.chara_traits.get(t).cost),
+                        format!("{:+}", -RULES.chara_traits.get(t).cost),
                         FontKind::M,
                     ),
                 )
@@ -515,9 +515,7 @@ impl ChooseTraitDialog {
                     .enumerate()
                     .filter_map(|(i, &s)| {
                         if s {
-                            Some(CharaTrait::Id(
-                                RULES.newgame.trait_choices[i as usize].clone(),
-                            ))
+                            Some(CharaTrait::Id(RULES.newgame.trait_choices[i].clone()))
                         } else {
                             None
                         }

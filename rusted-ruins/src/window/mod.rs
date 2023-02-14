@@ -90,16 +90,16 @@ impl std::fmt::Debug for DialogResult {
         match self {
             DialogResult::Continue => f.write_str("Continue"),
             DialogResult::Close => f.write_str("Close"),
-            DialogResult::CloseWithValue(v) => f.write_fmt(format_args!("CloseWithValue({:?})", v)),
+            DialogResult::CloseWithValue(v) => f.write_fmt(format_args!("CloseWithValue({v:?})")),
             DialogResult::CloseAll => f.write_str("CloseAll"),
             DialogResult::CloseAllAndReprocess(c) => {
-                f.write_fmt(format_args!("CloseAllAndReprocess({:?})", c))
+                f.write_fmt(format_args!("CloseAllAndReprocess({c:?})"))
             }
             DialogResult::CloseAndOpen(_) => f.write_str("CloseAndOpen"),
-            DialogResult::Command(c) => f.write_fmt(format_args!("Command({:?})", c)),
+            DialogResult::Command(c) => f.write_fmt(format_args!("Command({c:?})")),
             DialogResult::Quit => f.write_str("Quit"),
             DialogResult::OpenChildDialog(_) => f.write_str("OpenChildDialog"),
-            DialogResult::Reprocess(c) => f.write_fmt(format_args!("Reprocess({:?})", c)),
+            DialogResult::Reprocess(c) => f.write_fmt(format_args!("Reprocess({c:?})")),
             DialogResult::Special(_) => f.write_str("Special"),
         }
     }

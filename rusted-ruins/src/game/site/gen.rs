@@ -69,7 +69,7 @@ pub fn add_site_from_obj(
 
     for map_template_id in &sg.map_template_id {
         let map = crate::game::map::from_template::from_template_id(map_template_id, true)
-            .unwrap_or_else(|| panic!("Map template not found: {}", map_template_id));
+            .unwrap_or_else(|| panic!("Map template not found: {map_template_id}"));
 
         let map_random_id = gen_box_id(gd);
         gd.add_map(map, sid, map_random_id);

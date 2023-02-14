@@ -3,7 +3,7 @@ use super::READABLE_BUNDLE;
 const NEW_PAGE_LINE: &str = "<newpage>";
 
 pub fn readable_title_txt(id: &str) -> Option<String> {
-    let id = format!("{}-title", id);
+    let id = format!("{id}-title");
     READABLE_BUNDLE.format(&id, None)
 }
 

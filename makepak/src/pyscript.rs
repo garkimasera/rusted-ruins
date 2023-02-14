@@ -4,7 +4,7 @@ use common::obj::{Object, ScriptObject};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Seek, SeekFrom};
+use std::io::{BufRead, BufReader, Read, Seek};
 use std::path::Path;
 
 static FIRST_LINE: Lazy<Regex> = Lazy::new(|| Regex::new("# rusted-ruins-script").unwrap());
@@ -15,7 +15,7 @@ static ID_LINE: Lazy<Regex> =
 pub fn read_pyscript<P: AsRef<Path>>(path: P) -> Result<Object> {
     let path = path.as_ref();
     let mut f = BufReader::new(File::open(path)?);
-    print_verbose(|| format!("Processing \"{:?}\"", path));
+    print_verbose(|| format!("Processing \"{path:?}\""));
 
     // Check the first line
     let mut first_line = String::new();
@@ -44,7 +44,7 @@ pub fn read_pyscript<P: AsRef<Path>>(path: P) -> Result<Object> {
         );
     };
 
-    f.seek(SeekFrom::Start(0))?;
+    f.rewind()?;
     let mut script = String::new();
     f.read_to_string(&mut script)?;
 

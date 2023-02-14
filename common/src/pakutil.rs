@@ -55,7 +55,7 @@ fn walk_dir(dir: &Path, cb: &mut dyn FnMut(Object), err_stack: &mut Vec<PakLoadi
         let path = entry.path();
         if path.is_dir() {
             walk_dir(&path, cb, err_stack);
-        } else if path.extension() != None && path.extension().unwrap() == "pak" {
+        } else if path.extension().is_some() && path.extension().unwrap() == "pak" {
             read_tar(&path, cb, err_stack);
         }
     }

@@ -215,7 +215,7 @@ impl<T: ListWidgetRow> ListWidget<T> {
             0
         };
         let y = (y - self.rect.y - y_start) as u32;
-        let idx = (y / self.h_row) as u32;
+        let idx = y / self.h_row;
         if idx >= self.n_item {
             return None;
         }
@@ -254,7 +254,7 @@ impl ListWidget<TextCache> {
     /// Helper function to adjust widget size
     /// SdlValues is needed to calculate text size from text cache
     fn get_adjusted_widget_size(&mut self, sv: &mut SdlValues<'_, '_>) -> (u32, u32) {
-        let h = UI_CFG.list_widget.h_row_with_text as u32 * self.rows.len() as u32;
+        let h = UI_CFG.list_widget.h_row_with_text * self.rows.len() as u32;
         let max_w = {
             let mut max_w = 0;
             for i in 0..self.n_row {
@@ -306,7 +306,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 match dir.vdir {
                     VDirection::Up => {
                         if self.current_choice == 0 {
-                            self.current_choice = self.n_row as u32 - 1;
+                            self.current_choice = self.n_row - 1;
                         } else {
                             self.current_choice -= 1;
                         }
@@ -315,7 +315,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                         ));
                     }
                     VDirection::Down => {
-                        if self.current_choice == self.n_row as u32 - 1 {
+                        if self.current_choice == self.n_row - 1 {
                             self.current_choice = 0;
                         } else {
                             self.current_choice += 1;
@@ -402,7 +402,7 @@ impl<T: ListWidgetRow> WidgetTrait for ListWidget<T> {
                 self.rect.x,
                 self.rect.y + h_row as i32 * self.current_choice as i32 + y_start,
                 self.rect.w as u32,
-                h_row as u32,
+                h_row,
             );
             if self.row_highlight {
                 context

@@ -33,7 +33,7 @@ impl HelpWindow {
                 let s = format!("{} {}", c.to_text(), INPUT_CFG.find_key(c));
                 let mut r: Rect = cfg.key_label_start.into();
                 r.offset(0, cfg.key_label_h * i as i32);
-                LabelWidget::new(r, &s, FontKind::M)
+                LabelWidget::new(r, s, FontKind::M)
             })
             .collect::<Vec<_>>();
 

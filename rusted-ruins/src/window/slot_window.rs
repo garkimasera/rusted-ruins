@@ -50,7 +50,7 @@ impl SlotInstallWindow {
                 (
                     item.icon(),
                     TextCache::new(item.to_text(), FontKind::M, UI_CFG.color.normal_font),
-                    TextCache::new(format!("{}", cost), FontKind::M, UI_CFG.color.normal_font),
+                    TextCache::new(format!("{cost}"), FontKind::M, UI_CFG.color.normal_font),
                 )
             })
             .collect();
@@ -142,7 +142,7 @@ impl SlotInsertWindow {
     }
 
     pub fn update(&mut self) {
-        self.slots = crate::game::item::slot::slot_list(&*self.item.borrow());
+        self.slots = crate::game::item::slot::slot_list(&self.item.borrow());
         let rows: Vec<_> = self
             .slots
             .iter()
@@ -226,7 +226,7 @@ pub fn module_select_item_window(
     let action: Box<ActionCallback> = Box::new(move |pa, il| {
         let module_item = pa.remove_item(il, 1);
         if let Some(removed_module_item) =
-            crate::game::item::slot::insert_module_to(&mut *item.borrow_mut(), module_item, i_slot)
+            crate::game::item::slot::insert_module_to(&mut item.borrow_mut(), module_item, i_slot)
         {
             pa.append_item(removed_module_item, 1);
         }

@@ -10,7 +10,7 @@ use std::path::Path;
 pub fn build_img(input: ImgInput) -> Result<(Img, ImgData), Error> {
     let path = Path::new(&input.path);
     let newpath = if path.is_relative() {
-        crate::dir::path_from_src_dir(&path)
+        crate::dir::path_from_src_dir(path)
     } else {
         path.to_owned()
     };
