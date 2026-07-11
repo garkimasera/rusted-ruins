@@ -23,7 +23,7 @@ impl Game {
 
         match self.gd.save(&path) {
             Ok(_) => info!("Saved to {:?}", path.to_string_lossy()),
-            Err(e) => warn!("Faild to saving to {:?}: {}", path.to_string_lossy(), e),
+            Err(e) => warn!("Failed to saving to {:?}: {}", path.to_string_lossy(), e),
         }
     }
 
@@ -35,7 +35,7 @@ impl Game {
         }
         match self.gd.clean_map_dir(&path) {
             Ok(_) => info!("Clean map dir {:?}", path.to_string_lossy()),
-            Err(e) => warn!("Faild to clean map dir {:?}: {}", path.to_string_lossy(), e),
+            Err(e) => warn!("Failed to clean map dir {:?}: {}", path.to_string_lossy(), e),
         }
     }
 }
